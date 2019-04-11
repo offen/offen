@@ -72,7 +72,7 @@ func (rt *router) status(w http.ResponseWriter, r *http.Request) {
 func (rt *router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "application/json")
 	switch r.URL.Path {
-	case "/":
+	case "/events":
 		switch r.Method {
 		case http.MethodGet:
 			rt.get(w, r)
