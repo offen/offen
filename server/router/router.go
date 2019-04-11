@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+	"net/url"
 
 	"github.com/offen/offen/server/persistence"
 )
@@ -12,8 +13,25 @@ type router struct {
 	db persistence.Database
 }
 
+type queryStringQuery struct {
+	params url.Values
+}
+
+func (q *queryStringQuery) AccountID() string {
+	return q.params.Get("account_id")
+}
+
+func (q *queryStringQuery) UserID() string {
+	return q.params.Get("user_id")
+}
+
+func (q *queryStringQuery) Since() string {
+	return q.params.Get("since")
+}
+
 func (rt *router) get(w http.ResponseWriter, r *http.Request) {
-	result, err := rt.db.Query()
+	query := &queryStringQuery{r.URL.Query()}
+	result, err := rt.db.Query(query)
 	if err != nil {
 		respondWithError(w, err, http.StatusInternalServerError)
 		return
