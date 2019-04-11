@@ -1,0 +1,28 @@
+version: 2
+
+jobs:
+  server:
+    docker:
+      - image: circleci/golang:1.12
+    working_directory: ~/offen/server
+    steps:
+      - checkout:
+          path: ~/offen
+      - restore_cache:
+          key: offen-server-{{ checksum "go.mod" }}
+      - run:
+          name: Download modules
+          command: go mod download
+      - save_cache:
+          paths:
+            - /go/pkg/mod
+          key: offen-server-{{ checksum "go.mod" }}
+      - run:
+          name: Run tests
+          command: make test
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - server
