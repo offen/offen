@@ -4,6 +4,12 @@ jobs:
   server:
     docker:
       - image: circleci/golang:1.12
+        environment:
+          - POSTGRES_CONNECTION_STRING=postgres://circle:test@localhost:5432/circle_test?sslmode=disable
+      - image: circleci/postgres:11.2-alpine
+        environment:
+          - POSTGRES_USER=circle
+          - POSTGRES_PASSWORD=test
     working_directory: ~/offen/server
     steps:
       - checkout:

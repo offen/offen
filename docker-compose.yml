@@ -6,6 +6,14 @@ server:
     - $GOPATH/pkg/mod:/go/pkg/mod
   environment:
     - GOPATH=/go
+    - POSTGRES_CONNECTION_STRING=postgres://postgres:develop@database:5432/postgres?sslmode=disable
   ports:
     - 8080:8080
   command: go run cmd/server/main.go
+  links:
+    - database
+
+database:
+  image: postgres:11.2
+  environment:
+    - POSTGRES_PASSWORD=develop

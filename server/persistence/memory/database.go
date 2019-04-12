@@ -14,7 +14,7 @@ type inMemoryDatabase struct {
 	rows []row
 }
 
-func (i *inMemoryDatabase) Insert(accountID, userID, payload string) error {
+func (i *inMemoryDatabase) Insert(userID, accountID, payload string) error {
 	t := time.Now()
 	eventID, err := ulid.New(
 		ulid.Timestamp(t),

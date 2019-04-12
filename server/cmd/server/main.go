@@ -11,7 +11,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/offen/offen/server/persistence/memory"
+	"github.com/offen/offen/server/persistence/postgres"
 	"github.com/offen/offen/server/router"
 )
 
@@ -21,7 +21,10 @@ func main() {
 	)
 	flag.Parse()
 
-	db := memory.New()
+	db, err := postgres.New()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	srv := &http.Server{
 		Addr:    fmt.Sprintf("0.0.0.0:%v", *port),
