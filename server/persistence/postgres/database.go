@@ -1,6 +1,8 @@
 package postgres
 
 import (
+	"crypto/sha256"
+	"fmt"
 	"math/rand"
 	"os"
 	"time"
@@ -25,26 +27,39 @@ func (p *postgresDatabase) Insert(userID, accountID, payload string) error {
 		return err
 	}
 
+	var account Account
+	p.db.Find(&account, "account_id = ?", accountID)
+
+	hashedUserID := sha256.Sum256([]byte(fmt.Sprintf("%s-%s", account.UserSalt, userID)))
+
 	p.db.Create(&Event{
-		AccountID: accountID,
-		UserID:    userID,
-		Payload:   payload,
-		EventID:   eventID.String(),
+		AccountID:    accountID,
+		HashedUserID: fmt.Sprintf("%x", hashedUserID),
+		Payload:      payload,
+		EventID:      eventID.String(),
 	})
 	return nil
 }
 
 func (p *postgresDatabase) Query(query persistence.Query) ([]persistence.EventResult, error) {
-	where := []interface{}{}
+	var accounts []Account
+	if query.AccountID() == "" {
+		p.db.Find(&accounts)
+	} else {
+		p.db.Find(&accounts, "account_id = ?", query.AccountID())
+	}
 
-	if query.AccountID() != "" {
-		where = append(where, "account_id = ?", query.AccountID())
+	hashedUserIDs := []string{}
+	for _, account := range accounts {
+		hashed := sha256.Sum256([]byte(fmt.Sprintf("%s-%s", account.UserSalt, query.UserID())))
+		hashedUserIDs = append(hashedUserIDs, fmt.Sprintf("%x", hashed))
 	}
-	if query.UserID() != "" {
-		where = append(where, "user_id = ?", query.UserID())
-	}
+
+	var where []interface{}
 	if query.Since() != "" {
-		where = append(where, "event_id > ?", query.Since())
+		where = []interface{}{"event_id > ? AND hashed_user_id in (?)", query.Since(), hashedUserIDs}
+	} else {
+		where = []interface{}{"hashed_user_id in (?)", query.Since(), hashedUserIDs}
 	}
 
 	result := []Event{}
@@ -54,7 +69,7 @@ func (p *postgresDatabase) Query(query persistence.Query) ([]persistence.EventRe
 	for _, match := range result {
 		out = append(out, persistence.EventResult{
 			AccountID: match.AccountID,
-			UserID:    match.UserID,
+			UserID:    match.HashedUserID,
 			Payload:   match.Payload,
 			EventID:   match.EventID,
 		})
@@ -62,20 +77,12 @@ func (p *postgresDatabase) Query(query persistence.Query) ([]persistence.EventRe
 	return out, nil
 }
 
-type Event struct {
-	AccountID string
-	UserID    string
-	EventID   string
-	Payload   string
-}
-
+// New creates a persistence layer that connects to a PostgreSQL database
 func New() (persistence.Database, error) {
 	db, err := gorm.Open("postgres", os.Getenv("POSTGRES_CONNECTION_STRING"))
 	if err != nil {
 		return nil, err
 	}
-
-	db.AutoMigrate(&Event{})
 
 	return &postgresDatabase{db}, nil
 }
