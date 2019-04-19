@@ -12,14 +12,6 @@ type relationalDatabase struct {
 	db *gorm.DB
 }
 
-// ErrUnknownAccount will be returned when an insert call tries to create an
-// event for an account ID that does not exist in the database
-type ErrUnknownAccount string
-
-func (e ErrUnknownAccount) Error() string {
-	return string(e)
-}
-
 func (r *relationalDatabase) Insert(userID, accountID, payload string) error {
 	eventID, err := persistence.NewEventID()
 	if err != nil {
@@ -30,7 +22,7 @@ func (r *relationalDatabase) Insert(userID, accountID, payload string) error {
 	r.db.Where(`account_id = ?`, accountID).First(&account)
 
 	if account.AccountID == "" {
-		return ErrUnknownAccount(
+		return persistence.ErrUnknownAccount(
 			fmt.Sprintf("unknown account with id %s", accountID),
 		)
 	}

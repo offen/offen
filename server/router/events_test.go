@@ -12,7 +12,6 @@ import (
 	"testing"
 
 	"github.com/offen/offen/server/persistence"
-	"github.com/offen/offen/server/persistence/relational"
 )
 
 type mockInsertDatabase struct {
@@ -75,7 +74,7 @@ func TestRouter_PostEvents(t *testing.T) {
 		},
 		{
 			"account not found",
-			&mockInsertDatabase{err: relational.ErrUnknownAccount("unknown account")},
+			&mockInsertDatabase{err: persistence.ErrUnknownAccount("unknown account")},
 			bytes.NewReader([]byte(`{"account_id":"account-identifier","payload":"payload-value"}`)),
 			"user-identifier",
 			http.StatusBadRequest,

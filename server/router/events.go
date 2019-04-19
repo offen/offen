@@ -7,8 +7,6 @@ import (
 	"net/url"
 
 	"github.com/offen/offen/server/persistence"
-
-	"github.com/offen/offen/server/persistence/relational"
 )
 
 type inboundEventPayload struct {
@@ -41,7 +39,7 @@ func (rt *router) postEvents(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := rt.db.Insert(userID, evt.AccountID, evt.Payload); err != nil {
-		if unknownAccountErr, ok := err.(relational.ErrUnknownAccount); ok {
+		if unknownAccountErr, ok := err.(persistence.ErrUnknownAccount); ok {
 			respondWithError(w, unknownAccountErr, http.StatusBadRequest)
 			return
 		}
