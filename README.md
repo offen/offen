@@ -18,7 +18,7 @@ To work on the `server` you will need to install `docker-compose` and Go 1.12+.
 First, bootstrap the dockerized Postgres database used for development:
 
 ```
-docker-compose run server go run cmd/bootstrap/main.go
+docker-compose run server make bootstrap
 ```
 
 Run the server:

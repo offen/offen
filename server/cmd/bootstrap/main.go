@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
@@ -9,7 +10,8 @@ import (
 )
 
 func main() {
-	db, err := gorm.Open("postgres", "postgres://postgres:develop@database:5432/postgres?sslmode=disable")
+	connectionString := os.Getenv("POSTGRES_CONNECTION_STRING")
+	db, err := gorm.Open("postgres", connectionString)
 	if err != nil {
 		panic(err)
 	}

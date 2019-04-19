@@ -1,6 +1,9 @@
+//+build integration
+
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"os"
 	"strings"
@@ -9,6 +12,11 @@ import (
 )
 
 func TestMain(m *testing.M) {
+	oldArgs := os.Args
+	defer func() { os.Args = oldArgs }()
+	os.Args = append(os.Args, fmt.Sprintf("-conn=%s", os.Getenv("POSTGRES_CONNECTION_STRING")))
+	time.Sleep(time.Millisecond * 50)
+
 	go main()
 	time.Sleep(time.Millisecond * 50)
 	os.Exit(m.Run())
@@ -26,7 +34,13 @@ func TestStatus(t *testing.T) {
 
 func TestEvents_Get(t *testing.T) {
 	t.Run("ok", func(t *testing.T) {
-		res, err := http.Get("http://localhost:8080/events")
+		req, err := http.NewRequest(http.MethodGet, "http://localhost:8080/events", nil)
+		if err != nil {
+			t.Fatalf("Unexpected error %v", err)
+		}
+		req.AddCookie(&http.Cookie{Name: "user", Value: "3c6ccb0c-ff58-40dd-a588-9ba5b927e89a"})
+
+		res, err := http.DefaultClient.Do(req)
 		if err != nil {
 			t.Fatalf("Unexpected error %v", err)
 		}
@@ -38,7 +52,7 @@ func TestEvents_Get(t *testing.T) {
 
 func TestEvents_Post(t *testing.T) {
 	t.Run("ok", func(t *testing.T) {
-		body := strings.NewReader(`{"account_id":"d03eb742-20d4-49b4-aa4e-d2e76e72b088","payload":"c2b2e7d2bf3d5539794a3fd9cff4d4cc"}`)
+		body := strings.NewReader(`{"account_id":"78403940-ae4f-4aff-a395-1e90f145cf62","payload":"c2b2e7d2bf3d5539794a3fd9cff4d4cc"}`)
 		req, err := http.NewRequest(http.MethodPost, "http://localhost:8080/events", body)
 		if err != nil {
 			t.Fatalf("Unexpected error %v", err)
@@ -55,7 +69,7 @@ func TestEvents_Post(t *testing.T) {
 	})
 
 	t.Run("missing `user` cookie", func(t *testing.T) {
-		body := strings.NewReader(`{"account_id":"d03eb742-20d4-49b4-aa4e-d2e76e72b088","payload":"c2b2e7d2bf3d5539794a3fd9cff4d4cc"}`)
+		body := strings.NewReader(`{"account_id":"9b63c4d8-65c0-438c-9d30-cc4b01173393","payload":"c2b2e7d2bf3d5539794a3fd9cff4d4cc"}`)
 		req, err := http.NewRequest(http.MethodPost, "http://localhost:8080/events", body)
 		if err != nil {
 			t.Fatalf("Unexpected error %v", err)
