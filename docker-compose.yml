@@ -6,10 +6,9 @@ server:
     - $GOPATH/pkg/mod:/go/pkg/mod
   environment:
     - GOPATH=/go
-    - POSTGRES_CONNECTION_STRING=postgres://postgres:develop@database:5432/postgres?sslmode=disable
   ports:
     - 8080:8080
-  command: go run cmd/server/main.go
+  command: go run cmd/server/main.go -conn postgres://postgres:develop@database:5432/postgres?sslmode=disable
   links:
     - database
 

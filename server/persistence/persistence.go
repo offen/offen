@@ -9,7 +9,7 @@ type Database interface {
 // Query defines a set of filters to limit the set of results to be returned
 // In case a field has the zero value, its filter will not be applied.
 type Query interface {
-	AccountID() string
+	AccountIDs() []string
 	UserID() string
 	Since() string
 }
