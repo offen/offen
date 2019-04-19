@@ -4,6 +4,12 @@ jobs:
   server:
     docker:
       - image: circleci/golang:1.12
+        environment:
+          - POSTGRES_CONNECTION_STRING=postgres://circle:test@localhost:5432/circle_test?sslmode=disable
+      - image: circleci/postgres:11.2-alpine
+        environment:
+          - POSTGRES_USER=circle
+          - POSTGRES_PASSWORD=test
     working_directory: ~/offen/server
     steps:
       - checkout:
@@ -18,8 +24,18 @@ jobs:
             - /go/pkg/mod
           key: offen-server-{{ checksum "go.mod" }}
       - run:
+          name: Waiting for Postgres to be ready
+          command: |
+            for i in `seq 1 10`;
+            do
+              nc -z localhost 5432 && echo Success && exit 0
+              echo -n .
+              sleep 1
+            done
+            echo Failed waiting for Postgres && exit 1
+      - run:
           name: Run tests
-          command: make test
+          command: make test-ci
 
 workflows:
   version: 2

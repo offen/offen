@@ -11,17 +11,25 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/offen/offen/server/persistence/memory"
+	"github.com/offen/offen/server/persistence/relational"
 	"github.com/offen/offen/server/router"
 )
 
 func main() {
 	var (
-		port = flag.Int("port", 8080, "the port the server binds to")
+		port             = flag.Int("port", 8080, "the port the server binds to")
+		connectionString = flag.String("conn", "", "a database connection string")
+		dialect          = flag.String("dialect", "postgres", "the database dialect used by the given connection string")
 	)
 	flag.Parse()
 
-	db := memory.New()
+	db, err := relational.New(
+		relational.WithDialect(*dialect),
+		relational.WithConnectionString(*connectionString),
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	srv := &http.Server{
 		Addr:    fmt.Sprintf("0.0.0.0:%v", *port),

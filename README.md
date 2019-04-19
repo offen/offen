@@ -9,6 +9,30 @@ Development of __offen__ has just started, so instructions are rare and things w
 
 Guidelines for running and developing the Software will be added when it makes sense to do so. Feel free to open an issue if you have a question.
 
+### Developing the application
+
+#### `server`
+
+To work on the `server` you will need to install `docker-compose` and Go 1.12+.
+
+First, bootstrap the dockerized Postgres database used for development:
+
+```
+docker-compose run server make bootstrap
+```
+
+Run the server:
+
+```
+docker-compose up
+```
+
+Run the tests:
+
+```
+docker-compose run server make
+```
+
 ### License
 
 MIT © [Frederik Ring](https://www.frederikring.com), [Hendrik Niefeld](http://niefeld.com/)
