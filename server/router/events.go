@@ -20,12 +20,14 @@ type ackResponse struct {
 	Ack bool `json:"ack"`
 }
 
+var errBadRequestContext = errors.New("could not use user id in request context")
+
 func (rt *router) postEvents(w http.ResponseWriter, r *http.Request) {
 	userID, ok := r.Context().Value(contextKeyCookie).(string)
 	if !ok {
 		respondWithError(
 			w,
-			errors.New("could not use user id in request context"),
+			errBadRequestContext,
 			http.StatusInternalServerError,
 		)
 		return
@@ -47,11 +49,7 @@ func (rt *router) postEvents(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	b, err := json.Marshal(ackResponse{true})
-	if err != nil {
-		respondWithError(w, err, http.StatusInternalServerError)
-		return
-	}
+	b, _ := json.Marshal(ackResponse{true})
 	w.Write(b)
 }
 
@@ -81,7 +79,7 @@ func (rt *router) getEvents(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		respondWithError(
 			w,
-			errors.New("could not use user id in request context"),
+			errBadRequestContext,
 			http.StatusInternalServerError,
 		)
 		return
@@ -101,7 +99,5 @@ func (rt *router) getEvents(w http.ResponseWriter, r *http.Request) {
 	outbound := getResponse{
 		Events: result,
 	}
-	if err := json.NewEncoder(w).Encode(outbound); err != nil {
-		respondWithError(w, err, http.StatusInternalServerError)
-	}
+	json.NewEncoder(w).Encode(outbound)
 }
