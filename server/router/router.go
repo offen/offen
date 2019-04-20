@@ -24,7 +24,10 @@ const (
 
 func (rt *router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "application/json")
+	w.Header().Add("Access-Control-Allow-Origin", "*")
 	switch r.URL.Path {
+	case "/public-key":
+		rt.getPublicKey(w, r)
 	case "/events":
 		c, err := r.Cookie(cookieKey)
 		if err != nil {

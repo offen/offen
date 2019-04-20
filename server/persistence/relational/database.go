@@ -1,8 +1,12 @@
 package relational
 
 import (
+	"crypto/x509"
+	"encoding/pem"
 	"fmt"
 	"os"
+
+	"github.com/mendsley/gojwk"
 
 	"github.com/jinzhu/gorm"
 	"github.com/offen/offen/server/persistence"
@@ -102,6 +106,30 @@ func (r *relationalDatabase) Query(query persistence.Query) ([]persistence.Event
 		})
 	}
 	return out, nil
+}
+
+func (r *relationalDatabase) GetAccount(accountID string) (persistence.AccountResult, error) {
+	var account Account
+	if err := r.db.Find(&account, "account_id = ?", accountID).Error; err != nil {
+		return persistence.AccountResult{}, err
+	}
+
+	decoded, _ := pem.Decode([]byte(account.PublicKey))
+
+	pub, pubErr := x509.ParsePKCS1PublicKey(decoded.Bytes)
+	if pubErr != nil {
+		return persistence.AccountResult{}, pubErr
+	}
+
+	key, keyErr := gojwk.PublicKey(pub)
+	if keyErr != nil {
+		return persistence.AccountResult{}, keyErr
+	}
+
+	return persistence.AccountResult{
+		AccountID: account.AccountID,
+		PublicKey: *key,
+	}, nil
 }
 
 // New creates a persistence layer that connects to a PostgreSQL database
