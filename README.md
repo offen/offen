@@ -1,4 +1,5 @@
 # offen
+[![CircleCI](https://circleci.com/gh/offen/offen/tree/master.svg?style=svg)](https://circleci.com/gh/offen/offen/tree/master)
 > The offen analytics software
 
 This repository contains all source code needed to build and run __offen__, both on the server as well as on the client.
