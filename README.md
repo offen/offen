@@ -36,4 +36,4 @@ docker-compose run server make
 
 ### License
 
-MIT © [Frederik Ring](https://www.frederikring.com), [Hendrik Niefeld](http://niefeld.com/)
+MIT © offen
