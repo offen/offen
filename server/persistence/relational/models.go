@@ -13,6 +13,15 @@ type Event struct {
 	HashedUserID string
 	Payload      string
 	Account      Account `gorm:"foreignkey:AccountID;association_foreignkey:AccountID"`
+	User         User    `gorm:"foreignkey:HashedUserID;association_foreignkey:HashedUserID"`
+}
+
+// User associates a hashed user id - which ties a user and account together
+// uniquely - with the encrypted user secret the account owner can use
+// to decrypt events stored for that user.
+type User struct {
+	HashedUserID        string `gorm:"primary_key"`
+	EncryptedUserSecret string
 }
 
 // Account stores information about an account.

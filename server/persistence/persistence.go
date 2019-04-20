@@ -7,6 +7,7 @@ type Database interface {
 	Insert(userID, accountID, payload string) error
 	Query(Query) ([]EventResult, error)
 	GetAccount(accountID string) (AccountResult, error)
+	AssociateUserSecret(accountID, userID, encryptedUserSecret string) error
 }
 
 // Query defines a set of filters to limit the set of results to be returned

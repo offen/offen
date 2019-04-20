@@ -3,6 +3,7 @@ module github.com/offen/offen/server
 go 1.12
 
 require (
+	github.com/gofrs/uuid v3.2.0+incompatible
 	github.com/google/pprof v0.0.0-20190404155422-f8f10df84213 // indirect
 	github.com/jinzhu/gorm v1.9.2
 	github.com/jinzhu/inflection v0.0.0-20180308033659-04140366298a // indirect
