@@ -41,7 +41,8 @@ To work on the `vault` you will need to install `docker-compose`.
 First, install the project's dependencies:
 
 ```
-docker-compose run vault npm install
+cd vault
+npm install
 ```
 
 Run the server:
@@ -53,7 +54,8 @@ docker-compose up
 Run the tests:
 
 ```
-docker-compose run vault npm test
+cd vault
+npm test
 ```
 
 

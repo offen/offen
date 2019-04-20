@@ -39,7 +39,7 @@ jobs:
 
   vault:
     docker:
-      - image: circleci/node:10
+      - image: circleci/node:10-browsers
     working_directory: ~/offen/vault
     steps:
       - checkout:
@@ -55,7 +55,7 @@ jobs:
           key: offen-vault-{{ checksum "package.json" }}
       - run:
           name: Run tests
-          command: npm test
+          command: npm test -- --allow-chrome-as-root
 
 workflows:
   version: 2
