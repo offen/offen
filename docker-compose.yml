@@ -19,10 +19,10 @@ database:
     - POSTGRES_PASSWORD=develop
 
 vault:
-  image: node:10-alpine
+  image: node:10
   working_dir: /vault
   volumes:
     - ./vault:/vault
-  command: npm start
+  command: npm start -- --port 9977
   ports:
-    - 3000:3000
+    - 9977:9977
