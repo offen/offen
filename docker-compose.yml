@@ -17,3 +17,12 @@ database:
   image: postgres:11.2
   environment:
     - POSTGRES_PASSWORD=develop
+
+vault:
+  image: node:10-alpine
+  working_dir: /vault
+  volumes:
+    - ./vault:/vault
+  command: npm start
+  ports:
+    - 3000:3000

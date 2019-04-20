@@ -4,11 +4,12 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "test": "mocha --recursive *.test.js",
+    "test": "mocha --exit ./**/*.test.js",
     "posttest": "standard",
     "fix": "standard --fix"
   },
   "dependencies": {
+    "browserify-middleware": "^8.1.1",
     "debug": "^2.6.3",
     "express": "^4.15.2",
     "jade": "^1.11.0",
@@ -20,6 +21,8 @@
     "supertest": "^4.0.2"
   },
   "standard": {
-    "env": ["mocha"]
+    "env": [
+      "mocha"
+    ]
   }
 }

@@ -1,6 +1,8 @@
 const express = require('express')
 const path = require('path')
 const logger = require('morgan')
+const browserify = require('browserify-middleware')
+
 const index = require('./routes/index')
 
 const app = express()
@@ -9,7 +11,8 @@ app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'jade')
 
 app.use(logger('dev'))
-app.use(express.static(path.join(__dirname, 'public')))
+
+app.use('/main.js', browserify(path.join(__dirname, 'public/javascripts/main.js')))
 
 app.use('/', index)
 
