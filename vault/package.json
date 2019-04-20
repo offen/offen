@@ -1,0 +1,25 @@
+{
+  "name": "vault",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www",
+    "test": "mocha --recursive *.test.js",
+    "posttest": "standard",
+    "fix": "standard --fix"
+  },
+  "dependencies": {
+    "debug": "^2.6.3",
+    "express": "^4.15.2",
+    "jade": "^1.11.0",
+    "morgan": "^1.9.1"
+  },
+  "devDependencies": {
+    "mocha": "^6.1.4",
+    "standard": "^12.0.1",
+    "supertest": "^4.0.2"
+  },
+  "standard": {
+    "env": ["mocha"]
+  }
+}
