@@ -1,31 +1,33 @@
-const accountId = '78403940-ae4f-4aff-a395-1e90f145cf62'
-
-window
-  .fetch(`http://localhost:8080/exchange?account_id=${accountId}`, {
-    credentials: 'include'
-  })
-  .then(function (r) {
-    return r.json()
-  })
-  .then(function (response) {
-    return generateNewUserSecret(response.public_key)
-  })
-  .then((encryptedUserSecret) => {
-    return window.fetch('http://localhost:8080/exchange', {
-      method: 'POST',
-      credentials: 'include',
-      body: JSON.stringify({
-        account_id: accountId,
-        encrypted_user_secret: encryptedUserSecret
-      })
-    })
-  })
+exchangeUserSecret('78403940-ae4f-4aff-a395-1e90f145cf62', 'https://local.offen.org:8080')
   .then(function (response) {
     console.log(response)
   })
   .catch(function (err) {
     console.error(err)
   })
+
+function exchangeUserSecret (accountId, host) {
+  return window
+    .fetch(`${host}/exchange?account_id=${accountId}`, {
+      credentials: 'include'
+    })
+    .then(function (r) {
+      return r.json()
+    })
+    .then(function (response) {
+      return generateNewUserSecret(response.public_key)
+    })
+    .then((encryptedUserSecret) => {
+      return window.fetch(`${host}/exchange`, {
+        method: 'POST',
+        credentials: 'include',
+        body: JSON.stringify({
+          account_id: accountId,
+          encrypted_user_secret: encryptedUserSecret
+        })
+      })
+    })
+}
 
 function generateNewUserSecret (publicWebKey) {
   return Promise
