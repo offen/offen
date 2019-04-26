@@ -12,6 +12,34 @@ Guidelines for running and developing the Software will be added when it makes s
 
 ### Developing the application
 
+#### Local cookies and SSL
+
+In local development __offen__ requires to be served both via SSL (in order to use window.crypto) as well as a `local.offen.org` host.
+
+This requires the following steps to be taken:
+
+1. Edit your `/etc/hosts` to include the following line:
+  ```
+  127.0.0.1       local.offen.org
+  ```
+2. Install and setup [mkcert](https://github.com/FiloSottile/mkcert). Assuming you have Go installed, this looks like:
+  ```
+  $ go get -u github.com/FiloSottile/mkcert
+  $ mkcert -install
+  ```
+3. Navigate into the repository root and create a local certificate and key for the `local.offen.org` host:
+  ```
+  $ mkcert local.offen.org
+  ```
+
+You can test setup by starting the application:
+
+```
+$ docker-compose up
+```
+
+Now you should be able to access <https://local.offen.org:8080/status> in your browser without any security warnings.
+
 #### `server`
 
 To work on the `server` you will need to install `docker-compose` and Go 1.12+.

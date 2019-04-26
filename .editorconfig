@@ -10,6 +10,6 @@ insert_final_newline = true
 trim_trailing_whitespace = true
 indent_style = tab
 
-[{*.js,*.yml,Gopkg.toml}]
+[{*.js,*.yml,*.md,Gopkg.toml}]
 indent_style = space
 indent_size = 2
