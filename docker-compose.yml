@@ -21,7 +21,7 @@ database:
     - POSTGRES_PASSWORD=develop
 
 vault:
-  image: node:10
+  image: timbru31/node-chrome:slim
   working_dir: /vault
   volumes:
     - ./vault:/vault
