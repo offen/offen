@@ -111,6 +111,9 @@ func (r *relationalDatabase) Query(query persistence.Query) ([]persistence.Event
 func (r *relationalDatabase) GetAccount(accountID string) (persistence.AccountResult, error) {
 	var account Account
 	if err := r.db.Find(&account, "account_id = ?", accountID).Error; err != nil {
+		if gorm.IsRecordNotFoundError(err) {
+			return persistence.AccountResult{}, persistence.ErrUnknownAccount(fmt.Sprintf("account id %s unknown", accountID))
+		}
 		return persistence.AccountResult{}, err
 	}
 

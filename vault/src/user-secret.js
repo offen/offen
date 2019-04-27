@@ -3,22 +3,23 @@ const Dexie = require('dexie')
 module.exports = ensureUserSecret
 
 function ensureUserSecret (accountId, host) {
-  const db = new Dexie('user_secrets')
-  db.version(1).stores({
-    secrets: 'accountId,userSecret'
-  })
+  const db = getDatabase()
   return db.secrets.get({ accountId: accountId })
     .then(function (result) {
-      if (!result) {
-        return exchangeUserSecret(accountId, host)
-          .then(function (userSecret) {
-            return db.secrets.put({
+      if (result) {
+        return result.userSecret
+      }
+      return exchangeUserSecret(accountId, host)
+        .then(function (userSecret) {
+          return db.secrets
+            .put({
               accountId: accountId,
               userSecret: userSecret
             })
-          })
-      }
-      return result.userSecret
+            .then(function () {
+              return userSecret
+            })
+        })
     })
 }
 
@@ -27,13 +28,20 @@ function exchangeUserSecret (accountId, host) {
     .fetch(`${host}/exchange?account_id=${accountId}`, {
       credentials: 'include'
     })
-    .then(function (r) {
-      return r.json()
-    })
     .then(function (response) {
-      return generateNewUserSecret(response.public_key)
+      if (response.status >= 400) {
+        return response.json().then(function (errorBody) {
+          const err = new Error(errorBody.error)
+          err.status = response.status
+          throw err
+        })
+      }
+      return response.json()
     })
-    .then((result) => {
+    .then(function (body) {
+      return generateNewUserSecret(body.public_key)
+    })
+    .then(function (result) {
       return window
         .fetch(`${host}/exchange`, {
           method: 'POST',
@@ -45,11 +53,11 @@ function exchangeUserSecret (accountId, host) {
         })
         .then(function (response) {
           if (response.status >= 400) {
-            const err = new Error(
-              'Request failed with status code ' + response.status
-            )
-            err.status = response.status
-            throw err
+            return response.json().then(function (errorBody) {
+              const err = new Error(errorBody.error)
+              err.status = response.status
+              throw err
+            })
           }
           return result.userSecret
         })
@@ -62,7 +70,9 @@ function generateNewUserSecret (publicWebKey) {
       decodePublicWebKey(publicWebKey),
       createUserSecret()
     ])
-    .then(([accountPublicKey, userSecret]) => {
+    .then(function (keys) {
+      const accountPublicKey = keys[0]
+      const userSecret = keys[1]
       return window.crypto.subtle
         .exportKey(
           'jwk',
@@ -77,18 +87,20 @@ function generateNewUserSecret (publicWebKey) {
           )
         })
         .then(function (encrypted) {
-          const asString = byteArrayToString(encrypted)
           return {
-            encryptedUserSecret: window.btoa(asString),
+            encryptedUserSecret: arrayBufferToBase64(encrypted),
             userSecret: userSecret
           }
         })
     })
 }
 
-function byteArrayToString (byteArray) {
-  return Array.from(new Uint8Array(byteArray))
-    .map((byte) => String.fromCharCode(byte)).join('')
+function arrayBufferToBase64 (byteArray) {
+  const chars = Array.from(new Uint8Array(byteArray))
+    .map(function (byte) {
+      return String.fromCharCode(byte)
+    })
+  return window.btoa(chars.join(''))
 }
 
 function decodePublicWebKey (publicWebKey) {
@@ -109,4 +121,17 @@ function createUserSecret () {
     name: 'AES-CTR',
     length: 256
   }, true, ['encrypt', 'decrypt'])
+}
+
+function getDatabase () {
+  getDatabase.db = getDatabase.db || createDatabase()
+  return getDatabase.db
+}
+
+function createDatabase () {
+  const db = new Dexie('user_secrets')
+  db.version(1).stores({
+    secrets: 'accountId'
+  })
+  return db
 }

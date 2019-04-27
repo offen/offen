@@ -1,6 +1,6 @@
 const ensureUserSecret = require('./src/user-secret')
 
-ensureUserSecret('78403940-ae4f-4aff-a395-1e90f145cf62', 'https://local.offen.org:8080')
+ensureUserSecret('9b63c4d8-65c0-438c-9d30-cc4b01173393', 'https://local.offen.org:8080')
   .then(function (userSecret) {
     console.log(userSecret)
   })

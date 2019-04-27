@@ -5,12 +5,18 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/offen/offen/server/persistence"
+
 	"github.com/gofrs/uuid"
 )
 
 func (rt *router) getPublicKey(w http.ResponseWriter, r *http.Request) {
 	account, err := rt.db.GetAccount(r.URL.Query().Get("account_id"))
 	if err != nil {
+		if _, ok := err.(persistence.ErrUnknownAccount); ok {
+			respondWithError(w, err, http.StatusBadRequest)
+			return
+		}
 		respondWithError(w, err, http.StatusInternalServerError)
 		return
 	}
@@ -49,7 +55,7 @@ func (rt *router) postUserSecret(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := rt.db.AssociateUserSecret(payload.AccountID, userID, payload.EncryptedUserSecret); err != nil {
-		respondWithError(w, err, http.StatusInternalServerError)
+		respondWithError(w, err, http.StatusBadRequest)
 		return
 	}
 
