@@ -4,11 +4,13 @@
   "private": true,
   "scripts": {
     "start": "budo index.js --live --ssl --cert local.offen.org.pem --key local.offen.org-key.pem",
-    "test": "mochify ./**/*.test.js",
+    "test": "mochify --allow-chrome-as-root ./**/*.test.js",
     "posttest": "standard",
     "fix": "standard --fix"
   },
-  "dependencies": {},
+  "dependencies": {
+    "dexie": "^2.0.4"
+  },
   "devDependencies": {
     "budo": "^11.6.2",
     "mochify": "^6.2.0",
