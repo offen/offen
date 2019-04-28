@@ -2,7 +2,12 @@ package relational
 
 import (
 	"crypto/sha256"
+	"crypto/x509"
+	"encoding/pem"
+	"errors"
 	"fmt"
+
+	"github.com/mendsley/gojwk"
 )
 
 // Event is any analytics event that will be stored in the database. It is
@@ -35,6 +40,28 @@ type Account struct {
 // HashUserID uses the account's `UserSalt` to create a hashed version of a
 // user identifier that is unique per account.
 func (a *Account) HashUserID(userID string) string {
-	hashed := sha256.Sum256([]byte(fmt.Sprintf("%s-%s", a.UserSalt, userID)))
+	joined := fmt.Sprintf("%s-%s", a.UserSalt, userID)
+	hashed := sha256.Sum256([]byte(joined))
 	return fmt.Sprintf("%x", hashed)
+}
+
+// WrapPublicKey returns the public key of an account's keypair in
+// JSON WebKey format.
+func (a *Account) WrapPublicKey() (*gojwk.Key, error) {
+	decoded, _ := pem.Decode([]byte(a.PublicKey))
+
+	if decoded == nil {
+		return nil, errors.New("failed decoding stored key value")
+	}
+
+	pub, pubErr := x509.ParsePKCS1PublicKey(decoded.Bytes)
+	if pubErr != nil {
+		return nil, pubErr
+	}
+
+	key, keyErr := gojwk.PublicKey(pub)
+	if keyErr != nil {
+		return nil, keyErr
+	}
+	return key, nil
 }

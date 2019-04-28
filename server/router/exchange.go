@@ -5,9 +5,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/offen/offen/server/persistence"
-
 	"github.com/gofrs/uuid"
+	"github.com/offen/offen/server/persistence"
 )
 
 func (rt *router) getPublicKey(w http.ResponseWriter, r *http.Request) {

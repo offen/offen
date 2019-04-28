@@ -3,9 +3,7 @@ package router
 import (
 	"context"
 	"errors"
-	"fmt"
 	"net/http"
-	"net/url"
 
 	"github.com/offen/offen/server/persistence"
 )
@@ -17,27 +15,11 @@ type router struct {
 type contextKey int
 
 const (
+	cookieKey                   = "user"
 	contextKeyCookie contextKey = iota
 )
 
-const (
-	cookieKey = "user"
-)
-
 func (rt *router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Content-Type", "application/json")
-
-	allow := "*"
-	if h := r.Header.Get("Origin"); h != "" {
-		u, err := url.Parse(h)
-		if err == nil && u.Host != "" {
-			allow = fmt.Sprintf("%s://%s", u.Scheme, u.Host)
-		}
-	}
-	w.Header().Set("Access-Control-Allow-Credentials", "true")
-	w.Header().Set("Access-Control-Allow-Methods", "POST,GET")
-	w.Header().Set("Access-Control-Allow-Origin", allow)
-
 	switch r.URL.Path {
 	case "/exchange":
 		switch r.Method {
@@ -83,5 +65,8 @@ func (rt *router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 // this expects to be the only top level router in charge of handling all
 // incoming HTTP requests.
 func New(db persistence.Database) http.Handler {
-	return &router{db}
+	router := &router{db}
+	withContentType := contentTypeMiddleware(router)
+	withCors := corsMiddleware(withContentType)
+	return withCors
 }
