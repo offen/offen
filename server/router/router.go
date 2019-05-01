@@ -15,16 +15,21 @@ type router struct {
 type contextKey int
 
 const (
+	cookieKey                   = "user"
 	contextKeyCookie contextKey = iota
 )
 
-const (
-	cookieKey = "user"
-)
-
 func (rt *router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Content-Type", "application/json")
 	switch r.URL.Path {
+	case "/exchange":
+		switch r.Method {
+		case http.MethodGet:
+			rt.getPublicKey(w, r)
+		case http.MethodPost:
+			rt.postUserSecret(w, r)
+		default:
+			respondWithError(w, errors.New("Method not allowed"), http.StatusMethodNotAllowed)
+		}
 	case "/events":
 		c, err := r.Cookie(cookieKey)
 		if err != nil {
@@ -60,5 +65,8 @@ func (rt *router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 // this expects to be the only top level router in charge of handling all
 // incoming HTTP requests.
 func New(db persistence.Database) http.Handler {
-	return &router{db}
+	router := &router{db}
+	withContentType := contentTypeMiddleware(router)
+	withCors := corsMiddleware(withContentType)
+	return withCors
 }

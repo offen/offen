@@ -1,4 +1,4 @@
-package persistence
+package relational
 
 import (
 	"strings"
@@ -7,14 +7,14 @@ import (
 )
 
 func TestNewEventID(t *testing.T) {
-	first, firstErr := NewEventID()
+	first, firstErr := newEventID()
 	if firstErr != nil {
 		t.Fatalf("Unexpected error %v", firstErr)
 	}
 
 	time.Sleep(time.Millisecond)
 
-	second, secondErr := NewEventID()
+	second, secondErr := newEventID()
 	if secondErr != nil {
 		t.Fatalf("Unexpected error %v", secondErr)
 	}
