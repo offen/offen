@@ -15,8 +15,6 @@ func TestMain(m *testing.M) {
 	oldArgs := os.Args
 	defer func() { os.Args = oldArgs }()
 	os.Args = append(os.Args, fmt.Sprintf("-conn=%s", os.Getenv("POSTGRES_CONNECTION_STRING")))
-	time.Sleep(time.Millisecond * 50)
-
 	go main()
 	time.Sleep(time.Millisecond * 50)
 	os.Exit(m.Run())
