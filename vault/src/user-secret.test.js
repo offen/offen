@@ -16,8 +16,8 @@ describe('src/user-secret.js', function () {
   describe('ensureUserSecret(accountId: string, host: string)', function () {
     context('with server responding', function () {
       beforeEach(function () {
-        fetchMock.get('https://server.offen.org/exchange?account_id=7435d1b9-c0ca-4883-a869-42e943589917', response)
-        fetchMock.post('https://server.offen.org/exchange', 201)
+        fetchMock.get('https://server.offen.dev/exchange?account_id=7435d1b9-c0ca-4883-a869-42e943589917', response)
+        fetchMock.post('https://server.offen.dev/exchange', 201)
       })
 
       afterEach(function () {
@@ -26,10 +26,10 @@ describe('src/user-secret.js', function () {
 
       it('handles the key exchange', function () {
         let initialKey
-        return ensureUserSecret('7435d1b9-c0ca-4883-a869-42e943589917', 'https://server.offen.org')
+        return ensureUserSecret('7435d1b9-c0ca-4883-a869-42e943589917', 'https://server.offen.dev')
           .then(function (_initialKey) {
             initialKey = _initialKey
-            return ensureUserSecret('7435d1b9-c0ca-4883-a869-42e943589917', 'https://server.offen.org')
+            return ensureUserSecret('7435d1b9-c0ca-4883-a869-42e943589917', 'https://server.offen.dev')
           })
           .then(function (nextKey) {
             assert.deepStrictEqual(initialKey, nextKey)
@@ -39,8 +39,8 @@ describe('src/user-secret.js', function () {
 
     context('with server failing', function () {
       beforeEach(function () {
-        fetchMock.get('https://server.offen.org/exchange?account_id=8435d1b9-c0ca-4883-a869-42e943589917', 500)
-        fetchMock.post('https://server.offen.org/exchange', 500)
+        fetchMock.get('https://server.offen.dev/exchange?account_id=8435d1b9-c0ca-4883-a869-42e943589917', 500)
+        fetchMock.post('https://server.offen.dev/exchange', 500)
       })
 
       afterEach(function () {
@@ -48,7 +48,7 @@ describe('src/user-secret.js', function () {
       })
 
       it('rejects', function () {
-        return ensureUserSecret('8435d1b9-c0ca-4883-a869-42e943589917', 'https://server.offen.org')
+        return ensureUserSecret('8435d1b9-c0ca-4883-a869-42e943589917', 'https://server.offen.dev')
           .catch(function (err) {
             assert(err)
             return 'SKIP'

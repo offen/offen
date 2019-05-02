@@ -63,7 +63,7 @@ func (rt *router) postUserSecret(w http.ResponseWriter, r *http.Request) {
 		Value:    userID,
 		Expires:  time.Now().Add(time.Hour * 24 * 365),
 		HttpOnly: true,
-		Domain:   ".offen.org",
+		Domain:   ".offen.dev",
 	})
 
 	w.WriteHeader(http.StatusCreated)
