@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "budo index.js --live --ssl --cert local.offen.org.pem --key local.offen.org-key.pem",
+    "start": "budo index.js --live --ssl --cert local.offen.dev.pem --key local.offen.dev-key.pem",
     "test": "mochify --allow-chrome-as-root ./**/*.test.js",
     "posttest": "standard",
     "fix": "standard --fix"

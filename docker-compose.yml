@@ -3,15 +3,15 @@ server:
   working_dir: /server
   volumes:
     - ./server:/server
-    - ./local.offen.org.pem:/server/local.offen.org.pem
-    - ./local.offen.org-key.pem:/server/local.offen.org-key.pem
+    - ./local.offen.dev.pem:/server/local.offen.dev.pem
+    - ./local.offen.dev-key.pem:/server/local.offen.dev-key.pem
     - $GOPATH/pkg/mod:/go/pkg/mod
   environment:
     - GOPATH=/go
     - POSTGRES_CONNECTION_STRING=postgres://postgres:develop@database:5432/postgres?sslmode=disable
   ports:
     - 8080:8080
-  command: go run cmd/server/main.go -conn postgres://postgres:develop@database:5432/postgres?sslmode=disable -key local.offen.org-key.pem -cert local.offen.org.pem
+  command: go run cmd/server/main.go -conn postgres://postgres:develop@database:5432/postgres?sslmode=disable -key local.offen.dev-key.pem -cert local.offen.dev.pem
   links:
     - database
 
@@ -25,8 +25,8 @@ vault:
   working_dir: /vault
   volumes:
     - ./vault:/vault
-    - ./local.offen.org.pem:/vault/local.offen.org.pem
-    - ./local.offen.org-key.pem:/vault/local.offen.org-key.pem
+    - ./local.offen.dev.pem:/vault/local.offen.dev.pem
+    - ./local.offen.dev-key.pem:/vault/local.offen.dev-key.pem
   command: npm start -- --port 9977
   ports:
     - 9977:9977
