@@ -30,3 +30,5 @@ vault:
   command: npm start -- --port 9977
   ports:
     - 9977:9977
+  environment:
+    - SERVER_HOST=https://local.offen.dev:8080

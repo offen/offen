@@ -9,13 +9,18 @@
     "fix": "standard --fix"
   },
   "dependencies": {
-    "dexie": "^2.0.4"
+    "dexie": "^2.0.4",
+    "underscore": "^1.9.1"
   },
   "devDependencies": {
     "budo": "^11.6.2",
+    "envify": "^4.1.0",
     "fetch-mock": "^7.3.3",
     "mochify": "^6.2.0",
     "standard": "^12.0.1"
+  },
+  "browserify": {
+    "transform": ["envify"]
   },
   "standard": {
     "env": [
