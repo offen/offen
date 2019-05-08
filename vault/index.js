@@ -1,3 +1,4 @@
+const Unibabel = require('unibabel').Unibabel
 const ensureUserSecret = require('./src/user-secret')
 
 window.addEventListener('message', function (event) {
@@ -8,20 +9,20 @@ window.addEventListener('message', function (event) {
     console.warn('Received malformed event, skipping.')
     return
   }
-
+  let userSecret
   ensureUserSecret(payload.accountId, process.env.SERVER_HOST)
-    .then(function (userSecret) {
-      const enc = new TextEncoder()
+    .then(function (_userSecret) {
+      userSecret = _userSecret
       return window.crypto.subtle.encrypt({
         name: 'AES-CTR',
         counter: new Uint8Array(16),
         length: 128
       },
       userSecret,
-      enc.encode(JSON.stringify(payload.event)))
+      Unibabel.utf8ToBuffer(JSON.stringify(payload.event)))
     })
     .then(function (encrypted) {
-      const encryptedEventPayload = arrayBufferToBase64(encrypted)
+      const encryptedEventPayload = Unibabel.arrToBase64(new Uint8Array(encrypted))
       return window
         .fetch(`${process.env.SERVER_HOST}/events`, {
           method: 'POST',
@@ -42,6 +43,28 @@ window.addEventListener('message', function (event) {
           return response.json()
         })
     })
+    .then(function () {
+      return window
+        .fetch(`${process.env.SERVER_HOST}/events`, {
+          method: 'GET',
+          credentials: 'include'
+        })
+        .then(function (response) {
+          return response.json()
+        })
+    })
+    .then(function (result) {
+      return Promise.all(result.events.map(function (event) {
+        return window.crypto.subtle
+          .decrypt({
+            name: 'AES-CTR',
+            counter: new Uint8Array(16),
+            length: 128
+          }, userSecret, Unibabel.base64ToBuffer(event.payload))
+          .then((encrypted) => Unibabel.bufferToUtf8(new Uint8Array(encrypted)))
+          .then(JSON.parse)
+      }))
+    })
     .then(function (result) {
       console.log(result)
     })
@@ -49,11 +72,3 @@ window.addEventListener('message', function (event) {
       console.error(err)
     })
 })
-
-function arrayBufferToBase64 (byteArray) {
-  const chars = Array.from(new Uint8Array(byteArray))
-    .map(function (byte) {
-      return String.fromCharCode(byte)
-    })
-  return window.btoa(chars.join(''))
-}

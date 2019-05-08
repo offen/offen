@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "dexie": "^2.0.4",
-    "underscore": "^1.9.1"
+    "unibabel": "^2.1.8"
   },
   "devDependencies": {
     "budo": "^11.6.2",
@@ -20,7 +20,9 @@
     "standard": "^12.0.1"
   },
   "browserify": {
-    "transform": ["envify"]
+    "transform": [
+      "envify"
+    ]
   },
   "standard": {
     "env": [

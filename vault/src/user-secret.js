@@ -1,4 +1,5 @@
 const Dexie = require('dexie')
+const Unibabel = require('unibabel').Unibabel
 
 module.exports = ensureUserSecret
 
@@ -88,19 +89,11 @@ function generateNewUserSecret (publicWebKey) {
         })
         .then(function (encrypted) {
           return {
-            encryptedUserSecret: arrayBufferToBase64(encrypted),
+            encryptedUserSecret: Unibabel.arrToBase64(new Uint8Array(encrypted)),
             userSecret: userSecret
           }
         })
     })
-}
-
-function arrayBufferToBase64 (byteArray) {
-  const chars = Array.from(new Uint8Array(byteArray))
-    .map(function (byte) {
-      return String.fromCharCode(byte)
-    })
-  return window.btoa(chars.join(''))
 }
 
 function decodePublicWebKey (publicWebKey) {
