@@ -1,9 +1,24 @@
-const ensureUserSecret = require('./src/user-secret')
+const postEvent = require('./src/post-event')
 
-ensureUserSecret('9b63c4d8-65c0-438c-9d30-cc4b01173393', 'https://local.offen.dev:8080')
-  .then(function (userSecret) {
-    console.log(userSecret)
-  })
-  .catch(function (err) {
-    console.error(err)
-  })
+window.addEventListener('message', function (event) {
+  let message
+  try {
+    message = JSON.parse(event.data)
+  } catch (err) {
+    console.warn('Received malformed event, skipping.')
+    return
+  }
+  switch (message.type) {
+    case 'EVENT':
+      postEvent(message.payload.accountId, message.payload.event)
+        .then(function (result) {
+          console.log(result)
+        })
+        .catch(function (err) {
+          console.error(err)
+        })
+      break
+    default:
+      console.warn(`Received message of unknown type "${message.type}", skipping.`)
+  }
+})
