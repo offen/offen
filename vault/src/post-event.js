@@ -29,9 +29,9 @@ function postEvent (accountId, event, flush) {
           })
         })
         .then(function (response) {
-          if (response.status === 400) {
+          if (response.status === 400 && !flush) {
             return postEvent(accountId, event, true)
-          } else if (response.status > 400) {
+          } else if (response.status >= 400) {
             return response.json().then(function (errorBody) {
               const err = new Error(errorBody.error)
               err.status = response.status

@@ -3,6 +3,7 @@ package relational
 import (
 	"fmt"
 
+	"github.com/gofrs/uuid"
 	"github.com/jinzhu/gorm"
 	"github.com/offen/offen/server/persistence"
 )
@@ -42,12 +43,22 @@ func (r *relationalDatabase) AssociateUserSecret(accountID, userID, encryptedUse
 		if err != gorm.ErrRecordNotFound {
 			return err
 		}
-		if err := r.db.FirstOrCreate(&user, User{
-			EncryptedUserSecret: encryptedUserSecret,
-			HashedUserID:        hashedUserID,
-		}).Error; err != nil {
-			return err
+	} else {
+		parkedID, parkedIDErr := uuid.NewV4()
+		if parkedIDErr != nil {
+			return parkedIDErr
 		}
+		parkedHash := account.HashUserID(parkedID.String())
+		r.db.Model(&user).Update("hashed_user_id", parkedHash)
+		// TODO: also generate new event ids
+		r.db.Table("users").Where("hashed_user_id = ?", hashedUserID).Update("hashed_user_id", parkedHash)
+	}
+
+	if err := r.db.Create(&User{
+		EncryptedUserSecret: encryptedUserSecret,
+		HashedUserID:        hashedUserID,
+	}).Error; err != nil {
+		return err
 	}
 	return nil
 }
