@@ -90,6 +90,30 @@ cd vault
 npm test
 ```
 
+#### `script`
+
+To work on the `script` you will need to install `docker-compose`.
+
+First, install the project's dependencies:
+
+```
+cd script
+npm install
+```
+
+Run the server:
+
+```
+docker-compose up
+```
+
+Run the tests:
+
+```
+cd script
+npm test
+```
+
 
 ### License
 

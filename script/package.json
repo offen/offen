@@ -1,0 +1,28 @@
+{
+  "name": "script",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "budo index.js --live --ssl --cert local.offen.dev.pem --key local.offen.dev-key.pem",
+    "test": "mochify --allow-chrome-as-root ./**/*.test.js",
+    "posttest": "standard",
+    "fix": "standard --fix"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "budo": "^11.6.2",
+    "envify": "^4.1.0",
+    "mochify": "^6.2.0",
+    "standard": "^12.0.1"
+  },
+  "browserify": {
+    "transform": [
+      "envify"
+    ]
+  },
+  "standard": {
+    "env": [
+      "mocha"
+    ]
+  }
+}

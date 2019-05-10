@@ -32,3 +32,16 @@ vault:
     - 9977:9977
   environment:
     - SERVER_HOST=https://local.offen.dev:8080
+
+script:
+  image: timbru31/node-chrome:slim
+  working_dir: /script
+  volumes:
+    - ./script:/script
+    - ./local.offen.dev.pem:/script/local.offen.dev.pem
+    - ./local.offen.dev-key.pem:/script/local.offen.dev-key.pem
+  command: npm start -- --port 9966
+  ports:
+    - 9966:9966
+  environment:
+    - VAULT_HOST=https://local.offen.dev:9977
