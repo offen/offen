@@ -3,6 +3,7 @@ package relational
 import (
 	"fmt"
 
+	"github.com/jinzhu/gorm"
 	"github.com/offen/offen/server/persistence"
 )
 
@@ -13,12 +14,14 @@ func (r *relationalDatabase) Insert(userID, accountID, payload string) error {
 	}
 
 	var account Account
-	r.db.Where(`account_id = ?`, accountID).First(&account)
-
-	if account.AccountID == "" {
-		return persistence.ErrUnknownAccount(
-			fmt.Sprintf("unknown account with id %s", accountID),
-		)
+	err = r.db.Where(`account_id = ?`, accountID).First(&account).Error
+	if err != nil {
+		if gorm.IsRecordNotFoundError(err) {
+			return persistence.ErrUnknownAccount(
+				fmt.Sprintf("unknown account with id %s", accountID),
+			)
+		}
+		return err
 	}
 
 	hashedUserID := account.HashUserID(userID)

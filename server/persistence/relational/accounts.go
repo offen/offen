@@ -36,6 +36,7 @@ func (r *relationalDatabase) AssociateUserSecret(accountID, userID, encryptedUse
 	hashedUserID := account.HashUserID(userID)
 
 	var user User
+	txn := r.db.Begin()
 	// there is an issue with the postgres backend of GORM that disallows inserting
 	// primary keys when using `FirstOrCreate`, so we need to do a manual check
 	// for existence beforehand
@@ -46,19 +47,41 @@ func (r *relationalDatabase) AssociateUserSecret(accountID, userID, encryptedUse
 	} else {
 		parkedID, parkedIDErr := uuid.NewV4()
 		if parkedIDErr != nil {
+			txn.Rollback()
 			return parkedIDErr
 		}
 		parkedHash := account.HashUserID(parkedID.String())
-		r.db.Model(&user).Update("hashed_user_id", parkedHash)
-		// TODO: also generate new event ids
-		r.db.Table("users").Where("hashed_user_id = ?", hashedUserID).Update("hashed_user_id", parkedHash)
+
+		if err := txn.Model(&user).Update("hashed_user_id", parkedHash).Error; err != nil {
+			txn.Rollback()
+			return err
+		}
+
+		var affected []Event
+		txn.Find(&affected, "hashed_user_id = ?", parkedHash)
+		for _, ev := range affected {
+			newID, err := newEventID()
+			if err != nil {
+				txn.Rollback()
+				return err
+			}
+			if err := txn.Model(&ev).Updates(map[string]interface{}{
+				"event_id":       newID,
+				"hashed_user_id": parkedHash,
+			}).Error; err != nil {
+				txn.Rollback()
+				return err
+			}
+		}
 	}
 
-	if err := r.db.Create(&User{
+	if err := txn.Create(&User{
 		EncryptedUserSecret: encryptedUserSecret,
 		HashedUserID:        hashedUserID,
 	}).Error; err != nil {
+		txn.Rollback()
 		return err
 	}
-	return nil
+
+	return txn.Commit().Error
 }
