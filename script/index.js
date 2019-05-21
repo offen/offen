@@ -1,16 +1,23 @@
 const accountId = document.currentScript.dataset.accountId
 
-const iframe = document.createElement('iframe')
+const vault = document.createElement('iframe')
+vault.src = process.env.VAULT_HOST
 
-iframe.src = process.env.VAULT_HOST
-iframe.addEventListener('load', function (e) {
+vault.style.display = 'none'
+vault.setAttribute('width', '0')
+vault.setAttribute('height', '0')
+vault.setAttribute('frameBorder', '0')
+vault.setAttribute('scrolling', 'no')
+
+vault.addEventListener('load', function (e) {
   const pageviewEvent = {
     type: 'EVENT',
     payload: {
       accountId: accountId,
       event: {
         type: 'PAGEVIEW',
-        href: window.location.href
+        href: window.location.href,
+        referrer: document.referrer
       }
     }
   }
@@ -20,4 +27,4 @@ iframe.addEventListener('load', function (e) {
   )
 })
 
-document.body.appendChild(iframe)
+document.body.appendChild(vault)

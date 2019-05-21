@@ -10,7 +10,8 @@
   },
   "dependencies": {
     "dexie": "^2.0.4",
-    "unibabel": "^2.1.8"
+    "unibabel": "^2.1.8",
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
     "budo": "^11.6.2",

@@ -3,25 +3,33 @@ const Unibabel = require('unibabel').Unibabel
 
 module.exports = ensureUserSecret
 
-function ensureUserSecret (accountId, host) {
+function ensureUserSecret (accountId, host, flush) {
   const db = getDatabase()
-  return db.secrets.get({ accountId: accountId })
-    .then(function (result) {
-      if (result) {
-        return result.userSecret
-      }
-      return exchangeUserSecret(accountId, host)
-        .then(function (userSecret) {
-          return db.secrets
-            .put({
-              accountId: accountId,
-              userSecret: userSecret
-            })
-            .then(function () {
-              return userSecret
-            })
-        })
-    })
+
+  let prep = Promise.resolve()
+  if (flush) {
+    prep = db.secrets.delete(accountId)
+  }
+
+  return prep.then(function () {
+    return db.secrets.get({ accountId: accountId })
+      .then(function (result) {
+        if (result) {
+          return result.userSecret
+        }
+        return exchangeUserSecret(accountId, host)
+          .then(function (userSecret) {
+            return db.secrets
+              .put({
+                accountId: accountId,
+                userSecret: userSecret
+              })
+              .then(function () {
+                return userSecret
+              })
+          })
+      })
+  })
 }
 
 function exchangeUserSecret (accountId, host) {

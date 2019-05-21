@@ -4,9 +4,9 @@ const ensureUserSecret = require('./user-secret')
 
 module.exports = postEvent
 
-function postEvent (accountId, event) {
+function postEvent (accountId, event, flush) {
   let userSecret
-  return ensureUserSecret(accountId, process.env.SERVER_HOST)
+  return ensureUserSecret(accountId, process.env.SERVER_HOST, flush)
     .then(function (_userSecret) {
       userSecret = _userSecret
       return window.crypto.subtle.encrypt({
@@ -29,7 +29,9 @@ function postEvent (accountId, event) {
           })
         })
         .then(function (response) {
-          if (response.status >= 400) {
+          if (response.status === 400 && !flush) {
+            return postEvent(accountId, event, true)
+          } else if (response.status >= 400) {
             return response.json().then(function (errorBody) {
               const err = new Error(errorBody.error)
               err.status = response.status
