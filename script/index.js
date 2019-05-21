@@ -17,8 +17,7 @@ vault.addEventListener('load', function (e) {
       event: {
         type: 'PAGEVIEW',
         href: window.location.href,
-        referrer: document.referrer,
-        timestamp: new Date()
+        referrer: document.referrer
       }
     }
   }
