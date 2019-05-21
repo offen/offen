@@ -77,6 +77,26 @@ jobs:
           name: Run tests
           command: npm test
 
+  auditorium:
+    docker:
+      - image: circleci/node:10-browsers
+    working_directory: ~/offen/auditorium
+    steps:
+      - checkout:
+          path: ~/offen
+      - restore_cache:
+          key: offen-auditorium-{{ checksum "package.json" }}
+      - run:
+          name: Install dependencies
+          command: npm install
+      - save_cache:
+          paths:
+            - ~/offen/auditorium/node_modules
+          key: offen-auditorium-{{ checksum "package.json" }}
+      - run:
+          name: Run tests
+          command: npm test
+
 workflows:
   version: 2
   build_and_test:
@@ -84,3 +104,4 @@ workflows:
       - server
       - vault
       - script
+      - auditorium

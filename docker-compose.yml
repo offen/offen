@@ -45,3 +45,16 @@ script:
     - 9966:9966
   environment:
     - VAULT_HOST=https://local.offen.dev:9977
+
+auditorium:
+  image: timbru31/node-chrome:slim
+  working_dir: /auditorium
+  volumes:
+    - ./auditorium:/auditorium
+    - ./local.offen.dev.pem:/auditorium/local.offen.dev.pem
+    - ./local.offen.dev-key.pem:/auditorium/local.offen.dev-key.pem
+  command: npm start -- --port 9955
+  ports:
+    - 9955:9955
+  environment:
+    - VAULT_HOST=https://local.offen.dev:9977
