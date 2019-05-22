@@ -1,5 +1,7 @@
 const uuidv4 = require('uuid/v4')
+
 const postEvent = require('./src/post-event')
+const getEvents = require('./src/get-events')
 
 window.addEventListener('message', function (event) {
   let message
@@ -22,6 +24,41 @@ window.addEventListener('message', function (event) {
         })
       break
     }
+
+    case 'QUERY': {
+      const query = message.payload
+        ? message.payload.query
+        : null
+
+      getEvents(query)
+        .then(function (result) {
+          return {
+            type: 'QUERY_RESULT',
+            payload: {
+              query: query,
+              result: result
+            }
+          }
+        })
+        .catch(function (err) {
+          return {
+            type: 'ERROR',
+            payload: {
+              error: err
+            }
+          }
+        })
+        .then(function (responseMessage) {
+          event.source.postMessage(
+            JSON.stringify(responseMessage),
+            // it is important that these messages cannot be read by
+            // anyone else but the auditorium
+            process.env.AUDITORIUM_HOST
+          )
+        })
+      break
+    }
+
     default:
       console.warn(`Received message of unknown type "${message.type}", skipping.`)
   }

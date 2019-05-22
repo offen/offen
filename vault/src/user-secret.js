@@ -1,5 +1,6 @@
-const Dexie = require('dexie')
 const Unibabel = require('unibabel').Unibabel
+
+const getDatabase = require('./database')
 
 module.exports = ensureUserSecret
 
@@ -122,17 +123,4 @@ function createUserSecret () {
     name: 'AES-CTR',
     length: 256
   }, true, ['encrypt', 'decrypt'])
-}
-
-function getDatabase () {
-  getDatabase.db = getDatabase.db || createDatabase()
-  return getDatabase.db
-}
-
-function createDatabase () {
-  const db = new Dexie('user_secrets')
-  db.version(1).stores({
-    secrets: 'accountId'
-  })
-  return db
 }
