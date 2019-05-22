@@ -32,6 +32,7 @@ vault:
     - 9977:9977
   environment:
     - SERVER_HOST=https://local.offen.dev:8080
+    - AUDITORIUM_HOST=https://local.offen.dev:9955
 
 script:
   image: timbru31/node-chrome:slim
