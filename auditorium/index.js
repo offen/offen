@@ -4,7 +4,7 @@ const html = require('choo/html')
 const app = choo()
 
 if (process.env.NODE_ENV !== 'production') {
-  // app.use(require('choo-devtools')())
+  app.use(require('choo-devtools')())
 }
 
 const host = document.createElement('div')
@@ -38,7 +38,9 @@ app.use(function (state, emitter) {
         console.error(err)
         return
       }
-      state.data = message.payload.result
+      state.data = message.payload.result.map(function (item) {
+        return JSON.parse(item.payload)
+      })
       emitter.emit('render')
       window.removeEventListener('message', digestResponse)
     }
@@ -68,17 +70,34 @@ function mainView (state, emit) {
 
   const eventElements = state.data.map(function (event) {
     return html`
-      <li>
-        <pre>${JSON.stringify(event, null, 2)}</pre>
-      </li>
+      <tr>
+        <td>${event.type}</td>
+        <td>${event.href}</td>
+        <td>${event.referrer}</td>
+        <td>${event.sessionId}</td>
+        <td>${event.timestamp}</td>
+        <td>${event.title}</td>
+      </tr>
     `
   })
   return html`
-    <div>
+    <div class="container">
       <h1>offen auditorium</h1>
-      <ul>
-       ${eventElements}
-      </ul>
+      <table class="u-full-width">
+        <thead>
+          <tr>
+            <th>type</th>
+            <th>href</th>
+            <th>referrer</th>
+            <th>sessionId</th>
+            <th>timestamp</th>
+            <th>title</th>
+          </tr>
+        </thead>
+        <tbody>
+         ${eventElements}
+        </tbody>
+      </table>
     </div>
   `
 }
