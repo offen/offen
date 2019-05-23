@@ -4,7 +4,13 @@ var ensureUserSecret = require('./user-secret')
 
 module.exports = postEvent
 
-function postEvent (accountId, event, flush) {
+// postEvent transmits the given event to the server API associating it with
+// the given accountId. It ensures a local user secret exists for the given
+// accountId and uses it to encrypt the event payload before performing the request.
+function postEvent (accountId, event) {
+  // `flush` is not supposed to be part of the public signature, but will only
+  // be used when the function recursively calls itself
+  var flush = arguments[2] || false
   var userSecret
   return ensureUserSecret(accountId, process.env.SERVER_HOST, flush)
     .then(function (_userSecret) {

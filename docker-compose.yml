@@ -9,6 +9,7 @@ server:
   environment:
     - GOPATH=/go
     - POSTGRES_CONNECTION_STRING=postgres://postgres:develop@database:5432/postgres?sslmode=disable
+    - VAULT_HOST=https://local.offen.dev:9977
   ports:
     - 8080:8080
   command: go run cmd/server/main.go -conn postgres://postgres:develop@database:5432/postgres?sslmode=disable -key local.offen.dev-key.pem -cert local.offen.dev.pem

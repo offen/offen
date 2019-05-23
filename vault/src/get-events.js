@@ -4,6 +4,9 @@ var getDatabase = require('./database')
 
 module.exports = getEvents
 
+// getEvents queries the server API for events using the given query parameters.
+// Once the server has responded, it looks up the matching UserSecrets in the
+// local database and decrypts and parses the previously encrypted event payloads.
 function getEvents (query) {
   return window
     .fetch(`${process.env.SERVER_HOST}/events`, {
@@ -34,7 +37,7 @@ function getEvents (query) {
               }, userSecret, Unibabel.base64ToArr(event.payload))
               .then(function (decrypted) {
                 var payloadAsString = Unibabel.utf8ArrToStr(new Uint8Array(decrypted))
-                return Object.assign({}, event, { payload: payloadAsString })
+                return Object.assign({}, event, { payload: JSON.parse(payloadAsString) })
               })
           })
       })

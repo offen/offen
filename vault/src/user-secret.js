@@ -4,6 +4,9 @@ var getDatabase = require('./database')
 
 module.exports = ensureUserSecret
 
+// ensureUserSecret looks up the UserSecret for the given accountId. In case it
+// is not present in the local database or `flush` is passed, it initiates a
+// new exchange of secrets and stores the result in the local database.
 function ensureUserSecret (accountId, host, flush) {
   var db = getDatabase()
 

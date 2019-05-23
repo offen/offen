@@ -27,7 +27,7 @@ app.use(function (state, emitter) {
       })
       .then(function (message) {
         state.data = message.payload.result.map(function (item) {
-          return JSON.parse(item.payload)
+          return item.payload
         })
       })
       .catch(function (err) {

@@ -12,11 +12,14 @@ function checkSupport (callback) {
   if (!err && !supportsPromises()) {
     err = new Error('Browser does not support Promises which is required')
   }
-  if (!supportsWebCrypto()) {
+  if (!err && !supportsWebCrypto()) {
     err = new Error('Browser does not support WebCrypto which is required')
   }
-  if (!supportsIndexedDb()) {
+  if (!err && !supportsIndexedDb()) {
     err = new Error('Browser does not support IndexedDB which is required')
+  }
+  if (!err && !supportsFetch()) {
+    err = new Error('Browser does not support window.fetch which is required')
   }
 
   setTimeout(function () {
@@ -34,6 +37,10 @@ function supportsIndexedDb () {
 
 function supportsPromises () {
   return typeof window.Promise === 'function'
+}
+
+function supportsFetch () {
+  return typeof window.fetch === 'function'
 }
 
 function allowsTracking () {

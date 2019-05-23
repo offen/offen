@@ -1,23 +1,15 @@
 package router
 
 import (
-	"fmt"
 	"net/http"
-	"net/url"
+	"os"
 )
 
 func corsMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		allow := "*"
-		if h := r.Header.Get("Origin"); h != "" {
-			u, err := url.Parse(h)
-			if err == nil && u.Host != "" {
-				allow = fmt.Sprintf("%s://%s", u.Scheme, u.Host)
-			}
-		}
 		w.Header().Set("Access-Control-Allow-Credentials", "true")
 		w.Header().Set("Access-Control-Allow-Methods", "POST,GET")
-		w.Header().Set("Access-Control-Allow-Origin", allow)
+		w.Header().Set("Access-Control-Allow-Origin", os.Getenv("VAULT_HOST"))
 		next.ServeHTTP(w, r)
 	})
 }
