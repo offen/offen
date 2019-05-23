@@ -1,9 +1,9 @@
-const assert = require('assert')
-const fetchMock = require('fetch-mock')
+var assert = require('assert')
+var fetchMock = require('fetch-mock')
 
-const ensureUserSecret = require('./user-secret')
+var ensureUserSecret = require('./user-secret')
 
-const response = {
+var response = {
   'account_id': '9b63c4d8-65c0-438c-9d30-cc4b01173393',
   'public_key': {
     'kty': 'RSA',
@@ -25,7 +25,7 @@ describe('src/user-secret.js', function () {
       })
 
       it('handles the key exchange', function () {
-        let initialKey
+        var initialKey
         return ensureUserSecret('7435d1b9-c0ca-4883-a869-42e943589917', 'https://server.offen.dev')
           .then(function (_initialKey) {
             initialKey = _initialKey

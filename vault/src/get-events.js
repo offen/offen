@@ -1,6 +1,6 @@
-const Unibabel = require('unibabel').Unibabel
+var Unibabel = require('unibabel').Unibabel
 
-const getDatabase = require('./database')
+var getDatabase = require('./database')
 
 module.exports = getEvents
 
@@ -13,7 +13,7 @@ function getEvents (query) {
     .then(function (response) {
       if (response.status >= 400) {
         return response.json().then(function (errorBody) {
-          const err = new Error(errorBody.error)
+          var err = new Error(errorBody.error)
           err.status = response.status
           throw err
         })
@@ -21,11 +21,11 @@ function getEvents (query) {
       return response.json()
     })
     .then(function (payload) {
-      const db = getDatabase()
-      const decrypted = payload.events.map(function (event) {
+      var db = getDatabase()
+      var decrypted = payload.events.map(function (event) {
         return db.secrets.get({ accountId: event.account_id })
           .then(function (result) {
-            const userSecret = result.userSecret
+            var userSecret = result.userSecret
             return window.crypto.subtle
               .decrypt({
                 name: 'AES-CTR',
@@ -33,7 +33,7 @@ function getEvents (query) {
                 length: 128
               }, userSecret, Unibabel.base64ToArr(event.payload))
               .then(function (decrypted) {
-                const payloadAsString = Unibabel.utf8ArrToStr(new Uint8Array(decrypted))
+                var payloadAsString = Unibabel.utf8ArrToStr(new Uint8Array(decrypted))
                 return Object.assign({}, event, { payload: payloadAsString })
               })
           })

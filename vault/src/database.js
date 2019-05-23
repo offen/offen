@@ -1,4 +1,4 @@
-const Dexie = require('dexie')
+var Dexie = require('dexie')
 
 module.exports = getDatabase
 
@@ -8,7 +8,7 @@ function getDatabase () {
 }
 
 function createDatabase () {
-  const db = new Dexie('user_secrets')
+  var db = new Dexie('user_secrets')
   db.version(1).stores({
     secrets: 'accountId'
   })
