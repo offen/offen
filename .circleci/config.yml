@@ -76,6 +76,9 @@ jobs:
       - run:
           name: Run tests
           command: npm test
+      - run:
+          name: Bundle
+          command: NODE_ENV=production npm run build
 
   auditorium:
     docker:

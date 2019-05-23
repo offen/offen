@@ -1,5 +1,6 @@
 const choo = require('choo')
 const html = require('choo/html')
+const vault = require('offen/vault')
 
 const app = choo()
 
@@ -14,21 +15,6 @@ app.route('/', mainView)
 app.mount(host)
 
 app.use(function (state, emitter) {
-  const vault = document.createElement('iframe')
-  vault.src = process.env.VAULT_HOST
-
-  vault.style.display = 'none'
-  vault.setAttribute('width', '0')
-  vault.setAttribute('height', '0')
-  vault.setAttribute('frameBorder', '0')
-  vault.setAttribute('scrolling', 'no')
-
-  const ready = new Promise(function (resolve) {
-    vault.addEventListener('load', function (e) {
-      resolve(e.target)
-    })
-  })
-
   emitter.on('query', function () {
     function digestResponse (event) {
       let message
@@ -47,7 +33,7 @@ app.use(function (state, emitter) {
 
     window.addEventListener('message', digestResponse)
 
-    ready.then(function (el) {
+    vault(process.env.VAULT_HOST).then(function (el) {
       const pageviewEvent = {
         type: 'QUERY',
         payload: null
@@ -58,8 +44,6 @@ app.use(function (state, emitter) {
       )
     })
   })
-
-  document.body.appendChild(vault)
 })
 
 function mainView (state, emit) {

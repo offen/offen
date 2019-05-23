@@ -22,11 +22,11 @@ database:
 
 vault:
   image: timbru31/node-chrome:slim
-  working_dir: /vault
+  working_dir: /offen/vault
   volumes:
-    - ./vault:/vault
-    - ./local.offen.dev.pem:/vault/local.offen.dev.pem
-    - ./local.offen.dev-key.pem:/vault/local.offen.dev-key.pem
+    - .:/offen
+    - ./local.offen.dev.pem:/offen/vault/local.offen.dev.pem
+    - ./local.offen.dev-key.pem:/offen/vault/local.offen.dev-key.pem
   command: npm start -- --port 9977
   ports:
     - 9977:9977
@@ -36,11 +36,11 @@ vault:
 
 script:
   image: timbru31/node-chrome:slim
-  working_dir: /script
+  working_dir: /offen/script
   volumes:
-    - ./script:/script
-    - ./local.offen.dev.pem:/script/local.offen.dev.pem
-    - ./local.offen.dev-key.pem:/script/local.offen.dev-key.pem
+    - .:/offen
+    - ./local.offen.dev.pem:/offen/script/local.offen.dev.pem
+    - ./local.offen.dev-key.pem:/offen/script/local.offen.dev-key.pem
   command: npm start -- --port 9966
   ports:
     - 9966:9966
@@ -49,11 +49,11 @@ script:
 
 auditorium:
   image: timbru31/node-chrome:slim
-  working_dir: /auditorium
+  working_dir: /offen/auditorium
   volumes:
-    - ./auditorium:/auditorium
-    - ./local.offen.dev.pem:/auditorium/local.offen.dev.pem
-    - ./local.offen.dev-key.pem:/auditorium/local.offen.dev-key.pem
+    - .:/offen
+    - ./local.offen.dev.pem:/offen/auditorium/local.offen.dev.pem
+    - ./local.offen.dev-key.pem:/offen/auditorium/local.offen.dev-key.pem
   command: npm start -- --port 9955
   ports:
     - 9955:9955
