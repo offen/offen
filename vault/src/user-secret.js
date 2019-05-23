@@ -1,13 +1,13 @@
-const Unibabel = require('unibabel').Unibabel
+var Unibabel = require('unibabel').Unibabel
 
-const getDatabase = require('./database')
+var getDatabase = require('./database')
 
 module.exports = ensureUserSecret
 
 function ensureUserSecret (accountId, host, flush) {
-  const db = getDatabase()
+  var db = getDatabase()
 
-  let prep = Promise.resolve()
+  var prep = Promise.resolve()
   if (flush) {
     prep = db.secrets.delete(accountId)
   }
@@ -41,7 +41,7 @@ function exchangeUserSecret (accountId, host) {
     .then(function (response) {
       if (response.status >= 400) {
         return response.json().then(function (errorBody) {
-          const err = new Error(errorBody.error)
+          var err = new Error(errorBody.error)
           err.status = response.status
           throw err
         })
@@ -64,7 +64,7 @@ function exchangeUserSecret (accountId, host) {
         .then(function (response) {
           if (response.status >= 400) {
             return response.json().then(function (errorBody) {
-              const err = new Error(errorBody.error)
+              var err = new Error(errorBody.error)
               err.status = response.status
               throw err
             })
@@ -81,15 +81,15 @@ function generateNewUserSecret (publicWebKey) {
       createUserSecret()
     ])
     .then(function (keys) {
-      const accountPublicKey = keys[0]
-      const userSecret = keys[1]
+      var accountPublicKey = keys[0]
+      var userSecret = keys[1]
       return window.crypto.subtle
         .exportKey(
           'jwk',
           userSecret
         )
         .then(function (keydata) {
-          const enc = new TextEncoder()
+          var enc = new TextEncoder()
           return window.crypto.subtle.encrypt(
             { name: 'RSA-OAEP' },
             accountPublicKey,

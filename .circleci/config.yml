@@ -100,6 +100,26 @@ jobs:
           name: Run tests
           command: npm test
 
+  packages:
+    docker:
+      - image: circleci/node:10-browsers
+    working_directory: ~/offen/packages
+    steps:
+      - checkout:
+          path: ~/offen
+      - restore_cache:
+          key: offen-packages-{{ checksum "package.json" }}
+      - run:
+          name: Install dependencies
+          command: npm install
+      - save_cache:
+          paths:
+            - ~/offen/packages/node_modules
+          key: offen-packages-{{ checksum "package.json" }}
+      - run:
+          name: Run tests
+          command: npm test
+
 workflows:
   version: 2
   build_and_test:
@@ -108,3 +128,4 @@ workflows:
       - vault
       - script
       - auditorium
+      - packages

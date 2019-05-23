@@ -1,14 +1,14 @@
-const choo = require('choo')
-const html = require('choo/html')
-const vault = require('offen/vault')
+var choo = require('choo')
+var html = require('choo/html')
+var vault = require('offen/vault')
 
-const app = choo()
+var app = choo()
 
 if (process.env.NODE_ENV !== 'production') {
   app.use(require('choo-devtools')())
 }
 
-const host = document.createElement('div')
+var host = document.createElement('div')
 document.body.appendChild(host)
 
 app.route('/', mainView)
@@ -16,33 +16,26 @@ app.mount(host)
 
 app.use(function (state, emitter) {
   emitter.on('query', function () {
-    function digestResponse (event) {
-      let message
-      try {
-        message = JSON.parse(event.data)
-      } catch (err) {
-        console.error(err)
-        return
-      }
-      state.data = message.payload.result.map(function (item) {
-        return JSON.parse(item.payload)
+    vault(process.env.VAULT_HOST)
+      .then(function (postMessage) {
+        var queryRequest = {
+          type: 'QUERY',
+          respondWith: 'initial-query',
+          payload: null
+        }
+        return postMessage(queryRequest)
       })
-      emitter.emit('render')
-      window.removeEventListener('message', digestResponse)
-    }
-
-    window.addEventListener('message', digestResponse)
-
-    vault(process.env.VAULT_HOST).then(function (el) {
-      const pageviewEvent = {
-        type: 'QUERY',
-        payload: null
-      }
-      el.contentWindow.postMessage(
-        JSON.stringify(pageviewEvent),
-        process.env.VAULT_HOST
-      )
-    })
+      .then(function (message) {
+        state.data = message.payload.result.map(function (item) {
+          return JSON.parse(item.payload)
+        })
+      })
+      .catch(function (err) {
+        state.error = err
+      })
+      .then(function () {
+        emitter.emit('render')
+      })
   })
 })
 
@@ -52,7 +45,7 @@ function mainView (state, emit) {
     emit('query')
   }
 
-  const eventElements = state.data.map(function (event) {
+  var eventElements = state.data.map(function (event) {
     return html`
       <tr>
         <td>${event.type}</td>

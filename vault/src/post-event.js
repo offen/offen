@@ -1,11 +1,11 @@
-const Unibabel = require('unibabel').Unibabel
+var Unibabel = require('unibabel').Unibabel
 
-const ensureUserSecret = require('./user-secret')
+var ensureUserSecret = require('./user-secret')
 
 module.exports = postEvent
 
 function postEvent (accountId, event, flush) {
-  let userSecret
+  var userSecret
   return ensureUserSecret(accountId, process.env.SERVER_HOST, flush)
     .then(function (_userSecret) {
       userSecret = _userSecret
@@ -18,7 +18,7 @@ function postEvent (accountId, event, flush) {
       Unibabel.utf8ToBuffer(JSON.stringify(event)))
     })
     .then(function (encrypted) {
-      const encryptedEventPayload = Unibabel.arrToBase64(new Uint8Array(encrypted))
+      var encryptedEventPayload = Unibabel.arrToBase64(new Uint8Array(encrypted))
       return window
         .fetch(`${process.env.SERVER_HOST}/events`, {
           method: 'POST',
@@ -33,7 +33,7 @@ function postEvent (accountId, event, flush) {
             return postEvent(accountId, event, true)
           } else if (response.status >= 400) {
             return response.json().then(function (errorBody) {
-              const err = new Error(errorBody.error)
+              var err = new Error(errorBody.error)
               err.status = response.status
               throw err
             })

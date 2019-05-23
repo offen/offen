@@ -1,20 +1,14 @@
-const uuidv4 = require('uuid/v4')
+var uuidv4 = require('uuid/v4')
 
-const postEvent = require('./src/post-event')
-const getEvents = require('./src/get-events')
+var postEvent = require('./src/post-event')
+var getEvents = require('./src/get-events')
 
 window.addEventListener('message', function (event) {
-  let message
-  try {
-    message = JSON.parse(event.data)
-  } catch (err) {
-    console.warn('Received malformed event, skipping.')
-    return
-  }
+  var message = event.data
   switch (message.type) {
     case 'EVENT': {
-      const accountId = message.payload.accountId
-      const eventData = augmentEventData(message.payload.event, accountId)
+      var accountId = message.payload.accountId
+      var eventData = augmentEventData(message.payload.event, accountId)
       postEvent(accountId, eventData)
         .then(function (result) {
           console.log(result)
@@ -26,7 +20,7 @@ window.addEventListener('message', function (event) {
     }
 
     case 'QUERY': {
-      const query = message.payload
+      var query = message.payload
         ? message.payload.query
         : null
 
@@ -49,8 +43,12 @@ window.addEventListener('message', function (event) {
           }
         })
         .then(function (responseMessage) {
+          var withResponseId = Object.assign(
+            { responseTo: message.respondWith },
+            responseMessage
+          )
           event.source.postMessage(
-            JSON.stringify(responseMessage),
+            withResponseId,
             // it is important that these messages cannot be read by
             // anyone else but the auditorium
             process.env.AUDITORIUM_HOST
@@ -71,8 +69,8 @@ function augmentEventData (inboundPayload, accountId) {
   // even though the session identifier will be included in the encrypted part
   // of the event we generate a unique identifier per account so that each session
   // is unique per account and cannot be cross-referenced
-  const lookupKey = 'session-' + accountId
-  let sessionId = window.sessionStorage.getItem(lookupKey)
+  var lookupKey = 'session-' + accountId
+  var sessionId = window.sessionStorage.getItem(lookupKey)
   if (!sessionId) {
     sessionId = uuidv4()
     window.sessionStorage.setItem(lookupKey, sessionId)

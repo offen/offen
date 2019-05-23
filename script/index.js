@@ -1,15 +1,12 @@
-const vault = require('offen/vault')
+var vault = require('offen/vault')
+
+var checkSupport = require('./src/check-support')
+
+var accountId = document.currentScript.dataset.accountId
 
 function main () {
-  // TODO: ideally, the CDN serving this script would already drop the request
-  // requesting this script, but it's probably good to keep this in here anyways
-  if (navigator.doNotTrack) {
-    return
-  }
-  const accountId = document.currentScript.dataset.accountId
-
   vault(process.env.VAULT_HOST)
-    .then(function (iframeEl) {
+    .then(function (postMessage) {
       const pageviewEvent = {
         type: 'EVENT',
         payload: {
@@ -22,11 +19,14 @@ function main () {
           }
         }
       }
-      iframeEl.contentWindow.postMessage(
-        JSON.stringify(pageviewEvent),
-        process.env.VAULT_HOST
-      )
+      postMessage(pageviewEvent)
     })
 }
 
-main()
+checkSupport(function (err) {
+  if (err) {
+    console.log('offen does not support this browser or "Do Not Track" is enabled. No data will be collected. Find out more at https://www.offen.dev')
+    return
+  }
+  main()
+})
