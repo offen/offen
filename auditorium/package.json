@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "budo index.js --live --ssl --cert local.offen.dev.pem --key local.offen.dev-key.pem",
+    "start": "budo index.js --live --pushstate --ssl --cert local.offen.dev.pem --key local.offen.dev-key.pem",
     "test": "mochify --allow-chrome-as-root ./**/*.test.js",
     "posttest": "standard",
     "fix": "standard --fix"
@@ -11,7 +11,8 @@
   "dependencies": {
     "choo": "^6.13.3",
     "choo-devtools": "^2.5.1",
-    "offen": "file:./../packages"
+    "offen": "file:./../packages",
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
     "budo": "^11.6.2",
