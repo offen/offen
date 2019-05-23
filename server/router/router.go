@@ -68,5 +68,9 @@ func New(db persistence.Database) http.Handler {
 	router := &router{db}
 	withContentType := contentTypeMiddleware(router)
 	withCors := corsMiddleware(withContentType)
-	return withCors
+	// it is important that the DNT middleware is the last one to wrap the
+	// application as it should drop requests without performing anything else
+	// before doing so
+	withDNT := doNotTrackMiddleware(withCors)
+	return withDNT
 }

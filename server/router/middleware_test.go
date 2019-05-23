@@ -34,3 +34,50 @@ func TestContentTypeMiddleware(t *testing.T) {
 		}
 	})
 }
+
+func TestDoNotTrackMiddleware(t *testing.T) {
+	wrapped := doNotTrackMiddleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("hey there"))
+	}))
+	t.Run("with header", func(t *testing.T) {
+		w := httptest.NewRecorder()
+		r := httptest.NewRequest(http.MethodGet, "/", nil)
+		r.Header.Set("DNT", "1")
+		wrapped.ServeHTTP(w, r)
+
+		if w.Code != http.StatusOK {
+			t.Errorf("Unexpected status code %d", w.Code)
+		}
+
+		if w.Body.String() != "" {
+			t.Errorf("Unexpected response body %s", w.Body.String())
+		}
+	})
+	t.Run("without header", func(t *testing.T) {
+		w := httptest.NewRecorder()
+		r := httptest.NewRequest(http.MethodGet, "/", nil)
+		wrapped.ServeHTTP(w, r)
+
+		if w.Code != http.StatusOK {
+			t.Errorf("Unexpected status code %d", w.Code)
+		}
+
+		if w.Body.String() != "hey there" {
+			t.Errorf("Unexpected response body %s", w.Body.String())
+		}
+	})
+	t.Run("with header allowing", func(t *testing.T) {
+		w := httptest.NewRecorder()
+		r := httptest.NewRequest(http.MethodGet, "/", nil)
+		r.Header.Set("DNT", "0")
+		wrapped.ServeHTTP(w, r)
+
+		if w.Code != http.StatusOK {
+			t.Errorf("Unexpected status code %d", w.Code)
+		}
+
+		if w.Body.String() != "hey there" {
+			t.Errorf("Unexpected response body %s", w.Body.String())
+		}
+	})
+}
