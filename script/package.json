@@ -10,7 +10,9 @@
     "prebuild": "mkdir -p dist",
     "build": "browserify index.js -p tinyify > dist/script.js"
   },
-  "dependencies": {},
+  "dependencies": {
+    "offen": "file:./../packages"
+  },
   "devDependencies": {
     "browserify": "^16.2.3",
     "budo": "^11.6.2",

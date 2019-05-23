@@ -44,9 +44,6 @@ jobs:
     steps:
       - checkout:
           path: ~/offen
-      - run:
-          name: Create `packages` symlink
-          command: ln -s ./../packages ./packages
       - restore_cache:
           key: offen-vault-{{ checksum "package.json" }}
       - run:
@@ -67,9 +64,6 @@ jobs:
     steps:
       - checkout:
           path: ~/offen
-      - run:
-          name: Create `packages` symlink
-          command: ln -s ./../packages ./packages
       - restore_cache:
           key: offen-script-{{ checksum "package.json" }}
       - run:
@@ -84,7 +78,7 @@ jobs:
           command: npm test
       - run:
           name: Bundle
-          command: npm run build
+          command: NODE_ENV=production npm run build
 
   auditorium:
     docker:
@@ -93,9 +87,6 @@ jobs:
     steps:
       - checkout:
           path: ~/offen
-      - run:
-          name: Create `packages` symlink
-          command: ln -s ./../packages ./packages
       - restore_cache:
           key: offen-auditorium-{{ checksum "package.json" }}
       - run:

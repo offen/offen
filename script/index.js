@@ -1,4 +1,4 @@
-const vault = require('./packages/vault')
+const vault = require('offen/vault')
 
 const accountId = document.currentScript.dataset.accountId
 

@@ -1,7 +1,6 @@
 const choo = require('choo')
 const html = require('choo/html')
-
-const vault = require('./packages/vault')
+const vault = require('offen/vault')
 
 const app = choo()
 

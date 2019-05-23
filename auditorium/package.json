@@ -10,7 +10,8 @@
   },
   "dependencies": {
     "choo": "^6.13.3",
-    "choo-devtools": "^2.5.1"
+    "choo-devtools": "^2.5.1",
+    "offen": "file:./../packages"
   },
   "devDependencies": {
     "budo": "^11.6.2",
