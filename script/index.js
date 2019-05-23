@@ -1,6 +1,7 @@
 var vault = require('offen/vault')
 
 var checkSupport = require('./src/check-support')
+
 var accountId = document.currentScript.dataset.accountId
 
 function main () {
