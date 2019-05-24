@@ -33,7 +33,13 @@ THEME = 'offen'
 DELETE_OUTPUT_DIRECTORY = True
 
 # List of templates that are used directly to render content.
-DIRECT_TEMPLATES = ['index','deepdive']
+# DIRECT_TEMPLATES = ['index','deepdive']
+
+# dont create following standart pages
+AUTHORS_SAVE_AS = None
+ARCHIVES_SAVE_AS = None
+CATEGORIES_SAVE_AS = None
+TAGS_SAVE_AS = None
 
 # The static paths you want to have accessible on the output path “static”.
 STATIC_PATHS = ['img', 'css']
