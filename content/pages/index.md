@@ -1,4 +1,4 @@
-Title: index page
+Title: Transparent web analytics | offen
 URL:
 save_as: index.html
 

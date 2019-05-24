@@ -1,4 +1,4 @@
-Title: deepdive page
+Title: Transparent web analytics deep dive | offen
 URL:
 save_as: deepdive.html
 
