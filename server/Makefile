@@ -1,6 +1,12 @@
 test:
 	@go test ./... -cover -race
 
+up:
+	@go run cmd/server/main.go
+
+install:
+	@go mod download
+
 bootstrap:
 	@go run cmd/bootstrap/main.go
 

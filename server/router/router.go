@@ -64,10 +64,10 @@ func (rt *router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 // to the given database implementation. In the context of the application
 // this expects to be the only top level router in charge of handling all
 // incoming HTTP requests.
-func New(db persistence.Database) http.Handler {
+func New(db persistence.Database, origin string) http.Handler {
 	router := &router{db}
 	withContentType := contentTypeMiddleware(router)
-	withCors := corsMiddleware(withContentType)
+	withCors := corsMiddleware(withContentType, origin)
 	// it is important that the DNT middleware is the last one to wrap the
 	// application as it should drop requests without performing anything else
 	// before doing so

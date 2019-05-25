@@ -22,6 +22,7 @@ func main() {
 		dialect          = flag.String("dialect", "postgres", "the database dialect used by the given connection string")
 		certFile         = flag.String("cert", "", "the path to a SSL certificate in PEM format")
 		keyFile          = flag.String("key", "", "the path to a SSL key in PEM format")
+		origin           = flag.String("origin", "*", "the origin used in CORS headers")
 	)
 	flag.Parse()
 
@@ -35,7 +36,7 @@ func main() {
 
 	srv := &http.Server{
 		Addr:    fmt.Sprintf("0.0.0.0:%v", *port),
-		Handler: router.New(db),
+		Handler: router.New(db, *origin),
 	}
 
 	go func() {
