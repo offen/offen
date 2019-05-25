@@ -4,7 +4,7 @@
 
 > The offen analytics software
 
-This repository contains all source code needed to build and run __offen__, both on the server as well as on the client.
+This repository contains all source code needed to build and run __offen__, both on the server as well as on the client. See each of the READMEs in the subdirectories for instructions on how to work on that particular area of the application.
 
 ---
 
@@ -43,77 +43,6 @@ $ docker-compose up
 ```
 
 Now you should be able to access <https://local.offen.dev:8080/status> in your browser without any security warnings.
-
-#### `server`
-
-To work on the `server` you will need to install `docker-compose` and Go 1.12+.
-
-First, bootstrap the dockerized Postgres database used for development:
-
-```
-docker-compose run server make bootstrap
-```
-
-Run the server:
-
-```
-docker-compose up
-```
-
-Run the tests:
-
-```
-docker-compose run server make
-```
-
-#### `vault`
-
-To work on the `vault` you will need to install `docker-compose`.
-
-First, install the project's dependencies:
-
-```
-cd vault
-npm install
-```
-
-Run the server:
-
-```
-docker-compose up
-```
-
-Run the tests:
-
-```
-cd vault
-npm test
-```
-
-#### `script`
-
-To work on the `script` you will need to install `docker-compose`.
-
-First, install the project's dependencies:
-
-```
-cd script
-npm install
-```
-
-Run the server:
-
-```
-docker-compose up
-```
-
-Run the tests:
-
-```
-cd script
-npm test
-```
-
 
 ### License
 
