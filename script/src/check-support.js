@@ -2,15 +2,13 @@ module.exports = checkSupport
 
 // checkSupport ensures all features the application assumes present are
 // supported by the browser that is running the script and that "Do Not Track"
-// is not enabled.
+// is not enabled. It is important that this does use a callback interface
+// as it native Promises might not necessarily be supported.
 function checkSupport (callback) {
   var err = null
 
   if (!allowsTracking()) {
     err = new Error('Browser has "Do Not Track" setting enabled')
-  }
-  if (!err && !supportsPromises()) {
-    err = new Error('Browser does not support Promises which is required')
   }
   if (!err && !supportsWebCrypto()) {
     err = new Error('Browser does not support WebCrypto which is required')
@@ -33,10 +31,6 @@ function supportsWebCrypto () {
 
 function supportsIndexedDb () {
   return typeof window.indexedDB === 'object'
-}
-
-function supportsPromises () {
-  return typeof window.Promise === 'function'
 }
 
 function supportsFetch () {
