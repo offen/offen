@@ -2,8 +2,10 @@
   "name": "vault",
   "version": "0.0.0",
   "private": true,
+  "main": "index.js",
   "scripts": {
     "start": "budo index.js --live --ssl --cert local.offen.dev.pem --key local.offen.dev-key.pem",
+    "pretest": "dependency-check package.json",
     "test": "mochify --allow-chrome-as-root ./**/*.test.js",
     "posttest": "standard",
     "fix": "standard --fix"
@@ -15,6 +17,7 @@
   },
   "devDependencies": {
     "budo": "^11.6.2",
+    "dependency-check": "^3.3.0",
     "envify": "^4.1.0",
     "fetch-mock": "^7.3.3",
     "mochify": "^6.2.0",

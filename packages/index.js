@@ -1,0 +1,1 @@
+exports.vault = require('./vault')
