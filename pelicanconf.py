@@ -3,6 +3,10 @@
 from __future__ import unicode_literals
 import logging
 
+# If your site is available via HTTPS, make sure SITEURL begins with https://
+SITEURL = 'https://www.offen.dev'
+RELATIVE_URLS = False
+
 AUTHOR = 'offen'
 SITENAME = 'offen'
 SITEURL = ''
@@ -27,7 +31,7 @@ DEFAULT_PAGINATION = False
 
 
 # added configs ----------------------------------------------
-THEME = 'offen'
+THEME = 'homepage-theme'
 
 # Delete the output directory before generating new files.
 DELETE_OUTPUT_DIRECTORY = True
