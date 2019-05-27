@@ -6,6 +6,10 @@
 
 ---
 
+The app builds into a single executable that can be used to run the application.
+
+---
+
 ## Development
 
 ### Commands

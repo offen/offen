@@ -10,6 +10,10 @@ It collects events autonoumously and only needs to be parametrized with an Accou
 
 ---
 
+The app builds into a single JavaScript file that can be deployed to a CDN.
+
+---
+
 ## Development
 
 ### Commands
