@@ -8,7 +8,12 @@
     "test": "mochify --allow-chrome-as-root ./**/*.test.js",
     "pretest": "dependency-check package.json",
     "posttest": "standard",
-    "fix": "standard --fix"
+    "fix": "standard --fix",
+    "build": "npm run build:bundle && npm run build:inline",
+    "build:bundle": "browserify ./index.js -p tinyify > ./dist/index.js",
+    "build:inline": "html-inline ./dist/template.html > ./dist/index.html --ignore-styles",
+    "prebuild": "rm -rf ./dist && mkdir -p ./dist && cp ./index.html ./dist/template.html",
+    "postbuild": "rm ./dist/index.js ./dist/template.html"
   },
   "dependencies": {
     "choo": "^6.13.3",
@@ -17,15 +22,29 @@
     "uuid": "^3.3.2"
   },
   "devDependencies": {
+    "@babel/core": "^7.4.5",
+    "@babel/preset-env": "^7.4.5",
+    "babelify": "^10.0.0",
+    "browserify": "^16.2.3",
     "budo": "^11.6.2",
     "dependency-check": "^3.3.0",
     "envify": "^4.1.0",
+    "html-inline": "^1.2.0",
     "mochify": "^6.2.0",
-    "standard": "^12.0.1"
+    "standard": "^12.0.1",
+    "tinyify": "^2.5.1"
   },
   "browserify": {
     "transform": [
-      "envify"
+      "envify",
+      [
+        "babelify",
+        {
+          "presets": [
+            "@babel/preset-env"
+          ]
+        }
+      ]
     ]
   },
   "standard": {
