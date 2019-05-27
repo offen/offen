@@ -9,6 +9,10 @@ The application is currently built using [choo][choo-repo] and [skeleton][skelet
 
 ---
 
+The app builds into a single page app that can be deployed statically.
+
+---
+
 ## Development
 
 ### Commands
