@@ -16,11 +16,13 @@ func (rt *router) getPublicKey(w http.ResponseWriter, r *http.Request) {
 			respondWithError(w, err, http.StatusBadRequest)
 			return
 		}
+		rt.logError(err, "error looking up account")
 		respondWithError(w, err, http.StatusInternalServerError)
 		return
 	}
 	b, err := json.Marshal(account)
 	if err != nil {
+		rt.logError(err, "error marshaling account to JSON")
 		respondWithError(w, err, http.StatusInternalServerError)
 		return
 	}

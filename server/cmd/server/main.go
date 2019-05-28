@@ -11,6 +11,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/offen/offen/server/logger"
 	"github.com/offen/offen/server/persistence/relational"
 	"github.com/offen/offen/server/router"
 )
@@ -26,6 +27,8 @@ func main() {
 	)
 	flag.Parse()
 
+	logger := logger.New()
+
 	db, err := relational.New(
 		relational.WithDialect(*dialect),
 		relational.WithConnectionString(*connectionString),
@@ -36,7 +39,7 @@ func main() {
 
 	srv := &http.Server{
 		Addr:    fmt.Sprintf("0.0.0.0:%v", *port),
-		Handler: router.New(db, *origin),
+		Handler: router.New(db, logger, *origin),
 	}
 
 	go func() {
@@ -50,7 +53,7 @@ func main() {
 			}
 		}
 	}()
-
+	logger.Infof("Server now listening on port %d.", *port)
 	quit := make(chan os.Signal)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM, syscall.SIGKILL, syscall.SIGHUP)
 	<-quit

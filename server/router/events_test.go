@@ -83,7 +83,7 @@ func TestRouter_PostEvents(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			rt := router{test.db}
+			rt := router{test.db, nil}
 			w := httptest.NewRecorder()
 			r := httptest.NewRequest(http.MethodPost, "/", test.body)
 			r = r.WithContext(context.WithValue(r.Context(), contextKeyCookie, test.userID))
@@ -172,7 +172,7 @@ func TestRouter_GetEvents(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			rt := router{test.db}
+			rt := router{test.db, nil}
 			w := httptest.NewRecorder()
 			r := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/%s", test.queryString), nil)
 			r = r.WithContext(context.WithValue(r.Context(), contextKeyCookie, test.userID))
