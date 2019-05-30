@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<title>{% block title %}{% endblock %}</title>
+<link rel="stylesheet" type="text/css" href="{{ SITEURL }}/css/style.css">
+</head>
+
+<body>
+
+<div class="wrapper">
+
+<header>
+<a href="/" title="offen home page" alt="offen home page"><img src="{{ SITEURL }}/img/logo.svg" alt="offen logo" width="165" height="102" class="logo"></a>
+</header>
+
+{% block content %}{% endblock %}
+
+<footer>
+<ul class="footer-list">
+<li>
+May 2019
+</li>
+<li>
+<a href="https://github.com/offen" title="Offen GitHub" target="_blank">GitHub</a>
+</li>
+<li>
+<a href="mailto:mail@offen.dev" title="Offen Contact" target="_blank">Contact</a>
+</li>
+</ul>
+</footer>
+
+</div>
+
+</body>
+</html>
