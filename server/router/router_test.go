@@ -11,5 +11,5 @@ type mockDatabase struct {
 }
 
 func TestNew(t *testing.T) {
-	New(&mockDatabase{}, "*")
+	New(&mockDatabase{}, nil, "*")
 }

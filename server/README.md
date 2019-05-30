@@ -55,4 +55,5 @@ The application is configured using environment flags on startup. The following 
   - `dialect`: the database dialect used by the given connection string (default "postgres")
   - `key`: the path to a SSL key in PEM format
   - `cert`: the path to a SSL certificate in PEM format
-  - `origin`:the origin used in CORS headers (default "*")
+  - `origin`: the origin used in CORS headers (default "*")
+  - `level`: the application's log level (default "info")

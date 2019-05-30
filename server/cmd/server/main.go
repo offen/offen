@@ -13,6 +13,7 @@ import (
 
 	"github.com/offen/offen/server/persistence/relational"
 	"github.com/offen/offen/server/router"
+	"github.com/sirupsen/logrus"
 )
 
 func main() {
@@ -23,20 +24,28 @@ func main() {
 		certFile         = flag.String("cert", "", "the path to a SSL certificate in PEM format")
 		keyFile          = flag.String("key", "", "the path to a SSL key in PEM format")
 		origin           = flag.String("origin", "*", "the origin used in CORS headers")
+		logLevel         = flag.String("level", "info", "the application's log level")
 	)
 	flag.Parse()
+
+	logger := logrus.New()
+	parsedLogLevel, parseErr := logrus.ParseLevel(*logLevel)
+	if parseErr != nil {
+		logger.WithError(parseErr).Fatalf("unable to parse given log level %s", *logLevel)
+	}
+	logger.SetLevel(parsedLogLevel)
 
 	db, err := relational.New(
 		relational.WithDialect(*dialect),
 		relational.WithConnectionString(*connectionString),
 	)
 	if err != nil {
-		log.Fatal(err)
+		logger.WithError(err).Fatal("unable to create database connection")
 	}
 
 	srv := &http.Server{
 		Addr:    fmt.Sprintf("0.0.0.0:%v", *port),
-		Handler: router.New(db, *origin),
+		Handler: router.New(db, logger, *origin),
 	}
 
 	go func() {
@@ -50,7 +59,7 @@ func main() {
 			}
 		}
 	}()
-
+	logger.Infof("Server now listening on port %d.", *port)
 	quit := make(chan os.Signal)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM, syscall.SIGKILL, syscall.SIGHUP)
 	<-quit

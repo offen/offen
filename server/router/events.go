@@ -23,6 +23,7 @@ var errBadRequestContext = errors.New("could not use user id in request context"
 func (rt *router) postEvents(w http.ResponseWriter, r *http.Request) {
 	userID, ok := r.Context().Value(contextKeyCookie).(string)
 	if !ok {
+		rt.logError(errBadRequestContext, "missing request context")
 		respondWithError(
 			w,
 			errBadRequestContext,
@@ -43,6 +44,7 @@ func (rt *router) postEvents(w http.ResponseWriter, r *http.Request) {
 			respondWithError(w, unknownAccountErr, http.StatusBadRequest)
 			return
 		}
+		rt.logError(err, "error writing event payload")
 		respondWithError(w, err, http.StatusInternalServerError)
 		return
 	}
