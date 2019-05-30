@@ -31,7 +31,8 @@ DEFAULT_PAGINATION = False
 
 
 # added configs ----------------------------------------------
-THEME = 'homepage-theme'
+
+# THEME = '###'
 
 # Delete the output directory before generating new files.
 DELETE_OUTPUT_DIRECTORY = True
@@ -46,7 +47,7 @@ CATEGORIES_SAVE_AS = None
 TAGS_SAVE_AS = None
 
 # The static paths you want to have accessible on the output path “static”.
-STATIC_PATHS = ['img', 'css']
+STATIC_PATHS = ['css', 'img', 'fonts']
 
 # The default metadata you want to use for all articles and pages.
 DEFAULT_METADATA = {

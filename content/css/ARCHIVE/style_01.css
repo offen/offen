@@ -2,8 +2,8 @@
     font-family: 'Noto Sans';
     font-weight: 400;
     font-style: normal;
-    src: url("../fonts/Noto-Sans-400/Noto-Sans-400.eot");
-    src: url("../fonts/Noto-Sans-400/Noto-Sans-400.eot?#iefix") format("embedded-opentype"), local("Noto Sans"), local("Noto-Sans-400"), url("../fonts/Noto-Sans-400/Noto-Sans-400.woff2") format("woff2"), url("../fonts/Noto-Sans-400/Noto-Sans-400.woff") format("woff"), url("../fonts/Noto-Sans-400/Noto-Sans-400.ttf") format("truetype"), url("../fonts/Noto-Sans-400/Noto-Sans-400.svg#NotoSans") format("svg")
+    src: url("../fonts/Noto-Sans-regular/Noto-Sans-regular.eot");
+    src: url("../fonts/Noto-Sans-regular/Noto-Sans-regular.eot?#iefix") format("embedded-opentype"), local("Noto Sans"), local("Noto-Sans-regular"), url("../fonts/Noto-Sans-regular/Noto-Sans-regular.woff2") format("woff2"), url("../fonts/Noto-Sans-regular/Noto-Sans-regular.woff") format("woff"), url("../fonts/Noto-Sans-regular/Noto-Sans-regular.ttf") format("truetype"), url("../fonts/Noto-Sans-regular/Noto-Sans-regular.svg#NotoSans") format("svg")
 }
 
 @font-face {
