@@ -5,7 +5,7 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/gorilla/handlers"
+	"github.com/m90/go-thunk"
 	"github.com/offen/offen/server/persistence"
 	logrusmiddleware "github.com/offen/logrus-middleware"
 	"github.com/sirupsen/logrus"
@@ -86,6 +86,8 @@ func New(db persistence.Database, logger *logrus.Logger, origin string) http.Han
 	// application as it should drop requests without performing anything else
 	// before doing so
 	withDNT := doNotTrackMiddleware(withLogging)
-	withRecovery := handlers.RecoveryHandler(handlers.RecoveryLogger(logger))(withDNT)
+	withRecovery := thunk.HandleSafelyWith(func (err error) {
+		logger.WithError(err).Error("recovered from panic")
+	})(withDNT)
 	return withRecovery
 }
