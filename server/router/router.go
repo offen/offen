@@ -6,13 +6,14 @@ import (
 	"net/http"
 
 	"github.com/gorilla/handlers"
-	"github.com/offen/offen/server/logger"
 	"github.com/offen/offen/server/persistence"
+	logrusmiddleware "github.com/offen/logrus-middleware"
+	"github.com/sirupsen/logrus"
 )
 
 type router struct {
 	db     persistence.Database
-	logger *logger.Logger
+	logger *logrus.Logger
 }
 
 func (rt *router) logError(err error, message string) {
@@ -73,11 +74,14 @@ func (rt *router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 // to the given database implementation. In the context of the application
 // this expects to be the only top level router in charge of handling all
 // incoming HTTP requests.
-func New(db persistence.Database, logger *logger.Logger, origin string) http.Handler {
+func New(db persistence.Database, logger *logrus.Logger, origin string) http.Handler {
 	router := &router{db, logger}
 	withContentType := contentTypeMiddleware(router)
 	withCors := corsMiddleware(withContentType, origin)
-	withLogging := handlers.LoggingHandler(logger, withCors)
+	l := logrusmiddleware.Middleware{
+		Logger: logger,
+	}
+	withLogging := l.Handler(withCors, "")
 	// it is important that the DNT middleware is the last one to wrap the
 	// application as it should drop requests without performing anything else
 	// before doing so

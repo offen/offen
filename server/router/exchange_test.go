@@ -20,7 +20,7 @@ type mockAccountsDatabase struct {
 	err    error
 }
 
-func (m *mockAccountsDatabase) GetAccount(accountId string) (persistence.AccountResult, error) {
+func (m *mockAccountsDatabase) GetAccount(accountID string) (persistence.AccountResult, error) {
 	return m.result, m.err
 }
 
