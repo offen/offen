@@ -1,6 +1,29 @@
 version: 2
 
 jobs:
+  kms:
+    docker:
+      - image: circleci/golang:1.12
+    working_directory: ~/offen/kms
+    steps:
+      - checkout:
+          path: ~/offen
+      - restore_cache:
+          key: offen-kms-{{ checksum "go.mod" }}
+      - run:
+          name: Download modules
+          command: go mod download
+      - save_cache:
+          paths:
+            - /go/pkg/mod
+          key: offen-kms-{{ checksum "go.mod" }}
+      - run:
+          name: Generate one-off key file
+          command: make bootstrap
+      - run:
+          name: Run tests
+          command: make test-ci
+
   server:
     docker:
       - image: circleci/golang:1.12
@@ -122,6 +145,7 @@ workflows:
   build_and_test:
     jobs:
       - server
+      - kms
       - vault
       - script
       - auditorium

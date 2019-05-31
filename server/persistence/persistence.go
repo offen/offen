@@ -29,6 +29,7 @@ type EventResult struct {
 
 // AccountResult is the data returned from looking up an account by id
 type AccountResult struct {
-	AccountID string    `json:"account_id"`
-	PublicKey gojwk.Key `json:"public_key"`
+	AccountID          string    `json:"account_id"`
+	PublicKey          gojwk.Key `json:"public_key"`
+	EncryptedSecretKey string    `json:"encrypted_secret_key"`
 }
