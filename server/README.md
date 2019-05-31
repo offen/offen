@@ -26,6 +26,8 @@ make install
 make bootstrap
 ```
 
+This requires a `kms` server to be running in order to encrypt the operator private keys. If run via `docker-compose` at repository level, this happens automatically.
+
 **Important**: this erases all data currently stored in the local database and creates a fresh set of accounts with no event data.
 
 #### Run the development server

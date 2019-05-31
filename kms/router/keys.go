@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"encoding/pem"
+	"errors"
 	"net/http"
 
 	"github.com/mendsley/gojwk"
@@ -31,6 +32,7 @@ func (rt *router) handleDecrypt(w http.ResponseWriter, r *http.Request) {
 
 	decrypted, err := rt.manager.Decrypt(b)
 	if err != nil {
+		rt.logError(err, "error decrypting payload")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -41,18 +43,21 @@ func (rt *router) handleDecrypt(w http.ResponseWriter, r *http.Request) {
 		// can easily consume it
 		decoded, _ := pem.Decode(decrypted)
 		if decoded == nil {
+			rt.logError(errors.New("error decoding decrypted key in PEM format"), "error decoding decrypted key in PEM format")
 			http.Error(w, "error decoding decrypted key in PEM format", http.StatusInternalServerError)
 			return
 		}
 
 		priv, privErr := x509.ParsePKCS1PrivateKey(decoded.Bytes)
 		if privErr != nil {
+			rt.logError(privErr, "error parsing PEM key")
 			http.Error(w, privErr.Error(), http.StatusInternalServerError)
 			return
 		}
 
 		key, keyErr := gojwk.PrivateKey(priv)
 		if keyErr != nil {
+			rt.logError(keyErr, "error creating JWK")
 			http.Error(w, keyErr.Error(), http.StatusInternalServerError)
 			return
 		}

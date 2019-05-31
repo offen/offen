@@ -3,6 +3,7 @@ package router
 import (
 	"net/http"
 
+	"github.com/m90/go-thunk"
 	"github.com/offen/offen/kms/keymanager"
 	"github.com/sirupsen/logrus"
 )
@@ -15,7 +16,10 @@ type router struct {
 // New creates a new top-level application router for the KMS service using
 // the given key manager and logger
 func New(manager keymanager.Manager, logger *logrus.Logger) http.Handler {
-	return &router{logger: logger, manager: manager}
+	router := &router{logger: logger, manager: manager}
+	return thunk.HandleSafelyWith(func(err error) {
+		logger.WithError(err).Error("internal server error")
+	})(router)
 }
 
 func (rt *router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
