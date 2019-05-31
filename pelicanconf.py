@@ -32,7 +32,7 @@ DEFAULT_PAGINATION = False
 
 # added configs ----------------------------------------------
 
-# THEME = '###'
+THEME = './theme'
 
 # Delete the output directory before generating new files.
 DELETE_OUTPUT_DIRECTORY = True
@@ -40,7 +40,7 @@ DELETE_OUTPUT_DIRECTORY = True
 # List of templates that are used directly to render content.
 # DIRECT_TEMPLATES = ['index','deepdive']
 
-# dont create following standart pages
+# dont create following standard pages
 AUTHORS_SAVE_AS = None
 ARCHIVES_SAVE_AS = None
 CATEGORIES_SAVE_AS = None
@@ -51,6 +51,5 @@ STATIC_PATHS = ['css', 'img', 'fonts']
 
 # The default metadata you want to use for all articles and pages.
 DEFAULT_METADATA = {
-  'description': 'A brief description of your site',
-  'status': 'draft'
+    'description': 'offen is a free and open source analytics software for websites and web applications that allows respectful handling of data.'
 }
