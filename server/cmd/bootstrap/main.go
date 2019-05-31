@@ -5,9 +5,12 @@ import (
 	"crypto/rand"
 	"crypto/rsa"
 	"crypto/x509"
+	"encoding/base64"
 	"encoding/json"
 	"encoding/pem"
+	"errors"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"os"
 
@@ -37,7 +40,7 @@ func getRSAKeypair() (string, string, error) {
 
 	secretKey := string(privatePem)
 	if endpoint, ok := os.LookupEnv("KMS_ENCRYPTION_ENDPOINT"); ok {
-
+		fmt.Printf("endpoint %s\n", endpoint)
 		p := struct {
 			Decrypted string `json:"decrypted"`
 		}{
@@ -52,6 +55,11 @@ func getRSAKeypair() (string, string, error) {
 		if err != nil {
 			return "", "", err
 		}
+		if res.StatusCode != http.StatusOK {
+			body, _ := ioutil.ReadAll(res.Body)
+			fmt.Printf("error encoding secret key: %v", string(body))
+			return "", "", errors.New("error")
+		}
 
 		r := struct {
 			Encrypted string `json:"encrypted"`
@@ -61,6 +69,16 @@ func getRSAKeypair() (string, string, error) {
 	}
 
 	return string(publicPem), secretKey, nil
+}
+
+func createSalt(length int) (string, error) {
+	b := make([]byte, length)
+	_, err := rand.Read(b)
+	if err != nil {
+		return "", err
+	}
+	s := base64.URLEncoding.EncodeToString(b)
+	return s[:length], nil
 }
 
 func main() {
@@ -88,11 +106,16 @@ func main() {
 		tx.Rollback()
 		panic(keyErr)
 	}
+	salt, saltErr := createSalt(16)
+	if saltErr != nil {
+		tx.Rollback()
+		panic(saltErr)
+	}
 	account := relational.Account{
 		AccountID:          "9b63c4d8-65c0-438c-9d30-cc4b01173393",
 		PublicKey:          publicKey,
 		EncryptedSecretKey: privateKey,
-		UserSalt:           "78403940-ae4f-4aff-a395-1e90f145cf62",
+		UserSalt:           salt,
 	}
 	if err := tx.Create(&account).Error; err != nil {
 		tx.Rollback()
@@ -104,11 +127,17 @@ func main() {
 		tx.Rollback()
 		panic(keyErr)
 	}
+
+	salt2, salt2Err := createSalt(16)
+	if salt2Err != nil {
+		tx.Rollback()
+		panic(salt2Err)
+	}
 	otherAccount := relational.Account{
 		AccountID:          "78403940-ae4f-4aff-a395-1e90f145cf62",
 		PublicKey:          publicKey,
 		EncryptedSecretKey: privateKey,
-		UserSalt:           "9b63c4d8-65c0-438c-9d30-cc4b01173393",
+		UserSalt:           salt2,
 	}
 	if err := tx.Create(&otherAccount).Error; err != nil {
 		tx.Rollback()

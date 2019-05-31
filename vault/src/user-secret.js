@@ -1,4 +1,5 @@
 var Unibabel = require('unibabel').Unibabel
+var handleFetchResponse = require('offen/fetch-response')
 
 var getDatabase = require('./database')
 
@@ -41,16 +42,7 @@ function exchangeUserSecret (accountId, host) {
     .fetch(`${host}/exchange?account_id=${accountId}`, {
       credentials: 'include'
     })
-    .then(function (response) {
-      if (response.status >= 400) {
-        return response.json().then(function (errorBody) {
-          var err = new Error(errorBody.error)
-          err.status = response.status
-          throw err
-        })
-      }
-      return response.json()
-    })
+    .then(handleFetchResponse)
     .then(function (body) {
       return generateNewUserSecret(body.public_key)
     })
@@ -64,14 +56,8 @@ function exchangeUserSecret (accountId, host) {
             encrypted_user_secret: result.encryptedUserSecret
           })
         })
-        .then(function (response) {
-          if (response.status >= 400) {
-            return response.json().then(function (errorBody) {
-              var err = new Error(errorBody.error)
-              err.status = response.status
-              throw err
-            })
-          }
+        .then(handleFetchResponse)
+        .then(function () {
           return result.userSecret
         })
     })

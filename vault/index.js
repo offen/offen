@@ -41,7 +41,6 @@ window.addEventListener('message', function (event) {
       break
     }
   }
-
   handler(message, respond).catch(function (err) {
     console.error(err)
   })

@@ -8,9 +8,13 @@ import (
 	"github.com/offen/offen/server/persistence"
 )
 
-func (r *relationalDatabase) GetAccount(accountID string) (persistence.AccountResult, error) {
+func (r *relationalDatabase) GetAccount(accountID string, events bool) (persistence.AccountResult, error) {
 	var account Account
-	if err := r.db.Find(&account, "account_id = ?", accountID).Error; err != nil {
+	queryDB := r.db
+	if events {
+		queryDB = queryDB.Preload("Events").Preload("Events.User")
+	}
+	if err := queryDB.Find(&account, "account_id = ?", accountID).Error; err != nil {
 		if gorm.IsRecordNotFoundError(err) {
 			return persistence.AccountResult{}, persistence.ErrUnknownAccount(fmt.Sprintf("account id %s unknown", accountID))
 		}
@@ -22,11 +26,29 @@ func (r *relationalDatabase) GetAccount(accountID string) (persistence.AccountRe
 		return persistence.AccountResult{}, err
 	}
 
-	return persistence.AccountResult{
+	result := persistence.AccountResult{
 		AccountID:          account.AccountID,
-		PublicKey:          *key,
+		PublicKey:          key,
 		EncryptedSecretKey: account.EncryptedSecretKey,
-	}, nil
+	}
+
+	eventResults := persistence.EventsByAccountID{}
+	userSecrets := persistence.SecretsByUserID{}
+
+	for _, evt := range account.Events {
+		eventResults[evt.AccountID] = append(eventResults[evt.AccountID], persistence.EventResult{
+			UserID:  evt.HashedUserID,
+			EventID: evt.EventID,
+			Payload: evt.Payload,
+		})
+		userSecrets[evt.HashedUserID] = evt.User.EncryptedUserSecret
+	}
+	if len(eventResults) != 0 {
+		result.Events = &eventResults
+		result.UserSecrets = &userSecrets
+	}
+
+	return result, nil
 }
 
 func (r *relationalDatabase) AssociateUserSecret(accountID, userID, encryptedUserSecret string) error {

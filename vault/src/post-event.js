@@ -1,5 +1,6 @@
 var Unibabel = require('unibabel').Unibabel
 var uuidv4 = require('uuid/v4')
+var handleFetchResponse = require('offen/fetch-response')
 
 var ensureUserSecret = require('./user-secret')
 
@@ -39,14 +40,8 @@ function postEvent (accountId, event) {
         .then(function (response) {
           if (response.status === 400 && !flush) {
             return postEvent(accountId, event, true)
-          } else if (response.status >= 400) {
-            return response.json().then(function (errorBody) {
-              var err = new Error(errorBody.error)
-              err.status = response.status
-              throw err
-            })
           }
-          return response.json()
+          return handleFetchResponse(response)
         })
     })
 }

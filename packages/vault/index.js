@@ -22,13 +22,16 @@ function createVault (host) {
   createVault[host] = new Promise(function (resolve, reject) {
     vault.addEventListener('load', function (e) {
       function postMessage (message) {
-        return new Promise(function (resolve) {
+        return new Promise(function (resolve, reject) {
           function digestResponse (event) {
             var responseMessage = event.data
             if (responseMessage.responseTo !== message.respondWith) {
               return
             }
             window.removeEventListener('message', digestResponse)
+            if (responseMessage.type === 'ERROR') {
+              reject(new Error(responseMessage.payload.error))
+            }
             resolve(responseMessage)
           }
 

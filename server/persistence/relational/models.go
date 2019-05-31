@@ -7,7 +7,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/mendsley/gojwk"
+	jwk "github.com/lestrrat-go/jwx/jwk"
 )
 
 // Event is any analytics event that will be stored in the database. It is
@@ -35,6 +35,7 @@ type Account struct {
 	PublicKey          string
 	EncryptedSecretKey string
 	UserSalt           string
+	Events             []Event `gorm:"foreignkey:AccountID;association_foreignkey:AccountID"`
 }
 
 // HashUserID uses the account's `UserSalt` to create a hashed version of a
@@ -47,7 +48,7 @@ func (a *Account) HashUserID(userID string) string {
 
 // WrapPublicKey returns the public key of an account's keypair in
 // JSON WebKey format.
-func (a *Account) WrapPublicKey() (*gojwk.Key, error) {
+func (a *Account) WrapPublicKey() (jwk.Key, error) {
 	decoded, _ := pem.Decode([]byte(a.PublicKey))
 
 	if decoded == nil {
@@ -59,7 +60,7 @@ func (a *Account) WrapPublicKey() (*gojwk.Key, error) {
 		return nil, pubErr
 	}
 
-	key, keyErr := gojwk.PublicKey(pub)
+	key, keyErr := jwk.New(pub)
 	if keyErr != nil {
 		return nil, keyErr
 	}

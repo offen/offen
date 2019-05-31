@@ -6,8 +6,8 @@ import (
 	"net/http"
 
 	"github.com/m90/go-thunk"
-	"github.com/offen/offen/server/persistence"
 	logrusmiddleware "github.com/offen/logrus-middleware"
+	"github.com/offen/offen/server/persistence"
 	"github.com/sirupsen/logrus"
 )
 
@@ -37,6 +37,13 @@ func (rt *router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			rt.getPublicKey(w, r)
 		case http.MethodPost:
 			rt.postUserSecret(w, r)
+		default:
+			respondWithError(w, errors.New("Method not allowed"), http.StatusMethodNotAllowed)
+		}
+	case "/accounts":
+		switch r.Method {
+		case http.MethodGet:
+			rt.getAccount(w, r)
 		default:
 			respondWithError(w, errors.New("Method not allowed"), http.StatusMethodNotAllowed)
 		}
@@ -77,17 +84,14 @@ func (rt *router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func New(db persistence.Database, logger *logrus.Logger, origin string) http.Handler {
 	router := &router{db, logger}
 	withContentType := contentTypeMiddleware(router)
-	withCors := corsMiddleware(withContentType, origin)
 	l := logrusmiddleware.Middleware{
 		Logger: logger,
 	}
-	withLogging := l.Handler(withCors, "")
-	// it is important that the DNT middleware is the last one to wrap the
-	// application as it should drop requests without performing anything else
-	// before doing so
+	withLogging := l.Handler(withContentType, "")
 	withDNT := doNotTrackMiddleware(withLogging)
-	withRecovery := thunk.HandleSafelyWith(func (err error) {
+	withCORS := corsMiddleware(withDNT, origin)
+	withRecovery := thunk.HandleSafelyWith(func(err error) {
 		logger.WithError(err).Error("recovered from panic")
-	})(withDNT)
+	})(withCORS)
 	return withRecovery
 }

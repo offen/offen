@@ -13,7 +13,7 @@ services:
       - GOPATH=/go
     ports:
       - 8081:8081
-    command: go run cmd/kms/main.go -port 8081
+    command: go run cmd/kms/main.go -key local.offen.dev-key.pem -cert local.offen.dev.pem  -port 8081
 
   server:
     image: golang:1.12
@@ -52,6 +52,7 @@ services:
       - 9977:9977
     environment:
       - SERVER_HOST=https://local.offen.dev:8080
+      - KMS_HOST=https://local.offen.dev:8081
       - AUDITORIUM_HOST=https://local.offen.dev:9955
 
   script:

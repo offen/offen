@@ -104,18 +104,17 @@ type mockQueryDatabase struct {
 	err     error
 }
 
-func (m *mockQueryDatabase) Query(q persistence.Query) ([]persistence.EventResult, error) {
-	out := []persistence.EventResult{}
+func (m *mockQueryDatabase) Query(q persistence.Query) (map[string][]persistence.EventResult, error) {
+	out := map[string][]persistence.EventResult{}
 	eventID := "event-id"
 	if q.Since() != "" {
 		eventID = q.Since()
 	}
 	for _, id := range q.AccountIDs() {
-		out = append(out, persistence.EventResult{
-			AccountID: id,
-			UserID:    q.UserID(),
-			Payload:   m.payload,
-			EventID:   eventID,
+		out[id] = append(out[id], persistence.EventResult{
+			UserID:  q.UserID(),
+			Payload: m.payload,
+			EventID: eventID,
 		})
 	}
 	return out, m.err
@@ -151,7 +150,7 @@ func TestRouter_GetEvents(t *testing.T) {
 			"",
 			"user-identifier",
 			http.StatusOK,
-			`{"events":[]}`,
+			`{"events":{}}`,
 		},
 		{
 			"query params",
@@ -159,7 +158,7 @@ func TestRouter_GetEvents(t *testing.T) {
 			"?account_id=account-identifier&account_id=other-identifier",
 			"user-identifier",
 			http.StatusOK,
-			`{"events":[{"account_id":"account-identifier","user_id":"user-identifier","event_id":"event-id","payload":"payload-value"},{"account_id":"other-identifier","user_id":"user-identifier","event_id":"event-id","payload":"payload-value"}]}`,
+			`{"events":{"account-identifier":[{"user_id":"user-identifier","event_id":"event-id","payload":"payload-value"}],"other-identifier":[{"user_id":"user-identifier","event_id":"event-id","payload":"payload-value"}]}}`,
 		},
 		{
 			"since param",
@@ -167,7 +166,7 @@ func TestRouter_GetEvents(t *testing.T) {
 			"?account_id=account-identifier&since=since-value",
 			"user-identifier",
 			http.StatusOK,
-			`{"events":[{"account_id":"account-identifier","user_id":"user-identifier","event_id":"since-value","payload":"payload-value"}]}`,
+			`{"events":{"account-identifier":[{"user_id":"user-identifier","event_id":"since-value","payload":"payload-value"}]}}`,
 		},
 	}
 	for _, test := range tests {

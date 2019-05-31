@@ -52,8 +52,8 @@ YBf7sFrmjU4gcv62gsDPhYaxJBWOKR41EVXjOf0Zja5UrSfEfsrLOV8CAwEAAQ==
 		if err != nil {
 			t.Errorf("Unexpected error %v", err)
 		}
-		if result.Kty != "RSA" {
-			t.Errorf("Expected key type to be RSA, got %s", result.Kty)
+		if result.KeyType().String() != "RSA" {
+			t.Errorf("Expected key type to be RSA, got %s", result.KeyType().String())
 		}
 	})
 	t.Run("bad key", func(t *testing.T) {

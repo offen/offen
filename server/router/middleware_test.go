@@ -44,7 +44,7 @@ func TestDoNotTrackMiddleware(t *testing.T) {
 		r.Header.Set("DNT", "1")
 		wrapped.ServeHTTP(w, r)
 
-		if w.Code != http.StatusOK {
+		if w.Code != http.StatusNoContent {
 			t.Errorf("Unexpected status code %d", w.Code)
 		}
 

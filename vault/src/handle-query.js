@@ -21,7 +21,7 @@ function handleQuery (message, respond) {
       return {
         type: 'ERROR',
         payload: {
-          error: err
+          error: err.message
         }
       }
     })

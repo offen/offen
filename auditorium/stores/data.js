@@ -4,13 +4,15 @@ var vault = require('offen/vault')
 module.exports = store
 
 function store (state, emitter) {
-  emitter.on('offen:query', function () {
+  emitter.on('offen:query', function (data) {
     vault(process.env.VAULT_HOST)
       .then(function (postMessage) {
         var queryRequest = {
           type: 'QUERY',
           respondWith: uuid(),
-          payload: null
+          payload: data
+            ? { query: data }
+            : null
         }
         return postMessage(queryRequest)
       })
@@ -18,7 +20,8 @@ function store (state, emitter) {
         state.model = { events: message.payload.result }
       })
       .catch(function (err) {
-        state.error = err
+        console.error(err)
+        state.model.error = err
       })
       .then(function () {
         emitter.emit(state.events.RENDER)

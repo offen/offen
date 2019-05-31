@@ -71,7 +71,7 @@ func (q *getQuery) Since() string {
 }
 
 type getResponse struct {
-	Events []persistence.EventResult `json:"events"`
+	Events map[string][]persistence.EventResult `json:"events"`
 }
 
 func (rt *router) getEvents(w http.ResponseWriter, r *http.Request) {
@@ -99,5 +99,10 @@ func (rt *router) getEvents(w http.ResponseWriter, r *http.Request) {
 	outbound := getResponse{
 		Events: result,
 	}
-	json.NewEncoder(w).Encode(outbound)
+	b, err := json.Marshal(outbound)
+	if err != nil {
+		respondWithError(w, err, http.StatusInternalServerError)
+		return
+	}
+	w.Write(b)
 }

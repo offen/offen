@@ -15,6 +15,7 @@ document.body.appendChild(host)
 
 app.use(dataStore)
 
+app.route('/account/:account_id', mainView)
 app.route('/', mainView)
 app.route('/*', notFoundView)
 
