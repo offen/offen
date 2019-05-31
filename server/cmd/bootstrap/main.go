@@ -13,7 +13,7 @@ import (
 	"github.com/offen/offen/server/persistence/relational"
 )
 
-func getKeypair() (string, string, error) {
+func getRSAKeypair() (string, string, error) {
 	key, keyErr := rsa.GenerateKey(rand.Reader, 4096)
 	if keyErr != nil {
 		return "", "", keyErr
@@ -54,7 +54,7 @@ func main() {
 		panic(err)
 	}
 
-	publicKey, privateKey, keyErr := getKeypair()
+	publicKey, privateKey, keyErr := getRSAKeypair()
 	if keyErr != nil {
 		tx.Rollback()
 		panic(keyErr)
@@ -70,7 +70,7 @@ func main() {
 		panic(err)
 	}
 
-	publicKey, privateKey, keyErr = getKeypair()
+	publicKey, privateKey, keyErr = getRSAKeypair()
 	if keyErr != nil {
 		tx.Rollback()
 		panic(keyErr)

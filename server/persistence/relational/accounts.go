@@ -23,8 +23,9 @@ func (r *relationalDatabase) GetAccount(accountID string) (persistence.AccountRe
 	}
 
 	return persistence.AccountResult{
-		AccountID: account.AccountID,
-		PublicKey: *key,
+		AccountID:          account.AccountID,
+		PublicKey:          *key,
+		EncryptedSecretKey: account.EncryptedSecretKey,
 	}, nil
 }
 
