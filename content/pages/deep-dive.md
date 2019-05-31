@@ -1,6 +1,6 @@
 Title: Deep dive | offen
 URL:
-save_as: deepdive.html
+save_as: deep-dive/index.html
 
 ### What is this thing called "my data" and why does seemingly everyone want to get hold of it?
 
