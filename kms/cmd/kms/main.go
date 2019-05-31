@@ -11,7 +11,7 @@ import (
 	"syscall"
 	"time"
 
-	keymanager "github.com/offen/offen/kms/keymanager/memory"
+	keymanager "github.com/offen/offen/kms/keymanager/local"
 	"github.com/offen/offen/kms/router"
 	"github.com/sirupsen/logrus"
 )
@@ -21,8 +21,6 @@ func main() {
 		port     = flag.Int("port", 8080, "the port the server binds to")
 		certFile = flag.String("cert", "", "the path to a SSL certificate in PEM format")
 		keyFile  = flag.String("key", "", "the path to a SSL key in PEM format")
-		secret   = flag.String("secret", "", "the secret used for encrypting and decrypting")
-		origin   = flag.String("origin", "*", "the origin used in CORS headers")
 		logLevel = flag.String("level", "info", "the application's log level")
 	)
 	flag.Parse()
@@ -34,10 +32,13 @@ func main() {
 	}
 	logger.SetLevel(parsedLogLevel)
 
-	manager := keymanager.New(*secret)
+	manager, err := keymanager.New()
+	if err != nil {
+		logger.WithError(err).Fatal("error setting up keymanager")
+	}
 	srv := &http.Server{
 		Addr:    fmt.Sprintf("0.0.0.0:%v", *port),
-		Handler: router.New(manager, logger, *origin),
+		Handler: router.New(manager, logger),
 	}
 
 	go func() {

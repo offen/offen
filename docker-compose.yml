@@ -13,7 +13,7 @@ services:
       - GOPATH=/go
     ports:
       - 8081:8081
-    command: go run cmd/kms/main.go -origin https://local.offen.dev:9977 -port 8081
+    command: go run cmd/kms/main.go -port 8081
 
   server:
     image: golang:1.12

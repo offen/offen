@@ -2,6 +2,7 @@ package router
 
 import (
 	"crypto/x509"
+	"encoding/base64"
 	"encoding/json"
 	"encoding/pem"
 	"net/http"
@@ -10,21 +11,25 @@ import (
 )
 
 type encryptedPayload struct {
-	EncryptedPrivateKey string `json:"encrypted_private_key,omit"`
+	EncryptedValue string `json:"encrypted,omit"`
 }
 
 type decryptedPayload struct {
-	DecryptedPrivateKey interface{} `json:"decrypted_private_key,omit"`
+	DecryptedValue interface{} `json:"decrypted,omit"`
 }
 
 func (rt *router) handleDecrypt(w http.ResponseWriter, r *http.Request) {
 	asJWK := r.URL.Query().Get("jwk") != ""
 	req := encryptedPayload{}
+	defer r.Body.Close()
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, "bad payload", http.StatusBadRequest)
 		return
 	}
-	decrypted, err := rt.manager.Decrypt(req.EncryptedPrivateKey)
+
+	b, _ := base64.StdEncoding.DecodeString(req.EncryptedValue)
+
+	decrypted, err := rt.manager.Decrypt(b)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -34,7 +39,7 @@ func (rt *router) handleDecrypt(w http.ResponseWriter, r *http.Request) {
 	if asJWK {
 		// this branch wraps the store PEM key in a JSON Web Key so web clients
 		// can easily consume it
-		decoded, _ := pem.Decode([]byte(decrypted))
+		decoded, _ := pem.Decode(decrypted)
 		if decoded == nil {
 			http.Error(w, "error decoding decrypted key in PEM format", http.StatusInternalServerError)
 			return
@@ -51,9 +56,9 @@ func (rt *router) handleDecrypt(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, keyErr.Error(), http.StatusInternalServerError)
 			return
 		}
-		res.DecryptedPrivateKey = key
+		res.DecryptedValue = key
 	} else {
-		res.DecryptedPrivateKey = decrypted
+		res.DecryptedValue = string(decrypted)
 	}
 
 	if err := json.NewEncoder(w).Encode(&res); err != nil {
@@ -64,25 +69,26 @@ func (rt *router) handleDecrypt(w http.ResponseWriter, r *http.Request) {
 
 func (rt *router) handleEncrypt(w http.ResponseWriter, r *http.Request) {
 	req := decryptedPayload{}
+	defer r.Body.Close()
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, "bad payload", http.StatusBadRequest)
 		return
 	}
 
-	asString, ok := req.DecryptedPrivateKey.(string)
+	asString, ok := req.DecryptedValue.(string)
 	if !ok {
-		http.Error(w, "expected `decrypted_secret_key` to be a string", http.StatusBadRequest)
+		http.Error(w, "expected `decrypted` to be a non-empty string", http.StatusBadRequest)
 		return
 	}
 
-	encrypted, err := rt.manager.Encrypt(asString)
+	encrypted, err := rt.manager.Encrypt([]byte(asString))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	res := encryptedPayload{
-		EncryptedPrivateKey: encrypted,
+		EncryptedValue: base64.StdEncoding.EncodeToString([]byte(encrypted)),
 	}
 	if err := json.NewEncoder(w).Encode(&res); err != nil {
 		rt.logError(err, "error encoding response payload")

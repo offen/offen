@@ -12,7 +12,9 @@ type router struct {
 	manager keymanager.Manager
 }
 
-func New(manager keymanager.Manager, logger *logrus.Logger, corsOrigin string) http.Handler {
+// New creates a new top-level application router for the KMS service using
+// the given key manager and logger
+func New(manager keymanager.Manager, logger *logrus.Logger) http.Handler {
 	return &router{logger: logger, manager: manager}
 }
 

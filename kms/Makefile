@@ -10,6 +10,9 @@ install:
 test-ci:
 	@go test ./... -cover -tags="integration"
 
+bootstrap:
+	@go run cmd/bootstrap/main.go
+
 clean-build:
 	@rm -rf dist
 

@@ -18,6 +18,9 @@ jobs:
             - /go/pkg/mod
           key: offen-kms-{{ checksum "go.mod" }}
       - run:
+          name: Generate one-off key file
+          command: make bootstrap
+      - run:
           name: Run tests
           command: make test-ci
 
