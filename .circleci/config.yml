@@ -12,17 +12,13 @@ jobs:
       - TARGET_BRANCH: gh-pages
     steps:
       - checkout
-      - run:
-          name: Install deps
-          command: |
-            python -m venv venv
-            source venv/bin/activate
-            pip install --user -r requirements.txt
       - deploy:
           name: Deploy
           command: |
             if [ $CIRCLE_BRANCH == $SOURCE_BRANCH ]; then
+              python -m venv venv
               source venv/bin/activate
+              pip install -r requirements.txt
 
               git config --global user.email $GH_EMAIL
               git config --global user.name $GH_NAME

@@ -75,7 +75,7 @@ __offen__ is created by [Frederik Ring][frederik-ring]{: target="_blank"} and [H
 
 We are happy about any kind of feedback. From *criticism and praise to contributions or support*, everything is welcome.
 
-<a href="/index.html" class="btn">Summary</a>
+<a href="../" class="btn">Summary</a>
 
 ---
 
