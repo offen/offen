@@ -1,11 +1,14 @@
 package main
 
 import (
+	"bytes"
 	"crypto/rand"
 	"crypto/rsa"
 	"crypto/x509"
+	"encoding/json"
 	"encoding/pem"
 	"fmt"
+	"net/http"
 	"os"
 
 	"github.com/jinzhu/gorm"
@@ -31,7 +34,33 @@ func getRSAKeypair() (string, string, error) {
 			Bytes: x509.MarshalPKCS1PrivateKey(key),
 		},
 	)
-	return string(publicPem), string(privatePem), nil
+
+	secretKey := string(privatePem)
+	if endpoint, ok := os.LookupEnv("KMS_ENCRYPTION_ENDPOINT"); ok {
+
+		p := struct {
+			Decrypted string `json:"decrypted"`
+		}{
+			Decrypted: string(privatePem),
+		}
+		payload, _ := json.Marshal(&p)
+		res, err := http.Post(
+			endpoint,
+			"application/json",
+			bytes.NewReader(payload),
+		)
+		if err != nil {
+			return "", "", err
+		}
+
+		r := struct {
+			Encrypted string `json:"encrypted"`
+		}{}
+		json.NewDecoder(res.Body).Decode(&r)
+		secretKey = r.Encrypted
+	}
+
+	return string(publicPem), secretKey, nil
 }
 
 func main() {
