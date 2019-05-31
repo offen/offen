@@ -739,6 +739,11 @@ height: 1px;
 margin: 80px 0 -20px 0;
 }
 
+.footnote hr {
+border: 0;
+height: 0;
+}
+
 blockquote {
 border-left: 1px solid #d5d5d5;
 margin: 40px 0 40px 0;
@@ -778,13 +783,13 @@ margin: 60px 0 120px 0;
 background-color: #e1e1e1;
 }
 
-.footnotes {
+.footnote {
 color: #d5d5d5;
 font-size: 14px;
 margin: 60px 0 0 0;
 }
 
-.footnotes ol {
+.footnote ol {
   margin-bottom: 0;
 }
 

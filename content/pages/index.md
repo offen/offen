@@ -10,4 +10,4 @@ __offen__ treats both users and operators as parties of equal importance. Users 
 
 __offen__ is currently being conceptually designed and is applying for funds to sustain its development.
 
-<a href="/deepdive.html" class="btn">Deep Dive</a>
+<a href="/deepdive.html" class="btn">Deep dive</a>
