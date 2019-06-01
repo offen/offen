@@ -1,5 +1,5 @@
 Title: Deep dive | offen
-Summary: offen is a free and open source analytics software for websites and web applications that allows respectful handling of data.
+description: offen is a free and open source analytics software for websites and web applications that allows respectful handling of data.
 save_as: deep-dive/index.html
 
 ### What is this thing called "my data" and why does seemingly everyone want to get hold of it?

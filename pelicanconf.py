@@ -36,10 +36,5 @@ ARCHIVES_SAVE_AS = None
 CATEGORIES_SAVE_AS = None
 TAGS_SAVE_AS = None
 
-# The default metadata you want to use for all articles and pages.
-DEFAULT_METADATA = {
-    'description': 'offen is a free and open source analytics software for websites and web applications that allows respectful handling of data.'
-}
-
 # keep this for access to page variable
 DIRECT_TEMPLATES = []
