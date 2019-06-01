@@ -9,7 +9,7 @@ RELATIVE_URLS = False
 
 AUTHOR = 'offen'
 SITENAME = 'offen'
-SITEURL = ''
+SITEURL = 'https://www.offen.dev'
 PATH = 'content'
 TIMEZONE = 'Europe/Berlin'
 DEFAULT_LANG = 'en'
@@ -24,9 +24,6 @@ AUTHOR_FEED_RSS = None
 # pagination
 DEFAULT_PAGINATION = False
 
-
-
-# added configs ----------------------------------------------
 
 THEME = './theme'
 
@@ -43,3 +40,6 @@ TAGS_SAVE_AS = None
 DEFAULT_METADATA = {
     'description': 'offen is a free and open source analytics software for websites and web applications that allows respectful handling of data.'
 }
+
+# keep this for access to page variable
+DIRECT_TEMPLATES = []
