@@ -35,6 +35,7 @@ jobs:
               cp -a output/. out/.
 
               mkdir -p out/.circleci && cp -a .circleci/. out/.circleci/.
+              cp CNAME out/CNAME
               cd out
 
               git add -A
