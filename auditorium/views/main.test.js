@@ -7,13 +7,15 @@ describe('views/main.js', function () {
   var app
   beforeEach(function () {
     app = choo()
+    app.state.query = {}
+    app._setCache(app.state)
   })
 
   describe('mainView', function () {
-    it('renders a table', function () {
+    it('renders a headline', function () {
       var result = mainView(app.state, app.emit)
-      var table = result.querySelector('table')
-      assert(table)
+      var headline = result.querySelector('h1')
+      assert(headline)
     })
   })
 })
