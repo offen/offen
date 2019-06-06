@@ -2,7 +2,9 @@ package router
 
 import (
 	"net/http"
+	"os"
 
+	basicauth "github.com/m90/go-basicauth"
 	"github.com/m90/go-thunk"
 	"github.com/offen/offen/kms/keymanager"
 	"github.com/sirupsen/logrus"
@@ -11,6 +13,14 @@ import (
 type router struct {
 	logger  *logrus.Logger
 	manager keymanager.Manager
+}
+
+func protect(handler http.HandlerFunc) http.HandlerFunc {
+	withProtection := basicauth.With(basicauth.Credentials{
+		User: "offen",
+		Pass: os.Getenv("BASIC_AUTH_PASSWORD"),
+	})(http.HandlerFunc(handler))
+	return withProtection.ServeHTTP
 }
 
 // New creates a new top-level application router for the KMS service using
@@ -27,7 +37,7 @@ func New(manager keymanager.Manager, logger *logrus.Logger) http.Handler {
 func (rt *router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	switch r.URL.Path {
 	case "/decrypt":
-		rt.handleDecrypt(w, r)
+		protect(rt.handleDecrypt)(w, r)
 	case "/encrypt":
 		rt.handleEncrypt(w, r)
 	case "/status":
