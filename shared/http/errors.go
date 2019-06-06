@@ -1,4 +1,4 @@
-package router
+package http
 
 import (
 	"encoding/json"
@@ -16,7 +16,7 @@ func jsonError(err error, status int) []byte {
 	return b
 }
 
-func respondWithError(w http.ResponseWriter, err error, status int) {
+func RespondWithJSONError(w http.ResponseWriter, err error, status int) {
 	w.WriteHeader(status)
 	w.Write(jsonError(err, status))
 }

@@ -1,4 +1,4 @@
-package router
+package http
 
 import (
 	"errors"
@@ -7,9 +7,9 @@ import (
 	"testing"
 )
 
-func TestRespondWithError(t *testing.T) {
+func TestRespondWithJSONError(t *testing.T) {
 	w := httptest.NewRecorder()
-	respondWithError(w, errors.New("does not work"), http.StatusInternalServerError)
+	RespondWithJSONError(w, errors.New("does not work"), http.StatusInternalServerError)
 	if w.Code != http.StatusInternalServerError {
 		t.Errorf("Unexpected status code %d", w.Code)
 	}

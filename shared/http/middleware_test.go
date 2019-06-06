@@ -1,4 +1,4 @@
-package router
+package http
 
 import (
 	"net/http"
@@ -8,7 +8,7 @@ import (
 
 func TestCorsMiddleware(t *testing.T) {
 	t.Run("default", func(t *testing.T) {
-		wrapped := corsMiddleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		wrapped := CorsMiddleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			w.Write([]byte("OK"))
 		}), "https://www.example.net")
 		w := httptest.NewRecorder()
@@ -22,9 +22,9 @@ func TestCorsMiddleware(t *testing.T) {
 
 func TestContentTypeMiddleware(t *testing.T) {
 	t.Run("default", func(t *testing.T) {
-		wrapped := contentTypeMiddleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		wrapped := ContentTypeMiddleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			w.Write([]byte("OK"))
-		}))
+		}), "application/json")
 		w := httptest.NewRecorder()
 		r := httptest.NewRequest(http.MethodGet, "/", nil)
 		wrapped.ServeHTTP(w, r)
@@ -35,7 +35,7 @@ func TestContentTypeMiddleware(t *testing.T) {
 }
 
 func TestDoNotTrackMiddleware(t *testing.T) {
-	wrapped := doNotTrackMiddleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	wrapped := DoNotTrackMiddleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("hey there"))
 	}))
 	t.Run("with header", func(t *testing.T) {

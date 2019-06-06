@@ -7,23 +7,24 @@ import (
 
 	"github.com/gofrs/uuid"
 	"github.com/offen/offen/server/persistence"
+	httputil "github.com/offen/offen/server/shared/http"
 )
 
 func (rt *router) getPublicKey(w http.ResponseWriter, r *http.Request) {
 	account, err := rt.db.GetAccount(r.URL.Query().Get("account_id"), false)
 	if err != nil {
 		if _, ok := err.(persistence.ErrUnknownAccount); ok {
-			respondWithError(w, err, http.StatusBadRequest)
+			httputil.RespondWithJSONError(w, err, http.StatusBadRequest)
 			return
 		}
 		rt.logError(err, "error looking up account")
-		respondWithError(w, err, http.StatusInternalServerError)
+		httputil.RespondWithJSONError(w, err, http.StatusInternalServerError)
 		return
 	}
 	b, err := json.Marshal(account)
 	if err != nil {
 		rt.logError(err, "error marshaling account to JSON")
-		respondWithError(w, err, http.StatusInternalServerError)
+		httputil.RespondWithJSONError(w, err, http.StatusInternalServerError)
 		return
 	}
 	w.Write(b)
@@ -43,7 +44,7 @@ func (rt *router) postUserSecret(w http.ResponseWriter, r *http.Request) {
 	} else {
 		newID, newIDErr := uuid.NewV4()
 		if newIDErr != nil {
-			respondWithError(w, newIDErr, http.StatusInternalServerError)
+			httputil.RespondWithJSONError(w, newIDErr, http.StatusInternalServerError)
 			return
 		}
 		userID = newID.String()
@@ -52,12 +53,12 @@ func (rt *router) postUserSecret(w http.ResponseWriter, r *http.Request) {
 	payload := userSecretPayload{}
 	defer r.Body.Close()
 	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
-		respondWithError(w, err, http.StatusBadRequest)
+		httputil.RespondWithJSONError(w, err, http.StatusBadRequest)
 		return
 	}
 
 	if err := rt.db.AssociateUserSecret(payload.AccountID, userID, payload.EncryptedUserSecret); err != nil {
-		respondWithError(w, err, http.StatusBadRequest)
+		httputil.RespondWithJSONError(w, err, http.StatusBadRequest)
 		return
 	}
 

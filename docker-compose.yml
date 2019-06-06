@@ -3,11 +3,11 @@ version: '3'
 services:
   kms:
     image: golang:1.12
-    working_dir: /kms
+    working_dir: /code/kms
     volumes:
-      - ./kms:/kms
-      - ./local.offen.dev.pem:/kms/local.offen.dev.pem
-      - ./local.offen.dev-key.pem:/kms/local.offen.dev-key.pem
+      - .:/code
+      - ./local.offen.dev.pem:/code/kms/local.offen.dev.pem
+      - ./local.offen.dev-key.pem:/code/kms/local.offen.dev-key.pem
       - $GOPATH/pkg/mod:/go/pkg/mod
     environment:
       - GOPATH=/go
@@ -18,11 +18,11 @@ services:
 
   server:
     image: golang:1.12
-    working_dir: /server
+    working_dir: /code/server
     volumes:
-      - ./server:/server
-      - ./local.offen.dev.pem:/server/local.offen.dev.pem
-      - ./local.offen.dev-key.pem:/server/local.offen.dev-key.pem
+      - .:/code
+      - ./local.offen.dev.pem:/code/server/local.offen.dev.pem
+      - ./local.offen.dev-key.pem:/code/server/local.offen.dev-key.pem
       - $GOPATH/pkg/mod:/go/pkg/mod
     environment:
       - GOPATH=/go
