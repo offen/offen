@@ -17,7 +17,7 @@ describe('src/user-secret.js', function () {
     context('with server responding', function () {
       beforeEach(function () {
         fetchMock.get('https://server.offen.dev/exchange?account_id=7435d1b9-c0ca-4883-a869-42e943589917', response)
-        fetchMock.post('https://server.offen.dev/exchange', 201)
+        fetchMock.post('https://server.offen.dev/exchange', 204)
       })
 
       afterEach(function () {

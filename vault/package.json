@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "dexie": "^2.0.4",
+    "offen": "file:./../packages",
     "unibabel": "^2.1.8",
     "uuid": "^3.3.2"
   },

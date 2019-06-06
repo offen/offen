@@ -44,4 +44,5 @@ The application is configured using environment variables. The following values 
 
 - `NODE_ENV`: If set to `production`, all dev tooling is skipped and production optimizations applied.
 - `SERVER_HOST`: The location of the `server` instance that is used for storing and querying event data, e.g. `https://server.offen.dev`
+- `KMS_HOST`: The location of the `kms` instance that is used for decrypting private keys, e.g. `https://kms.offen.dev`
 - `AUDITORIUM_HOST`: The location of the `auditorium` application that is embedding the `vault` instance, e.g. `https://auditorium.offen.dev`

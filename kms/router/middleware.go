@@ -21,7 +21,6 @@ func contentTypeMiddleware(next http.Handler) http.Handler {
 func doNotTrackMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if dnt := r.Header.Get("DNT"); dnt == "1" {
-			w.WriteHeader(http.StatusNoContent)
 			return
 		}
 		next.ServeHTTP(w, r)

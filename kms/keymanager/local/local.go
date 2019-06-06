@@ -14,6 +14,8 @@ type memorykeymanager struct {
 	key symmecrypt.Key
 }
 
+// New creates a new key manager that uses package symmecrypt to
+// encrypt and decrypt keys
 func New() (keymanager.Manager, error) {
 	prefix := os.Getenv("PATH_PREFIX")
 	configstore.File(fmt.Sprintf("%skey.txt", prefix))

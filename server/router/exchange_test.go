@@ -9,8 +9,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/mendsley/gojwk"
-
 	"github.com/offen/offen/server/persistence"
 )
 
@@ -20,7 +18,7 @@ type mockAccountsDatabase struct {
 	err    error
 }
 
-func (m *mockAccountsDatabase) GetAccount(accountID string) (persistence.AccountResult, error) {
+func (m *mockAccountsDatabase) GetAccount(accountID string, events bool) (persistence.AccountResult, error) {
 	return m.result, m.err
 }
 
@@ -52,7 +50,7 @@ func TestRouter_GetPublicKey(t *testing.T) {
 			&mockAccountsDatabase{
 				result: persistence.AccountResult{
 					AccountID: "12345",
-					PublicKey: gojwk.Key{},
+					PublicKey: nil,
 				},
 			},
 			"account_id=12345",
@@ -123,7 +121,7 @@ func TestRouter_PostUserSecret(t *testing.T) {
 			}
 			`),
 			&http.Cookie{},
-			http.StatusCreated,
+			http.StatusNoContent,
 			func(input string) bool { return input != "" },
 		},
 		{
@@ -139,7 +137,7 @@ func TestRouter_PostUserSecret(t *testing.T) {
 				Name:  cookieKey,
 				Value: "existing-user-id",
 			},
-			http.StatusCreated,
+			http.StatusNoContent,
 			func(input string) bool { return input == "existing-user-id" },
 		},
 	}

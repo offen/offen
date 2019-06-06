@@ -10,7 +10,7 @@ import (
 )
 
 func (rt *router) getPublicKey(w http.ResponseWriter, r *http.Request) {
-	account, err := rt.db.GetAccount(r.URL.Query().Get("account_id"))
+	account, err := rt.db.GetAccount(r.URL.Query().Get("account_id"), false)
 	if err != nil {
 		if _, ok := err.(persistence.ErrUnknownAccount); ok {
 			respondWithError(w, err, http.StatusBadRequest)
@@ -50,6 +50,7 @@ func (rt *router) postUserSecret(w http.ResponseWriter, r *http.Request) {
 	}
 
 	payload := userSecretPayload{}
+	defer r.Body.Close()
 	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
 		respondWithError(w, err, http.StatusBadRequest)
 		return
@@ -68,5 +69,5 @@ func (rt *router) postUserSecret(w http.ResponseWriter, r *http.Request) {
 		Domain:   ".offen.dev",
 	})
 
-	w.WriteHeader(http.StatusCreated)
+	w.WriteHeader(http.StatusNoContent)
 }

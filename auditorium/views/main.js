@@ -4,15 +4,28 @@ var withTitle = require('./decorators/with-title')
 
 module.exports = withTitle(view, 'auditorium - offen')
 
+function layout (content) {
+  return html`
+    <div class="container">
+      <h1>offen auditorium</h1>
+      ${content}
+    </div>
+  `
+}
+
 function view (state, emit) {
   if (!state.model) {
+    emit('offen:query', state.params)
     state.model = {
       events: []
     }
   }
 
-  if (!state.model.events.length) {
-    emit('offen:query')
+  if (state.model.error) {
+    var content = html`
+      <p>An error occured: ${state.model.error.message}</p>
+    `
+    return layout(content)
   }
 
   var eventElements = state.model.events.map(function (item) {
@@ -28,24 +41,22 @@ function view (state, emit) {
       </tr>
     `
   })
-  return html`
-    <div class="container">
-      <h1>offen auditorium</h1>
-      <table class="u-full-width">
-        <thead>
-          <tr>
-            <th>type</th>
-            <th>href</th>
-            <th>referrer</th>
-            <th>sessionId</th>
-            <th>timestamp</th>
-            <th>title</th>
-          </tr>
-        </thead>
-        <tbody>
-         ${eventElements}
-        </tbody>
-      </table>
-    </div>
+  var table = html`
+    <table class="u-full-width">
+      <thead>
+        <tr>
+          <th>type</th>
+          <th>href</th>
+          <th>referrer</th>
+          <th>sessionId</th>
+          <th>timestamp</th>
+          <th>title</th>
+        </tr>
+      </thead>
+      <tbody>
+       ${eventElements}
+      </tbody>
+    </table>
   `
+  return layout(table)
 }

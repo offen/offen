@@ -11,6 +11,6 @@ type statusResponse struct {
 
 func (rt *router) handleStatus(w http.ResponseWriter, r *http.Request) {
 	res := statusResponse{true}
-	b, _ := json.Marshal(res)
+	b, _ := json.Marshal(&res)
 	w.Write(b)
 }

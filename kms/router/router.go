@@ -17,9 +17,11 @@ type router struct {
 // the given key manager and logger
 func New(manager keymanager.Manager, logger *logrus.Logger) http.Handler {
 	router := &router{logger: logger, manager: manager}
+	withContentType := contentTypeMiddleware(router)
+	withCors := corsMiddleware(withContentType, "https://local.offen.dev:9977")
 	return thunk.HandleSafelyWith(func(err error) {
 		logger.WithError(err).Error("internal server error")
-	})(router)
+	})(withCors)
 }
 
 func (rt *router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
