@@ -28,6 +28,7 @@ github.com/m90/go-thunk v1.0.0 h1:1QYqFX2Gmmw7n9D8hnUsE5xRoHlxtXLkSQnlNO60t0U=
 github.com/m90/go-thunk v1.0.0/go.mod h1:wIbJp3g6c3Um6mEN+2xwwZPcCtidCvZitH4EpzVqo+E=
 github.com/miscreant/miscreant-go v0.0.0-20181010193435-325cbd69228b h1:VPhrxAgvd0d0xSZP4P8zzWZntso2NE0m69dmDEXM53I=
 github.com/miscreant/miscreant-go v0.0.0-20181010193435-325cbd69228b/go.mod h1:Vj6lPE3LxPymcFxg7hm9aDIJWCyhJMnxSNC/y9ZHtN8=
+github.com/offen/offen v0.0.0-20190606093038-547f8eb36cee h1:+VKYYaRhao50jYcXmsBOQokVY52zqK2IBFPs3GgRVNo=
 github.com/ovh/configstore v0.1.5 h1:+6DKm/DFgEqJuZfL/0mPHPItcr2a5dfdDsXeOYKLcIs=
 github.com/ovh/configstore v0.1.5/go.mod h1:bBc7U++7HXgf9lrtmmJb31DK3Tp+Zv8GaIn0Bjolv/o=
 github.com/ovh/symmecrypt v0.2.0 h1:2uAwM8XEUwrwd489ubMohEKTQu1EPrLpk/0EcH6P2Fs=

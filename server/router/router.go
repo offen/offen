@@ -8,6 +8,7 @@ import (
 	"github.com/m90/go-thunk"
 	logrusmiddleware "github.com/offen/logrus-middleware"
 	"github.com/offen/offen/server/persistence"
+	httputil "github.com/offen/offen/server/shared/http"
 	"github.com/sirupsen/logrus"
 )
 
@@ -38,23 +39,23 @@ func (rt *router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		case http.MethodPost:
 			rt.postUserSecret(w, r)
 		default:
-			respondWithError(w, errors.New("Method not allowed"), http.StatusMethodNotAllowed)
+			httputil.RespondWithJSONError(w, errors.New("Method not allowed"), http.StatusMethodNotAllowed)
 		}
 	case "/accounts":
 		switch r.Method {
 		case http.MethodGet:
 			rt.getAccount(w, r)
 		default:
-			respondWithError(w, errors.New("Method not allowed"), http.StatusMethodNotAllowed)
+			httputil.RespondWithJSONError(w, errors.New("Method not allowed"), http.StatusMethodNotAllowed)
 		}
 	case "/events":
 		c, err := r.Cookie(cookieKey)
 		if err != nil {
-			respondWithError(w, err, http.StatusBadRequest)
+			httputil.RespondWithJSONError(w, err, http.StatusBadRequest)
 			return
 		}
 		if c.Value == "" {
-			respondWithError(w, errors.New("received blank user identifier"), http.StatusBadRequest)
+			httputil.RespondWithJSONError(w, errors.New("received blank user identifier"), http.StatusBadRequest)
 			return
 		}
 
@@ -68,12 +69,12 @@ func (rt *router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		case http.MethodPost:
 			rt.postEvents(w, r)
 		default:
-			respondWithError(w, errors.New("Method not allowed"), http.StatusMethodNotAllowed)
+			httputil.RespondWithJSONError(w, errors.New("Method not allowed"), http.StatusMethodNotAllowed)
 		}
 	case "/status":
 		rt.status(w, r)
 	default:
-		respondWithError(w, errors.New("Not found"), http.StatusNotFound)
+		httputil.RespondWithJSONError(w, errors.New("Not found"), http.StatusNotFound)
 	}
 }
 
@@ -83,13 +84,13 @@ func (rt *router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 // incoming HTTP requests.
 func New(db persistence.Database, logger *logrus.Logger, origin string) http.Handler {
 	router := &router{db, logger}
-	withContentType := contentTypeMiddleware(router)
+	withContentType := httputil.ContentTypeMiddleware(router, "application/json")
 	l := logrusmiddleware.Middleware{
 		Logger: logger,
 	}
 	withLogging := l.Handler(withContentType, "")
-	withDNT := doNotTrackMiddleware(withLogging)
-	withCORS := corsMiddleware(withDNT, origin)
+	withDNT := httputil.DoNotTrackMiddleware(withLogging)
+	withCORS := httputil.CorsMiddleware(withDNT, origin)
 	withRecovery := thunk.HandleSafelyWith(func(err error) {
 		logger.WithError(err).Error("recovered from panic")
 	})(withCORS)

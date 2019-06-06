@@ -60,6 +60,17 @@ jobs:
           name: Run tests
           command: make test-ci
 
+  shared:
+    docker:
+      - image: circleci/golang:1.12
+    working_directory: ~/offen/shared
+    steps:
+      - checkout:
+          path: ~/offen
+      - run:
+          name: Run tests
+          command: make test
+
   vault:
     docker:
       - image: circleci/node:10-browsers
@@ -150,3 +161,4 @@ workflows:
       - script
       - auditorium
       - packages
+      - shared

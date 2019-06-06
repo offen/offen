@@ -9,6 +9,7 @@ import (
 	"net/http"
 
 	jwk "github.com/lestrrat-go/jwx/jwk"
+	httputil "github.com/offen/offen/kms/shared/http"
 )
 
 type encryptedPayload struct {
@@ -24,7 +25,7 @@ func (rt *router) handleDecrypt(w http.ResponseWriter, r *http.Request) {
 	req := encryptedPayload{}
 	defer r.Body.Close()
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		respondWithError(w, err, http.StatusBadRequest)
+		httputil.RespondWithJSONError(w, err, http.StatusBadRequest)
 		return
 	}
 
@@ -33,7 +34,7 @@ func (rt *router) handleDecrypt(w http.ResponseWriter, r *http.Request) {
 	decrypted, err := rt.manager.Decrypt(b)
 	if err != nil {
 		rt.logError(err, "error decrypting payload")
-		respondWithError(w, err, http.StatusInternalServerError)
+		httputil.RespondWithJSONError(w, err, http.StatusInternalServerError)
 		return
 	}
 
@@ -44,21 +45,21 @@ func (rt *router) handleDecrypt(w http.ResponseWriter, r *http.Request) {
 		decoded, _ := pem.Decode(decrypted)
 		if decoded == nil {
 			rt.logError(errors.New("error decoding decrypted key in PEM format"), "error decoding decrypted key in PEM format")
-			respondWithError(w, errors.New("error decoding decrypted key in PEM format"), http.StatusInternalServerError)
+			httputil.RespondWithJSONError(w, errors.New("error decoding decrypted key in PEM format"), http.StatusInternalServerError)
 			return
 		}
 
 		priv, privErr := x509.ParsePKCS1PrivateKey(decoded.Bytes)
 		if privErr != nil {
 			rt.logError(privErr, "error parsing PEM key")
-			respondWithError(w, privErr, http.StatusInternalServerError)
+			httputil.RespondWithJSONError(w, privErr, http.StatusInternalServerError)
 			return
 		}
 
 		key, keyErr := jwk.New(priv)
 		if keyErr != nil {
 			rt.logError(keyErr, "error creating JWK")
-			respondWithError(w, keyErr, http.StatusInternalServerError)
+			httputil.RespondWithJSONError(w, keyErr, http.StatusInternalServerError)
 			return
 		}
 		res.DecryptedValue = key
@@ -69,7 +70,7 @@ func (rt *router) handleDecrypt(w http.ResponseWriter, r *http.Request) {
 	responseJSON, err := json.Marshal(&res)
 	if err != nil {
 		rt.logError(err, "error encoding response payload")
-		respondWithError(w, err, http.StatusInternalServerError)
+		httputil.RespondWithJSONError(w, err, http.StatusInternalServerError)
 		return
 	}
 	w.Write(responseJSON)
@@ -79,19 +80,19 @@ func (rt *router) handleEncrypt(w http.ResponseWriter, r *http.Request) {
 	req := decryptedPayload{}
 	defer r.Body.Close()
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		respondWithError(w, err, http.StatusBadRequest)
+		httputil.RespondWithJSONError(w, err, http.StatusBadRequest)
 		return
 	}
 
 	asString, ok := req.DecryptedValue.(string)
 	if !ok {
-		respondWithError(w, errors.New("expected `decrypted` to be a non-empty string"), http.StatusBadRequest)
+		httputil.RespondWithJSONError(w, errors.New("expected `decrypted` to be a non-empty string"), http.StatusBadRequest)
 		return
 	}
 
 	encrypted, err := rt.manager.Encrypt([]byte(asString))
 	if err != nil {
-		respondWithError(w, err, http.StatusBadRequest)
+		httputil.RespondWithJSONError(w, err, http.StatusBadRequest)
 		return
 	}
 
@@ -102,7 +103,7 @@ func (rt *router) handleEncrypt(w http.ResponseWriter, r *http.Request) {
 	responseJSON, err := json.Marshal(&res)
 	if err != nil {
 		rt.logError(err, "error encoding response payload")
-		respondWithError(w, err, http.StatusInternalServerError)
+		httputil.RespondWithJSONError(w, err, http.StatusInternalServerError)
 		return
 	}
 	w.Write(responseJSON)

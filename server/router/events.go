@@ -7,6 +7,7 @@ import (
 	"net/url"
 
 	"github.com/offen/offen/server/persistence"
+	httputil "github.com/offen/offen/server/shared/http"
 )
 
 type inboundEventPayload struct {
@@ -24,7 +25,7 @@ func (rt *router) postEvents(w http.ResponseWriter, r *http.Request) {
 	userID, ok := r.Context().Value(contextKeyCookie).(string)
 	if !ok {
 		rt.logError(errBadRequestContext, "missing request context")
-		respondWithError(
+		httputil.RespondWithJSONError(
 			w,
 			errBadRequestContext,
 			http.StatusInternalServerError,
@@ -35,17 +36,17 @@ func (rt *router) postEvents(w http.ResponseWriter, r *http.Request) {
 	evt := inboundEventPayload{}
 	defer r.Body.Close()
 	if err := json.NewDecoder(r.Body).Decode(&evt); err != nil {
-		respondWithError(w, err, http.StatusBadRequest)
+		httputil.RespondWithJSONError(w, err, http.StatusBadRequest)
 		return
 	}
 
 	if err := rt.db.Insert(userID, evt.AccountID, evt.Payload); err != nil {
 		if unknownAccountErr, ok := err.(persistence.ErrUnknownAccount); ok {
-			respondWithError(w, unknownAccountErr, http.StatusBadRequest)
+			httputil.RespondWithJSONError(w, unknownAccountErr, http.StatusBadRequest)
 			return
 		}
 		rt.logError(err, "error writing event payload")
-		respondWithError(w, err, http.StatusInternalServerError)
+		httputil.RespondWithJSONError(w, err, http.StatusInternalServerError)
 		return
 	}
 
@@ -77,7 +78,7 @@ type getResponse struct {
 func (rt *router) getEvents(w http.ResponseWriter, r *http.Request) {
 	userID, ok := r.Context().Value(contextKeyCookie).(string)
 	if !ok {
-		respondWithError(
+		httputil.RespondWithJSONError(
 			w,
 			errBadRequestContext,
 			http.StatusInternalServerError,
@@ -91,7 +92,7 @@ func (rt *router) getEvents(w http.ResponseWriter, r *http.Request) {
 
 	result, err := rt.db.Query(query)
 	if err != nil {
-		respondWithError(w, err, http.StatusInternalServerError)
+		httputil.RespondWithJSONError(w, err, http.StatusInternalServerError)
 		return
 	}
 	// the query result gets wrapped in a top level object before marshalling
@@ -101,7 +102,7 @@ func (rt *router) getEvents(w http.ResponseWriter, r *http.Request) {
 	}
 	b, err := json.Marshal(outbound)
 	if err != nil {
-		respondWithError(w, err, http.StatusInternalServerError)
+		httputil.RespondWithJSONError(w, err, http.StatusInternalServerError)
 		return
 	}
 	w.Write(b)
