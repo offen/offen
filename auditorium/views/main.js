@@ -28,23 +28,29 @@ function view (state, emit) {
     state.model = {
       eventsByDate: {},
       uniqueUsers: 0,
-      uniqueSessions: 0
+      uniqueSessions: 0,
+      loading: true
     }
+  }
+
+  if (state.model.loading) {
+    var loading = html`<p class="loading">Loading...</p>`
+    return layout(loading)
   }
 
   if (state.model.error) {
     var content = html`
-      <p>An error occured: ${state.model.error.message}</p>
+      <p class="error">An error occured: ${state.model.error.message}</p>
     `
     return layout(content)
   }
 
   var numDays = parseInt(state.query.num_days, 10) || 7
 
-  var uniqueUsers = state.model.uniqueUsers
+  var uniqueEntities = state.model.uniqueUsers
   var entityName = state.params && state.params.account_id ? 'users' : 'accounts'
   var users = html`
-    <h4><strong>${uniqueUsers}</strong> unique ${entityName} in the last ${numDays} days</h4>
+    <h4><strong>${uniqueEntities}</strong> unique ${entityName} in the last ${numDays} days</h4>
   `
 
   var uniqueSessions = state.model.uniqueSessions
