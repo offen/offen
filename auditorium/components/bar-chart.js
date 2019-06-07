@@ -15,8 +15,8 @@ BarChart.prototype = Object.create(Component.prototype)
 
 BarChart.prototype.load = function (element) {
   this.chart = new Chartist.Bar(element, {
-    labels: [],
-    series: []
+    labels: Object.keys(this.local.data),
+    series: [Object.values(this.local.data).map(function (events) { return events.length })]
   }, {
     reverseData: true,
     horizontalBars: true,
@@ -24,15 +24,6 @@ BarChart.prototype.load = function (element) {
       onlyInteger: true
     }
   })
-}
-
-BarChart.prototype.update = function (data) {
-  this.local.data = data
-  this.chart.update({
-    labels: Object.keys(this.local.data),
-    series: [Object.values(this.local.data).map(function (events) { return events.length })]
-  })
-  return false
 }
 
 BarChart.prototype.createElement = function (data) {

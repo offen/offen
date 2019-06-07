@@ -32,7 +32,7 @@ func New(manager keymanager.Manager, logger *logrus.Logger) http.Handler {
 	withContentType := httputil.ContentTypeMiddleware(router, "application/json")
 	withCors := httputil.CorsMiddleware(withContentType, "https://local.offen.dev:9977")
 	withRecover := thunk.HandleSafelyWith(func(err error) {
-		logger.WithError(err).Error("internal server error")
+		logger.WithError(err).Error("Internal server error")
 	})(withCors)
 	return withRecover
 }

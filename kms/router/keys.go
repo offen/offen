@@ -22,6 +22,7 @@ type decryptedPayload struct {
 
 func (rt *router) handleDecrypt(w http.ResponseWriter, r *http.Request) {
 	asJWK := r.URL.Query().Get("jwk") != ""
+
 	req := encryptedPayload{}
 	defer r.Body.Close()
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
@@ -67,12 +68,7 @@ func (rt *router) handleDecrypt(w http.ResponseWriter, r *http.Request) {
 		res.DecryptedValue = string(decrypted)
 	}
 
-	responseJSON, err := json.Marshal(&res)
-	if err != nil {
-		rt.logError(err, "error encoding response payload")
-		httputil.RespondWithJSONError(w, err, http.StatusInternalServerError)
-		return
-	}
+	responseJSON, _ := json.Marshal(&res)
 	w.Write(responseJSON)
 }
 
@@ -86,7 +82,7 @@ func (rt *router) handleEncrypt(w http.ResponseWriter, r *http.Request) {
 
 	asString, ok := req.DecryptedValue.(string)
 	if !ok {
-		httputil.RespondWithJSONError(w, errors.New("expected `decrypted` to be a non-empty string"), http.StatusBadRequest)
+		httputil.RespondWithJSONError(w, errors.New("expected .decrypted to be a non-empty string"), http.StatusBadRequest)
 		return
 	}
 
@@ -100,11 +96,6 @@ func (rt *router) handleEncrypt(w http.ResponseWriter, r *http.Request) {
 		EncryptedValue: base64.StdEncoding.EncodeToString([]byte(encrypted)),
 	}
 
-	responseJSON, err := json.Marshal(&res)
-	if err != nil {
-		rt.logError(err, "error encoding response payload")
-		httputil.RespondWithJSONError(w, err, http.StatusInternalServerError)
-		return
-	}
+	responseJSON, _ := json.Marshal(&res)
 	w.Write(responseJSON)
 }

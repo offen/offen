@@ -72,6 +72,7 @@ function store (state, emitter) {
         state.model.error = err
       })
       .then(function () {
+        state.model.loading = false
         emitter.emit(state.events.RENDER)
       })
   })
