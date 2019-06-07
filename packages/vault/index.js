@@ -20,7 +20,7 @@ function createVault (host) {
   vault.setAttribute('scrolling', 'no')
 
   createVault[host] = new Promise(function (resolve, reject) {
-    vault.addEventListener('load', function (e) {
+    vault.addEventListener('load', function () {
       function postMessage (message) {
         return new Promise(function (resolve, reject) {
           function digestResponse (event) {
@@ -28,6 +28,7 @@ function createVault (host) {
             if (responseMessage.responseTo !== message.respondWith) {
               return
             }
+            delete responseMessage.responseTo
             window.removeEventListener('message', digestResponse)
             if (responseMessage.type === 'ERROR') {
               reject(new Error(responseMessage.payload.error))
@@ -35,7 +36,7 @@ function createVault (host) {
             resolve(responseMessage)
           }
 
-          e.target.contentWindow.postMessage(message, host)
+          vault.contentWindow.postMessage(message, host)
 
           if (message.respondWith) {
             window.addEventListener('message', digestResponse)
