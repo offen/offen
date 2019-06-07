@@ -101,6 +101,9 @@ jobs:
       - restore_cache:
           key: offen-script-{{ checksum "package.json" }}
       - run:
+          name: Install lsof
+          command: sudo apt-get install lsof
+      - run:
           name: Install dependencies
           command: npm install
       - save_cache:
