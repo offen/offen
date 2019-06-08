@@ -10,9 +10,6 @@ describe('src/decrypt-private-key', function () {
         if (url !== 'https://kms.offen.dev/decrypt?jwk=1') {
           return false
         }
-        if (req.method !== 'POST') {
-          return false
-        }
         try {
           assert.deepStrictEqual(JSON.parse(req.body), { encrypted: 'fbo-ora' })
         } catch (err) {

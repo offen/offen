@@ -25,7 +25,5 @@ function handleQuery (message, respond) {
         }
       }
     })
-    .then(function (responseMessage) {
-      respond(responseMessage)
-    })
+    .then(respond)
 }

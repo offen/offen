@@ -1,26 +1,11 @@
-var Unibabel = require('unibabel').Unibabel
 var handleFetchResponse = require('offen/fetch-response')
 
 var getDatabase = require('./database')
+var crypto = require('./crypto')
 var getAccount = require('./get-account')
 var decryptPrivateKey = require('./decrypt-private-key')
 
 module.exports = getEvents
-
-function decryptEventWith (userSecret) {
-  return function (event) {
-    return window.crypto.subtle
-      .decrypt({
-        name: 'AES-CTR',
-        counter: new Uint8Array(16),
-        length: 128
-      }, userSecret, Unibabel.base64ToArr(event.payload))
-      .then(function (decrypted) {
-        var payloadAsString = Unibabel.utf8ArrToStr(new Uint8Array(decrypted))
-        return Object.assign({}, event, { payload: JSON.parse(payloadAsString) })
-      })
-  }
-}
 
 function decryptUserEvents (eventsByAccountId) {
   var db = getDatabase()
@@ -28,13 +13,16 @@ function decryptUserEvents (eventsByAccountId) {
     .map(function (accountId) {
       var withSecret = db.secrets.get({ accountId: accountId })
         .then(function (result) {
-          return decryptEventWith(result.userSecret)
+          return crypto.decryptSymmetricWith(result.userSecret)
         })
 
       var events = eventsByAccountId[accountId]
       return events.map(function (event) {
-        return withSecret.then(function (decryptEvent) {
-          return decryptEvent(event)
+        return withSecret.then(function (decryptEventPayload) {
+          return decryptEventPayload(event.payload)
+            .then(function (decryptedPayload) {
+              return Object.assign({}, event, { payload: decryptedPayload })
+            })
         })
       })
     })
@@ -53,39 +41,15 @@ function getOperatorEvents (accountId) {
       return decryptPrivateKey(account.encrypted_private_key)
     })
     .then(function (result) {
-      return window.crypto.subtle.importKey(
-        'jwk',
-        result.decrypted,
-        {
-          name: 'RSA-OAEP',
-          hash: { name: 'SHA-256' }
-        },
-        false,
-        ['decrypt']
-      )
+      return crypto.importPrivateKey(result.decrypted)
     })
     .then(function (privateKey) {
       var userSecretDecryptions = Object.keys(account.user_secrets)
         .map(function (hashedUserId) {
-          return window.crypto.subtle
-            .decrypt(
-              { name: 'RSA-OAEP' },
-              privateKey,
-              Unibabel.base64ToArr(account.user_secrets[hashedUserId])
-            )
-            .then(function (decrypted) {
-              var payloadAsString = Unibabel.utf8ArrToStr(new Uint8Array(decrypted))
-              return JSON.parse(payloadAsString)
-            })
-            .then(function (jwk) {
-              return window.crypto.subtle.importKey(
-                'jwk',
-                jwk,
-                { name: 'AES-CTR' },
-                false,
-                ['encrypt', 'decrypt']
-              )
-            })
+          var encrpytedSecret = account.user_secrets[hashedUserId]
+          var decryptSecret = crypto.decryptAsymmetricWith(privateKey)
+          return decryptSecret(encrpytedSecret)
+            .then(crypto.importSymmetricKey)
             .then(function (userKey) {
               return { userKey: userKey, userId: hashedUserId }
             })
@@ -102,8 +66,11 @@ function getOperatorEvents (accountId) {
         if (!userSecret) {
           return
         }
-        var decryptEvent = decryptEventWith(userSecret)
-        return decryptEvent(event)
+        var decryptEventPayload = crypto.decryptSymmetricWith(userSecret)
+        return decryptEventPayload(event.payload)
+          .then(function (decryptedPayload) {
+            return Object.assign({}, event, { payload: decryptedPayload })
+          })
       })
       return Promise.all(eventDecryptions)
     })

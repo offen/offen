@@ -1,7 +1,7 @@
-var Unibabel = require('unibabel').Unibabel
 var handleFetchResponse = require('offen/fetch-response')
 
 var getDatabase = require('./database')
+var crypto = require('./crypto')
 
 module.exports = ensureUserSecret
 
@@ -63,53 +63,23 @@ function exchangeUserSecret (accountId, host) {
     })
 }
 
-function generateNewUserSecret (publicWebKey) {
+function generateNewUserSecret (publicJWK) {
   return Promise
     .all([
-      decodePublicWebKey(publicWebKey),
-      createUserSecret()
+      crypto.importPublicKey(publicJWK),
+      crypto.createSymmetricKey()
     ])
     .then(function (keys) {
-      var accountPublicKey = keys[0]
+      var publicKey = keys[0]
       var userSecret = keys[1]
-      return window.crypto.subtle
-        .exportKey(
-          'jwk',
-          userSecret
-        )
-        .then(function (keydata) {
-          var enc = new TextEncoder()
-          return window.crypto.subtle.encrypt(
-            { name: 'RSA-OAEP' },
-            accountPublicKey,
-            enc.encode(JSON.stringify(keydata))
-          )
-        })
-        .then(function (encrypted) {
+
+      return crypto.exportKey(userSecret)
+        .then(crypto.encryptAsymmetricWith(publicKey))
+        .then(function (encryptedUserSecret) {
           return {
-            encryptedUserSecret: Unibabel.arrToBase64(new Uint8Array(encrypted)),
+            encryptedUserSecret: encryptedUserSecret,
             userSecret: userSecret
           }
         })
     })
-}
-
-function decodePublicWebKey (publicWebKey) {
-  return window.crypto.subtle.importKey(
-    'jwk',
-    publicWebKey,
-    {
-      name: 'RSA-OAEP',
-      hash: { name: 'SHA-256' }
-    },
-    false,
-    ['encrypt']
-  )
-}
-
-function createUserSecret () {
-  return window.crypto.subtle.generateKey({
-    name: 'AES-CTR',
-    length: 256
-  }, true, ['encrypt', 'decrypt'])
 }

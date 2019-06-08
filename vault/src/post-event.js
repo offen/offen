@@ -1,7 +1,7 @@
-var Unibabel = require('unibabel').Unibabel
 var uuidv4 = require('uuid/v4')
 var handleFetchResponse = require('offen/fetch-response')
 
+var crypto = require('./crypto')
 var ensureUserSecret = require('./user-secret')
 
 module.exports = postEvent
@@ -13,21 +13,13 @@ function postEvent (accountId, event) {
   // `flush` is not supposed to be part of the public signature, but will only
   // be used when the function recursively calls itself
   var flush = arguments[2] || false
-  var userSecret
   event = augmentEventData(event, accountId)
   return ensureUserSecret(accountId, process.env.SERVER_HOST, flush)
-    .then(function (_userSecret) {
-      userSecret = _userSecret
-      return window.crypto.subtle.encrypt({
-        name: 'AES-CTR',
-        counter: new Uint8Array(16),
-        length: 128
-      },
-      userSecret,
-      Unibabel.utf8ToBuffer(JSON.stringify(event)))
+    .then(function (userSecret) {
+      var encryptEventPayload = crypto.encryptSymmetricWith(userSecret)
+      return encryptEventPayload(event)
     })
-    .then(function (encrypted) {
-      var encryptedEventPayload = Unibabel.arrToBase64(new Uint8Array(encrypted))
+    .then(function (encryptedEventPayload) {
       return window
         .fetch(`${process.env.SERVER_HOST}/events`, {
           method: 'POST',

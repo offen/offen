@@ -1,14 +1,17 @@
 var handleFetchResponse = require('offen/fetch-response')
 
-module.exports = getAccount
+module.exports = getAccountWith(`${process.env.SERVER_HOST}/accounts`)
+module.exports.getAccountWith = getAccountWith
 
-function getAccount (accountId) {
-  var url = new window.URL(`${process.env.SERVER_HOST}/accounts`)
-  url.search = new window.URLSearchParams({ account_id: accountId })
-  return window
-    .fetch(url, {
-      method: 'GET',
-      credentials: 'include'
-    })
-    .then(handleFetchResponse)
+function getAccountWith (accountsUrl) {
+  return function (accountId) {
+    var url = new window.URL(accountsUrl)
+    url.search = new window.URLSearchParams({ account_id: accountId })
+    return window
+      .fetch(url, {
+        method: 'GET',
+        credentials: 'include'
+      })
+      .then(handleFetchResponse)
+  }
 }
