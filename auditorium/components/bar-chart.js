@@ -16,7 +16,12 @@ BarChart.prototype = Object.create(Component.prototype)
 BarChart.prototype.load = function (element) {
   this.chart = new Chartist.Bar(element, {
     labels: Object.keys(this.local.data),
-    series: [Object.values(this.local.data).map(function (events) { return events.length })]
+    series: [
+      Object.values(this.local.data)
+        .map(function (events) {
+          return events.length
+        })
+    ]
   }, {
     reverseData: true,
     horizontalBars: true,
