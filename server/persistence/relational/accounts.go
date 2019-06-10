@@ -27,9 +27,12 @@ func (r *relationalDatabase) GetAccount(accountID string, events bool) (persiste
 	}
 
 	result := persistence.AccountResult{
-		AccountID:          account.AccountID,
-		PublicKey:          key,
-		EncryptedSecretKey: account.EncryptedSecretKey,
+		AccountID: account.AccountID,
+		PublicKey: key,
+	}
+
+	if events {
+		result.EncryptedSecretKey = account.EncryptedSecretKey
 	}
 
 	eventResults := persistence.EventsByAccountID{}

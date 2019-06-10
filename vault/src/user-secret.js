@@ -1,115 +1,77 @@
-var Unibabel = require('unibabel').Unibabel
-var handleFetchResponse = require('offen/fetch-response')
-
 var getDatabase = require('./database')
+var crypto = require('./crypto')
+var api = require('./api')
 
-module.exports = ensureUserSecret
+module.exports = ensureUserSecretWith(api)
+module.exports.ensureUserSecretWith = ensureUserSecretWith
 
 // ensureUserSecret looks up the UserSecret for the given accountId. In case it
 // is not present in the local database or `flush` is passed, it initiates a
 // new exchange of secrets and stores the result in the local database.
-function ensureUserSecret (accountId, host, flush) {
-  var db = getDatabase()
+function ensureUserSecretWith (api) {
+  return function (accountId, flush) {
+    var db = getDatabase()
 
-  var prep = Promise.resolve()
-  if (flush) {
-    prep = db.secrets.delete(accountId)
-  }
+    var before = Promise.resolve()
+    if (flush) {
+      before = db.secrets.delete(accountId)
+    }
 
-  return prep.then(function () {
-    return db.secrets.get({ accountId: accountId })
-      .then(function (result) {
-        if (result) {
-          return result.userSecret
-        }
-        return exchangeUserSecret(accountId, host)
-          .then(function (userSecret) {
-            return db.secrets
-              .put({
-                accountId: accountId,
-                userSecret: userSecret
-              })
-              .then(function () {
-                return userSecret
-              })
-          })
-      })
-  })
-}
-
-function exchangeUserSecret (accountId, host) {
-  return window
-    .fetch(`${host}/exchange?account_id=${accountId}`, {
-      credentials: 'include'
+    return before.then(function () {
+      return db.secrets.get({ accountId: accountId })
+        .then(function (result) {
+          if (result) {
+            return result.userSecret
+          }
+          return exchangeUserSecret(api, accountId)
+            .then(function (userSecret) {
+              return db.secrets
+                .put({
+                  accountId: accountId,
+                  userSecret: userSecret
+                })
+                .then(function () {
+                  return userSecret
+                })
+            })
+        })
     })
-    .then(handleFetchResponse)
+  }
+}
+function exchangeUserSecret (api, accountId) {
+  return api.getPublicKey(accountId)
     .then(function (body) {
       return generateNewUserSecret(body.public_key)
     })
     .then(function (result) {
-      return window
-        .fetch(`${host}/exchange`, {
-          method: 'POST',
-          credentials: 'include',
-          body: JSON.stringify({
-            account_id: accountId,
-            encrypted_user_secret: result.encryptedUserSecret
-          })
-        })
-        .then(handleFetchResponse)
+      var body = {
+        account_id: accountId,
+        encrypted_user_secret: result.encryptedUserSecret
+      }
+      return api.postUserSecret(body)
         .then(function () {
           return result.userSecret
         })
     })
 }
 
-function generateNewUserSecret (publicWebKey) {
+function generateNewUserSecret (publicJWK) {
   return Promise
     .all([
-      decodePublicWebKey(publicWebKey),
-      createUserSecret()
+      crypto.importPublicKey(publicJWK),
+      crypto.createSymmetricKey()
     ])
     .then(function (keys) {
-      var accountPublicKey = keys[0]
+      var publicKey = keys[0]
       var userSecret = keys[1]
-      return window.crypto.subtle
-        .exportKey(
-          'jwk',
-          userSecret
-        )
-        .then(function (keydata) {
-          var enc = new TextEncoder()
-          return window.crypto.subtle.encrypt(
-            { name: 'RSA-OAEP' },
-            accountPublicKey,
-            enc.encode(JSON.stringify(keydata))
-          )
-        })
-        .then(function (encrypted) {
+
+      return crypto.exportKey(userSecret)
+        .then(crypto.encryptAsymmetricWith(publicKey))
+        .then(function (encryptedUserSecret) {
           return {
-            encryptedUserSecret: Unibabel.arrToBase64(new Uint8Array(encrypted)),
+            encryptedUserSecret: encryptedUserSecret,
             userSecret: userSecret
           }
         })
     })
-}
-
-function decodePublicWebKey (publicWebKey) {
-  return window.crypto.subtle.importKey(
-    'jwk',
-    publicWebKey,
-    {
-      name: 'RSA-OAEP',
-      hash: { name: 'SHA-256' }
-    },
-    false,
-    ['encrypt']
-  )
-}
-
-function createUserSecret () {
-  return window.crypto.subtle.generateKey({
-    name: 'AES-CTR',
-    length: 256
-  }, true, ['encrypt', 'decrypt'])
 }
