@@ -1,0 +1,114 @@
+service:
+  name: auditorium
+  awsKmsKeyArn: ${ssm:/aws/reference/secretsmanager/${self:custom.stage}/kmsArn~true}
+
+plugins:
+  - serverless-finch
+
+provider:
+  name: aws
+  stage: alpha
+  runtime: nodejs8.10
+  region: eu-central-1
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+  bucket:
+    production: auditorium-static-deployment
+    staging: auditorium-static-deployment-staging
+    alpha: auditorium-static-deployment-alpha
+  originId:
+    production: auditorium
+    staging: auditorium-staging
+    alpha: auditorium-alpha
+  domain:
+    production: auditorium.offen.dev
+    staging: auditorium-staging.offen.dev
+    alpha: auditorium-alpha.offen.dev
+  client:
+    manageResources: false
+    bucketName: ${self:custom.bucket.${self:custom.stage}}
+    distributionFolder: auditorium/dist
+    indexDocument: index.html
+    errorDocument: index.html
+    objectHeaders:
+      '**/*.html':
+        - name: Cache-Control
+          value: max-age=0
+        - name: Content-Type
+          value: text/html
+
+resources:
+  Resources:
+    ClientBucketResource:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.client.bucketName}
+    ClientBucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket: ${self:custom.client.bucketName}
+        PolicyDocument:
+          Statement:
+            - Sid: OAIGetObject
+              Effect: Allow
+              Principal:
+                AWS:
+                  Fn::Join:
+                    - ' '
+                    - - arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity
+                      - Ref: S3OriginAccessIdentity
+              Action:
+                - s3:GetObject
+              Resource:
+                Fn::Join:
+                  - ''
+                  - - 'arn:aws:s3:::'
+                    - Ref: ClientBucketResource
+                    - '/*'
+    S3OriginAccessIdentity:
+      Type: 'AWS::CloudFront::CloudFrontOriginAccessIdentity'
+      Properties:
+        CloudFrontOriginAccessIdentityConfig:
+          Comment: Serverless managed S3 bucket origin-access-identity
+    CloudfrontDistribution:
+      Type: AWS::CloudFront::Distribution
+      Properties:
+        DistributionConfig:
+          CustomErrorResponses:
+            - ErrorCode: 403
+              ResponseCode: 200
+              ResponsePagePath: /index.html
+          Aliases:
+            - ${self:custom.domain.${self:custom.stage}}
+          ViewerCertificate:
+            # important: cloudfront requires this to be in the `us-east-1` region
+            AcmCertificateArn: ${ssm:/aws/reference/secretsmanager/${self:custom.stage}/all/certificateArn~true}
+            SslSupportMethod: sni-only
+          Origins:
+            - Id: ${self:custom.originId.${self:custom.stage}}
+              DomainName:
+                Fn::GetAtt: [ClientBucketResource, DomainName]
+              S3OriginConfig:
+                OriginAccessIdentity:
+                  Fn::Join:
+                    - ''
+                    - - origin-access-identity/cloudfront/
+                      - Ref: S3OriginAccessIdentity
+          Enabled: true
+          DefaultRootObject: index.html
+          DefaultCacheBehavior:
+            AllowedMethods:
+              - GET
+              - HEAD
+              - OPTIONS
+            TargetOriginId: ${self:custom.originId.${self:custom.stage}}
+            ForwardedValues:
+              QueryString: 'false'
+              Cookies:
+                Forward: none
+            ViewerProtocolPolicy: redirect-to-https
+          Logging:
+            IncludeCookies: 'false'
+            Bucket: ''
+            Prefix: ''

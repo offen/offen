@@ -10,13 +10,15 @@ function getOperatorEvents (query) {
   return api.getAccount(accountId)
     .then(function (_account) {
       account = _account
+      account.events = account.events || []
+      account.user_secrets = account.user_secrets || []
       return api.decryptPrivateKey(account.encrypted_private_key)
     })
     .then(function (result) {
       return crypto.importPrivateKey(result.decrypted)
     })
     .then(function (privateKey) {
-      var userSecretDecryptions = Object.keys(account.user_secrets)
+      var userSecretDecryptions = Object.keys(account.user_secrets || {})
         .map(function (hashedUserId) {
           var encrpytedSecret = account.user_secrets[hashedUserId]
           var decryptSecret = crypto.decryptAsymmetricWith(privateKey)
@@ -33,7 +35,9 @@ function getOperatorEvents (query) {
         acc[next.userId] = next.userKey
         return acc
       }, {})
-      var eventDecryptions = account.events[accountId].map(function (event) {
+
+      var events = (account.events[accountId] || [])
+      var eventDecryptions = events.map(function (event) {
         var userSecret = byHashedUserId[event.user_id]
         if (!userSecret) {
           return
@@ -44,9 +48,14 @@ function getOperatorEvents (query) {
             return Object.assign({}, event, { payload: decryptedPayload })
           })
       })
+
       return Promise.all(eventDecryptions)
     })
     .then(function (results) {
       return results.filter(function (r) { return r })
+    })
+    .then(function (results) {
+      delete account.events
+      return { events: results, account: account }
     })
 }

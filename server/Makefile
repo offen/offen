@@ -14,7 +14,7 @@ test-ci: bootstrap
 	@go test ./... -cover -tags="integration"
 
 clean-build:
-	@rm -rf dist
+	@rm -rf bin
 
 build: clean-build
-	@go build -o dist/server cmd/server/main.go
+	@GOOS=linux go build -o bin/server cmd/lambda/main.go

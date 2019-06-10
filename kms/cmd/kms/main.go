@@ -4,6 +4,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -22,6 +23,7 @@ func main() {
 		certFile = flag.String("cert", "", "the path to a SSL certificate in PEM format")
 		keyFile  = flag.String("key", "", "the path to a SSL key in PEM format")
 		logLevel = flag.String("level", "info", "the application's log level")
+		origin   = flag.String("origin", "*", "the CORS origin")
 	)
 	flag.Parse()
 
@@ -32,13 +34,17 @@ func main() {
 	}
 	logger.SetLevel(parsedLogLevel)
 
-	manager, err := keymanager.New()
+	manager, err := keymanager.New(func() ([]byte, error) {
+		keyFile := os.Getenv("KEY_FILE")
+		return ioutil.ReadFile(keyFile)
+	})
+
 	if err != nil {
 		logger.WithError(err).Fatal("error setting up keymanager")
 	}
 	srv := &http.Server{
 		Addr:    fmt.Sprintf("0.0.0.0:%v", *port),
-		Handler: router.New(manager, logger),
+		Handler: router.New(*origin, manager, logger),
 	}
 
 	go func() {

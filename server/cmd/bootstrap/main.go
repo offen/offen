@@ -9,17 +9,20 @@ import (
 	"encoding/json"
 	"encoding/pem"
 	"errors"
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"os"
+
+	yaml "gopkg.in/yaml.v2"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/offen/offen/server/persistence/relational"
 )
 
-func getRSAKeypair() (string, string, error) {
+func getRSAKeypair(encryptionEndpoint string) (string, string, error) {
 	key, keyErr := rsa.GenerateKey(rand.Reader, 4096)
 	if keyErr != nil {
 		return "", "", keyErr
@@ -39,8 +42,10 @@ func getRSAKeypair() (string, string, error) {
 	)
 
 	secretKey := string(privatePem)
-	if endpoint, ok := os.LookupEnv("KMS_ENCRYPTION_ENDPOINT"); ok {
-		fmt.Printf("endpoint %s\n", endpoint)
+
+	// this currently is used in CI where the private keys don't need
+	// to be encrypted yet
+	if encryptionEndpoint != "" {
 		p := struct {
 			Decrypted string `json:"decrypted"`
 		}{
@@ -48,7 +53,7 @@ func getRSAKeypair() (string, string, error) {
 		}
 		payload, _ := json.Marshal(&p)
 		res, err := http.Post(
-			endpoint,
+			encryptionEndpoint,
 			"application/json",
 			bytes.NewReader(payload),
 		)
@@ -81,9 +86,30 @@ func createSalt(length int) (string, error) {
 	return s[:length], nil
 }
 
+type accountConfig struct {
+	Name string `yaml:"name"`
+	ID   string `yaml:"id"`
+}
+
 func main() {
-	connectionString := os.Getenv("POSTGRES_CONNECTION_STRING")
-	db, err := gorm.Open("postgres", connectionString)
+	var (
+		source             = flag.String("source", "bootstrap.yml", "the configuration file")
+		connection         = flag.String("conn", os.Getenv("POSTGRES_CONNECTION_STRING"), "a postgres connection string")
+		encryptionEndpoint = flag.String("kms", os.Getenv("KMS_ENCRYPTION_ENDPOINT"), "the endpoint used for encrypting private keys")
+	)
+	flag.Parse()
+
+	read, readErr := ioutil.ReadFile(*source)
+	if readErr != nil {
+		panic(readErr)
+	}
+
+	var accounts []accountConfig
+	if err := yaml.Unmarshal(read, &accounts); err != nil {
+		panic(err)
+	}
+
+	db, err := gorm.Open("postgres", *connection)
 	if err != nil {
 		panic(err)
 	}
@@ -101,50 +127,30 @@ func main() {
 		panic(err)
 	}
 
-	publicKey, privateKey, keyErr := getRSAKeypair()
-	if keyErr != nil {
-		tx.Rollback()
-		panic(keyErr)
-	}
-	salt, saltErr := createSalt(16)
-	if saltErr != nil {
-		tx.Rollback()
-		panic(saltErr)
-	}
-	account := relational.Account{
-		AccountID:          "9b63c4d8-65c0-438c-9d30-cc4b01173393",
-		PublicKey:          publicKey,
-		EncryptedSecretKey: privateKey,
-		UserSalt:           salt,
-	}
-	if err := tx.Create(&account).Error; err != nil {
-		tx.Rollback()
-		panic(err)
-	}
-
-	publicKey, privateKey, keyErr = getRSAKeypair()
-	if keyErr != nil {
-		tx.Rollback()
-		panic(keyErr)
-	}
-
-	salt2, salt2Err := createSalt(16)
-	if salt2Err != nil {
-		tx.Rollback()
-		panic(salt2Err)
-	}
-	otherAccount := relational.Account{
-		AccountID:          "78403940-ae4f-4aff-a395-1e90f145cf62",
-		PublicKey:          publicKey,
-		EncryptedSecretKey: privateKey,
-		UserSalt:           salt2,
-	}
-	if err := tx.Create(&otherAccount).Error; err != nil {
-		tx.Rollback()
-		panic(err)
+	for _, account := range accounts {
+		publicKey, privateKey, keyErr := getRSAKeypair(*encryptionEndpoint)
+		if keyErr != nil {
+			tx.Rollback()
+			panic(keyErr)
+		}
+		salt, saltErr := createSalt(16)
+		if saltErr != nil {
+			tx.Rollback()
+			panic(saltErr)
+		}
+		account := relational.Account{
+			AccountID:          account.ID,
+			PublicKey:          publicKey,
+			EncryptedSecretKey: privateKey,
+			UserSalt:           salt,
+			Name:               account.Name,
+		}
+		if err := tx.Create(&account).Error; err != nil {
+			tx.Rollback()
+			panic(err)
+		}
 	}
 
 	tx.Commit()
-
 	fmt.Println("Successfully bootstrapped database for development.")
 }

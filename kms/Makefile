@@ -11,10 +11,11 @@ test-ci:
 	@go test ./... -cover -tags="integration"
 
 bootstrap:
-	@go run cmd/bootstrap/main.go
+	@go run cmd/bootstrap/main.go -out key.txt
 
 clean-build:
-	@rm -rf dist
+	@rm -rf bin
 
 build: clean-build
-	@go build -o dist/kms cmd/kms/main.go
+	@GOOS=linux go build -o bin/kms cmd/lambda/main.go
+	@GOOS=linux go build -o bin/authorizer cmd/authorizer/main.go

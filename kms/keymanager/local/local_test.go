@@ -1,6 +1,7 @@
 package localkeymanager
 
 import (
+	"io/ioutil"
 	"os"
 	"testing"
 )
@@ -14,7 +15,9 @@ func TestMain(m *testing.M) {
 
 func TestMemoryKeyManager_EncryptDecrypt(t *testing.T) {
 	val := "this-is-a-string"
-	mgr, err := New()
+	mgr, err := New(func() ([]byte, error) {
+		return ioutil.ReadFile("testdata/key.txt")
+	})
 	if err != nil {
 		t.Fatalf("Unexpected error %v", err)
 	}

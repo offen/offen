@@ -1,0 +1,22 @@
+{
+  "name": "offen",
+  "private": true,
+  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/offen/offen.git"
+  },
+  "author": "offen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/offen/offen/issues"
+  },
+  "homepage": "https://github.com/offen/offen#readme",
+  "dependencies": {
+    "serverless": "^1.45.0",
+    "serverless-finch": "^2.4.2"
+  },
+  "devDependencies": {
+    "serverless-domain-manager": "^2.6.13"
+  }
+}
