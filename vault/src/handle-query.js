@@ -1,4 +1,5 @@
-var getEvents = require('./get-events')
+var getUserEvents = require('./get-user-events')
+var getOperatorEvents = require('./get-operator-events')
 
 module.exports = handleQuery
 
@@ -7,7 +8,11 @@ function handleQuery (message, respond) {
     ? message.payload.query
     : null
 
-  return getEvents(query)
+  var lookup = (query && query.account_id)
+    ? getOperatorEvents(query)
+    : getUserEvents(query)
+
+  return lookup
     .then(function (result) {
       return {
         type: 'QUERY_RESULT',

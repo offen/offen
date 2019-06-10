@@ -1,5 +1,4 @@
 var assert = require('assert')
-var fetchMock = require('fetch-mock')
 
 var ensureUserSecret = require('./user-secret')
 
@@ -13,52 +12,72 @@ var response = {
 }
 
 describe('src/user-secret.js', function () {
-  describe('ensureUserSecret(accountId: string, host: string)', function () {
-    context('with server responding', function () {
-      beforeEach(function () {
-        fetchMock.get('https://server.offen.dev/exchange?account_id=7435d1b9-c0ca-4883-a869-42e943589917', response)
-        fetchMock.post('https://server.offen.dev/exchange', 204)
-      })
-
-      afterEach(function () {
-        fetchMock.restore()
-      })
-
-      it('handles the key exchange', function () {
-        var initialKey
-        return ensureUserSecret('7435d1b9-c0ca-4883-a869-42e943589917', 'https://server.offen.dev')
-          .then(function (_initialKey) {
-            initialKey = _initialKey
-            return ensureUserSecret('7435d1b9-c0ca-4883-a869-42e943589917', 'https://server.offen.dev')
-          })
-          .then(function (nextKey) {
-            assert.deepStrictEqual(initialKey, nextKey)
-          })
-      })
+  describe('ensureUserSecret(accountId)', function () {
+    it('handles the key exchange', function () {
+      var mockApi = {
+        getPublicKey: function () {
+          return Promise.resolve(response)
+        },
+        postUserSecret: function () {
+          return Promise.resolve()
+        }
+      }
+      var ensure = ensureUserSecret.ensureUserSecretWith(mockApi)
+      var initialKey
+      return ensure('7435d1b9-c0ca-4883-a869-42e943589917')
+        .then(function (_initialKey) {
+          initialKey = _initialKey
+          return ensure('7435d1b9-c0ca-4883-a869-42e943589917')
+        })
+        .then(function (nextKey) {
+          assert.deepStrictEqual(initialKey, nextKey)
+        })
     })
 
-    context('with server failing', function () {
-      beforeEach(function () {
-        fetchMock.get('https://server.offen.dev/exchange?account_id=8435d1b9-c0ca-4883-a869-42e943589917', 500)
-        fetchMock.post('https://server.offen.dev/exchange', 500)
-      })
+    it('rejects when public key is unavailable', function (done) {
+      var mockApi = {
+        getPublicKey: function () {
+          return Promise.reject(new Error('Does not work.'))
+        },
+        postUserSecret: function () {
+          return Promise.resolve()
+        }
+      }
+      var ensure = ensureUserSecret.ensureUserSecretWith(mockApi)
+      ensure('8435d1b9-c0ca-4883-a869-42e943589917')
+        .then(function () {
+          done(new Error('Unexpected promise resolution'))
+        })
+        .catch(function (err) {
+          assert.strictEqual(err.message, 'Does not work.')
+          done()
+        })
+        .catch(function (err) {
+          done(err)
+        })
+    })
 
-      afterEach(function () {
-        fetchMock.restore()
-      })
-
-      it('rejects', function () {
-        return ensureUserSecret('8435d1b9-c0ca-4883-a869-42e943589917', 'https://server.offen.dev')
-          .catch(function (err) {
-            assert(err)
-            return 'SKIP'
-          })
-          .then(function (result) {
-            if (result !== 'SKIP') {
-              throw new Error('Unexpected promise resolution')
-            }
-          })
-      })
+    it('rejects when user secret cannot be posted', function (done) {
+      var mockApi = {
+        getPublicKey: function () {
+          return Promise.resolve(response)
+        },
+        postUserSecret: function () {
+          return Promise.reject(new Error('Does not work.'))
+        }
+      }
+      var ensure = ensureUserSecret.ensureUserSecretWith(mockApi)
+      ensure('9435d1b9-c0ca-4883-a869-42e943589917')
+        .then(function () {
+          done(new Error('Unexpected promise resolution'))
+        })
+        .catch(function (err) {
+          assert.strictEqual(err.message, 'Does not work.')
+          done()
+        })
+        .catch(function (err) {
+          done(err)
+        })
     })
   })
 })
