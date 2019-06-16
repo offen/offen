@@ -7,7 +7,8 @@
     "start": "budo index.js --live --ssl --cert local.offen.dev.pem --key local.offen.dev-key.pem",
     "test": "npm run server & (npm run mochify; status=$?; kill $(lsof -t -i:9876); exit $status)",
     "mochify": "mochify --allow-chrome-as-root {,**}/*.test.js",
-    "server": "http-server __fixtures__ -p 9876 -s",    "pretest": "dependency-check package.json",
+    "server": "http-server __fixtures__ -p 9876 -s",
+    "pretest": "dependency-check package.json",
     "posttest": "standard",
     "fix": "standard --fix",
     "prebuild": "mkdir -p dist",
@@ -22,7 +23,7 @@
     "dependency-check": "^3.3.0",
     "envify": "^4.1.0",
     "http-server": "^0.11.1",
-    "mochify": "^6.2.0",
+    "mochify": "^6.3.0",
     "standard": "^12.0.1",
     "tinyify": "^2.5.0"
   },

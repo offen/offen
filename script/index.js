@@ -7,7 +7,7 @@ var accountId = document.currentScript && document.currentScript.dataset.account
 
 checkSupport(function (err) {
   if (err) {
-    console.log('"offen" does not support this browser or "Do Not Track" is enabled: ' + err.message)
+    console.log('"offen" does not support this site, your browser or "Do Not Track" is enabled: ' + err.message)
     console.log('No data will be collected. Find out more at "https://www.offen.dev".')
     return
   }
