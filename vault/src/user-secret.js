@@ -38,6 +38,7 @@ function ensureUserSecretWith (api) {
     })
   }
 }
+
 function exchangeUserSecret (api, accountId) {
   return api.getPublicKey(accountId)
     .then(function (body) {

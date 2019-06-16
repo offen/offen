@@ -21,6 +21,7 @@ require (
 	github.com/offen/logrus-middleware v0.0.0-20190530085437-e0dff465fff6
 	github.com/offen/offen/kms v0.0.0-20190610141453-de2dc7eb23ac
 	github.com/oklog/ulid v1.3.1
+	github.com/satori/go.uuid v1.2.0
 	github.com/sirupsen/logrus v1.4.2
 	gopkg.in/yaml.v2 v2.2.2
 )

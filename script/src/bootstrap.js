@@ -17,6 +17,14 @@ function bootstrap (host, accountId) {
           }
         }
       }
-      return postMessage(pageviewEvent)
+      return new Promise(function (resolve) {
+        if ('requestIdleCallback' in window) {
+          window.requestIdleCallback(function () {
+            resolve(postMessage(pageviewEvent))
+          })
+        } else {
+          resolve(postMessage(pageviewEvent))
+        }
+      })
     })
 }

@@ -7,3 +7,9 @@ type ErrUnknownAccount string
 func (e ErrUnknownAccount) Error() string {
 	return string(e)
 }
+
+type ErrUnknownUser string
+
+func (e ErrUnknownUser) Error() string {
+	return string(e)
+}
