@@ -1,2 +1,3 @@
-key.txt
+*.txt
 !keymanager/local/testdata/key.txt
+bin/

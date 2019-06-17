@@ -1,9 +1,6 @@
 package localkeymanager
 
 import (
-	"fmt"
-	"os"
-
 	"github.com/offen/offen/kms/keymanager"
 	"github.com/ovh/configstore"
 	"github.com/ovh/symmecrypt"
@@ -16,9 +13,15 @@ type memorykeymanager struct {
 
 // New creates a new key manager that uses package symmecrypt to
 // encrypt and decrypt keys
-func New() (keymanager.Manager, error) {
-	prefix := os.Getenv("PATH_PREFIX")
-	configstore.File(fmt.Sprintf("%skey.txt", prefix))
+func New(creds func() ([]byte, error)) (keymanager.Manager, error) {
+	configstore.RegisterProvider("offen", func() (configstore.ItemList, error) {
+		b, err := creds()
+		return configstore.ItemList{
+			Items: []configstore.Item{
+				configstore.NewItem("encryption-key", string(b), 0),
+			},
+		}, err
+	})
 	k, err := keyloader.LoadKey("offen")
 	if err != nil {
 		return nil, err

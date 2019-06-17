@@ -45,6 +45,10 @@ func (rt *router) postEvents(w http.ResponseWriter, r *http.Request) {
 			httputil.RespondWithJSONError(w, unknownAccountErr, http.StatusBadRequest)
 			return
 		}
+		if unknownUserErr, ok := err.(persistence.ErrUnknownUser); ok {
+			httputil.RespondWithJSONError(w, unknownUserErr, http.StatusBadRequest)
+			return
+		}
 		rt.logError(err, "error writing event payload")
 		httputil.RespondWithJSONError(w, err, http.StatusInternalServerError)
 		return

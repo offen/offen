@@ -49,7 +49,7 @@ func TestEvents_Get(t *testing.T) {
 }
 
 func TestEvents_Post(t *testing.T) {
-	t.Run("ok", func(t *testing.T) {
+	t.Run("missing user in db", func(t *testing.T) {
 		body := strings.NewReader(`{"account_id":"78403940-ae4f-4aff-a395-1e90f145cf62","payload":"c2b2e7d2bf3d5539794a3fd9cff4d4cc"}`)
 		req, err := http.NewRequest(http.MethodPost, "http://localhost:8080/events", body)
 		if err != nil {
@@ -61,7 +61,7 @@ func TestEvents_Post(t *testing.T) {
 		if err != nil {
 			t.Fatalf("Unexpected error %v", err)
 		}
-		if res.StatusCode != http.StatusOK {
+		if res.StatusCode != http.StatusBadRequest {
 			t.Errorf("Unexpected status code %d", res.StatusCode)
 		}
 	})

@@ -26,6 +26,13 @@ func (r *relationalDatabase) Insert(userID, accountID, payload string) error {
 
 	hashedUserID := account.HashUserID(userID)
 
+	var user User
+	if err := r.db.First(&user).Where("hashed_user_id = ?", hashedUserID).Error; gorm.IsRecordNotFoundError(err) {
+		return persistence.ErrUnknownUser(
+			fmt.Sprintf("unknown user with id %s", userID),
+		)
+	}
+
 	r.db.Create(&Event{
 		AccountID:    accountID,
 		HashedUserID: hashedUserID,

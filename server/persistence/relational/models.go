@@ -32,6 +32,7 @@ type User struct {
 // Account stores information about an account.
 type Account struct {
 	AccountID          string `gorm:"primary_key"`
+	Name               string
 	PublicKey          string
 	EncryptedSecretKey string
 	UserSalt           string

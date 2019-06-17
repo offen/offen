@@ -7,7 +7,10 @@ module.exports = checkSupport
 function checkSupport (callback) {
   var err = null
 
-  if (!allowsTracking()) {
+  if (!isSecureContext()) {
+    err = new Error('The host page is required to run in a secure context')
+  }
+  if (!err && !allowsTracking()) {
     err = new Error('Browser has "Do Not Track" setting enabled')
   }
   if (!err && !supportsWebCrypto()) {
@@ -25,8 +28,12 @@ function checkSupport (callback) {
   }, 0)
 }
 
+function isSecureContext () {
+  return window.location.hostname === 'localhost' || window.location.protocol === 'https:' || window.location.protocol === 'file:'
+}
+
 function supportsWebCrypto () {
-  return !!(window.crypto && window.crypto.subtle)
+  return window.crypto && window.crypto.subtle
 }
 
 function supportsIndexedDb () {

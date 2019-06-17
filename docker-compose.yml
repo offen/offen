@@ -11,10 +11,10 @@ services:
       - $GOPATH/pkg/mod:/go/pkg/mod
     environment:
       - GOPATH=/go
-      - BASIC_AUTH_PASSWORD=test
+      - KEY_FILE=key.txt
     ports:
       - 8081:8081
-    command: go run cmd/kms/main.go -key local.offen.dev-key.pem -cert local.offen.dev.pem  -port 8081
+    command: go run cmd/kms/main.go -key local.offen.dev-key.pem -cert local.offen.dev.pem  -port 8081 -origin https://local.offen.dev:9977
 
   server:
     image: golang:1.12

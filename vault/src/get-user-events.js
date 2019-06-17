@@ -47,4 +47,7 @@ function decryptUserEvents (eventsByAccountId) {
     }, [])
 
   return Promise.all(decrypted)
+    .then(function (events) {
+      return { events: events }
+    })
 }

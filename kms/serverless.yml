@@ -1,0 +1,82 @@
+service:
+  name: kms
+  awsKmsKeyArn: ${ssm:/aws/reference/secretsmanager/${self:custom.stage}/all/kmsArn~true}
+
+provider:
+  name: aws
+  endpointType: regional
+  runtime: go1.x
+  stage: alpha
+  region: eu-central-1
+  apiName: offen-${self:provider.stage}
+  logs:
+    restApi: true
+
+package:
+  exclude:
+    - '*/**'
+    - '*.*'
+  individually: true
+  excludeDevDependencies: false
+
+plugins:
+  - serverless-domain-manager
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+  domain:
+    production: kms.offen.dev
+    staging: kms-staging.offen.dev
+    alpha: kms-alpha.offen.dev
+  origin:
+    production: vault.offen.dev
+    staging: vault-staging.offen.dev
+    alpha: vault-alpha.offen.dev
+  customDomain:
+    basePath: ''
+    certificateName: '*.offen.dev'
+    domainName: ${self:custom.domain.${self:custom.stage}}
+    stage: ${self:custom.stage}
+    endpointType: regional
+    createRoute53Record: false
+
+functions:
+  app:
+    package:
+      include:
+        - kms/bin/kms
+    handler: kms/bin/kms
+    environment:
+      CORS_ORIGIN: https://${self:custom.origin.${self:custom.stage}}
+      KEY_CONTENT: '${ssm:/aws/reference/secretsmanager/${self:custom.stage}/kms/key~true}'
+    events:
+      - http:
+          path: /decrypt
+          method: any
+          authorizer:
+            name: authorizer
+            resultTtlInSeconds: 0
+            identitySource: method.request.header.Authorization
+      - http:
+          path: '{proxy+}'
+          method: any
+  authorizer:
+    environment:
+      BASIC_AUTH_USER: offen
+      HASHED_BASIC_AUTH_PASSWORD: ${ssm:/aws/reference/secretsmanager/${self:custom.stage}/kms/hashedBasicAuthPassword~true}
+    package:
+      include:
+        - kms/bin/authorizer
+    handler: kms/bin/authorizer
+
+resources:
+  Resources:
+    GatewayResponse:
+      Type: 'AWS::ApiGateway::GatewayResponse'
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.WWW-Authenticate: "'Basic'"
+        ResponseType: UNAUTHORIZED
+        RestApiId:
+          Ref: 'ApiGatewayRestApi'
+        StatusCode: '401'

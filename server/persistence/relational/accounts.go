@@ -29,6 +29,7 @@ func (r *relationalDatabase) GetAccount(accountID string, events bool) (persiste
 	result := persistence.AccountResult{
 		AccountID: account.AccountID,
 		PublicKey: key,
+		Name:      account.Name,
 	}
 
 	if events {
@@ -84,7 +85,7 @@ func (r *relationalDatabase) AssociateUserSecret(accountID, userID, encryptedUse
 		}
 
 		var affected []Event
-		txn.Find(&affected, "hashed_user_id = ?", parkedHash)
+		r.db.Find(&affected, "hashed_user_id = ?", hashedUserID)
 		for _, ev := range affected {
 			newID, err := newEventID()
 			if err != nil {

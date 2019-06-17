@@ -1,2 +1,1 @@
-- key: encryption-key
-  value: '{"identifier":"offen","cipher":"aes-gcm","timestamp":1559309532,"key":"b6a942c0c0c75cc87f37d9e880c440ac124e040f263611d9d236b8ed92e35521"}'
+{"identifier":"offen","cipher":"aes-gcm","timestamp":1559309532,"key":"b6a942c0c0c75cc87f37d9e880c440ac124e040f263611d9d236b8ed92e35521"}

@@ -7,6 +7,15 @@ var get = require('lodash/get')
 
 module.exports = store
 
+function takeEvents (numDays, events) {
+  var now = Date.now()
+  return events
+    .filter(function (event) {
+      var distance = differenceInDays(now, event.payload.timestamp)
+      return distance < numDays
+    })
+}
+
 function groupEvents (numDays, events) {
   var now = new Date()
   var dates = {}
@@ -24,16 +33,25 @@ function groupEvents (numDays, events) {
   return dates
 }
 
-function getUnique (numDays /* , ...path */) {
-  var path = [].slice.call(arguments, 1)
+function getReferrers (events) {
+  return events
+    .filter(function (event) {
+      return event.payload && event.payload.referrer
+    })
+    .reduce(function (acc, event) {
+      var url = new window.URL(event.payload.referrer)
+      var host = url.host
+      acc[host] = acc[host] || 0
+      acc[host]++
+      return acc
+    }, {})
+}
+
+function getUnique (/* , ...path */) {
+  var path = [].slice.call(arguments, 0)
   path = path.join('.')
   return function (events) {
-    var now = new Date()
     var elements = events
-      .filter(function (event) {
-        var distance = differenceInDays(now, event.payload.timestamp)
-        return distance < numDays
-      })
       .reduce(function (acc, event) {
         var value = get(event, path)
         if (value) {
@@ -61,10 +79,13 @@ function store (state, emitter) {
       .then(function (message) {
         var result = message.payload.result
         var numDays = parseInt(state.query.num_days, 10) || 7
+        var scopedEvents = takeEvents(numDays, result.events)
         state.model = {
-          eventsByDate: groupEvents(numDays, result),
-          uniqueSessions: getUnique(numDays, 'payload', 'sessionId')(result),
-          uniqueUsers: getUnique(numDays, 'user_id')(result)
+          eventsByDate: groupEvents(numDays, result.events),
+          uniqueSessions: getUnique('payload', 'sessionId')(scopedEvents),
+          uniqueUsers: getUnique('user_id')(scopedEvents),
+          referrers: getReferrers(scopedEvents),
+          account: result.account
         }
       })
       .catch(function (err) {

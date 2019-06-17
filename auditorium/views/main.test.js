@@ -45,20 +45,21 @@ describe('views/main.js', function () {
       assert(message)
     })
 
-    it('renders 3 sections when passed data', function () {
+    it('renders 4 sections when passed data', function () {
       app.state.model = {
         eventsByDate: {
           '12.12.2019': []
         },
         uniqueUsers: 4,
         uniqueSessions: 12,
-        loading: false
+        loading: false,
+        referrers: {}
       }
       var result = mainView(app.state, app.emit)
 
       var headlines = result.querySelectorAll('h4')
       assert(headlines)
-      assert.strictEqual(headlines.length, 3)
+      assert.strictEqual(headlines.length, 4)
 
       var chart = result.querySelector('.ct-chart')
       assert(chart)

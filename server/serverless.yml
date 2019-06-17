@@ -1,0 +1,54 @@
+service:
+  name: server
+  awsKmsKeyArn: ${ssm:/aws/reference/secretsmanager/${self:custom.stage}/all/kmsArn~true}
+
+provider:
+  name: aws
+  endpointType: regional
+  runtime: go1.x
+  stage: alpha
+  region: eu-central-1
+  apiName: offen-${self:provider.stage}
+  logs:
+    restApi: true
+
+package:
+  individually: true
+  excludeDevDependencies: false
+  exclude:
+  - '**/*'
+
+plugins:
+  - serverless-domain-manager
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+  domain:
+    production: server.offen.dev
+    staging: server-staging.offen.dev
+    alpha: server-alpha.offen.dev
+  origin:
+    production: vault.offen.dev
+    staging: vault-staging.offen.dev
+    alpha: vault-alpha.offen.dev
+  customDomain:
+    basePath: ''
+    certificateName: '*.offen.dev'
+    domainName: ${self:custom.domain.${self:custom.stage}}
+    stage: ${self:custom.stage}
+    endpointType: regional
+    createRoute53Record: false
+
+functions:
+  app:
+    package:
+      include:
+      - server/bin/server
+    handler: server/bin/server
+    environment:
+      CORS_ORIGIN: https://${self:custom.origin.${self:custom.stage}}
+      POSTGRES_CONNECTION_STRING: ${ssm:/aws/reference/secretsmanager/${self:custom.stage}/server/postgresConnectionString~true}
+    events:
+      - http:
+          path: '{proxy+}'
+          method: any

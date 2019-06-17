@@ -14,7 +14,7 @@ import (
 )
 
 func TestMain(m *testing.M) {
-	os.Setenv("PATH_PREFIX", "./../../")
+	os.Setenv("KEY_FILE", "./../../key.txt")
 	go main()
 	time.Sleep(time.Millisecond * 50)
 	os.Exit(m.Run())

@@ -27,6 +27,7 @@ function view (state, emit) {
     emit('offen:query', state.params)
     state.model = {
       eventsByDate: {},
+      referrers: {},
       uniqueUsers: 0,
       uniqueSessions: 0,
       loading: true
@@ -43,6 +44,17 @@ function view (state, emit) {
       <p class="error">An error occured: ${state.model.error.message}</p>
     `
     return layout(content)
+  }
+
+  var accountHeader = null
+  if (state.params && state.params.account_id) {
+    accountHeader = html`
+      <h3>Account: <strong>${state.model.account.name}</strong></h3>
+    `
+  } else {
+    accountHeader = html`
+      <h3>Your data across all sites</h3>
+    `
   }
 
   var numDays = parseInt(state.query.num_days, 10) || 7
@@ -63,5 +75,41 @@ function view (state, emit) {
     ${state.cache(BarChart, 'bar-chart').render(state.model.eventsByDate)}
   `
 
-  return layout(users, sessions, chart)
+  var referrerData = Object.keys(state.model.referrers)
+    .map(function (host) {
+      return { host: host, pageviews: state.model.referrers[host] }
+    })
+    .sort(function (a, b) {
+      if (a.pageviews > b.pageviews) {
+        return -1
+      } else if (a.pageviews === b.pageviews) {
+        return 0
+      }
+      return 1
+    })
+    .map(function (row) {
+      return html`
+        <tr>
+          <td>${row.host}</td>
+          <td>${row.pageviews}</td>
+        </tr>
+      `
+    })
+
+  var referrers = html`
+    <h4>Top referrers:</h4>
+    <table class="u-full-width">
+      <thead>
+        <tr>
+          <td>Host</td>
+          <td>Pageviews</td>
+        </tr>
+      </thead>
+      <tbody>
+        ${referrerData}
+      </tbody>
+    </table>
+  `
+
+  return layout(accountHeader, users, sessions, chart, referrers)
 }
