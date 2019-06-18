@@ -97,7 +97,7 @@ function view (state, emit) {
     })
 
   var referrers = html`
-    <h4>Top referrers:</h4>
+    <h4>Top referrers in the last ${numDays} days:</h4>
     <table class="u-full-width">
       <thead>
         <tr>

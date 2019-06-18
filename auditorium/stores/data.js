@@ -38,9 +38,14 @@ function getReferrers (events) {
     .filter(function (event) {
       return event.payload && event.payload.referrer
     })
-    .reduce(function (acc, event) {
+    .map(function (event) {
       var url = new window.URL(event.payload.referrer)
-      var host = url.host
+      return url.host || url.href
+    })
+    .filter(function (host) {
+      return host
+    })
+    .reduce(function (acc, host) {
       acc[host] = acc[host] || 0
       acc[host]++
       return acc
