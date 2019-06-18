@@ -1,6 +1,6 @@
 service:
   name: auditorium
-  awsKmsKeyArn: ${ssm:/aws/reference/secretsmanager/${self:custom.stage}/kmsArn~true}
+  awsKmsKeyArn: ${ssm:/aws/reference/secretsmanager/${self:custom.stage}/all/kmsArn~true}
 
 plugins:
   - serverless-finch
