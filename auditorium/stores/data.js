@@ -94,8 +94,14 @@ function store (state, emitter) {
         }
       })
       .catch(function (err) {
-        console.error(err)
-        state.model.error = err
+        if (process.env.NODE_ENV !== 'production') {
+          console.error(err)
+          if (err.originalStack) {
+            console.log('Error has been thrown in vault with original stacktrace:')
+            console.log(err.originalStack)
+          }
+        }
+        state.model.error = { message: err.message, stack: err.originalStack || err.stack }
       })
       .then(function () {
         state.model.loading = false

@@ -42,6 +42,7 @@ function view (state, emit) {
   if (state.model.error) {
     var content = html`
       <p class="error">An error occured: ${state.model.error.message}</p>
+      <pre>${state.model.error.stack}</pre>
     `
     return layout(content)
   }
