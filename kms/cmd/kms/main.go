@@ -20,8 +20,6 @@ import (
 func main() {
 	var (
 		port     = flag.Int("port", 8080, "the port the server binds to")
-		certFile = flag.String("cert", "", "the path to a SSL certificate in PEM format")
-		keyFile  = flag.String("key", "", "the path to a SSL key in PEM format")
 		logLevel = flag.String("level", "info", "the application's log level")
 		origin   = flag.String("origin", "*", "the CORS origin")
 	)
@@ -48,16 +46,11 @@ func main() {
 	}
 
 	go func() {
-		if *certFile != "" && *keyFile != "" {
-			if err := srv.ListenAndServeTLS(*certFile, *keyFile); err != nil {
-				log.Fatal(err)
-			}
-		} else {
-			if err := srv.ListenAndServe(); err != nil {
-				log.Fatal(err)
-			}
+		if err := srv.ListenAndServe(); err != nil {
+			log.Fatal(err)
 		}
 	}()
+
 	logger.Infof("KMS server now listening on port %d.", *port)
 	quit := make(chan os.Signal)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM, syscall.SIGKILL, syscall.SIGHUP)

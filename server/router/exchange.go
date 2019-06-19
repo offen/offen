@@ -3,7 +3,7 @@ package router
 import (
 	"encoding/json"
 	"net/http"
-	"time"
+	"os"
 
 	"github.com/gofrs/uuid"
 	"github.com/offen/offen/server/persistence"
@@ -62,13 +62,9 @@ func (rt *router) postUserSecret(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	http.SetCookie(w, &http.Cookie{
-		Name:     cookieKey,
-		Value:    userID,
-		Expires:  time.Now().Add(time.Hour * 24 * 365),
-		HttpOnly: true,
-		Secure:   true,
-	})
+	_, secureCookie := os.LookupEnv("SECURE_COOKIE")
+	cookie := newCookie(userID, secureCookie)
+	http.SetCookie(w, cookie)
 
 	w.WriteHeader(http.StatusNoContent)
 }

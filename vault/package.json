@@ -4,7 +4,7 @@
   "private": true,
   "main": "index.js",
   "scripts": {
-    "start": "budo index.js --live --ssl --cert local.offen.dev.pem --key local.offen.dev-key.pem",
+    "start": "budo index.js --live",
     "pretest": "dependency-check package.json",
     "test": "mochify --allow-chrome-as-root ./**/*.test.js",
     "posttest": "standard",

@@ -21,8 +21,6 @@ func main() {
 		port             = flag.Int("port", 8080, "the port the server binds to")
 		connectionString = flag.String("conn", "", "a database connection string")
 		dialect          = flag.String("dialect", "postgres", "the database dialect used by the given connection string")
-		certFile         = flag.String("cert", "", "the path to a SSL certificate in PEM format")
-		keyFile          = flag.String("key", "", "the path to a SSL key in PEM format")
 		origin           = flag.String("origin", "*", "the origin used in CORS headers")
 		logLevel         = flag.String("level", "info", "the application's log level")
 	)
@@ -49,16 +47,11 @@ func main() {
 	}
 
 	go func() {
-		if *certFile != "" && *keyFile != "" {
-			if err := srv.ListenAndServeTLS(*certFile, *keyFile); err != nil {
-				log.Fatal(err)
-			}
-		} else {
-			if err := srv.ListenAndServe(); err != nil {
-				log.Fatal(err)
-			}
+		if err := srv.ListenAndServe(); err != nil {
+			log.Fatal(err)
 		}
 	}()
+
 	logger.Infof("Server now listening on port %d.", *port)
 	quit := make(chan os.Signal)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM, syscall.SIGKILL, syscall.SIGHUP)
