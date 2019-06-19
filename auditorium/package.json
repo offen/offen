@@ -4,7 +4,7 @@
   "private": true,
   "main": "index.js",
   "scripts": {
-    "start": "budo index.js --live --pushstate --ssl --cert local.offen.dev.pem --key local.offen.dev-key.pem",
+    "start": "budo index.js --live --pushstate",
     "test": "npm run server & (VAULT_HOST=http://localhost:9876 npm run mochify; status=$?; kill $(lsof -t -i:9876); exit $status)",
     "mochify": "mochify --allow-chrome-as-root {,**}/*.test.js",
     "server": "http-server __fixtures__ -p 9876 -s",

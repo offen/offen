@@ -46,6 +46,7 @@ functions:
       - server/bin/server
     handler: server/bin/server
     environment:
+      SECURE_COOKIE: 1
       CORS_ORIGIN: https://${self:custom.origin.${self:custom.stage}}
       POSTGRES_CONNECTION_STRING: ${ssm:/aws/reference/secretsmanager/${self:custom.stage}/server/postgresConnectionString~true}
     events:
