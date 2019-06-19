@@ -68,7 +68,6 @@ func (rt *router) postUserSecret(w http.ResponseWriter, r *http.Request) {
 		Expires:  time.Now().Add(time.Hour * 24 * 365),
 		HttpOnly: true,
 		Secure:   true,
-		SameSite: http.SameSiteStrictMode,
 	})
 
 	w.WriteHeader(http.StatusNoContent)
