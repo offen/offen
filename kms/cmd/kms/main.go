@@ -19,9 +19,9 @@ import (
 
 func main() {
 	var (
-		port     = flag.Int("port", 8080, "the port the server binds to")
+		port     = flag.String("port", os.Getenv("PORT"), "the port the server binds to")
 		logLevel = flag.String("level", "info", "the application's log level")
-		origin   = flag.String("origin", "*", "the CORS origin")
+		origin   = flag.String("origin", "http://localhost:9977", "the CORS origin")
 	)
 	flag.Parse()
 
@@ -41,7 +41,7 @@ func main() {
 		logger.WithError(err).Fatal("error setting up keymanager")
 	}
 	srv := &http.Server{
-		Addr:    fmt.Sprintf("0.0.0.0:%v", *port),
+		Addr:    fmt.Sprintf("0.0.0.0:%s", *port),
 		Handler: router.New(*origin, manager, logger),
 	}
 
@@ -51,7 +51,7 @@ func main() {
 		}
 	}()
 
-	logger.Infof("KMS server now listening on port %d.", *port)
+	logger.Infof("KMS server now listening on port %s.", *port)
 	quit := make(chan os.Signal)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM, syscall.SIGKILL, syscall.SIGHUP)
 	<-quit

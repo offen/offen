@@ -16,13 +16,27 @@ Project planning and issue tracking is done using [Pivotal Tracker](https://www.
 
 ### Developing the application
 
-You can test setup by starting the application:
+The development setup requires `docker` and `docker-compose` to be installed.
 
+After cloning the repository, you can build the containers and install dependencies using:
+
+```sh
+$ make setup
 ```
+
+Next, create a local encryption key for the `kms` service and seed the database for the `server` application:
+
+```sh
+$ make bootstrap
+```
+
+You can test your setup by starting the application:
+
+```sh
 $ docker-compose up
 ```
 
-Now you should be able to access <http://localhost:8080/status> seeing a successful response.
+which should enable you to access <http://localhost:8080/status> seeing a successful response.
 
 ### License
 

@@ -1,47 +1,54 @@
 version: '3'
 
 services:
-  kms:
-    image: golang:1.12
-    working_dir: /code/kms
-    volumes:
-      - .:/code
-      - $GOPATH/pkg/mod:/go/pkg/mod
-    environment:
-      - GOPATH=/go
-      - KEY_FILE=key.txt
-    ports:
-      - 8081:8081
-    command: go run cmd/kms/main.go -port 8081 -origin http://localhost:9977
-
-  server:
-    image: golang:1.12
-    working_dir: /code/server
-    volumes:
-      - .:/code
-      - $GOPATH/pkg/mod:/go/pkg/mod
-    environment:
-      - GOPATH=/go
-      - POSTGRES_CONNECTION_STRING=postgres://postgres:develop@database:5432/postgres?sslmode=disable
-      - KMS_ENCRYPTION_ENDPOINT=http://kms:8081/encrypt
-    ports:
-      - 8080:8080
-    command: go run cmd/server/main.go -origin http://localhost:9977 -conn postgres://postgres:develop@database:5432/postgres?sslmode=disable -level debug
-    links:
-      - database
-    depends_on:
-      - kms
-
   database:
     image: postgres:11.2
     environment:
       - POSTGRES_PASSWORD=develop
 
+  kms:
+    build:
+      context: '.'
+      dockerfile: Dockerfile.golang
+    working_dir: /offen/kms
+    volumes:
+      - .:/offen
+      - kmsdeps:/go/pkg/mod
+    environment:
+      - KEY_FILE=key.txt
+      - PORT=8081
+    ports:
+      - 8081:8081
+    command: refresh run
+
+  server:
+    build:
+      context: '.'
+      dockerfile: Dockerfile.golang
+    working_dir: /offen/server
+    volumes:
+      - .:/offen
+      - serverdeps:/go/pkg/mod
+    environment:
+      - POSTGRES_CONNECTION_STRING=postgres://postgres:develop@database:5432/postgres?sslmode=disable
+      - KMS_ENCRYPTION_ENDPOINT=http://kms:8081/encrypt
+      - PORT=8080
+    ports:
+      - 8080:8080
+    command: refresh run
+    links:
+      - database
+    depends_on:
+      - kms
+
   vault:
-    image: timbru31/node-chrome:slim
+    build:
+      context: '.'
+      dockerfile: Dockerfile.node
     working_dir: /offen/vault
     volumes:
       - .:/offen
+      - vaultdeps:/offen/vault/node_modules
     command: npm start -- --port 9977
     ports:
       - 9977:9977
@@ -51,10 +58,13 @@ services:
       - AUDITORIUM_HOST=http://localhost:9955
 
   script:
-    image: timbru31/node-chrome:slim
+    build:
+      context: '.'
+      dockerfile: Dockerfile.node
     working_dir: /offen/script
     volumes:
       - .:/offen
+      - scriptdeps:/offen/script/node_modules
     command: npm start -- --port 9966
     ports:
       - 9966:9966
@@ -62,12 +72,22 @@ services:
       - VAULT_HOST=http://localhost:9977
 
   auditorium:
-    image: timbru31/node-chrome:slim
+    build:
+      context: '.'
+      dockerfile: Dockerfile.node
     working_dir: /offen/auditorium
     volumes:
       - .:/offen
+      - auditoriumdeps_2:/offen/auditorium/node_modules
     command: npm start -- --port 9955
     ports:
       - 9955:9955
     environment:
       - VAULT_HOST=http://localhost:9977
+
+volumes:
+  kmsdeps:
+  serverdeps:
+  scriptdeps:
+  auditoriumdeps_2:
+  vaultdeps:

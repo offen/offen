@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"flag"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"time"
@@ -29,5 +30,7 @@ func main() {
 	if err := ioutil.WriteFile(*out, b, 0644); err != nil {
 		panic(err)
 	}
-
+	fmt.Printf(`Successfully created keyfile "%s".
+If in development, you will now need to recreate your database.
+`, *out)
 }

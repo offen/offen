@@ -2,7 +2,7 @@
 
 `kms` exposes a HTTP API that can be used to encrypt and decrypt the `PrivateKey`s of operator's keypair. It should not be accessible to any entity other than operators.
 
-`ksm` is a Go application that uses Go modules for dependency management. The expected Go version is 1.12.
+`kms` is a Go application that uses Go modules for dependency management. The expected Go version is 1.12.
 
 ---
 
