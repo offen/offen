@@ -10,13 +10,15 @@ import (
 
 func (r *relationalDatabase) GetAccount(accountID string, events bool) (persistence.AccountResult, error) {
 	var account Account
+
 	queryDB := r.db
 	if events {
 		queryDB = queryDB.Preload("Events").Preload("Events.User")
 	}
+
 	if err := queryDB.Find(&account, "account_id = ?", accountID).Error; err != nil {
 		if gorm.IsRecordNotFoundError(err) {
-			return persistence.AccountResult{}, persistence.ErrUnknownAccount(fmt.Sprintf("account id %s unknown", accountID))
+			return persistence.AccountResult{}, persistence.ErrUnknownAccount(fmt.Sprintf(`account id "%s" unknown`, accountID))
 		}
 		return persistence.AccountResult{}, err
 	}
@@ -47,10 +49,9 @@ func (r *relationalDatabase) GetAccount(accountID string, events bool) (persiste
 		})
 		userSecrets[evt.HashedUserID] = evt.User.EncryptedUserSecret
 	}
-	if len(eventResults) != 0 {
-		result.Events = &eventResults
-		result.UserSecrets = &userSecrets
-	}
+
+	result.Events = &eventResults
+	result.UserSecrets = &userSecrets
 
 	return result, nil
 }

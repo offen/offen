@@ -10,15 +10,13 @@ function getOperatorEvents (query) {
   return api.getAccount(accountId)
     .then(function (_account) {
       account = _account
-      account.events = account.events || []
-      account.user_secrets = account.user_secrets || []
       return api.decryptPrivateKey(account.encrypted_private_key)
     })
     .then(function (result) {
       return crypto.importPrivateKey(result.decrypted)
     })
     .then(function (privateKey) {
-      var userSecretDecryptions = Object.keys(account.user_secrets || {})
+      var userSecretDecryptions = Object.keys(account.user_secrets)
         .map(function (hashedUserId) {
           var encrpytedSecret = account.user_secrets[hashedUserId]
           var decryptSecret = crypto.decryptAsymmetricWith(privateKey)
@@ -36,7 +34,8 @@ function getOperatorEvents (query) {
         return acc
       }, {})
 
-      var events = (account.events[accountId] || [])
+      // there might not be events for the given account at all
+      var events = account.events[accountId] || []
       var eventDecryptions = events.map(function (event) {
         var userSecret = byHashedUserId[event.user_id]
         if (!userSecret) {

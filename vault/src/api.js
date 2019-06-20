@@ -48,6 +48,14 @@ function getEventsWith (accountsUrl) {
         credentials: 'include'
       })
       .then(handleFetchResponse)
+      .then(function (response) {
+        if (response === null) {
+          // this means the server responded with a 204
+          // and the user likely has Do Not Track enabled.
+          return { events: [] }
+        }
+        return response
+      })
   }
 }
 
