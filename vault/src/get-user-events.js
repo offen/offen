@@ -17,7 +17,7 @@ function getUserEvents (query) {
       // in case a user without a cookie tries to query for events a 400
       // will be returned
       if (err.status === 400) {
-        return []
+        return { events: [] }
       }
       throw err
     })
