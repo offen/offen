@@ -5,7 +5,6 @@ go 1.12
 require (
 	github.com/SSSaaS/sssa-golang v0.0.0-20170502204618-d37d7782d752 // indirect
 	github.com/aws/aws-lambda-go v1.11.1
-	github.com/aws/aws-sdk-go v1.19.47
 	github.com/awslabs/aws-lambda-go-api-proxy v0.3.0
 	github.com/ghodss/yaml v1.0.0 // indirect
 	github.com/juju/errors v0.0.0-20190207033735-e65537c515d7 // indirect
