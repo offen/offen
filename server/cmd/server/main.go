@@ -18,10 +18,10 @@ import (
 
 func main() {
 	var (
-		port             = flag.Int("port", 8080, "the port the server binds to")
-		connectionString = flag.String("conn", "", "a database connection string")
+		port             = flag.String("port", os.Getenv("PORT"), "the port the server binds to")
+		connectionString = flag.String("conn", os.Getenv("POSTGRES_CONNECTION_STRING"), "a database connection string")
 		dialect          = flag.String("dialect", "postgres", "the database dialect used by the given connection string")
-		origin           = flag.String("origin", "*", "the origin used in CORS headers")
+		origin           = flag.String("origin", "http://localhost:9977", "the origin used in CORS headers")
 		logLevel         = flag.String("level", "info", "the application's log level")
 	)
 	flag.Parse()
@@ -42,7 +42,7 @@ func main() {
 	}
 
 	srv := &http.Server{
-		Addr:    fmt.Sprintf("0.0.0.0:%v", *port),
+		Addr:    fmt.Sprintf("0.0.0.0:%s", *port),
 		Handler: router.New(db, logger, *origin),
 	}
 
@@ -52,7 +52,7 @@ func main() {
 		}
 	}()
 
-	logger.Infof("Server now listening on port %d.", *port)
+	logger.Infof("Server now listening on port %s.", *port)
 	quit := make(chan os.Signal)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM, syscall.SIGKILL, syscall.SIGHUP)
 	<-quit

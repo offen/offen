@@ -1,0 +1,8 @@
+app_root: .
+included_extensions:
+  - .go
+build_path: /tmp
+build_delay: 200ms
+build_target_path : ./cmd/kms
+binary_name: refresh-build
+enable_colors: true

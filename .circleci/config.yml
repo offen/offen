@@ -4,6 +4,8 @@ jobs:
   kms:
     docker:
       - image: circleci/golang:1.12
+        environment:
+          - PORT=8081
     working_directory: ~/offen/kms
     steps:
       - checkout:
@@ -29,6 +31,7 @@ jobs:
       - image: circleci/golang:1.12
         environment:
           - POSTGRES_CONNECTION_STRING=postgres://circle:test@localhost:5432/circle_test?sslmode=disable
+          - PORT=8080
       - image: circleci/postgres:11.2-alpine
         environment:
           - POSTGRES_USER=circle

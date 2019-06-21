@@ -25,7 +25,7 @@ func TestKMS_Encrypt_Decrypt(t *testing.T) {
 		var result string
 		{
 			body := strings.NewReader(`{"decrypted":"expected-value"}`)
-			req, err := http.NewRequest(http.MethodPost, "http://localhost:8080/encrypt", body)
+			req, err := http.NewRequest(http.MethodPost, "http://localhost:8081/encrypt", body)
 			if err != nil {
 				t.Fatalf("Unexpected error %v", err)
 			}
@@ -49,7 +49,7 @@ func TestKMS_Encrypt_Decrypt(t *testing.T) {
 		var result2 string
 		{
 			body := strings.NewReader(fmt.Sprintf(`{"encrypted":"%s"}`, result))
-			req, err := http.NewRequest(http.MethodPost, "http://localhost:8080/decrypt", body)
+			req, err := http.NewRequest(http.MethodPost, "http://localhost:8081/decrypt", body)
 			if err != nil {
 				t.Fatalf("Unexpected error %v", err)
 			}
@@ -78,7 +78,7 @@ func TestKMS_Encrypt_Decrypt(t *testing.T) {
 func TestKMS_Encrypt(t *testing.T) {
 	t.Run("malformed body", func(t *testing.T) {
 		body := strings.NewReader(`plain text payload`)
-		req, err := http.NewRequest(http.MethodPost, "http://localhost:8080/encrypt", body)
+		req, err := http.NewRequest(http.MethodPost, "http://localhost:8081/encrypt", body)
 		if err != nil {
 			t.Fatalf("Unexpected error %v", err)
 		}

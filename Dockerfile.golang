@@ -1,0 +1,9 @@
+FROM golang:1.12
+
+ENV GOPATH=/go
+
+WORKDIR /offen
+# this is used for hot-reloading applications on change
+# configuration is found in the application directories
+# themselves
+RUN go get github.com/markbates/refresh
