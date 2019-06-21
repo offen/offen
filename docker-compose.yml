@@ -78,7 +78,7 @@ services:
     working_dir: /offen/auditorium
     volumes:
       - .:/offen
-      - auditoriumdeps_2:/offen/auditorium/node_modules
+      - auditoriumdeps:/offen/auditorium/node_modules
     command: npm start -- --port 9955
     ports:
       - 9955:9955
@@ -89,5 +89,5 @@ volumes:
   kmsdeps:
   serverdeps:
   scriptdeps:
-  auditoriumdeps_2:
+  auditoriumdeps:
   vaultdeps:
