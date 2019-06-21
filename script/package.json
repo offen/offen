@@ -6,7 +6,7 @@
   "scripts": {
     "start": "budo index.js --live",
     "test": "npm run server & (npm run mochify; status=$?; kill $(lsof -t -i:9876); exit $status)",
-    "mochify": "mochify --allow-chrome-as-root {,**}/*.test.js",
+    "mochify": "mochify --chrome $(which google-chrome) --allow-chrome-as-root {,**}/*.test.js",
     "server": "http-server __fixtures__ -p 9876 -s",
     "pretest": "dependency-check package.json",
     "posttest": "standard",
