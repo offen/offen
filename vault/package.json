@@ -6,7 +6,7 @@
   "scripts": {
     "start": "budo index.js --live",
     "pretest": "dependency-check package.json",
-    "test": "mochify --allow-chrome-as-root ./**/*.test.js",
+    "test": "mochify --chrome $(which google-chrome) --allow-chrome-as-root ./**/*.test.js",
     "posttest": "standard",
     "fix": "standard --fix",
     "build": "npm run build:bundle && npm run build:inline",
