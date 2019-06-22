@@ -55,6 +55,7 @@ func (rt *router) postEvents(w http.ResponseWriter, r *http.Request) {
 	}
 
 	b, _ := json.Marshal(ackResponse{true})
+	http.SetCookie(w, rt.userCookie(userID))
 	w.Write(b)
 }
 

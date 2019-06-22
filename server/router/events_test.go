@@ -10,6 +10,7 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/offen/offen/server/persistence"
 )
@@ -83,7 +84,7 @@ func TestRouter_PostEvents(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			rt := router{test.db, nil}
+			rt := router{test.db, nil, false}
 			w := httptest.NewRecorder()
 			r := httptest.NewRequest(http.MethodPost, "/", test.body)
 			r = r.WithContext(context.WithValue(r.Context(), contextKeyCookie, test.userID))
@@ -96,6 +97,34 @@ func TestRouter_PostEvents(t *testing.T) {
 			}
 		})
 	}
+
+	t.Run("cookie renewal", func(t *testing.T) {
+		rt := router{&mockInsertDatabase{}, nil, true}
+		w := httptest.NewRecorder()
+		r := httptest.NewRequest(http.MethodPost, "/", bytes.NewReader([]byte(`{"account_id":"account-identifier","payload":"payload-value"}`)))
+		r = r.WithContext(context.WithValue(r.Context(), contextKeyCookie, "user-token"))
+		r.AddCookie(&http.Cookie{
+			Name:    "user",
+			Value:   "user-token",
+			Expires: time.Now().Add(time.Hour),
+			Secure:  true,
+		})
+		rt.postEvents(w, r)
+		if w.Code != http.StatusOK {
+			t.Errorf("Expected status code %d, got %d", http.StatusOK, w.Code)
+		}
+		responseCookies := w.Result().Cookies()
+		userCookie := responseCookies[0]
+		if userCookie.Name != "user" {
+			t.Errorf("Unexpected cookie name %s", userCookie.Name)
+		}
+		if userCookie.Expires.Before(time.Now().Add(time.Hour * 24 * 89)) {
+			t.Errorf("Unexpected cookie expiry %s", userCookie.Expires)
+		}
+		if userCookie.Secure != true {
+			t.Error("Expected secure cookie")
+		}
+	})
 }
 
 type mockQueryDatabase struct {
@@ -171,7 +200,7 @@ func TestRouter_GetEvents(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			rt := router{test.db, nil}
+			rt := router{test.db, nil, false}
 			w := httptest.NewRecorder()
 			r := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/%s", test.queryString), nil)
 			r = r.WithContext(context.WithValue(r.Context(), contextKeyCookie, test.userID))

@@ -23,6 +23,7 @@ func main() {
 		dialect          = flag.String("dialect", "postgres", "the database dialect used by the given connection string")
 		origin           = flag.String("origin", "http://localhost:9977", "the origin used in CORS headers")
 		logLevel         = flag.String("level", "info", "the application's log level")
+		secureCookie     = flag.Bool("secure", false, "use secure cookies")
 	)
 	flag.Parse()
 
@@ -43,7 +44,7 @@ func main() {
 
 	srv := &http.Server{
 		Addr:    fmt.Sprintf("0.0.0.0:%s", *port),
-		Handler: router.New(db, logger, *origin),
+		Handler: router.New(db, logger, *secureCookie, *origin),
 	}
 
 	go func() {
