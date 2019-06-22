@@ -29,7 +29,9 @@ func init() {
 		origin = val
 	}
 
-	rt := router.New(db, logger, origin)
+	_, secureCookies := os.LookupEnv("SECURE_COOKIE")
+
+	rt := router.New(db, logger, secureCookies, origin)
 	adapter = httpadapter.New(rt)
 }
 

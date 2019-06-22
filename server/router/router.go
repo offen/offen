@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"net/http"
+	"time"
 
 	"github.com/m90/go-thunk"
 	logrusmiddleware "github.com/offen/logrus-middleware"
@@ -13,13 +14,24 @@ import (
 )
 
 type router struct {
-	db     persistence.Database
-	logger *logrus.Logger
+	db           persistence.Database
+	logger       *logrus.Logger
+	secureCookie bool
 }
 
 func (rt *router) logError(err error, message string) {
 	if rt.logger != nil {
 		rt.logger.WithError(err).Error(message)
+	}
+}
+
+func (rt *router) userCookie(userID string) *http.Cookie {
+	return &http.Cookie{
+		Name:     cookieKey,
+		Value:    userID,
+		Expires:  time.Now().Add(time.Hour * 24 * 90),
+		HttpOnly: true,
+		Secure:   rt.secureCookie,
 	}
 }
 
@@ -82,8 +94,8 @@ func (rt *router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 // to the given database implementation. In the context of the application
 // this expects to be the only top level router in charge of handling all
 // incoming HTTP requests.
-func New(db persistence.Database, logger *logrus.Logger, origin string) http.Handler {
-	router := &router{db, logger}
+func New(db persistence.Database, logger *logrus.Logger, secureCookie bool, origin string) http.Handler {
+	router := &router{db, logger, secureCookie}
 	withContentType := httputil.ContentTypeMiddleware(router, "application/json")
 	l := logrusmiddleware.Middleware{
 		Logger: logger,
