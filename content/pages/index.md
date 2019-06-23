@@ -11,4 +11,13 @@ __offen__ treats both users and operators as parties of equal importance. Users 
 
 __offen__ is currently being conceptually designed and is applying for funds to sustain its development.
 
-<a href="./deep-dive/" class="btn">Deep dive</a>
+
+<div class="button-wrapper btn-fill-space">
+<a class="btn btn-color-grey" href="./deep-dive/">Deep dive</a>
+<a class="btn btn-color-orange" href="mailto:mail@offen.dev">Contact</a>
+</div>
+
+<div class="button-wrapper btn-fill-space">
+<a class="btn btn-color-orange" href="https://github.com/offen" target="_blank">Get involved</a>
+<a class="btn btn-color-orange" href="https://www.patreon.com/bePatron?u=21484999" target="_blank">Support us</a>
+</div>

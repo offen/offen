@@ -75,7 +75,15 @@ __offen__ is created by [Frederik Ring][frederik-ring]{: target="_blank"} and [H
 
 We are happy about any kind of feedback. From *criticism and praise to contributions or support*, everything is welcome.
 
-<a href="../" class="btn">Summary</a>
+<div class="button-wrapper btn-fill-space">
+<a class="btn btn-color-grey" href="../">Summary</a>
+<a class="btn btn-color-orange" href="mailto:mail@offen.dev">Contact</a>
+</div>
+
+<div class="button-wrapper btn-fill-space">
+<a class="btn btn-color-orange" href="https://github.com/offen" target="_blank">Get involved</a>
+<a class="btn btn-color-orange" href="https://www.patreon.com/bePatron?u=21484999" target="_blank">Support us</a>
+</div>
 
 ---
 
