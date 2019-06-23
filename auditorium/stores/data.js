@@ -36,18 +36,38 @@ function groupEvents (numDays, events) {
 function getReferrers (events) {
   return events
     .filter(function (event) {
-      return event.payload && event.payload.referrer
+      if (!event.payload || !event.payload.referrer) {
+        return false
+      }
+      var referrerUrl = new window.URL(event.payload.referrer)
+      var hrefUrl = new window.URL(event.payload.href)
+      return referrerUrl.host !== hrefUrl.host
     })
     .map(function (event) {
       var url = new window.URL(event.payload.referrer)
       return url.host || url.href
     })
-    .filter(function (host) {
-      return host
+    .filter(function (referrerValue) {
+      return referrerValue
     })
-    .reduce(function (acc, host) {
-      acc[host] = acc[host] || 0
-      acc[host]++
+    .reduce(function (acc, referrerValue) {
+      acc[referrerValue] = acc[referrerValue] || 0
+      acc[referrerValue]++
+      return acc
+    }, {})
+}
+
+function getPages (events) {
+  return events
+    .map(function (event) {
+      var url = new window.URL(event.payload.href)
+      return [url.pathname, url.origin]
+    })
+    .reduce(function (acc, data) {
+      var pathname = data[0]
+      var origin = data[1]
+      acc[pathname] = acc[pathname] || { pageviews: 0, origin: origin }
+      acc[pathname].pageviews++
       return acc
     }, {})
 }
@@ -86,10 +106,11 @@ function store (state, emitter) {
         var numDays = parseInt(state.query.num_days, 10) || 7
         var scopedEvents = takeEvents(numDays, result.events)
         state.model = {
-          eventsByDate: groupEvents(numDays, result.events),
+          eventsByDate: groupEvents(numDays, scopedEvents),
           uniqueSessions: getUnique('payload', 'sessionId')(scopedEvents),
           uniqueUsers: getUnique('user_id')(scopedEvents),
           referrers: getReferrers(scopedEvents),
+          pages: getPages(scopedEvents),
           account: result.account
         }
       })
@@ -101,7 +122,10 @@ function store (state, emitter) {
             console.log(err.originalStack)
           }
         }
-        state.model.error = { message: err.message, stack: err.originalStack || err.stack }
+        state.model.error = {
+          message: err.message,
+          stack: err.originalStack || err.stack
+        }
       })
       .then(function () {
         state.model.loading = false
