@@ -73,7 +73,7 @@ function getPages (events) {
 }
 
 function getUnique (/* , ...path */) {
-  var path = [].slice.call(arguments, 0)
+  var path = [].slice.call(arguments)
   path = path.join('.')
   return function (events) {
     var elements = events
@@ -104,11 +104,14 @@ function store (state, emitter) {
       .then(function (message) {
         var result = message.payload.result
         var numDays = parseInt(state.query.num_days, 10) || 7
+        var getUniqueSessions = getUnique('payload', 'sessionId')
+        var getUniqueUsers = getUnique('user_id')
+
         var scopedEvents = takeEvents(numDays, result.events)
         state.model = {
           eventsByDate: groupEvents(numDays, scopedEvents),
-          uniqueSessions: getUnique('payload', 'sessionId')(scopedEvents),
-          uniqueUsers: getUnique('user_id')(scopedEvents),
+          uniqueSessions: getUniqueSessions(scopedEvents),
+          uniqueUsers: getUniqueUsers(scopedEvents),
           referrers: getReferrers(scopedEvents),
           pages: getPages(scopedEvents),
           account: result.account

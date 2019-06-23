@@ -63,14 +63,17 @@ function view (state, emit) {
   var numDays = parseInt(state.query.num_days, 10) || 7
 
   var uniqueEntities = state.model.uniqueUsers
-  var entityName = isOperator ? 'users' : 'accounts'
-  var users = html`
-    <h4><strong>${uniqueEntities}</strong> unique ${entityName} in the last ${numDays} days</h4>
-  `
-
   var uniqueSessions = state.model.uniqueSessions
-  var sessions = html`
-    <h4><strong>${uniqueSessions}</strong> unique sessions in the last ${numDays} days</h4>
+  var entityName = isOperator ? 'users' : 'accounts'
+  var usersAndSessions = html`
+    <div class="row">
+      <div class="six columns">
+        <h4><strong>${uniqueEntities}</strong> unique ${entityName} in the last ${numDays} days</h4>
+      </div>
+      <div class="six columns">
+        <h4><strong>${uniqueSessions}</strong> unique sessions in the last ${numDays} days</h4>
+      </div>
+    </div>
   `
 
   var chart = html`
@@ -152,5 +155,5 @@ function view (state, emit) {
     </table>
   `
 
-  return layout(accountHeader, users, sessions, chart, pages, referrers)
+  return layout(accountHeader, usersAndSessions, chart, pages, referrers)
 }
