@@ -1,6 +1,7 @@
 # offen
 [![CircleCI](https://circleci.com/gh/offen/offen/tree/master.svg?style=svg)](https://circleci.com/gh/offen/offen/tree/master)
 [![Pivotal Tracker](https://img.shields.io/static/v1.svg?label=Project+Planning&message=Pivotal+Tracker&color=informational)](https://www.pivotaltracker.com/n/projects/2334535)
+[![Patreon](https://img.shields.io/static/v1.svg?label=patreon&message=donate&color=e85b46)](https://www.patreon.com/offen)
 
 > The offen analytics software
 
