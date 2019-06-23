@@ -47,8 +47,10 @@ function view (state, emit) {
     return layout(content)
   }
 
+  var isOperator = !!(state.params && state.params.account_id)
+
   var accountHeader = null
-  if (state.params && state.params.account_id) {
+  if (isOperator) {
     accountHeader = html`
       <h3>Account: <strong>${state.model.account.name}</strong></h3>
     `
@@ -61,19 +63,60 @@ function view (state, emit) {
   var numDays = parseInt(state.query.num_days, 10) || 7
 
   var uniqueEntities = state.model.uniqueUsers
-  var entityName = state.params && state.params.account_id ? 'users' : 'accounts'
-  var users = html`
-    <h4><strong>${uniqueEntities}</strong> unique ${entityName} in the last ${numDays} days</h4>
-  `
-
   var uniqueSessions = state.model.uniqueSessions
-  var sessions = html`
-    <h4><strong>${uniqueSessions}</strong> unique sessions in the last ${numDays} days</h4>
+  var entityName = isOperator ? 'users' : 'accounts'
+  var usersAndSessions = html`
+    <div class="row">
+      <div class="six columns">
+        <h4><strong>${uniqueEntities}</strong> unique ${entityName} in the last ${numDays} days</h4>
+      </div>
+      <div class="six columns">
+        <h4><strong>${uniqueSessions}</strong> unique sessions in the last ${numDays} days</h4>
+      </div>
+    </div>
   `
 
   var chart = html`
     <h4>Pageviews in the last ${numDays} days</h4>
     ${state.cache(BarChart, 'bar-chart').render(state.model.eventsByDate)}
+  `
+
+  var pagesData = Object.keys(state.model.pages)
+    .map(function (page) {
+      return { page: page, data: state.model.pages[page] }
+    })
+    .sort(function (a, b) {
+      if (a.data.pageviews > b.data.pageviews) {
+        return -1
+      } else if (a.data.pageviews === b.data.pageviews) {
+        return 0
+      }
+      return 1
+    })
+    .map(function (row) {
+      return html`
+        <tr>
+          <td>${row.data.origin}</td>
+          <td>${row.page}</td>
+          <td>${row.data.pageviews}</td>
+        </tr>
+      `
+    })
+
+  var pages = html`
+    <h4>Top pages in the last ${numDays} days:</h4>
+    <table class="u-full-width">
+      <thead>
+        <tr>
+          <td>Host</td>
+          <td>Path</td>
+          <td>Pageviews</td>
+        </tr>
+      </thead>
+      <tbody>
+        ${pagesData}
+      </tbody>
+    </table>
   `
 
   var referrerData = Object.keys(state.model.referrers)
@@ -112,5 +155,5 @@ function view (state, emit) {
     </table>
   `
 
-  return layout(accountHeader, users, sessions, chart, referrers)
+  return layout(accountHeader, usersAndSessions, chart, pages, referrers)
 }

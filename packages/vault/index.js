@@ -31,7 +31,7 @@ function createVault (host) {
             delete responseMessage.responseTo
             window.removeEventListener('message', digestResponse)
             if (responseMessage.type === 'ERROR') {
-              const err = new Error(responseMessage.payload.error)
+              var err = new Error(responseMessage.payload.error)
               err.originalStack = responseMessage.payload.stack
               reject(err)
             }

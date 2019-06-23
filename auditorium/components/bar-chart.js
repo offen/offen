@@ -1,33 +1,32 @@
 var html = require('choo/html')
-var Chartist = require('chartist')
 var Component = require('choo/component')
-var css = require('sheetify')
+
+var Plotly = require('plotly.js-basic-dist')
 
 module.exports = BarChart
 
 function BarChart (id, state) {
   Component.call(this)
   this.local = state.components[id] = {}
-  css('chartist/dist/chartist.css')
 }
 
 BarChart.prototype = Object.create(Component.prototype)
 
 BarChart.prototype.load = function (element) {
-  this.chart = new Chartist.Bar(element, {
-    labels: Object.keys(this.local.data),
-    series: [
-      Object.values(this.local.data)
-        .map(function (events) {
-          return events.length
-        })
-    ]
+  this.plot = Plotly.newPlot(element, [{
+    type: 'bar',
+    y: Object.values(this.local.data)
+      .map(function (events) {
+        return events.length
+      })
+      .reverse(),
+    x: Object.keys(this.local.data),
+    marker: { color: '#f9d152' }
+  }], {
+    yaxis: { dtick: 1, nticks: 5 }
   }, {
-    reverseData: true,
-    horizontalBars: true,
-    axisX: {
-      onlyInteger: true
-    }
+    displayModeBar: false,
+    responsive: true
   })
 }
 
