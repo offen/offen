@@ -34,14 +34,16 @@ func TestContentTypeMiddleware(t *testing.T) {
 	})
 }
 
-func TestDoNotTrackMiddleware(t *testing.T) {
-	wrapped := DoNotTrackMiddleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+func TestOptoutMiddleware(t *testing.T) {
+	wrapped := OptoutMiddleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("hey there"))
 	}))
 	t.Run("with header", func(t *testing.T) {
 		w := httptest.NewRecorder()
 		r := httptest.NewRequest(http.MethodGet, "/", nil)
-		r.Header.Set("DNT", "1")
+		r.AddCookie(&http.Cookie{
+			Name: "optout",
+		})
 		wrapped.ServeHTTP(w, r)
 
 		if w.Code != http.StatusNoContent {
@@ -55,20 +57,6 @@ func TestDoNotTrackMiddleware(t *testing.T) {
 	t.Run("without header", func(t *testing.T) {
 		w := httptest.NewRecorder()
 		r := httptest.NewRequest(http.MethodGet, "/", nil)
-		wrapped.ServeHTTP(w, r)
-
-		if w.Code != http.StatusOK {
-			t.Errorf("Unexpected status code %d", w.Code)
-		}
-
-		if w.Body.String() != "hey there" {
-			t.Errorf("Unexpected response body %s", w.Body.String())
-		}
-	})
-	t.Run("with header allowing", func(t *testing.T) {
-		w := httptest.NewRecorder()
-		r := httptest.NewRequest(http.MethodGet, "/", nil)
-		r.Header.Set("DNT", "0")
 		wrapped.ServeHTTP(w, r)
 
 		if w.Code != http.StatusOK {

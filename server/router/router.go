@@ -14,9 +14,10 @@ import (
 )
 
 type router struct {
-	db           persistence.Database
-	logger       *logrus.Logger
-	secureCookie bool
+	db                persistence.Database
+	logger            *logrus.Logger
+	secureCookie       bool
+	optoutCookieDomain string
 }
 
 func (rt *router) logError(err error, message string) {
@@ -24,6 +25,14 @@ func (rt *router) logError(err error, message string) {
 		rt.logger.WithError(err).Error(message)
 	}
 }
+
+type contextKey int
+
+const (
+	cookieKey                   = "user"
+	optoutKey                   = "optout"
+	contextKeyCookie contextKey = iota
+)
 
 func (rt *router) userCookie(userID string) *http.Cookie {
 	return &http.Cookie{
@@ -35,16 +44,28 @@ func (rt *router) userCookie(userID string) *http.Cookie {
 	}
 }
 
-type contextKey int
-
-const (
-	cookieKey                   = "user"
-	contextKeyCookie contextKey = iota
-)
+func (rt *router) optoutCookie() *http.Cookie {
+	return &http.Cookie{
+		Name:    optoutKey,
+		Value:   "1",
+		Expires: time.Now().Add(time.Hour * 24 * 365 * 100),
+		Domain:  rt.optoutCookieDomain,
+	}
+}
 
 func (rt *router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	switch r.URL.Path {
+	case "/opt-out":
+		switch r.Method {
+		case http.MethodGet:
+			w.Header().Set("Content-Type", "image/gif")
+			rt.optOut(w, r)
+		default:
+			w.Header().Set("Content-Type", "application/json")
+			httputil.RespondWithJSONError(w, errors.New("Method not allowed"), http.StatusMethodNotAllowed)
+		}
 	case "/exchange":
+		w.Header().Set("Content-Type", "application/json")
 		switch r.Method {
 		case http.MethodGet:
 			rt.getPublicKey(w, r)
@@ -54,6 +75,7 @@ func (rt *router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			httputil.RespondWithJSONError(w, errors.New("Method not allowed"), http.StatusMethodNotAllowed)
 		}
 	case "/accounts":
+		w.Header().Set("Content-Type", "application/json")
 		switch r.Method {
 		case http.MethodGet:
 			rt.getAccount(w, r)
@@ -61,6 +83,7 @@ func (rt *router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			httputil.RespondWithJSONError(w, errors.New("Method not allowed"), http.StatusMethodNotAllowed)
 		}
 	case "/events":
+		w.Header().Set("Content-Type", "application/json")
 		c, err := r.Cookie(cookieKey)
 		if err != nil {
 			httputil.RespondWithJSONError(w, err, http.StatusBadRequest)
@@ -84,8 +107,10 @@ func (rt *router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			httputil.RespondWithJSONError(w, errors.New("Method not allowed"), http.StatusMethodNotAllowed)
 		}
 	case "/status":
+		w.Header().Set("Content-Type", "application/json")
 		rt.status(w, r)
 	default:
+		w.Header().Set("Content-Type", "application/json")
 		httputil.RespondWithJSONError(w, errors.New("Not found"), http.StatusNotFound)
 	}
 }
@@ -94,15 +119,13 @@ func (rt *router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 // to the given database implementation. In the context of the application
 // this expects to be the only top level router in charge of handling all
 // incoming HTTP requests.
-func New(db persistence.Database, logger *logrus.Logger, secureCookie bool, origin string) http.Handler {
-	router := &router{db, logger, secureCookie}
-	withContentType := httputil.ContentTypeMiddleware(router, "application/json")
+func New(db persistence.Database, logger *logrus.Logger, secureCookie bool, optoutCookieDomain string, origin string) http.Handler {
+	router := &router{db, logger, secureCookie, optoutCookieDomain}
 	l := logrusmiddleware.Middleware{
 		Logger: logger,
 	}
-	withLogging := l.Handler(withContentType, "")
-	withDNT := httputil.DoNotTrackMiddleware(withLogging)
-	withCORS := httputil.CorsMiddleware(withDNT, origin)
+	withLogging := l.Handler(router, "")
+	withCORS := httputil.CorsMiddleware(withLogging, origin)
 	withRecovery := thunk.HandleSafelyWith(func(err error) {
 		logger.WithError(err).Error("recovered from panic")
 	})(withCORS)

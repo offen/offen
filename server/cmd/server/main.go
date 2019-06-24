@@ -18,12 +18,13 @@ import (
 
 func main() {
 	var (
-		port             = flag.String("port", os.Getenv("PORT"), "the port the server binds to")
-		connectionString = flag.String("conn", os.Getenv("POSTGRES_CONNECTION_STRING"), "a database connection string")
-		dialect          = flag.String("dialect", "postgres", "the database dialect used by the given connection string")
-		origin           = flag.String("origin", "http://localhost:9977", "the origin used in CORS headers")
-		logLevel         = flag.String("level", "info", "the application's log level")
-		secureCookie     = flag.Bool("secure", false, "use secure cookies")
+		port               = flag.String("port", os.Getenv("PORT"), "the port the server binds to")
+		connectionString   = flag.String("conn", os.Getenv("POSTGRES_CONNECTION_STRING"), "a database connection string")
+		dialect            = flag.String("dialect", "postgres", "the database dialect used by the given connection string")
+		origin             = flag.String("origin", "http://localhost:9977", "the origin used in CORS headers")
+		logLevel           = flag.String("level", "info", "the application's log level")
+		secureCookie       = flag.Bool("secure", false, "use secure cookies")
+		optoutCookieDomain = flag.String("optout", "localhost", "domain value for the optout cookie")
 	)
 	flag.Parse()
 
@@ -44,7 +45,7 @@ func main() {
 
 	srv := &http.Server{
 		Addr:    fmt.Sprintf("0.0.0.0:%s", *port),
-		Handler: router.New(db, logger, *secureCookie, *origin),
+		Handler: router.New(db, logger, *secureCookie, *optoutCookieDomain, *origin),
 	}
 
 	go func() {

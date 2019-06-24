@@ -18,9 +18,9 @@ func ContentTypeMiddleware(next http.Handler, contentType string) http.Handler {
 	})
 }
 
-func DoNotTrackMiddleware(next http.Handler) http.Handler {
+func OptoutMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if dnt := r.Header.Get("DNT"); dnt == "1" {
+		if _, err := r.Cookie("optout"); err == nil {
 			w.WriteHeader(http.StatusNoContent)
 			return
 		}
