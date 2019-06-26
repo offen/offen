@@ -17,6 +17,9 @@ function getOperatorEvents (query) {
     })
     .then(function (privateKey) {
       var userSecretDecryptions = Object.keys(account.user_secrets)
+        .filter(function (hashedUserId) {
+          return account.user_secrets[hashedUserId] !== ''
+        })
         .map(function (hashedUserId) {
           var encrpytedSecret = account.user_secrets[hashedUserId]
           var decryptSecret = crypto.decryptAsymmetricWith(privateKey)
