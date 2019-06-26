@@ -66,8 +66,9 @@ function getPages (events) {
     .reduce(function (acc, data) {
       var pathname = data[0]
       var origin = data[1]
-      acc[pathname] = acc[pathname] || { pageviews: 0, origin: origin }
-      acc[pathname].pageviews++
+      var key = pathname + origin
+      acc[key] = acc[key] || { pageviews: 0, origin: origin, pathname: pathname }
+      acc[key].pageviews++
       return acc
     }, {})
 }

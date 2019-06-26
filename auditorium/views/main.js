@@ -97,7 +97,7 @@ function view (state, emit) {
       return html`
         <tr>
           <td>${row.data.origin}</td>
-          <td>${row.page}</td>
+          <td>${row.data.pathname}</td>
           <td>${row.data.pageviews}</td>
         </tr>
       `
