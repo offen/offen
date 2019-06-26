@@ -37,6 +37,11 @@ custom:
           value: max-age=0
         - name: Content-Type
           value: text/html
+      '**/*.js':
+        - name: Cache-Control
+          value: max-age=31536000
+        - name: Content-Type
+          value: application/javascript
 
 resources:
   Resources:

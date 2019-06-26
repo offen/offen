@@ -70,7 +70,7 @@ services:
     ports:
       - 9966:9966
     environment:
-      - VAULT_HOST=https://vault-alpha.offen.dev
+      - VAULT_HOST=http://localhost:9977
 
   auditorium:
     build:
