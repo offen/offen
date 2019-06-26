@@ -1,8 +1,11 @@
 var choo = require('choo')
+var sf = require('sheetify')
 
 var dataStore = require('./stores/data')
 var mainView = require('./views/main')
 var notFoundView = require('./views/404')
+
+sf('./index.css')
 
 var app = choo()
 
