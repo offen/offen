@@ -11,11 +11,7 @@
     "pretest": "dependency-check package.json",
     "posttest": "standard",
     "fix": "standard --fix",
-    "build": "npm run build:bundle && npm run build:inline",
-    "build:bundle": "browserify ./index.js | uglifyjs --mangle > ./dist/index.js",
-    "build:inline": "html-inline ./dist/template.html > ./dist/index.html --ignore-styles",
-    "prebuild": "rm -rf ./dist && mkdir -p ./dist && cp ./index.html ./dist/template.html",
-    "postbuild": "rm ./dist/index.js ./dist/template.html"
+    "build": "gulp"
   },
   "dependencies": {
     "choo": "^6.13.3",
@@ -23,7 +19,7 @@
     "date-fns": "^1.30.1",
     "lodash": "^4.17.11",
     "offen": "file:./../packages",
-    "plotly.js-basic-dist": "^1.48.3",
+    "plotly.js-basic-dist": "1.48.3",
     "uuid": "^3.3.2"
   },
   "devDependencies": {
@@ -34,12 +30,20 @@
     "budo": "^11.6.2",
     "dependency-check": "^3.3.0",
     "envify": "^4.1.0",
+    "gulp": "^3.9.1",
+    "gulp-clean": "^0.4.0",
+    "gulp-rev": "^9.0.0",
+    "gulp-rev-replace": "^0.4.4",
+    "gulp-uglify": "^3.0.2",
     "html-inline": "^1.2.0",
     "http-server": "^0.11.1",
     "mochify": "^6.3.0",
+    "run-sequence": "^2.2.1",
     "sheetify": "^7.4.0",
     "standard": "^12.0.1",
-    "uglify-js": "^3.6.0"
+    "uglify-js": "^3.6.0",
+    "vinyl-buffer": "^1.0.1",
+    "vinyl-source-stream": "^2.0.0"
   },
   "browserify": {
     "transform": [
