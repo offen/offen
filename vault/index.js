@@ -7,6 +7,19 @@ var handleQuery = require('./src/handle-query')
 // third parties.
 var ALLOWED_HOSTS = [process.env.AUDITORIUM_HOST]
 
+function hasOptedOut () {
+  return document.cookie && document.cookie.split(';')
+    .map(function (s) {
+      return s.trim()
+    })
+    .map(function (pair) {
+      return pair.split('=')
+    })
+    .some(function (pair) {
+      return pair[0] === 'optout'
+    })
+}
+
 window.addEventListener('message', function (event) {
   var message = event.data
   var origin = event.origin
@@ -33,7 +46,21 @@ window.addEventListener('message', function (event) {
 
   switch (message.type) {
     case 'EVENT': {
-      handler = handleAnalyticsEvent
+      if (hasOptedOut()) {
+        handler = function () {
+          console.log('You have opted out of data collection, no events are being recorded.')
+          console.log('Find out more at "https://www.offen.dev".')
+          return Promise.resolve()
+        }
+      } else {
+        handler = function () {
+          console.log('This page is using offen to collect usage statistics.')
+          console.log('You can access and manage all of your personal data at "' + process.env.AUDITORIUM_HOST + '".')
+          console.log('To opt out from data collection, please visit "https://www.offen.dev/opt-out"')
+          console.log('Find out more at "https://www.offen.dev".')
+          return handleAnalyticsEvent.apply(null, [].slice.call(arguments))
+        }
+      }
       break
     }
     case 'QUERY': {
@@ -41,6 +68,7 @@ window.addEventListener('message', function (event) {
       break
     }
   }
+
   handler(message, respond)
     .catch(function (err) {
       if (process.env.NODE_ENV !== 'production') {

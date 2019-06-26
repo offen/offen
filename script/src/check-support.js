@@ -10,9 +10,6 @@ function checkSupport (callback) {
   if (!isSecureContext()) {
     err = new Error('The host page is required to run in a secure context')
   }
-  if (!err && !allowsTracking()) {
-    err = new Error('Browser has "Do Not Track" setting enabled')
-  }
   if (!err && !supportsWebCrypto()) {
     err = new Error('Browser does not support WebCrypto which is required')
   }
@@ -42,10 +39,4 @@ function supportsIndexedDb () {
 
 function supportsFetch () {
   return typeof window.fetch === 'function'
-}
-
-function allowsTracking () {
-  // TODO: ideally, the CDN serving this script would already drop the request
-  // requesting this script, but it's probably good to keep this in here anyways
-  return !navigator.doNotTrack
 }

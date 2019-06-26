@@ -13,7 +13,7 @@ type mockPersistence struct {
 }
 
 func TestRouter_Status(t *testing.T) {
-	rt := router{&mockPersistence{}, nil, false}
+	rt := router{&mockPersistence{}, nil, false, ""}
 	w := httptest.NewRecorder()
 	r := httptest.NewRequest(http.MethodGet, "/", nil)
 	rt.status(w, r)

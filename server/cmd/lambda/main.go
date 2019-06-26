@@ -30,8 +30,9 @@ func init() {
 	}
 
 	_, secureCookies := os.LookupEnv("SECURE_COOKIE")
+	optoutCookieDomain := os.Getenv("OPTOUT_COOKIE_DOMAIN")
 
-	rt := router.New(db, logger, secureCookies, origin)
+	rt := router.New(db, logger, secureCookies, optoutCookieDomain, origin)
 	adapter = httpadapter.New(rt)
 }
 
