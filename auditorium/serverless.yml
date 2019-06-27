@@ -103,6 +103,7 @@ resources:
           Enabled: true
           DefaultRootObject: index.html
           DefaultCacheBehavior:
+            Compress: true
             AllowedMethods:
               - GET
               - HEAD
