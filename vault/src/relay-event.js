@@ -23,7 +23,7 @@ function relayEventWith (api, ensureUserSecret) {
       })
       .then(function (encryptedEventPayload) {
         return api.postEvent({
-          account_id: accountId,
+          accountId: accountId,
           payload: encryptedEventPayload
         })
           .catch(function (err) {

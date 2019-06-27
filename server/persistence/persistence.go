@@ -17,16 +17,17 @@ type Query interface {
 }
 
 type UserResult struct {
-	HashedUserID        string `json:"hashed_user_id"`
-	EncryptedUserSecret string `json:"encrypted_user_secret"`
+	HashedUserID        string `json:"hashedUserId"`
+	EncryptedUserSecret string `json:"encryptedUserSecret"`
 }
 
 // EventResult is an element returned from a query. It contains all data that
 // is stored about an atomic event.
 type EventResult struct {
-	UserID  string `json:"user_id"`
-	EventID string `json:"event_id"`
-	Payload string `json:"payload"`
+	AccountID string `json:"accountId"`
+	UserID    string `json:"userId"`
+	EventID   string `json:"eventId"`
+	Payload   string `json:"payload"`
 }
 
 // EventsByAccountID groups a list of events by AccountID in a response
@@ -39,9 +40,9 @@ type SecretsByUserID map[string]string
 // AccountResult is the data returned from looking up an account by id
 type AccountResult struct {
 	Name               string             `json:"name"`
-	AccountID          string             `json:"account_id"`
-	PublicKey          interface{}        `json:"public_key"`
-	EncryptedSecretKey string             `json:"encrypted_private_key,omitempty"`
+	AccountID          string             `json:"accountId"`
+	PublicKey          interface{}        `json:"publicKey"`
+	EncryptedSecretKey string             `json:"encryptedPrivateKey,omitempty"`
 	Events             *EventsByAccountID `json:"events,omitempty"`
-	UserSecrets        *SecretsByUserID   `json:"user_secrets,omitempty"`
+	UserSecrets        *SecretsByUserID   `json:"userSecrets,omitempty"`
 }

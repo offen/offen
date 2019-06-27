@@ -23,7 +23,7 @@ exports.getAccountWith = getAccountWith
 function getAccountWith (accountsUrl) {
   return function (accountId) {
     var url = new window.URL(accountsUrl)
-    url.search = new window.URLSearchParams({ account_id: accountId })
+    url.search = new window.URLSearchParams({ accountId: accountId })
     return window
       .fetch(url, {
         method: 'GET',
@@ -52,7 +52,7 @@ function getEventsWith (accountsUrl) {
         if (response === null) {
           // this means the server responded with a 204
           // and the user likely has Do Not Track enabled.
-          return { events: [] }
+          return { events: {} }
         }
         return response
       })
@@ -80,7 +80,7 @@ exports.getPublicKeyWith = getPublicKeyWith
 function getPublicKeyWith (exchangeUrl) {
   return function (accountId) {
     var url = new window.URL(exchangeUrl)
-    url.search = new window.URLSearchParams({ account_id: accountId })
+    url.search = new window.URLSearchParams({ accountId: accountId })
     return window
       .fetch(url, {
         method: 'GET',

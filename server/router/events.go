@@ -11,7 +11,7 @@ import (
 )
 
 type inboundEventPayload struct {
-	AccountID string `json:"account_id"`
+	AccountID string `json:"accountId"`
 	Payload   string `json:"payload"`
 }
 
@@ -70,7 +70,7 @@ type getQuery struct {
 }
 
 func (q *getQuery) AccountIDs() []string {
-	return q.params["account_id"]
+	return q.params["accountId"]
 }
 
 func (q *getQuery) UserID() string {

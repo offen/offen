@@ -47,19 +47,21 @@ describe('views/main.js', function () {
 
     it('renders 5 sections when passed data', function () {
       app.state.model = {
-        eventsByDate: {
-          '12.12.2019': []
-        },
+        pageviews: [
+          { date: '12.12.2019', pageviews: 12 }
+        ],
+        uniqueAccounts: 2,
         uniqueUsers: 4,
         uniqueSessions: 12,
         loading: false,
-        referrers: {},
-        pages: {
-          '/': {
+        referrers: [],
+        pages: [
+          {
+            pathname: '/',
             pageviews: 12,
-            host: 'www.puppies.com'
+            origin: 'www.puppies.com'
           }
-        }
+        ]
       }
       var result = mainView(app.state, app.emit)
 

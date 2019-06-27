@@ -12,21 +12,13 @@ describe('stores/data.js', function () {
       app._setCache(app.state)
     })
 
-    it('aggregates response data into a model', function (done) {
+    it('passes through data received by the vault to the state', function (done) {
       data(app.state, app.emitter)
 
       app.emitter.on(app.state.events.RENDER, function () {
         try {
           assert.strictEqual(app.state.model.loading, false)
-          assert.strictEqual(app.state.model.uniqueUsers, 1)
-          assert.strictEqual(app.state.model.uniqueSessions, 2)
-          assert.strictEqual(Object.keys(app.state.model.eventsByDate).length, 7)
-
-          var allEvents = Object.values(app.state.model.eventsByDate).reduce(function (acc, next) {
-            acc = acc.concat(next)
-            return acc
-          }, [])
-          assert.strictEqual(allEvents.length, 2)
+          assert.strictEqual(app.state.model.value, 99)
           done()
         } catch (err) {
           done(err)

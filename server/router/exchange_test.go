@@ -34,7 +34,7 @@ func TestRouter_GetPublicKey(t *testing.T) {
 			&mockAccountsDatabase{
 				err: errors.New("did not work"),
 			},
-			"account_id=12345",
+			"accountId=12345",
 			http.StatusInternalServerError,
 		},
 		{
@@ -42,7 +42,7 @@ func TestRouter_GetPublicKey(t *testing.T) {
 			&mockAccountsDatabase{
 				err: persistence.ErrUnknownAccount("unknown account"),
 			},
-			"account_id=12345",
+			"accountId=12345",
 			http.StatusBadRequest,
 		},
 		{
@@ -53,7 +53,7 @@ func TestRouter_GetPublicKey(t *testing.T) {
 					PublicKey: nil,
 				},
 			},
-			"account_id=12345",
+			"accountId=12345",
 			http.StatusOK,
 		},
 	}
@@ -104,7 +104,7 @@ func TestRouter_PostUserSecret(t *testing.T) {
 			strings.NewReader(`
 			{
 				"encrypted_user_secret": "a value",
-				"account_id": "another value"
+				"accountId": "another value"
 			}
 			`),
 			&http.Cookie{},
@@ -117,7 +117,7 @@ func TestRouter_PostUserSecret(t *testing.T) {
 			strings.NewReader(`
 			{
 				"encrypted_user_secret": "a value",
-				"account_id": "another value"
+				"accountId": "another value"
 			}
 			`),
 			&http.Cookie{},
@@ -130,7 +130,7 @@ func TestRouter_PostUserSecret(t *testing.T) {
 			strings.NewReader(`
 			{
 				"encrypted_user_secret": "a value",
-				"account_id": "another value"
+				"accountId": "another value"
 			}
 			`),
 			&http.Cookie{

@@ -1,27 +1,37 @@
 var crypto = require('./crypto')
 var api = require('./api')
+var getDatabase = require('./database')
+var defaultStats = require('./queries')
 
 module.exports = getOperatorEvents
 
 function getOperatorEvents (query) {
-  var accountId = query.account_id
-  var account
+  return ensureSync(query.accountId)
+    .then(function (account) {
+      return defaultStats(getDatabase(query.accountId), query)
+        .then(function (stats) {
+          return Object.assign(stats, { account: account })
+        })
+    })
+}
 
+function fetchOperatorEvents (accountId) {
+  var account
   return api.getAccount(accountId)
     .then(function (_account) {
       account = _account
-      return api.decryptPrivateKey(account.encrypted_private_key)
+      return api.decryptPrivateKey(account.encryptedPrivateKey)
     })
     .then(function (result) {
       return crypto.importPrivateKey(result.decrypted)
     })
     .then(function (privateKey) {
-      var userSecretDecryptions = Object.keys(account.user_secrets)
+      var userSecretDecryptions = Object.keys(account.userSecrets)
         .filter(function (hashedUserId) {
-          return account.user_secrets[hashedUserId] !== ''
+          return account.userSecrets[hashedUserId] !== ''
         })
         .map(function (hashedUserId) {
-          var encrpytedSecret = account.user_secrets[hashedUserId]
+          var encrpytedSecret = account.userSecrets[hashedUserId]
           var decryptSecret = crypto.decryptAsymmetricWith(privateKey)
           return decryptSecret(encrpytedSecret)
             .then(crypto.importSymmetricKey)
@@ -40,7 +50,7 @@ function getOperatorEvents (query) {
       // there might not be events for the given account at all
       var events = account.events[accountId] || []
       var eventDecryptions = events.map(function (event) {
-        var userSecret = byHashedUserId[event.user_id]
+        var userSecret = byHashedUserId[event.userId]
         if (!userSecret) {
           return
         }
@@ -59,5 +69,27 @@ function getOperatorEvents (query) {
     .then(function (results) {
       delete account.events
       return { events: results, account: account }
+    })
+}
+
+function ensureSync (accountId) {
+  var db = getDatabase(accountId)
+  // this is here until sync is sorted out
+  return db.events.clear()
+    .then(function () {
+      return db.events
+        .orderBy('eventId')
+        .last()
+        .then(function (latestLocalEvent) {
+          var params = latestLocalEvent
+            ? { since: latestLocalEvent.eventId }
+            : null
+          return fetchOperatorEvents(accountId, params)
+            .then(function (payload) {
+              return db.events.bulkAdd(payload.events).then(function () {
+                return payload.account
+              })
+            })
+        })
     })
 }

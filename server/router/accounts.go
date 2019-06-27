@@ -11,9 +11,9 @@ import (
 )
 
 func (rt *router) getAccount(w http.ResponseWriter, r *http.Request) {
-	accountID := r.URL.Query().Get("account_id")
+	accountID := r.URL.Query().Get("accountId")
 	if accountID == "" {
-		httputil.RespondWithJSONError(w, errors.New("no account_id parameter given"), http.StatusBadRequest)
+		httputil.RespondWithJSONError(w, errors.New("no accountId parameter given"), http.StatusBadRequest)
 		return
 	}
 	result, err := rt.db.GetAccount(accountID, true)

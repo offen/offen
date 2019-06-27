@@ -106,9 +106,10 @@ func (r *relationalDatabase) Query(query persistence.Query) (map[string][]persis
 
 	for _, match := range result {
 		out[match.AccountID] = append(out[match.AccountID], persistence.EventResult{
-			UserID:  match.HashedUserID,
-			Payload: match.Payload,
-			EventID: match.EventID,
+			AccountID: match.AccountID,
+			UserID:    match.HashedUserID,
+			Payload:   match.Payload,
+			EventID:   match.EventID,
 		})
 	}
 	return out, nil

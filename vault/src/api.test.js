@@ -37,9 +37,9 @@ describe('src/api.js', function () {
 
   describe('getAccount', function () {
     before(function () {
-      fetchMock.get('https://server.offen.dev/accounts?account_id=foo-bar', {
+      fetchMock.get('https://server.offen.dev/accounts?accountId=foo-bar', {
         status: 200,
-        body: { account_id: 'foo-bar', data: 'ok' }
+        body: { accountId: 'foo-bar', data: 'ok' }
       })
     })
 
@@ -51,7 +51,7 @@ describe('src/api.js', function () {
       var get = api.getAccountWith('https://server.offen.dev/accounts')
       return get('foo-bar')
         .then(function (result) {
-          assert.deepStrictEqual(result, { account_id: 'foo-bar', data: 'ok' })
+          assert.deepStrictEqual(result, { accountId: 'foo-bar', data: 'ok' })
         })
     })
   })

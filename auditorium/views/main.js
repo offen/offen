@@ -23,13 +23,14 @@ function layout () {
 
 function view (state, emit) {
   if (!state.model) {
-    emit('offen:query', state.params)
+    emit('offen:query', Object.assign({}, state.params, state.query))
     state.model = {
-      eventsByDate: {},
-      referrers: {},
+      pageviews: [],
+      referrers: [],
       uniqueUsers: 0,
       uniqueSessions: 0,
-      loading: true
+      loading: true,
+      pages: []
     }
   }
 
@@ -46,7 +47,7 @@ function view (state, emit) {
     return layout(content)
   }
 
-  var isOperator = !!(state.params && state.params.account_id)
+  var isOperator = !!(state.params && state.params.accountId)
 
   var accountHeader = null
   if (isOperator) {
@@ -59,11 +60,15 @@ function view (state, emit) {
     `
   }
 
-  var numDays = parseInt(state.query.num_days, 10) || 7
+  var numDays = parseInt(state.query.numDays, 10) || 7
 
-  var uniqueEntities = state.model.uniqueUsers
+  var uniqueEntities = isOperator
+    ? state.model.uniqueUsers
+    : state.model.uniqueAccounts
+  var entityName = isOperator
+    ? 'users'
+    : 'accounts'
   var uniqueSessions = state.model.uniqueSessions
-  var entityName = isOperator ? 'users' : 'accounts'
   var usersAndSessions = html`
     <div class="row">
       <div class="six columns">
@@ -77,27 +82,15 @@ function view (state, emit) {
 
   var chart = html`
     <h4>Pageviews in the last ${numDays} days</h4>
-    ${state.cache(BarChart, 'bar-chart').render(state.model.eventsByDate)}
+    ${state.cache(BarChart, 'bar-chart').render(state.model.pageviews)}
   `
-
-  var pagesData = Object.keys(state.model.pages)
-    .map(function (page) {
-      return { page: page, data: state.model.pages[page] }
-    })
-    .sort(function (a, b) {
-      if (a.data.pageviews > b.data.pageviews) {
-        return -1
-      } else if (a.data.pageviews === b.data.pageviews) {
-        return 0
-      }
-      return 1
-    })
+  var pagesData = state.model.pages
     .map(function (row) {
       return html`
         <tr>
-          <td>${row.data.origin}</td>
-          <td>${row.data.pathname}</td>
-          <td>${row.data.pageviews}</td>
+          <td>${row.origin}</td>
+          <td>${row.pathname}</td>
+          <td>${row.pageviews}</td>
         </tr>
       `
     })
@@ -117,19 +110,7 @@ function view (state, emit) {
       </tbody>
     </table>
   `
-
-  var referrerData = Object.keys(state.model.referrers)
-    .map(function (host) {
-      return { host: host, pageviews: state.model.referrers[host] }
-    })
-    .sort(function (a, b) {
-      if (a.pageviews > b.pageviews) {
-        return -1
-      } else if (a.pageviews === b.pageviews) {
-        return 0
-      }
-      return 1
-    })
+  var referrerData = state.model.referrers
     .map(function (row) {
       return html`
         <tr>

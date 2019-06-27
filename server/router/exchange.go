@@ -10,7 +10,7 @@ import (
 )
 
 func (rt *router) getPublicKey(w http.ResponseWriter, r *http.Request) {
-	account, err := rt.db.GetAccount(r.URL.Query().Get("account_id"), false)
+	account, err := rt.db.GetAccount(r.URL.Query().Get("accountId"), false)
 	if err != nil {
 		if _, ok := err.(persistence.ErrUnknownAccount); ok {
 			httputil.RespondWithJSONError(w, err, http.StatusBadRequest)
@@ -30,8 +30,8 @@ func (rt *router) getPublicKey(w http.ResponseWriter, r *http.Request) {
 }
 
 type userSecretPayload struct {
-	EncryptedUserSecret string `json:"encrypted_user_secret"`
-	AccountID           string `json:"account_id"`
+	EncryptedUserSecret string `json:"encryptedUserSecret"`
+	AccountID           string `json:"accountId"`
 }
 
 func (rt *router) postUserSecret(w http.ResponseWriter, r *http.Request) {
