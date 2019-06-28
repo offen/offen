@@ -1,0 +1,388 @@
+@font-face {
+    font-family: 'Noto Sans';
+    font-weight: 400;
+    font-style: normal;
+    src: url("https://www.offen.dev/theme/fonts/Noto-Sans-400/Noto-Sans-400.eot");
+    src: url("https://www.offen.dev/theme/fonts/Noto-Sans-400/Noto-Sans-400.eot?#iefix") format("embedded-opentype"), local("Noto Sans"), local("Noto-Sans-400"), url("https://www.offen.dev/theme/fonts/Noto-Sans-400/Noto-Sans-400.woff2") format("woff2"), url("https://www.offen.dev/theme/fonts/Noto-Sans-400/Noto-Sans-400.woff") format("woff"), url("https://www.offen.dev/theme/fonts/Noto-Sans-400/Noto-Sans-400.ttf") format("truetype"), url("https://www.offen.dev/theme/fonts/Noto-Sans-400/Noto-Sans-400.svg#NotoSans") format("svg")
+}
+
+@font-face {
+    font-family: 'Noto Sans';
+    font-weight: 700;
+    font-style: normal;
+    src: url("https://www.offen.dev/theme/fonts/Noto-Sans-700/Noto-Sans-700.eot");
+    src: url("https://www.offen.dev/theme/fonts/Noto-Sans-700/Noto-Sans-700.eot?#iefix") format("embedded-opentype"), local("Noto Sans Bold"), local("Noto-Sans-700"), url("https://www.offen.dev/theme/fonts/Noto-Sans-700/Noto-Sans-700.woff2") format("woff2"), url("https://www.offen.dev/theme/fonts/Noto-Sans-700/Noto-Sans-700.woff") format("woff"), url("https://www.offen.dev/theme/fonts/Noto-Sans-700/Noto-Sans-700.ttf") format("truetype"), url("https://www.offen.dev/theme/fonts/Noto-Sans-700/Noto-Sans-700.svg#NotoSans") format("svg")
+}
+
+@font-face {
+    font-family: 'Noto Sans';
+    font-weight: 400;
+    font-style: italic;
+    src: url("https://www.offen.dev/theme/fonts/Noto-Sans-italic/Noto-Sans-italic.eot");
+    src: url("https://www.offen.dev/theme/fonts/Noto-Sans-italic/Noto-Sans-italic.eot?#iefix") format("embedded-opentype"), local("Noto Sans Italic"), local("Noto-Sans-italic"), url("https://www.offen.dev/theme/fonts/Noto-Sans-italic/Noto-Sans-italic.woff2") format("woff2"), url("https://www.offen.dev/theme/fonts/Noto-Sans-italic/Noto-Sans-italic.woff") format("woff"), url("https://www.offen.dev/theme/fonts/Noto-Sans-italic/Noto-Sans-italic.ttf") format("truetype"), url("https://www.offen.dev/theme/fonts/Noto-Sans-italic/Noto-Sans-italic.svg#NotoSans") format("svg")
+}
+
+@font-face {
+    font-family: 'Noto Sans';
+    font-weight: 700;
+    font-style: italic;
+    src: url("https://www.offen.dev/theme/fonts/Noto-Sans-700italic/Noto-Sans-700italic.eot");
+    src: url("https://www.offen.dev/theme/fonts/Noto-Sans-700italic/Noto-Sans-700italic.eot?#iefix") format("embedded-opentype"), local("Noto Sans Bold Italic"), local("Noto-Sans-700italic"), url("https://www.offen.dev/theme/fonts/Noto-Sans-700italic/Noto-Sans-700italic.woff2") format("woff2"), url("https://www.offen.dev/theme/fonts/Noto-Sans-700italic/Noto-Sans-700italic.woff") format("woff"), url("https://www.offen.dev/theme/fonts/Noto-Sans-700italic/Noto-Sans-700italic.ttf") format("truetype"), url("https://www.offen.dev/theme/fonts/Noto-Sans-700italic/Noto-Sans-700italic.svg#NotoSans") format("svg")
+}
+
+
+
+
+/* Typo
+------------------------------------------------------------- */
+body {
+padding: 50px;
+background-color: #fff;
+color: #898989;
+font: 18px/1.5 "Noto Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 18px;
+line-height: 1.5;
+font-weight: 400;
+}
+
+h1,
+h2,
+h3 {
+color: #404040;
+font-size: 28px;
+line-height: 1.4;
+font-weight: 400;
+margin: 0 0 40px 0;
+}
+
+h3,
+h4 {
+font-size: 18px;
+margin: 30px 0 20px 0;
+}
+
+
+
+
+/* Links
+------------------------------------------------------------- */
+a,
+a:hover,
+a:focus {
+color: #898989;
+text-decoration: none;
+font-weight: 700;
+}
+
+h1 a,
+h1 a:hover,
+h1 a:focus {
+color: #f7bf08;
+text-decoration: none;
+font-weight: 400;
+}
+
+small a,
+small a:hover,
+small a:focus {
+color: #898989;
+text-decoration: none;
+font-weight: 700;
+}
+
+sup {
+line-height: 1;
+}
+
+sup a,
+sup a:hover,
+sup a:focus {
+color: #cfcfcf;
+}
+
+ol {
+padding-inline-start: 20px;
+}
+
+ol li p a,
+ol li p a:hover,
+ol li p a:focus {
+color: #cfcfcf;
+}
+
+
+
+
+/* Typo Elements
+------------------------------------------------------------- */
+.logo {
+margin: -20px 0 0 0;
+}
+
+blockquote {
+border-left: 1px solid #e5e5e5;
+margin: 0;
+padding: 0 0 0 20px;
+font-style: italic
+}
+
+hr {
+border-top: 1px solid #d5d5d5;
+height: 0;
+margin: 80px 0 0 0;
+}
+
+.footnote hr {
+border: 0;
+height: 0;
+margin: 0;
+}
+
+blockquote {
+border-left: 1px solid #d5d5d5;
+margin: 40px 0 40px 0;
+}
+
+strong {
+font-weight: 700
+}
+
+strong,
+h2 strong {
+color: #404040;
+text-decoration: none;
+font-weight: 400;
+}
+
+h2 strong {
+color: #898989;
+}
+
+h4 strong {
+color: #404040;
+text-decoration: none;
+font-size: 32px;
+font-weight: 700;
+}
+
+
+
+/* Buttons
+------------------------------------------------------------- */
+.btn {
+-webkit-border-radius: 0;
+-moz-border-radius: 0;
+border-radius: 0px;
+padding: 6px;
+text-align: center;
+text-decoration: none;
+}
+
+.btn-color-grey,
+.btn-color-grey:visited,
+.btn-color-grey:link {
+background: #fff;
+color: #898989;
+border: solid #898989 5px;
+}
+
+.btn-color-orange,
+.btn-color-orange:visited,
+.btn-color-orange:link {
+background: #fff;
+color: #F7BF08;
+border: solid #F7BF08 5px;
+}
+
+.btn-color-grey:hover,
+.btn-color-grey:active {
+background: #898989;
+color: #fff;
+text-decoration: none;
+}
+
+.btn-color-orange:hover,
+.btn-color-orange:active {
+background: #F7BF08;
+color: #fff;
+text-decoration: none;
+}
+
+.btn:first-of-type,
+.btn:last-of-type {
+margin: 0 0 15px 0;
+}
+
+.button-wrapper {
+display: flex;
+flex-flow: column wrap;
+justify-content: space-around;
+}
+
+.button-wrapper:first-of-type {
+padding-top: 40px;
+}
+
+.button-wrapper:last-of-type {
+padding: 0;
+}
+
+@media (min-width: 480px) {
+.button-wrapper {
+align-items: center;
+flex-flow: row wrap;
+-ms-flex-flow: row wrap;
+-webkit-flex-flow: row wrap;
+}
+.btn {
+flex-grow: 1;
+}
+.btn:first-of-type {
+margin-left: 0;
+margin-right: 15px;
+}
+.btn:last-of-type {
+margin-left: 15px;
+margin-right: 0;
+}
+}
+
+
+
+
+/* Custom Underline
+------------------------------------------------------------- */
+em {
+color: #898989;
+background: linear-gradient(transparent 66%, #fde28c 66%);
+font-style: normal;
+}
+
+
+
+
+/* Layout
+------------------------------------------------------------- */
+.wrapper {
+width: 860px;
+margin: 0 auto
+}
+
+header {
+width: 270px;
+float: left;
+position: fixed;
+-webkit-font-smoothing: subpixel-antialiased
+}
+
+section {
+float: right;
+width: 600px;
+padding: 0 0 40px 0;
+}
+
+section > p {
+margin: 0 0 20px 0;
+}
+
+section > p:last-child {
+margin: 0 0 60px 0;
+}
+
+
+
+
+/* Footer
+------------------------------------------------------------- */
+footer {
+width: 270px;
+float: left;
+position: fixed;
+bottom: 100px;
+-webkit-font-smoothing: subpixel-antialiased
+}
+
+.footnote {
+color: #d5d5d5;
+font-size: 14px;
+margin: 20px 0 0 0;
+}
+
+.footnote ol {
+margin-bottom: 0;
+}
+
+.footer-list {
+list-style-type: none;
+padding: 0;
+margin: 0;
+}
+
+.footer-list li {
+display: inline-block;
+font-size: 14px;
+margin-right: 0.14em;
+}
+
+
+
+
+/* Media Queries
+------------------------------------------------------------- */
+@media screen and (max-width: 960px) {
+div.wrapper {
+width: auto;
+margin: 0
+}
+header,
+section,
+footer {
+float: none;
+position: static;
+width: auto
+}
+header {
+padding-right: 320px
+}
+section {
+border: none;
+width: auto;
+padding: 0 0 0 0;
+margin: 40px 0 40px 0;
+}
+section > p:first-child, section > p:last-child {
+margin: 0 0 40px 0;
+}
+}
+
+@media screen and (max-width: 720px) {
+body {
+word-wrap: break-word
+}
+header {
+padding: 0
+}
+}
+
+@media screen and (max-width: 480px) {
+body {
+padding: 15px
+}
+.logo {
+margin: 0;
+}
+}
+
+
+
+
+/* ADDED
+------------------------------------------------------------- */
+
+
+.top_pages,
+.top_referrers {
+color: #404040;
+text-decoration: none;
+font-weight: 700;
+}

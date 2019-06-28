@@ -14,9 +14,8 @@ function layout () {
     return el
   })
   return html`
-    <div class="container">
-      <h1>offen auditorium</h1>
-      <hr/>
+    <div class="section">
+      <h1>offen auditorium user</h1>
       ${withSeparators}
     </div>
   `
@@ -113,7 +112,7 @@ function view (state, emit) {
           <td>Pageviews</td>
         </tr>
       </thead>
-      <tbody>
+      <tbody class="top_pages">
         ${pagesData}
       </tbody>
     </table>
@@ -149,7 +148,7 @@ function view (state, emit) {
           <td>Pageviews</td>
         </tr>
       </thead>
-      <tbody>
+      <tbody class="top_referrers">
         ${referrerData}
       </tbody>
     </table>
