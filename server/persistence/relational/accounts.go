@@ -8,12 +8,17 @@ import (
 	"github.com/offen/offen/server/persistence"
 )
 
-func (r *relationalDatabase) GetAccount(accountID string, events bool) (persistence.AccountResult, error) {
+func (r *relationalDatabase) GetAccount(accountID string, events bool, eventsSince string) (persistence.AccountResult, error) {
 	var account Account
 
 	queryDB := r.db
 	if events {
-		queryDB = queryDB.Preload("Events").Preload("Events.User")
+		if eventsSince != "" {
+			queryDB = queryDB.Preload("Events", "event_id > ?", eventsSince)
+		} else {
+			queryDB = queryDB.Preload("Events")
+		}
+		queryDB = queryDB.Preload("Events.User")
 	}
 
 	if err := queryDB.Find(&account, "account_id = ?", accountID).Error; err != nil {

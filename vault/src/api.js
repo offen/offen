@@ -21,9 +21,12 @@ exports.getAccount = getAccountWith(process.env.SERVER_HOST + '/accounts')
 exports.getAccountWith = getAccountWith
 
 function getAccountWith (accountsUrl) {
-  return function (accountId) {
+  return function (accountId, params) {
+    params = params || {}
     var url = new window.URL(accountsUrl)
-    url.search = new window.URLSearchParams({ accountId: accountId })
+    url.search = new window.URLSearchParams(
+      Object.assign(params, { accountId: accountId })
+    )
     return window
       .fetch(url, {
         method: 'GET',
@@ -66,6 +69,25 @@ function postEventWith (eventsUrl) {
   return function (body) {
     return window
       .fetch(eventsUrl, {
+        method: 'POST',
+        credentials: 'include',
+        body: JSON.stringify(body)
+      })
+      .then(handleFetchResponse)
+  }
+}
+
+exports.getDeletedEvents = getDeletedEventsWith(process.env.SERVER_HOST + '/events/deleted')
+exports.getDeletedEventsWith = getDeletedEventsWith
+
+function getDeletedEventsWith (deletedEventsUrl) {
+  return function (body, user) {
+    var url = new window.URL(deletedEventsUrl)
+    if (user) {
+      url.search = new window.URLSearchParams({ user: '1' })
+    }
+    return window
+      .fetch(url, {
         method: 'POST',
         credentials: 'include',
         body: JSON.stringify(body)
