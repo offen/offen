@@ -1,6 +1,7 @@
 var api = require('./api')
 var getDatabase = require('./database')
 var crypto = require('./crypto')
+var defaultStats = require('./queries')
 
 module.exports = getUserEvents
 
@@ -8,18 +9,41 @@ module.exports = getUserEvents
 // Once the server has responded, it looks up the matching UserSecrets in the
 // local database and decrypts and parses the previously encrypted event payloads.
 function getUserEvents (query) {
-  return api.getEvents(query)
-    .then(function (payload) {
-      var events = payload.events
-      return decryptUserEvents(events)
+  return ensureSync()
+    .then(function () {
+      return defaultStats(getDatabase(), query)
     })
-    .catch(function (err) {
-      // in case a user without a cookie tries to query for events a 400
-      // will be returned
-      if (err.status === 400) {
-        return { events: [] }
-      }
-      throw err
+}
+
+function ensureSync () {
+  var db = getDatabase()
+  // this is here until sync is sorted out
+  return db.events.clear()
+    .then(function () {
+      return db.events
+        .orderBy('eventId')
+        .last()
+        .then(function (latestLocalEvent) {
+          var params = latestLocalEvent
+            ? { since: latestLocalEvent.eventId }
+            : null
+          return api.getEvents(params)
+            .then(function (payload) {
+              var events = payload.events
+              return decryptUserEvents(events)
+            })
+            .catch(function (err) {
+              // in case a user without a cookie tries to query for events a 400
+              // will be returned
+              if (err.status === 400) {
+                return []
+              }
+              throw err
+            })
+            .then(function (events) {
+              return db.events.bulkAdd(events)
+            })
+        })
     })
 }
 
@@ -47,7 +71,4 @@ function decryptUserEvents (eventsByAccountId) {
     }, [])
 
   return Promise.all(decrypted)
-    .then(function (events) {
-      return { events: events }
-    })
 }

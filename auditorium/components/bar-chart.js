@@ -15,13 +15,8 @@ BarChart.prototype = Object.create(Component.prototype)
 BarChart.prototype.load = function (element) {
   this.plot = Plotly.newPlot(element, [{
     type: 'bar',
-    x: Object.keys(this.local.data)
-      .reverse(),
-    y: Object.values(this.local.data)
-      .reverse()
-      .map(function (events) {
-        return events.length
-      }),
+    x: this.local.data.map(function (item) { return item.date }),
+    y: this.local.data.map(function (item) { return item.value }),
     marker: { color: '#f9d152' }
   }], {
     yaxis: { dtick: 1, nticks: 5 }

@@ -42,12 +42,12 @@ function ensureUserSecretWith (api) {
 function exchangeUserSecret (api, accountId) {
   return api.getPublicKey(accountId)
     .then(function (body) {
-      return generateNewUserSecret(body.public_key)
+      return generateNewUserSecret(body.publicKey)
     })
     .then(function (result) {
       var body = {
-        account_id: accountId,
-        encrypted_user_secret: result.encryptedUserSecret
+        accountId: accountId,
+        encryptedUserSecret: result.encryptedUserSecret
       }
       return api.postUserSecret(body)
         .then(function () {

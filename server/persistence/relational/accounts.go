@@ -43,9 +43,10 @@ func (r *relationalDatabase) GetAccount(accountID string, events bool) (persiste
 
 	for _, evt := range account.Events {
 		eventResults[evt.AccountID] = append(eventResults[evt.AccountID], persistence.EventResult{
-			UserID:  evt.HashedUserID,
-			EventID: evt.EventID,
-			Payload: evt.Payload,
+			UserID:    evt.HashedUserID,
+			EventID:   evt.EventID,
+			Payload:   evt.Payload,
+			AccountID: evt.AccountID,
 		})
 		userSecrets[evt.HashedUserID] = evt.User.EncryptedUserSecret
 	}
@@ -78,38 +79,47 @@ func (r *relationalDatabase) AssociateUserSecret(accountID, userID, encryptedUse
 			txn.Rollback()
 			return parkedIDErr
 		}
-		parkedHash := account.HashUserID(parkedID.String())
 
-		if err := txn.Model(&user).Update("hashed_user_id", parkedHash).Error; err != nil {
+		parkedHash := account.HashUserID(parkedID.String())
+		user.HashedUserID = parkedHash
+
+		if err := txn.Create(&user).Error; err != nil {
+			txn.Rollback()
+			return err
+		}
+		if err := txn.Delete(&User{}, "hashed_user_id = ?", hashedUserID).Error; err != nil {
 			txn.Rollback()
 			return err
 		}
 
 		var affected []Event
 		r.db.Find(&affected, "hashed_user_id = ?", hashedUserID)
+
 		for _, ev := range affected {
 			newID, err := newEventID()
 			if err != nil {
 				txn.Rollback()
 				return err
 			}
-			if err := txn.Model(&ev).Updates(map[string]interface{}{
-				"event_id":       newID,
-				"hashed_user_id": parkedHash,
-			}).Error; err != nil {
+			if err := txn.Delete(&Event{}, "event_id = ?", ev.EventID).Error; err != nil {
+				txn.Rollback()
+				return err
+			}
+			ev.EventID = newID
+			ev.HashedUserID = parkedHash
+			if err := txn.Create(&ev).Error; err != nil {
 				txn.Rollback()
 				return err
 			}
 		}
 	}
 
-	if err := txn.Create(&User{
-		EncryptedUserSecret: encryptedUserSecret,
-		HashedUserID:        hashedUserID,
-	}).Error; err != nil {
-		txn.Rollback()
+	if err := txn.Commit().Error; err != nil {
 		return err
 	}
 
-	return txn.Commit().Error
+	return r.db.Create(&User{
+		EncryptedUserSecret: encryptedUserSecret,
+		HashedUserID:        hashedUserID,
+	}).Error
 }

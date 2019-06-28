@@ -31,7 +31,7 @@ describe('src/relay-event.js', function () {
           try {
             assert(event.payload)
             assert.notStrictEqual(event.payload, 'data')
-            assert.strictEqual(event.account_id, 'account-id-token')
+            assert.strictEqual(event.accountId, 'account-id-token')
           } catch (_err) {
             err = _err
           }

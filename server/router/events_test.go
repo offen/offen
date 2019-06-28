@@ -60,7 +60,7 @@ func TestRouter_PostEvents(t *testing.T) {
 		{
 			"ok",
 			&mockInsertDatabase{},
-			bytes.NewReader([]byte(`{"account_id":"account-identifier","payload":"payload-value"}`)),
+			bytes.NewReader([]byte(`{"accountId":"account-identifier","payload":"payload-value"}`)),
 			"user-identifier",
 			http.StatusOK,
 			`{"ack":true}`,
@@ -68,7 +68,7 @@ func TestRouter_PostEvents(t *testing.T) {
 		{
 			"database error",
 			&mockInsertDatabase{err: errors.New("did not work")},
-			bytes.NewReader([]byte(`{"account_id":"account-identifier","payload":"payload-value"}`)),
+			bytes.NewReader([]byte(`{"accountId":"account-identifier","payload":"payload-value"}`)),
 			"user-identifier",
 			http.StatusInternalServerError,
 			`{"error":"did not work","status":500}`,
@@ -76,7 +76,7 @@ func TestRouter_PostEvents(t *testing.T) {
 		{
 			"account not found",
 			&mockInsertDatabase{err: persistence.ErrUnknownAccount("unknown account")},
-			bytes.NewReader([]byte(`{"account_id":"account-identifier","payload":"payload-value"}`)),
+			bytes.NewReader([]byte(`{"accountId":"account-identifier","payload":"payload-value"}`)),
 			"user-identifier",
 			http.StatusBadRequest,
 			`{"error":"unknown account","status":400}`,
@@ -101,7 +101,7 @@ func TestRouter_PostEvents(t *testing.T) {
 	t.Run("cookie renewal", func(t *testing.T) {
 		rt := router{&mockInsertDatabase{}, nil, true, ""}
 		w := httptest.NewRecorder()
-		r := httptest.NewRequest(http.MethodPost, "/", bytes.NewReader([]byte(`{"account_id":"account-identifier","payload":"payload-value"}`)))
+		r := httptest.NewRequest(http.MethodPost, "/", bytes.NewReader([]byte(`{"accountId":"account-identifier","payload":"payload-value"}`)))
 		r = r.WithContext(context.WithValue(r.Context(), contextKeyCookie, "user-token"))
 		r.AddCookie(&http.Cookie{
 			Name:    "user",
@@ -184,18 +184,18 @@ func TestRouter_GetEvents(t *testing.T) {
 		{
 			"query params",
 			&mockQueryDatabase{payload: "payload-value"},
-			"?account_id=account-identifier&account_id=other-identifier",
+			"?accountId=account-identifier&accountId=other-identifier",
 			"user-identifier",
 			http.StatusOK,
-			`{"events":{"account-identifier":[{"user_id":"user-identifier","event_id":"event-id","payload":"payload-value"}],"other-identifier":[{"user_id":"user-identifier","event_id":"event-id","payload":"payload-value"}]}}`,
+			`{"events":{"account-identifier":[{"accountId":"","userId":"user-identifier","eventId":"event-id","payload":"payload-value"}],"other-identifier":[{"accountId":"","userId":"user-identifier","eventId":"event-id","payload":"payload-value"}]}}`,
 		},
 		{
 			"since param",
 			&mockQueryDatabase{payload: "payload-value"},
-			"?account_id=account-identifier&since=since-value",
+			"?accountId=account-identifier&since=since-value",
 			"user-identifier",
 			http.StatusOK,
-			`{"events":{"account-identifier":[{"user_id":"user-identifier","event_id":"since-value","payload":"payload-value"}]}}`,
+			`{"events":{"account-identifier":[{"accountId":"","userId":"user-identifier","eventId":"since-value","payload":"payload-value"}]}}`,
 		},
 	}
 	for _, test := range tests {
