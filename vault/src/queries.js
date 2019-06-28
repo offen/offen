@@ -61,6 +61,8 @@ function generateDefaultStats (db, query) {
   var uniqueSessions = scopedQuery.uniqueCount('payload.sessionId')
 
   var referrers = db.events
+    .where('payload.timestamp')
+    .inAnyRange([[lowerBound, upperBound]])
     .toArray(function (events) {
       const perHost = events
         .filter(function (event) {
@@ -106,7 +108,7 @@ function generateDefaultStats (db, query) {
       return Promise.all(lookups)
     })
     .then(function (pages) {
-      return _.sortBy(pages, 'pageviews')
+      return _.sortBy(pages, 'pageviews').reverse()
     })
 
   return Promise
