@@ -160,9 +160,90 @@ jobs:
           name: Run tests
           command: npm test
 
+  deploy:
+    docker:
+      - image: circleci/golang:1.12-node
+        environment:
+          - SERVER_HOST=https://server-alpha.offen.dev
+          - KMS_HOST=https://kms-alpha.offen.dev
+          - SCRIPT_HOST=https://script-alpha.offen.dev
+          - AUDITORIUM_HOST=https://auditorium-alpha.offen.dev
+          - VAULT_HOST=https://vault-alpha.offen.dev
+    working_directory: ~/offen
+    steps:
+      - checkout:
+          path: ~/offen
+      - restore_cache:
+          key: offen-deploy-{{ checksum "package.json" }}
+      - run:
+          name: Install dependencies
+          command: npm install
+      - save_cache:
+          paths:
+            - ~/offen/packages/node_modules
+          key: offen-packages-{{ checksum "package.json" }}
+
+      - restore_cache:
+          key: offen-server-{{ checksum "server/go.mod" }}
+      - run:
+          name: Build server service
+          working_directory: ~/offen/server
+          command: make build
+      - run:
+          name: Manually clear go cache
+          command: sudo rm -rf /go/pkg/mod
+
+      - restore_cache:
+          key: offen-kms-{{ checksum "kms/go.mod" }}
+      - run:
+          name: Build kms service
+          working_directory: ~/offen/kms
+          command: make build
+      - run:
+          name: Manually clear go cache
+          command: sudo rm -rf /go/pkg/mod
+
+      - restore_cache:
+          key: offen-auditorium-{{ checksum "auditorium/package.json" }}
+      - run:
+          name: Build auditorium service
+          working_directory: ~/offen/auditorium
+          command: npm run build
+
+      - restore_cache:
+          key: offen-script-{{ checksum "script/package.json" }}
+      - run:
+          name: Build script service
+          working_directory: ~/offen/script
+          command: npm run build
+
+      - restore_cache:
+          key: offen-vault-{{ checksum "vault/package.json" }}
+      - run:
+          name: Build vault service
+          working_directory: ~/offen/vault
+          command: npm run build
+
+      - run:
+          name: Deploy
+          command: |
+            echo "Deploying server ..."
+            $(npm bin)/sls deploy --config server/serverless.yml
+            echo "Deploying kms ..."
+            $(npm bin)/sls deploy --config kms/serverless.yml
+            echo "Deploying auditorium ..."
+            $(npm bin)/sls deploy --config auditorium/serverless.yml
+            $(npm bin)/sls client deploy --config auditorium/serverless.yml --no-confirm
+            echo "Deploying script ..."
+            $(npm bin)/sls deploy --config script/serverless.yml
+            $(npm bin)/sls client deploy --config script/serverless.yml --no-confirm
+            echo "Deploying vault ..."
+            $(npm bin)/sls deploy --config vault/serverless.yml
+            $(npm bin)/sls client deploy --config vault/serverless.yml --no-confirm
+
 workflows:
   version: 2
-  build_and_test:
+  test_build_deploy:
     jobs:
       - server
       - kms
@@ -171,3 +252,15 @@ workflows:
       - auditorium
       - packages
       - shared
+      - deploy:
+          requires:
+            - server
+            - kms
+            - vault
+            - script
+            - auditorium
+            - packages
+            - shared
+          filters:
+            branches:
+              only: /^master$/
