@@ -25,9 +25,13 @@ BarChart.prototype.load = function (element) {
     marker: { color: '#f9d152' }
   }], {
     yaxis: { dtick: 1, nticks: 5 }
-  }, {
+  },
+  {
     displayModeBar: false,
     responsive: true
+  },
+  {
+    margin: { l: 0, r: 0, b: 0, t: 0 }
   })
 }
 
