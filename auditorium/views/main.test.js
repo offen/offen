@@ -14,7 +14,7 @@ describe('views/main.js', function () {
   describe('mainView', function () {
     it('displays a loading state on first render', function () {
       var result = mainView(app.state, app.emit)
-      var headline = result.querySelector('h2')
+      var headline = result.querySelector('h1')
       assert(headline)
 
       var loading = result.querySelector('p.loading')

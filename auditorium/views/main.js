@@ -18,7 +18,7 @@ function layout () {
   // headline
   return html`
     <div class="section">
-      <h2><strong>offen</strong> auditorium user</h2>
+      <h1><strong>offen</strong> auditorium user</h1>
       ${withSeparators}
     </div>
   `
