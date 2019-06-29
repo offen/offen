@@ -5,7 +5,6 @@ var BarChart = require('./../components/bar-chart')
 
 module.exports = withTitle(view, 'auditorium - offen')
 
-
 function layout () {
   var elements = [].slice.call(arguments)
   var withSeparators = elements.map(function (el, index) {
