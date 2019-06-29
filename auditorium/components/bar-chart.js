@@ -13,25 +13,56 @@ function BarChart (id, state) {
 BarChart.prototype = Object.create(Component.prototype)
 
 BarChart.prototype.load = function (element) {
-  this.plot = Plotly.newPlot(element, [{
-    type: 'bar',
-    x: this.local.data.map(function (item) { return item.date }),
-    y: this.local.data.map(function (item) { return item.value }),
-    marker: { color: '#f9d152' }
-  }], {
+  var self = this
+  this.plot = Plotly.newPlot(element, [
+    {
+      type: 'bar',
+      x: this.local.data.map(function (item) {
+        return item.date
+      }),
+      y: this.local.data.map(function (item) {
+        return self.local.isOperator
+          ? item.visitors
+          : item.accounts
+      }),
+      marker: { color: '#f9d152' },
+      name: this.isOperator ? 'Visitors' : 'Accounts'
+    },
+    {
+      type: 'bar',
+      x: this.local.data.map(function (item) {
+        return item.date
+      }),
+      y: this.local.data.map(function (item) {
+        var deduct = self.local.isOperator
+          ? item.visitors
+          : item.accounts
+        return item.pageviews - deduct
+      }),
+      text: this.local.data.map(function (item) {
+        return item.pageviews
+      }),
+      hovertemplate: '%{text}',
+      marker: { color: '#39352a' },
+      name: 'Pageviews'
+    }
+  ], {
     yaxis: { dtick: 1, nticks: 5, automargin: true },
     xaxis: { automargin: true },
-    margin: { t: 0, r: 0, b: 0, l: 0 }
+    margin: { t: 0, r: 0, b: 0, l: 0 },
+    barmode: 'stack',
+    showlegend: false
   }, {
     displayModeBar: false,
     responsive: true
   })
 }
 
-BarChart.prototype.createElement = function (data) {
-  this.local.data = data
+BarChart.prototype.createElement = function (params) {
+  params = params || {}
+  this.local.data = params.data
+  this.local.isOperator = params.isOperator
   return html`
-    <div class="ct-chart ct-golden-section">
-    </div>
+    <div class="chart"></div>
   `
 }
