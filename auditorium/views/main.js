@@ -63,8 +63,6 @@ function view (state, emit) {
     `
   }
 
-  var numDays = parseInt(state.query.numDays, 10) || 7
-
   var uniqueEntities = isOperator
     ? state.model.uniqueUsers
     : state.model.uniqueAccounts
