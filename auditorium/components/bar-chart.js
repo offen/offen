@@ -19,7 +19,9 @@ BarChart.prototype.load = function (element) {
     y: this.local.data.map(function (item) { return item.value }),
     marker: { color: '#f9d152' }
   }], {
-    yaxis: { dtick: 1, nticks: 5 }
+    yaxis: { dtick: 1, nticks: 5, automargin: true },
+    xaxis: { automargin: true },
+    margin: { t: 0, r: 0, b: 0, l: 0 }
   }, {
     displayModeBar: false,
     responsive: true

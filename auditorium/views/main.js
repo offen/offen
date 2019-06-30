@@ -7,15 +7,12 @@ module.exports = withTitle(view, 'auditorium - offen')
 
 function layout () {
   var elements = [].slice.call(arguments)
-  var withSeparators = elements.map(function (el, index) {
-    if (index < elements.length - 1) {
-      return html`${el}<hr>`
-    }
-    return el
+  var withSeparators = elements.map(function (el) {
+    return html`${el}<hr>`
   })
   return html`
-    <div class="section">
-      <h1>offen auditorium user</h1>
+    <div class="section-auditorium">
+      <h1><strong>offen</strong> auditorium</h1>
       ${withSeparators}
     </div>
   `
@@ -50,17 +47,20 @@ function view (state, emit) {
   var isOperator = !!(state.params && state.params.accountId)
 
   var accountHeader = null
+
+  var numDays = parseInt(state.query.num_days, 10) || 7
+
   if (isOperator) {
     accountHeader = html`
-      <h3>Account: <strong>${state.model.account.name}</strong></h3>
+      <h3><strong>You are viewing data as</strong> operator <strong>with account</strong> ${state.model.account.name}.</h3>
+      <h3><strong>This is the data collected over the last </strong> ${numDays} days.</h3>
     `
   } else {
     accountHeader = html`
-      <h3>Your data across all sites</h3>
+      <h3><strong>You are logged in as</strong> user.</h3>
+      <h3><strong>This is your data collected over the last</strong> ${numDays} days <strong>across all sites.</strong></h3>
     `
   }
-
-  var numDays = parseInt(state.query.numDays, 10) || 7
 
   var uniqueEntities = isOperator
     ? state.model.uniqueUsers
@@ -71,17 +71,13 @@ function view (state, emit) {
   var uniqueSessions = state.model.uniqueSessions
   var usersAndSessions = html`
     <div class="row">
-      <div class="six columns">
-        <h4><strong>${uniqueEntities}</strong> unique ${entityName} in the last ${numDays} days</h4>
-      </div>
-      <div class="six columns">
-        <h4><strong>${uniqueSessions}</strong> unique sessions in the last ${numDays} days</h4>
-      </div>
+    <h4><strong>${uniqueEntities}</strong> unique ${entityName} </h4>
+    <h4><strong>${uniqueSessions}</strong> unique sessions</h4>
     </div>
   `
 
   var chart = html`
-    <h4>Pageviews in the last ${numDays} days</h4>
+    <h4>Pageviews</h4>
     ${state.cache(BarChart, 'bar-chart').render(state.model.pageviews)}
   `
   var pagesData = state.model.pages
@@ -96,8 +92,8 @@ function view (state, emit) {
     })
 
   var pages = html`
-    <h4>Top pages in the last ${numDays} days:</h4>
-    <table class="u-full-width">
+    <h4>Top pages</h4>
+    <table class="table-full-width">
       <thead>
         <tr>
           <td>Host</td>
@@ -105,7 +101,7 @@ function view (state, emit) {
           <td>Pageviews</td>
         </tr>
       </thead>
-      <tbody class="top_pages">
+      <tbody>
         ${pagesData}
       </tbody>
     </table>
@@ -121,15 +117,15 @@ function view (state, emit) {
     })
 
   var referrers = html`
-    <h4>Top referrers in the last ${numDays} days:</h4>
-    <table class="u-full-width">
+    <h4>Top referrers</h4>
+    <table class="table-full-width">
       <thead>
         <tr>
           <td>Host</td>
           <td>Pageviews</td>
         </tr>
       </thead>
-      <tbody class="top_referrers">
+      <tbody>
         ${referrerData}
       </tbody>
     </table>
