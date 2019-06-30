@@ -85,9 +85,11 @@ function generateDefaultStats (db, query) {
   var uniqueAccounts = scopedQuery.uniqueCount('accountId')
   var uniqueSessions = scopedQuery.uniqueCount('payload.sessionId')
 
-  var bounceRate = db.events
+  var allEventsInTimeRange = db.events
     .where('payload.timestamp')
     .inAnyRange([[lowerBound, upperBound]])
+
+  var bounceRate = allEventsInTimeRange
     .toArray(function (events) {
       var sessions = events.reduce(function (acc, next) {
         acc[next.payload.sessionId] = acc[next.payload.sessionId] || 0
@@ -101,7 +103,7 @@ function generateDefaultStats (db, query) {
       return bounces.length / sessions.length
     })
 
-  var referrers = db.events
+  var referrers = allEventsInTimeRange
     .toArray(function (events) {
       const perHost = events
         .filter(function (event) {
