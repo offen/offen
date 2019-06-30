@@ -26,7 +26,7 @@ BarChart.prototype.load = function (element) {
           : item.accounts
       }),
       marker: { color: '#f9d152' },
-      name: this.isOperator ? 'Visitors' : 'Accounts'
+      name: this.local.isOperator ? 'Visitors' : 'Accounts'
     },
     {
       type: 'bar',
