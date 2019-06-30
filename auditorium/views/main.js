@@ -14,8 +14,8 @@ function layout () {
     return el
   })
   return html`
-    <div class="section">
-      <h1><strong>offen</strong> auditorium user</h1>
+    <div class="section-auditorium">
+      <h1><strong>offen</strong> auditorium</h1>
       ${withSeparators}
     </div>
   `
@@ -55,11 +55,13 @@ function view (state, emit) {
 
   if (isOperator) {
     accountHeader = html`
-      <h3>Account: <strong>${state.model.account.name}</strong></h3>
+      <h3><strong>You are logged in as</strong> operator <strong>with account</strong> ${state.model.account.name}.</h3>
+      <h3><strong>This is the data collected over the last </strong> ${numDays} days.</h3>
     `
   } else {
     accountHeader = html`
-      <h3><strong>Your data across all sites in the last</strong> ${numDays} days</h3>
+      <h3><strong>You are logged in as</strong> user.</h3>
+      <h3><strong>This is your data collected over the last</strong> ${numDays} days <strong>across all sites.</strong></h3>
     `
   }
 
