@@ -25,6 +25,7 @@ BarChart.prototype.load = function (element) {
           ? item.visitors
           : item.accounts
       }),
+      hoverinfo: 'y',
       marker: { color: '#f9d152' },
       name: this.local.isOperator ? 'Visitors' : 'Accounts'
     },
@@ -39,6 +40,7 @@ BarChart.prototype.load = function (element) {
           : item.accounts
         return item.pageviews - deduct
       }),
+      hoverinfo: 'y',
       text: this.local.data.map(function (item) {
         return item.pageviews
       }),
