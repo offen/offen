@@ -140,6 +140,10 @@ height: 0;
 margin: 80px 0 0 0;
 }
 
+hr:last-child {
+margin-bottom: 60px
+}
+
 .footnote hr {
 border: 0;
 height: 0;
@@ -449,14 +453,4 @@ width: 100%;
 td {
 padding-right: 0;
 }
-}
-
-
-
-
-/* AUDITORIUM QUICK FIX
-------------------------------------------------------------- */
-.bottom {
-display: block;
-margin: 60px;
 }

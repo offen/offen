@@ -7,11 +7,8 @@ module.exports = withTitle(view, 'auditorium - offen')
 
 function layout () {
   var elements = [].slice.call(arguments)
-  var withSeparators = elements.map(function (el, index) {
-    if (index < elements.length - 1) {
-      return html`${el}<hr>`
-    }
-    return el
+  var withSeparators = elements.map(function (el) {
+    return html`${el}<hr>`
   })
   return html`
     <div class="section-auditorium">
@@ -55,7 +52,7 @@ function view (state, emit) {
 
   if (isOperator) {
     accountHeader = html`
-      <h3><strong>You are logged in as</strong> operator <strong>with account</strong> ${state.model.account.name}.</h3>
+      <h3><strong>You are viewing data as</strong> operator <strong>with account</strong> ${state.model.account.name}.</h3>
       <h3><strong>This is the data collected over the last </strong> ${numDays} days.</h3>
     `
   } else {
@@ -134,10 +131,5 @@ function view (state, emit) {
     </table>
   `
 
-  var bottom = html`
-    <div class="bottom">
-    </div>
-  `
-
-  return layout(accountHeader, usersAndSessions, chart, pages, referrers, bottom)
+  return layout(accountHeader, usersAndSessions, chart, pages, referrers)
 }
