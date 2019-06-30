@@ -45,7 +45,7 @@ describe('views/main.js', function () {
       assert(message)
     })
 
-    it('renders 5 sections when passed data', function () {
+    it('renders 6 sections when passed data', function () {
       app.state.model = {
         pageviews: [
           { date: '12.12.2019', pageviews: 12 }
@@ -53,6 +53,7 @@ describe('views/main.js', function () {
         uniqueAccounts: 2,
         uniqueUsers: 4,
         uniqueSessions: 12,
+        bounceRate: 0.5412,
         loading: false,
         referrers: [],
         pages: [
@@ -67,9 +68,9 @@ describe('views/main.js', function () {
 
       var headlines = result.querySelectorAll('h4')
       assert(headlines)
-      assert.strictEqual(headlines.length, 5)
+      assert.strictEqual(headlines.length, 6)
 
-      var chart = result.querySelector('.ct-chart')
+      var chart = result.querySelector('.chart')
       assert(chart)
     })
   })

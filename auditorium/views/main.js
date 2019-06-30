@@ -46,10 +46,9 @@ function view (state, emit) {
 
   var isOperator = !!(state.params && state.params.accountId)
 
-  var accountHeader = null
-
   var numDays = parseInt(state.query.num_days, 10) || 7
 
+  var accountHeader = null
   if (isOperator) {
     accountHeader = html`
       <h3><strong>You are viewing data as</strong> operator <strong>with account</strong> ${state.model.account.name}.</h3>
@@ -57,7 +56,7 @@ function view (state, emit) {
     `
   } else {
     accountHeader = html`
-      <h3><strong>You are logged in as</strong> user.</h3>
+      <h3><strong>You are viewing data as</strong> user.</h3>
       <h3><strong>This is your data collected over the last</strong> ${numDays} days <strong>across all sites.</strong></h3>
     `
   }
@@ -69,16 +68,25 @@ function view (state, emit) {
     ? 'users'
     : 'accounts'
   var uniqueSessions = state.model.uniqueSessions
+  var bounceRate = (state.model.bounceRate * 100).toLocaleString(undefined, {
+    maximumFractionDigits: 1,
+    minimumFractionDigits: 1
+  })
   var usersAndSessions = html`
     <div class="row">
-    <h4><strong>${uniqueEntities}</strong> unique ${entityName} </h4>
-    <h4><strong>${uniqueSessions}</strong> unique sessions</h4>
+      <h4><strong>${uniqueEntities}</strong> unique ${entityName} </h4>
+      <h4><strong>${uniqueSessions}</strong> unique sessions</h4>
+      <h4><strong>${bounceRate}%</strong> bounce rate</h4>
     </div>
   `
 
+  var chartData = {
+    data: state.model.pageviews,
+    isOperator: isOperator
+  }
   var chart = html`
     <h4>Pageviews</h4>
-    ${state.cache(BarChart, 'bar-chart').render(state.model.pageviews)}
+    ${state.cache(BarChart, 'bar-chart').render(chartData)}
   `
   var pagesData = state.model.pages
     .map(function (row) {

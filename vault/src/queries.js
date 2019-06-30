@@ -44,12 +44,37 @@ function generateDefaultStats (db, query) {
       var date = addDays(now, -distance)
       var lowerBound = startOfDay(date).toJSON()
       var upperBound = endOfDay(date).toJSON()
-      return db.events
+      var scopedQuery = db.events
         .where('payload.timestamp')
         .inAnyRange([[lowerBound, upperBound]])
-        .count()
-        .then(function (value) {
-          return { date: format(date, 'DD.MM.YYYY'), value: value }
+
+      var pageviews = scopedQuery.clone().count()
+      var visitors = scopedQuery.clone()
+        .toArray(function (events) {
+          return events.reduce(function (acc, next) {
+            if (acc.indexOf(next.userId) < 0) {
+              acc.push(next.userId)
+            }
+            return acc
+          }, []).length
+        })
+      var accounts = scopedQuery.clone()
+        .toArray(function (events) {
+          return events.reduce(function (acc, next) {
+            if (acc.indexOf(next.accountId) < 0) {
+              acc.push(next.accountId)
+            }
+            return acc
+          }, []).length
+        })
+      return Promise.all([pageviews, visitors, accounts])
+        .then(function (values) {
+          return {
+            date: format(date, 'DD.MM.YYYY'),
+            pageviews: values[0],
+            visitors: values[1],
+            accounts: values[2]
+          }
         })
     }))
     .then(function (days) {
@@ -60,9 +85,23 @@ function generateDefaultStats (db, query) {
   var uniqueAccounts = scopedQuery.uniqueCount('accountId')
   var uniqueSessions = scopedQuery.uniqueCount('payload.sessionId')
 
-  var referrers = db.events
+  var bounceRate = db.events
     .where('payload.timestamp')
     .inAnyRange([[lowerBound, upperBound]])
+    .toArray(function (events) {
+      var sessions = events.reduce(function (acc, next) {
+        acc[next.payload.sessionId] = acc[next.payload.sessionId] || 0
+        acc[next.payload.sessionId]++
+        return acc
+      }, {})
+      sessions = Object.values(sessions)
+      var bounces = sessions.filter(function (viewsPerSession) {
+        return viewsPerSession === 1
+      })
+      return bounces.length / sessions.length
+    })
+
+  var referrers = db.events
     .toArray(function (events) {
       const perHost = events
         .filter(function (event) {
@@ -118,7 +157,8 @@ function generateDefaultStats (db, query) {
       uniqueSessions,
       referrers,
       pages,
-      pageviews
+      pageviews,
+      bounceRate
     ])
     .then(function (results) {
       return {
@@ -127,7 +167,8 @@ function generateDefaultStats (db, query) {
         uniqueSessions: results[2],
         referrers: results[3],
         pages: results[4],
-        pageviews: results[5]
+        pageviews: results[5],
+        bounceRate: results[6]
       }
     })
 }

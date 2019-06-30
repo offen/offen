@@ -13,7 +13,7 @@ describe('components/bar-chart.js', function () {
     it('renders a chartist bar chart', function () {
       var chart = new BarChart('test-component', app.state)
       var el = chart.render()
-      assert(el.classList.contains('ct-chart'))
+      assert(el.classList.contains('chart'))
     })
   })
 })
