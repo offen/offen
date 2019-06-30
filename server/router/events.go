@@ -95,12 +95,12 @@ func (rt *router) getEvents(w http.ResponseWriter, r *http.Request) {
 		)
 		return
 	}
-	query := &getQuery{
+	query := getQuery{
 		params: r.URL.Query(),
 		userID: userID,
 	}
 
-	result, err := rt.db.Query(query)
+	result, err := rt.db.Query(&query)
 	if err != nil {
 		httputil.RespondWithJSONError(w, err, http.StatusInternalServerError)
 		return
@@ -115,5 +115,29 @@ func (rt *router) getEvents(w http.ResponseWriter, r *http.Request) {
 		httputil.RespondWithJSONError(w, err, http.StatusInternalServerError)
 		return
 	}
+	w.Write(b)
+}
+
+type deletedQuery struct {
+	EventIDs []string `json:"eventIds"`
+}
+
+func (rt *router) getDeletedEvents(w http.ResponseWriter, r *http.Request) {
+	userID, _ := r.Context().Value(contextKeyCookie).(string)
+
+	query := deletedQuery{}
+	if err := json.NewDecoder(r.Body).Decode(&query); err != nil {
+		httputil.RespondWithJSONError(w, err, http.StatusBadRequest)
+		return
+	}
+	deleted, err := rt.db.GetDeletedEvents(query.EventIDs, userID)
+	if err != nil {
+		httputil.RespondWithJSONError(w, err, http.StatusInternalServerError)
+		return
+	}
+	out := deletedQuery{
+		EventIDs: deleted,
+	}
+	b, _ := json.Marshal(&out)
 	w.Write(b)
 }

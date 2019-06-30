@@ -14,8 +14,8 @@ import (
 )
 
 type router struct {
-	db                persistence.Database
-	logger            *logrus.Logger
+	db                 persistence.Database
+	logger             *logrus.Logger
 	secureCookie       bool
 	optoutCookieDomain string
 }
@@ -79,6 +79,28 @@ func (rt *router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case http.MethodGet:
 			rt.getAccount(w, r)
+		default:
+			httputil.RespondWithJSONError(w, errors.New("Method not allowed"), http.StatusMethodNotAllowed)
+		}
+	case "/events/deleted":
+		w.Header().Set("Content-Type", "application/json")
+		switch r.Method {
+		case http.MethodPost:
+			if r.URL.Query().Get("user") != "" {
+				c, err := r.Cookie(cookieKey)
+				if err != nil {
+					httputil.RespondWithJSONError(w, err, http.StatusBadRequest)
+					return
+				}
+				if c.Value == "" {
+					httputil.RespondWithJSONError(w, errors.New("received blank user identifier"), http.StatusBadRequest)
+					return
+				}
+				r = r.WithContext(
+					context.WithValue(r.Context(), contextKeyCookie, c.Value),
+				)
+			}
+			rt.getDeletedEvents(w, r)
 		default:
 			httputil.RespondWithJSONError(w, errors.New("Method not allowed"), http.StatusMethodNotAllowed)
 		}

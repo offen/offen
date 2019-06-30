@@ -63,30 +63,7 @@ func (r *relationalDatabase) Query(query persistence.Query) (map[string][]persis
 			}
 		}
 
-		if len(accounts) == 0 {
-			return out, nil
-		}
-
-		hashes := make(chan string)
-
-		// in case a user queries for a longer list of account ids (or even all of them)
-		// hashing the user ID against all salts can get relatively expensive, so
-		// computation is being done concurrently
-		for _, account := range accounts {
-			go func(account Account) {
-				hash := account.HashUserID(userID)
-				hashes <- hash
-			}(account)
-		}
-
-		var hashedUserIDs []string
-		for result := range hashes {
-			hashedUserIDs = append(hashedUserIDs, result)
-			if len(hashedUserIDs) == len(accounts) {
-				close(hashes)
-				break
-			}
-		}
+		hashedUserIDs := hashUserIDForAccounts(userID, accounts)
 
 		var eventConditions []interface{}
 		if query.Since() != "" {
@@ -113,4 +90,68 @@ func (r *relationalDatabase) Query(query persistence.Query) (map[string][]persis
 		})
 	}
 	return out, nil
+}
+
+func hashUserIDForAccounts(userID string, accounts []Account) []string {
+	hashes := make(chan string)
+	// in case a user queries for a longer list of account ids (or even all of them)
+	// hashing the user ID against all salts can get relatively expensive, so
+	// computation is being done concurrently
+	for _, account := range accounts {
+		go func(account Account) {
+			hash := account.HashUserID(userID)
+			hashes <- hash
+		}(account)
+	}
+
+	var hashedUserIDs []string
+	for result := range hashes {
+		hashedUserIDs = append(hashedUserIDs, result)
+		if len(hashedUserIDs) == len(accounts) {
+			close(hashes)
+			break
+		}
+	}
+	return hashedUserIDs
+}
+
+func (r *relationalDatabase) GetDeletedEvents(ids []string, userID string) ([]string, error) {
+	// First, perform a check which one of the events have been deleted
+	var existing []Event
+	if err := r.db.Where("event_id IN (?)", ids).Find(&existing).Error; err != nil {
+		return nil, err
+	}
+
+	deletedIds := []string{}
+outer:
+	for _, id := range ids {
+		for _, ev := range existing {
+			if id == ev.EventID {
+				continue outer
+			}
+		}
+		deletedIds = append(deletedIds, id)
+	}
+
+	// The user might have changed their identifier and might know about events
+	// associated to previous values, so the next check looks up events that
+	// are still present but considered "foreign"
+	if userID != "" {
+		var accounts []Account
+		if err := r.db.Find(&accounts).Error; err != nil {
+			return nil, err
+		}
+
+		hashedUserIDs := hashUserIDForAccounts(userID, accounts)
+		var foreign []Event
+		if err := r.db.Where("event_id IN (?) AND hashed_user_id NOT IN (?)", ids, hashedUserIDs).Find(&foreign).Error; err != nil {
+			return nil, err
+		}
+
+		for _, evt := range foreign {
+			deletedIds = append(deletedIds, evt.EventID)
+		}
+	}
+
+	return deletedIds, nil
 }

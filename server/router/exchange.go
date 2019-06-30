@@ -10,7 +10,7 @@ import (
 )
 
 func (rt *router) getPublicKey(w http.ResponseWriter, r *http.Request) {
-	account, err := rt.db.GetAccount(r.URL.Query().Get("accountId"), false)
+	account, err := rt.db.GetAccount(r.URL.Query().Get("accountId"), false, "")
 	if err != nil {
 		if _, ok := err.(persistence.ErrUnknownAccount); ok {
 			httputil.RespondWithJSONError(w, err, http.StatusBadRequest)

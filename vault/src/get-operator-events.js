@@ -15,9 +15,9 @@ function getOperatorEvents (query) {
     })
 }
 
-function fetchOperatorEvents (accountId) {
+function fetchOperatorEvents (accountId, params) {
   var account
-  return api.getAccount(accountId)
+  return api.getAccount(accountId, params)
     .then(function (_account) {
       account = _account
       return api.decryptPrivateKey(account.encryptedPrivateKey)
@@ -74,22 +74,31 @@ function fetchOperatorEvents (accountId) {
 
 function ensureSync (accountId) {
   var db = getDatabase(accountId)
-  // this is here until sync is sorted out
-  return db.events.clear()
+  return db.events.toCollection().keys()
+    .then(function (eventIds) {
+      return eventIds.length
+        ? api.getDeletedEvents({ eventIds: eventIds })
+        : null
+    })
+    .then(function (response) {
+      return response
+        ? db.events.bulkDelete(response.eventIds)
+        : null
+    })
     .then(function () {
       return db.events
         .orderBy('eventId')
         .last()
-        .then(function (latestLocalEvent) {
-          var params = latestLocalEvent
-            ? { since: latestLocalEvent.eventId }
-            : null
-          return fetchOperatorEvents(accountId, params)
-            .then(function (payload) {
-              return db.events.bulkAdd(payload.events).then(function () {
-                return payload.account
-              })
-            })
-        })
+    })
+    .then(function (latestLocalEvent) {
+      var params = latestLocalEvent
+        ? { since: latestLocalEvent.eventId }
+        : null
+      return fetchOperatorEvents(accountId, params)
+    })
+    .then(function (payload) {
+      return db.events.bulkAdd(payload.events).then(function () {
+        return payload.account
+      })
     })
 }

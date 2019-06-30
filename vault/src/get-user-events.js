@@ -17,33 +17,42 @@ function getUserEvents (query) {
 
 function ensureSync () {
   var db = getDatabase()
-  // this is here until sync is sorted out
-  return db.events.clear()
+  return db.events.toCollection().keys()
+    .then(function (eventIds) {
+      return eventIds.length
+        ? api.getDeletedEvents({ eventIds: eventIds }, true)
+        : null
+    })
+    .then(function (response) {
+      return response
+        ? db.events.bulkDelete(response.eventIds)
+        : null
+    })
     .then(function () {
       return db.events
         .orderBy('eventId')
         .last()
-        .then(function (latestLocalEvent) {
-          var params = latestLocalEvent
-            ? { since: latestLocalEvent.eventId }
-            : null
-          return api.getEvents(params)
-            .then(function (payload) {
-              var events = payload.events
-              return decryptUserEvents(events)
-            })
-            .catch(function (err) {
-              // in case a user without a cookie tries to query for events a 400
-              // will be returned
-              if (err.status === 400) {
-                return []
-              }
-              throw err
-            })
-            .then(function (events) {
-              return db.events.bulkAdd(events)
-            })
+    })
+    .then(function (latestLocalEvent) {
+      var params = latestLocalEvent
+        ? { since: latestLocalEvent.eventId }
+        : null
+      return api.getEvents(params)
+        .then(function (payload) {
+          var events = payload.events
+          return decryptUserEvents(events)
         })
+        .catch(function (err) {
+          // in case a user without a cookie tries to query for events a 400
+          // will be returned
+          if (err.status === 400) {
+            return []
+          }
+          throw err
+        })
+    })
+    .then(function (events) {
+      return db.events.bulkAdd(events)
     })
 }
 
@@ -58,12 +67,13 @@ function decryptUserEvents (eventsByAccountId) {
 
       var events = eventsByAccountId[accountId]
       return events.map(function (event) {
-        return withSecret.then(function (decryptEventPayload) {
-          return decryptEventPayload(event.payload)
-            .then(function (decryptedPayload) {
-              return Object.assign({}, event, { payload: decryptedPayload })
-            })
-        })
+        return withSecret
+          .then(function (decryptEventPayload) {
+            return decryptEventPayload(event.payload)
+          })
+          .then(function (decryptedPayload) {
+            return Object.assign({}, event, { payload: decryptedPayload })
+          })
       })
     })
     .reduce(function (acc, next) {

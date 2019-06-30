@@ -4,7 +4,8 @@ package persistence
 type Database interface {
 	Insert(userID, accountID, payload string) error
 	Query(Query) (map[string][]EventResult, error)
-	GetAccount(accountID string, events bool) (AccountResult, error)
+	GetAccount(accountID string, events bool, eventsSince string) (AccountResult, error)
+	GetDeletedEvents(ids []string, userID string) ([]string, error)
 	AssociateUserSecret(accountID, userID, encryptedUserSecret string) error
 }
 
