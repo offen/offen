@@ -47,14 +47,21 @@ function fetchOperatorEvents (accountId, params) {
             .then(function (userKey) {
               return { userKey: userKey, userId: hashedUserId }
             })
+            .catch(function () {
+              return null
+            })
         })
       return Promise.all(userSecretDecryptions)
     })
     .then(function (userSecrets) {
-      var byHashedUserId = userSecrets.reduce(function (acc, next) {
-        acc[next.userId] = next.userKey
-        return acc
-      }, {})
+      var byHashedUserId = userSecrets
+        .filter(function (v) {
+          return v
+        })
+        .reduce(function (acc, next) {
+          acc[next.userId] = next.userKey
+          return acc
+        }, {})
 
       // there might not be events for the given account at all
       var events = account.events[accountId] || []
@@ -67,6 +74,9 @@ function fetchOperatorEvents (accountId, params) {
         return decryptEventPayload(event.payload)
           .then(function (decryptedPayload) {
             return Object.assign({}, event, { payload: decryptedPayload })
+          })
+          .catch(function () {
+            return null
           })
       })
 
