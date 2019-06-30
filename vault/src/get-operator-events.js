@@ -3,6 +3,8 @@ var api = require('./api')
 var getDatabase = require('./database')
 var defaultStats = require('./queries')
 
+var NO_PENDING_EVENTS = '__NONEPENDING__'
+
 module.exports = getOperatorEvents
 
 function getOperatorEvents (query) {
@@ -20,6 +22,13 @@ function fetchOperatorEvents (accountId, params) {
   return api.getAccount(accountId, params)
     .then(function (_account) {
       account = _account
+      // in case no new events were returned decrypting the private key of the
+      // account can be skipped altogether
+      if (Object.keys(account.events).length === 0) {
+        var err = new Error('No pending events')
+        err.status = NO_PENDING_EVENTS
+        throw err
+      }
       return api.decryptPrivateKey(account.encryptedPrivateKey)
     })
     .then(function (result) {
@@ -64,41 +73,50 @@ function fetchOperatorEvents (accountId, params) {
       return Promise.all(eventDecryptions)
     })
     .then(function (results) {
-      return results.filter(function (r) { return r })
+      return {
+        events: results.filter(function (r) {
+          return r
+        }),
+        account: account
+      }
     })
-    .then(function (results) {
-      delete account.events
-      return { events: results, account: account }
+    .catch(function (err) {
+      if (err.status === NO_PENDING_EVENTS) {
+        return { events: [], account: account }
+      }
+      throw err
     })
 }
 
 function ensureSync (accountId) {
   var db = getDatabase(accountId)
   return db.events.toCollection().keys()
-    .then(function (eventIds) {
-      return eventIds.length
-        ? api.getDeletedEvents({ eventIds: eventIds })
-        : null
-    })
-    .then(function (response) {
-      return response
-        ? db.events.bulkDelete(response.eventIds)
-        : null
-    })
-    .then(function () {
-      return db.events
+    .then(function (knownEventIds) {
+      var fetchNewEvents = db.events
         .orderBy('eventId')
         .last()
-    })
-    .then(function (latestLocalEvent) {
-      var params = latestLocalEvent
-        ? { since: latestLocalEvent.eventId }
-        : null
-      return fetchOperatorEvents(accountId, params)
-    })
-    .then(function (payload) {
-      return db.events.bulkAdd(payload.events).then(function () {
-        return payload.account
-      })
+        .then(function (latestLocalEvent) {
+          var params = latestLocalEvent
+            ? { since: latestLocalEvent.eventId }
+            : null
+          return fetchOperatorEvents(accountId, params)
+        })
+      var pruneEvents = (knownEventIds.length
+        ? api.getDeletedEvents({ eventIds: knownEventIds })
+        : Promise.resolve({ eventIds: [] })
+      )
+        .then(function (response) {
+          return response
+            ? db.events.bulkDelete(response.eventIds)
+            : null
+        })
+      return Promise.all([fetchNewEvents, pruneEvents])
+        .then(function (results) {
+          var payload = results[0]
+          return db.events.bulkAdd(payload.events)
+            .then(function () {
+              return payload.account
+            })
+        })
     })
 }
