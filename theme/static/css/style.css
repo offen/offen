@@ -62,6 +62,10 @@ font-size: 18px;
 margin: 30px 0 20px 0;
 }
 
+.section-auditorium h3 {
+margin: 0 0 10px 0;
+}
+
 h4 {
 color: #898989;
 }
@@ -286,17 +290,20 @@ position: fixed;
 -webkit-font-smoothing: subpixel-antialiased
 }
 
-section {
+section,
+section-auditorium {
 float: right;
 width: 600px;
 padding: 0 0 40px 0;
 }
 
-section > p {
+section > p,
+section-auditorium > p {
 margin: 0 0 20px 0;
 }
 
-section > p:last-child {
+section > p:last-child,
+section-auditorium > p:last-child {
 margin: 0 0 60px 0;
 }
 
@@ -369,6 +376,7 @@ margin: 0
 }
 header,
 section,
+section-auditorium,
 footer {
 float: none;
 position: static;
@@ -377,13 +385,17 @@ width: auto
 header {
 padding-right: 320px
 }
-section {
+section,
+section-auditorium {
 border: none;
 width: auto;
 padding: 0 0 0 0;
 margin: 40px 0 40px 0;
 }
-section > p:first-child, section > p:last-child {
+section > p:first-child,
+section > p:last-child,
+section-auditorium > p:first-child,
+section-auditorium > p:last-child {
 margin: 0 0 40px 0;
 }
 }
