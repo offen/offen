@@ -169,6 +169,7 @@ jobs:
           - SCRIPT_HOST=https://script-alpha.offen.dev
           - AUDITORIUM_HOST=https://auditorium-alpha.offen.dev
           - VAULT_HOST=https://vault-alpha.offen.dev
+          - NODE_ENV=production
     working_directory: ~/offen
     steps:
       - checkout:
