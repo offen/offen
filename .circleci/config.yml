@@ -226,6 +226,7 @@ jobs:
 
       - run:
           name: Deploy
+          working_directory: ~/offen
           command: |
             echo "Deploying server ..."
             $(npm bin)/sls deploy --config server/serverless.yml
