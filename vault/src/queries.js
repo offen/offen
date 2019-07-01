@@ -1,4 +1,3 @@
-var format = require('date-fns/format')
 var startOfDay = require('date-fns/start_of_day')
 var endOfDay = require('date-fns/end_of_day')
 var addDays = require('date-fns/add_days')
@@ -70,7 +69,8 @@ function generateDefaultStats (db, query) {
       return Promise.all([pageviews, visitors, accounts])
         .then(function (values) {
           return {
-            date: format(date, 'DD.MM.YYYY'),
+            date: date.toLocaleDateString(),
+            jsonDate: date.toJSON(),
             pageviews: values[0],
             visitors: values[1],
             accounts: values[2]
@@ -78,7 +78,7 @@ function generateDefaultStats (db, query) {
         })
     }))
     .then(function (days) {
-      return _.sortBy(days, 'date')
+      return _.sortBy(days, 'jsonDate')
     })
 
   var uniqueUsers = scopedQuery.uniqueCount('userId')
