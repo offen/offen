@@ -96,7 +96,12 @@ function generateDefaultStats (db, query) {
         acc[next.payload.sessionId]++
         return acc
       }, {})
+
       sessions = Object.values(sessions)
+      if (sessions.length === 0) {
+        return 0
+      }
+
       var bounces = sessions.filter(function (viewsPerSession) {
         return viewsPerSession === 1
       })
