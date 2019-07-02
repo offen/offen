@@ -139,8 +139,16 @@ function generateDefaultStats (db, query) {
     })
 
   var pages = scopedQuery.items('[accountId+payload.href]')
-    .uniqueKeys(function (keys) {
-      var lookups = keys.map(function (key) {
+    .keys(function (keys) {
+      var uniqueKeys = _.unique(keys
+        .map(function (pair) {
+          return JSON.stringify(pair)
+        }))
+        .map(function (string) {
+          return JSON.parse(string)
+        })
+
+      var lookups = uniqueKeys.map(function (key) {
         var query = db.events.where({ '[accountId+payload.href]': key })
         var count = query.clone().count()
         var item = query.clone().first().then(function (event) {
