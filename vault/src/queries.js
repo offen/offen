@@ -149,7 +149,12 @@ function generateDefaultStats (db, query) {
         })
 
       var lookups = uniqueKeys.map(function (key) {
-        var query = db.events.where({ '[accountId+payload.href]': key })
+        var query = db.events
+          .where({ '[accountId+payload.href]': key })
+          .and(function (event) {
+            var time = event.payload.timestamp
+            return lowerBound <= time && time <= upperBound
+          })
         var count = query.clone().count()
         var item = query.clone().first().then(function (event) {
           var url = new window.URL(event.payload.href)
