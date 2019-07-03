@@ -22,7 +22,16 @@ describe('src/user-secret.js', function () {
           return Promise.resolve()
         }
       }
-      var ensure = ensureUserSecret.ensureUserSecretWith(mockApi)
+
+      var mockQueries = {
+        getUserSecret: function () {
+          return Promise.resolve(null)
+        },
+        putUserSecret: function () {
+          return Promise.resolve()
+        }
+      }
+      var ensure = ensureUserSecret.ensureUserSecretWith(mockApi, mockQueries)
       var initialKey
       return ensure('7435d1b9-c0ca-4883-a869-42e943589917')
         .then(function (_initialKey) {
@@ -43,7 +52,15 @@ describe('src/user-secret.js', function () {
           return Promise.resolve()
         }
       }
-      var ensure = ensureUserSecret.ensureUserSecretWith(mockApi)
+      var mockQueries = {
+        getUserSecret: function () {
+          return Promise.resolve(null)
+        },
+        putUserSecret: function () {
+          return Promise.resolve()
+        }
+      }
+      var ensure = ensureUserSecret.ensureUserSecretWith(mockApi, mockQueries)
       ensure('8435d1b9-c0ca-4883-a869-42e943589917')
         .then(function () {
           done(new Error('Unexpected promise resolution'))
@@ -66,7 +83,15 @@ describe('src/user-secret.js', function () {
           return Promise.reject(new Error('Does not work.'))
         }
       }
-      var ensure = ensureUserSecret.ensureUserSecretWith(mockApi)
+      var mockQueries = {
+        getUserSecret: function () {
+          return Promise.resolve(null)
+        },
+        putUserSecret: function () {
+          return Promise.resolve()
+        }
+      }
+      var ensure = ensureUserSecret.ensureUserSecretWith(mockApi, mockQueries)
       ensure('9435d1b9-c0ca-4883-a869-42e943589917')
         .then(function () {
           done(new Error('Unexpected promise resolution'))
