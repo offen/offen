@@ -1,6 +1,5 @@
 var html = require('choo/html')
 var Component = require('choo/component')
-
 var Plotly = require('plotly.js-basic-dist')
 
 module.exports = BarChart
@@ -40,17 +39,16 @@ BarChart.prototype.load = function (element) {
           : item.accounts
         return item.pageviews - deduct
       }),
-      hoverinfo: 'y',
       text: this.local.data.map(function (item) {
         return item.pageviews
       }),
-      hovertemplate: '%{text}',
+      hovertemplate: '%{text}<extra></extra>',
       marker: { color: '#39352a' },
       name: 'Pageviews'
     }
   ], {
-    yaxis: { dtick: 1, nticks: 5, automargin: true },
-    xaxis: { automargin: true },
+    yaxis: { fixedrange: true, dtick: 1, nticks: 5, automargin: true, autotick: true, tick0: 0 },
+    xaxis: { fixedrange: true, automargin: true },
     margin: { t: 0, r: 0, b: 0, l: 0 },
     barmode: 'stack',
     showlegend: false
