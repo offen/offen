@@ -3,7 +3,7 @@ var html = require('choo/html')
 var withTitle = require('./decorators/with-title')
 var BarChart = require('./../components/bar-chart')
 
-module.exports = withTitle(view, 'auditorium - offen')
+module.exports = withTitle(view, 'offen auditorium')
 
 function layout () {
   var elements = [].slice.call(arguments)
@@ -49,17 +49,21 @@ function view (state, emit) {
   var numDays = parseInt(state.query.num_days, 10) || 7
 
   var accountHeader = null
+  var pageTitle
   if (isOperator) {
     accountHeader = html`
       <h3><strong>You are viewing data as</strong> operator <strong>with account</strong> ${state.model.account.name}.</h3>
       <h3><strong>This is the data collected over the last </strong> ${numDays} days.</h3>
     `
+    pageTitle = state.model.account.name + ' | offen auditorium'
   } else {
     accountHeader = html`
       <h3><strong>You are viewing data as</strong> user.</h3>
       <h3><strong>This is your data collected over the last</strong> ${numDays} days <strong>across all sites.</strong></h3>
     `
+    pageTitle = 'user | offen auditorium'
   }
+  emit(state.events.DOMTITLECHANGE, pageTitle)
 
   var uniqueEntities = isOperator
     ? state.model.uniqueUsers
