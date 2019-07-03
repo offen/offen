@@ -89,7 +89,7 @@ function view (state, emit) {
     isOperator: isOperator
   }
   var chart = html`
-    <h4>Pageviews</h4>
+    <h4>Pageviews and Visitors</h4>
     ${state.cache(BarChart, 'bar-chart').render(chartData)}
   `
   var pagesData = state.model.pages
@@ -128,20 +128,22 @@ function view (state, emit) {
       `
     })
 
-  var referrers = html`
-    <h4>Top referrers</h4>
-    <table class="table-full-width">
-      <thead>
-        <tr>
-          <td>Host</td>
-          <td>Pageviews</td>
-        </tr>
-      </thead>
-      <tbody>
-        ${referrerData}
-      </tbody>
-    </table>
-  `
+  var referrers = referrerData.length
+    ? html`
+      <h4>Top referrers</h4>
+      <table class="table-full-width">
+        <thead>
+          <tr>
+            <td>Host</td>
+            <td>Pageviews</td>
+          </tr>
+        </thead>
+        <tbody>
+          ${referrerData}
+        </tbody>
+      </table>
+    `
+    : null
 
   return layout(accountHeader, usersAndSessions, chart, pages, referrers)
 }

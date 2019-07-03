@@ -55,7 +55,7 @@ describe('views/main.js', function () {
         uniqueSessions: 12,
         bounceRate: 0.5412,
         loading: false,
-        referrers: [],
+        referrers: [{}],
         pages: [
           {
             pathname: '/',
