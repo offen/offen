@@ -96,8 +96,7 @@ function view (state, emit) {
     .map(function (row) {
       return html`
         <tr>
-          <td>${row.origin}</td>
-          <td>${row.pathname}</td>
+          <td>${row.url}</td>
           <td>${row.pageviews}</td>
         </tr>
       `
@@ -108,8 +107,7 @@ function view (state, emit) {
     <table class="table-full-width">
       <thead>
         <tr>
-          <td>Host</td>
-          <td>Path</td>
+          <td>URL</td>
           <td>Pageviews</td>
         </tr>
       </thead>

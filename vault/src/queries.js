@@ -1,4 +1,5 @@
 var _ = require('underscore')
+var Dexie = require('dexie')
 var startOfDay = require('date-fns/start_of_day')
 var endOfDay = require('date-fns/end_of_day')
 var addDays = require('date-fns/add_days')
@@ -21,39 +22,30 @@ function getDefaultStatsWith (getDatabase) {
     var numDays = (query && query.numDays) || 7
     var now = new Date()
     var beginning = startOfDay(addDays(now, -numDays))
-
     var lowerBound = beginning.toJSON()
     var upperBound = now.toJSON()
-    var scopedQuery = queryWithScope(table, lowerBound, upperBound)
 
     var pageviews = Promise.all(Array.from({ length: numDays })
       .map(function (num, distance) {
         var date = addDays(now, -distance)
         var lowerBound = startOfDay(date).toJSON()
         var upperBound = endOfDay(date).toJSON()
-        var scopedQuery = table
-          .where('payload.timestamp')
-          .inAnyRange([[lowerBound, upperBound]])
 
-        var pageviews = scopedQuery.clone().count()
-        var visitors = scopedQuery.clone()
-          .toArray(function (events) {
-            return events.reduce(function (acc, next) {
-              if (acc.indexOf(next.userId) < 0) {
-                acc.push(next.userId)
-              }
-              return acc
-            }, []).length
-          })
-        var accounts = scopedQuery.clone()
-          .toArray(function (events) {
-            return events.reduce(function (acc, next) {
-              if (acc.indexOf(next.accountId) < 0) {
-                acc.push(next.accountId)
-              }
-              return acc
-            }, []).length
-          })
+        var pageviews = table
+          .where('payload.timestamp')
+          .between(lowerBound, upperBound)
+          .count()
+
+        var visitors = table
+          .where('[payload.timestamp+userId]')
+          .between([lowerBound, Dexie.minKey], [upperBound, Dexie.maxKey])
+          .keys(uniqueKeysAt(1))
+
+        var accounts = table
+          .where('[payload.timestamp+accountId]')
+          .between([lowerBound, Dexie.minKey], [upperBound, Dexie.maxKey])
+          .keys(uniqueKeysAt(1))
+
         return Promise.all([pageviews, visitors, accounts])
           .then(function (values) {
             return {
@@ -69,34 +61,43 @@ function getDefaultStatsWith (getDatabase) {
         return _.sortBy(days, 'jsonDate')
       })
 
-    var uniqueUsers = scopedQuery.uniqueCount('userId')
-    var uniqueAccounts = scopedQuery.uniqueCount('accountId')
-    var uniqueSessions = scopedQuery.uniqueCount('payload.sessionId')
+    var uniqueUsers = table
+      .where('[payload.timestamp+userId]')
+      .between([lowerBound, Dexie.minKey], [upperBound, Dexie.maxKey])
+      .keys(uniqueKeysAt(1))
 
-    var allEventsInTimeRange = table
-      .where('payload.timestamp')
-      .inAnyRange([[lowerBound, upperBound]])
+    var uniqueAccounts = table
+      .where('[payload.timestamp+accountId]')
+      .between([lowerBound, Dexie.minKey], [upperBound, Dexie.maxKey])
+      .keys(uniqueKeysAt(1))
 
-    var bounceRate = allEventsInTimeRange
-      .toArray(function (events) {
-        var sessions = events.reduce(function (acc, next) {
-          acc[next.payload.sessionId] = acc[next.payload.sessionId] || 0
-          acc[next.payload.sessionId]++
-          return acc
-        }, {})
+    var uniqueSessions = table
+      .where('[payload.timestamp+payload.sessionId]')
+      .between([lowerBound, Dexie.minKey], [upperBound, Dexie.maxKey])
+      .keys(uniqueKeysAt(1))
 
+    var bounceRate = table
+      .where('[payload.timestamp+payload.sessionId]')
+      .between([lowerBound, Dexie.minKey], [upperBound, Dexie.maxKey])
+      .keys(function (keys) {
+        var sessions = _.countBy(keys, function (pair) {
+          return pair[1]
+        })
         sessions = Object.values(sessions)
         if (sessions.length === 0) {
           return 0
         }
 
-        var bounces = sessions.filter(function (viewsPerSession) {
-          return viewsPerSession === 1
-        })
+        var bounces = sessions
+          .filter(function (viewsInSession) {
+            return viewsInSession === 1
+          })
         return bounces.length / sessions.length
       })
 
-    var referrers = allEventsInTimeRange
+    var referrers = table
+      .where('payload.timestamp')
+      .between(lowerBound, upperBound)
       .toArray(function (events) {
         const perHost = events
           .filter(function (event) {
@@ -126,36 +127,35 @@ function getDefaultStatsWith (getDatabase) {
         return _.sortBy(unique, 'pageviews').reverse()
       })
 
-    var pages = scopedQuery.items('[accountId+payload.href]')
+    var pages = table
+      .where('[payload.timestamp+accountId+payload.href]')
+      .between([lowerBound, Dexie.minKey, Dexie.minKey], [upperBound, Dexie.maxKey, Dexie.maxKey])
       .keys(function (keys) {
-        var uniqueKeys = _.unique(keys
-          .map(function (pair) {
-            return JSON.stringify(pair)
-          }))
-          .map(function (string) {
-            return JSON.parse(string)
-          })
-
-        var lookups = uniqueKeys.map(function (key) {
-          var query = table
-            .where({ '[accountId+payload.href]': key })
-            .and(function (event) {
-              var time = event.payload.timestamp
-              return lowerBound <= time && time <= upperBound
-            })
-          var count = query.clone().count()
-          var item = query.clone().first().then(function (event) {
-            var url = new window.URL(event.payload.href)
-            return { origin: url.origin, pathname: url.pathname }
-          })
-          return Promise.all([count, item]).then(function (result) {
-            return Object.assign(result[1], { pageviews: result[0] })
-          })
+        var cleanedKeys = keys.map(function (pair) {
+          var url = new window.URL(pair[2])
+          var strippedHref = url.origin + url.pathname
+          return [pair[1], strippedHref]
         })
-        return Promise.all(lookups)
-      })
-      .then(function (pages) {
-        return _.sortBy(pages, 'pageviews').reverse()
+
+        var byAccount = cleanedKeys.reduce(function (acc, next) {
+          acc[next[0]] = acc[next[0]] || []
+          acc[next[0]].push(next)
+          return acc
+        }, {})
+
+        return _.chain(Object.values(byAccount))
+          .map(function (pageviews) {
+            var counts = _.countBy(pageviews, function (pageview) {
+              return pageview[1]
+            })
+            return Object.keys(counts).map(function (url) {
+              return { url: url, pageviews: counts[url] }
+            })
+          })
+          .flatten(true)
+          .sortBy('pageviews')
+          .reverse()
+          .value()
       })
 
     return Promise
@@ -183,9 +183,10 @@ function getDefaultStatsWith (getDatabase) {
 }
 
 exports.getUserSecret = getUserSecretWith(getDatabase)
+exports.getUserSecretWith = getUserSecretWith
 function getUserSecretWith (getDatabase) {
   return function (accountId) {
-    var db = getDatabase()
+    var db = getDatabase(accountId)
     return db.secrets
       .get(accountId)
       .then(function (result) {
@@ -198,9 +199,10 @@ function getUserSecretWith (getDatabase) {
 }
 
 exports.putUserSecret = putUserSecretWith(getDatabase)
+exports.putUserSecretWith = putUserSecretWith
 function putUserSecretWith (getDatabase) {
   return function (accountId, userSecret) {
-    var db = getDatabase()
+    var db = getDatabase(accountId)
     return db.secrets
       .put({
         accountId: accountId,
@@ -210,15 +212,17 @@ function putUserSecretWith (getDatabase) {
 }
 
 exports.deleteUserSecret = deleteUserSecretWith(getDatabase)
+exports.deleteUserSecretWith = deleteUserSecretWith
 function deleteUserSecretWith (getDatabase) {
   return function (accountId) {
-    var db = getDatabase()
+    var db = getDatabase(accountId)
     return db.secrets
       .delete(accountId)
   }
 }
 
 exports.getLatestEvent = getLatestEventWith(getDatabase)
+exports.getLatestEventWith = getLatestEventWith
 function getLatestEventWith (getDatabase) {
   return function (accountId) {
     var db = getDatabase(accountId)
@@ -232,6 +236,7 @@ function getLatestEventWith (getDatabase) {
 }
 
 exports.getAllEventIds = getAllEventIdsWith(getDatabase)
+exports.getAllEventIdsWith = getAllEventIdsWith
 function getAllEventIdsWith (getDatabase) {
   return function (accountId) {
     var db = getDatabase(accountId)
@@ -240,6 +245,7 @@ function getAllEventIdsWith (getDatabase) {
 }
 
 exports.putEvents = putEventsWith(getDatabase)
+exports.putEventsWith = putEventsWith
 function putEventsWith (getDatabase) {
   return function (/* accountId, ...events */) {
     var args = [].slice.call(arguments)
@@ -250,6 +256,7 @@ function putEventsWith (getDatabase) {
 }
 
 exports.deleteEvents = deleteEventsWith(getDatabase)
+exports.deleteEventsWith = deleteEventsWith
 function deleteEventsWith (getDatabase) {
   return function (/* accountId, ...eventIds */) {
     var args = [].slice.call(arguments)
@@ -259,26 +266,10 @@ function deleteEventsWith (getDatabase) {
   }
 }
 
-function queryWithScope (table, lowerBound, upperBound) {
-  function uniqueCount (index) {
-    return items(index)
-      .uniqueKeys()
-      .then(function (keys) {
-        return keys.length
-      })
-  }
-
-  function items (index) {
-    return table
-      .orderBy(index)
-      .and(function (event) {
-        var time = event.payload.timestamp
-        return lowerBound <= time && time <= upperBound
-      })
-  }
-
-  return {
-    uniqueCount: uniqueCount,
-    items: items
+function uniqueKeysAt (index) {
+  return function (keys) {
+    return _.unique(keys.map(function (pair) {
+      return pair[index]
+    })).length
   }
 }
