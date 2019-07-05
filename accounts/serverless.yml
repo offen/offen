@@ -1,0 +1,59 @@
+service:
+  name: accounts
+  awsKmsKeyArn: ${ssm:/aws/reference/secretsmanager/${self:custom.stage}/all/kmsArn~true}
+
+provider:
+  name: aws
+  endpointType: regional
+  runtime: python3.6
+  stage: alpha
+  region: eu-central-1
+  apiName: offen-${self:provider.stage}
+  logs:
+    restApi: true
+
+package:
+  individually: true
+  excludeDevDependencies: false
+  exclude:
+  - '**/*'
+
+plugins:
+  - serverless-domain-manager
+  - serverless-python-requirements
+  - serverless-wsgi
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+  domain:
+    production: accounts.offen.dev
+    staging: accounts-staging.offen.dev
+    alpha: accounts-alpha.offen.dev
+  customDomain:
+    basePath: ''
+    certificateName: '*.offen.dev'
+    domainName: ${self:custom.domain.${self:custom.stage}}
+    stage: ${self:custom.stage}
+    endpointType: regional
+    createRoute53Record: false
+  wsgi:
+    app: accounts.accounts.app
+    packRequirements: false
+  pythonRequirements:
+    slim: true
+    dockerizePip: non-linux
+    fileName: accounts/requirements.txt
+
+functions:
+  app:
+    package:
+      include:
+      - accounts/**/*
+    handler: wsgi_handler.handler
+    events:
+      - http:
+          path: '/'
+          method: any
+      - http:
+          path: '{proxy+}'
+          method: any

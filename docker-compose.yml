@@ -1,11 +1,6 @@
 version: '3'
 
 services:
-  database:
-    image: postgres:11.2
-    environment:
-      - POSTGRES_PASSWORD=develop
-
   kms:
     build:
       context: '.'
@@ -21,6 +16,11 @@ services:
       - 8081:8081
     command: refresh run
 
+  server_database:
+    image: postgres:11.2
+    environment:
+      - POSTGRES_PASSWORD=develop
+
   server:
     build:
       context: '.'
@@ -30,14 +30,14 @@ services:
       - .:/offen
       - serverdeps:/go/pkg/mod
     environment:
-      - POSTGRES_CONNECTION_STRING=postgres://postgres:develop@database:5432/postgres?sslmode=disable
+      - POSTGRES_CONNECTION_STRING=postgres://postgres:develop@server_database:5432/postgres?sslmode=disable
       - KMS_ENCRYPTION_ENDPOINT=http://kms:8081/encrypt
       - PORT=8080
     ports:
       - 8080:8080
     command: refresh run
     links:
-      - database
+      - server_database
     depends_on:
       - kms
 
@@ -86,9 +86,25 @@ services:
     environment:
       - VAULT_HOST=http://localhost:9977
 
+  accounts:
+    build:
+      context: '.'
+      dockerfile: Dockerfile.python
+    working_dir: /offen/accounts
+    volumes:
+      - .:/offen
+      - accountdeps:/root/.local
+    command: flask run --host 0.0.0.0
+    ports:
+      - 5000:5000
+    environment:
+      - FLASK_APP=accounts
+      - FLASK_ENV=development
+
 volumes:
   kmsdeps:
   serverdeps:
   scriptdeps:
   auditoriumdeps:
   vaultdeps:
+  accountdeps:
