@@ -1,5 +1,29 @@
 version: 2
 
+production_env: &production_env
+  environment:
+    - SERVER_HOST=https://server-alpha.offen.dev
+    - KMS_HOST=https://kms-alpha.offen.dev
+    - SCRIPT_HOST=https://script-alpha.offen.dev
+    - AUDITORIUM_HOST=https://auditorium-alpha.offen.dev
+    - VAULT_HOST=https://vault-alpha.offen.dev
+    - ACCOUNTS_HOST=https://accounts-alpha.offen.dev
+    - NODE_ENV=production
+
+deploy_preconditions: &deploy_preconditions
+  requires:
+    - server
+    - kms
+    - vault
+    - script
+    - auditorium
+    - packages
+    - shared
+    - accounts
+  filters:
+    branches:
+      only: /^master$/
+
 jobs:
   kms:
     docker:
@@ -160,16 +184,60 @@ jobs:
           name: Run tests
           command: npm test
 
-  deploy:
+  accounts:
+    docker:
+      - image: circleci/python:3.6
+    working_directory: ~/offen/accounts
+    steps:
+      - checkout:
+          path: ~/offen
+      - restore_cache:
+          key: offen-accounts-{{ checksum "requirements.txt" }}-{{ checksum "requirements-dev.txt" }}
+      - run:
+          name: Install dependencies
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install -r requirements.txt
+            pip install -r requirements-dev.txt
+      - save_cache:
+          paths:
+            - ~/offen/accounts/venv
+          key: offen-accounts-{{ checksum "requirements.txt" }}-{{ checksum "requirements-dev.txt" }}
+      - run:
+          name: Run tests
+          command: |
+            . venv/bin/activate
+            make
+
+  deploy_python:
+    docker:
+      - image: circleci/python:3.6-node
+        <<: *production_env
+    working_directory: ~/offen
+    steps:
+      - checkout:
+          path: ~/offen
+      - restore_cache:
+          key: offen-deploy-{{ checksum "package.json" }}
+      - run:
+          name: Install dependencies
+          command: npm install
+      - save_cache:
+          paths:
+            - ~/offen/packages/node_modules
+          key: offen-packages-{{ checksum "package.json" }}
+      - run:
+          name: Deploy
+          working_directory: ~/offen
+          command: |
+            echo "Deploying accounts ..."
+            $(npm bin)/sls deploy --config accounts/serverless.yml
+
+  deploy_golang:
     docker:
       - image: circleci/golang:1.12-node
-        environment:
-          - SERVER_HOST=https://server-alpha.offen.dev
-          - KMS_HOST=https://kms-alpha.offen.dev
-          - SCRIPT_HOST=https://script-alpha.offen.dev
-          - AUDITORIUM_HOST=https://auditorium-alpha.offen.dev
-          - VAULT_HOST=https://vault-alpha.offen.dev
-          - NODE_ENV=production
+        <<: *production_env
     working_directory: ~/offen
     steps:
       - checkout:
@@ -204,6 +272,33 @@ jobs:
           name: Manually clear go cache
           command: sudo rm -rf /go/pkg/mod
 
+      - run:
+          name: Deploy
+          working_directory: ~/offen
+          command: |
+            echo "Deploying server ..."
+            $(npm bin)/sls deploy --config server/serverless.yml
+            echo "Deploying kms ..."
+            $(npm bin)/sls deploy --config kms/serverless.yml
+
+  deploy_node:
+    docker:
+      - image: circleci/node:10
+        <<: *production_env
+    working_directory: ~/offen
+    steps:
+      - checkout:
+          path: ~/offen
+      - restore_cache:
+          key: offen-deploy-{{ checksum "package.json" }}
+      - run:
+          name: Install dependencies
+          command: npm install
+      - save_cache:
+          paths:
+            - ~/offen/packages/node_modules
+          key: offen-packages-{{ checksum "package.json" }}
+
       - restore_cache:
           key: offen-auditorium-{{ checksum "auditorium/package.json" }}
       - run:
@@ -229,10 +324,6 @@ jobs:
           name: Deploy
           working_directory: ~/offen
           command: |
-            echo "Deploying server ..."
-            $(npm bin)/sls deploy --config server/serverless.yml
-            echo "Deploying kms ..."
-            $(npm bin)/sls deploy --config kms/serverless.yml
             echo "Deploying auditorium ..."
             $(npm bin)/sls deploy --config auditorium/serverless.yml
             $(npm bin)/sls client deploy --config auditorium/serverless.yml --no-confirm
@@ -254,15 +345,10 @@ workflows:
       - auditorium
       - packages
       - shared
-      - deploy:
-          requires:
-            - server
-            - kms
-            - vault
-            - script
-            - auditorium
-            - packages
-            - shared
-          filters:
-            branches:
-              only: /^master$/
+      - accounts
+      - deploy_golang:
+          <<: *deploy_preconditions
+      - deploy_node:
+          <<: *deploy_preconditions
+      - deploy_python:
+          <<: *deploy_preconditions
