@@ -18,6 +18,10 @@ describe('src/queries.js', function () {
         })
       })
 
+      afterEach(function () {
+        return db.delete()
+      })
+
       it('returns an object of the correct shape without failing', function () {
         return getDefaultStats('test-account')
           .then(function (data) {
@@ -186,9 +190,72 @@ describe('src/queries.js', function () {
             assert.strictEqual(data.bounceRate, 0.75)
           })
       })
+    })
+  })
 
-      afterEach(function () {
-        return db.delete()
+  describe('getLatestEvent', function () {
+    var db
+    var getLatestEvent
+
+    beforeEach(function () {
+      db = getDatabase('test-' + uuid())
+      getLatestEvent = queries.getLatestEventWith(function () {
+        return db
+      })
+    })
+
+    afterEach(function () {
+      return db.delete()
+    })
+
+    it('returns null when no events are known', function () {
+      return getLatestEvent('account-id')
+        .then(function (result) {
+          assert.strictEqual(result, null)
+        })
+    })
+
+    it('returns the highest sorting event id for the requested account', function () {
+      return db.events.bulkAdd([
+        { accountId: 'account-a', eventId: 'a' },
+        { accountId: 'account-a', eventId: 'b' },
+        { accountId: 'account-a', eventId: 't' },
+        { accountId: 'account-a', eventId: 'c' }
+      ]).then(function () {
+        return getLatestEvent('account-a')
+          .then(function (result) {
+            assert.strictEqual(result.eventId, 't')
+          })
+      })
+    })
+  })
+
+  describe('getAllEventIds', function () {
+    var db
+    var getAllEventIds
+
+    beforeEach(function () {
+      db = getDatabase('test-' + uuid())
+      getAllEventIds = queries.getAllEventIdsWith(function () {
+        return db
+      })
+    })
+
+    afterEach(function () {
+      return db.delete()
+    })
+
+    it('returns an ordered list of all known event ids', function () {
+      return db.events.bulkAdd([
+        { accountId: 'account-a', eventId: 'a' },
+        { accountId: 'account-a', eventId: 'b' },
+        { accountId: 'account-a', eventId: 't' },
+        { accountId: 'account-a', eventId: 'c' }
+      ]).then(function () {
+        return getAllEventIds('account-a')
+          .then(function (result) {
+            assert.deepStrictEqual(result, ['a', 'b', 'c', 't'])
+          })
       })
     })
   })

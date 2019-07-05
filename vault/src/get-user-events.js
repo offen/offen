@@ -3,6 +3,7 @@ var crypto = require('./crypto')
 var queries = require('./queries')
 
 module.exports = getUserEventsWith(queries, api)
+module.exports.getUserEventsWith = getUserEventsWith
 
 // getEvents queries the server API for events using the given query parameters.
 // Once the server has responded, it looks up the matching UserSecrets in the
@@ -62,6 +63,11 @@ function decryptUserEventsWith (queries) {
       .map(function (accountId) {
         var withSecret = queries.getUserSecret(accountId)
           .then(function (userSecret) {
+            if (!userSecret) {
+              return function () {
+                return null
+              }
+            }
             return crypto.decryptSymmetricWith(userSecret)
           })
 
@@ -72,6 +78,9 @@ function decryptUserEventsWith (queries) {
               return decryptEventPayload(event.payload)
             })
             .then(function (decryptedPayload) {
+              if (!decryptedPayload) {
+                return null
+              }
               return Object.assign({}, event, { payload: decryptedPayload })
             })
         })
@@ -81,5 +90,10 @@ function decryptUserEventsWith (queries) {
       }, [])
 
     return Promise.all(decrypted)
+      .then(function (result) {
+        return result.filter(function (v) {
+          return v
+        })
+      })
   }
 }

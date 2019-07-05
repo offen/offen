@@ -5,6 +5,7 @@ var queries = require('./queries')
 var NO_PENDING_EVENTS = '__NONEPENDING__'
 
 module.exports = getOperatorEventsWith(queries, api)
+module.exports.getOperatorEventsWith = getOperatorEventsWith
 
 function getOperatorEventsWith (queries, api) {
   return function (query) {
@@ -126,6 +127,9 @@ function ensureSyncWith (queries, api) {
             var payload = results[0]
             return queries.putEvents.apply(null, [accountId].concat(payload.events))
               .then(function () {
+                delete payload.account.events
+                delete payload.account.encryptedPrivateKey
+                delete payload.account.userSecrets
                 return payload.account
               })
           })
