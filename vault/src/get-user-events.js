@@ -1,84 +1,99 @@
 var api = require('./api')
-var getDatabase = require('./database')
 var crypto = require('./crypto')
-var defaultStats = require('./queries')
+var queries = require('./queries')
 
-module.exports = getUserEvents
+module.exports = getUserEventsWith(queries, api)
+module.exports.getUserEventsWith = getUserEventsWith
 
 // getEvents queries the server API for events using the given query parameters.
 // Once the server has responded, it looks up the matching UserSecrets in the
 // local database and decrypts and parses the previously encrypted event payloads.
-function getUserEvents (query) {
-  return ensureSync()
-    .then(function () {
-      return defaultStats(getDatabase(), query)
-    })
+function getUserEventsWith (queries, api) {
+  return function (query) {
+    return ensureSyncWith(queries, api)()
+      .then(function () {
+        return queries.getDefaultStats(null, query)
+      })
+  }
 }
 
-function ensureSync () {
-  var db = getDatabase()
-  return db.events.toCollection().keys()
-    .then(function (eventIds) {
-      return eventIds.length
-        ? api.getDeletedEvents({ eventIds: eventIds }, true)
-        : null
-    })
-    .then(function (response) {
-      return response
-        ? db.events.bulkDelete(response.eventIds)
-        : null
-    })
-    .then(function () {
-      return db.events
-        .orderBy('eventId')
-        .last()
-    })
-    .then(function (latestLocalEvent) {
-      var params = latestLocalEvent
-        ? { since: latestLocalEvent.eventId }
-        : null
-      return api.getEvents(params)
-        .then(function (payload) {
-          var events = payload.events
-          return decryptUserEvents(events)
-        })
-        .catch(function (err) {
-          // in case a user without a cookie tries to query for events a 400
-          // will be returned
-          if (err.status === 400) {
-            return []
-          }
-          throw err
-        })
-    })
-    .then(function (events) {
-      return db.events.bulkAdd(events)
-    })
-}
-
-function decryptUserEvents (eventsByAccountId) {
-  var db = getDatabase()
-  var decrypted = Object.keys(eventsByAccountId)
-    .map(function (accountId) {
-      var withSecret = db.secrets.get({ accountId: accountId })
-        .then(function (result) {
-          return crypto.decryptSymmetricWith(result.userSecret)
-        })
-
-      var events = eventsByAccountId[accountId]
-      return events.map(function (event) {
-        return withSecret
-          .then(function (decryptEventPayload) {
-            return decryptEventPayload(event.payload)
+function ensureSyncWith (queries, api) {
+  return function () {
+    return queries.getAllEventIds(null)
+      .then(function (eventIds) {
+        return eventIds.length
+          ? api.getDeletedEvents({ eventIds: eventIds }, true)
+          : null
+      })
+      .then(function (response) {
+        return response
+          ? queries.deleteEvents.apply(null, [null].concat(response.eventIds))
+          : null
+      })
+      .then(function () {
+        return queries.getLatestEvent(null)
+      })
+      .then(function (latestLocalEvent) {
+        var params = latestLocalEvent
+          ? { since: latestLocalEvent.eventId }
+          : null
+        return api.getEvents(params)
+          .then(function (payload) {
+            var events = payload.events
+            return decryptUserEventsWith(queries)(events)
           })
-          .then(function (decryptedPayload) {
-            return Object.assign({}, event, { payload: decryptedPayload })
+          .catch(function (err) {
+            // in case a user without a cookie tries to query for events a 400
+            // will be returned
+            if (err.status === 400) {
+              return []
+            }
+            throw err
           })
       })
-    })
-    .reduce(function (acc, next) {
-      return acc.concat(next)
-    }, [])
+      .then(function (events) {
+        return queries.putEvents.apply(null, [null].concat(events))
+      })
+  }
+}
 
-  return Promise.all(decrypted)
+function decryptUserEventsWith (queries) {
+  return function (eventsByAccountId) {
+    var decrypted = Object.keys(eventsByAccountId)
+      .map(function (accountId) {
+        var withSecret = queries.getUserSecret(accountId)
+          .then(function (userSecret) {
+            if (!userSecret) {
+              return function () {
+                return null
+              }
+            }
+            return crypto.decryptSymmetricWith(userSecret)
+          })
+
+        var events = eventsByAccountId[accountId]
+        return events.map(function (event) {
+          return withSecret
+            .then(function (decryptEventPayload) {
+              return decryptEventPayload(event.payload)
+            })
+            .then(function (decryptedPayload) {
+              if (!decryptedPayload) {
+                return null
+              }
+              return Object.assign({}, event, { payload: decryptedPayload })
+            })
+        })
+      })
+      .reduce(function (acc, next) {
+        return acc.concat(next)
+      }, [])
+
+    return Promise.all(decrypted)
+      .then(function (result) {
+        return result.filter(function (v) {
+          return v
+        })
+      })
+  }
 }
