@@ -1,4 +1,7 @@
 test:
 	@pytest --disable-pytest-warnings
 
-.PHONY: test
+fmt:
+	@black .
+
+.PHONY: test fmt
