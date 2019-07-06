@@ -6,7 +6,9 @@ require (
 	github.com/SSSaaS/sssa-golang v0.0.0-20170502204618-d37d7782d752 // indirect
 	github.com/aws/aws-lambda-go v1.11.1
 	github.com/awslabs/aws-lambda-go-api-proxy v0.3.0
+	github.com/felixge/httpsnoop v1.0.0
 	github.com/ghodss/yaml v1.0.0 // indirect
+	github.com/gorilla/mux v1.7.3
 	github.com/juju/errors v0.0.0-20190207033735-e65537c515d7 // indirect
 	github.com/juju/loggo v0.0.0-20190526231331-6e530bcce5d8 // indirect
 	github.com/juju/testing v0.0.0-20190429233213-dfc56b8c09fc // indirect

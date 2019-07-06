@@ -22,11 +22,6 @@ type ackResponse struct {
 var errBadRequestContext = errors.New("could not use user id in request context")
 
 func (rt *router) postEvents(w http.ResponseWriter, r *http.Request) {
-	if _, err := r.Cookie(optoutKey); err == nil {
-		w.WriteHeader(http.StatusNoContent)
-		return
-	}
-
 	userID, ok := r.Context().Value(contextKeyCookie).(string)
 	if !ok {
 		rt.logError(errBadRequestContext, "missing request context")

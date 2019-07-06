@@ -29,10 +29,16 @@ func init() {
 		origin = val
 	}
 
-	_, secureCookies := os.LookupEnv("SECURE_COOKIE")
+	_, secureCookie := os.LookupEnv("SECURE_COOKIE")
 	optoutCookieDomain := os.Getenv("OPTOUT_COOKIE_DOMAIN")
 
-	rt := router.New(db, logger, secureCookies, optoutCookieDomain, origin)
+	rt := router.New(
+		router.WithDatabase(db),
+		router.WithLogger(logger),
+		router.WithSecureCookie(secureCookie),
+		router.WithOptoutCookieDomain(optoutCookieDomain),
+		router.WithCORSOrigin(origin),
+	)
 	adapter = httpadapter.New(rt)
 }
 

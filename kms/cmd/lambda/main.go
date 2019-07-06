@@ -30,7 +30,11 @@ func init() {
 		origin = val
 	}
 
-	rt := router.New(origin, manager, logger)
+	rt := router.New(
+		router.WithCORSOrigin(origin),
+		router.WithManager(manager),
+		router.WithLogger(logger),
+	)
 
 	adapter = httpadapter.New(rt)
 }

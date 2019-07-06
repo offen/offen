@@ -77,7 +77,7 @@ function postEventWith (eventsUrl) {
   }
 }
 
-exports.getDeletedEvents = getDeletedEventsWith(process.env.SERVER_HOST + '/events/deleted')
+exports.getDeletedEvents = getDeletedEventsWith(process.env.SERVER_HOST + '/deleted')
 exports.getDeletedEventsWith = getDeletedEventsWith
 
 function getDeletedEventsWith (deletedEventsUrl) {
