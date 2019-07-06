@@ -8,9 +8,9 @@ import (
 
 func TestCorsMiddleware(t *testing.T) {
 	t.Run("default", func(t *testing.T) {
-		wrapped := CorsMiddleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		wrapped := CorsMiddleware("https://www.example.net")(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			w.Write([]byte("OK"))
-		}), "https://www.example.net")
+		}))
 		w := httptest.NewRecorder()
 		r := httptest.NewRequest(http.MethodGet, "/", nil)
 		wrapped.ServeHTTP(w, r)
@@ -22,9 +22,9 @@ func TestCorsMiddleware(t *testing.T) {
 
 func TestContentTypeMiddleware(t *testing.T) {
 	t.Run("default", func(t *testing.T) {
-		wrapped := ContentTypeMiddleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		wrapped := ContentTypeMiddleware("application/json")(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			w.Write([]byte("OK"))
-		}), "application/json")
+		}))
 		w := httptest.NewRecorder()
 		r := httptest.NewRequest(http.MethodGet, "/", nil)
 		wrapped.ServeHTTP(w, r)
@@ -35,7 +35,7 @@ func TestContentTypeMiddleware(t *testing.T) {
 }
 
 func TestOptoutMiddleware(t *testing.T) {
-	wrapped := OptoutMiddleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	wrapped := OptoutMiddleware("optout")(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("hey there"))
 	}))
 	t.Run("with header", func(t *testing.T) {

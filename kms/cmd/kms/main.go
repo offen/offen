@@ -1,16 +1,12 @@
 package main
 
 import (
-	"context"
 	"flag"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
-	"os/signal"
-	"syscall"
-	"time"
 
 	keymanager "github.com/offen/offen/kms/keymanager/local"
 	"github.com/offen/offen/kms/router"
@@ -41,24 +37,15 @@ func main() {
 		logger.WithError(err).Fatal("error setting up keymanager")
 	}
 	srv := &http.Server{
-		Addr:    fmt.Sprintf("0.0.0.0:%s", *port),
-		Handler: router.New(*origin, manager, logger),
+		Addr: fmt.Sprintf("0.0.0.0:%s", *port),
+		Handler: router.New(
+			router.WithManager(manager),
+			router.WithLogger(logger),
+			router.WithCORSOrigin(*origin),
+		),
 	}
 
-	go func() {
-		if err := srv.ListenAndServe(); err != nil {
-			log.Fatal(err)
-		}
-	}()
-
-	logger.Infof("KMS server now listening on port %s.", *port)
-	quit := make(chan os.Signal)
-	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM, syscall.SIGKILL, syscall.SIGHUP)
-	<-quit
-
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	if err := srv.Shutdown(ctx); err != nil {
-		log.Fatal(err.Error())
+	if err := srv.ListenAndServe(); err != nil {
+		log.Fatal(err)
 	}
 }

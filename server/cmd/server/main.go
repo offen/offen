@@ -1,15 +1,11 @@
 package main
 
 import (
-	"context"
 	"flag"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
-	"os/signal"
-	"syscall"
-	"time"
 
 	"github.com/offen/offen/server/persistence/relational"
 	"github.com/offen/offen/server/router"
@@ -40,28 +36,21 @@ func main() {
 		relational.WithConnectionString(*connectionString),
 	)
 	if err != nil {
-		logger.WithError(err).Fatal("unable to create database connection")
+		logger.WithError(err).Fatal("unable to establish database connection")
 	}
 
 	srv := &http.Server{
-		Addr:    fmt.Sprintf("0.0.0.0:%s", *port),
-		Handler: router.New(db, logger, *secureCookie, *optoutCookieDomain, *origin),
+		Addr: fmt.Sprintf("0.0.0.0:%s", *port),
+		Handler: router.New(
+			router.WithDatabase(db),
+			router.WithLogger(logger),
+			router.WithSecureCookie(*secureCookie),
+			router.WithOptoutCookieDomain(*optoutCookieDomain),
+			router.WithCORSOrigin(*origin),
+		),
 	}
 
-	go func() {
-		if err := srv.ListenAndServe(); err != nil {
-			log.Fatal(err)
-		}
-	}()
-
-	logger.Infof("Server now listening on port %s.", *port)
-	quit := make(chan os.Signal)
-	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM, syscall.SIGKILL, syscall.SIGHUP)
-	<-quit
-
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	if err := srv.Shutdown(ctx); err != nil {
-		log.Fatal(err.Error())
+	if err := srv.ListenAndServe(); err != nil {
+		log.Fatal(err)
 	}
 }

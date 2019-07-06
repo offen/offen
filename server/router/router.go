@@ -1,13 +1,13 @@
 package router
 
 import (
-	"context"
 	"errors"
 	"net/http"
 	"time"
 
+	"github.com/felixge/httpsnoop"
+	"github.com/gorilla/mux"
 	"github.com/m90/go-thunk"
-	logrusmiddleware "github.com/offen/logrus-middleware"
 	"github.com/offen/offen/server/persistence"
 	httputil "github.com/offen/offen/server/shared/http"
 	"github.com/sirupsen/logrus"
@@ -18,6 +18,7 @@ type router struct {
 	logger             *logrus.Logger
 	secureCookie       bool
 	optoutCookieDomain string
+	corsOrigin         string
 }
 
 func (rt *router) logError(err error, message string) {
@@ -41,6 +42,7 @@ func (rt *router) userCookie(userID string) *http.Cookie {
 		Expires:  time.Now().Add(time.Hour * 24 * 90),
 		HttpOnly: true,
 		Secure:   rt.secureCookie,
+		Path:     "/",
 	}
 }
 
@@ -53,87 +55,42 @@ func (rt *router) optoutCookie() *http.Cookie {
 	}
 }
 
-func (rt *router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	switch r.URL.Path {
-	case "/opt-out":
-		switch r.Method {
-		case http.MethodGet:
-			w.Header().Set("Content-Type", "image/gif")
-			rt.optOut(w, r)
-		default:
-			w.Header().Set("Content-Type", "application/json")
-			httputil.RespondWithJSONError(w, errors.New("Method not allowed"), http.StatusMethodNotAllowed)
-		}
-	case "/exchange":
-		w.Header().Set("Content-Type", "application/json")
-		switch r.Method {
-		case http.MethodGet:
-			rt.getPublicKey(w, r)
-		case http.MethodPost:
-			rt.postUserSecret(w, r)
-		default:
-			httputil.RespondWithJSONError(w, errors.New("Method not allowed"), http.StatusMethodNotAllowed)
-		}
-	case "/accounts":
-		w.Header().Set("Content-Type", "application/json")
-		switch r.Method {
-		case http.MethodGet:
-			rt.getAccount(w, r)
-		default:
-			httputil.RespondWithJSONError(w, errors.New("Method not allowed"), http.StatusMethodNotAllowed)
-		}
-	case "/events/deleted":
-		w.Header().Set("Content-Type", "application/json")
-		switch r.Method {
-		case http.MethodPost:
-			if r.URL.Query().Get("user") != "" {
-				c, err := r.Cookie(cookieKey)
-				if err != nil {
-					httputil.RespondWithJSONError(w, err, http.StatusBadRequest)
-					return
-				}
-				if c.Value == "" {
-					httputil.RespondWithJSONError(w, errors.New("received blank user identifier"), http.StatusBadRequest)
-					return
-				}
-				r = r.WithContext(
-					context.WithValue(r.Context(), contextKeyCookie, c.Value),
-				)
-			}
-			rt.getDeletedEvents(w, r)
-		default:
-			httputil.RespondWithJSONError(w, errors.New("Method not allowed"), http.StatusMethodNotAllowed)
-		}
-	case "/events":
-		w.Header().Set("Content-Type", "application/json")
-		c, err := r.Cookie(cookieKey)
-		if err != nil {
-			httputil.RespondWithJSONError(w, err, http.StatusBadRequest)
-			return
-		}
-		if c.Value == "" {
-			httputil.RespondWithJSONError(w, errors.New("received blank user identifier"), http.StatusBadRequest)
-			return
-		}
+// Config adds a configuration value to the router
+type Config func(*router)
 
-		r = r.WithContext(
-			context.WithValue(r.Context(), contextKeyCookie, c.Value),
-		)
+// WithDatabase sets the database the router will use
+func WithDatabase(db persistence.Database) Config {
+	return func(r *router) {
+		r.db = db
+	}
+}
 
-		switch r.Method {
-		case http.MethodGet:
-			rt.getEvents(w, r)
-		case http.MethodPost:
-			rt.postEvents(w, r)
-		default:
-			httputil.RespondWithJSONError(w, errors.New("Method not allowed"), http.StatusMethodNotAllowed)
-		}
-	case "/status":
-		w.Header().Set("Content-Type", "application/json")
-		rt.status(w, r)
-	default:
-		w.Header().Set("Content-Type", "application/json")
-		httputil.RespondWithJSONError(w, errors.New("Not found"), http.StatusNotFound)
+// WithLogger sets the logger the router will use
+func WithLogger(l *logrus.Logger) Config {
+	return func(r *router) {
+		r.logger = l
+	}
+}
+
+// WithSecureCookie determines whether the application will issue
+// secure (HTTPS-only) cookies
+func WithSecureCookie(sc bool) Config {
+	return func(r *router) {
+		r.secureCookie = sc
+	}
+}
+
+// WithOptoutCookieDomain defines the domain `optout` cookies will use
+func WithOptoutCookieDomain(cd string) Config {
+	return func(r *router) {
+		r.optoutCookieDomain = cd
+	}
+}
+
+// WithCORSOrigin sets the CORS origin used on response headers
+func WithCORSOrigin(o string) Config {
+	return func(r *router) {
+		r.corsOrigin = o
 	}
 }
 
@@ -141,15 +98,65 @@ func (rt *router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 // to the given database implementation. In the context of the application
 // this expects to be the only top level router in charge of handling all
 // incoming HTTP requests.
-func New(db persistence.Database, logger *logrus.Logger, secureCookie bool, optoutCookieDomain string, origin string) http.Handler {
-	router := &router{db, logger, secureCookie, optoutCookieDomain}
-	l := logrusmiddleware.Middleware{
-		Logger: logger,
+func New(opts ...Config) http.Handler {
+	rt := router{}
+	for _, opt := range opts {
+		opt(&rt)
 	}
-	withLogging := l.Handler(router, "")
-	withCORS := httputil.CorsMiddleware(withLogging, origin)
-	withRecovery := thunk.HandleSafelyWith(func(err error) {
-		logger.WithError(err).Error("recovered from panic")
-	})(withCORS)
-	return withRecovery
+	m := mux.NewRouter()
+
+	json := httputil.ContentTypeMiddleware("application/json")
+	gif := httputil.ContentTypeMiddleware("image/gif")
+	cors := httputil.CorsMiddleware(rt.corsOrigin)
+	dropOptout := httputil.OptoutMiddleware(optoutKey)
+	recovery := thunk.HandleSafelyWith(func(err error) {
+		if rt.logger != nil {
+			rt.logger.WithError(err).Error("Internal server error")
+		}
+	})
+	userCookie := httputil.UserCookieMiddleware(cookieKey, contextKeyCookie)
+
+	m.Use(recovery, cors)
+
+	optout := m.PathPrefix("/opt-out/").Subrouter()
+	optout.Use(gif)
+	optout.HandleFunc("/", rt.optout).Methods(http.MethodGet)
+
+	exchange := m.PathPrefix("/exchange/").Subrouter()
+	exchange.Use(json)
+	exchange.HandleFunc("/", rt.getPublicKey).Methods(http.MethodGet)
+	exchange.HandleFunc("/", rt.postUserSecret).Methods(http.MethodPost)
+
+	accounts := m.PathPrefix("/accounts/").Subrouter()
+	accounts.Use(json)
+	accounts.HandleFunc("/", rt.getAccount).Methods(http.MethodGet)
+
+	deleted := m.PathPrefix("/deleted/").Subrouter()
+	deleted.Use(json)
+	deletedEventsForUser := userCookie(http.HandlerFunc(rt.getDeletedEvents))
+	deleted.Handle("/", deletedEventsForUser).Methods(http.MethodPost).Queries("user", "1")
+	deleted.HandleFunc("/", rt.getDeletedEvents).Methods(http.MethodPost)
+
+	events := m.PathPrefix("/events/").Subrouter()
+	events.Use(json, userCookie)
+	events.HandleFunc("/", rt.getEvents).Methods(http.MethodGet)
+	receiveEvents := dropOptout(http.HandlerFunc(rt.postEvents))
+	events.Handle("/", receiveEvents).Methods(http.MethodPost)
+
+	m.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		httputil.RespondWithJSONError(w, errors.New("Not found"), http.StatusNotFound)
+	})
+
+	if rt.logger == nil {
+		return m
+	}
+
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		metrics := httpsnoop.CaptureMetrics(m, w, r)
+		rt.logger.WithFields(logrus.Fields{
+			"status":   metrics.Code,
+			"duration": metrics.Duration.Seconds(),
+			"size":     metrics.Written,
+		}).Infof("%s %s", r.Method, r.RequestURI)
+	})
 }

@@ -16,7 +16,7 @@ type mockKeyManager struct {
 func TestNew(t *testing.T) {
 	logger := logrus.New()
 	manager := mockKeyManager{}
-	rt := New("*", manager, logger)
+	rt := New(WithManager(manager), WithCORSOrigin("*"), WithLogger(logger))
 
 	w := httptest.NewRecorder()
 	r := httptest.NewRequest(http.MethodGet, "/not/found", nil)
