@@ -214,3 +214,65 @@ func TestRouter_GetEvents(t *testing.T) {
 		})
 	}
 }
+
+type mockDeletedDatabase struct {
+	persistence.Database
+	result []string
+	err    error
+}
+
+func (m *mockDeletedDatabase) GetDeletedEvents([]string, string) ([]string, error) {
+	return m.result, m.err
+}
+
+func TestRouter_GetDeletedEvents(t *testing.T) {
+	tests := []struct {
+		name               string
+		db                 persistence.Database
+		body               string
+		expectedStatusCode int
+		expectedResponse   string
+	}{
+		{
+			"bad payload",
+			&mockDeletedDatabase{},
+			`this-is-not-json`,
+			http.StatusBadRequest,
+			`{"error":"invalid character 'h' in literal true (expecting 'r')","status":400}`,
+		},
+		{
+			"query error",
+			&mockDeletedDatabase{
+				err: errors.New("did not work"),
+			},
+			`{"eventIds":["a","b"]}`,
+			http.StatusInternalServerError,
+			`{"error":"did not work","status":500}`,
+		},
+		{
+			"ok",
+			&mockDeletedDatabase{
+				result: []string{"b", "c"},
+			},
+			`{"eventIds":["a","b","c","d"]}`,
+			http.StatusOK,
+			`{"eventIds":["b","c"]}`,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			rt := router{test.db, nil, false, "", ""}
+			w := httptest.NewRecorder()
+			r := httptest.NewRequest(http.MethodPost, "/", bytes.NewReader([]byte(test.body)))
+
+			rt.getDeletedEvents(w, r)
+			if w.Code != test.expectedStatusCode {
+				t.Errorf("Expected status code %d, got %d", test.expectedStatusCode, w.Code)
+			}
+			if strings.Index(w.Body.String(), test.expectedResponse) == -1 {
+				t.Errorf("Unexpected response body %s", w.Body.String())
+			}
+		})
+	}
+}
