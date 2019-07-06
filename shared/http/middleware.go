@@ -6,6 +6,8 @@ import (
 	"net/http"
 )
 
+// CorsMiddleware ensures the wrapped handler will respond with proper CORS
+// headers using the given origin.
 func CorsMiddleware(origin string) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -17,6 +19,8 @@ func CorsMiddleware(origin string) func(http.Handler) http.Handler {
 	}
 }
 
+// ContentTypeMiddleware ensuresthe wrapped handler will respond with a
+// content type header of the given value.
 func ContentTypeMiddleware(contentType string) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -26,6 +30,8 @@ func ContentTypeMiddleware(contentType string) func(http.Handler) http.Handler {
 	}
 }
 
+// OptoutMiddleware drops all requests to the given handler that are sent with
+// a cookie of the given name,
 func OptoutMiddleware(cookieName string) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -38,16 +44,15 @@ func OptoutMiddleware(cookieName string) func(http.Handler) http.Handler {
 	}
 }
 
+// UserCookieMiddleware ensures a cookie of the given name is present and
+// attaches its value to the request's context using the given key, before
+// passing it on to the wrapped handler.
 func UserCookieMiddleware(cookieKey string, contextKey interface{}) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			c, err := r.Cookie(cookieKey)
 			if err != nil {
-				RespondWithJSONError(w, err, http.StatusBadRequest)
-				return
-			}
-			if c.Value == "" {
-				RespondWithJSONError(w, errors.New("received blank user identifier"), http.StatusBadRequest)
+				RespondWithJSONError(w, errors.New("received no or blank user identifier"), http.StatusBadRequest)
 				return
 			}
 			r = r.WithContext(
