@@ -61,8 +61,8 @@ func New(opts ...Config) http.Handler {
 	m := mux.NewRouter()
 
 	m.Use(recover, json, cors)
-	m.HandleFunc("/decrypt/", rt.handleDecrypt).Methods(http.MethodPost)
-	m.HandleFunc("/encrypt/", rt.handleEncrypt).Methods(http.MethodPost)
+	m.HandleFunc("/decrypt", rt.handleDecrypt).Methods(http.MethodPost)
+	m.HandleFunc("/encrypt", rt.handleEncrypt).Methods(http.MethodPost)
 
 	m.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		httputil.RespondWithJSONError(w, errors.New("Not found"), http.StatusNotFound)

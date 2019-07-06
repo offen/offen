@@ -1,6 +1,6 @@
 var handleFetchResponse = require('offen/fetch-response')
 
-exports.decryptPrivateKey = decryptPrivateKeyWith(process.env.KMS_HOST + '/decrypt/')
+exports.decryptPrivateKey = decryptPrivateKeyWith(process.env.KMS_HOST + '/decrypt')
 exports.decryptPrivateKeyWith = decryptPrivateKeyWith
 
 function decryptPrivateKeyWith (kmsUrl) {
@@ -17,7 +17,7 @@ function decryptPrivateKeyWith (kmsUrl) {
   }
 }
 
-exports.getAccount = getAccountWith(process.env.SERVER_HOST + '/accounts/')
+exports.getAccount = getAccountWith(process.env.SERVER_HOST + '/accounts')
 exports.getAccountWith = getAccountWith
 
 function getAccountWith (accountsUrl) {
@@ -36,7 +36,7 @@ function getAccountWith (accountsUrl) {
   }
 }
 
-exports.getEvents = getEventsWith(process.env.SERVER_HOST + '/events/')
+exports.getEvents = getEventsWith(process.env.SERVER_HOST + '/events')
 exports.getEventsWith = getEventsWith
 
 function getEventsWith (accountsUrl) {
@@ -62,7 +62,7 @@ function getEventsWith (accountsUrl) {
   }
 }
 
-exports.postEvent = postEventWith(process.env.SERVER_HOST + '/events/')
+exports.postEvent = postEventWith(process.env.SERVER_HOST + '/events')
 exports.postEventWith = postEventWith
 
 function postEventWith (eventsUrl) {
@@ -77,7 +77,7 @@ function postEventWith (eventsUrl) {
   }
 }
 
-exports.getDeletedEvents = getDeletedEventsWith(process.env.SERVER_HOST + '/deleted/')
+exports.getDeletedEvents = getDeletedEventsWith(process.env.SERVER_HOST + '/deleted')
 exports.getDeletedEventsWith = getDeletedEventsWith
 
 function getDeletedEventsWith (deletedEventsUrl) {
@@ -96,7 +96,7 @@ function getDeletedEventsWith (deletedEventsUrl) {
   }
 }
 
-exports.getPublicKey = getPublicKeyWith(process.env.SERVER_HOST + '/exchange/')
+exports.getPublicKey = getPublicKeyWith(process.env.SERVER_HOST + '/exchange')
 exports.getPublicKeyWith = getPublicKeyWith
 
 function getPublicKeyWith (exchangeUrl) {
@@ -112,7 +112,7 @@ function getPublicKeyWith (exchangeUrl) {
   }
 }
 
-exports.postUserSecret = postUserSecretWith(process.env.SERVER_HOST + '/exchange/')
+exports.postUserSecret = postUserSecretWith(process.env.SERVER_HOST + '/exchange')
 exports.postUserSecretWith = postUserSecretWith
 
 function postUserSecretWith (exchangeUrl) {

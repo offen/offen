@@ -42,7 +42,6 @@ func (rt *router) userCookie(userID string) *http.Cookie {
 		Expires:  time.Now().Add(time.Hour * 24 * 90),
 		HttpOnly: true,
 		Secure:   rt.secureCookie,
-		Path:     "/",
 	}
 }
 
@@ -118,30 +117,30 @@ func New(opts ...Config) http.Handler {
 
 	m.Use(recovery, cors)
 
-	optout := m.PathPrefix("/opt-out/").Subrouter()
+	optout := m.PathPrefix("/opt-out").Subrouter()
 	optout.Use(gif)
-	optout.HandleFunc("/", rt.optout).Methods(http.MethodGet)
+	optout.HandleFunc("", rt.optout).Methods(http.MethodGet)
 
-	exchange := m.PathPrefix("/exchange/").Subrouter()
+	exchange := m.PathPrefix("/exchange").Subrouter()
 	exchange.Use(json)
-	exchange.HandleFunc("/", rt.getPublicKey).Methods(http.MethodGet)
-	exchange.HandleFunc("/", rt.postUserSecret).Methods(http.MethodPost)
+	exchange.HandleFunc("", rt.getPublicKey).Methods(http.MethodGet)
+	exchange.HandleFunc("", rt.postUserSecret).Methods(http.MethodPost)
 
-	accounts := m.PathPrefix("/accounts/").Subrouter()
+	accounts := m.PathPrefix("/accounts").Subrouter()
 	accounts.Use(json)
-	accounts.HandleFunc("/", rt.getAccount).Methods(http.MethodGet)
+	accounts.HandleFunc("", rt.getAccount).Methods(http.MethodGet)
 
-	deleted := m.PathPrefix("/deleted/").Subrouter()
+	deleted := m.PathPrefix("/deleted").Subrouter()
 	deleted.Use(json)
 	deletedEventsForUser := userCookie(http.HandlerFunc(rt.getDeletedEvents))
-	deleted.Handle("/", deletedEventsForUser).Methods(http.MethodPost).Queries("user", "1")
-	deleted.HandleFunc("/", rt.getDeletedEvents).Methods(http.MethodPost)
+	deleted.Handle("", deletedEventsForUser).Methods(http.MethodPost).Queries("user", "1")
+	deleted.HandleFunc("", rt.getDeletedEvents).Methods(http.MethodPost)
 
-	events := m.PathPrefix("/events/").Subrouter()
+	events := m.PathPrefix("/events").Subrouter()
 	events.Use(json, userCookie)
-	events.HandleFunc("/", rt.getEvents).Methods(http.MethodGet)
+	events.HandleFunc("", rt.getEvents).Methods(http.MethodGet)
 	receiveEvents := dropOptout(http.HandlerFunc(rt.postEvents))
-	events.Handle("/", receiveEvents).Methods(http.MethodPost)
+	events.Handle("", receiveEvents).Methods(http.MethodPost)
 
 	m.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		httputil.RespondWithJSONError(w, errors.New("Not found"), http.StatusNotFound)
