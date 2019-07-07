@@ -23,6 +23,10 @@ function ensureSyncWith (queries, api) {
       .then(function (eventIds) {
         return eventIds.length
           ? api.getDeletedEvents({ eventIds: eventIds }, true)
+            .catch(function () {
+              // this might be called by users without a cookie
+              return { eventIds: [] }
+            })
           : null
       })
       .then(function (response) {

@@ -126,3 +126,25 @@ function postUserSecretWith (exchangeUrl) {
       .then(handleFetchResponse)
   }
 }
+
+exports.login = loginWith(process.env.ACCOUNTS_HOST + '/api/login')
+exports.loginWith = loginWith
+
+function loginWith (loginUrl) {
+  return function (credentials) {
+    return credentials
+      ? window
+        .fetch(loginUrl, {
+          method: 'POST',
+          credentials: 'include',
+          body: JSON.stringify(credentials)
+        })
+        .then(handleFetchResponse)
+      : window
+        .fetch(loginUrl, {
+          method: 'GET',
+          credentials: 'include'
+        })
+        .then(handleFetchResponse)
+  }
+}

@@ -1,3 +1,4 @@
+*.pem
 *.dot
 __pycache__
 *.log
@@ -5,6 +6,3 @@ __pycache__
 .pytest_cache
 venv/
 *.pyc
-
-models/
-

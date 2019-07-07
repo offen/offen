@@ -32,6 +32,14 @@ custom:
     production: vault.offen.dev
     staging: vault-staging.offen.dev
     alpha: vault-alpha.offen.dev
+  jwtPublicKey:
+    production: accounts.offen.dev/api/key
+    staging: accounts-staging.offen.dev/api/key
+    alpha: accounts-alpha.offen.dev/api/key
+  cookieDomain:
+    production: offen.dev
+    staging: offen.dev
+    alpha: offen.dev
   customDomain:
     basePath: ''
     certificateName: '*.offen.dev'
@@ -49,25 +57,12 @@ functions:
     environment:
       CORS_ORIGIN: https://${self:custom.origin.${self:custom.stage}}
       KEY_CONTENT: '${ssm:/aws/reference/secretsmanager/${self:custom.stage}/kms/key~true}'
+      JWT_PUBLIC_KEY: ${self:custom.jwtPublicKey.${self:custom.stage}}
+      COOKIE_DOMAIN: ${self:custom.publicKeyEndpoint.${self:custom.stage}}
     events:
-      - http:
-          path: /decrypt
-          method: any
-          authorizer:
-            name: authorizer
-            resultTtlInSeconds: 0
-            identitySource: method.request.header.Authorization
       - http:
           path: '{proxy+}'
           method: any
-  authorizer:
-    environment:
-      BASIC_AUTH_USER: offen
-      HASHED_BASIC_AUTH_PASSWORD: ${ssm:/aws/reference/secretsmanager/${self:custom.stage}/kms/hashedBasicAuthPassword~true}
-    package:
-      include:
-        - kms/bin/authorizer
-    handler: kms/bin/authorizer
 
 resources:
   Resources:

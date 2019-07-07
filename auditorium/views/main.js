@@ -19,6 +19,22 @@ function layout () {
 }
 
 function view (state, emit) {
+  var isOperator = !!(state.params && state.params.accountId)
+
+  if (state.error) {
+    var errorMessage = html`
+      <p class="error">An error occured: ${state.error.message}</p>
+      <pre>${state.error.stack}</pre>
+    `
+    return layout(errorMessage)
+  }
+
+  if (!state.authenticated) {
+    emit('offen:authenticate', isOperator ? state.params.accountId : null, state.href)
+    var authenticating = html`<p class="loading">Checking authentication...</p>`
+    return layout(authenticating)
+  }
+
   if (!state.model) {
     emit('offen:query', Object.assign({}, state.params, state.query))
     state.model = {
@@ -35,16 +51,6 @@ function view (state, emit) {
     var loading = html`<p class="loading">Loading...</p>`
     return layout(loading)
   }
-
-  if (state.model.error) {
-    var content = html`
-      <p class="error">An error occured: ${state.model.error.message}</p>
-      <pre>${state.model.error.stack}</pre>
-    `
-    return layout(content)
-  }
-
-  var isOperator = !!(state.params && state.params.accountId)
 
   var numDays = parseInt(state.query.num_days, 10) || 7
 

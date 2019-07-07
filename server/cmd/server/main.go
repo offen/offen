@@ -21,6 +21,7 @@ func main() {
 		logLevel           = flag.String("level", "info", "the application's log level")
 		secureCookie       = flag.Bool("secure", false, "use secure cookies")
 		optoutCookieDomain = flag.String("optout", "localhost", "domain value for the optout cookie")
+		jwtPublicKey       = flag.String("jwt", os.Getenv("JWT_PUBLIC_KEY"), "the location of the JWT public key")
 	)
 	flag.Parse()
 
@@ -47,6 +48,7 @@ func main() {
 			router.WithSecureCookie(*secureCookie),
 			router.WithOptoutCookieDomain(*optoutCookieDomain),
 			router.WithCORSOrigin(*origin),
+			router.WithJWTPublicKey(*jwtPublicKey),
 		),
 	}
 

@@ -38,6 +38,7 @@ func init() {
 		router.WithSecureCookie(secureCookie),
 		router.WithOptoutCookieDomain(optoutCookieDomain),
 		router.WithCORSOrigin(origin),
+		router.WithJWTPublicKey(os.Getenv("JWT_PUBLIC_KEY")),
 	)
 	adapter = httpadapter.New(rt)
 }

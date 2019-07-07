@@ -324,7 +324,9 @@ margin-right: 40px;
 margin-right: 0;
 }
 
-
+label {
+display: block;
+}
 
 
 /* Tables

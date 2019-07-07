@@ -25,6 +25,10 @@ plugins:
 
 custom:
   stage: ${opt:stage, self:provider.stage}
+  origin:
+    production: vault.offen.dev
+    staging: vault-staging.offen.dev
+    alpha: vault-alpha.offen.dev
   domain:
     production: accounts.offen.dev
     staging: accounts-staging.offen.dev
@@ -57,3 +61,9 @@ functions:
       - http:
           path: '{proxy+}'
           method: any
+    environment:
+      USER: offen
+      CORS_ORIGIN: https://${self:custom.origin.${self:custom.stage}}
+      JWT_PRIVATE_KEY: '${ssm:/aws/reference/secretsmanager/${self:custom.stage}/accounts/jwtPrivateKey~true}'
+      JWT_PUBLIC_KEY: '${ssm:/aws/reference/secretsmanager/${self:custom.stage}/accounts/jwtPublicKey~true}'
+      HASHED_PASSWORD: ${ssm:/aws/reference/secretsmanager/${self:custom.stage}/accounts/hashedPassword~true}

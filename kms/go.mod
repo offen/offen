@@ -14,7 +14,6 @@ require (
 	github.com/juju/testing v0.0.0-20190429233213-dfc56b8c09fc // indirect
 	github.com/kr/pretty v0.1.0 // indirect
 	github.com/lestrrat-go/jwx v0.9.0
-	github.com/m90/go-basicauth v1.0.0
 	github.com/m90/go-thunk v1.0.0
 	github.com/miscreant/miscreant-go v0.0.0-20181010193435-325cbd69228b // indirect
 	github.com/onsi/ginkgo v1.8.0 // indirect

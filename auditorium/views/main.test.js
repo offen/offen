@@ -21,7 +21,7 @@ describe('views/main.js', function () {
       assert(loading)
     })
 
-    it('emits a query event when no model is set', function () {
+    it('emits a authenticate event on first load', function () {
       var originalEmit = app.emit
       var callArgs = []
       // sinon broke the dependency tree for unknown reasons so we need
@@ -31,15 +31,13 @@ describe('views/main.js', function () {
         callArgs.push(args)
         originalEmit.apply(app, args)
       }
-      app.state.params = { query: 'test' }
       mainView(app.state, app.emit)
       assert.strictEqual(callArgs.length, 1)
-      assert.strictEqual(callArgs[0][0], 'offen:query')
-      assert.deepStrictEqual(callArgs[0][1], { query: 'test' })
+      assert.strictEqual(callArgs[0][0], 'offen:authenticate')
     })
 
     it('renders an error message when an error is defined', function () {
-      app.state.model = { error: new Error('did not work') }
+      app.state.error = new Error('did not work')
       var result = mainView(app.state, app.emit)
       var message = result.querySelector('p.error')
       assert(message)
@@ -64,6 +62,8 @@ describe('views/main.js', function () {
           }
         ]
       }
+      app.state.authenticated = true
+
       var result = mainView(app.state, app.emit)
 
       var headlines = result.querySelectorAll('h4')

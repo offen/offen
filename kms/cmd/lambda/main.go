@@ -34,6 +34,7 @@ func init() {
 		router.WithCORSOrigin(origin),
 		router.WithManager(manager),
 		router.WithLogger(logger),
+		router.WithJWTPublicKey(os.Getenv("JWT_PUBLIC_KEY")),
 	)
 
 	adapter = httpadapter.New(rt)
