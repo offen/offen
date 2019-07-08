@@ -33,7 +33,6 @@ function store (state, emitter) {
         }
       })
       .then(function () {
-        state.model.loading = false
         emitter.emit(state.events.RENDER)
       })
   })

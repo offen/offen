@@ -17,7 +17,6 @@ describe('stores/data.js', function () {
 
       app.emitter.on(app.state.events.RENDER, function () {
         try {
-          assert.strictEqual(app.state.model.loading, false)
           assert.strictEqual(app.state.model.value, 99)
           done()
         } catch (err) {

@@ -1,14 +1,15 @@
 var html = require('choo/html')
 
-var withTitle = require('./decorators/with-title')
+var layout = require('./_layout')
 
-module.exports = withTitle(view, 'offen accounts')
+module.exports = view
 
 function view (state, emit) {
-  return html`
-    <div class="section-auditorium">
-      <h1><strong>offen</strong> auditorium</h1>
-      <p>You are now logged in.</p>
-    </div>
+  var loggedInMessage = html`
+    <p>
+      You are now logged in.<br>
+      For now, please navigate by entering a URL manually.
+    </p>
   `
+  return layout(loggedInMessage)
 }

@@ -18,6 +18,7 @@ type router struct {
 	logger             *logrus.Logger
 	secureCookie       bool
 	optoutCookieDomain string
+	userCookieDomain   string
 	corsOrigin         string
 	jwtPublicKey       string
 }
@@ -43,6 +44,7 @@ func (rt *router) userCookie(userID string) *http.Cookie {
 		Expires:  time.Now().Add(time.Hour * 24 * 90),
 		HttpOnly: true,
 		Secure:   rt.secureCookie,
+		Path:     "/",
 	}
 }
 
@@ -52,6 +54,10 @@ func (rt *router) optoutCookie() *http.Cookie {
 		Value:   "1",
 		Expires: time.Now().Add(time.Hour * 24 * 365 * 100),
 		Domain:  rt.optoutCookieDomain,
+		Path:    "/",
+		// this cookie is supposed to be read by the `script` so it can
+		// stop operating before even sending requests
+		HttpOnly: false,
 	}
 }
 

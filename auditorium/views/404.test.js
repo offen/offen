@@ -12,7 +12,7 @@ describe('views/404.js', function () {
   describe('notFoundView', function () {
     it('renders a not found message', function () {
       var result = notFoundView(app.state, app.emit)
-      var headline = result.querySelector('h1')
+      var headline = result.querySelector('h2')
       assert(headline.innerText.indexOf('Not found') >= 0)
     })
   })

@@ -5,6 +5,27 @@
 </head>
 <body>
   <script type="text/javascript">
+    var loginResponses = [
+      {
+        type: 'LOGIN_SUCCESS',
+        payload: null
+      },
+      {
+        type: 'ERROR',
+        payload: {
+          error: 'Session expired',
+          status: 401
+        }
+      },
+      {
+        type: 'ERROR',
+        payload: {
+          error: 'did not work',
+          status: 500
+        }
+      }
+    ]
+    var loginCalled = 0
     window.addEventListener('message', function (event) {
       if (event.data.type === 'QUERY') {
         event.source.postMessage({
@@ -15,6 +36,12 @@
             }
           }
         }, '*')
+      }
+      if (event.data.type === 'LOGIN') {
+        event.source.postMessage(Object.assign(loginResponses[loginCalled], {
+          responseTo: event.data.respondWith
+        }), '*')
+        loginCalled++
       }
     })
   </script>

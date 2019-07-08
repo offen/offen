@@ -14,10 +14,6 @@ import (
 	"github.com/lestrrat-go/jwx/jwt"
 )
 
-type keyResponse struct {
-	Key string `json:"key"`
-}
-
 type contextKey string
 
 // ClaimsContextKey will be used to attach a JWT claim to a request context
@@ -34,27 +30,25 @@ func JWTProtect(keyURL, cookieName string) func(http.Handler) http.Handler {
 				RespondWithJSONError(w, err, http.StatusForbidden)
 				return
 			}
-			keyRes, keyErr := http.Get(keyURL)
+
+			keyRes, keyErr := fetchKey(keyURL)
 			if keyErr != nil {
 				RespondWithJSONError(w, keyErr, http.StatusInternalServerError)
 				return
 			}
-			defer keyRes.Body.Close()
-			payload := keyResponse{}
-			if err := json.NewDecoder(keyRes.Body).Decode(&payload); err != nil {
-				RespondWithJSONError(w, keyErr, http.StatusBadGateway)
-				return
-			}
-			keyBytes, _ := pem.Decode([]byte(payload.Key))
+
+			keyBytes, _ := pem.Decode([]byte(keyRes))
 			if keyBytes == nil {
 				RespondWithJSONError(w, errors.New("no pem block found"), http.StatusInternalServerError)
 				return
 			}
+
 			parseResult, parseErr := x509.ParsePKIXPublicKey(keyBytes.Bytes)
 			if parseErr != nil {
 				RespondWithJSONError(w, parseErr, http.StatusBadGateway)
 				return
 			}
+
 			pubKey, pubKeyOk := parseResult.(*rsa.PublicKey)
 			if !pubKeyOk {
 				RespondWithJSONError(w, errors.New("unable to use given key"), http.StatusInternalServerError)
@@ -78,4 +72,21 @@ func JWTProtect(keyURL, cookieName string) func(http.Handler) http.Handler {
 			next.ServeHTTP(w, r)
 		})
 	}
+}
+
+type keyResponse struct {
+	Key string `json:"key"`
+}
+
+func fetchKey(keyURL string) ([]byte, error) {
+	fetchRes, fetchErr := http.Get(keyURL)
+	if fetchErr != nil {
+		return nil, fetchErr
+	}
+	defer fetchRes.Body.Close()
+	payload := keyResponse{}
+	if err := json.NewDecoder(fetchRes.Body).Decode(&payload); err != nil {
+		return nil, err
+	}
+	return []byte(payload.Key), nil
 }

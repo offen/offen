@@ -44,6 +44,7 @@ def post_login():
         expires=expiry,
         path="/",
         domain=environ.get("COOKIE_DOMAIN"),
+        samesite="strict"
     )
     return resp
 
