@@ -33,9 +33,9 @@ custom:
     staging: vault-staging.offen.dev
     alpha: vault-alpha.offen.dev
   jwtPublicKey:
-    production: accounts.offen.dev/api/key
-    staging: accounts-staging.offen.dev/api/key
-    alpha: accounts-alpha.offen.dev/api/key
+    production: https://accounts.offen.dev/api/key
+    staging: https://accounts-staging.offen.dev/api/key
+    alpha: https://accounts-alpha.offen.dev/api/key
   cookieDomain:
     production: offen.dev
     staging: offen.dev
