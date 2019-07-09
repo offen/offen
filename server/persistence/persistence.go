@@ -7,6 +7,7 @@ type Database interface {
 	GetAccount(accountID string, events bool, eventsSince string) (AccountResult, error)
 	GetDeletedEvents(ids []string, userID string) ([]string, error)
 	AssociateUserSecret(accountID, userID, encryptedUserSecret string) error
+	Purge(userID string) error
 }
 
 // Query defines a set of filters to limit the set of results to be returned

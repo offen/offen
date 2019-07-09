@@ -148,3 +148,17 @@ function loginWith (loginUrl) {
         .then(handleFetchResponse)
   }
 }
+
+exports.purge = purgeWith(process.env.SERVER_HOST + '/purge')
+exports.purgeWith = purgeWith
+
+function purgeWith (purgeUrl) {
+  return function () {
+    return window
+      .fetch(purgeUrl, {
+        method: 'POST',
+        credentials: 'include'
+      })
+      .then(handleFetchResponse)
+  }
+}

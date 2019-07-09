@@ -3,6 +3,7 @@ package router
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 	"net/url"
 
@@ -135,4 +136,13 @@ func (rt *router) getDeletedEvents(w http.ResponseWriter, r *http.Request) {
 	}
 	b, _ := json.Marshal(&out)
 	w.Write(b)
+}
+
+func (rt *router) purgeEvents(w http.ResponseWriter, r *http.Request) {
+	userID, _ := r.Context().Value(contextKeyCookie).(string)
+	if err := rt.db.Purge(userID); err != nil {
+		httputil.RespondWithJSONError(w, fmt.Errorf("router: error purging user events: %v", err), http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusNoContent)
 }

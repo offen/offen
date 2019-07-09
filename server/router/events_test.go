@@ -276,3 +276,46 @@ func TestRouter_GetDeletedEvents(t *testing.T) {
 		})
 	}
 }
+
+type mockPurgeDatabase struct {
+	persistence.Database
+	err error
+}
+
+func (m *mockPurgeDatabase) Purge(string) error {
+	return m.err
+}
+
+func TestRouter_PurgeEvents(t *testing.T) {
+	tests := []struct {
+		name               string
+		db                 persistence.Database
+		expectedStatusCode int
+	}{
+		{
+			"persistence error",
+			&mockPurgeDatabase{
+				err: errors.New("did not work"),
+			},
+			http.StatusInternalServerError,
+		},
+		{
+			"ok",
+			&mockPurgeDatabase{},
+			http.StatusNoContent,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			rt := router{test.db, nil, false, "", "", "", ""}
+			w := httptest.NewRecorder()
+			r := httptest.NewRequest(http.MethodPost, "/", nil)
+
+			rt.purgeEvents(w, r)
+			if w.Code != test.expectedStatusCode {
+				t.Errorf("Expected status code %d, got %d", test.expectedStatusCode, w.Code)
+			}
+		})
+	}
+}
