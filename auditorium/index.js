@@ -28,30 +28,30 @@ document.body.appendChild(host)
 app.use(dataStore)
 app.use(authStore)
 
-var decoratedMain = _.compose(
-  withTitle('offen auditorium'),
-  withModel()
-)(mainView)
+function decorateWithDefaults (view, title) {
+  var wrapper = _.compose(withLayout(), withError(), withTitle(title))
+  return wrapper(view)
+}
 
 app.route(
   '/account/:accountId',
-  withLayout()(withError()(withAuthentication()(decoratedMain)))
+  decorateWithDefaults(withAuthentication()(withModel()(mainView)), 'offen auditorium')
 )
 app.route(
   '/account',
-  withLayout()(withTitle('offen accounts')(withAuthentication()(accountView)))
+  decorateWithDefaults(withAuthentication()(accountView), 'offen accounts')
 )
 app.route(
   '/login',
-  withLayout()(withTitle('offen login')(loginView))
+  decorateWithDefaults(loginView, 'offen login')
 )
 app.route(
   '/',
-  withLayout()(withError()(decoratedMain))
+  decorateWithDefaults(withModel()(mainView), 'offen auditorium')
 )
 app.route(
   '/*',
-  withLayout()(withTitle('Not found')(notFoundView))
+  decorateWithDefaults(notFoundView, 'Not found')
 )
 
 module.exports = app.mount(host)
