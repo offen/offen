@@ -1,7 +1,6 @@
 var html = require('choo/html')
 
 var BarChart = require('./../components/bar-chart')
-var layout = require('./_layout')
 
 module.exports = view
 
@@ -105,5 +104,12 @@ function view (state, emit) {
     `
     : null
 
-  return layout(accountHeader, usersAndSessions, chart, pages, referrers)
+  var withSeparators = [accountHeader, usersAndSessions, chart, pages, referrers].map(function (el) {
+    return html`${el}<hr>`
+  })
+  return html`
+    <div>
+      ${withSeparators}
+    </div>
+  `
 }

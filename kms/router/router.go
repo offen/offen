@@ -79,7 +79,7 @@ func New(opts ...Config) http.Handler {
 	m.HandleFunc("/encrypt", rt.handleEncrypt).Methods(http.MethodPost)
 
 	m.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		httputil.RespondWithJSONError(w, errors.New("Not found"), http.StatusNotFound)
+		httputil.RespondWithJSONError(w, errors.New("404 not found"), http.StatusNotFound)
 	})
 
 	if rt.logger == nil {

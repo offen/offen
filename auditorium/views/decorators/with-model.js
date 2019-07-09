@@ -1,7 +1,5 @@
 var html = require('choo/html')
 
-var layout = require('./../_layout')
-
 module.exports = withModel
 
 function withModel () {
@@ -12,7 +10,7 @@ function withModel () {
         var loading = html`
           <p class="loading">Fetching the latest data...</p>
         `
-        return layout(loading)
+        return loading
       }
       return originalView(state, emit)
     }

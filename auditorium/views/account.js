@@ -1,7 +1,5 @@
 var html = require('choo/html')
 
-var layout = require('./_layout')
-
 module.exports = view
 
 function view (state, emit) {
@@ -11,5 +9,5 @@ function view (state, emit) {
       For now, please navigate by entering a URL manually.
     </p>
   `
-  return layout(loggedInMessage)
+  return loggedInMessage
 }

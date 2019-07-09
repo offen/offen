@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"encoding/pem"
 	"errors"
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -27,42 +28,42 @@ func JWTProtect(keyURL, cookieName string) func(http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			authCookie, err := r.Cookie(cookieName)
 			if err != nil {
-				RespondWithJSONError(w, err, http.StatusForbidden)
+				RespondWithJSONError(w, fmt.Errorf("jwt: error reading cookie: %s", err), http.StatusForbidden)
 				return
 			}
 
 			keyRes, keyErr := fetchKey(keyURL)
 			if keyErr != nil {
-				RespondWithJSONError(w, keyErr, http.StatusInternalServerError)
+				RespondWithJSONError(w, fmt.Errorf("jwt: error fetching key: %v", keyErr), http.StatusInternalServerError)
 				return
 			}
 
 			keyBytes, _ := pem.Decode([]byte(keyRes))
 			if keyBytes == nil {
-				RespondWithJSONError(w, errors.New("no pem block found"), http.StatusInternalServerError)
+				RespondWithJSONError(w, errors.New("jwt: no PEM block found in given key"), http.StatusInternalServerError)
 				return
 			}
 
 			parseResult, parseErr := x509.ParsePKIXPublicKey(keyBytes.Bytes)
 			if parseErr != nil {
-				RespondWithJSONError(w, parseErr, http.StatusBadGateway)
+				RespondWithJSONError(w, fmt.Errorf("jwt: error parsing key: %v", parseErr), http.StatusBadGateway)
 				return
 			}
 
 			pubKey, pubKeyOk := parseResult.(*rsa.PublicKey)
 			if !pubKeyOk {
-				RespondWithJSONError(w, errors.New("unable to use given key"), http.StatusInternalServerError)
+				RespondWithJSONError(w, errors.New("jwt: given key is not of type RSA public key"), http.StatusInternalServerError)
 				return
 			}
 
 			token, jwtErr := jwt.ParseVerify(strings.NewReader(authCookie.Value), jwa.RS256, pubKey)
 			if jwtErr != nil {
-				RespondWithJSONError(w, jwtErr, http.StatusForbidden)
+				RespondWithJSONError(w, fmt.Errorf("jwt: error parsing token: %v", jwtErr), http.StatusForbidden)
 				return
 			}
 
 			if err := token.Verify(jwt.WithAcceptableSkew(0)); err != nil {
-				RespondWithJSONError(w, err, http.StatusForbidden)
+				RespondWithJSONError(w, fmt.Errorf("jwt: error verifying token: %v", err), http.StatusForbidden)
 				return
 			}
 

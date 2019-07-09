@@ -1,7 +1,5 @@
 var html = require('choo/html')
 
-var layout = require('./../_layout')
-
 module.exports = withError
 
 function withError () {
@@ -14,7 +12,7 @@ function withError () {
           <p class="error">An error occured: ${state.error.message}</p>
           <pre>${state.error.stack}</pre>
         `
-        return layout(errorMessage)
+        return errorMessage
       }
       return originalView(state, emit)
     }

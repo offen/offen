@@ -1,7 +1,5 @@
 var html = require('choo/html')
 
-var layout = require('./../_layout')
-
 module.exports = withAuthentication
 
 function withAuthentication () {
@@ -12,7 +10,7 @@ function withAuthentication () {
         var authenticating = html`
           <p class="loading">Checking authentication...</p>
         `
-        return layout(authenticating)
+        return authenticating
       }
       return originalView(state, emit)
     }

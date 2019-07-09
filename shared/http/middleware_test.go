@@ -83,7 +83,7 @@ func TestUserCookieMiddleware(t *testing.T) {
 		if w.Code != http.StatusBadRequest {
 			t.Errorf("Unexpected status code %v", w.Code)
 		}
-		if !strings.Contains(w.Body.String(), "received no or blank user identifier") {
+		if !strings.Contains(w.Body.String(), "received no or blank identifier") {
 			t.Errorf("Unexpected body %s", w.Body.String())
 		}
 	})
@@ -99,7 +99,7 @@ func TestUserCookieMiddleware(t *testing.T) {
 		if w.Code != http.StatusBadRequest {
 			t.Errorf("Unexpected status code %v", w.Code)
 		}
-		if !strings.Contains(w.Body.String(), "received no or blank user identifier") {
+		if !strings.Contains(w.Body.String(), "received no or blank identifier") {
 			t.Errorf("Unexpected body %s", w.Body.String())
 		}
 	})

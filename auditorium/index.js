@@ -12,6 +12,7 @@ var withAuthentication = require('./views/decorators/with-authentication')
 var withTitle = require('./views/decorators/with-title')
 var withModel = require('./views/decorators/with-model')
 var withError = require('./views/decorators/with-error')
+var withLayout = require('./views/decorators/with-layout')
 
 sf('./index.css')
 
@@ -27,28 +28,31 @@ document.body.appendChild(host)
 app.use(dataStore)
 app.use(authStore)
 
-var withDecorators = _.compose(withTitle('offen auditorium'), withModel(), withError())
-var decoratedMain = withDecorators(mainView)
+var decoratedMain = _.compose(
+  withTitle('offen auditorium'),
+  withModel(),
+  withError()
+)(mainView)
 
 app.route(
   '/account/:accountId',
-  withAuthentication()(decoratedMain)
+  withLayout()(withAuthentication()(decoratedMain))
 )
 app.route(
   '/account',
-  withTitle('offen accounts')(withAuthentication()(accountView))
+  withLayout()(withTitle('offen accounts')(withAuthentication()(accountView)))
 )
 app.route(
   '/login',
-  withTitle('offen login')(loginView)
+  withLayout()(withTitle('offen login')(loginView))
 )
 app.route(
   '/',
-  decoratedMain
+  withLayout()(decoratedMain)
 )
 app.route(
   '/*',
-  withTitle('Not found')(notFoundView)
+  withLayout()(withTitle('Not found')(notFoundView))
 )
 
 module.exports = app.mount(host)

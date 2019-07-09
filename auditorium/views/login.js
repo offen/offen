@@ -1,7 +1,5 @@
 var html = require('choo/html')
 
-var layout = require('./_layout')
-
 module.exports = view
 
 function view (state, emit) {
@@ -29,5 +27,5 @@ function view (state, emit) {
     </form>
   `
 
-  return layout(form)
+  return form
 }
