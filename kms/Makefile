@@ -18,4 +18,3 @@ clean-build:
 
 build: clean-build
 	@GOOS=linux go build -o bin/kms cmd/lambda/main.go
-	@GOOS=linux go build -o bin/authorizer cmd/authorizer/main.go
