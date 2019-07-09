@@ -23,14 +23,14 @@ func (r *relationalDatabase) GetAccount(accountID string, events bool, eventsSin
 
 	if err := queryDB.Find(&account, "account_id = ?", accountID).Error; err != nil {
 		if gorm.IsRecordNotFoundError(err) {
-			return persistence.AccountResult{}, persistence.ErrUnknownAccount(fmt.Sprintf(`account id "%s" unknown`, accountID))
+			return persistence.AccountResult{}, persistence.ErrUnknownAccount(fmt.Sprintf(`relational: account id "%s" unknown`, accountID))
 		}
-		return persistence.AccountResult{}, err
+		return persistence.AccountResult{}, fmt.Errorf("relational: error looking up account with id %s: %v", accountID, err)
 	}
 
 	key, err := account.WrapPublicKey()
 	if err != nil {
-		return persistence.AccountResult{}, err
+		return persistence.AccountResult{}, fmt.Errorf("relational: error wrapping account public key: %v", err)
 	}
 
 	result := persistence.AccountResult{
@@ -65,7 +65,7 @@ func (r *relationalDatabase) GetAccount(accountID string, events bool, eventsSin
 func (r *relationalDatabase) AssociateUserSecret(accountID, userID, encryptedUserSecret string) error {
 	var account Account
 	if err := r.db.Find(&account, "account_id = ?", accountID).Error; err != nil {
-		return err
+		return fmt.Errorf("relational: error looking up account with id %s: %v", accountID, err)
 	}
 	hashedUserID := account.HashUserID(userID)
 
@@ -76,13 +76,13 @@ func (r *relationalDatabase) AssociateUserSecret(accountID, userID, encryptedUse
 	// for existence beforehand
 	if err := r.db.First(&user, "hashed_user_id = ?", hashedUserID).Error; err != nil {
 		if err != gorm.ErrRecordNotFound {
-			return err
+			return fmt.Errorf("relational: error looking up user: %v", err)
 		}
 	} else {
 		parkedID, parkedIDErr := uuid.NewV4()
 		if parkedIDErr != nil {
 			txn.Rollback()
-			return parkedIDErr
+			return fmt.Errorf("relational: error migrating existing events: %v", parkedIDErr)
 		}
 
 		parkedHash := account.HashUserID(parkedID.String())
@@ -90,11 +90,11 @@ func (r *relationalDatabase) AssociateUserSecret(accountID, userID, encryptedUse
 
 		if err := txn.Create(&user).Error; err != nil {
 			txn.Rollback()
-			return err
+			return fmt.Errorf("relational: error migrating existing events: %v", err)
 		}
 		if err := txn.Delete(&User{}, "hashed_user_id = ?", hashedUserID).Error; err != nil {
 			txn.Rollback()
-			return err
+			return fmt.Errorf("relational: error migrating existing events: %v", err)
 		}
 
 		var affected []Event
@@ -104,23 +104,23 @@ func (r *relationalDatabase) AssociateUserSecret(accountID, userID, encryptedUse
 			newID, err := newEventID()
 			if err != nil {
 				txn.Rollback()
-				return err
+				return fmt.Errorf("relational: error migrating existing events: %v", err)
 			}
 			if err := txn.Delete(&Event{}, "event_id = ?", ev.EventID).Error; err != nil {
 				txn.Rollback()
-				return err
+				return fmt.Errorf("relational: error migrating existing events: %v", err)
 			}
 			ev.EventID = newID
 			ev.HashedUserID = parkedHash
 			if err := txn.Create(&ev).Error; err != nil {
 				txn.Rollback()
-				return err
+				return fmt.Errorf("relational: error migrating existing events: %v", err)
 			}
 		}
 	}
 
 	if err := txn.Commit().Error; err != nil {
-		return err
+		return fmt.Errorf("relational: error migrating existing events: %v", err)
 	}
 
 	return r.db.Create(&User{

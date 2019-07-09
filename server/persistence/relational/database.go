@@ -29,13 +29,13 @@ func New(configs ...Config) (persistence.Database, error) {
 		var err error
 		opts, err = config(opts)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("relational: error configuring instance: %v", err)
 		}
 	}
 
 	db, err := gorm.Open(opts.dialect, opts.connectionString)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("relational: error opening database: %v", err)
 	}
 
 	return &relationalDatabase{db}, nil
