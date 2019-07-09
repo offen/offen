@@ -20,5 +20,5 @@ func newEventID() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return eventID.String(), err
+	return eventID.String(), nil
 }

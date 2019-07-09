@@ -18,7 +18,9 @@ type router struct {
 	logger             *logrus.Logger
 	secureCookie       bool
 	optoutCookieDomain string
+	userCookieDomain   string
 	corsOrigin         string
+	jwtPublicKey       string
 }
 
 func (rt *router) logError(err error, message string) {
@@ -42,6 +44,7 @@ func (rt *router) userCookie(userID string) *http.Cookie {
 		Expires:  time.Now().Add(time.Hour * 24 * 90),
 		HttpOnly: true,
 		Secure:   rt.secureCookie,
+		Path:     "/",
 	}
 }
 
@@ -51,6 +54,10 @@ func (rt *router) optoutCookie() *http.Cookie {
 		Value:   "1",
 		Expires: time.Now().Add(time.Hour * 24 * 365 * 100),
 		Domain:  rt.optoutCookieDomain,
+		Path:    "/",
+		// this cookie is supposed to be read by the `script` so it can
+		// stop operating before even sending requests
+		HttpOnly: false,
 	}
 }
 
@@ -93,6 +100,13 @@ func WithCORSOrigin(o string) Config {
 	}
 }
 
+// WithJWTPublicKey sets the endpoint to fetch the JWT Public Key
+func WithJWTPublicKey(k string) Config {
+	return func(r *router) {
+		r.jwtPublicKey = k
+	}
+}
+
 // New creates a new application router that reads and writes data
 // to the given database implementation. In the context of the application
 // this expects to be the only top level router in charge of handling all
@@ -114,6 +128,7 @@ func New(opts ...Config) http.Handler {
 		}
 	})
 	userCookie := httputil.UserCookieMiddleware(cookieKey, contextKeyCookie)
+	auth := httputil.JWTProtect(rt.jwtPublicKey, "auth")
 
 	m.Use(recovery, cors)
 
@@ -127,7 +142,7 @@ func New(opts ...Config) http.Handler {
 	exchange.HandleFunc("", rt.postUserSecret).Methods(http.MethodPost)
 
 	accounts := m.PathPrefix("/accounts").Subrouter()
-	accounts.Use(json)
+	accounts.Use(json, auth)
 	accounts.HandleFunc("", rt.getAccount).Methods(http.MethodGet)
 
 	deleted := m.PathPrefix("/deleted").Subrouter()

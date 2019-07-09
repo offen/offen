@@ -52,7 +52,7 @@ func UserCookieMiddleware(cookieKey string, contextKey interface{}) func(http.Ha
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			c, err := r.Cookie(cookieKey)
 			if err != nil {
-				RespondWithJSONError(w, errors.New("received no or blank user identifier"), http.StatusBadRequest)
+				RespondWithJSONError(w, errors.New("user cookie: received no or blank identifier"), http.StatusBadRequest)
 				return
 			}
 			r = r.WithContext(

@@ -95,6 +95,9 @@ jobs:
       - checkout:
           path: ~/offen
       - run:
+          name: Install dependencies
+          command: go get ./...
+      - run:
           name: Run tests
           command: make test
 
@@ -151,6 +154,9 @@ jobs:
       - restore_cache:
           key: offen-auditorium-{{ checksum "package.json" }}
       - run:
+          name: Install lsof
+          command: sudo apt-get install lsof
+      - run:
           name: Install dependencies
           command: npm install
       - save_cache:
@@ -187,6 +193,48 @@ jobs:
   accounts:
     docker:
       - image: circleci/python:3.6
+        environment:
+          HASHED_PASSWORD: JDJhJDEwJGpFRXJMOVVSQndZQlFQNjkxallkZi53aGp1cDMvRW5maGUvakZleG1pWFlnWEVXcU93ODBp
+          JWT_PRIVATE_KEY: |-
+            -----BEGIN PRIVATE KEY-----
+            MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCzgU18PnRrpbVK
+            LU4EewU476arjLeMAXoxQAvrufvnwAGlrvnuh+TE7z7R3KslOyP0m3bTMaNyn2la
+            DFz0ERR8KFA3rbUUDLG8QAUomm6X2WNbZJqFG/ORBWyEWy/bvNEbCTtF8K09v6HT
+            PcNzpSrzN8MK/xsIXnMTa/acftbfD3jnb1KFNWaSUKgEM9OL8NSW8PpqTf+le/+R
+            0Dwhd4vNnELpobKY3tvhxjvlQmbZA6vRrOoWfWbKXuS/7B7CWXWEhXPTbcJPcKPt
+            zlkpJGlrcHgvTBorM/lBZw7zrmfUcJROdX6ziU1ymEENkKtLBORedWdBZU8Ivuyy
+            hDIzS7cdAgMBAAECggEAVReXfq0wjRMJhHdDg5Y5nIrmbG4RWFoe7ZfZzs3kXzDC
+            1yLCMdPTm5N6KQu9SbHmUn8b7fOa8qwkyd4QdlZeapjFpg8/RpjZ7E5A48WJZYxU
+            sC9ZnH3qkTWMApYjcrvoODPBGF+GED52XOfrbje+y3sEh4L08purW2qThg4Ol8A2
+            +lqh7W0DCAYV9BG4jFo0QyJRsXa88JIxVS2gSbuegDyHwRTtPq0ZH+vqUEsJti0c
+            G60hwcl0v9eRbJk/e9lzhKFKnf4/ReRAX9pUyyIb7za3vhYwDmjglgZ+Ax4HhkPK
+            SR8KjqX5hQ2nOtDmxkxEO1QF5Qm99VLlZyo55vdJYQKBgQDomtQ7jwc41JM9naZC
+            1agGjJamZAtfDf/00KQILWplaDCDEyue9A1iSnu7yNLX4VOjsKhfvugARwz2pOrw
+            PkOYasurM+P16qNkyfyVUilC/QoOcm5UjsCy/wAViwYFG8hZGBj+jPELqPglSdr4
+            m2FPTFOmtQDzB7EOk9Mzaic26QKBgQDFjz96/3OAC2dBdjQz7zXKHYPPo2gXqS76
+            3UOX2u+S43jJGEEKLdWa34qO6KrnnUsivyvEyF2/5H6n8Dc2Xj0LBdO67wyzbtFM
+            dI9RiQ3DqTBbebmrkSdIaTBAGu1VtSCzBKUqckkM3lLSHhJBg0XrURGdqro28nhZ
+            uSQ8EzzGFQKBgQCCiVlvrz3jU9Dp9E45FcR9IGrvKBgFmUq6bliPykT6cfU/qgOB
+            6f6U2a4E3ZgN1QNmSp7DVNTISxdoV3cNqjOvFsgD5VQaTzqxNnXMqtZDJNR+9RMb
+            2x0jlt3KOUIAne3aqh5kxF4GKCZSbtc3S6PZp8EOPmgw+3EO+EC/iuRE+QKBgHIW
+            uqs2UKY2b6ffMmB3mVGiX9eOX3OikW3wT7OnjMkAMmW3awAM3hl1VNgYx3HAZX6o
+            dgdLStChjP9A+zGblJcEA3Ulzejla1tCyO1mP5up3jJFhpLs3Ym0rVen9T2Uv1CC
+            sztjCoqy7ZNIKHTK8Zrmk0zBJo7K0fPGtoU2+tbNAoGAc2x7cW8y9ERRJg8FSWj0
+            ADPUPzsW3Bu76U0oVEXg66d3+D9z8LBVhBYjL/+tJWADapePnye+gpqzd4kGFeV4
+            q49Qz5hhZUzsUl2iOURQLUnI2g0AINiMIVL5EkZtdD+Au65+AaYL7YEsXmKcLXHX
+            coEomAoy102k4A6WsM2bKf4=
+            -----END PRIVATE KEY-----
+          JWT_PUBLIC_KEY: |-
+            -----BEGIN PUBLIC KEY-----
+            MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAs4FNfD50a6W1Si1OBHsF
+            OO+mq4y3jAF6MUAL67n758ABpa757ofkxO8+0dyrJTsj9Jt20zGjcp9pWgxc9BEU
+            fChQN621FAyxvEAFKJpul9ljW2SahRvzkQVshFsv27zRGwk7RfCtPb+h0z3Dc6Uq
+            8zfDCv8bCF5zE2v2nH7W3w94529ShTVmklCoBDPTi/DUlvD6ak3/pXv/kdA8IXeL
+            zZxC6aGymN7b4cY75UJm2QOr0azqFn1myl7kv+wewll1hIVz023CT3Cj7c5ZKSRp
+            a3B4L0waKzP5QWcO865n1HCUTnV+s4lNcphBDZCrSwTkXnVnQWVPCL7ssoQyM0u3
+            HQIDAQAB
+            -----END PUBLIC KEY-----
+
     working_directory: ~/offen/accounts
     steps:
       - checkout:
@@ -229,10 +277,10 @@ jobs:
           key: offen-packages-{{ checksum "package.json" }}
       - run:
           name: Deploy
-          working_directory: ~/offen
+          working_directory: ~/offen/accounts
           command: |
             echo "Deploying accounts ..."
-            $(npm bin)/sls deploy --config accounts/serverless.yml
+            $(npm bin)/sls deploy
 
   deploy_golang:
     docker:

@@ -1,5 +1,6 @@
 var handleAnalyticsEvent = require('./src/handle-analytics-event')
 var handleQuery = require('./src/handle-query')
+var handleLogin = require('./src/handle-login')
 
 // This is a list of all host applications that are allowed to request data
 // by adding `respondWith` to messages. It is important to keep this restricted
@@ -65,6 +66,10 @@ window.addEventListener('message', function (event) {
     }
     case 'QUERY': {
       handler = handleQuery
+      break
+    }
+    case 'LOGIN': {
+      handler = handleLogin
       break
     }
   }

@@ -27,13 +27,12 @@ function store (state, emitter) {
             console.log(err.originalStack)
           }
         }
-        state.model.error = {
+        state.error = {
           message: err.message,
           stack: err.originalStack || err.stack
         }
       })
       .then(function () {
-        state.model.loading = false
         emitter.emit(state.events.RENDER)
       })
   })

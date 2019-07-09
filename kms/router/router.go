@@ -13,9 +13,10 @@ import (
 )
 
 type router struct {
-	logger     *logrus.Logger
-	manager    keymanager.Manager
-	corsOrigin string
+	logger       *logrus.Logger
+	manager      keymanager.Manager
+	corsOrigin   string
+	jwtPublicKey string
 }
 
 // Config is a function that adds config values to a router instance
@@ -42,6 +43,13 @@ func WithLogger(l *logrus.Logger) Config {
 	}
 }
 
+// WithJWTPublicKey sets the URL for the auth server to be called
+func WithJWTPublicKey(k string) Config {
+	return func(r *router) {
+		r.jwtPublicKey = k
+	}
+}
+
 // New creates a new top-level application router for the KMS service using
 // the given key manager and logger
 func New(opts ...Config) http.Handler {
@@ -59,13 +67,19 @@ func New(opts ...Config) http.Handler {
 	})
 
 	m := mux.NewRouter()
-
 	m.Use(recover, json, cors)
-	m.HandleFunc("/decrypt", rt.handleDecrypt).Methods(http.MethodPost)
+
+	decrypt := m.PathPrefix("/decrypt").Subrouter()
+	if rt.jwtPublicKey != "" {
+		auth := httputil.JWTProtect(rt.jwtPublicKey, "auth")
+		decrypt.Use(auth)
+	}
+
+	decrypt.HandleFunc("", rt.handleDecrypt).Methods(http.MethodPost)
 	m.HandleFunc("/encrypt", rt.handleEncrypt).Methods(http.MethodPost)
 
 	m.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		httputil.RespondWithJSONError(w, errors.New("Not found"), http.StatusNotFound)
+		httputil.RespondWithJSONError(w, errors.New("404 not found"), http.StatusNotFound)
 	})
 
 	if rt.logger == nil {

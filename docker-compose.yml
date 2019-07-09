@@ -10,16 +10,19 @@ services:
       - .:/offen
       - kmsdeps:/go/pkg/mod
     environment:
-      - KEY_FILE=key.txt
-      - PORT=8081
+      KEY_FILE: key.txt
+      PORT: 8081
+      JWT_PUBLIC_KEY: http://accounts:5000/api/key
     ports:
       - 8081:8081
     command: refresh run
+    links:
+      - accounts
 
   server_database:
     image: postgres:11.2
     environment:
-      - POSTGRES_PASSWORD=develop
+      POSTGRES_PASSWORD: develop
 
   server:
     build:
@@ -30,9 +33,10 @@ services:
       - .:/offen
       - serverdeps:/go/pkg/mod
     environment:
-      - POSTGRES_CONNECTION_STRING=postgres://postgres:develop@server_database:5432/postgres?sslmode=disable
-      - KMS_ENCRYPTION_ENDPOINT=http://kms:8081/encrypt
-      - PORT=8080
+      POSTGRES_CONNECTION_STRING: postgres://postgres:develop@server_database:5432/postgres?sslmode=disable
+      KMS_ENCRYPTION_ENDPOINT: http://kms:8081/encrypt
+      PORT: 8080
+      JWT_PUBLIC_KEY: http://accounts:5000/api/key
     ports:
       - 8080:8080
     command: refresh run
@@ -57,6 +61,7 @@ services:
       - KMS_HOST=http://localhost:8081
       - SCRIPT_HOST=http://localhost:9977
       - AUDITORIUM_HOST=http://localhost:9955
+      - ACCOUNTS_HOST=http://localhost:5000
 
   script:
     build:
@@ -98,8 +103,50 @@ services:
     ports:
       - 5000:5000
     environment:
-      - FLASK_APP=accounts
-      - FLASK_ENV=development
+      FLASK_APP: accounts
+      FLASK_ENV: development
+      CORS_ORIGIN: http://localhost:9977
+      # local password is `develop`
+      HASHED_PASSWORD: JDJhJDEwJGpFRXJMOVVSQndZQlFQNjkxallkZi53aGp1cDMvRW5maGUvakZleG1pWFlnWEVXcU93ODBp
+      JWT_PRIVATE_KEY: |-
+        -----BEGIN PRIVATE KEY-----
+        MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCa6AEl0RUW43YS
+        6cfbYkEDoSxQV8WoEQPuwM9OPdrJjTHYwX9+J9dPhvdnuSIGca86jgYwg45xG5MC
+        7arOIIGOI8rBuXWyPF/iZliWxUmzEMIsmZYFNTjezRl95ymy43ZH9JCS2pw2gTTq
+        Z4ln/hPkl2KMs+Two7iux52sgFRAxWYPNgqCpkbzEAL+zCHIPaZqsZjRX/nES7/y
+        JZWyvSSDQ/CsdeR+xssx2F1JXjQHl68dBEJJc7hAU4xNqs9aP5vaaL6PbwWOh6S7
+        bzieDvankyZSrCxVBbMy8+JHXDLLQTp8Lv3y38HL/Ez0gefm2kRnGNTU19kwoFT+
+        ceeuYE6RAgMBAAECggEAcZ2g2d/UnAkRXSXi1GHoVYUtP3BhJLf2LnN0mWp8wj+x
+        Q84IeLs4DLhtVcJP1nIjl8r7dzHGk+cpmIhBMxZcb6iI2jXwwV3O5fszFsJ1H8U2
+        5gdwJTm4EJJWFCYsS2zSIEycjVmSIdf6u8Jc4c1VQeBXA+QeEvHCT09RsmgdY7NA
+        zEZtpIf4EUXtQMmZdKwYVRJUJlBccAP2IR23lhAV6pS5n0pwOodnZD7lf/XAIrOm
+        Shy0WE+8DAxmg1DXzFLC+vw45kGJTdhHKc+ZFj86Nv2nUx0u12mb1hF3XlC66ojc
+        jmS0i5NbJVCqTSSXlC81V/16wCJmWIF0+O6y2EkZwQKBgQDLcgORV1QhUAz6QfiP
+        wR9OIWCJyxaGbaBe1FZvx8T9ofri8z/ycwxkzlEDCLYu7CZ2ZCpZLMwE5njzfmTq
+        ixhiVvu/fCPgo4bXRt6H/BaggBs04p8UB3ZJKl0ib67kKMXQjH2qFhuCS2Jpy3ru
+        REmRoukY4iAqHRdIrP6zW0y55QKBgQDC7BDIZrSbZNwkdbj+UilKEit+plBAvdan
+        7CGLg4XhwiW7XYr9gHM3RKCAlUFRIsAaFClxiCvy21p3UpbO0XC5aIC5ReWYK9zh
+        THqwjxgDCev4FIe0md2fQCP7TP4wTYwvKjSqzI4v/XW86VYynegDBQSqeI8heuY4
+        YbTBYMvHPQKBgQCy89wdiVJwZwizTTpFwNs3j3ZqXmC26FEreN17P56Qd13HKa6z
+        Je3d8fkikRQnnAONGjiB7jybhtsXW7OK98UAI4EYAytP2qeuTyFJPj3s+iJ0V28U
+        YCf03bXEp7aP7Slrc1jKNt4Fsyei5aCBW0HXQBSHlcgzIxmrDLiRrZqE3QKBgBPu
+        KUUkY0EkTfIYa2LtqbUeKH5ZqQkFoCYpWcC3IQBVZqBCz0xeTumOxc5/9F7Ea9n+
+        x8IJB11cmmJq+mqJNbpvegH3qKMnkP0kYcMdznm5EPybtMh9lxCKcWNnmvH7a+MC
+        sMHqCnvTsa8wOJUSWj+8yp5Xl2L3+wQ20VGYgR2NAoGAE8/BCLHcescaA9PGr4Kx
+        EfVfoULTXOJp8a8j+N3C8cXhnroXGT6IYnETb34Z2J713m/5Ko/74PBWXnRvvnu4
+        ATPZbyXlmtsorV5E5lRs9x6U9bRUzDEWLp1yITfaDHflYUWkrtAKDZ6GslCMbvQz
+        9/CbsOaHzDf73JYos55E78E=
+        -----END PRIVATE KEY-----
+      JWT_PUBLIC_KEY: |-
+        -----BEGIN PUBLIC KEY-----
+        MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmugBJdEVFuN2EunH22JB
+        A6EsUFfFqBED7sDPTj3ayY0x2MF/fifXT4b3Z7kiBnGvOo4GMIOOcRuTAu2qziCB
+        jiPKwbl1sjxf4mZYlsVJsxDCLJmWBTU43s0ZfecpsuN2R/SQktqcNoE06meJZ/4T
+        5JdijLPk8KO4rsedrIBUQMVmDzYKgqZG8xAC/swhyD2marGY0V/5xEu/8iWVsr0k
+        g0PwrHXkfsbLMdhdSV40B5evHQRCSXO4QFOMTarPWj+b2mi+j28Fjoeku284ng72
+        p5MmUqwsVQWzMvPiR1wyy0E6fC798t/By/xM9IHn5tpEZxjU1NfZMKBU/nHnrmBO
+        kQIDAQAB
+        -----END PUBLIC KEY-----
 
 volumes:
   kmsdeps:

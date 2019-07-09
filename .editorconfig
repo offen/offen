@@ -13,3 +13,7 @@ indent_style = tab
 [{*.js,*.yml,*.md,Gopkg.toml,package.json,*.html,Dockerfile.*}]
 indent_style = space
 indent_size = 2
+
+[*.py]
+indent_style = space
+indent_size = 4

@@ -18,6 +18,7 @@ func main() {
 		port     = flag.String("port", os.Getenv("PORT"), "the port the server binds to")
 		logLevel = flag.String("level", "info", "the application's log level")
 		origin   = flag.String("origin", "http://localhost:9977", "the CORS origin")
+		key      = flag.String("jwt", os.Getenv("JWT_PUBLIC_KEY"), "the location of the JWT public key")
 	)
 	flag.Parse()
 
@@ -42,6 +43,7 @@ func main() {
 			router.WithManager(manager),
 			router.WithLogger(logger),
 			router.WithCORSOrigin(*origin),
+			router.WithJWTPublicKey(*key),
 		),
 	}
 

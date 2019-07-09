@@ -19,8 +19,9 @@ func main() {
 		dialect            = flag.String("dialect", "postgres", "the database dialect used by the given connection string")
 		origin             = flag.String("origin", "http://localhost:9977", "the origin used in CORS headers")
 		logLevel           = flag.String("level", "info", "the application's log level")
-		secureCookie       = flag.Bool("secure", false, "use secure cookies")
 		optoutCookieDomain = flag.String("optout", "localhost", "domain value for the optout cookie")
+		jwtPublicKey       = flag.String("jwt", os.Getenv("JWT_PUBLIC_KEY"), "the location of the JWT public key")
+		secureCookie       = flag.Bool("secure", false, "use secure cookies")
 	)
 	flag.Parse()
 
@@ -47,6 +48,7 @@ func main() {
 			router.WithSecureCookie(*secureCookie),
 			router.WithOptoutCookieDomain(*optoutCookieDomain),
 			router.WithCORSOrigin(*origin),
+			router.WithJWTPublicKey(*jwtPublicKey),
 		),
 	}
 

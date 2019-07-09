@@ -41,14 +41,14 @@ func TestRouter_HandleEncrypt(t *testing.T) {
 			&mockEncryptionKeyManager{},
 			"just a string",
 			http.StatusBadRequest,
-			`{"error":"invalid character 'j' looking for beginning of value","status":400}`,
+			`{"error":"router: error decoding request body: invalid character 'j' looking for beginning of value","status":400}`,
 		},
 		{
 			"non-string decrypted value",
 			&mockEncryptionKeyManager{},
 			`{"decrypted":100}`,
 			http.StatusBadRequest,
-			`{"error":"expected .decrypted to be a non-empty string","status":400}`,
+			`{"error":"router: expected 'decrypted' to be a non-empty string","status":400}`,
 		},
 		{
 			"encryption error",
@@ -57,7 +57,7 @@ func TestRouter_HandleEncrypt(t *testing.T) {
 			},
 			`{"decrypted":"abc123"}`,
 			http.StatusBadRequest,
-			`{"error":"upstream problems and such","status":400}`,
+			`{"error":"router: error encrypting given value: upstream problems and such","status":400}`,
 		},
 		{
 			"ok",
@@ -122,7 +122,7 @@ func TestRouter_HandleDecrypt(t *testing.T) {
 			"just a string",
 			"",
 			http.StatusBadRequest,
-			`{"error":"invalid character 'j' looking for beginning of value","status":400}`,
+			`{"error":"router: error decoding request body: invalid character 'j' looking for beginning of value","status":400}`,
 		},
 		{
 			"decryption error",
@@ -132,7 +132,7 @@ func TestRouter_HandleDecrypt(t *testing.T) {
 			`{"encrypted":"c29tZXZhbHVl"}`,
 			"",
 			http.StatusInternalServerError,
-			`{"error":"did not work","status":500}`,
+			`{"error":"router: error decrypting payload: did not work","status":500}`,
 		},
 		{
 			"successful decryption",
@@ -148,7 +148,7 @@ func TestRouter_HandleDecrypt(t *testing.T) {
 			`{"encrypted":"c29tZXZhbHVl"}`, // base64 encoded string "somevalue"
 			"?jwk=1",
 			http.StatusInternalServerError,
-			`{"error":"error decoding decrypted key in PEM format","status":500}`,
+			`{"error":"router: error decoding decrypted key in PEM format","status":500}`,
 		},
 		{
 			"as jwk - successful",
@@ -222,7 +222,7 @@ kKB/ghAnnkuqfcJsCidjSy816blbGqFqzu9tGgE420toESra+z+9LiMj2ek8tEw6
 			`{"encrypted":"LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFb3dJQkFBS0NBUUVBdlNFS3BWRm5TU1YvS25yOGcvQVFZdDQ2eEVNVndlS0xIL3luRXBvT0FaVm5TNDNaCmtxN3BFb1d5ZEZBVzMraUtBTHhFaUNVNno0VlRjT1ZHMmhRQ2VKM0dpc2paWEpJZmZvdjlORDRyemlkbzlMamEKbVdYVTUza2p0NWNvQWJjd21iRERRL3IvVjViczJOemVOcTdWQ3g2VjRWZnlXSzZaQStYaVRpRW5waDc3bFQwbApYZHQ1VVdoSFBRcERicTdHVDA0dnFkVkJQSitjZzExT3RvbmRocjBoZjRDdGNTUTlzR2c1eUl4M0ZwVGlsZUJ2CmlCQUpMRmdrS2NndG5USmpNWlNIZGRIMW0wZk5IdzV2dkxVTTlVbnpWK2VFMGthd2dyL2ZVUzZVZ0VaMGlWK0MKakZZOWFPeEhMZXAyMjRVdElja2g0NHhUY3NDWHhaNEcxTTB2bXdJREFRQUJBb0lCQUcrVDlydmhjcFhzMFVFMgpuWk1aSmhHdUdlMS94bTVFUU4vMkpuc0srQWhuSkRHbTFoMTdvM1dSK3Q0MEFjckhYZU5oTHUxRFNaYjBpVzJwClZrdUNVcExtUWlQT3FxMjZaMm81SElDZHpTb3FoZmthdFp5YVB5andodW5nKzNGSHFoeUI5REUrK3pXcGpNSEUKVERUbW9EbVhLY1Z3SlVHOGYvbVV2aFpwNlFKUGNHQmxXbk91Ym9vZ1BJc2ZOYWV1eG1wSTBqbWF5OENsMEtWSQowSStqZ2J3UlRkVzdDYk93cDJudHF3blhYTWtXclFRMGF1a1NWR1VXMSt4dCt4VXp2bTFraGNUS3Vqbi8yNk5OCkpKb3dveTBtZjdCMy9nWWVYc3VWVS9ZSVZveml0TXl3czRZZGhVTTFXMlZBOEV3M0xVcmlxZ2FNZFg5b0VBN08KdHg0Z3dzRUNnWUVBOExDYXJVekhoT0FkMDVmK1R2VGhSL1NNL21qc0JuYkllV2JKblJ4WnJHcUdacWo0ZU96bApSMWQxRzBmbjlxWW42RmtKYnE5cmxvL3B5eCtTUFBaZk80UHJEM1oxQkJNVmpNeFFoS2hvcXBodGNIMzhYY04xClBrZU5pZ3pMV3ZNOHFNb2VZRW5uSUNxenlOOTAwTHRvN0FVdU5MVnVrRTg5ZVFKTkdvQkduczhDZ1lFQXlTalMKTE9XSURHOFRBSGV1SkRWV1UxWW13ZVZ6K1N5WEZyL1JlRmJ4aFN6VGMvaStqaVlhcUdtbmY4OWtUK3FhUjFkNQpUb1FFRXVaTk5YblVvNDk1SXVkVGJRWXhXem9vcmZMUFBXWFdFWXZqREJub1RWMzZXOTJGRXUxdnpSYWswMU5mCmJrY3h3T20zcm4yN2VuOW54MFRjcm9KMEJiSUQ4ZHBDaDM5dWRYVUNnWUFvZDlrWjZEM25wbkw5WDZIZmpxYk8KSFYwVGJYcTV2NEVIZ0hQSG1idXVGSjhTWmJpWlJHTnNjbFQ3U0VURklMeTNBVGxueGREV0dNNWJXNnlQMlhDNwpwZnVBdHc4SHAxbkpPWlVVS09pb1BrYXdVazU3U1dET0h1TzZZVnBUcVcvNmhUbEVRVWkrRE0vN3B5NlI1ZURIClJqdTFtd2ZDOWIvRk45RFU4dHBzMndLQmdBbVN6c1hpT3FKVTJ2T252bnJzcXVvV2JJdkh6c2dxRGhyQUVFa0kKNGorelRYRDBncVVqUFJ1TXc3TDZmTXlzM3FETWtmSmhxQXY2Tit4Mm10OFo0ZXIrVldNWDYxdHJIaXFCSnNuRwpRZlRkMG5WdCtqZE1aTERnandmQ2t4S1FwRkdHWTBGTlZCblpSYXVoUWozbk9Gb3NkZEE4VnljNlBLUFMvbDJTCmZBQk5Bb0dCQU4vcGVUOUVOcHBvOUZRZzdia2NmRXhhU0F0bHQ4eGZnVSt1ZmlPSlc1Q09GZVZYNG1oWDc5Q1UKa0tCL2doQW5ua3VxZmNKc0NpZGpTeTgxNmJsYkdxRnF6dTl0R2dFNDIwdG9FU3JhK3orOUxpTWoyZWs4dEV3Ngo4cWpxV0hvMDBEb05PcmdqUmRvSHEzUmQ3enc5ZkNmamh1YzMwS0IwWTNQUWJua3NzQ0I0Ci0tLS0tRU5EIFJTQSBQUklWQVRFIEtFWS0tLS0tCg=="}`, // base64 encoded string "somevalue"
 			"?jwk=1",
 			http.StatusInternalServerError,
-			`{"error":"crypto/rsa: invalid modulus","status":500}`,
+			`{"error":"router: error parsing PEM key: crypto/rsa: invalid modulus","status":500}`,
 		},
 	}
 	for _, test := range tests {

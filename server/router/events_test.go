@@ -84,7 +84,7 @@ func TestRouter_PostEvents(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			rt := router{test.db, nil, false, "", ""}
+			rt := router{test.db, nil, false, "", "", "", ""}
 			w := httptest.NewRecorder()
 			r := httptest.NewRequest(http.MethodPost, "/", test.body)
 			r = r.WithContext(context.WithValue(r.Context(), contextKeyCookie, test.userID))
@@ -99,7 +99,7 @@ func TestRouter_PostEvents(t *testing.T) {
 	}
 
 	t.Run("cookie renewal", func(t *testing.T) {
-		rt := router{&mockInsertDatabase{}, nil, true, "", ""}
+		rt := router{&mockInsertDatabase{}, nil, true, "", "", "", ""}
 		w := httptest.NewRecorder()
 		r := httptest.NewRequest(http.MethodPost, "/", bytes.NewReader([]byte(`{"accountId":"account-identifier","payload":"payload-value"}`)))
 		r = r.WithContext(context.WithValue(r.Context(), contextKeyCookie, "user-token"))
@@ -200,7 +200,7 @@ func TestRouter_GetEvents(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			rt := router{test.db, nil, false, "", ""}
+			rt := router{test.db, nil, false, "", "", "", ""}
 			w := httptest.NewRecorder()
 			r := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/%s", test.queryString), nil)
 			r = r.WithContext(context.WithValue(r.Context(), contextKeyCookie, test.userID))
@@ -262,7 +262,7 @@ func TestRouter_GetDeletedEvents(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			rt := router{test.db, nil, false, "", ""}
+			rt := router{test.db, nil, false, "", "", "", ""}
 			w := httptest.NewRecorder()
 			r := httptest.NewRequest(http.MethodPost, "/", bytes.NewReader([]byte(test.body)))
 

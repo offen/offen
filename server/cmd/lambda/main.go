@@ -16,9 +16,10 @@ func init() {
 	logger := logrus.New()
 	logger.SetLevel(logrus.InfoLevel)
 
+	postgresConnectionString := os.Getenv("POSTGRES_CONNECTION_STRING")
 	db, err := relational.New(
 		relational.WithDialect("postgres"),
-		relational.WithConnectionString(os.Getenv("POSTGRES_CONNECTION_STRING")),
+		relational.WithConnectionString(postgresConnectionString),
 	)
 	if err != nil {
 		panic(err)
@@ -31,6 +32,7 @@ func init() {
 
 	_, secureCookie := os.LookupEnv("SECURE_COOKIE")
 	optoutCookieDomain := os.Getenv("OPTOUT_COOKIE_DOMAIN")
+	jwtPublicKey := os.Getenv("JWT_PUBLIC_KEY")
 
 	rt := router.New(
 		router.WithDatabase(db),
@@ -38,6 +40,7 @@ func init() {
 		router.WithSecureCookie(secureCookie),
 		router.WithOptoutCookieDomain(optoutCookieDomain),
 		router.WithCORSOrigin(origin),
+		router.WithJWTPublicKey(jwtPublicKey),
 	)
 	adapter = httpadapter.New(rt)
 }

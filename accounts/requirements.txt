@@ -1,2 +1,6 @@
 Flask==1.0.2
+Flask-Cors==3.0.8
 werkzeug==0.15.4
+pyjwt[crypto]==1.7.1
+passlib==1.7.1
+bcrypt==3.1.7

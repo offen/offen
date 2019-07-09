@@ -14,9 +14,6 @@ provider:
 
 package:
   individually: true
-  excludeDevDependencies: false
-  exclude:
-  - '**/*'
 
 plugins:
   - serverless-domain-manager
@@ -25,10 +22,18 @@ plugins:
 
 custom:
   stage: ${opt:stage, self:provider.stage}
+  origin:
+    production: vault.offen.dev
+    staging: vault-staging.offen.dev
+    alpha: vault-alpha.offen.dev
   domain:
     production: accounts.offen.dev
     staging: accounts-staging.offen.dev
     alpha: accounts-alpha.offen.dev
+  cookieDomain:
+    production: .offen.dev
+    staging: .offen.dev
+    alpha: .offen.dev
   customDomain:
     basePath: ''
     certificateName: '*.offen.dev'
@@ -37,18 +42,15 @@ custom:
     endpointType: regional
     createRoute53Record: false
   wsgi:
-    app: accounts.accounts.app
+    app: accounts.app
     packRequirements: false
   pythonRequirements:
     slim: true
     dockerizePip: non-linux
-    fileName: accounts/requirements.txt
+    fileName: requirements.txt
 
 functions:
   app:
-    package:
-      include:
-      - accounts/**/*
     handler: wsgi_handler.handler
     events:
       - http:
@@ -57,3 +59,10 @@ functions:
       - http:
           path: '{proxy+}'
           method: any
+    environment:
+      USER: offen
+      CORS_ORIGIN: https://${self:custom.origin.${self:custom.stage}}
+      COOKIE_DOMAIN: ${self:custom.origin.${self:custom.stage}}
+      JWT_PRIVATE_KEY: '${ssm:/aws/reference/secretsmanager/${self:custom.stage}/accounts/jwtPrivateKey~true}'
+      JWT_PUBLIC_KEY: '${ssm:/aws/reference/secretsmanager/${self:custom.stage}/accounts/jwtPublicKey~true}'
+      HASHED_PASSWORD: ${ssm:/aws/reference/secretsmanager/${self:custom.stage}/accounts/hashedPassword~true}

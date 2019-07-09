@@ -12,8 +12,8 @@ describe('views/404.js', function () {
   describe('notFoundView', function () {
     it('renders a not found message', function () {
       var result = notFoundView(app.state, app.emit)
-      var headline = result.querySelector('h1')
-      assert(headline.innerText.indexOf('Not found') >= 0)
+      assert(result.matches('h2'))
+      assert(result.innerText.indexOf('Not found') >= 0)
     })
   })
 })

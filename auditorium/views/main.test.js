@@ -12,39 +12,6 @@ describe('views/main.js', function () {
   })
 
   describe('mainView', function () {
-    it('displays a loading state on first render', function () {
-      var result = mainView(app.state, app.emit)
-      var headline = result.querySelector('h1')
-      assert(headline)
-
-      var loading = result.querySelector('p.loading')
-      assert(loading)
-    })
-
-    it('emits a query event when no model is set', function () {
-      var originalEmit = app.emit
-      var callArgs = []
-      // sinon broke the dependency tree for unknown reasons so we need
-      // to spy on the emit function ourselves right now
-      app.emit = function () {
-        var args = [].slice.call(arguments)
-        callArgs.push(args)
-        originalEmit.apply(app, args)
-      }
-      app.state.params = { query: 'test' }
-      mainView(app.state, app.emit)
-      assert.strictEqual(callArgs.length, 1)
-      assert.strictEqual(callArgs[0][0], 'offen:query')
-      assert.deepStrictEqual(callArgs[0][1], { query: 'test' })
-    })
-
-    it('renders an error message when an error is defined', function () {
-      app.state.model = { error: new Error('did not work') }
-      var result = mainView(app.state, app.emit)
-      var message = result.querySelector('p.error')
-      assert(message)
-    })
-
     it('renders 6 sections when passed data', function () {
       app.state.model = {
         pageviews: [
@@ -64,6 +31,8 @@ describe('views/main.js', function () {
           }
         ]
       }
+      app.state.authenticated = true
+
       var result = mainView(app.state, app.emit)
 
       var headlines = result.querySelectorAll('h4')

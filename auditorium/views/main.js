@@ -1,49 +1,10 @@
 var html = require('choo/html')
 
-var withTitle = require('./decorators/with-title')
 var BarChart = require('./../components/bar-chart')
 
-module.exports = withTitle(view, 'offen auditorium')
-
-function layout () {
-  var elements = [].slice.call(arguments)
-  var withSeparators = elements.map(function (el) {
-    return html`${el}<hr>`
-  })
-  return html`
-    <div class="section-auditorium">
-      <h1><strong>offen</strong> auditorium</h1>
-      ${withSeparators}
-    </div>
-  `
-}
+module.exports = view
 
 function view (state, emit) {
-  if (!state.model) {
-    emit('offen:query', Object.assign({}, state.params, state.query))
-    state.model = {
-      pageviews: [],
-      referrers: [],
-      uniqueUsers: 0,
-      uniqueSessions: 0,
-      loading: true,
-      pages: []
-    }
-  }
-
-  if (state.model.loading) {
-    var loading = html`<p class="loading">Loading...</p>`
-    return layout(loading)
-  }
-
-  if (state.model.error) {
-    var content = html`
-      <p class="error">An error occured: ${state.model.error.message}</p>
-      <pre>${state.model.error.stack}</pre>
-    `
-    return layout(content)
-  }
-
   var isOperator = !!(state.params && state.params.accountId)
 
   var numDays = parseInt(state.query.num_days, 10) || 7
@@ -55,13 +16,13 @@ function view (state, emit) {
       <h3><strong>You are viewing data as</strong> operator <strong>with account</strong> ${state.model.account.name}.</h3>
       <h3><strong>This is the data collected over the last </strong> ${numDays} days.</h3>
     `
-    pageTitle = state.model.account.name + ' | offen auditorium'
+    pageTitle = state.model.account.name + ' | ' + state.title
   } else {
     accountHeader = html`
       <h3><strong>You are viewing data as</strong> user.</h3>
       <h3><strong>This is your data collected over the last</strong> ${numDays} days <strong>across all sites.</strong></h3>
     `
-    pageTitle = 'user | offen auditorium'
+    pageTitle = 'user | ' + state.title
   }
   emit(state.events.DOMTITLECHANGE, pageTitle)
 
@@ -143,5 +104,12 @@ function view (state, emit) {
     `
     : null
 
-  return layout(accountHeader, usersAndSessions, chart, pages, referrers)
+  var withSeparators = [accountHeader, usersAndSessions, chart, pages, referrers].map(function (el) {
+    return html`${el}<hr>`
+  })
+  return html`
+    <div>
+      ${withSeparators}
+    </div>
+  `
 }

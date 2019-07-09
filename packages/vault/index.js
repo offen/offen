@@ -33,6 +33,7 @@ function createVault (host) {
             if (responseMessage.type === 'ERROR') {
               var err = new Error(responseMessage.payload.error)
               err.originalStack = responseMessage.payload.stack
+              err.status = responseMessage.payload.status
               reject(err)
             }
             resolve(responseMessage)
