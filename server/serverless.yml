@@ -35,6 +35,10 @@ custom:
     production: .offen.dev
     staging: .offen.dev
     alpha: .offen.dev
+  jwtPublicKey:
+    production: accounts.offen.dev/api/key
+    staging: accounts-staging.offen.dev/api/key
+    alpha: accounts-alpha.offen.dev/api/key
   customDomain:
     basePath: ''
     certificateName: '*.offen.dev'
@@ -50,6 +54,7 @@ functions:
       - server/bin/server
     handler: server/bin/server
     environment:
+      JWT_PUBLIC_KEY: ${self:custom.jwtPublicKey.${self:custom.stage}}
       SECURE_COOKIE: 1
       OPTOUT_COOKIE_DOMAIN: ${self:custom.optoutCookieDomain.${self:custom.stage}}
       CORS_ORIGIN: https://${self:custom.origin.${self:custom.stage}}

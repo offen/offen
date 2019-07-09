@@ -30,13 +30,12 @@ app.use(authStore)
 
 var decoratedMain = _.compose(
   withTitle('offen auditorium'),
-  withModel(),
-  withError()
+  withModel()
 )(mainView)
 
 app.route(
   '/account/:accountId',
-  withLayout()(withAuthentication()(decoratedMain))
+  withLayout()(withError()(withAuthentication()(decoratedMain)))
 )
 app.route(
   '/account',
@@ -48,7 +47,7 @@ app.route(
 )
 app.route(
   '/',
-  withLayout()(decoratedMain)
+  withLayout()(withError()(decoratedMain))
 )
 app.route(
   '/*',
