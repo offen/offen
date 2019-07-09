@@ -14,9 +14,6 @@ provider:
 
 package:
   individually: true
-  excludeDevDependencies: false
-  exclude:
-  - '**/*'
 
 plugins:
   - serverless-domain-manager
@@ -45,18 +42,15 @@ custom:
     endpointType: regional
     createRoute53Record: false
   wsgi:
-    app: accounts.accounts.app
+    app: accounts.app
     packRequirements: false
   pythonRequirements:
     slim: true
     dockerizePip: non-linux
-    fileName: accounts/requirements.txt
+    fileName: requirements.txt
 
 functions:
   app:
-    package:
-      include:
-      - accounts/**/*
     handler: wsgi_handler.handler
     events:
       - http:

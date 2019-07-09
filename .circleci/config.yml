@@ -277,10 +277,10 @@ jobs:
           key: offen-packages-{{ checksum "package.json" }}
       - run:
           name: Deploy
-          working_directory: ~/offen
+          working_directory: ~/offen/accounts
           command: |
             echo "Deploying accounts ..."
-            $(npm bin)/sls deploy --config accounts/serverless.yml
+            $(npm bin)/sls deploy
 
   deploy_golang:
     docker:
