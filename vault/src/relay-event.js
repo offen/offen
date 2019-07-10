@@ -47,11 +47,16 @@ function augmentEventData (inboundPayload, accountId) {
   // even though the session identifier will be included in the encrypted part
   // of the event we generate a unique identifier per account so that each session
   // is unique per account and cannot be cross-referenced
-  var lookupKey = 'session-' + accountId
-  var sessionId = window.sessionStorage.getItem(lookupKey)
-  if (!sessionId) {
+  var sessionId
+  try {
+    var lookupKey = 'session-' + accountId
+    sessionId = window.sessionStorage.getItem(lookupKey)
+    if (!sessionId) {
+      sessionId = uuid()
+      window.sessionStorage.setItem(lookupKey, sessionId)
+    }
+  } catch (err) {
     sessionId = uuid()
-    window.sessionStorage.setItem(lookupKey, sessionId)
   }
   return Object.assign({}, inboundPayload, {
     timestamp: new Date(),
