@@ -1,69 +1,97 @@
 from datetime import datetime, timedelta
 from os import environ
-import base64
 
-from flask import jsonify, render_template, make_response, request
-from flask_cors import cross_origin
+import requests
+from flask_admin.contrib.sqla import ModelView
+from wtforms import PasswordField, StringField, Form
+from wtforms.validators import InputRequired, EqualTo
 from passlib.hash import bcrypt
 import jwt
 
-from accounts import app
-
-@app.route("/")
-def home():
-    return render_template("index.html")
+from accounts import db
+from accounts.models import AccountUserAssociation
 
 
-@app.route("/api/login", methods=["POST"])
-@cross_origin(origins=[environ.get("CORS_ORIGIN", "*")], supports_credentials=True)
-def post_login():
-    credentials = request.get_json(force=True)
+class RemoteServerException(Exception):
+    status = 0
 
-    if credentials["username"] != environ.get("USER", "offen"):
-        return jsonify({"error": "bad username", "status": 401}), 401
 
-    hashed_password = base64.standard_b64decode(environ.get("HASHED_PASSWORD", ""))
-    if not bcrypt.verify(credentials["password"], hashed_password):
-        return jsonify({"error": "bad password", "status": 401}), 401
-
+def create_remote_account(name, account_id):
     private_key = environ.get("JWT_PRIVATE_KEY", "")
-    expiry = datetime.utcnow() + timedelta(hours=24)
-    try:
-        encoded = jwt.encode(
-            {"ok": True, "exp": expiry}, private_key.encode(), algorithm="RS256"
-        ).decode("utf-8")
-    except jwt.exceptions.PyJWTError as encode_error:
-        return jsonify({"error": str(encode_error), "status": 500}), 500
+    expiry = datetime.utcnow() + timedelta(seconds=10)
+    encoded = jwt.encode(
+        {"ok": True, "exp": expiry, "priv": {"rpc": "1"}},
+        private_key.encode(),
+        algorithm="RS256",
+    ).decode("utf-8")
 
-    resp = make_response(jsonify({"ok": True}))
-    resp.set_cookie(
-        "auth",
-        encoded,
-        httponly=True,
-        expires=expiry,
-        path="/",
-        domain=environ.get("COOKIE_DOMAIN"),
-        samesite="strict"
+    r = requests.post(
+        "{}/accounts".format(environ.get("SERVER_HOST")),
+        json={"name": name, "account_id": account_id},
+        headers={"X-RPC-Authentication": encoded},
     )
-    return resp
+
+    if r.status_code > 299:
+        err = r.json()
+        remote_err = RemoteServerException(err["error"])
+        remote_err.status = err["status"]
+        raise remote_err
 
 
-@app.route("/api/login", methods=["GET"])
-@cross_origin(origins=[environ.get("CORS_ORIGIN", "*")], supports_credentials=True)
-def get_login():
-    auth_cookie = request.cookies.get("auth")
-    public_key = environ.get("JWT_PUBLIC_KEY", "")
-    try:
-        jwt.decode(auth_cookie, public_key)
-    except jwt.exceptions.PyJWTError as unauthorized_error:
-        return jsonify({"error": str(unauthorized_error), "status": 401}), 401
-
-    return jsonify({"ok": True})
+class AccountForm(Form):
+    name = StringField(
+        "Account Name",
+        validators=[InputRequired()],
+        description="This is the account name visible to users",
+    )
 
 
-# This route is not supposed to be called by client-side applications, so
-# no CORS configuration is added
-@app.route("/api/key", methods=["GET"])
-def key():
-    public_key = environ.get("JWT_PUBLIC_KEY", "").strip()
-    return jsonify({"key": public_key})
+class AccountView(ModelView):
+    form = AccountForm
+    column_display_all_relations = True
+    column_list = ("account_id", "name")
+
+    def after_model_change(self, form, model, is_created):
+        if is_created:
+            try:
+                create_remote_account(model.name, model.account_id)
+            except RemoteServerException as server_error:
+                db.session.delete(model)
+                db.session.commit()
+                raise server_error
+
+
+class UserView(ModelView):
+    inline_models = [(AccountUserAssociation, dict(form_columns=["id", "account"]))]
+    column_auto_select_related = True
+    column_display_all_relations = True
+    column_list = ("user_id", "email")
+    form_columns = ("email", "accounts")
+
+    def on_model_change(self, form, model, is_created):
+        if form.password.data:
+            model.hashed_password = bcrypt.hash(form.password.data)
+
+    def get_create_form(self):
+        form = super().get_create_form()
+        form.password = PasswordField(
+            "Password",
+            validators=[
+                InputRequired(),
+                EqualTo("confirm", message="Passwords must match"),
+            ],
+        )
+        form.confirm = PasswordField("Repeat Password", validators=[InputRequired()])
+        return form
+
+    def get_edit_form(self):
+        form = super().get_edit_form()
+        form.password = PasswordField(
+            "Password",
+            description="When left blank, the password will remain unchanged on update",
+            validators=[
+                EqualTo("confirm", message="Passwords must match"),
+            ],
+        )
+        form.confirm = PasswordField("Repeat Password", validators=[])
+        return form

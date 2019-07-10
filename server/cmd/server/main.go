@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/offen/offen/server/keys/local"
+
 	"github.com/offen/offen/server/persistence/relational"
 	"github.com/offen/offen/server/router"
 	"github.com/sirupsen/logrus"
@@ -22,6 +24,7 @@ func main() {
 		optoutCookieDomain = flag.String("optout", "localhost", "domain value for the optout cookie")
 		jwtPublicKey       = flag.String("jwt", os.Getenv("JWT_PUBLIC_KEY"), "the location of the JWT public key")
 		secureCookie       = flag.Bool("secure", false, "use secure cookies")
+		encryptionEndpoint = flag.String("kms", os.Getenv("KMS_ENCRYPTION_ENDPOINT"), "the KMS service's encryption endpoint")
 	)
 	flag.Parse()
 
@@ -32,9 +35,11 @@ func main() {
 	}
 	logger.SetLevel(parsedLogLevel)
 
+	keyOps := local.New(*encryptionEndpoint)
 	db, err := relational.New(
 		relational.WithDialect(*dialect),
 		relational.WithConnectionString(*connectionString),
+		relational.WithKeyOps(keyOps),
 	)
 	if err != nil {
 		logger.WithError(err).Fatal("unable to establish database connection")

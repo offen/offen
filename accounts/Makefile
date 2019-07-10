@@ -4,4 +4,7 @@ test:
 fmt:
 	@black .
 
-.PHONY: test fmt
+bootstrap:
+	@python -m scripts.bootstrap
+
+.PHONY: test fmt bootstrap

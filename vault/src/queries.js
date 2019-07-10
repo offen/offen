@@ -73,6 +73,9 @@ function getDefaultStatsWith (getDatabase) {
       .between(lowerBound, upperBound)
       .count()
       .then(function (allEvents) {
+        if (allEvents === 0) {
+          return 0
+        }
         return table
           .where('[payload.timestamp+userId]')
           .between([lowerBound, Dexie.minKey], [upperBound, Dexie.maxKey])

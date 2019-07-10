@@ -152,6 +152,7 @@ func New(opts ...Config) http.Handler {
 	accounts := m.PathPrefix("/accounts").Subrouter()
 	accounts.Use(json, auth)
 	accounts.HandleFunc("", rt.getAccount).Methods(http.MethodGet)
+	accounts.HandleFunc("", rt.postAccount).Methods(http.MethodPost)
 
 	deleted := m.PathPrefix("/deleted").Subrouter()
 	deleted.Use(json)

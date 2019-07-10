@@ -26,6 +26,10 @@ custom:
     production: vault.offen.dev
     staging: vault-staging.offen.dev
     alpha: vault-alpha.offen.dev
+  serverHost:
+    production: server.offen.dev
+    staging: server-staging.offen.dev
+    alpha: server-alpha.offen.dev
   domain:
     production: accounts.offen.dev
     staging: accounts-staging.offen.dev
@@ -60,9 +64,10 @@ functions:
           path: '{proxy+}'
           method: any
     environment:
-      USER: offen
       CORS_ORIGIN: https://${self:custom.origin.${self:custom.stage}}
       COOKIE_DOMAIN: ${self:custom.cookieDomain.${self:custom.stage}}
       JWT_PRIVATE_KEY: '${ssm:/aws/reference/secretsmanager/${self:custom.stage}/accounts/jwtPrivateKey~true}'
       JWT_PUBLIC_KEY: '${ssm:/aws/reference/secretsmanager/${self:custom.stage}/accounts/jwtPublicKey~true}'
       HASHED_PASSWORD: ${ssm:/aws/reference/secretsmanager/${self:custom.stage}/accounts/hashedBasicAuthPassword~true}
+      SESSION_SECRET: '${ssm:/aws/reference/secretsmanager/${self:custom.stage}/accounts/sessionSecret~true}'
+      SERVER_URL: ${self:custom.serverHost.${self:custom.stage}}

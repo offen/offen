@@ -3,6 +3,8 @@ package relational
 import (
 	"fmt"
 
+	"github.com/offen/offen/server/keys"
+
 	"github.com/gofrs/uuid"
 	"github.com/jinzhu/gorm"
 	"github.com/offen/offen/server/persistence"
@@ -128,5 +130,27 @@ func (r *relationalDatabase) AssociateUserSecret(accountID, userID, encryptedUse
 	return r.db.Create(&User{
 		EncryptedUserSecret: encryptedUserSecret,
 		HashedUserID:        hashedUserID,
+	}).Error
+}
+
+func (r *relationalDatabase) CreateAccount(accountID, name string) error {
+	userSalt, userSaltErr := r.keyOps.GenerateRandomString(keys.UserSaltLength)
+	if userSaltErr != nil {
+		return fmt.Errorf("relational: error creating new user salt for account: %v", userSaltErr)
+	}
+	publicKey, privateKey, keyErr := r.keyOps.GenerateRSAKeypair(keys.RSAKeyLength)
+	if keyErr != nil {
+		return fmt.Errorf("relational: error creating new key pair for account: %v", keyErr)
+	}
+	encryptedPrivateKey, encryptErr := r.keyOps.RemoteEncrypt(privateKey)
+	if encryptErr != nil {
+		return fmt.Errorf("relational: error encrypting account private key: %v", encryptErr)
+	}
+	return r.db.Save(&Account{
+		AccountID:          accountID,
+		Name:               name,
+		PublicKey:          string(publicKey),
+		EncryptedSecretKey: string(encryptedPrivateKey),
+		UserSalt:           userSalt,
 	}).Error
 }

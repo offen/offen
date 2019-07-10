@@ -26,9 +26,18 @@ const ClaimsContextKey contextKey = "claims"
 func JWTProtect(keyURL, cookieName string) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			authCookie, err := r.Cookie(cookieName)
-			if err != nil {
-				RespondWithJSONError(w, fmt.Errorf("jwt: error reading cookie: %s", err), http.StatusForbidden)
+			var jwtValue string
+			var isRPC bool
+			if authCookie, err := r.Cookie(cookieName); err == nil {
+				jwtValue = authCookie.Value
+			} else {
+				if header := r.Header.Get("X-RPC-Authentication"); header != "" {
+					jwtValue = header
+					isRPC = true
+				}
+			}
+			if jwtValue == "" {
+				RespondWithJSONError(w, errors.New("jwt: could not infer JWT value from cookie or header"), http.StatusForbidden)
 				return
 			}
 
@@ -56,7 +65,7 @@ func JWTProtect(keyURL, cookieName string) func(http.Handler) http.Handler {
 				return
 			}
 
-			token, jwtErr := jwt.ParseVerify(strings.NewReader(authCookie.Value), jwa.RS256, pubKey)
+			token, jwtErr := jwt.ParseVerify(strings.NewReader(jwtValue), jwa.RS256, pubKey)
 			if jwtErr != nil {
 				RespondWithJSONError(w, fmt.Errorf("jwt: error parsing token: %v", jwtErr), http.StatusForbidden)
 				return
@@ -68,8 +77,19 @@ func JWTProtect(keyURL, cookieName string) func(http.Handler) http.Handler {
 			}
 
 			privateClaims, _ := token.Get("priv")
-			r = r.WithContext(context.WithValue(r.Context(), ClaimsContextKey, privateClaims))
+			if isRPC {
+				cast, ok := privateClaims.(map[string]interface{})
+				if !ok {
+					RespondWithJSONError(w, fmt.Errorf("jwt: malformed private claims section in token: %v", privateClaims), http.StatusBadRequest)
+					return
+				}
+				if cast["rpc"] != "1" {
+					RespondWithJSONError(w, errors.New("jwt: token claims do not allow the requested operation"), http.StatusForbidden)
+					return
+				}
+			}
 
+			r = r.WithContext(context.WithValue(r.Context(), ClaimsContextKey, privateClaims))
 			next.ServeHTTP(w, r)
 		})
 	}
