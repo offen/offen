@@ -90,6 +90,7 @@ services:
       - 9955:9955
     environment:
       - VAULT_HOST=http://localhost:9977
+      - OPT_OUT_PIXEL_LOCATION=http://localhost:8080/opt-out
 
   accounts:
     build:

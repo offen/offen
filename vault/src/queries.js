@@ -266,6 +266,15 @@ function deleteEventsWith (getDatabase) {
   }
 }
 
+exports.purge = purgeWith(getDatabase)
+exports.purgeWith = purgeWith
+function purgeWith (getDatabase) {
+  return function () {
+    var db = getDatabase(null)
+    return db.events.clear()
+  }
+}
+
 function uniqueKeysAt (index) {
   return function (keys) {
     return _.unique(keys.map(function (pair) {

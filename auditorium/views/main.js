@@ -5,6 +5,19 @@ var BarChart = require('./../components/bar-chart')
 module.exports = view
 
 function view (state, emit) {
+  function handleOptoutRequest () {
+    state.model.optOut = true
+    emit(state.events.RENDER)
+  }
+
+  function handleOptoutSuccess () {
+    window.alert('You have now opted out.')
+  }
+
+  function handlePurge () {
+    emit('offen:purge')
+  }
+
   var isOperator = !!(state.params && state.params.accountId)
 
   var numDays = parseInt(state.query.num_days, 10) || 7
@@ -104,9 +117,29 @@ function view (state, emit) {
     `
     : null
 
-  var withSeparators = [accountHeader, usersAndSessions, chart, pages, referrers].map(function (el) {
-    return html`${el}<hr>`
-  })
+  var optOutPixel = state.model.optOut
+    ? html`<img data-role="optout-pixel" src="${process.env.OPT_OUT_PIXEL_LOCATION}" onload=${handleOptoutSuccess}>`
+    : null
+  var manage = isOperator
+    ? null
+    : html`
+      <h4>Manage your data</h4>
+      <div class="button-wrapper btn-fill-space">
+        <button class="btn btn-color-grey" data-role="optout" onclick="${handleOptoutRequest}">Opt out</button>
+        <button class="btn btn-color-grey" data-role="purge" onclick="${handlePurge}">Delete my data</button>
+      </div>
+      <div class="opt-out-pixel">
+        ${optOutPixel}
+      </div>
+    `
+
+  var withSeparators = [accountHeader, usersAndSessions, chart, pages, referrers, manage]
+    .filter(function (el) {
+      return el
+    })
+    .map(function (el) {
+      return html`${el}<hr>`
+    })
   return html`
     <div>
       ${withSeparators}

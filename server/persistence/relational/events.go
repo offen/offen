@@ -115,6 +115,19 @@ func hashUserIDForAccounts(userID string, accounts []Account) []string {
 	return hashedUserIDs
 }
 
+func (r *relationalDatabase) Purge(userID string) error {
+	var accounts []Account
+	if err := r.db.Find(&accounts).Error; err != nil {
+		return fmt.Errorf("relational: error looking up all accounts: %v", err)
+	}
+	hashedUserIDs := hashUserIDForAccounts(userID, accounts)
+
+	if err := r.db.Where("hashed_user_id IN (?)", hashedUserIDs).Delete(Event{}).Error; err != nil {
+		return fmt.Errorf("relational: error purging events: %v", err)
+	}
+	return nil
+}
+
 func (r *relationalDatabase) GetDeletedEvents(ids []string, userID string) ([]string, error) {
 	// First, perform a check which one of the events have been deleted
 	var existing []Event
