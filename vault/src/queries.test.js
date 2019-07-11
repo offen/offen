@@ -29,7 +29,7 @@ describe('src/queries.js', function () {
               Object.keys(data),
               [
                 'uniqueUsers', 'uniqueAccounts', 'uniqueSessions',
-                'referrers', 'pages', 'pageviews', 'bounceRate'
+                'referrers', 'pages', 'pageviews', 'bounceRate', 'loss'
               ]
             )
             assert.strictEqual(data.uniqueUsers, 0)
@@ -150,6 +150,33 @@ describe('src/queries.js', function () {
               referrer: '',
               timestamp: subDays(now, 12).toJSON()
             }
+          },
+          {
+            accountId: 'test-account-1',
+            userId: null,
+            eventId: 'test-event-7',
+            payload: {
+              type: 'PAGEVIEW',
+              timestamp: now.toJSON()
+            }
+          },
+          {
+            accountId: 'test-account-1',
+            userId: null,
+            eventId: 'test-event-8',
+            payload: {
+              type: 'PAGEVIEW',
+              timestamp: subDays(now, 12).toJSON()
+            }
+          },
+          {
+            accountId: 'test-account-1',
+            userId: null,
+            eventId: 'test-event-9',
+            payload: {
+              type: 'PAGEVIEW',
+              timestamp: subDays(now, 4).toJSON()
+            }
           }
         ])
       })
@@ -161,7 +188,7 @@ describe('src/queries.js', function () {
               Object.keys(data),
               [
                 'uniqueUsers', 'uniqueAccounts', 'uniqueSessions',
-                'referrers', 'pages', 'pageviews', 'bounceRate'
+                'referrers', 'pages', 'pageviews', 'bounceRate', 'loss'
               ]
             )
 
@@ -188,6 +215,8 @@ describe('src/queries.js', function () {
             assert.strictEqual(data.pageviews[3].visitors, 0)
 
             assert.strictEqual(data.bounceRate, 0.75)
+
+            assert.strictEqual(data.loss, 2 / 7)
           })
       })
     })

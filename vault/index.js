@@ -1,4 +1,5 @@
 var handleAnalyticsEvent = require('./src/handle-analytics-event')
+var handleAnonymousEvent = require('./src/handle-anonymous-event')
 var handleQuery = require('./src/handle-query')
 var handleLogin = require('./src/handle-login')
 var handlePurge = require('./src/handle-purge')
@@ -24,8 +25,6 @@ function hasOptedOut () {
 }
 
 window.addEventListener('message', function (event) {
-  console.log('Your browser allows third party cookies: ', allowsCookies())
-
   var message = event.data
   var origin = event.origin
 
@@ -53,15 +52,23 @@ window.addEventListener('message', function (event) {
     case 'EVENT': {
       if (hasOptedOut()) {
         handler = function () {
-          console.log('You have opted out of data collection, no events are being recorded.')
+          console.log('This page is using offen to collect usage statistics.')
+          console.log('You have opted out of data collection, no data is being collected.')
           console.log('Find out more at "https://www.offen.dev".')
           return Promise.resolve()
+        }
+      } else if (!allowsCookies()) {
+        handler = function () {
+          console.log('This page is using offen to collect usage statistics.')
+          console.log('Your setup prevents or you have disabled third party cookies in your browser\'s settings.')
+          console.log('Basic usage data will be collected anonymously.')
+          console.log('Find out more at "https://www.offen.dev".')
+          return handleAnonymousEvent.apply(null, [].slice.call(arguments))
         }
       } else {
         handler = function () {
           console.log('This page is using offen to collect usage statistics.')
-          console.log('You can access and manage all of your personal data at "' + process.env.AUDITORIUM_HOST + '".')
-          console.log('To opt out from data collection, please visit "https://www.offen.dev/opt-out"')
+          console.log('You can access and manage all of your personal data or opt-out at "' + process.env.AUDITORIUM_HOST + '".')
           console.log('Find out more at "https://www.offen.dev".')
           return handleAnalyticsEvent.apply(null, [].slice.call(arguments))
         }

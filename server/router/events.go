@@ -23,17 +23,7 @@ type ackResponse struct {
 var errBadRequestContext = errors.New("could not use user id in request context")
 
 func (rt *router) postEvents(w http.ResponseWriter, r *http.Request) {
-	userID, ok := r.Context().Value(contextKeyCookie).(string)
-	if !ok {
-		rt.logError(errBadRequestContext, "missing request context")
-		httputil.RespondWithJSONError(
-			w,
-			errBadRequestContext,
-			http.StatusInternalServerError,
-		)
-		return
-	}
-
+	userID, _ := r.Context().Value(contextKeyCookie).(string)
 	evt := inboundEventPayload{}
 	defer r.Body.Close()
 	if err := json.NewDecoder(r.Body).Decode(&evt); err != nil {
@@ -56,7 +46,12 @@ func (rt *router) postEvents(w http.ResponseWriter, r *http.Request) {
 	}
 
 	b, _ := json.Marshal(ackResponse{true})
-	http.SetCookie(w, rt.userCookie(userID))
+	// this handler might be called without a cookie / i.e. receiving an
+	// anonymous event, in which case it is important **NOT** to re-issue
+	// the user cookie.
+	if userID != "" {
+		http.SetCookie(w, rt.userCookie(userID))
+	}
 	w.Write(b)
 }
 

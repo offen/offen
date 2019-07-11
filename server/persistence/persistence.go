@@ -26,10 +26,10 @@ type UserResult struct {
 // EventResult is an element returned from a query. It contains all data that
 // is stored about an atomic event.
 type EventResult struct {
-	AccountID string `json:"accountId"`
-	UserID    string `json:"userId"`
-	EventID   string `json:"eventId"`
-	Payload   string `json:"payload"`
+	AccountID string  `json:"accountId"`
+	UserID    *string `json:"userId"`
+	EventID   string  `json:"eventId"`
+	Payload   string  `json:"payload"`
 }
 
 // EventsByAccountID groups a list of events by AccountID in a response

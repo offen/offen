@@ -37,9 +37,7 @@ function ensureUserSecretWith (api, queries) {
 
 function exchangeUserSecret (api, accountId) {
   return api.getPublicKey(accountId)
-    .then(function (body) {
-      return generateNewUserSecret(body.publicKey)
-    })
+    .then(generateNewUserSecret)
     .then(function (result) {
       var body = {
         accountId: accountId,

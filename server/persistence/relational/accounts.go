@@ -53,7 +53,9 @@ func (r *relationalDatabase) GetAccount(accountID string, events bool, eventsSin
 			Payload:   evt.Payload,
 			AccountID: evt.AccountID,
 		})
-		userSecrets[evt.HashedUserID] = evt.User.EncryptedUserSecret
+		if evt.HashedUserID != nil {
+			userSecrets[*evt.HashedUserID] = evt.User.EncryptedUserSecret
+		}
 	}
 
 	result.Events = &eventResults
@@ -111,7 +113,7 @@ func (r *relationalDatabase) AssociateUserSecret(accountID, userID, encryptedUse
 				return fmt.Errorf("relational: error migrating existing events: %v", err)
 			}
 			ev.EventID = newID
-			ev.HashedUserID = parkedHash
+			ev.HashedUserID = &parkedHash
 			if err := txn.Create(&ev).Error; err != nil {
 				txn.Rollback()
 				return fmt.Errorf("relational: error migrating existing events: %v", err)

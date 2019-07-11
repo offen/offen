@@ -66,9 +66,13 @@ exports.postEvent = postEventWith(process.env.SERVER_HOST + '/events')
 exports.postEventWith = postEventWith
 
 function postEventWith (eventsUrl) {
-  return function (body) {
+  return function (body, anonymous) {
+    var url = new window.URL(eventsUrl)
+    if (anonymous) {
+      url.search = new window.URLSearchParams({ anonymous: '1' })
+    }
     return window
-      .fetch(eventsUrl, {
+      .fetch(url, {
         method: 'POST',
         credentials: 'include',
         body: JSON.stringify(body)
@@ -109,6 +113,9 @@ function getPublicKeyWith (exchangeUrl) {
         credentials: 'include'
       })
       .then(handleFetchResponse)
+      .then(function (response) {
+        return response.publicKey
+      })
   }
 }
 
