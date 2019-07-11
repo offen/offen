@@ -2,6 +2,7 @@ var handleAnalyticsEvent = require('./src/handle-analytics-event')
 var handleQuery = require('./src/handle-query')
 var handleLogin = require('./src/handle-login')
 var handlePurge = require('./src/handle-purge')
+var allowsCookies = require('./src/allows-cookies')
 
 // This is a list of all host applications that are allowed to request data
 // by adding `respondWith` to messages. It is important to keep this restricted
@@ -23,6 +24,8 @@ function hasOptedOut () {
 }
 
 window.addEventListener('message', function (event) {
+  console.log('Your browser allows third party cookies: ', allowsCookies())
+
   var message = event.data
   var origin = event.origin
 
