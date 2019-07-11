@@ -4,6 +4,13 @@ var BarChart = require('./../components/bar-chart')
 
 module.exports = view
 
+function formatPercentage (value) {
+  return (value * 100).toLocaleString(undefined, {
+    maximumFractionDigits: 1,
+    minimumFractionDigits: 1
+  })
+}
+
 function view (state, emit) {
   function handleOptoutRequest () {
     state.model.optOut = true
@@ -46,15 +53,12 @@ function view (state, emit) {
     ? 'users'
     : 'accounts'
   var uniqueSessions = state.model.uniqueSessions
-  var bounceRate = (state.model.bounceRate * 100).toLocaleString(undefined, {
-    maximumFractionDigits: 1,
-    minimumFractionDigits: 1
-  })
   var usersAndSessions = html`
     <div class="row">
       <h4><strong>${uniqueEntities}</strong> unique ${entityName} </h4>
       <h4><strong>${uniqueSessions}</strong> unique sessions</h4>
-      <h4><strong>${bounceRate}%</strong> bounce rate</h4>
+      <h4><strong>${formatPercentage(state.model.bounceRate)}%</strong> bounce rate</h4>
+      ${isOperator ? html`<h4><strong>${formatPercentage(state.model.loss)}%</strong> plus</h4>` : null}
     </div>
   `
 

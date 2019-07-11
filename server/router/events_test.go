@@ -50,14 +50,6 @@ func TestRouter_PostEvents(t *testing.T) {
 			`{"error":"invalid character 'h' in literal true (expecting 'r')","status":400}`,
 		},
 		{
-			"bad request context",
-			&mockInsertDatabase{},
-			nil,
-			[]string{"whoops"},
-			http.StatusInternalServerError,
-			`{"error":"could not use user id in request context","status":500}`,
-		},
-		{
 			"ok",
 			&mockInsertDatabase{},
 			bytes.NewReader([]byte(`{"accountId":"account-identifier","payload":"payload-value"}`)),
@@ -140,8 +132,9 @@ func (m *mockQueryDatabase) Query(q persistence.Query) (map[string][]persistence
 		eventID = q.Since()
 	}
 	for _, id := range q.AccountIDs() {
+		userID := q.UserID()
 		out[id] = append(out[id], persistence.EventResult{
-			UserID:  q.UserID(),
+			UserID:  &userID,
 			Payload: m.payload,
 			EventID: eventID,
 		})

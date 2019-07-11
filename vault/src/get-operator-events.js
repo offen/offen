@@ -22,6 +22,7 @@ function getOperatorEventsWith (queries, api) {
 function fetchOperatorEventsWith (api) {
   return function (accountId, params) {
     var account
+    var privateKey
     return api.getAccount(accountId, params)
       .then(function (_account) {
         account = _account
@@ -37,10 +38,11 @@ function fetchOperatorEventsWith (api) {
       .then(function (result) {
         return crypto.importPrivateKey(result.decrypted)
       })
-      .then(function (privateKey) {
+      .then(function (_privateKey) {
+        privateKey = _privateKey
         var userSecretDecryptions = Object.keys(account.userSecrets)
           .filter(function (hashedUserId) {
-            return account.userSecrets[hashedUserId] !== ''
+            return account.userSecrets[hashedUserId]
           })
           .map(function (hashedUserId) {
             var encrpytedSecret = account.userSecrets[hashedUserId]
@@ -69,11 +71,10 @@ function fetchOperatorEventsWith (api) {
         // there might not be events for the given account at all
         var events = account.events[accountId] || []
         var eventDecryptions = events.map(function (event) {
-          var userSecret = byHashedUserId[event.userId]
-          if (!userSecret) {
-            return
-          }
-          var decryptEventPayload = crypto.decryptSymmetricWith(userSecret)
+          var decryptEventPayload = byHashedUserId[event.userId]
+            ? crypto.decryptSymmetricWith(byHashedUserId[event.userId])
+            : crypto.decryptAsymmetricWith(privateKey)
+
           return decryptEventPayload(event.payload)
             .then(function (decryptedPayload) {
               return Object.assign({}, event, { payload: decryptedPayload })

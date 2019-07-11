@@ -24,13 +24,21 @@ func (r *relationalDatabase) Insert(userID, accountID, payload string) error {
 		return fmt.Errorf("relational: error looking up account with id %s: %v", accountID, err)
 	}
 
-	hashedUserID := account.HashUserID(userID)
+	var hashedUserID *string
+	if userID != "" {
+		hash := account.HashUserID(userID)
+		hashedUserID = &hash
+	}
 
-	var user User
-	if err := r.db.First(&user).Where("hashed_user_id = ?", hashedUserID).Error; gorm.IsRecordNotFoundError(err) {
-		return persistence.ErrUnknownUser(
-			fmt.Sprintf("unknown user with id %s", userID),
-		)
+	// in case the event is not anonymous, we need to check that the user
+	// already exists for the account so events can be decrypted lateron
+	if hashedUserID != nil {
+		var user User
+		if err := r.db.First(&user).Where("hashed_user_id = ?", hashedUserID).Error; gorm.IsRecordNotFoundError(err) {
+			return persistence.ErrUnknownUser(
+				fmt.Sprintf("relational: unknown user with id %s", userID),
+			)
+		}
 	}
 
 	r.db.Create(&Event{

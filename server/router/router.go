@@ -156,10 +156,11 @@ func New(opts ...Config) http.Handler {
 	purge.HandleFunc("", rt.purgeEvents).Methods(http.MethodPost)
 
 	events := m.PathPrefix("/events").Subrouter()
-	events.Use(json, userCookie)
-	events.HandleFunc("", rt.getEvents).Methods(http.MethodGet)
+	events.Use(json)
+	events.Handle("", userCookie(http.HandlerFunc(rt.getEvents))).Methods(http.MethodGet)
 	receiveEvents := dropOptout(http.HandlerFunc(rt.postEvents))
-	events.Handle("", receiveEvents).Methods(http.MethodPost)
+	events.Handle("", receiveEvents).Methods(http.MethodPost).Queries("anonymous", "1")
+	events.Handle("", userCookie(receiveEvents)).Methods(http.MethodPost)
 
 	m.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		httputil.RespondWithJSONError(w, errors.New("Not found"), http.StatusNotFound)

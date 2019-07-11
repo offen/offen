@@ -32,8 +32,8 @@ function getDefaultStatsWith (getDatabase) {
         var upperBound = endOfDay(date).toJSON()
 
         var pageviews = table
-          .where('payload.timestamp')
-          .between(lowerBound, upperBound)
+          .where(['payload.timestamp+userId'])
+          .between([lowerBound, Dexie.minKey], [upperBound, Dexie.maxKey])
           .count()
 
         var visitors = table
@@ -66,6 +66,23 @@ function getDefaultStatsWith (getDatabase) {
       .between([lowerBound, Dexie.minKey], [upperBound, Dexie.maxKey])
       .keys(uniqueKeysAt(1))
 
+    // indexed DB does not index on `null` (which maps to an anonymous event)
+    // so the loss rate can simply be calculated by comparing the count
+    // in an index with and one without userId
+    var loss = table
+      .where('payload.timestamp')
+      .between(lowerBound, upperBound)
+      .count()
+      .then(function (allEvents) {
+        return table
+          .where('[payload.timestamp+userId]')
+          .between([lowerBound, Dexie.minKey], [upperBound, Dexie.maxKey])
+          .count()
+          .then(function (userEvents) {
+            return 1 - (userEvents / allEvents)
+          })
+      })
+
     var uniqueAccounts = table
       .where('[payload.timestamp+accountId]')
       .between([lowerBound, Dexie.minKey], [upperBound, Dexie.maxKey])
@@ -96,8 +113,8 @@ function getDefaultStatsWith (getDatabase) {
       })
 
     var referrers = table
-      .where('payload.timestamp')
-      .between(lowerBound, upperBound)
+      .where('[payload.timestamp+userId]')
+      .between([lowerBound, Dexie.minKey], [upperBound, Dexie.maxKey])
       .toArray(function (events) {
         const perHost = events
           .filter(function (event) {
@@ -166,7 +183,8 @@ function getDefaultStatsWith (getDatabase) {
         referrers,
         pages,
         pageviews,
-        bounceRate
+        bounceRate,
+        loss
       ])
       .then(function (results) {
         return {
@@ -176,7 +194,8 @@ function getDefaultStatsWith (getDatabase) {
           referrers: results[3],
           pages: results[4],
           pageviews: results[5],
-          bounceRate: results[6]
+          bounceRate: results[6],
+          loss: results[7]
         }
       })
   }
