@@ -49,8 +49,7 @@ function getDefaultStatsWith (getDatabase) {
         return Promise.all([pageviews, visitors, accounts])
           .then(function (values) {
             return {
-              date: date.toLocaleDateString(),
-              jsonDate: date.toJSON(),
+              date: date.toJSON(),
               pageviews: values[0],
               visitors: values[1],
               accounts: values[2]
@@ -58,7 +57,7 @@ function getDefaultStatsWith (getDatabase) {
           })
       }))
       .then(function (days) {
-        return _.sortBy(days, 'jsonDate')
+        return _.sortBy(days, 'date')
       })
 
     var uniqueUsers = table

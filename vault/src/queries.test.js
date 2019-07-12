@@ -43,7 +43,7 @@ describe('src/queries.js', function () {
                 day.pageviews === 0 &&
                 day.visitors === 0
             }))
-            assert(data.pageviews[0].jsonDate < data.pageviews[1].jsonDate)
+            assert(data.pageviews[0].date < data.pageviews[1].date)
 
             assert.strictEqual(data.bounceRate, 0)
           })
