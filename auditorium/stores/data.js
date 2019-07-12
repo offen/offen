@@ -29,7 +29,7 @@ function store (state, emitter) {
   })
 
   emitter.on('offen:query', function (data) {
-    vault(process.env.VAULT_HOST)
+    var fetchQuery = vault(process.env.VAULT_HOST)
       .then(function (postMessage) {
         var queryRequest = {
           type: 'QUERY',
@@ -40,8 +40,22 @@ function store (state, emitter) {
         }
         return postMessage(queryRequest)
       })
-      .then(function (message) {
-        state.model = message.payload.result
+    var fetchOptoutStatus = vault(process.env.VAULT_HOST)
+      .then(function (postMessage) {
+        var queryRequest = {
+          type: 'OPTOUT_STATUS',
+          respondWith: uuid(),
+          payload: null
+        }
+        return postMessage(queryRequest)
+      })
+
+    Promise.all([fetchQuery, fetchOptoutStatus])
+      .then(function (results) {
+        var queryMessage = results[0]
+        var optoutMessage = results[1]
+        state.model = queryMessage.payload.result
+        Object.assign(state.model, optoutMessage.payload)
       })
       .catch(function (err) {
         if (process.env.NODE_ENV !== 'production') {

@@ -3,26 +3,15 @@ var handleAnonymousEvent = require('./src/handle-anonymous-event')
 var handleQuery = require('./src/handle-query')
 var handleLogin = require('./src/handle-login')
 var handlePurge = require('./src/handle-purge')
+var handleOptoutStatus = require('./src/handle-optout-status')
 var allowsCookies = require('./src/allows-cookies')
+var hasOptedOut = require('./src/user-optout')
 
 // This is a list of all host applications that are allowed to request data
 // by adding `respondWith` to messages. It is important to keep this restricted
 // to trusted applications only, otherwise decrypted event data may leak to
 // third parties.
 var ALLOWED_HOSTS = [process.env.AUDITORIUM_HOST]
-
-function hasOptedOut () {
-  return document.cookie && document.cookie.split(';')
-    .map(function (s) {
-      return s.trim()
-    })
-    .map(function (pair) {
-      return pair.split('=')
-    })
-    .some(function (pair) {
-      return pair[0] === 'optout'
-    })
-}
 
 window.addEventListener('message', function (event) {
   var message = event.data
@@ -75,21 +64,21 @@ window.addEventListener('message', function (event) {
       }
       break
     }
-    case 'QUERY': {
+    case 'QUERY':
       handler = handleQuery
       break
-    }
-    case 'LOGIN': {
+    case 'LOGIN':
       handler = handleLogin
       break
-    }
-    case 'PURGE': {
+    case 'PURGE':
       handler = handlePurge
       break
-    }
+    case 'OPTOUT_STATUS':
+      handler = handleOptoutStatus
+      break
   }
 
-  handler(message, respond)
+  Promise.resolve(handler(message, respond))
     .catch(function (err) {
       if (process.env.NODE_ENV !== 'production') {
         console.error(err)
