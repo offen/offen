@@ -21,7 +21,7 @@ function getDefaultStatsWith (getDatabase) {
 
     var numDays = (query && query.numDays) || 7
     var now = new Date()
-    var beginning = startOfDay(addDays(now, -numDays))
+    var beginning = startOfDay(addDays(now, -(numDays - 1)))
     var lowerBound = beginning.toJSON()
     var upperBound = now.toJSON()
 

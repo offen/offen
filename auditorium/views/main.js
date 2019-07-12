@@ -69,7 +69,7 @@ function view (state, emit) {
     isOperator: isOperator
   }
   var chart = html`
-    <h4>Pageviews and Visitors</h4>
+    <h4>Pageviews and ${isOperator ? 'Visitors' : 'Accounts'}</h4>
     ${state.cache(BarChart, 'bar-chart').render(chartData)}
   `
   var pagesData = state.model.pages
