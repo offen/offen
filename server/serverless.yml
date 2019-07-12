@@ -40,7 +40,7 @@ custom:
     production: https://accounts.offen.dev/api/key
     staging: https://accounts-staging.offen.dev/api/key
     alpha: https://accounts-alpha.offen.dev/api/key
-  apiGwBinary:
+  apigwBinary:
     types:
       - image/gif
   customDomain:
