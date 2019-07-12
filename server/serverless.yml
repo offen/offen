@@ -42,7 +42,7 @@ custom:
     alpha: https://accounts-alpha.offen.dev/api/key
   apigwBinary:
     types:
-      - image/gif
+      - image/*
   customDomain:
     basePath: ''
     certificateName: '*.offen.dev'
