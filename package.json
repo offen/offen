@@ -18,5 +18,8 @@
     "serverless-finch": "^2.4.2",
     "serverless-python-requirements": "^4.3.0",
     "serverless-wsgi": "^1.7.2"
+  },
+  "devDependencies": {
+    "serverless-apigw-binary": "^0.4.4"
   }
 }

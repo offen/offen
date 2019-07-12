@@ -20,6 +20,7 @@ package:
 
 plugins:
   - serverless-domain-manager
+  - serverless-apigw-binary
 
 custom:
   stage: ${opt:stage, self:provider.stage}
@@ -39,6 +40,9 @@ custom:
     production: https://accounts.offen.dev/api/key
     staging: https://accounts-staging.offen.dev/api/key
     alpha: https://accounts-alpha.offen.dev/api/key
+  apiGwBinary:
+    types:
+      - image/gif
   customDomain:
     basePath: ''
     certificateName: '*.offen.dev'
