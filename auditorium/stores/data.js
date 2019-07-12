@@ -55,7 +55,7 @@ function store (state, emitter) {
         var queryMessage = results[0]
         var optoutMessage = results[1]
         state.model = queryMessage.payload.result
-        state.model.hasOptedOut = optoutMessage.payload.hasOptedOut
+        Object.assign(state.model, optoutMessage.payload)
       })
       .catch(function (err) {
         if (process.env.NODE_ENV !== 'production') {

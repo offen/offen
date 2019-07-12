@@ -64,7 +64,9 @@ describe('views/main.js', function () {
             pageviews: 12,
             origin: 'www.puppies.com'
           }
-        ]
+        ],
+        allowsCookies: true,
+        hasOptedOut: false
       }
       app.state.authenticated = true
 

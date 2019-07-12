@@ -64,24 +64,21 @@ window.addEventListener('message', function (event) {
       }
       break
     }
-    case 'QUERY': {
+    case 'QUERY':
       handler = handleQuery
       break
-    }
-    case 'LOGIN': {
+    case 'LOGIN':
       handler = handleLogin
       break
-    }
-    case 'PURGE': {
+    case 'PURGE':
       handler = handlePurge
       break
-    }
     case 'OPTOUT_STATUS':
       handler = handleOptoutStatus
       break
   }
 
-  handler(message, respond)
+  Promise.resolve(handler(message, respond))
     .catch(function (err) {
       if (process.env.NODE_ENV !== 'production') {
         console.error(err)

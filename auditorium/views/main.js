@@ -41,6 +41,7 @@ function view (state, emit) {
     accountHeader = html`
       <h3><strong>You are viewing data as</strong> user.</h3>
       ${state.model.hasOptedOut ? html`<h3><strong>You have opted out. Clear your cookies to opt in.</strong></h3>` : null}
+      ${state.model.allowsCookies ? null : html`<h3><strong>Your browser does not allow 3rd party cookies. We respect this setting and collect only very basic data in this case, yet it also means we cannot display any data to you here.</strong></h3>`}
       <h3><strong>This is your data collected over the last</strong> ${numDays} days <strong>across all sites.</strong></h3>
     `
     pageTitle = 'user | ' + state.title
@@ -128,7 +129,7 @@ function view (state, emit) {
   var optoutPixel = state.model.showPixel
     ? html`<img data-role="optout-pixel" src="${optoutPixelSrc}" onload=${handleOptoutSuccess}>`
     : null
-  var manage = !isOperator
+  var manage = !isOperator && state.model.allowsCookies
     ? html`
       <h4>Manage your data</h4>
       <div class="button-wrapper btn-fill-space">
