@@ -48,17 +48,21 @@ func (rt *router) userCookie(userID string) *http.Cookie {
 	}
 }
 
-func (rt *router) optoutCookie() *http.Cookie {
-	return &http.Cookie{
+func (rt *router) optoutCookie(optout bool) *http.Cookie {
+	c := &http.Cookie{
 		Name:    optoutKey,
 		Value:   "1",
 		Expires: time.Now().Add(time.Hour * 24 * 365 * 100),
 		Domain:  rt.optoutCookieDomain,
 		Path:    "/",
-		// this cookie is supposed to be read by the `script` so it can
+		// this cookie is supposed to be read by the client so it can
 		// stop operating before even sending requests
 		HttpOnly: false,
 	}
+	if !optout {
+		c.Expires = time.Unix(0, 0)
+	}
+	return c
 }
 
 // Config adds a configuration value to the router
@@ -135,6 +139,10 @@ func New(opts ...Config) http.Handler {
 	optout := m.PathPrefix("/opt-out").Subrouter()
 	optout.Use(gif)
 	optout.HandleFunc("", rt.optout).Methods(http.MethodGet)
+
+	optin := m.PathPrefix("/opt-in").Subrouter()
+	optin.Use(gif)
+	optin.HandleFunc("", rt.optin).Methods(http.MethodGet)
 
 	exchange := m.PathPrefix("/exchange").Subrouter()
 	exchange.Use(json)

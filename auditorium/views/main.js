@@ -13,11 +13,12 @@ function formatPercentage (value) {
 
 function view (state, emit) {
   function handleOptout () {
-    Object.assign(state.model, {
-      showOptoutPixel: true,
-      hasOptedOut: true
-    })
+    state.model.showPixel = true
     emit(state.events.RENDER)
+  }
+
+  function handleOptoutSuccess () {
+    emit('offen:query')
   }
 
   function handlePurge () {
@@ -121,21 +122,28 @@ function view (state, emit) {
     `
     : null
 
-  var optOutPixel = state.model.showOptoutPixel
-    ? html`<img data-role="optout-pixel" src="${process.env.OPT_OUT_PIXEL_LOCATION}">`
+  var optoutPixelSrc = state.model.hasOptedOut
+    ? process.env.OPT_IN_PIXEL_LOCATION
+    : process.env.OPT_OUT_PIXEL_LOCATION
+  var optoutPixel = state.model.showPixel
+    ? html`<img data-role="optout-pixel" src="${optoutPixelSrc}" onload=${handleOptoutSuccess}>`
     : null
-  var manage = isOperator
-    ? null
-    : html`
+  var manage = !isOperator
+    ? html`
       <h4>Manage your data</h4>
       <div class="button-wrapper btn-fill-space">
-        <button class="btn btn-color-grey" data-role="optout" onclick="${handleOptout}">Opt out</button>
-        <button class="btn btn-color-grey" data-role="purge" onclick="${handlePurge}">Delete my data</button>
+        <button class="btn btn-color-grey" data-role="optout" onclick="${handleOptout}">
+          ${state.model.hasOptedOut ? 'Opt in' : 'Opt out'}
+        </button>
+        <button class="btn btn-color-grey" data-role="purge" onclick="${handlePurge}">
+          Delete my data
+        </button>
       </div>
       <div class="opt-out-pixel">
-        ${optOutPixel}
+        ${optoutPixel}
       </div>
     `
+    : null
 
   var withSeparators = [accountHeader, usersAndSessions, chart, pages, referrers, manage]
     .filter(function (el) {
