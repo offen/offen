@@ -1,6 +1,7 @@
 var html = require('choo/html')
 var Component = require('choo/component')
 var Plotly = require('plotly.js-basic-dist')
+var isFirstDayOfMonth = require('date-fns/is_first_day_of_month')
 
 module.exports = BarChart
 
@@ -38,37 +39,43 @@ BarChart.prototype.createElement = function (params) {
 
 BarChart.prototype.getChartData = function () {
   var self = this
+  var x = self.local.data.map(function (item) {
+    return item.date
+  })
+  var y = self.local.data.map(function (item) {
+    return self.local.isOperator
+      ? item.visitors
+      : item.accounts
+  })
+  var text = x.map(function (value, index) {
+    var date = new Date(value)
+    var result = date.toLocaleDateString(undefined, { day: 'numeric' })
+    if (index === 0 || isFirstDayOfMonth(date)) {
+      result = date.toLocaleDateString(undefined, { month: 'short' }) + ' ' + result
+    }
+    return result
+  })
+
   var data = [
     {
       type: 'bar',
-      x: self.local.data.map(function (item) {
-        return item.date
-      }),
-      y: self.local.data.map(function (item) {
-        return self.local.isOperator
-          ? item.visitors
-          : item.accounts
-      }),
+      x: x,
+      y: y,
       hoverinfo: 'y',
       marker: { color: '#f9d152' },
       name: self.local.isOperator ? 'Visitors' : 'Accounts'
     },
     {
       type: 'bar',
-      x: self.local.data.map(function (item) {
-        return item.date
-      }),
-      y: self.local.data.map(function (item) {
-        var deduct = self.local.isOperator
-          ? item.visitors
-          : item.accounts
-        return item.pageviews - deduct
+      x: x,
+      y: self.local.data.map(function (item, index) {
+        return item.pageviews - y[index]
       }),
       text: self.local.data.map(function (item) {
         return item.pageviews
       }),
       hovertemplate: '%{text}<extra></extra>',
-      marker: { color: '#39352a' },
+      marker: { color: '#fde18a' },
       name: 'Pageviews'
     }
   ]
@@ -84,7 +91,9 @@ BarChart.prototype.getChartData = function () {
     },
     xaxis: {
       fixedrange: true,
-      automargin: true
+      automargin: true,
+      tickvals: x,
+      ticktext: text
     },
     margin: { t: 0, r: 0, b: 0, l: 0 },
     barmode: 'stack',
