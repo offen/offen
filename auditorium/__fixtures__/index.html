@@ -37,6 +37,16 @@
           }
         }, '*')
       }
+      if (event.data.type === 'OPTOUT_STATUS') {
+        event.source.postMessage({
+          responseTo: event.data.respondWith,
+          payload: {
+            result: {
+              hasOptedOut: false
+            }
+          }
+        }, '*')
+      }
       if (event.data.type === 'LOGIN') {
         event.source.postMessage(Object.assign(loginResponses[loginCalled], {
           responseTo: event.data.respondWith

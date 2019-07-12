@@ -12,13 +12,12 @@ function formatPercentage (value) {
 }
 
 function view (state, emit) {
-  function handleOptoutRequest () {
-    state.model.optOut = true
+  function handleOptout () {
+    Object.assign(state.model, {
+      showOptoutPixel: true,
+      hasOptedOut: true
+    })
     emit(state.events.RENDER)
-  }
-
-  function handleOptoutSuccess () {
-    window.alert('You have now opted out.')
   }
 
   function handlePurge () {
@@ -40,6 +39,7 @@ function view (state, emit) {
   } else {
     accountHeader = html`
       <h3><strong>You are viewing data as</strong> user.</h3>
+      ${state.model.hasOptedOut ? html`<h3><strong>You have opted out. Clear your cookies to opt in.</strong></h3>` : null}
       <h3><strong>This is your data collected over the last</strong> ${numDays} days <strong>across all sites.</strong></h3>
     `
     pageTitle = 'user | ' + state.title
@@ -121,15 +121,15 @@ function view (state, emit) {
     `
     : null
 
-  var optOutPixel = state.model.optOut
-    ? html`<img data-role="optout-pixel" src="${process.env.OPT_OUT_PIXEL_LOCATION}" onload=${handleOptoutSuccess}>`
+  var optOutPixel = state.model.showOptoutPixel
+    ? html`<img data-role="optout-pixel" src="${process.env.OPT_OUT_PIXEL_LOCATION}">`
     : null
   var manage = isOperator
     ? null
     : html`
       <h4>Manage your data</h4>
       <div class="button-wrapper btn-fill-space">
-        <button class="btn btn-color-grey" data-role="optout" onclick="${handleOptoutRequest}">Opt out</button>
+        <button class="btn btn-color-grey" data-role="optout" onclick="${handleOptout}">Opt out</button>
         <button class="btn btn-color-grey" data-role="purge" onclick="${handlePurge}">Delete my data</button>
       </div>
       <div class="opt-out-pixel">
