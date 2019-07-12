@@ -2,6 +2,7 @@ var html = require('choo/html')
 var Component = require('choo/component')
 var Plotly = require('plotly.js-basic-dist')
 var isFirstDayOfMonth = require('date-fns/is_first_day_of_month')
+var isWeekend = require('date-fns/is_weekend')
 
 module.exports = BarChart
 
@@ -62,7 +63,11 @@ BarChart.prototype.getChartData = function () {
       x: x,
       y: y,
       hoverinfo: 'y',
-      marker: { color: '#f9d152' },
+      marker: {
+        color: x.map(function (date) {
+          return isWeekend(date) ? '#ffeeb9' : '#f9d152'
+        })
+      },
       name: self.local.isOperator ? 'Visitors' : 'Accounts'
     },
     {
@@ -75,7 +80,11 @@ BarChart.prototype.getChartData = function () {
         return item.pageviews
       }),
       hovertemplate: '%{text}<extra></extra>',
-      marker: { color: '#fde18a' },
+      marker: {
+        color: x.map(function (date) {
+          return isWeekend(date) ? '#fff7df' : '#fde18a'
+        })
+      },
       name: 'Pageviews'
     }
   ]
