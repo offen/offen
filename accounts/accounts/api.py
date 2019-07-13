@@ -34,6 +34,7 @@ def json_error(handler):
 class UnauthorizedError(Exception):
     pass
 
+
 @app.route("/api/login", methods=["POST"])
 @cross_origin(origins=[environ.get("CORS_ORIGIN", "*")], supports_credentials=True)
 @json_error
@@ -54,10 +55,19 @@ def post_login():
     private_key = environ.get("JWT_PRIVATE_KEY", "")
     expiry = datetime.utcnow() + timedelta(hours=24)
     encoded = jwt.encode(
-        {"ok": True, "exp": expiry}, private_key.encode(), algorithm="RS256"
+        {
+            "ok": True,
+            "exp": expiry,
+            "priv": {
+                "userId": match.user_id,
+                "accounts": [a.account_id for a in match.accounts],
+            },
+        },
+        private_key.encode(),
+        algorithm="RS256",
     ).decode("utf-8")
 
-    resp = make_response(jsonify({"match": match}))
+    resp = make_response(jsonify({"user": match.serialize()}))
     resp.set_cookie(
         "auth",
         encoded,
@@ -77,11 +87,20 @@ def get_login():
     auth_cookie = request.cookies.get("auth")
     public_key = environ.get("JWT_PUBLIC_KEY", "")
     try:
-        jwt.decode(auth_cookie, public_key)
+        token = jwt.decode(auth_cookie, public_key)
     except jwt.exceptions.PyJWTError as unauthorized_error:
         return jsonify({"error": str(unauthorized_error), "status": 401}), 401
 
-    return jsonify({"ok": True})
+    try:
+        match = User.query.get(token["priv"]["userId"])
+    except KeyError as key_err:
+        return (
+            jsonify(
+                {"error": "malformed JWT claims: {}".format(key_err), "status": 401}
+            ),
+            401,
+        )
+    return jsonify({"user": match.serialize()})
 
 
 # This route is not supposed to be called by client-side applications, so

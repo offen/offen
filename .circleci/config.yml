@@ -87,7 +87,9 @@ jobs:
             echo Failed waiting for Postgres && exit 1
       - run:
           name: Run tests
-          command: make test-ci
+          command: |
+            cp ~/offen/bootstrap.yml .
+            make test-ci
 
   shared:
     docker:
@@ -272,7 +274,8 @@ jobs:
           name: Run tests
           command: |
             . venv/bin/activate
-            make
+            cp ~/offen/bootstrap.yml .
+            make test-ci
 
   deploy_python:
     docker:

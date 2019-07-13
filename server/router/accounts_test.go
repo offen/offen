@@ -74,7 +74,7 @@ func TestRouter_GetAccount(t *testing.T) {
 				result: persistence.AccountResult{},
 			},
 			http.StatusOK,
-			`{"name":"","accountId":"","publicKey":null}`,
+			`{"accountId":""}`,
 		},
 	}
 	for _, test := range tests {

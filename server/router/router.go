@@ -34,6 +34,8 @@ type contextKey int
 const (
 	cookieKey                   = "user"
 	optoutKey                   = "optout"
+	authKey                     = "auth"
+	authHeader                  = "X-RPC-Authentication"
 	contextKeyCookie contextKey = iota
 )
 
@@ -132,7 +134,6 @@ func New(opts ...Config) http.Handler {
 		}
 	})
 	userCookie := httputil.UserCookieMiddleware(cookieKey, contextKeyCookie)
-	auth := httputil.JWTProtect(rt.jwtPublicKey, "auth")
 
 	m.Use(recovery, cors)
 
@@ -149,10 +150,12 @@ func New(opts ...Config) http.Handler {
 	exchange.HandleFunc("", rt.getPublicKey).Methods(http.MethodGet)
 	exchange.HandleFunc("", rt.postUserSecret).Methods(http.MethodPost)
 
+	getAuth := httputil.JWTProtect(rt.jwtPublicKey, authKey, authHeader, getAuthorizer)
+	postAuth := httputil.JWTProtect(rt.jwtPublicKey, authKey, authHeader, postAuthorizer)
 	accounts := m.PathPrefix("/accounts").Subrouter()
-	accounts.Use(json, auth)
-	accounts.HandleFunc("", rt.getAccount).Methods(http.MethodGet)
-	accounts.HandleFunc("", rt.postAccount).Methods(http.MethodPost)
+	accounts.Use(json)
+	accounts.Handle("", getAuth(http.HandlerFunc(rt.getAccount))).Methods(http.MethodGet)
+	accounts.Handle("", postAuth(http.HandlerFunc(rt.postAccount))).Methods(http.MethodPost)
 
 	deleted := m.PathPrefix("/deleted").Subrouter()
 	deleted.Use(json)

@@ -6,10 +6,10 @@ function handleQuery (message, respond) {
   var credentials = (message.payload && message.payload.credentials) || null
 
   return api.login(credentials)
-    .then(function () {
+    .then(function (response) {
       return {
         type: 'LOGIN_SUCCESS',
-        payload: null
+        payload: response
       }
     })
     .catch(function (err) {

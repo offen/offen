@@ -23,17 +23,15 @@ const ClaimsContextKey contextKey = "claims"
 // JWTProtect uses the public key located at the given URL to check if the
 // cookie value is signed properly. In case yes, the JWT claims will be added
 // to the request context
-func JWTProtect(keyURL, cookieName string) func(http.Handler) http.Handler {
+func JWTProtect(keyURL, cookieName, headerName string, authorizer func(*http.Request, map[string]interface{}) error) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			var jwtValue string
-			var isRPC bool
 			if authCookie, err := r.Cookie(cookieName); err == nil {
 				jwtValue = authCookie.Value
 			} else {
-				if header := r.Header.Get("X-RPC-Authentication"); header != "" {
+				if header := r.Header.Get(headerName); header != "" {
 					jwtValue = header
-					isRPC = true
 				}
 			}
 			if jwtValue == "" {
@@ -76,20 +74,13 @@ func JWTProtect(keyURL, cookieName string) func(http.Handler) http.Handler {
 				return
 			}
 
-			privateClaims, _ := token.Get("priv")
-			if isRPC {
-				cast, ok := privateClaims.(map[string]interface{})
-				if !ok {
-					RespondWithJSONError(w, fmt.Errorf("jwt: malformed private claims section in token: %v", privateClaims), http.StatusBadRequest)
-					return
-				}
-				if cast["rpc"] != "1" {
-					RespondWithJSONError(w, errors.New("jwt: token claims do not allow the requested operation"), http.StatusForbidden)
-					return
-				}
+			privKey, _ := token.Get("priv")
+			claims, _ := privKey.(map[string]interface{})
+			if err := authorizer(r, claims); err != nil {
+				RespondWithJSONError(w, fmt.Errorf("jwt: token claims do not allow the requested operation: %v", err), http.StatusForbidden)
+				return
 			}
-
-			r = r.WithContext(context.WithValue(r.Context(), ClaimsContextKey, privateClaims))
+			r = r.WithContext(context.WithValue(r.Context(), ClaimsContextKey, claims))
 			next.ServeHTTP(w, r)
 		})
 	}

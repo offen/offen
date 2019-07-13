@@ -1,4 +1,4 @@
-package local
+package keys
 
 import (
 	"crypto/rand"
@@ -6,7 +6,8 @@ import (
 	"fmt"
 )
 
-func (*localKeyOps) GenerateRandomString(length int) (string, error) {
+// GenerateRandomString returns a printable random string of the requested length
+func GenerateRandomString(length int) (string, error) {
 	b := make([]byte, length)
 	_, err := rand.Read(b)
 	if err != nil {

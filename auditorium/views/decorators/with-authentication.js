@@ -5,10 +5,12 @@ module.exports = withAuthentication
 function withAuthentication () {
   return function (originalView) {
     return function (state, emit) {
-      if (!state.authenticated) {
-        emit('offen:login', null, state.href)
+      if (!state.authenticatedUser) {
+        emit('offen:login', null)
         var authenticating = html`
-          <p class="loading">Checking authentication...</p>
+          <p class="loading">
+            Checking authentication...
+          </p>
         `
         return authenticating
       }

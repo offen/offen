@@ -13,7 +13,7 @@ class TestJWT(unittest.TestCase):
         assert rv.status.startswith("401")
 
         rv = self.app.post(
-            "/api/login", data=json.dumps({"username": "offen", "password": "develop"})
+            "/api/login", data=json.dumps({"username": "develop@offen.dev", "password": "develop"})
         )
         assert rv.status.startswith("200")
 

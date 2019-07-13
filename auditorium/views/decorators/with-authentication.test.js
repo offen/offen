@@ -28,7 +28,7 @@ describe('src/decorators/with-authentication.js', function () {
         setTimeout(function () {
           credentials = _credentials
           numEmitted++
-          app.state.authenticated = true
+          app.state.authenticatedUser = { id: 'some-user-id' }
           result = wrappedView(app.state, app.emit)
         }, 0)
       })
@@ -39,7 +39,7 @@ describe('src/decorators/with-authentication.js', function () {
       setTimeout(function () {
         var error
         try {
-          assert.strictEqual(app.state.authenticated, true)
+          assert.deepStrictEqual(app.state.authenticatedUser, { id: 'some-user-id' })
           assert.strictEqual(numEmitted, 1)
           assert.strictEqual(credentials, null)
           assert(result.querySelector('#test'))

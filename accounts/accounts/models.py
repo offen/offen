@@ -22,7 +22,17 @@ class User(db.Model):
     user_id = db.Column(db.String, primary_key=True, default=generate_key)
     email = db.Column(db.String, nullable=False, unique=True)
     hashed_password = db.Column(db.String, nullable=False)
-    accounts = db.relationship("AccountUserAssociation", back_populates="user")
+    accounts = db.relationship(
+        "AccountUserAssociation", back_populates="user", lazy="joined"
+    )
+
+    def serialize(self):
+        associated_accounts = [a.account_id for a in self.accounts]
+        records = [
+            {"name": a.name, "accountId": a.account_id}
+            for a in Account.query.filter(Account.account_id.in_(associated_accounts))
+        ]
+        return {"userId": self.user_id, "email": self.email, "accounts": records}
 
 
 class AccountUserAssociation(db.Model):

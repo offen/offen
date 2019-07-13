@@ -49,7 +49,7 @@ class AccountForm(Form):
 class AccountView(ModelView):
     form = AccountForm
     column_display_all_relations = True
-    column_list = ("account_id", "name")
+    column_list = ("name", "account_id")
 
     def after_model_change(self, form, model, is_created):
         if is_created:
@@ -65,7 +65,7 @@ class UserView(ModelView):
     inline_models = [(AccountUserAssociation, dict(form_columns=["id", "account"]))]
     column_auto_select_related = True
     column_display_all_relations = True
-    column_list = ("user_id", "email")
+    column_list = ("email", "user_id")
     form_columns = ("email", "accounts")
 
     def on_model_change(self, form, model, is_created):

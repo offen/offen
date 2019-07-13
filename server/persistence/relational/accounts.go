@@ -37,12 +37,12 @@ func (r *relationalDatabase) GetAccount(accountID string, events bool, eventsSin
 
 	result := persistence.AccountResult{
 		AccountID: account.AccountID,
-		PublicKey: key,
-		Name:      account.Name,
 	}
 
 	if events {
 		result.EncryptedSecretKey = account.EncryptedSecretKey
+	} else {
+		result.PublicKey = key
 	}
 
 	eventResults := persistence.EventsByAccountID{}
@@ -60,8 +60,12 @@ func (r *relationalDatabase) GetAccount(accountID string, events bool, eventsSin
 		}
 	}
 
-	result.Events = &eventResults
-	result.UserSecrets = &userSecrets
+	if len(eventResults) != 0 {
+		result.Events = &eventResults
+	}
+	if len(userSecrets) != 0 {
+		result.UserSecrets = &userSecrets
+	}
 
 	return result, nil
 }
@@ -134,15 +138,15 @@ func (r *relationalDatabase) AssociateUserSecret(accountID, userID, encryptedUse
 }
 
 func (r *relationalDatabase) CreateAccount(accountID, name string) error {
-	userSalt, userSaltErr := r.keyOps.GenerateRandomString(keys.UserSaltLength)
+	userSalt, userSaltErr := keys.GenerateRandomString(keys.UserSaltLength)
 	if userSaltErr != nil {
 		return fmt.Errorf("relational: error creating new user salt for account: %v", userSaltErr)
 	}
-	publicKey, privateKey, keyErr := r.keyOps.GenerateRSAKeypair(keys.RSAKeyLength)
+	publicKey, privateKey, keyErr := keys.GenerateRSAKeypair(keys.RSAKeyLength)
 	if keyErr != nil {
 		return fmt.Errorf("relational: error creating new key pair for account: %v", keyErr)
 	}
-	encryptedPrivateKey, encryptErr := r.keyOps.RemoteEncrypt(privateKey)
+	encryptedPrivateKey, encryptErr := r.encryption.Encrypt(privateKey)
 	if encryptErr != nil {
 		return fmt.Errorf("relational: error encrypting account private key: %v", encryptErr)
 	}

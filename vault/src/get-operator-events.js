@@ -28,7 +28,7 @@ function fetchOperatorEventsWith (api) {
         account = _account
         // in case no new events were returned decrypting the private key of the
         // account can be skipped altogether
-        if (Object.keys(account.events).length === 0) {
+        if (Object.keys(account.events || {}).length === 0) {
           var err = new Error('No pending events')
           err.status = NO_PENDING_EVENTS
           throw err
@@ -40,7 +40,7 @@ function fetchOperatorEventsWith (api) {
       })
       .then(function (_privateKey) {
         privateKey = _privateKey
-        var userSecretDecryptions = Object.keys(account.userSecrets)
+        var userSecretDecryptions = Object.keys(account.userSecrets || {})
           .filter(function (hashedUserId) {
             return account.userSecrets[hashedUserId]
           })

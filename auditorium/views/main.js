@@ -32,11 +32,14 @@ function view (state, emit) {
   var accountHeader = null
   var pageTitle
   if (isOperator) {
+    var matchingAccount = state.authenticatedUser.accounts.filter(function (account) {
+      return account.accountId === state.model.account.accountId
+    })[0]
     accountHeader = html`
-      <h3><strong>You are viewing data as</strong> operator <strong>with account</strong> ${state.model.account.name}.</h3>
+      <h3><strong>You are viewing data as</strong> operator <strong>with account</strong> ${matchingAccount.name}.</h3>
       <h3><strong>This is the data collected over the last </strong> ${numDays} days.</h3>
     `
-    pageTitle = state.model.account.name + ' | ' + state.title
+    pageTitle = matchingAccount.name + ' | ' + state.title
   } else {
     accountHeader = html`
       <h3><strong>You are viewing data as</strong> user.</h3>

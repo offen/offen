@@ -18,8 +18,8 @@ import (
 var supportedDialects = []string{"postgres"}
 
 type relationalDatabase struct {
-	db     *gorm.DB
-	keyOps keys.KeyOps
+	db         *gorm.DB
+	encryption keys.Encrypter
 }
 
 // New creates a persistence layer that connects to a PostgreSQL database
@@ -41,13 +41,13 @@ func New(configs ...Config) (persistence.Database, error) {
 		return nil, fmt.Errorf("relational: error opening database: %v", err)
 	}
 
-	return &relationalDatabase{db, opts.keyOps}, nil
+	return &relationalDatabase{db, opts.encryption}, nil
 }
 
 type dbOptions struct {
 	dialect          string
 	connectionString string
-	keyOps           keys.KeyOps
+	encryption       keys.Encrypter
 }
 
 // Config is a function that adds a configuration option to the constructor
@@ -65,14 +65,14 @@ func WithConnectionString(connectionString string) Config {
 	}
 }
 
-// WithKeyOps adds a keyOps instance to be used for generating new keys for
+// WithEncryption adds a keyOps instance to be used for encrypting new keys for
 // accounts
-func WithKeyOps(keyOps keys.KeyOps) Config {
+func WithEncryption(e keys.Encrypter) Config {
 	return func(opts dbOptions) (dbOptions, error) {
-		if keyOps == nil {
-			return opts, errors.New("relational: received nil keyops instance")
+		if e == nil {
+			return opts, errors.New("relational: received nil encryption instance")
 		}
-		opts.keyOps = keyOps
+		opts.encryption = e
 		return opts, nil
 	}
 }

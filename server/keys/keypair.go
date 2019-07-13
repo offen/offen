@@ -1,4 +1,4 @@
-package local
+package keys
 
 import (
 	"crypto/rand"
@@ -8,7 +8,8 @@ import (
 	"errors"
 )
 
-func (*localKeyOps) GenerateRSAKeypair(bits int) ([]byte, []byte, error) {
+// GenerateRSAKeypair creates an RSA key pair of the requested length
+func GenerateRSAKeypair(bits int) ([]byte, []byte, error) {
 	key, keyErr := rsa.GenerateKey(rand.Reader, bits)
 	if keyErr != nil {
 		return nil, nil, keyErr

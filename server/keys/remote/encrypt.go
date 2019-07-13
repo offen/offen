@@ -1,4 +1,4 @@
-package local
+package remote
 
 import (
 	"bytes"
@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func (l *localKeyOps) RemoteEncrypt(value []byte) ([]byte, error) {
+func (k *kmsRemoteEncryption) Encrypt(value []byte) ([]byte, error) {
 	p := struct {
 		Decrypted string `json:"decrypted"`
 	}{
@@ -15,7 +15,7 @@ func (l *localKeyOps) RemoteEncrypt(value []byte) ([]byte, error) {
 	}
 	payload, _ := json.Marshal(&p)
 	res, err := http.Post(
-		l.encryptionEndpoint,
+		k.encryptionEndpoint,
 		"application/json",
 		bytes.NewReader(payload),
 	)

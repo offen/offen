@@ -7,8 +7,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/offen/offen/server/keys/local"
-
+	"github.com/offen/offen/server/keys/remote"
 	"github.com/offen/offen/server/persistence/relational"
 	"github.com/offen/offen/server/router"
 	"github.com/sirupsen/logrus"
@@ -35,11 +34,11 @@ func main() {
 	}
 	logger.SetLevel(parsedLogLevel)
 
-	keyOps := local.New(*encryptionEndpoint)
+	encryption := remote.New(*encryptionEndpoint)
 	db, err := relational.New(
 		relational.WithDialect(*dialect),
 		relational.WithConnectionString(*connectionString),
-		relational.WithKeyOps(keyOps),
+		relational.WithEncryption(encryption),
 	)
 	if err != nil {
 		logger.WithError(err).Fatal("unable to establish database connection")

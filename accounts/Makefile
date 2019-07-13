@@ -1,6 +1,9 @@
 test:
 	@pytest --disable-pytest-warnings
 
+test-ci: bootstrap
+	@pytest --disable-pytest-warnings
+
 fmt:
 	@black .
 

@@ -174,7 +174,9 @@ func TestJWTProtect(t *testing.T) {
 			if test.server != nil {
 				url = test.server.URL
 			}
-			wrappedHandler := JWTProtect(url, "auth")(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			wrappedHandler := JWTProtect(url, "auth", "X-RPC-Authentication", func(r *http.Request, claims map[string]interface{}) error {
+				return nil
+			})(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				w.Write([]byte("OK"))
 			}))
 			w := httptest.NewRecorder()

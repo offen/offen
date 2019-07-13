@@ -9,10 +9,14 @@ import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/offen/offen/server/keys"
-	"github.com/offen/offen/server/keys/local"
+	"github.com/offen/offen/server/keys/remote"
 	"github.com/offen/offen/server/persistence/relational"
 	yaml "gopkg.in/yaml.v2"
 )
+
+type bootstrapConfig struct {
+	Accounts []accountConfig `yaml:"accounts"`
+}
 
 type accountConfig struct {
 	Name string `yaml:"name"`
@@ -32,8 +36,8 @@ func main() {
 		panic(readErr)
 	}
 
-	var accounts []accountConfig
-	if err := yaml.Unmarshal(read, &accounts); err != nil {
+	var config bootstrapConfig
+	if err := yaml.Unmarshal(read, &config); err != nil {
 		panic(err)
 	}
 
@@ -55,20 +59,26 @@ func main() {
 		panic(err)
 	}
 
-	keyOps := local.New(*encryptionEndpoint)
+	remoteEncryption := remote.New(*encryptionEndpoint)
 
-	for _, account := range accounts {
-		publicKey, privateKey, keyErr := keyOps.GenerateRSAKeypair(keys.RSAKeyLength)
+	for _, account := range config.Accounts {
+		publicKey, privateKey, keyErr := keys.GenerateRSAKeypair(keys.RSAKeyLength)
 		if keyErr != nil {
 			tx.Rollback()
 			panic(keyErr)
 		}
-		encryptedKey, encryptedErr := keyOps.RemoteEncrypt(privateKey)
+
+		encryptedKey, encryptedErr := remoteEncryption.Encrypt(privateKey)
 		if encryptedErr != nil {
-			tx.Rollback()
-			panic(keyErr)
+			if _, ok := os.LookupEnv("CI"); ok {
+				encryptedKey = nil
+			} else {
+				tx.Rollback()
+				panic(encryptedErr)
+			}
 		}
-		salt, saltErr := keyOps.GenerateRandomString(keys.UserSaltLength)
+
+		salt, saltErr := keys.GenerateRandomString(keys.UserSaltLength)
 		if saltErr != nil {
 			tx.Rollback()
 			panic(saltErr)
