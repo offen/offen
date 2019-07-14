@@ -290,6 +290,9 @@ jobs:
       - run:
           name: Install dependencies
           command: npm install
+      - run:
+          name: Install psycopg2 dependencies
+          command: sudo apt-get install libpq-dev
       - save_cache:
           paths:
             - ~/offen/packages/node_modules
