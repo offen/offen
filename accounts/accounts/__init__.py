@@ -6,7 +6,7 @@ from flask_admin import Admin
 
 app = Flask(__name__)
 app.secret_key = environ.get("SESSION_SECRET")
-app.config["SQLALCHEMY_DATABASE_URI"] = environ.get("POSTGRES_CONNECTION_STRING")
+app.config["SQLALCHEMY_DATABASE_URI"] = environ.get("MYSQL_CONNECTION_STRING")
 db = SQLAlchemy(app)
 
 from accounts.models import Account, User

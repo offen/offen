@@ -25,9 +25,12 @@ services:
       POSTGRES_PASSWORD: develop
 
   accounts_database:
-    image: postgres:11.2
+    image: mysql:5.7
+    ports:
+      - "3306:3306"
     environment:
-      POSTGRES_PASSWORD: develop
+      MYSQL_DATABASE: mysql
+      MYSQL_ROOT_PASSWORD: develop
 
   server:
     build:
@@ -116,7 +119,7 @@ services:
     environment:
       FLASK_APP: accounts:app
       FLASK_ENV: development
-      POSTGRES_CONNECTION_STRING: postgres://postgres:develop@accounts_database:5432/postgres?sslmode=disable
+      MYSQL_CONNECTION_STRING: mysql+pymysql://root:develop@accounts_database:3306/mysql
       CORS_ORIGIN: http://localhost:9977
       SERVER_HOST: http://server:8080
       SESSION_SECRET: vndJRFJTiyjfgtTF

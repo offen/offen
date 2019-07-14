@@ -198,8 +198,7 @@ jobs:
     docker:
       - image: circleci/python:3.6
         environment:
-          POSTGRES_CONNECTION_STRING: postgres://circle:test@localhost:5432/circle_test?sslmode=disable
-          HASHED_PASSWORD: JDJhJDEwJGpFRXJMOVVSQndZQlFQNjkxallkZi53aGp1cDMvRW5maGUvakZleG1pWFlnWEVXcU93ODBp
+          MYSQL_CONNECTION_STRING: mysql://root:circle@127.0.0.1:3306/circle
           JWT_PRIVATE_KEY: |-
             -----BEGIN PRIVATE KEY-----
             MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCzgU18PnRrpbVK
@@ -239,10 +238,11 @@ jobs:
             a3B4L0waKzP5QWcO865n1HCUTnV+s4lNcphBDZCrSwTkXnVnQWVPCL7ssoQyM0u3
             HQIDAQAB
             -----END PUBLIC KEY-----
-      - image: circleci/postgres:11.2-alpine
+      - image: circleci/mysql:5.7
         environment:
-          - POSTGRES_USER=circle
-          - POSTGRES_PASSWORD=test
+          - MYSQL_ROOT_PASSWORD=circle
+          - MYSQL_DATABASE=circle
+          - MYSQL_HOST=127.0.0.1
     working_directory: ~/offen/accounts
     steps:
       - checkout:
@@ -261,15 +261,15 @@ jobs:
             - ~/offen/accounts/venv
           key: offen-accounts-{{ checksum "requirements.txt" }}-{{ checksum "requirements-dev.txt" }}
       - run:
-          name: Waiting for Postgres to be ready
+          name: Waiting for MySQL to be ready
           command: |
             for i in `seq 1 10`;
             do
-              nc -z localhost 5432 && echo Success && exit 0
+              nc -z localhost 3306 && echo Success && exit 0
               echo -n .
               sleep 1
             done
-            echo Failed waiting for Postgres && exit 1
+            echo Failed waiting for MySQL && exit 1
       - run:
           name: Run tests
           command: |

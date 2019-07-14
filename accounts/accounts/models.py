@@ -9,8 +9,8 @@ def generate_key():
 
 class Account(db.Model):
     __tablename__ = "accounts"
-    account_id = db.Column(db.String, primary_key=True, default=generate_key)
-    name = db.Column(db.String, nullable=False, unique=True)
+    account_id = db.Column(db.String(36), primary_key=True, default=generate_key)
+    name = db.Column(db.String(256), nullable=False, unique=True)
     users = db.relationship("AccountUserAssociation", back_populates="account")
 
     def __repr__(self):
@@ -19,9 +19,9 @@ class Account(db.Model):
 
 class User(db.Model):
     __tablename__ = "users"
-    user_id = db.Column(db.String, primary_key=True, default=generate_key)
-    email = db.Column(db.String, nullable=False, unique=True)
-    hashed_password = db.Column(db.String, nullable=False)
+    user_id = db.Column(db.String(36), primary_key=True, default=generate_key)
+    email = db.Column(db.String(256), nullable=False, unique=True)
+    hashed_password = db.Column(db.String(256), nullable=False)
     accounts = db.relationship(
         "AccountUserAssociation", back_populates="user", lazy="joined"
     )
@@ -40,9 +40,9 @@ class AccountUserAssociation(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
 
-    user_id = db.Column(db.String, db.ForeignKey("users.user_id"), nullable=False)
+    user_id = db.Column(db.String(36), db.ForeignKey("users.user_id"), nullable=False)
     account_id = db.Column(
-        db.String, db.ForeignKey("accounts.account_id"), nullable=False
+        db.String(36), db.ForeignKey("accounts.account_id"), nullable=False
     )
 
     user = db.relationship("User", back_populates="accounts")
