@@ -68,8 +68,12 @@ margin: 0 0 10px 0;
 
 h4 {
 color: #898989;
+margin: 30px 0 6px 0;
 }
 
+.section-auditorium h4 {
+margin: 30px 0 20px 0;
+}
 
 
 /* Links
@@ -79,13 +83,6 @@ a:hover,
 a:focus {
 color: #898989;
 text-decoration: none;
-font-weight: 700;
-}
-
-button {
-cursor: pointer;
-font: inherit;
-font-size: inherit;
 font-weight: 700;
 }
 
@@ -145,10 +142,6 @@ hr {
 border-top: 1px solid #d5d5d5;
 height: 0;
 margin: 80px 0 0 0;
-}
-
-hr:last-child {
-margin-bottom: 60px
 }
 
 .footnote hr {
@@ -234,8 +227,7 @@ color: #fff;
 text-decoration: none;
 }
 
-.btn:first-of-type,
-.btn:last-of-type {
+.btn {
 margin: 0 0 15px 0;
 }
 
@@ -246,11 +238,7 @@ justify-content: space-around;
 }
 
 .button-wrapper:first-of-type {
-padding-top: 40px;
-}
-
-.button-wrapper:last-of-type {
-padding: 0;
+margin: 60px 0 0 0;
 }
 
 @media (min-width: 480px) {
@@ -263,13 +251,11 @@ flex-flow: row wrap;
 .btn {
 flex-grow: 1;
 }
-.btn:first-of-type {
-margin-left: 0;
-margin-right: 15px;
+.btn {
+margin: 0 15px 15px 0;
 }
 .btn:last-of-type {
-margin-left: 15px;
-margin-right: 0;
+margin: 0 0 15px 0;
 }
 }
 
@@ -323,17 +309,11 @@ display: flex;
 justify-content: flex-start;
 }
 
-.row h4 {
-margin-right: 40px;
+.row h4:first-child {
+margin-right: 30px;
 }
 
-.row h4:last-child {
-margin-right: 0;
-}
 
-label {
-display: block;
-}
 
 
 /* Tables
@@ -468,6 +448,12 @@ padding-right: 0;
 }
 }
 
-.opt-out-pixel {
-display: none;
+
+
+
+/* AUDITORIUM QUICK FIX
+------------------------------------------------------------- */
+.bottom {
+display: block;
+margin: 60px;
 }
