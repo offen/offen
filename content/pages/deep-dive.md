@@ -77,6 +77,7 @@ We are happy about any kind of feedback. From *criticism and praise to contribut
 
 <div class="button-wrapper btn-fill-space">
 <a class="btn btn-color-grey" href="../">Summary</a>
+<a class="btn btn-color-grey" href="../status/">Status</a>
 <a class="btn btn-color-orange" href="mailto:mail@offen.dev">Contact</a>
 </div>
 

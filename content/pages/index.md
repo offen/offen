@@ -14,6 +14,7 @@ __offen__ is currently in the early stages of development and is applying for fu
 
 <div class="button-wrapper btn-fill-space">
 <a class="btn btn-color-grey" href="./deep-dive/">Deep dive</a>
+<a class="btn btn-color-grey" href="./status/">Status</a>
 <a class="btn btn-color-orange" href="mailto:mail@offen.dev">Contact</a>
 </div>
 
