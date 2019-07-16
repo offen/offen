@@ -67,13 +67,15 @@ class UserView(ModelView):
     column_display_all_relations = True
     column_list = ("email", "user_id")
     form_columns = ("email", "accounts")
+    form_create_rules = ("email", "password", "confirm", "accounts")
+    form_edit_rules = ("email", "password", "confirm", "accounts")
 
     def on_model_change(self, form, model, is_created):
         if form.password.data:
             model.hashed_password = bcrypt.hash(form.password.data)
 
     def get_create_form(self):
-        form = super().get_create_form()
+        form = super(UserView, self).get_create_form()
         form.password = PasswordField(
             "Password",
             validators=[
@@ -85,13 +87,11 @@ class UserView(ModelView):
         return form
 
     def get_edit_form(self):
-        form = super().get_edit_form()
+        form = super(UserView, self).get_edit_form()
         form.password = PasswordField(
             "Password",
             description="When left blank, the password will remain unchanged on update",
-            validators=[
-                EqualTo("confirm", message="Passwords must match"),
-            ],
+            validators=[EqualTo("confirm", message="Passwords must match")],
         )
         form.confirm = PasswordField("Repeat Password", validators=[])
         return form

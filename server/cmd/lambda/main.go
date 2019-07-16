@@ -22,7 +22,6 @@ func init() {
 	encrypter := remote.New(encryptionEndpoint)
 
 	db, err := relational.New(
-		relational.WithDialect("postgres"),
 		relational.WithConnectionString(postgresConnectionString),
 		relational.WithEncryption(encrypter),
 	)

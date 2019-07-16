@@ -5,3 +5,5 @@ package-lock.json
 # mkcert certificates
 *.pem
 venv/
+
+bootstrap-alpha.yml

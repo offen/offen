@@ -11,7 +11,7 @@ module.exports.relayEventWith = relayEventWith
 // the given accountId. It ensures a local user secret exists for the given
 // accountId and uses it to encrypt the event payload before performing the request.
 function relayEventWith (api, ensureUserSecret) {
-  var relayEvent = function (accountId, event, anonymous) {
+  function relayEvent (accountId, event, anonymous) {
   // `flush` is not supposed to be part of the public signature, but will only
   // be used when the function recursively calls itself
     var flush = arguments[3] || false
@@ -28,10 +28,8 @@ function relayEventWith (api, ensureUserSecret) {
         return encryptEventPayload(event)
       })
       .then(function (encryptedEventPayload) {
-        return api.postEvent({
-          accountId: accountId,
-          payload: encryptedEventPayload
-        }, anonymous)
+        return api
+          .postEvent(accountId, encryptedEventPayload, anonymous)
           .catch(function (err) {
             // a 400 response is sent in case no cookie is present in the request.
             // This means the secret exchange can happen one more time

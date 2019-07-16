@@ -115,7 +115,7 @@ function ensureSyncWith (queries, api) {
             return fetchOperatorEventsWith(api)(accountId, params)
           })
         var pruneEvents = (knownEventIds.length
-          ? api.getDeletedEvents({ eventIds: knownEventIds })
+          ? api.getDeletedEvents(knownEventIds)
           : Promise.resolve({ eventIds: [] })
         )
           .then(function (response) {

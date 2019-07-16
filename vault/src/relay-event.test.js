@@ -27,11 +27,11 @@ describe('src/relay-event.js', function () {
     it('sends an augmented and encrypted event payload to the server', function (done) {
       let err
       var mockApi = {
-        postEvent: function (event) {
+        postEvent: function (accountId, payload) {
           try {
-            assert(event.payload)
-            assert.notStrictEqual(event.payload, 'data')
-            assert.strictEqual(event.accountId, 'account-id-token')
+            assert(payload)
+            assert.notStrictEqual(payload, 'data')
+            assert.strictEqual(accountId, 'account-id-token')
           } catch (_err) {
             err = _err
           }

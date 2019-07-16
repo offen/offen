@@ -136,7 +136,7 @@ describe('src/get-operator-events', function () {
             assert(mockQueries.getLatestEvent.calledWith('account-a'))
 
             assert(mockApi.getDeletedEvents.calledOnce)
-            assert(mockApi.getDeletedEvents.calledWith({ eventIds: ['a', 'b', 'c', 'd'] }))
+            assert(mockApi.getDeletedEvents.calledWith(['a', 'b', 'c', 'd']))
 
             assert(mockApi.getAccount.calledOnce)
             assert(mockApi.getAccount.calledWith('account-a'))

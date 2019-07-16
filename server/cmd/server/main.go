@@ -17,7 +17,6 @@ func main() {
 	var (
 		port               = flag.String("port", os.Getenv("PORT"), "the port the server binds to")
 		connectionString   = flag.String("conn", os.Getenv("POSTGRES_CONNECTION_STRING"), "a database connection string")
-		dialect            = flag.String("dialect", "postgres", "the database dialect used by the given connection string")
 		origin             = flag.String("origin", "http://localhost:9977", "the origin used in CORS headers")
 		logLevel           = flag.String("level", "info", "the application's log level")
 		optoutCookieDomain = flag.String("optout", "localhost", "domain value for the optout cookie")
@@ -36,7 +35,6 @@ func main() {
 
 	encryption := remote.New(*encryptionEndpoint)
 	db, err := relational.New(
-		relational.WithDialect(*dialect),
 		relational.WithConnectionString(*connectionString),
 		relational.WithEncryption(encryption),
 	)

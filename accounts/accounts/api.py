@@ -1,6 +1,5 @@
 from datetime import datetime, timedelta
 from os import environ
-import base64
 from functools import wraps
 
 from flask import jsonify, make_response, request
@@ -10,6 +9,8 @@ import jwt
 
 from accounts import app
 from accounts.models import User
+
+COOKIE_KEY = "auth"
 
 
 def json_error(handler):
@@ -48,7 +49,7 @@ def post_login():
             raise UnauthorizedError("bad password")
     except UnauthorizedError as unauthorized_error:
         resp = make_response(jsonify({"error": str(unauthorized_error), "status": 401}))
-        resp.set_cookie("auth", "", expires=0)
+        resp.set_cookie(COOKIE_KEY, "", expires=0)
         resp.status_code = 401
         return resp
 
@@ -56,7 +57,6 @@ def post_login():
     expiry = datetime.utcnow() + timedelta(hours=24)
     encoded = jwt.encode(
         {
-            "ok": True,
             "exp": expiry,
             "priv": {
                 "userId": match.user_id,
@@ -69,7 +69,7 @@ def post_login():
 
     resp = make_response(jsonify({"user": match.serialize()}))
     resp.set_cookie(
-        "auth",
+        COOKIE_KEY,
         encoded,
         httponly=True,
         expires=expiry,
@@ -84,7 +84,7 @@ def post_login():
 @cross_origin(origins=[environ.get("CORS_ORIGIN", "*")], supports_credentials=True)
 @json_error
 def get_login():
-    auth_cookie = request.cookies.get("auth")
+    auth_cookie = request.cookies.get(COOKIE_KEY)
     public_key = environ.get("JWT_PUBLIC_KEY", "")
     try:
         token = jwt.decode(auth_cookie, public_key)
@@ -103,10 +103,22 @@ def get_login():
     return jsonify({"user": match.serialize()})
 
 
-# This route is not supposed to be called by client-side applications, so
-# no CORS configuration is added
+@app.route("/api/logout", methods=["POST"])
+@cross_origin(origins=[environ.get("CORS_ORIGIN", "*")], supports_credentials=True)
+@json_error
+def post_logout():
+    resp = make_response("")
+    resp.set_cookie(COOKIE_KEY, "", expires=0)
+    resp.status_code = 204
+    return resp
+
+
 @app.route("/api/key", methods=["GET"])
 @json_error
 def key():
+    """
+    This route is not supposed to be called by client-side applications, so
+    no CORS configuration is added
+    """
     public_key = environ.get("JWT_PUBLIC_KEY", "").strip()
     return jsonify({"key": public_key})

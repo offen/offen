@@ -17,6 +17,7 @@ def build_api_arn(method_arn):
         aws_region, aws_account_id, rest_api_id, stage
     )
 
+
 def build_response(api_arn, allow):
     effect = "Deny"
     if allow:
@@ -30,17 +31,18 @@ def build_response(api_arn, allow):
                 {
                     "Action": ["execute-api:Invoke"],
                     "Effect": effect,
-                    "Resource": [api_arn]
+                    "Resource": [api_arn],
                 }
-            ]
-        }
+            ],
+        },
     }
 
 
 def handler(event, context):
     api_arn = build_api_arn(event["methodArn"])
 
-    auth_string = base64.standard_b64decode(event["authorizationToken"].lstrip("Basic ")).decode()
+    encoded_auth = event["authorizationToken"].lstrip("Basic ")
+    auth_string = base64.standard_b64decode(encoded_auth).decode()
     if not auth_string:
         return build_response(api_arn, False)
 
@@ -51,7 +53,8 @@ def handler(event, context):
     if user != environ.get("BASIC_AUTH_USER"):
         return build_response(api_arn, False)
 
-    hashed_password = base64.standard_b64decode(environ.get("HASHED_BASIC_AUTH_PASSWORD")).decode()
+    encoded_password = environ.get("HASHED_BASIC_AUTH_PASSWORD")
+    hashed_password = base64.standard_b64decode(encoded_password).decode()
     if not bcrypt.verify(password, hashed_password):
         return build_response(api_arn, False)
 
