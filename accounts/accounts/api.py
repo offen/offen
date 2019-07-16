@@ -65,7 +65,7 @@ def post_login():
         },
         private_key.encode(),
         algorithm="RS256",
-    ).decode("utf-8")
+    ).decode()
 
     resp = make_response(jsonify({"user": match.serialize()}))
     resp.set_cookie(

@@ -10,7 +10,7 @@ def generate_key():
 class Account(db.Model):
     __tablename__ = "accounts"
     account_id = db.Column(db.String(36), primary_key=True, default=generate_key)
-    name = db.Column(db.String(256), nullable=False, unique=True)
+    name = db.Column(db.Text, nullable=False)
     users = db.relationship("AccountUserAssociation", back_populates="account")
 
     def __repr__(self):
@@ -20,8 +20,8 @@ class Account(db.Model):
 class User(db.Model):
     __tablename__ = "users"
     user_id = db.Column(db.String(36), primary_key=True, default=generate_key)
-    email = db.Column(db.String(256), nullable=False, unique=True)
-    hashed_password = db.Column(db.String(256), nullable=False)
+    email = db.Column(db.String(128), nullable=False, unique=True)
+    hashed_password = db.Column(db.Text, nullable=False)
     accounts = db.relationship(
         "AccountUserAssociation", back_populates="user", lazy="joined"
     )

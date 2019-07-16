@@ -15,10 +15,17 @@ from accounts.models import AccountUserAssociation
 class RemoteServerException(Exception):
     status = 0
 
+    def __str__(self):
+        return "Status {}: {}".format(
+            self.status, super(RemoteServerException, self).__str__()
+        )
+
 
 def create_remote_account(name, account_id):
     private_key = environ.get("JWT_PRIVATE_KEY", "")
-    expiry = datetime.utcnow() + timedelta(seconds=10)
+    # expires in 30 seconds as this will mean the HTTP request would have
+    # timed out anyways
+    expiry = datetime.utcnow() + timedelta(seconds=30)
     encoded = jwt.encode(
         {"ok": True, "exp": expiry, "priv": {"rpc": "1"}},
         private_key.encode(),
@@ -27,7 +34,7 @@ def create_remote_account(name, account_id):
 
     r = requests.post(
         "{}/accounts".format(environ.get("SERVER_HOST")),
-        json={"name": name, "account_id": account_id},
+        json={"name": name, "accountId": account_id},
         headers={"X-RPC-Authentication": encoded},
     )
 

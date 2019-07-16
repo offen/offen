@@ -38,7 +38,7 @@ func (rt *router) getAccount(w http.ResponseWriter, r *http.Request) {
 
 type accountPayload struct {
 	Name      string `json:"name"`
-	AccountID string `json:"account_id"`
+	AccountID string `json:"accountId"`
 }
 
 func (rt *router) postAccount(w http.ResponseWriter, r *http.Request) {
@@ -47,7 +47,6 @@ func (rt *router) postAccount(w http.ResponseWriter, r *http.Request) {
 		httputil.RespondWithJSONError(w, fmt.Errorf("router: error parsing request payload: %v", err), http.StatusBadRequest)
 		return
 	}
-	fmt.Println("aacount", payload)
 	if err := rt.db.CreateAccount(payload.AccountID, payload.Name); err != nil {
 		httputil.RespondWithJSONError(w, fmt.Errorf("router: error creating account: %v", err), http.StatusInternalServerError)
 		return

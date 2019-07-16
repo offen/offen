@@ -4,9 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/offen/offen/server/keys"
-
 	"github.com/jinzhu/gorm"
+	"github.com/offen/offen/server/keys"
 	// GORM imports the dialects for side effects only
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/offen/offen/server/persistence"

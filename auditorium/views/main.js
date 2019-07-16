@@ -1,4 +1,5 @@
 var html = require('choo/html')
+var _ = require('underscore')
 
 var BarChart = require('./../components/bar-chart')
 
@@ -32,9 +33,15 @@ function view (state, emit) {
   var accountHeader = null
   var pageTitle
   if (isOperator) {
-    var matchingAccount = state.authenticatedUser.accounts.filter(function (account) {
+    var matchingAccount = _.find(state.authenticatedUser.accounts, function (account) {
       return account.accountId === state.model.account.accountId
-    })[0]
+    })
+    if (!matchingAccount) {
+      // this is just a backup, if it ever happens outside of development,
+      // there is something off with claims authorization in the server application
+      emit('offen:bailOut', 'User is not authorized to access account with id "' + state.model.accountId + '".')
+      return null
+    }
     accountHeader = html`
       <h3><strong>You are viewing data as</strong> operator <strong>with account</strong> ${matchingAccount.name}.</h3>
       <h3><strong>This is the data collected over the last </strong> ${numDays} days.</h3>

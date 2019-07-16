@@ -10,7 +10,7 @@ function withLayout () {
       return html`
         <div class="section-auditorium">
           <h1><strong>offen</strong> auditorium</h1>
-          ${flash ? html`<p>${flash}</p>` : null}
+          ${flash ? html`<p class="flash-message">${flash}</p>` : null}
           ${originalView(state, emit)}
         </div>
       `

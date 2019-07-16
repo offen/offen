@@ -3,10 +3,9 @@ package relational
 import (
 	"fmt"
 
-	"github.com/offen/offen/server/keys"
-
 	"github.com/gofrs/uuid"
 	"github.com/jinzhu/gorm"
+	"github.com/offen/offen/server/keys"
 	"github.com/offen/offen/server/persistence"
 )
 

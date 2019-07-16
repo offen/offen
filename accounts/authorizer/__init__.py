@@ -53,8 +53,7 @@ def handler(event, context):
     if user != environ.get("BASIC_AUTH_USER"):
         return build_response(api_arn, False)
 
-    encoded_password = environ.get("HASHED_BASIC_AUTH_PASSWORD")
-    hashed_password = base64.standard_b64decode(encoded_password).decode()
+    hashed_password = environ.get("HASHED_BASIC_AUTH_PASSWORD")
     if not bcrypt.verify(password, hashed_password):
         return build_response(api_arn, False)
 
