@@ -54,7 +54,7 @@ gulp.task('bundle:vendor', function () {
 })
 
 gulp.task('revreplace', function () {
-  return gulp.src('./index.html')
+  return gulp.src('./template.html')
     .pipe(revReplace({ manifest: gulp.src('./dist/rev-manifest.json') }))
     .pipe(gulp.dest('./dist/'))
     .pipe(sriHash({ relative: true }))
