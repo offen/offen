@@ -27,9 +27,9 @@ custom:
     staging: vault-staging.offen.dev
     alpha: vault-alpha.offen.dev
   serverHost:
-    production: server.offen.dev
-    staging: server-staging.offen.dev
-    alpha: server-alpha.offen.dev
+    production: https://server.offen.dev
+    staging: https://server-staging.offen.dev
+    alpha: https://server-alpha.offen.dev
   domain:
     production: accounts.offen.dev
     staging: accounts-staging.offen.dev
