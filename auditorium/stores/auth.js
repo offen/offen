@@ -4,10 +4,7 @@ var vault = require('offen/vault')
 module.exports = store
 
 function store (state, emitter) {
-  emitter.on('offen:login', function (credentials, returnUrl) {
-    if (returnUrl) {
-      state.returnUrl = returnUrl
-    }
+  emitter.on('offen:login', function (credentials) {
     vault(process.env.VAULT_HOST)
       .then(function (postMessage) {
         var queryRequest = {
@@ -19,15 +16,16 @@ function store (state, emitter) {
         }
         return postMessage(queryRequest)
       })
-      .then(function () {
-        state.authenticated = true
+      .then(function (response) {
+        state.authenticatedUser = response.payload.user
         if (credentials) {
-          emitter.emit(state.events.PUSHSTATE, state.returnUrl || '/account')
-          delete state.returnUrl
+          state.flash = 'You are now logged in.'
+          emitter.emit(state.events.PUSHSTATE, '/account')
         }
       })
       .catch(function (err) {
         if (err.status === 401) {
+          state.flash = 'Could not log in. Try again.'
           emitter.emit(state.events.PUSHSTATE, '/login')
           return
         }

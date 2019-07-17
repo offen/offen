@@ -66,7 +66,7 @@ exports.postEvent = postEventWith(process.env.SERVER_HOST + '/events')
 exports.postEventWith = postEventWith
 
 function postEventWith (eventsUrl) {
-  return function (body, anonymous) {
+  return function (accountId, payload, anonymous) {
     var url = new window.URL(eventsUrl)
     if (anonymous) {
       url.search = new window.URLSearchParams({ anonymous: '1' })
@@ -75,7 +75,10 @@ function postEventWith (eventsUrl) {
       .fetch(url, {
         method: 'POST',
         credentials: 'include',
-        body: JSON.stringify(body)
+        body: JSON.stringify({
+          accountId: accountId,
+          payload: payload
+        })
       })
       .then(handleFetchResponse)
   }
@@ -85,16 +88,18 @@ exports.getDeletedEvents = getDeletedEventsWith(process.env.SERVER_HOST + '/dele
 exports.getDeletedEventsWith = getDeletedEventsWith
 
 function getDeletedEventsWith (deletedEventsUrl) {
-  return function (body, user) {
+  return function (eventIds, isUser) {
     var url = new window.URL(deletedEventsUrl)
-    if (user) {
+    if (isUser) {
       url.search = new window.URLSearchParams({ user: '1' })
     }
     return window
       .fetch(url, {
         method: 'POST',
         credentials: 'include',
-        body: JSON.stringify(body)
+        body: JSON.stringify({
+          eventIds: eventIds
+        })
       })
       .then(handleFetchResponse)
   }

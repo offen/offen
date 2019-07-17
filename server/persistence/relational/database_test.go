@@ -21,7 +21,7 @@ func TestNew(t *testing.T) {
 		}
 	})
 	t.Run("bad config", func(t *testing.T) {
-		_, err := New(WithConnectionString("something that is not a database"), WithDialect("texan"))
+		_, err := New(WithConnectionString("something that is not a database"))
 		if err == nil {
 			t.Error("Expected error, got nil")
 		}

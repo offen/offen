@@ -26,6 +26,10 @@ custom:
     production: vault.offen.dev
     staging: vault-staging.offen.dev
     alpha: vault-alpha.offen.dev
+  serverHost:
+    production: server.offen.dev
+    staging: server-staging.offen.dev
+    alpha: server-alpha.offen.dev
   domain:
     production: accounts.offen.dev
     staging: accounts-staging.offen.dev
@@ -50,19 +54,53 @@ custom:
     fileName: requirements.txt
 
 functions:
+  authorizer:
+    handler: authorizer.handler
+    environment:
+      BASIC_AUTH_USER: ${ssm:/aws/reference/secretsmanager/${self:custom.stage}/accounts/basicAuthUser~true}
+      HASHED_BASIC_AUTH_PASSWORD: ${ssm:/aws/reference/secretsmanager/${self:custom.stage}/accounts/hashedBasicAuthPassword~true}
   app:
     handler: wsgi_handler.handler
     events:
       - http:
+          path: /admin/
+          method: any
+          authorizer:
+            name: authorizer
+            resultTtlInSeconds: 0
+            identitySource: method.request.header.Authorization
+      - http:
+          path: /admin/{proxy+}
+          method: any
+          authorizer:
+            name: authorizer
+            resultTtlInSeconds: 0
+            identitySource: method.request.header.Authorization
+      - http:
           path: '/'
           method: any
       - http:
-          path: '{proxy+}'
+          path: '/{proxy+}'
           method: any
     environment:
-      USER: offen
       CORS_ORIGIN: https://${self:custom.origin.${self:custom.stage}}
       COOKIE_DOMAIN: ${self:custom.cookieDomain.${self:custom.stage}}
+      SERVER_URL: ${self:custom.serverHost.${self:custom.stage}}
       JWT_PRIVATE_KEY: '${ssm:/aws/reference/secretsmanager/${self:custom.stage}/accounts/jwtPrivateKey~true}'
       JWT_PUBLIC_KEY: '${ssm:/aws/reference/secretsmanager/${self:custom.stage}/accounts/jwtPublicKey~true}'
-      HASHED_PASSWORD: ${ssm:/aws/reference/secretsmanager/${self:custom.stage}/accounts/hashedBasicAuthPassword~true}
+      BASIC_AUTH_USER: ${ssm:/aws/reference/secretsmanager/${self:custom.stage}/accounts/basicAuthUser~true}
+      HASHED_BASIC_AUTH_PASSWORD: ${ssm:/aws/reference/secretsmanager/${self:custom.stage}/accounts/hashedBasicAuthPassword~true}
+      SESSION_SECRET: '${ssm:/aws/reference/secretsmanager/${self:custom.stage}/accounts/sessionSecret~true}'
+      MYSQL_CONNECTION_STRING: '${ssm:/aws/reference/secretsmanager/${self:custom.stage}/accounts/mysqlConnectionString~true}'
+
+resources:
+  Resources:
+    GatewayResponse:
+      Type: 'AWS::ApiGateway::GatewayResponse'
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.WWW-Authenticate: "'Basic'"
+        ResponseType: UNAUTHORIZED
+        RestApiId:
+          Ref: 'ApiGatewayRestApi'
+        StatusCode: '401'

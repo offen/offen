@@ -5,6 +5,7 @@ type Database interface {
 	Insert(userID, accountID, payload string) error
 	Query(Query) (map[string][]EventResult, error)
 	GetAccount(accountID string, events bool, eventsSince string) (AccountResult, error)
+	CreateAccount(accountID, name string) error
 	GetDeletedEvents(ids []string, userID string) ([]string, error)
 	AssociateUserSecret(accountID, userID, encryptedUserSecret string) error
 	Purge(userID string) error
@@ -41,9 +42,8 @@ type SecretsByUserID map[string]string
 
 // AccountResult is the data returned from looking up an account by id
 type AccountResult struct {
-	Name               string             `json:"name"`
 	AccountID          string             `json:"accountId"`
-	PublicKey          interface{}        `json:"publicKey"`
+	PublicKey          interface{}        `json:"publicKey,omitempty"`
 	EncryptedSecretKey string             `json:"encryptedPrivateKey,omitempty"`
 	Events             *EventsByAccountID `json:"events,omitempty"`
 	UserSecrets        *SecretsByUserID   `json:"userSecrets,omitempty"`

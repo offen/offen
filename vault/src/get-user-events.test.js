@@ -61,7 +61,7 @@ describe('src/get-user-events', function () {
           assert(mockQueries.getAllEventIds.calledWith(null))
 
           assert(mockApi.getDeletedEvents.calledOnce)
-          assert(mockApi.getDeletedEvents.calledWith({ eventIds: ['a', 'b', 'c'] }))
+          assert(mockApi.getDeletedEvents.calledWith(['a', 'b', 'c']))
 
           assert(mockQueries.deleteEvents.calledOnce)
           assert(mockQueries.deleteEvents.calledWith(null, 'a'))

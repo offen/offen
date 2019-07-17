@@ -23,12 +23,19 @@ const ClaimsContextKey contextKey = "claims"
 // JWTProtect uses the public key located at the given URL to check if the
 // cookie value is signed properly. In case yes, the JWT claims will be added
 // to the request context
-func JWTProtect(keyURL, cookieName string) func(http.Handler) http.Handler {
+func JWTProtect(keyURL, cookieName, headerName string, authorizer func(*http.Request, map[string]interface{}) error) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			authCookie, err := r.Cookie(cookieName)
-			if err != nil {
-				RespondWithJSONError(w, fmt.Errorf("jwt: error reading cookie: %s", err), http.StatusForbidden)
+			var jwtValue string
+			if authCookie, err := r.Cookie(cookieName); err == nil {
+				jwtValue = authCookie.Value
+			} else {
+				if header := r.Header.Get(headerName); header != "" {
+					jwtValue = header
+				}
+			}
+			if jwtValue == "" {
+				RespondWithJSONError(w, errors.New("jwt: could not infer JWT value from cookie or header"), http.StatusForbidden)
 				return
 			}
 
@@ -56,7 +63,7 @@ func JWTProtect(keyURL, cookieName string) func(http.Handler) http.Handler {
 				return
 			}
 
-			token, jwtErr := jwt.ParseVerify(strings.NewReader(authCookie.Value), jwa.RS256, pubKey)
+			token, jwtErr := jwt.ParseVerify(strings.NewReader(jwtValue), jwa.RS256, pubKey)
 			if jwtErr != nil {
 				RespondWithJSONError(w, fmt.Errorf("jwt: error parsing token: %v", jwtErr), http.StatusForbidden)
 				return
@@ -67,9 +74,13 @@ func JWTProtect(keyURL, cookieName string) func(http.Handler) http.Handler {
 				return
 			}
 
-			privateClaims, _ := token.Get("priv")
-			r = r.WithContext(context.WithValue(r.Context(), ClaimsContextKey, privateClaims))
-
+			privKey, _ := token.Get("priv")
+			claims, _ := privKey.(map[string]interface{})
+			if err := authorizer(r, claims); err != nil {
+				RespondWithJSONError(w, fmt.Errorf("jwt: token claims do not allow the requested operation: %v", err), http.StatusForbidden)
+				return
+			}
+			r = r.WithContext(context.WithValue(r.Context(), ClaimsContextKey, claims))
 			next.ServeHTTP(w, r)
 		})
 	}

@@ -19,14 +19,14 @@ describe('stores/auth.js', function () {
 
       app.emitter.on(app.state.events.RENDER, function () {
         try {
-          assert.strictEqual(app.state.authenticated, true)
+          assert.deepStrictEqual(app.state.authenticatedUser, { userId: 'some-id' })
           done()
         } catch (err) {
           done(err)
         }
       })
 
-      app.emitter.emit('offen:login', null, null)
+      app.emitter.emit('offen:login', null)
     })
 
     it('redirects to the login page when existing auth is not present', function (done) {

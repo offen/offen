@@ -24,6 +24,14 @@ services:
     environment:
       POSTGRES_PASSWORD: develop
 
+  accounts_database:
+    image: mysql:5.7
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: mysql
+      MYSQL_ROOT_PASSWORD: develop
+
   server:
     build:
       context: '.'
@@ -31,6 +39,7 @@ services:
     working_dir: /offen/server
     volumes:
       - .:/offen
+      - ./bootstrap.yml:/offen/server/bootstrap.yml
       - serverdeps:/go/pkg/mod
     environment:
       POSTGRES_CONNECTION_STRING: postgres://postgres:develop@server_database:5432/postgres?sslmode=disable
@@ -100,16 +109,20 @@ services:
     working_dir: /offen/accounts
     volumes:
       - .:/offen
+      - ./bootstrap.yml:/offen/accounts/bootstrap.yml
       - accountdeps:/root/.local
     command: flask run --host 0.0.0.0
     ports:
       - 5000:5000
+    links:
+      - accounts_database
     environment:
-      FLASK_APP: accounts
+      FLASK_APP: accounts:app
       FLASK_ENV: development
+      MYSQL_CONNECTION_STRING: mysql+pymysql://root:develop@accounts_database:3306/mysql
       CORS_ORIGIN: http://localhost:9977
-      # local password is `develop`
-      HASHED_PASSWORD: JDJhJDEwJGpFRXJMOVVSQndZQlFQNjkxallkZi53aGp1cDMvRW5maGUvakZleG1pWFlnWEVXcU93ODBp
+      SERVER_HOST: http://server:8080
+      SESSION_SECRET: vndJRFJTiyjfgtTF
       JWT_PRIVATE_KEY: |-
         -----BEGIN PRIVATE KEY-----
         MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCa6AEl0RUW43YS

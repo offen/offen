@@ -5,6 +5,7 @@ import (
 
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/awslabs/aws-lambda-go-api-proxy/httpadapter"
+	"github.com/offen/offen/server/keys/remote"
 	"github.com/offen/offen/server/persistence/relational"
 	"github.com/offen/offen/server/router"
 	"github.com/sirupsen/logrus"
@@ -17,9 +18,12 @@ func init() {
 	logger.SetLevel(logrus.InfoLevel)
 
 	postgresConnectionString := os.Getenv("POSTGRES_CONNECTION_STRING")
+	encryptionEndpoint := os.Getenv("KMS_ENCRYPTION_ENDPOINT")
+	encrypter := remote.New(encryptionEndpoint)
+
 	db, err := relational.New(
-		relational.WithDialect("postgres"),
 		relational.WithConnectionString(postgresConnectionString),
+		relational.WithEncryption(encrypter),
 	)
 	if err != nil {
 		panic(err)

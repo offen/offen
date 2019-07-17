@@ -3,6 +3,7 @@ package http
 import (
 	"crypto/x509"
 	"encoding/pem"
+	"errors"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -62,13 +63,17 @@ func TestJWTProtect(t *testing.T) {
 	tests := []struct {
 		name               string
 		cookie             *http.Cookie
+		headers            *http.Header
 		server             *httptest.Server
+		authorizer         func(r *http.Request, claims map[string]interface{}) error
 		expectedStatusCode int
 	}{
 		{
 			"no cookie",
 			nil,
 			nil,
+			nil,
+			func(r *http.Request, claims map[string]interface{}) error { return nil },
 			http.StatusForbidden,
 		},
 		{
@@ -78,6 +83,8 @@ func TestJWTProtect(t *testing.T) {
 				Value: "irrelevantgibberish",
 			},
 			nil,
+			nil,
+			func(r *http.Request, claims map[string]interface{}) error { return nil },
 			http.StatusInternalServerError,
 		},
 		{
@@ -86,9 +93,11 @@ func TestJWTProtect(t *testing.T) {
 				Name:  "auth",
 				Value: "irrelevantgibberish",
 			},
+			nil,
 			httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				w.Write([]byte("here's some bytes 4 y'all"))
 			})),
+			func(r *http.Request, claims map[string]interface{}) error { return nil },
 			http.StatusInternalServerError,
 		},
 		{
@@ -97,9 +106,11 @@ func TestJWTProtect(t *testing.T) {
 				Name:  "auth",
 				Value: "irrelevantgibberish",
 			},
+			nil,
 			httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				w.Write([]byte(`{"key":"not really a key"}`))
 			})),
+			func(r *http.Request, claims map[string]interface{}) error { return nil },
 			http.StatusInternalServerError,
 		},
 		{
@@ -108,9 +119,11 @@ func TestJWTProtect(t *testing.T) {
 				Name:  "auth",
 				Value: "irrelevantgibberish",
 			},
+			nil,
 			httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				w.Write([]byte(`{"key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCATZAMIIBCgKCAQEA2yUfHH6SRYKvBTemrefi\nHk4L4qkcc4skl4QCaHOkfgA4VcGKG2nXysYuZK7AzNOcHQVi+e4BwN+BfIZtwEU5\n7Ogctb5eg8ksxxLjS7eSRfQIvPGfAbJ12R9OoOWcue/CdUy/YMec4R/o4+tZ45S6\nQQWIMhLqYljw+s1Runda3K8Q8lOdJ4yEZckXaZr1waNJikC7oGpT7ClAgdbvWIbo\nN18G1OluRn+3WNdcN6V+vIj8c9dGs92bgTPX4cn3RmB/80BDfzeFiPMRw5xaq66F\n42zXzllkTqukQPk2wmO5m9pFy0ciRve+awfgbTtZRZOEpTSWLbbpOfd4RQ5YqDWJ\nmQIDAQAB\n-----END PUBLIC KEY-----"}`))
 			})),
+			func(r *http.Request, claims map[string]interface{}) error { return nil },
 			http.StatusBadGateway,
 		},
 		{
@@ -119,11 +132,13 @@ func TestJWTProtect(t *testing.T) {
 				Name:  "auth",
 				Value: "irrelevantgibberish",
 			},
+			nil,
 			httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				w.Write([]byte(
 					fmt.Sprintf(`{"key":"%s"}`, strings.ReplaceAll(publicKey, "\n", `\n`)),
 				))
 			})),
+			func(r *http.Request, claims map[string]interface{}) error { return nil },
 			http.StatusForbidden,
 		},
 		{
@@ -139,12 +154,79 @@ func TestJWTProtect(t *testing.T) {
 					return string(b)
 				})(),
 			},
+			nil,
 			httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				w.Write([]byte(
 					fmt.Sprintf(`{"key":"%s"}`, strings.ReplaceAll(publicKey, "\n", `\n`)),
 				))
 			})),
+			func(r *http.Request, claims map[string]interface{}) error { return nil },
 			http.StatusOK,
+		},
+		{
+			"ok token in headers",
+			nil,
+			(func() *http.Header {
+				token := jwt.New()
+				token.Set("exp", time.Now().Add(time.Hour))
+				keyBytes, _ := pem.Decode([]byte(privateKey))
+				privKey, _ := x509.ParsePKCS8PrivateKey(keyBytes.Bytes)
+				b, _ := token.Sign(jwa.RS256, privKey)
+				return &http.Header{
+					"X-RPC-Authentication": []string{string(b)},
+				}
+			})(),
+			httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				w.Write([]byte(
+					fmt.Sprintf(`{"key":"%s"}`, strings.ReplaceAll(publicKey, "\n", `\n`)),
+				))
+			})),
+			func(r *http.Request, claims map[string]interface{}) error { return nil },
+			http.StatusOK,
+		},
+		{
+			"bad token in headers",
+			nil,
+			(func() *http.Header {
+				return &http.Header{
+					"X-RPC-Authentication": []string{"nilly willy"},
+				}
+			})(),
+			httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				w.Write([]byte(
+					fmt.Sprintf(`{"key":"%s"}`, strings.ReplaceAll(publicKey, "\n", `\n`)),
+				))
+			})),
+			func(r *http.Request, claims map[string]interface{}) error { return nil },
+			http.StatusForbidden,
+		},
+		{
+			"authorizer rejects",
+			&http.Cookie{
+				Name: "auth",
+				Value: (func() string {
+					token := jwt.New()
+					token.Set("exp", time.Now().Add(time.Hour))
+					token.Set("priv", map[string]interface{}{"ok": false})
+					keyBytes, _ := pem.Decode([]byte(privateKey))
+					privKey, _ := x509.ParsePKCS8PrivateKey(keyBytes.Bytes)
+					b, _ := token.Sign(jwa.RS256, privKey)
+					return string(b)
+				})(),
+			},
+			nil,
+			httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				w.Write([]byte(
+					fmt.Sprintf(`{"key":"%s"}`, strings.ReplaceAll(publicKey, "\n", `\n`)),
+				))
+			})),
+			func(r *http.Request, claims map[string]interface{}) error {
+				if claims["ok"] == true {
+					return nil
+				}
+				return errors.New("expected ok to be true")
+			},
+			http.StatusForbidden,
 		},
 		{
 			"valid key, expired token",
@@ -159,11 +241,13 @@ func TestJWTProtect(t *testing.T) {
 					return string(b)
 				})(),
 			},
+			nil,
 			httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				w.Write([]byte(
 					fmt.Sprintf(`{"key":"%s"}`, strings.ReplaceAll(publicKey, "\n", `\n`)),
 				))
 			})),
+			func(r *http.Request, claims map[string]interface{}) error { return nil },
 			http.StatusForbidden,
 		},
 	}
@@ -174,13 +258,18 @@ func TestJWTProtect(t *testing.T) {
 			if test.server != nil {
 				url = test.server.URL
 			}
-			wrappedHandler := JWTProtect(url, "auth")(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			wrappedHandler := JWTProtect(url, "auth", "X-RPC-Authentication", test.authorizer)(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				w.Write([]byte("OK"))
 			}))
 			w := httptest.NewRecorder()
 			r := httptest.NewRequest(http.MethodGet, "/", nil)
 			if test.cookie != nil {
 				r.AddCookie(test.cookie)
+			}
+			if test.headers != nil {
+				for key, value := range *test.headers {
+					r.Header.Add(key, value[0])
+				}
 			}
 			wrappedHandler.ServeHTTP(w, r)
 			if w.Code != test.expectedStatusCode {

@@ -31,10 +31,14 @@ describe('views/main.js', function () {
         ],
         loss: 0.1234,
         account: {
-          name: 'Test Account'
+          accountId: 'test'
         }
       }
-      app.state.authenticated = true
+      app.state.authenticatedUser = {
+        accounts: [
+          { accountId: 'test', name: 'Testing things' }
+        ]
+      }
       app.state.params = { accountId: 'test' }
 
       var result = mainView(app.state, app.emit)

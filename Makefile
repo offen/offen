@@ -20,5 +20,6 @@ setup:
 bootstrap:
 	@docker-compose run kms make bootstrap
 	@docker-compose run server make bootstrap
+	@docker-compose run accounts make bootstrap
 
 .PHONY: setup bootstrap

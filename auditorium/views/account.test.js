@@ -8,6 +8,10 @@ describe('views/account.js', function () {
   beforeEach(function () {
     app = choo()
     app.state.query = {}
+    app.state.authenticatedUser = {
+      userId: 'some-user-id',
+      accounts: ['a', 'b', 'c']
+    }
     app._setCache(app.state)
   })
 
