@@ -37,6 +37,8 @@ custom:
           value: max-age=0
         - name: Content-Type
           value: text/html
+        - name: Content-Security-Policy
+          value: default-src 'self' require-sri-for script
       '**/*.js':
         - name: Cache-Control
           value: max-age=31536000

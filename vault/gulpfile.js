@@ -6,6 +6,7 @@ var rev = require('gulp-rev')
 var runSequence = require('run-sequence')
 var buffer = require('vinyl-buffer')
 var revReplace = require('gulp-rev-replace')
+var sriHash = require('gulp-sri-hash')
 
 gulp.task('clean:pre', function () {
   return gulp
@@ -54,6 +55,8 @@ gulp.task('bundle:vendor', function () {
 gulp.task('revreplace', function () {
   return gulp.src('./index.html')
     .pipe(revReplace({ manifest: gulp.src('./dist/rev-manifest.json') }))
+    .pipe(gulp.dest('./dist/'))
+    .pipe(sriHash({ relative: true }))
     .pipe(gulp.dest('./dist/'))
 })
 
