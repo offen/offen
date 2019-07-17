@@ -61,6 +61,7 @@ functions:
       HASHED_BASIC_AUTH_PASSWORD: ${ssm:/aws/reference/secretsmanager/${self:custom.stage}/accounts/hashedBasicAuthPassword~true}
   app:
     handler: wsgi_handler.handler
+    timeout: 30
     events:
       - http:
           path: /admin/
