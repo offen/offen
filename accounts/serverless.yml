@@ -85,7 +85,7 @@ functions:
     environment:
       CORS_ORIGIN: https://${self:custom.origin.${self:custom.stage}}
       COOKIE_DOMAIN: ${self:custom.cookieDomain.${self:custom.stage}}
-      SERVER_URL: ${self:custom.serverHost.${self:custom.stage}}
+      SERVER_HOST: ${self:custom.serverHost.${self:custom.stage}}
       JWT_PRIVATE_KEY: '${ssm:/aws/reference/secretsmanager/${self:custom.stage}/accounts/jwtPrivateKey~true}'
       JWT_PUBLIC_KEY: '${ssm:/aws/reference/secretsmanager/${self:custom.stage}/accounts/jwtPublicKey~true}'
       BASIC_AUTH_USER: ${ssm:/aws/reference/secretsmanager/${self:custom.stage}/accounts/basicAuthUser~true}
