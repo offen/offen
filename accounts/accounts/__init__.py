@@ -15,7 +15,7 @@ import accounts.api
 
 app.config["FLASK_ADMIN_SWATCH"] = "flatly"
 
-admin = Admin(app, name="offen admin", template_mode="bootstrap3")
+admin = Admin(app, name="offen admin", template_mode="bootstrap3", base_template="index.html")
 
 admin.add_view(AccountView(Account, db.session))
 admin.add_view(UserView(User, db.session))
