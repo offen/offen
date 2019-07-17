@@ -32,6 +32,10 @@ custom:
     production: vault.offen.dev
     staging: vault-staging.offen.dev
     alpha: vault-alpha.offen.dev
+  encryptionEndpoint:
+    production: https://kms.offen.dev/encrypt
+    staging: https://kms-staging.offen.dev/encrypt
+    alpha: https://kms-alpha.offen.dev/encrypt
   optoutCookieDomain:
     production: .offen.dev
     staging: .offen.dev
@@ -62,6 +66,7 @@ functions:
       SECURE_COOKIE: 1
       OPTOUT_COOKIE_DOMAIN: ${self:custom.optoutCookieDomain.${self:custom.stage}}
       CORS_ORIGIN: https://${self:custom.origin.${self:custom.stage}}
+      KMS_ENCRYPTION_ENDPOINT: ${self:custom.encryptionEndpoint.${self:custom.stage}}
       POSTGRES_CONNECTION_STRING: ${ssm:/aws/reference/secretsmanager/${self:custom.stage}/server/postgresConnectionString~true}
     events:
       - http:
