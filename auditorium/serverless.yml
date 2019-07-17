@@ -104,7 +104,7 @@ resources:
           DefaultRootObject: index.html
           DefaultCacheBehavior:
             LambdaFunctionAssociations:
-              - EventType: 'viewer-request'
+              - EventType: 'viewer-response'
                 LambdaFunctionARN: ${ssm:/aws/reference/secretsmanager/${self:custom.stage}/all/securityHeadersLambdaARN~true}
             Compress: true
             AllowedMethods:
