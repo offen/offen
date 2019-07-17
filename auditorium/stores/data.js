@@ -61,6 +61,10 @@ function store (state, emitter) {
         : null
     })
   })
+
+  emitter.on(state.events.NAVIGATE, function () {
+    delete state.model
+  })
 }
 
 store.storeName = 'data'
