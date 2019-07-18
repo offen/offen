@@ -28,8 +28,6 @@ function view (state, emit) {
 
   var isOperator = !!(state.params && state.params.accountId)
 
-  var numDays = parseInt(state.query.num_days, 10) || 7
-
   var accountHeader = null
   var pageTitle
   if (isOperator) {
@@ -44,7 +42,6 @@ function view (state, emit) {
     }
     accountHeader = html`
       <h3><strong>You are viewing data as</strong> operator <strong>with account</strong> ${matchingAccount.name}.</h3>
-      <h3><strong>This is the data collected over the last </strong> ${numDays} days.</h3>
     `
     pageTitle = matchingAccount.name + ' | ' + state.title
   } else {
@@ -52,11 +49,33 @@ function view (state, emit) {
       <h3><strong>You are viewing data as</strong> user.</h3>
       ${state.model.hasOptedOut ? html`<h3><strong>You have opted out. Clear your cookies to opt in.</strong></h3>` : null}
       ${state.model.allowsCookies ? null : html`<h3><strong>Your browser does not allow 3rd party cookies. We respect this setting and collect only very basic data in this case, yet it also means we cannot display any data to you here.</strong></h3>`}
-      <h3><strong>This is your data collected over the last</strong> ${numDays} days <strong>across all sites.</strong></h3>
     `
     pageTitle = 'user | ' + state.title
   }
   emit(state.events.DOMTITLECHANGE, pageTitle)
+
+  var ranges = [
+    { display: 'last 7 days', query: null },
+    { display: 'last 28 days', query: { range: '28', resolution: 'days' } },
+    { display: 'last 6 weeks', query: { range: '6', resolution: 'weeks' } },
+    { display: 'last 12 weeks', query: { range: '12', resolution: 'weeks' } }
+  ].map(function (range) {
+    var url = state.href || '/'
+    var current = _.pick(state.query, ['range', 'resolution'])
+    var active = _.isEqual(current, range.query || {})
+    var foreign = _.omit(state.query, ['range', 'resolution'])
+    if (range.query || Object.keys(foreign).length) {
+      url += '?' + new window.URLSearchParams(Object.assign(foreign, range.query))
+    }
+    return html`
+      <li class="${active ? 'active' : null}">
+        <a href="${url}">${range.display}</a>
+      </li>
+    `
+  })
+  var rangeSelector = html`
+    <h4>Show data from the: <ul class="range-selector">${ranges}</ul></h4>
+  `
 
   var uniqueEntities = isOperator
     ? state.model.uniqueUsers
@@ -74,38 +93,14 @@ function view (state, emit) {
     </div>
   `
 
-  var ranges = [
-    { display: 'last 7 days', query: null },
-    { display: 'last 28 days', query: { range: '28', resolution: 'days' } },
-    { display: 'last 6 weeks', query: { range: '6', resolution: 'weeks' } },
-    { display: 'last 12 weeks', query: { range: '12', resolution: 'weeks' } }
-  ].map(function (range) {
-    var url = state.href
-    var current = _.pick(state.query, ['range', 'resolution'])
-    var active = _.isEqual(current, range.query || {})
-    var foreign = _.omit(state.query, ['range', 'resolution'])
-    if (range.query || Object.keys(foreign).length) {
-      url += '?' + new window.URLSearchParams(Object.assign(foreign, range.query))
-    }
-    return html`
-      <li class="${active ? 'active' : null}">
-        <a href="${url}">${range.display}</a>
-      </li>
-    `
-  })
-
   var chartData = {
     data: state.model.pageviews,
     isOperator: isOperator,
     resolution: state.model.resolution
   }
   var chart = html`
-    <h4>Pageviews and ${isOperator ? 'Visitors' : 'Accounts'} in the:
-      <ul class="range-selector">
-        ${ranges}
-      </ul>
-      ${state.cache(BarChart, 'bar-chart').render(chartData)}
-    </h4>
+    <h4>Pageviews and ${isOperator ? 'Visitors' : 'Accounts'}</h4>
+    ${state.cache(BarChart, 'bar-chart').render(chartData)}
   `
   var pagesData = state.model.pages
     .map(function (row) {
@@ -181,7 +176,7 @@ function view (state, emit) {
     `
     : null
 
-  var withSeparators = [accountHeader, usersAndSessions, chart, pages, referrers, manage]
+  var withSeparators = [accountHeader, rangeSelector, usersAndSessions, chart, pages, referrers, manage]
     .filter(function (el) {
       return el
     })
