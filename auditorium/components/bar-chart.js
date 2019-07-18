@@ -3,6 +3,7 @@ var Component = require('choo/component')
 var Plotly = require('plotly.js-basic-dist')
 var isFirstDayOfMonth = require('date-fns/is_first_day_of_month')
 var isWeekend = require('date-fns/is_weekend')
+var getISOWeek = require('date-fns/get_iso_week')
 
 module.exports = BarChart
 
@@ -31,8 +32,7 @@ BarChart.prototype.update = function (update) {
 
 BarChart.prototype.createElement = function (params) {
   params = params || {}
-  this.local.data = params.data
-  this.local.isOperator = params.isOperator
+  Object.assign(this.local, params)
   return html`
     <div class="chart"></div>
   `
@@ -50,6 +50,9 @@ BarChart.prototype.getChartData = function () {
   })
   var text = x.map(function (value, index) {
     var date = new Date(value)
+    if (self.local.resolution === 'weeks') {
+      return 'W' + getISOWeek(date)
+    }
     var result = date.toLocaleDateString(undefined, { day: 'numeric' })
     if (index === 0 || isFirstDayOfMonth(date)) {
       result = date.toLocaleDateString(undefined, { month: 'short' }) + ' ' + result

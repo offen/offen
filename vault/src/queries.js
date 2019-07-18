@@ -1,8 +1,11 @@
 var _ = require('underscore')
 var Dexie = require('dexie')
 var startOfDay = require('date-fns/start_of_day')
+var startOfWeek = require('date-fns/start_of_week')
 var endOfDay = require('date-fns/end_of_day')
-var addDays = require('date-fns/add_days')
+var endOfWeek = require('date-fns/end_of_week')
+var subDays = require('date-fns/sub_days')
+var subWeeks = require('date-fns/sub_weeks')
 
 var getDatabase = require('./database')
 
@@ -19,17 +22,28 @@ function getDefaultStatsWith (getDatabase) {
     var db = getDatabase(accountId)
     var table = db.events
 
-    var numDays = (query && query.numDays) || 7
+    var range = (query && query.range) || 7
+    var resolution = (query && query.resolution) || 'days'
     var now = new Date()
-    var beginning = startOfDay(addDays(now, -(numDays - 1)))
+    var useWeeks = resolution === 'weeks'
+
+    var beginning = useWeeks
+      ? startOfWeek(subWeeks(now, range - 1))
+      : startOfDay(subDays(now, range - 1))
     var lowerBound = beginning.toJSON()
     var upperBound = now.toJSON()
 
-    var pageviews = Promise.all(Array.from({ length: numDays })
+    var pageviews = Promise.all(Array.from({ length: range })
       .map(function (num, distance) {
-        var date = addDays(now, -distance)
-        var lowerBound = startOfDay(date).toJSON()
-        var upperBound = endOfDay(date).toJSON()
+        var date = useWeeks
+          ? subWeeks(now, distance)
+          : subDays(now, distance)
+        var lowerBound = useWeeks
+          ? startOfWeek(date).toJSON()
+          : startOfDay(date).toJSON()
+        var upperBound = useWeeks
+          ? endOfWeek(date).toJSON()
+          : endOfDay(date).toJSON()
 
         var pageviews = table
           .where(['payload.timestamp+userId'])
@@ -197,7 +211,9 @@ function getDefaultStatsWith (getDatabase) {
           pages: results[4],
           pageviews: results[5],
           bounceRate: results[6],
-          loss: results[7]
+          loss: results[7],
+          resolution: resolution,
+          range: range
         }
       })
   }

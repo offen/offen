@@ -29,7 +29,8 @@ describe('src/queries.js', function () {
               Object.keys(data),
               [
                 'uniqueUsers', 'uniqueAccounts', 'uniqueSessions',
-                'referrers', 'pages', 'pageviews', 'bounceRate', 'loss'
+                'referrers', 'pages', 'pageviews', 'bounceRate', 'loss',
+                'resolution', 'range'
               ]
             )
             assert.strictEqual(data.uniqueUsers, 0)
@@ -50,7 +51,7 @@ describe('src/queries.js', function () {
       })
 
       it('handles queries correctly', function () {
-        return getDefaultStats('test-account', { numDays: 12 })
+        return getDefaultStats('test-account', { range: 12, resolution: 'weeks' })
           .then(function (data) {
             assert.strictEqual(data.pageviews.length, 12)
           })
@@ -188,7 +189,8 @@ describe('src/queries.js', function () {
               Object.keys(data),
               [
                 'uniqueUsers', 'uniqueAccounts', 'uniqueSessions',
-                'referrers', 'pages', 'pageviews', 'bounceRate', 'loss'
+                'referrers', 'pages', 'pageviews', 'bounceRate', 'loss',
+                'resolution', 'range'
               ]
             )
 
