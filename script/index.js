@@ -18,7 +18,7 @@ function collectPageview () {
 
 checkSupport(function (err) {
   if (err) {
-    console.log('"offen" does not support this site, or you have opted out: ' + err.message)
+    console.log('"offen" does not support this site: ' + err.message)
     console.log('No data will be collected. Find out more at "https://www.offen.dev".')
     return
   }
