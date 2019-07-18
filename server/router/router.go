@@ -60,6 +60,7 @@ func (rt *router) optoutCookie(optout bool) *http.Cookie {
 		// this cookie is supposed to be read by the client so it can
 		// stop operating before even sending requests
 		HttpOnly: false,
+		SameSite: http.SameSiteDefaultMode,
 	}
 	if !optout {
 		c.Expires = time.Unix(0, 0)
