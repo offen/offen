@@ -182,7 +182,7 @@ describe('src/queries.js', function () {
         ])
       })
 
-      it('calculates stats correctly', function () {
+      it('calculates stats correctly using defaults', function () {
         return getDefaultStats('test-account')
           .then(function (data) {
             assert.deepStrictEqual(
@@ -215,6 +215,38 @@ describe('src/queries.js', function () {
             assert.strictEqual(data.pageviews[3].accounts, 0)
             assert.strictEqual(data.pageviews[3].pageviews, 0)
             assert.strictEqual(data.pageviews[3].visitors, 0)
+
+            assert.strictEqual(data.bounceRate, 0.75)
+
+            assert.strictEqual(data.loss, 2 / 7)
+          })
+      })
+
+      it('calculates stats correctly with a non-default query', function () {
+        return getDefaultStats('test-account', { range: 2, resolution: 'weeks' })
+          .then(function (data) {
+            assert.deepStrictEqual(
+              Object.keys(data),
+              [
+                'uniqueUsers', 'uniqueAccounts', 'uniqueSessions',
+                'referrers', 'pages', 'pageviews', 'bounceRate', 'loss',
+                'resolution', 'range'
+              ]
+            )
+
+            assert.strictEqual(data.uniqueUsers, 2)
+            assert.strictEqual(data.uniqueAccounts, 2)
+            assert.strictEqual(data.uniqueSessions, 4)
+            assert.strictEqual(data.pages.length, 4)
+            assert.strictEqual(data.referrers.length, 1)
+
+            assert.strictEqual(data.pageviews[1].accounts, 2)
+            assert.strictEqual(data.pageviews[1].pageviews, 5)
+            assert.strictEqual(data.pageviews[1].visitors, 2)
+
+            assert.strictEqual(data.pageviews[0].accounts, 0)
+            assert.strictEqual(data.pageviews[0].pageviews, 0)
+            assert.strictEqual(data.pageviews[0].visitors, 0)
 
             assert.strictEqual(data.bounceRate, 0.75)
 
