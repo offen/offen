@@ -1,3 +1,5 @@
+var historyEvents = require('history-events')
+
 var checkSupport = require('./src/check-support')
 var bootstrap = require('./src/bootstrap')
 
@@ -5,16 +7,21 @@ var bootstrap = require('./src/bootstrap')
 // again
 var accountId = document.currentScript && document.currentScript.dataset.accountId
 
-checkSupport(function (err) {
-  if (err) {
-    console.log('"offen" does not support this site, or the user has opted out: ' + err.message)
-    console.log('No data will be collected. Find out more at "https://www.offen.dev".')
-    return
-  }
+function collectPageview () {
   bootstrap(process.env.VAULT_HOST, accountId)
     .catch(function (err) {
       if (process.env.NODE_ENV !== 'production') {
         console.error(err)
       }
     })
+}
+
+checkSupport(function (err) {
+  if (err) {
+    console.log('"offen" does not support this site, or you have opted out: ' + err.message)
+    console.log('No data will be collected. Find out more at "https://www.offen.dev".')
+    return
+  }
+  historyEvents.addEventListener(window, 'changestate', collectPageview)
+  collectPageview()
 })
