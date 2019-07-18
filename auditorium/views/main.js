@@ -74,13 +74,38 @@ function view (state, emit) {
     </div>
   `
 
+  var ranges = [
+    { display: 'last 7 days', query: null },
+    { display: 'last 28 days', query: { range: '28', resolution: 'days' } },
+    { display: 'last 6 weeks', query: { range: '6', resolution: 'weeks' } },
+    { display: 'last 12 weeks', query: { range: '12', resolution: 'weeks' } }
+  ].map(function (range) {
+    var url = state.href
+    var current = _.pick(state.query, ['range', 'resolution'])
+    var active = _.isEqual(current, range.query || {})
+    var foreign = _.omit(state.query, ['range', 'resolution'])
+    if (range.query || Object.keys(foreign).length) {
+      url += '?' + new window.URLSearchParams(Object.assign(foreign, range.query))
+    }
+    return html`
+      <li class="${active ? 'active' : null}">
+        <a href="${url}">${range.display}</a>
+      </li>
+    `
+  })
+
   var chartData = {
     data: state.model.pageviews,
-    isOperator: isOperator
+    isOperator: isOperator,
+    resolution: state.model.resolution
   }
   var chart = html`
-    <h4>Pageviews and ${isOperator ? 'Visitors' : 'Accounts'}</h4>
-    ${state.cache(BarChart, 'bar-chart').render(chartData)}
+    <h4>Pageviews and ${isOperator ? 'Visitors' : 'Accounts'} in the:
+      <ul class="range-selector">
+        ${ranges}
+      </ul>
+      ${state.cache(BarChart, 'bar-chart').render(chartData)}
+    </h4>
   `
   var pagesData = state.model.pages
     .map(function (row) {

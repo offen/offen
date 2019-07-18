@@ -347,6 +347,27 @@ padding-right: 30px;
 }
 
 
+/* Range selector
+------------------------------------------------------------- */
+.range-selector {
+list-style-type: none;
+margin: 0 0 0 0em;
+padding: 0;
+display: inline-block;
+}
+
+.range-selector li {
+display: inline-flex;
+margin-right: 0.5em;
+}
+
+.range-selector a {
+font-weight: 400;
+}
+
+.range-selector li.active a {
+color: #404040;
+}
 
 
 /* Footer
