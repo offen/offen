@@ -15,6 +15,7 @@
     "build": "browserify index.js -p tinyify > dist/script.js"
   },
   "dependencies": {
+    "history-events": "^1.0.4",
     "offen": "file:./../packages"
   },
   "devDependencies": {
