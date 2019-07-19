@@ -11,6 +11,16 @@ boto_client = session.client(
     service_name="secretsmanager", region_name=environ.get("AWS_REGION")
 )
 
+
+def get_secret(boto_client, secret_name):
+    ssm_response = boto_client.get_secret_value(
+        SecretId="{}/accounts/{}".format(environ.get("STAGE"), secret_name)
+    )
+    if "SecretString" in ssm_response:
+        return ssm_response["SecretString"]
+    return base64.b64decode(ssm_response["SecretBinary"])
+
+
 basic_auth_user = get_secret(boto_client, "basicAuthUser")
 hashed_basic_auth_password = get_secret(boto_client, "hashedBasicAuthPassword")
 
@@ -47,15 +57,6 @@ def build_response(api_arn, allow):
             ],
         },
     }
-
-
-def get_secret(secret_name):
-    ssm_response = boto_client.get_secret_value(
-        SecretId="{}/accounts/{}".format(environ.get("STAGE"), secret_name)
-    )
-    if "SecretString" in ssm_response:
-        return ssm_response["SecretString"]
-    return base64.b64decode(ssm_response["SecretBinary"])
 
 
 def handler(event, context):
