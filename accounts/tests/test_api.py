@@ -1,7 +1,6 @@
 import unittest
 import json
 import base64
-from json import loads
 from time import time
 from datetime import datetime, timedelta
 from os import environ
@@ -55,7 +54,7 @@ class TestKey(unittest.TestCase):
     def test_get_key(self):
         rv = self.app.get("/api/key")
         assert rv.status.startswith("200")
-        data = loads(rv.data)
+        data = json.loads(rv.data)
         assert data["key"] == environ.get("JWT_PUBLIC_KEY")
 
 
@@ -132,7 +131,7 @@ class TestJWT(unittest.TestCase):
         # PyJWT strips the padding from the base64 encoded parts which Python
         # cannot decode properly, so we need to add the padding ourselves
         claims_part = _pad_b64_string(jwt.split(".")[1])
-        claims = loads(base64.b64decode(claims_part))
+        claims = json.loads(base64.b64decode(claims_part))
         assert claims.get("exp") > time()
 
         priv = claims.get("priv")

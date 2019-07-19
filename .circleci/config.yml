@@ -198,6 +198,7 @@ jobs:
     docker:
       - image: circleci/python:3.6
         environment:
+          CONFIG_CLASS: accounts.config.EnvConfig
           MYSQL_CONNECTION_STRING: mysql://root:circle@127.0.0.1:3306/circle
           JWT_PRIVATE_KEY: |-
             -----BEGIN PRIVATE KEY-----

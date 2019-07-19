@@ -1,5 +1,4 @@
 from datetime import datetime, timedelta
-from os import environ
 
 import requests
 from flask_admin.contrib.sqla import ModelView
@@ -8,7 +7,7 @@ from wtforms.validators import InputRequired, EqualTo
 from passlib.hash import bcrypt
 import jwt
 
-from accounts import db
+from accounts import db, app
 from accounts.models import AccountUserAssociation
 
 
@@ -22,18 +21,17 @@ class RemoteServerException(Exception):
 
 
 def create_remote_account(name, account_id):
-    private_key = environ.get("JWT_PRIVATE_KEY", "")
     # expires in 30 seconds as this will mean the HTTP request would have
     # timed out anyways
     expiry = datetime.utcnow() + timedelta(seconds=30)
     encoded = jwt.encode(
         {"ok": True, "exp": expiry, "priv": {"rpc": "1"}},
-        private_key.encode(),
+        app.config["JWT_PRIVATE_KEY"].encode(),
         algorithm="RS256",
     ).decode("utf-8")
 
     r = requests.post(
-        "{}/accounts".format(environ.get("SERVER_HOST")),
+        "{}/accounts".format(app.config["SERVER_HOST"]),
         json={"name": name, "accountId": account_id},
         headers={"X-RPC-Authentication": encoded},
     )

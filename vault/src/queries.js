@@ -28,7 +28,7 @@ function getDefaultStatsWith (getDatabase) {
     var useWeeks = resolution === 'weeks'
 
     var beginning = useWeeks
-      ? startOfWeek(subWeeks(now, range - 1))
+      ? startOfWeek(subWeeks(now, range - 1), { weekStartsOn: 1 })
       : startOfDay(subDays(now, range - 1))
     var lowerBound = beginning.toJSON()
     var upperBound = now.toJSON()
@@ -39,10 +39,10 @@ function getDefaultStatsWith (getDatabase) {
           ? subWeeks(now, distance)
           : subDays(now, distance)
         var lowerBound = useWeeks
-          ? startOfWeek(date).toJSON()
+          ? startOfWeek(date, { weekStartsOn: 1 }).toJSON()
           : startOfDay(date).toJSON()
         var upperBound = useWeeks
-          ? endOfWeek(date).toJSON()
+          ? endOfWeek(date, { weekStartsOn: 1 }).toJSON()
           : endOfDay(date).toJSON()
 
         var pageviews = table
