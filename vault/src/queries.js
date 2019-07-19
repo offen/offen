@@ -8,6 +8,7 @@ var subDays = require('date-fns/sub_days')
 var subWeeks = require('date-fns/sub_weeks')
 
 var getDatabase = require('./database')
+var mapToBuckets = require('./buckets')
 
 exports.getDefaultStats = getDefaultStatsWith(getDatabase)
 exports.getDefaultStatsWith = getDefaultStatsWith
@@ -148,6 +149,7 @@ function getDefaultStatsWith (getDatabase) {
           .filter(function (referrerValue) {
             return referrerValue
           })
+          .map(mapToBuckets)
           .reduce(function (acc, referrerValue) {
             acc[referrerValue] = acc[referrerValue] || 0
             acc[referrerValue]++
