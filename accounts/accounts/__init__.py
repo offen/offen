@@ -3,10 +3,13 @@ from os import environ
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_admin import Admin
+from werkzeug.utils import import_string
 
 
 app = Flask(__name__)
-app.config.from_object(environ.get("CONFIG_CLASS"))
+
+cfg = import_string(environ.get("CONFIG_CLASS"))()
+app.config.from_object(cfg)
 
 db = SQLAlchemy(app)
 

@@ -39,38 +39,31 @@ func JWTProtect(keyURL, cookieName, headerName string, authorizer func(*http.Req
 				return
 			}
 
-			keyRes, keyErr := fetchKey(keyURL)
-			if keyErr != nil {
-				RespondWithJSONError(w, fmt.Errorf("jwt: error fetching key: %v", keyErr), http.StatusInternalServerError)
+			keys, keysErr := fetchKeys(keyURL)
+			if keysErr != nil {
+				RespondWithJSONError(w, fmt.Errorf("jwt: error fetching keys: %v", keysErr), http.StatusInternalServerError)
 				return
 			}
 
-			keyBytes, _ := pem.Decode([]byte(keyRes))
-			if keyBytes == nil {
-				RespondWithJSONError(w, errors.New("jwt: no PEM block found in given key"), http.StatusInternalServerError)
-				return
+			var token *jwt.Token
+			var tokenErr error
+			// the response can contain multiple keys to try as some of them
+			// might have been retired with signed tokens still in use until
+			// their expiry
+			for _, key := range keys {
+				token, tokenErr = tryParse(key, jwtValue)
+				if tokenErr == nil {
+					break
+				}
 			}
 
-			parseResult, parseErr := x509.ParsePKIXPublicKey(keyBytes.Bytes)
-			if parseErr != nil {
-				RespondWithJSONError(w, fmt.Errorf("jwt: error parsing key: %v", parseErr), http.StatusBadGateway)
-				return
-			}
-
-			pubKey, pubKeyOk := parseResult.(*rsa.PublicKey)
-			if !pubKeyOk {
-				RespondWithJSONError(w, errors.New("jwt: given key is not of type RSA public key"), http.StatusInternalServerError)
-				return
-			}
-
-			token, jwtErr := jwt.ParseVerify(strings.NewReader(jwtValue), jwa.RS256, pubKey)
-			if jwtErr != nil {
-				RespondWithJSONError(w, fmt.Errorf("jwt: error parsing token: %v", jwtErr), http.StatusForbidden)
+			if tokenErr != nil {
+				RespondWithJSONError(w, fmt.Errorf("jwt: error verifying token signature: %v", tokenErr), http.StatusForbidden)
 				return
 			}
 
 			if err := token.Verify(jwt.WithAcceptableSkew(0)); err != nil {
-				RespondWithJSONError(w, fmt.Errorf("jwt: error verifying token: %v", err), http.StatusForbidden)
+				RespondWithJSONError(w, fmt.Errorf("jwt: error verifying token claims: %v", err), http.StatusForbidden)
 				return
 			}
 
@@ -86,11 +79,34 @@ func JWTProtect(keyURL, cookieName, headerName string, authorizer func(*http.Req
 	}
 }
 
-type keyResponse struct {
-	Key string `json:"key"`
+func tryParse(key []byte, tokenValue string) (*jwt.Token, error) {
+	keyBytes, _ := pem.Decode([]byte(key))
+	if keyBytes == nil {
+		return nil, errors.New("jwt: no PEM block found in given key")
+	}
+
+	parseResult, parseErr := x509.ParsePKIXPublicKey(keyBytes.Bytes)
+	if parseErr != nil {
+		return nil, fmt.Errorf("jwt: error parsing key: %v", parseErr)
+	}
+
+	pubKey, pubKeyOk := parseResult.(*rsa.PublicKey)
+	if !pubKeyOk {
+		return nil, errors.New("jwt: given key is not of type RSA public key")
+	}
+
+	token, jwtErr := jwt.ParseVerify(strings.NewReader(tokenValue), jwa.RS256, pubKey)
+	if jwtErr != nil {
+		return nil, fmt.Errorf("jwt: error parsing token: %v", jwtErr)
+	}
+	return token, nil
 }
 
-func fetchKey(keyURL string) ([]byte, error) {
+type keyResponse struct {
+	Keys []string `json:"keys"`
+}
+
+func fetchKeys(keyURL string) ([][]byte, error) {
 	fetchRes, fetchErr := http.Get(keyURL)
 	if fetchErr != nil {
 		return nil, fetchErr
@@ -100,5 +116,10 @@ func fetchKey(keyURL string) ([]byte, error) {
 	if err := json.NewDecoder(fetchRes.Body).Decode(&payload); err != nil {
 		return nil, err
 	}
-	return []byte(payload.Key), nil
+
+	asBytes := [][]byte{}
+	for _, key := range payload.Keys {
+		asBytes = append(asBytes, []byte(key))
+	}
+	return asBytes, nil
 }

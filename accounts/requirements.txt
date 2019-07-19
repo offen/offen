@@ -9,3 +9,4 @@ bcrypt==3.1.7
 PyMySQL==0.9.3
 mysqlclient==1.4.2.post1
 requests==2.22.0
+cryptography==2.7

@@ -23,9 +23,9 @@ plugins:
 custom:
   stage: ${opt:stage, self:provider.stage}
   origin:
-    production: vault.offen.dev
-    staging: vault-staging.offen.dev
-    alpha: vault-alpha.offen.dev
+    production: https://vault.offen.dev
+    staging: https://vault-staging.offen.dev
+    alpha: https://vault-alpha.offen.dev
   serverHost:
     production: https://server.offen.dev
     staging: https://server-staging.offen.dev
@@ -55,10 +55,13 @@ custom:
 
 functions:
   authorizer:
-    handler: authorizer.handler
+    handler: lambdas.authorizer.handler
     environment:
-      BASIC_AUTH_USER: ${ssm:/aws/reference/secretsmanager/${self:custom.stage}/accounts/basicAuthUser~true}
-      HASHED_BASIC_AUTH_PASSWORD: ${ssm:/aws/reference/secretsmanager/${self:custom.stage}/accounts/hashedBasicAuthPassword~true}
+      STAGE: ${self:custom.stage}
+  rotateKeys:
+    handler: lambdas.rotate_keys.handler
+    environment:
+      STAGE: ${self:custom.stage}
   app:
     handler: wsgi_handler.handler
     timeout: 30
@@ -84,16 +87,11 @@ functions:
           path: '/{proxy+}'
           method: any
     environment:
-      CONFIG_CLASS: accounts.config.EnvConfig
-      CORS_ORIGIN: https://${self:custom.origin.${self:custom.stage}}
+      CONFIG_CLASS: accounts.config.SecretsManagerConfig
+      STAGE: ${self:custom.stage}
+      CORS_ORIGIN: ${self:custom.origin.${self:custom.stage}}
       COOKIE_DOMAIN: ${self:custom.cookieDomain.${self:custom.stage}}
       SERVER_HOST: ${self:custom.serverHost.${self:custom.stage}}
-      JWT_PRIVATE_KEY: '${ssm:/aws/reference/secretsmanager/${self:custom.stage}/accounts/jwtPrivateKey~true}'
-      JWT_PUBLIC_KEY: '${ssm:/aws/reference/secretsmanager/${self:custom.stage}/accounts/jwtPublicKey~true}'
-      BASIC_AUTH_USER: ${ssm:/aws/reference/secretsmanager/${self:custom.stage}/accounts/basicAuthUser~true}
-      HASHED_BASIC_AUTH_PASSWORD: ${ssm:/aws/reference/secretsmanager/${self:custom.stage}/accounts/hashedBasicAuthPassword~true}
-      SESSION_SECRET: '${ssm:/aws/reference/secretsmanager/${self:custom.stage}/accounts/sessionSecret~true}'
-      MYSQL_CONNECTION_STRING: '${ssm:/aws/reference/secretsmanager/${self:custom.stage}/accounts/mysqlConnectionString~true}'
 
 resources:
   Resources:

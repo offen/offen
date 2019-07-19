@@ -1,7 +1,18 @@
 import base64
 from os import environ
 
+import boto3
+from botocore.exceptions import ClientError
 from passlib.hash import bcrypt
+
+
+session = boto3.session.Session()
+boto_client = session.client(
+    service_name="secretsmanager", region_name=environ.get("AWS_REGION")
+)
+
+basic_auth_user = get_secret(boto_client, "basicAuthUser")
+hashed_basic_auth_password = get_secret(boto_client, "hashedBasicAuthPassword")
 
 
 def build_api_arn(method_arn):
@@ -38,6 +49,15 @@ def build_response(api_arn, allow):
     }
 
 
+def get_secret(secret_name):
+    ssm_response = boto_client.get_secret_value(
+        SecretId="{}/accounts/{}".format(environ.get("STAGE"), secret_name)
+    )
+    if "SecretString" in ssm_response:
+        return ssm_response["SecretString"]
+    return base64.b64decode(ssm_response["SecretBinary"])
+
+
 def handler(event, context):
     api_arn = build_api_arn(event["methodArn"])
 
@@ -50,11 +70,10 @@ def handler(event, context):
     user = credentials[0]
     password = credentials[1]
 
-    if user != environ.get("BASIC_AUTH_USER"):
+    if user != basic_auth_user:
         return build_response(api_arn, False)
 
-    hashed_password = environ.get("HASHED_BASIC_AUTH_PASSWORD")
-    if not bcrypt.verify(password, hashed_password):
+    if not bcrypt.verify(password, hashed_basic_auth_password):
         return build_response(api_arn, False)
 
     return build_response(api_arn, True)

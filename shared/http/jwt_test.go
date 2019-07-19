@@ -108,10 +108,10 @@ func TestJWTProtect(t *testing.T) {
 			},
 			nil,
 			httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-				w.Write([]byte(`{"key":"not really a key"}`))
+				w.Write([]byte(`{"keys":["not really a key","me neither"]}`))
 			})),
 			func(r *http.Request, claims map[string]interface{}) error { return nil },
-			http.StatusInternalServerError,
+			http.StatusForbidden,
 		},
 		{
 			"invalid key",
@@ -121,10 +121,10 @@ func TestJWTProtect(t *testing.T) {
 			},
 			nil,
 			httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-				w.Write([]byte(`{"key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCATZAMIIBCgKCAQEA2yUfHH6SRYKvBTemrefi\nHk4L4qkcc4skl4QCaHOkfgA4VcGKG2nXysYuZK7AzNOcHQVi+e4BwN+BfIZtwEU5\n7Ogctb5eg8ksxxLjS7eSRfQIvPGfAbJ12R9OoOWcue/CdUy/YMec4R/o4+tZ45S6\nQQWIMhLqYljw+s1Runda3K8Q8lOdJ4yEZckXaZr1waNJikC7oGpT7ClAgdbvWIbo\nN18G1OluRn+3WNdcN6V+vIj8c9dGs92bgTPX4cn3RmB/80BDfzeFiPMRw5xaq66F\n42zXzllkTqukQPk2wmO5m9pFy0ciRve+awfgbTtZRZOEpTSWLbbpOfd4RQ5YqDWJ\nmQIDAQAB\n-----END PUBLIC KEY-----"}`))
+				w.Write([]byte(`{"keys":["-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCATZAMIIBCgKCAQEA2yUfHH6SRYKvBTemrefi\nHk4L4qkcc4skl4QCaHOkfgA4VcGKG2nXysYuZK7AzNOcHQVi+e4BwN+BfIZtwEU5\n7Ogctb5eg8ksxxLjS7eSRfQIvPGfAbJ12R9OoOWcue/CdUy/YMec4R/o4+tZ45S6\nQQWIMhLqYljw+s1Runda3K8Q8lOdJ4yEZckXaZr1waNJikC7oGpT7ClAgdbvWIbo\nN18G1OluRn+3WNdcN6V+vIj8c9dGs92bgTPX4cn3RmB/80BDfzeFiPMRw5xaq66F\n42zXzllkTqukQPk2wmO5m9pFy0ciRve+awfgbTtZRZOEpTSWLbbpOfd4RQ5YqDWJ\nmQIDAQAB\n-----END PUBLIC KEY-----"]}`))
 			})),
 			func(r *http.Request, claims map[string]interface{}) error { return nil },
-			http.StatusBadGateway,
+			http.StatusForbidden,
 		},
 		{
 			"valid key, bad auth token",
@@ -135,7 +135,7 @@ func TestJWTProtect(t *testing.T) {
 			nil,
 			httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				w.Write([]byte(
-					fmt.Sprintf(`{"key":"%s"}`, strings.ReplaceAll(publicKey, "\n", `\n`)),
+					fmt.Sprintf(`{"keys":["%s"]}`, strings.ReplaceAll(publicKey, "\n", `\n`)),
 				))
 			})),
 			func(r *http.Request, claims map[string]interface{}) error { return nil },
@@ -157,7 +157,7 @@ func TestJWTProtect(t *testing.T) {
 			nil,
 			httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				w.Write([]byte(
-					fmt.Sprintf(`{"key":"%s"}`, strings.ReplaceAll(publicKey, "\n", `\n`)),
+					fmt.Sprintf(`{"keys":["%s"]}`, strings.ReplaceAll(publicKey, "\n", `\n`)),
 				))
 			})),
 			func(r *http.Request, claims map[string]interface{}) error { return nil },
@@ -178,7 +178,7 @@ func TestJWTProtect(t *testing.T) {
 			})(),
 			httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				w.Write([]byte(
-					fmt.Sprintf(`{"key":"%s"}`, strings.ReplaceAll(publicKey, "\n", `\n`)),
+					fmt.Sprintf(`{"keys":["%s"]}`, strings.ReplaceAll(publicKey, "\n", `\n`)),
 				))
 			})),
 			func(r *http.Request, claims map[string]interface{}) error { return nil },
@@ -194,7 +194,7 @@ func TestJWTProtect(t *testing.T) {
 			})(),
 			httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				w.Write([]byte(
-					fmt.Sprintf(`{"key":"%s"}`, strings.ReplaceAll(publicKey, "\n", `\n`)),
+					fmt.Sprintf(`{"keys":["%s"]}`, strings.ReplaceAll(publicKey, "\n", `\n`)),
 				))
 			})),
 			func(r *http.Request, claims map[string]interface{}) error { return nil },
@@ -217,7 +217,7 @@ func TestJWTProtect(t *testing.T) {
 			nil,
 			httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				w.Write([]byte(
-					fmt.Sprintf(`{"key":"%s"}`, strings.ReplaceAll(publicKey, "\n", `\n`)),
+					fmt.Sprintf(`{"keys":["%s"]}`, strings.ReplaceAll(publicKey, "\n", `\n`)),
 				))
 			})),
 			func(r *http.Request, claims map[string]interface{}) error {
@@ -244,7 +244,7 @@ func TestJWTProtect(t *testing.T) {
 			nil,
 			httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				w.Write([]byte(
-					fmt.Sprintf(`{"key":"%s"}`, strings.ReplaceAll(publicKey, "\n", `\n`)),
+					fmt.Sprintf(`{"keys":["%s"]}`, strings.ReplaceAll(publicKey, "\n", `\n`)),
 				))
 			})),
 			func(r *http.Request, claims map[string]interface{}) error { return nil },
