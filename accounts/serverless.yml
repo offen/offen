@@ -84,6 +84,7 @@ functions:
           path: '/{proxy+}'
           method: any
     environment:
+      CONFIG_CLASS: accounts.config.EnvConfig
       CORS_ORIGIN: https://${self:custom.origin.${self:custom.stage}}
       COOKIE_DOMAIN: ${self:custom.cookieDomain.${self:custom.stage}}
       SERVER_HOST: ${self:custom.serverHost.${self:custom.stage}}

@@ -117,6 +117,7 @@ services:
     links:
       - accounts_database
     environment:
+      CONFIG_CLASS: accounts.config.EnvConfig
       FLASK_APP: accounts:app
       FLASK_ENV: development
       MYSQL_CONNECTION_STRING: mysql+pymysql://root:develop@accounts_database:3306/mysql

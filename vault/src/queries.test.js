@@ -182,6 +182,10 @@ describe('src/queries.js', function () {
         ])
       })
 
+      afterEach(function () {
+        return db.delete()
+      })
+
       it('calculates stats correctly using defaults', function () {
         return getDefaultStats('test-account')
           .then(function (data) {

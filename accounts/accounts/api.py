@@ -1,5 +1,4 @@
 from datetime import datetime, timedelta
-from os import environ
 from functools import wraps
 
 from flask import jsonify, make_response, request
@@ -37,7 +36,7 @@ class UnauthorizedError(Exception):
 
 
 @app.route("/api/login", methods=["POST"])
-@cross_origin(origins=[environ.get("CORS_ORIGIN", "*")], supports_credentials=True)
+@cross_origin(origins=[app.config["CORS_ORIGIN"]], supports_credentials=True)
 @json_error
 def post_login():
     credentials = request.get_json(force=True)
@@ -53,7 +52,6 @@ def post_login():
         resp.status_code = 401
         return resp
 
-    private_key = environ.get("JWT_PRIVATE_KEY", "")
     expiry = datetime.utcnow() + timedelta(hours=24)
     encoded = jwt.encode(
         {
@@ -63,7 +61,7 @@ def post_login():
                 "accounts": [a.account_id for a in match.accounts],
             },
         },
-        private_key.encode(),
+        app.config["JWT_PRIVATE_KEY"].encode(),
         algorithm="RS256",
     ).decode()
 
@@ -74,20 +72,19 @@ def post_login():
         httponly=True,
         expires=expiry,
         path="/",
-        domain=environ.get("COOKIE_DOMAIN"),
+        domain=app.config["COOKIE_DOMAIN"],
         samesite="strict",
     )
     return resp
 
 
 @app.route("/api/login", methods=["GET"])
-@cross_origin(origins=[environ.get("CORS_ORIGIN", "*")], supports_credentials=True)
+@cross_origin(origins=[app.config["CORS_ORIGIN"]], supports_credentials=True)
 @json_error
 def get_login():
     auth_cookie = request.cookies.get(COOKIE_KEY)
-    public_key = environ.get("JWT_PUBLIC_KEY", "")
     try:
-        token = jwt.decode(auth_cookie, public_key)
+        token = jwt.decode(auth_cookie, app.config["JWT_PUBLIC_KEY"])
     except jwt.exceptions.PyJWTError as unauthorized_error:
         return jsonify({"error": str(unauthorized_error), "status": 401}), 401
 
@@ -104,7 +101,7 @@ def get_login():
 
 
 @app.route("/api/logout", methods=["POST"])
-@cross_origin(origins=[environ.get("CORS_ORIGIN", "*")], supports_credentials=True)
+@cross_origin(origins=[app.config["CORS_ORIGIN"]], supports_credentials=True)
 @json_error
 def post_logout():
     resp = make_response("")
@@ -120,5 +117,5 @@ def key():
     This route is not supposed to be called by client-side applications, so
     no CORS configuration is added
     """
-    public_key = environ.get("JWT_PUBLIC_KEY", "").strip()
+    public_key = app.config["JWT_PUBLIC_KEY"].strip()
     return jsonify({"key": public_key})
