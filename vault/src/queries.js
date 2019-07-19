@@ -1,14 +1,37 @@
 var _ = require('underscore')
 var Dexie = require('dexie')
+var startOfHour = require('date-fns/start_of_hour')
 var startOfDay = require('date-fns/start_of_day')
 var startOfWeek = require('date-fns/start_of_week')
+var endOfHour = require('date-fns/end_of_hour')
 var endOfDay = require('date-fns/end_of_day')
 var endOfWeek = require('date-fns/end_of_week')
+var subHours = require('date-fns/sub_hours')
 var subDays = require('date-fns/sub_days')
 var subWeeks = require('date-fns/sub_weeks')
 
 var getDatabase = require('./database')
 var mapToBuckets = require('./buckets')
+
+var startOf = {
+  hours: startOfHour,
+  days: startOfDay,
+  weeks: function (date) {
+    return startOfWeek(date, { weekStartsOn: 1 })
+  }
+}
+var endOf = {
+  hours: endOfHour,
+  days: endOfDay,
+  weeks: function (date) {
+    return endOfWeek(date, { weekStartsOn: 1 })
+  }
+}
+var subtract = {
+  hours: subHours,
+  days: subDays,
+  weeks: subWeeks
+}
 
 exports.getDefaultStats = getDefaultStatsWith(getDatabase)
 exports.getDefaultStatsWith = getDefaultStatsWith
@@ -25,26 +48,22 @@ function getDefaultStatsWith (getDatabase) {
 
     var range = (query && query.range) || 7
     var resolution = (query && query.resolution) || 'days'
-    var now = new Date()
-    var useWeeks = resolution === 'weeks'
 
-    var beginning = useWeeks
-      ? startOfWeek(subWeeks(now, range - 1), { weekStartsOn: 1 })
-      : startOfDay(subDays(now, range - 1))
+    if (['hours', 'days', 'weeks'].indexOf(resolution) < 0) {
+      return Promise.reject(new Error('Unknown resolution value: ' + resolution))
+    }
+
+    var now = new Date()
+
+    var beginning = startOf[resolution](subtract[resolution](now, range - 1))
     var lowerBound = beginning.toJSON()
     var upperBound = now.toJSON()
 
     var pageviews = Promise.all(Array.from({ length: range })
       .map(function (num, distance) {
-        var date = useWeeks
-          ? subWeeks(now, distance)
-          : subDays(now, distance)
-        var lowerBound = useWeeks
-          ? startOfWeek(date, { weekStartsOn: 1 }).toJSON()
-          : startOfDay(date).toJSON()
-        var upperBound = useWeeks
-          ? endOfWeek(date, { weekStartsOn: 1 }).toJSON()
-          : endOfDay(date).toJSON()
+        var date = subtract[resolution](now, distance)
+        var lowerBound = startOf[resolution](date).toJSON()
+        var upperBound = endOf[resolution](date).toJSON()
 
         var pageviews = table
           .where(['payload.timestamp+userId'])

@@ -222,11 +222,11 @@ describe('src/queries.js', function () {
 
             assert.strictEqual(data.bounceRate, 0.75)
 
-            assert.strictEqual(data.loss, 2 / 7)
+            assert.strictEqual(data.loss, 1 - (5 / 7))
           })
       })
 
-      it('calculates stats correctly with a non-default query', function () {
+      it('calculates stats correctly with a weekly query', function () {
         return getDefaultStats('test-account', { range: 2, resolution: 'weeks' })
           .then(function (data) {
             assert.deepStrictEqual(
@@ -254,7 +254,39 @@ describe('src/queries.js', function () {
 
             assert.strictEqual(data.bounceRate, 0.75)
 
-            assert.strictEqual(data.loss, 2 / 7)
+            assert.strictEqual(data.loss, 1 - (5 / 7))
+          })
+      })
+
+      it('calculates stats correctly with a hourly query', function () {
+        return getDefaultStats('test-account', { range: 12, resolution: 'hours' })
+          .then(function (data) {
+            assert.deepStrictEqual(
+              Object.keys(data),
+              [
+                'uniqueUsers', 'uniqueAccounts', 'uniqueSessions',
+                'referrers', 'pages', 'pageviews', 'bounceRate', 'loss',
+                'resolution', 'range'
+              ]
+            )
+
+            assert.strictEqual(data.uniqueUsers, 1)
+            assert.strictEqual(data.uniqueAccounts, 1)
+            assert.strictEqual(data.uniqueSessions, 1)
+            assert.strictEqual(data.pages.length, 2)
+            assert.strictEqual(data.referrers.length, 0)
+
+            assert.strictEqual(data.pageviews[11].accounts, 1)
+            assert.strictEqual(data.pageviews[11].pageviews, 2)
+            assert.strictEqual(data.pageviews[11].visitors, 1)
+
+            assert.strictEqual(data.pageviews[10].accounts, 0)
+            assert.strictEqual(data.pageviews[10].pageviews, 0)
+            assert.strictEqual(data.pageviews[10].visitors, 0)
+
+            assert.strictEqual(data.bounceRate, 0)
+
+            assert.strictEqual(data.loss, 1 - (2 / 3))
           })
       })
     })

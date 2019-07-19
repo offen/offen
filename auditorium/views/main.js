@@ -55,6 +55,7 @@ function view (state, emit) {
   emit(state.events.DOMTITLECHANGE, pageTitle)
 
   var ranges = [
+    { display: 'last 24 hours', query: { range: '24', resolution: 'hours' } },
     { display: 'last 7 days', query: null },
     { display: 'last 28 days', query: { range: '28', resolution: 'days' } },
     { display: 'last 6 weeks', query: { range: '6', resolution: 'weeks' } },

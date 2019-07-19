@@ -4,6 +4,7 @@ var Plotly = require('plotly.js-basic-dist')
 var isFirstDayOfMonth = require('date-fns/is_first_day_of_month')
 var isWeekend = require('date-fns/is_weekend')
 var getISOWeek = require('date-fns/get_iso_week')
+var getHours = require('date-fns/get_hours')
 
 module.exports = BarChart
 
@@ -52,6 +53,9 @@ BarChart.prototype.getChartData = function () {
     var date = new Date(value)
     if (self.local.resolution === 'weeks') {
       return 'W' + getISOWeek(date)
+    }
+    if (self.local.resolution === 'hours') {
+      return getHours(date) + ':00'
     }
     var result = date.toLocaleDateString(undefined, { day: 'numeric' })
     if (index === 0 || isFirstDayOfMonth(date)) {
