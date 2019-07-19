@@ -83,10 +83,19 @@ def post_login():
 @json_error
 def get_login():
     auth_cookie = request.cookies.get(COOKIE_KEY)
-    try:
-        token = jwt.decode(auth_cookie, app.config["JWT_PUBLIC_KEY"])
-    except jwt.exceptions.PyJWTError as unauthorized_error:
-        return jsonify({"error": str(unauthorized_error), "status": 401}), 401
+    public_keys = app.config["JWT_PUBLIC_KEYS"]
+
+    token = None
+    token_err = None
+    for public_key in public_keys:
+        try:
+            token = jwt.decode(auth_cookie, public_key)
+            break
+        except Exception as decode_err:
+            token_err = decode_err
+
+    if not token:
+        return jsonify({"error": str(token_err), "status": 401}), 401
 
     try:
         match = User.query.get(token["priv"]["userId"])
@@ -117,5 +126,4 @@ def key():
     This route is not supposed to be called by client-side applications, so
     no CORS configuration is added
     """
-    public_key = app.config["JWT_PUBLIC_KEY"].strip()
-    return jsonify({"key": public_key})
+    return jsonify({"keys": app.config["JWT_PUBLIC_KEYS"]})
