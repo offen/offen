@@ -15,7 +15,7 @@ provider:
     - Effect: 'Allow'
       Action:
         - secretsmanager:GetSecretValue
-      Resource: '*'
+      Resource: arn:aws:secretsmanager:eu-central-1:#{AWS::AccountId}:secret:${self:custom.stage}/*
 
 package:
   individually: true
@@ -26,6 +26,7 @@ plugins:
   - serverless-domain-manager
   - serverless-python-requirements
   - serverless-wsgi
+  - serverless-pseudo-parameters
 
 custom:
   stage: ${opt:stage, self:provider.stage}
