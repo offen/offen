@@ -11,9 +11,16 @@ provider:
   apiName: offen-${self:provider.stage}
   logs:
     restApi: true
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - secretsmanager:GetSecretValue
+      Resource: '*'
 
 package:
   individually: true
+  exclude:
+    - tests
 
 plugins:
   - serverless-domain-manager
