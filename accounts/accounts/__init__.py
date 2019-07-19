@@ -4,7 +4,6 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_admin import Admin
 
-from accounts.config import EnvConfig
 
 app = Flask(__name__)
 app.config.from_object(environ.get("CONFIG_CLASS"))
