@@ -1,10 +1,19 @@
 import yaml
 from passlib.hash import bcrypt
 
-from accounts import db
-from accounts.models import Account, User, AccountUserAssociation
+from lambdas.create_keys import create_key_pair
 
 if __name__ == "__main__":
+    keypair = create_key_pair(key_size=2048)
+    with open("public_key.pem", "w") as f:
+        f.write(keypair["public"])
+
+    with open("private_key.pem", "w") as f:
+        f.write(keypair["private"])
+
+    from accounts import db
+    from accounts.models import Account, User, AccountUserAssociation
+
     db.drop_all()
     db.create_all()
 
@@ -29,4 +38,4 @@ if __name__ == "__main__":
 
     db.session.commit()
 
-    print("Successfully bootstrapped accounts database")
+    print("Successfully bootstrapped accounts database and created key pair")
