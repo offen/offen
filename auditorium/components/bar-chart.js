@@ -51,11 +51,14 @@ BarChart.prototype.getChartData = function () {
   })
   var text = x.map(function (value, index) {
     var date = new Date(value)
+    if (self.local.resolution === 'hours') {
+      return getHours(date) + ':00'
+    }
     if (self.local.resolution === 'weeks') {
       return 'W' + getISOWeek(date)
     }
-    if (self.local.resolution === 'hours') {
-      return getHours(date) + ':00'
+    if (self.local.resolution === 'months') {
+      return date.toLocaleDateString(undefined, { month: 'short' })
     }
     var result = date.toLocaleDateString(undefined, { day: 'numeric' })
     if (index === 0 || isFirstDayOfMonth(date)) {
@@ -72,6 +75,9 @@ BarChart.prototype.getChartData = function () {
       hoverinfo: 'y',
       marker: {
         color: x.map(function (date) {
+          if (self.local.resolution !== 'days') {
+            return '#f9d152'
+          }
           return isWeekend(date) ? '#ffeeb9' : '#f9d152'
         })
       },
@@ -89,6 +95,9 @@ BarChart.prototype.getChartData = function () {
       hovertemplate: '%{text}<extra></extra>',
       marker: {
         color: x.map(function (date) {
+          if (self.local.resolution !== 'days') {
+            return '#fde18a'
+          }
           return isWeekend(date) ? '#fff7df' : '#fde18a'
         })
       },

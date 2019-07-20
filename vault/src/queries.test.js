@@ -65,14 +65,15 @@ describe('src/queries.js', function () {
     context('populated with data', function () {
       var db
       var getDefaultStats
+      var now
 
       beforeEach(function () {
         db = getDatabase('test-' + uuid())
         getDefaultStats = queries.getDefaultStatsWith(function () {
           return db
         })
-
-        var now = new Date()
+        // this is a sunday morning
+        now = new Date('2019-07-14T10:00:00.000Z')
         return db.events.bulkAdd([
           {
             accountId: 'test-account-1',
@@ -187,7 +188,7 @@ describe('src/queries.js', function () {
       })
 
       it('calculates stats correctly using defaults', function () {
-        return getDefaultStats('test-account')
+        return getDefaultStats('test-account', { now: now })
           .then(function (data) {
             assert.deepStrictEqual(
               Object.keys(data),
@@ -227,7 +228,7 @@ describe('src/queries.js', function () {
       })
 
       it('calculates stats correctly with a weekly query', function () {
-        return getDefaultStats('test-account', { range: 2, resolution: 'weeks' })
+        return getDefaultStats('test-account', { range: 2, resolution: 'weeks', now: now })
           .then(function (data) {
             assert.deepStrictEqual(
               Object.keys(data),
@@ -240,7 +241,7 @@ describe('src/queries.js', function () {
 
             assert.strictEqual(data.uniqueUsers, 2)
             assert.strictEqual(data.uniqueAccounts, 2)
-            assert.strictEqual(data.uniqueSessions, 4)
+            assert.strictEqual(data.uniqueSessions, 5)
             assert.strictEqual(data.pages.length, 4)
             assert.strictEqual(data.referrers.length, 1)
 
@@ -248,18 +249,18 @@ describe('src/queries.js', function () {
             assert.strictEqual(data.pageviews[1].pageviews, 5)
             assert.strictEqual(data.pageviews[1].visitors, 2)
 
-            assert.strictEqual(data.pageviews[0].accounts, 0)
-            assert.strictEqual(data.pageviews[0].pageviews, 0)
-            assert.strictEqual(data.pageviews[0].visitors, 0)
+            assert.strictEqual(data.pageviews[0].accounts, 2)
+            assert.strictEqual(data.pageviews[0].pageviews, 1)
+            assert.strictEqual(data.pageviews[0].visitors, 1)
 
-            assert.strictEqual(data.bounceRate, 0.75)
+            assert.strictEqual(data.bounceRate, 0.8)
 
-            assert.strictEqual(data.loss, 1 - (5 / 7))
+            assert.strictEqual(data.loss, 1 - (6 / 9))
           })
       })
 
       it('calculates stats correctly with a hourly query', function () {
-        return getDefaultStats('test-account', { range: 12, resolution: 'hours' })
+        return getDefaultStats('test-account', { range: 12, resolution: 'hours', now: now })
           .then(function (data) {
             assert.deepStrictEqual(
               Object.keys(data),
