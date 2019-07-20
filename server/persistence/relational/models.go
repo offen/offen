@@ -17,8 +17,7 @@ type Event struct {
 	AccountID    string
 	HashedUserID *string
 	Payload      string
-	Account      Account `gorm:"foreignkey:AccountID;association_foreignkey:AccountID"`
-	User         User    `gorm:"foreignkey:HashedUserID;association_foreignkey:HashedUserID"`
+	User         User `gorm:"foreignkey:HashedUserID;association_foreignkey:HashedUserID"`
 }
 
 // User associates a hashed user id - which ties a user and account together
