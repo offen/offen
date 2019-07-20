@@ -9,11 +9,11 @@ import (
 	"github.com/offen/offen/server/persistence"
 )
 
-func (r *relationalDatabase) GetAccount(accountID string, events bool, eventsSince string) (persistence.AccountResult, error) {
+func (r *relationalDatabase) GetAccount(accountID string, includeEvents bool, eventsSince string) (persistence.AccountResult, error) {
 	var account Account
 
 	queryDB := r.db
-	if events {
+	if includeEvents {
 		if eventsSince != "" {
 			queryDB = queryDB.Preload("Events", "event_id > ?", eventsSince)
 		} else {
@@ -29,18 +29,17 @@ func (r *relationalDatabase) GetAccount(accountID string, events bool, eventsSin
 		return persistence.AccountResult{}, fmt.Errorf("relational: error looking up account with id %s: %v", accountID, err)
 	}
 
-	key, err := account.WrapPublicKey()
-	if err != nil {
-		return persistence.AccountResult{}, fmt.Errorf("relational: error wrapping account public key: %v", err)
-	}
-
 	result := persistence.AccountResult{
 		AccountID: account.AccountID,
 	}
 
-	if events {
+	if includeEvents {
 		result.EncryptedSecretKey = account.EncryptedSecretKey
 	} else {
+		key, err := account.WrapPublicKey()
+		if err != nil {
+			return persistence.AccountResult{}, fmt.Errorf("relational: error wrapping account public key: %v", err)
+		}
 		result.PublicKey = key
 	}
 
@@ -77,57 +76,73 @@ func (r *relationalDatabase) AssociateUserSecret(accountID, userID, encryptedUse
 	hashedUserID := account.HashUserID(userID)
 
 	var user User
-	txn := r.db.Begin()
-	// there is an issue with the postgres backend of GORM that disallows inserting
+	// there is an issue with the Postgres backend of GORM that disallows inserting
 	// primary keys when using `FirstOrCreate`, so we need to do a manual check
-	// for existence beforehand
+	// for existence beforehand.
 	if err := r.db.First(&user, "hashed_user_id = ?", hashedUserID).Error; err != nil {
 		if err != gorm.ErrRecordNotFound {
 			return fmt.Errorf("relational: error looking up user: %v", err)
 		}
 	} else {
+		txn := r.db.Begin()
+		// In this branch the following case is covered: a user whose hashed
+		// identifier is known, has sent a new user secret to be saved. This means
+		// all events previously saved using their identifier cannot be accessed
+		// by them anymore as the key that has been used to encrypt the event's payloads
+		// is not known to the user anymore. This means all events that are
+		// currently associated to the identifier will be migrated to a newly
+		// created identifier which will be used to "park" them. It is important
+		// to update these event's EventIDs as this means they will be considered
+		// "deleted" by clients.
 		parkedID, parkedIDErr := uuid.NewV4()
 		if parkedIDErr != nil {
 			txn.Rollback()
-			return fmt.Errorf("relational: error migrating existing events: %v", parkedIDErr)
+			return fmt.Errorf("relational: error creating identifier for parking events: %v", parkedIDErr)
 		}
 
 		parkedHash := account.HashUserID(parkedID.String())
-		user.HashedUserID = parkedHash
-
-		if err := txn.Create(&user).Error; err != nil {
+		if err := txn.Create(&User{
+			HashedUserID:        parkedHash,
+			EncryptedUserSecret: user.EncryptedUserSecret,
+		}).Error; err != nil {
 			txn.Rollback()
-			return fmt.Errorf("relational: error migrating existing events: %v", err)
+			return fmt.Errorf("relational: error creating user for parking events: %v", err)
 		}
-		if err := txn.Delete(&User{}, "hashed_user_id = ?", hashedUserID).Error; err != nil {
+		if err := txn.Delete(&user).Error; err != nil {
 			txn.Rollback()
-			return fmt.Errorf("relational: error migrating existing events: %v", err)
+			return fmt.Errorf("relational: error deleting existing user: %v", err)
 		}
 
-		var affected []Event
-		r.db.Find(&affected, "hashed_user_id = ?", hashedUserID)
-
-		for _, ev := range affected {
+		// The previous user is now deleted so all orphaned events need to be
+		// copied over to the one used for parking the events.
+		var orphanedEvents []Event
+		var idsToDelete []string
+		txn.Find(&orphanedEvents, "hashed_user_id = ?", hashedUserID)
+		for _, orphan := range orphanedEvents {
 			newID, err := newEventID()
 			if err != nil {
 				txn.Rollback()
-				return fmt.Errorf("relational: error migrating existing events: %v", err)
+				return fmt.Errorf("relational: error creating new event id: %v", err)
 			}
-			if err := txn.Delete(&Event{}, "event_id = ?", ev.EventID).Error; err != nil {
-				txn.Rollback()
-				return fmt.Errorf("relational: error migrating existing events: %v", err)
-			}
-			ev.EventID = newID
-			ev.HashedUserID = &parkedHash
-			if err := txn.Create(&ev).Error; err != nil {
-				txn.Rollback()
-				return fmt.Errorf("relational: error migrating existing events: %v", err)
-			}
-		}
-	}
 
-	if err := txn.Commit().Error; err != nil {
-		return fmt.Errorf("relational: error migrating existing events: %v", err)
+			if err := txn.Create(&Event{
+				EventID:      newID,
+				AccountID:    orphan.AccountID,
+				HashedUserID: &parkedHash,
+				Payload:      orphan.Payload,
+			}).Error; err != nil {
+				txn.Rollback()
+				return fmt.Errorf("relational: error migrating an existing event: %v", err)
+			}
+			idsToDelete = append(idsToDelete, orphan.EventID)
+		}
+		if err := txn.Where("event_id in (?)", idsToDelete).Delete(Event{}).Error; err != nil {
+			txn.Rollback()
+			return fmt.Errorf("relational: error deleting orphaned events: %v", err)
+		}
+		if err := txn.Commit().Error; err != nil {
+			return fmt.Errorf("relational: error committing migration transaction: %v", err)
+		}
 	}
 
 	return r.db.Create(&User{
