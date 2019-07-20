@@ -59,7 +59,8 @@ function view (state, emit) {
     { display: 'last 7 days', query: null },
     { display: 'last 28 days', query: { range: '28', resolution: 'days' } },
     { display: 'last 6 weeks', query: { range: '6', resolution: 'weeks' } },
-    { display: 'last 12 weeks', query: { range: '12', resolution: 'weeks' } }
+    { display: 'last 12 weeks', query: { range: '12', resolution: 'weeks' } },
+    { display: 'last 12 months', query: { range: '12', resolution: 'months' } }
   ].map(function (range) {
     var url = state.href || '/'
     var current = _.pick(state.query, ['range', 'resolution'])
