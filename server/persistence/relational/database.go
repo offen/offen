@@ -26,6 +26,7 @@ func New(configs ...Config) (persistence.Database, error) {
 	}
 
 	db, err := gorm.Open("postgres", opts.connectionString)
+	db.LogMode(opts.logger)
 	if err != nil {
 		return nil, fmt.Errorf("relational: error opening database: %v", err)
 	}
@@ -37,6 +38,7 @@ type dbOptions struct {
 	dialect          string
 	connectionString string
 	encryption       keys.Encrypter
+	logger           bool
 }
 
 // Config is a function that adds a configuration option to the constructor
@@ -55,5 +57,12 @@ func WithConnectionString(connectionString string) Config {
 func WithEncryption(e keys.Encrypter) Config {
 	return func(opts *dbOptions) {
 		opts.encryption = e
+	}
+}
+
+// WithLogging will print additional debug information when set to true
+func WithLogging(l bool) Config {
+	return func(opts *dbOptions) {
+		opts.logger = l
 	}
 }

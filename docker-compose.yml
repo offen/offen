@@ -46,6 +46,7 @@ services:
       KMS_ENCRYPTION_ENDPOINT: http://kms:8081/encrypt
       PORT: 8080
       JWT_PUBLIC_KEY: http://accounts:5000/api/key
+      DEVELOPMENT: '1'
     ports:
       - 8080:8080
     command: refresh run

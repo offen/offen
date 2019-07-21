@@ -23,6 +23,7 @@ func main() {
 		jwtPublicKey       = flag.String("jwt", os.Getenv("JWT_PUBLIC_KEY"), "the location of the JWT public key")
 		secureCookie       = flag.Bool("secure", false, "use secure cookies")
 		encryptionEndpoint = flag.String("kms", os.Getenv("KMS_ENCRYPTION_ENDPOINT"), "the KMS service's encryption endpoint")
+		development        = flag.Bool("develop", os.Getenv("DEVELOPMENT") != "", "add verbose logging")
 	)
 	flag.Parse()
 
@@ -37,6 +38,7 @@ func main() {
 	db, err := relational.New(
 		relational.WithConnectionString(*connectionString),
 		relational.WithEncryption(encryption),
+		relational.WithLogging(*development),
 	)
 	if err != nil {
 		logger.WithError(err).Fatal("unable to establish database connection")
