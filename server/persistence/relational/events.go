@@ -100,29 +100,6 @@ func (r *relationalDatabase) Query(query persistence.Query) (map[string][]persis
 	return out, nil
 }
 
-func hashUserIDForAccounts(userID string, accounts []Account) []string {
-	hashes := make(chan string)
-	// in case a user queries for a longer list of account ids (or even all of them)
-	// hashing the user ID against all salts can get relatively expensive, so
-	// computation is being done concurrently
-	for _, account := range accounts {
-		go func(account Account) {
-			hash := account.HashUserID(userID)
-			hashes <- hash
-		}(account)
-	}
-
-	var hashedUserIDs []string
-	for result := range hashes {
-		hashedUserIDs = append(hashedUserIDs, result)
-		if len(hashedUserIDs) == len(accounts) {
-			close(hashes)
-			break
-		}
-	}
-	return hashedUserIDs
-}
-
 func (r *relationalDatabase) Purge(userID string) error {
 	var accounts []Account
 	if err := r.db.Find(&accounts).Error; err != nil {
@@ -175,4 +152,27 @@ outer:
 	}
 
 	return deletedIds, nil
+}
+
+func hashUserIDForAccounts(userID string, accounts []Account) []string {
+	hashes := make(chan string)
+	// in case a user queries for a longer list of account ids (or even all of them)
+	// hashing the user ID against all salts can get relatively expensive, so
+	// computation is being done concurrently
+	for _, account := range accounts {
+		go func(account Account) {
+			hash := account.HashUserID(userID)
+			hashes <- hash
+		}(account)
+	}
+
+	var hashedUserIDs []string
+	for result := range hashes {
+		hashedUserIDs = append(hashedUserIDs, result)
+		if len(hashedUserIDs) == len(accounts) {
+			close(hashes)
+			break
+		}
+	}
+	return hashedUserIDs
 }
