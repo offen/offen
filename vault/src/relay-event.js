@@ -68,10 +68,23 @@ function getSessionId (accountId) {
   var sessionId
   try {
     var lookupKey = 'session-' + accountId
-    sessionId = window.sessionStorage.getItem(lookupKey)
+    var matches = document.cookie.split(';')
+      .map(function (chunk) {
+        return chunk.trim().split('=')
+      })
+      .filter(function (pair) {
+        return pair[0] === lookupKey
+      })
+      .map(function (pair) {
+        return pair[1]
+      })
+    sessionId = matches.length
+      ? matches[0]
+      : null
+
     if (!sessionId) {
       sessionId = uuid()
-      window.sessionStorage.setItem(lookupKey, sessionId)
+      document.cookie = [lookupKey, sessionId].join('=')
     }
   } catch (err) {
     sessionId = uuid()
