@@ -7,14 +7,19 @@ class BaseConfig(object):
     FLASK_ADMIN_SWATCH = "flatly"
 
 
-class EnvConfig(BaseConfig):
+class LocalConfig(BaseConfig):
     SECRET_KEY = environ.get("SESSION_SECRET")
     SQLALCHEMY_DATABASE_URI = environ.get("MYSQL_CONNECTION_STRING")
     CORS_ORIGIN = environ.get("CORS_ORIGIN", "*")
-    JWT_PRIVATE_KEY = environ.get("JWT_PRIVATE_KEY", "")
-    JWT_PUBLIC_KEYS = [environ.get("JWT_PUBLIC_KEY", "")]
     COOKIE_DOMAIN = environ.get("COOKIE_DOMAIN")
     SERVER_HOST = environ.get("SERVER_HOST")
+    def __init__(self):
+        with open("private_key.pem") as f:
+            private_key = f.read()
+        with open("public_key.pem") as f:
+            public_key = f.read()
+        self.JWT_PRIVATE_KEY = private_key
+        self.JWT_PUBLIC_KEYS = [public_key]
 
 
 class SecretsManagerConfig(BaseConfig):

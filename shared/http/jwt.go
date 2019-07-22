@@ -2,7 +2,6 @@ package http
 
 import (
 	"context"
-	"crypto/rsa"
 	"crypto/x509"
 	"encoding/json"
 	"encoding/pem"
@@ -85,14 +84,9 @@ func tryParse(key []byte, tokenValue string) (*jwt.Token, error) {
 		return nil, errors.New("jwt: no PEM block found in given key")
 	}
 
-	parseResult, parseErr := x509.ParsePKIXPublicKey(keyBytes.Bytes)
+	pubKey, parseErr := x509.ParsePKCS1PublicKey(keyBytes.Bytes)
 	if parseErr != nil {
 		return nil, fmt.Errorf("jwt: error parsing key: %v", parseErr)
-	}
-
-	pubKey, pubKeyOk := parseResult.(*rsa.PublicKey)
-	if !pubKeyOk {
-		return nil, errors.New("jwt: given key is not of type RSA public key")
 	}
 
 	token, jwtErr := jwt.ParseVerify(strings.NewReader(tokenValue), jwa.RS256, pubKey)

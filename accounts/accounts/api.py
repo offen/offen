@@ -106,7 +106,9 @@ def get_login():
             ),
             401,
         )
-    return jsonify({"user": match.serialize()})
+    if match:
+        return jsonify({"user": match.serialize()})
+    return jsonify({"error": "unknown user id", "status": 401}), 401
 
 
 @app.route("/api/logout", methods=["POST"])

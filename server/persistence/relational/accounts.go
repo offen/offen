@@ -15,11 +15,10 @@ func (r *relationalDatabase) GetAccount(accountID string, includeEvents bool, ev
 	queryDB := r.db
 	if includeEvents {
 		if eventsSince != "" {
-			queryDB = queryDB.Preload("Events", "event_id > ?", eventsSince)
+			queryDB = queryDB.Preload("Events", "event_id > ?", eventsSince).Preload("Events.User")
 		} else {
-			queryDB = queryDB.Preload("Events")
+			queryDB = queryDB.Preload("Events").Preload("Events.User")
 		}
-		queryDB = queryDB.Preload("Events.User")
 	}
 
 	if err := queryDB.Find(&account, "account_id = ?", accountID).Error; err != nil {

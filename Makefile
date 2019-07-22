@@ -18,8 +18,11 @@ setup:
 	@echo "to create the needed local keys and seed the database."
 
 bootstrap:
+	@echo "Bootstrapping KMS service ..."
 	@docker-compose run kms make bootstrap
+	@echo "Bootstrapping Server service ..."
 	@docker-compose run server make bootstrap
+	@echo "Bootstrapping Accounts service ..."
 	@docker-compose run accounts make bootstrap
 
 .PHONY: setup bootstrap
