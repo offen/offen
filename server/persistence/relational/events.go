@@ -155,6 +155,9 @@ outer:
 }
 
 func hashUserIDForAccounts(userID string, accounts []Account) []string {
+	if len(accounts) == 0 {
+		return []string{}
+	}
 	hashes := make(chan string)
 	// in case a user queries for a longer list of account ids (or even all of them)
 	// hashing the user ID against all salts can get relatively expensive, so
