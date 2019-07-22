@@ -34,7 +34,7 @@ func (r *relationalDatabase) Insert(userID, accountID, payload string) error {
 	// already exists for the account so events can be decrypted lateron
 	if hashedUserID != nil {
 		var user User
-		if err := r.db.First(&user).Where("hashed_user_id = ?", hashedUserID).Error; gorm.IsRecordNotFoundError(err) {
+		if err := r.db.Where("hashed_user_id = ?", hashedUserID).First(&user).Error; gorm.IsRecordNotFoundError(err) {
 			return persistence.ErrUnknownUser(
 				fmt.Sprintf("relational: unknown user with id %s", userID),
 			)
