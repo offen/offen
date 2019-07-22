@@ -16,8 +16,12 @@ var buckets = [
     name: 'Telegram'
   },
   {
-    re: /^(l|lm|m)\.facebook\.com/,
+    re: /^(l|lm|m|www)\.facebook\.com/,
     name: 'Facebook'
+  },
+  {
+    re: /^android-app:\/\/com\.Slack$/,
+    name: 'Slack'
   }
 ]
 
