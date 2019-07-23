@@ -38,3 +38,5 @@ TAGS_SAVE_AS = None
 
 # keep this for access to page variable
 DIRECT_TEMPLATES = []
+
+OFFEN_ACCOUNT_ID = None
