@@ -29,10 +29,11 @@ gulp.task('bundle:script', function () {
 
   return b
     .exclude('plotly.js-basic-dist')
+    .plugin('tinyify')
+    .transform('nanohtml')
     .bundle()
     .pipe(source('index.js'))
     .pipe(buffer())
-    .pipe(uglify())
     .pipe(rev())
     .pipe(gulp.dest('./dist/'))
     .pipe(rev.manifest('./dist/rev-manifest.json', { base: './dist', merge: true }))
@@ -47,6 +48,8 @@ gulp.task('bundle:vendor', function () {
     .bundle()
     .pipe(source('vendor.js'))
     .pipe(buffer())
+    // the `tinyify` plugin fails on mangling plotly for unknown reasons, so
+    // it is being uglified instead: https://github.com/browserify/tinyify/issues/13
     .pipe(uglify())
     .pipe(rev())
     .pipe(gulp.dest('./dist/'))
