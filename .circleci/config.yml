@@ -327,7 +327,6 @@ jobs:
           paths:
             - ~/offen/packages/node_modules
           key: offen-packages-{{ checksum "package.json" }}
-
       - restore_cache:
           key: offen-auditorium-{{ checksum "auditorium/package.json" }}
       - run:
@@ -363,6 +362,56 @@ jobs:
             $(npm bin)/sls deploy --config vault/serverless.yml
             $(npm bin)/sls client deploy --config vault/serverless.yml --no-confirm
 
+  deploy_homepage:
+    docker:
+      - image: circleci/python:3.6
+    working_directory: ~/offen/homepage
+    environment:
+      - SOURCE_BRANCH: master
+      - TARGET_BRANCH: gh-pages
+    steps:
+      - checkout:
+          path: ~/offen
+      - restore_cache:
+          key: offen-homepage-{{ checksum "requirements.txt" }}
+      - run:
+          name: Install dependencies
+          command: |
+            python -m venv venv
+            source venv/bin/activate
+            pip install -r requirements.txt
+      - save_cache:
+          paths:
+            - ~/offen/homepage/venv
+          key: offen-homepage-{{ checksum "requirements.txt" }}
+      - run:
+          name: Deploy
+          command: |
+            source venv/bin/activate
+
+            git config --global user.email $GH_EMAIL
+            git config --global user.name $GH_NAME
+
+            git clone $CIRCLE_REPOSITORY_URL out
+
+            cd out
+            git checkout $TARGET_BRANCH || git checkout --orphan $TARGET_BRANCH
+            git rm -rf .
+            cd ..
+
+            make publish
+
+            cp -a output/. out/.
+
+            mkdir -p out/.circleci && cp -a .circleci/. out/.circleci/.
+            cp CNAME out/CNAME
+            cd out
+
+            git add -A
+            git commit -m "Automated deployment to GitHub Pages: ${CIRCLE_SHA1}" --allow-empty
+
+            git push origin $TARGET_BRANCH
+
 workflows:
   version: 2
   test_build_deploy:
@@ -380,4 +429,6 @@ workflows:
       - deploy_node:
           <<: *deploy_preconditions
       - deploy_python:
+          <<: *deploy_preconditions
+      - deploy_homepage:
           <<: *deploy_preconditions
