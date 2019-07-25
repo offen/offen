@@ -6,6 +6,8 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/offen/offen/server/persistence"
+
 	"github.com/jinzhu/gorm"
 )
 
@@ -327,6 +329,207 @@ func TestRelationalDatabase_GetDeletedEvents(t *testing.T) {
 
 			if (err != nil) != test.expectError {
 				t.Errorf("Unexpected error value %v", err)
+			}
+		})
+	}
+}
+
+type mockQuery struct {
+	accountIDs []string
+	userID     string
+	since      string
+}
+
+func (m *mockQuery) AccountIDs() []string {
+	return m.accountIDs
+}
+
+func (m *mockQuery) UserID() string {
+	return m.userID
+}
+
+func (m *mockQuery) Since() string {
+	return m.since
+}
+func TestRelationalDatabase_Query(t *testing.T) {
+	a1 := Account{
+		AccountID: "account-id",
+		UserSalt:  "user-salt",
+	}
+	a2 := Account{
+		AccountID: "other-account",
+		UserSalt:  "other-salt",
+	}
+
+	tests := []struct {
+		name           string
+		setup          func(*gorm.DB) error
+		query          mockQuery
+		expectedResult map[string][]persistence.EventResult
+		expectError    bool
+	}{
+		{
+			"empty database",
+			func(db *gorm.DB) error {
+				return nil
+			},
+			mockQuery{userID: "user-id"},
+			map[string][]persistence.EventResult{},
+			false,
+		},
+		{
+			"query all",
+			func(db *gorm.DB) error {
+				if err := db.Create(&a1).Error; err != nil {
+					return err
+				}
+				if err := db.Create(&a2).Error; err != nil {
+					return err
+				}
+				if err := db.Create(&Event{
+					AccountID:    "account-id",
+					EventID:      "event-id-1",
+					Payload:      "payload-1",
+					HashedUserID: str(a1.HashUserID("user-id")),
+				}).Error; err != nil {
+					return err
+				}
+				if err := db.Create(&Event{
+					AccountID:    "account-id",
+					EventID:      "event-id-2",
+					Payload:      "payload-2",
+					HashedUserID: str(a1.HashUserID("user-id")),
+				}).Error; err != nil {
+					return err
+				}
+				if err := db.Create(&Event{
+					AccountID:    "other-account",
+					EventID:      "event-id-3",
+					Payload:      "payload-3",
+					HashedUserID: str(a2.HashUserID("user-id")),
+				}).Error; err != nil {
+					return err
+				}
+				if err := db.Create(&Event{
+					AccountID:    "other-account",
+					EventID:      "event-id-4",
+					Payload:      "payload-4",
+					HashedUserID: str(a2.HashUserID("other-user")),
+				}).Error; err != nil {
+					return err
+				}
+				return nil
+			},
+			mockQuery{userID: "user-id"},
+			map[string][]persistence.EventResult{
+				"account-id": []persistence.EventResult{
+					{
+						AccountID: "account-id",
+						UserID:    str(a1.HashUserID("user-id")),
+						Payload:   "payload-1",
+						EventID:   "event-id-1",
+					},
+					{
+						AccountID: "account-id",
+						UserID:    str(a1.HashUserID("user-id")),
+						Payload:   "payload-2",
+						EventID:   "event-id-2",
+					},
+				},
+				"other-account": []persistence.EventResult{
+					{
+						AccountID: "other-account",
+						UserID:    str(a2.HashUserID("user-id")),
+						Payload:   "payload-3",
+						EventID:   "event-id-3",
+					},
+				},
+			},
+			false,
+		},
+		{
+			"using since parameter",
+			func(db *gorm.DB) error {
+				if err := db.Create(&a1).Error; err != nil {
+					return err
+				}
+				if err := db.Create(&a2).Error; err != nil {
+					return err
+				}
+				if err := db.Create(&Event{
+					AccountID:    "account-id",
+					EventID:      "event-id-1",
+					Payload:      "payload-1",
+					HashedUserID: str(a1.HashUserID("user-id")),
+				}).Error; err != nil {
+					return err
+				}
+				if err := db.Create(&Event{
+					AccountID:    "account-id",
+					EventID:      "event-id-2",
+					Payload:      "payload-2",
+					HashedUserID: str(a1.HashUserID("user-id")),
+				}).Error; err != nil {
+					return err
+				}
+				if err := db.Create(&Event{
+					AccountID:    "other-account",
+					EventID:      "event-id-3",
+					Payload:      "payload-3",
+					HashedUserID: str(a2.HashUserID("user-id")),
+				}).Error; err != nil {
+					return err
+				}
+				if err := db.Create(&Event{
+					AccountID:    "other-account",
+					EventID:      "event-id-4",
+					Payload:      "payload-4",
+					HashedUserID: str(a2.HashUserID("other-user")),
+				}).Error; err != nil {
+					return err
+				}
+				return nil
+			},
+			mockQuery{userID: "user-id", since: "event-id-1"},
+			map[string][]persistence.EventResult{
+				"account-id": []persistence.EventResult{
+					{
+						AccountID: "account-id",
+						UserID:    str(a1.HashUserID("user-id")),
+						Payload:   "payload-2",
+						EventID:   "event-id-2",
+					},
+				},
+				"other-account": []persistence.EventResult{
+					{
+						AccountID: "other-account",
+						UserID:    str(a2.HashUserID("user-id")),
+						Payload:   "payload-3",
+						EventID:   "event-id-3",
+					},
+				},
+			},
+			false,
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			db, closeDB := createTestDatabase()
+			defer closeDB()
+
+			if err := test.setup(db); err != nil {
+				t.Fatalf("Error setting up test: %v", err)
+			}
+
+			relational := relationalDatabase{db: db}
+			result, err := relational.Query(&test.query)
+
+			if (err != nil) != test.expectError {
+				t.Errorf("Unexpected error value %v", err)
+			}
+
+			if !reflect.DeepEqual(test.expectedResult, result) {
+				t.Errorf("Expected %v, got %v", test.expectedResult, result)
 			}
 		})
 	}
