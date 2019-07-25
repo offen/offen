@@ -279,3 +279,116 @@ func TestRelationalDatabase_GetAccount(t *testing.T) {
 		})
 	}
 }
+
+func TestRelationalDatabase_AssociateUserSecret(t *testing.T) {
+	a1 := Account{
+		AccountID: "account-id",
+		UserSalt:  "user-salt",
+	}
+	tests := []struct {
+		name        string
+		setup       func(*gorm.DB) error
+		assertion   func(*gorm.DB) error
+		expectError bool
+	}{
+		{
+			"empty database",
+			func(db *gorm.DB) error {
+				return nil
+			},
+			func(db *gorm.DB) error {
+				return nil
+			},
+			true,
+		},
+		{
+			"new user",
+			func(db *gorm.DB) error {
+				return db.Create(&a1).Error
+			},
+			func(db *gorm.DB) error {
+				var user User
+				if err := db.Where("hashed_user_id = ?", a1.HashUserID("user-id")).Find(&user).Error; err != nil {
+					return err
+				}
+				if user.EncryptedUserSecret != "encrypted-user-secret" {
+					return fmt.Errorf("Unexpected value for user secret %v", user.EncryptedUserSecret)
+				}
+				return nil
+			},
+			false,
+		},
+		{
+			"migrating existing user",
+			func(db *gorm.DB) error {
+				if err := db.Create(&a1).Error; err != nil {
+					return err
+				}
+				if err := db.Create(&User{
+					HashedUserID:        a1.HashUserID("user-id"),
+					EncryptedUserSecret: "previous-user-secret",
+				}).Error; err != nil {
+					return err
+				}
+				if err := db.Create(&Event{
+					EventID:      "event-id",
+					AccountID:    "account-id",
+					Payload:      "payload",
+					HashedUserID: str(a1.HashUserID("user-id")),
+				}).Error; err != nil {
+					return err
+				}
+				return nil
+			},
+			func(db *gorm.DB) error {
+				var user User
+				if err := db.Where("hashed_user_id = ?", a1.HashUserID("user-id")).Find(&user).Error; err != nil {
+					return err
+				}
+				if user.EncryptedUserSecret != "encrypted-user-secret" {
+					return fmt.Errorf("Unexpected value for user secret %v", user.EncryptedUserSecret)
+				}
+
+				var previous User
+				if err := db.Where("encrypted_user_secret = ?", "previous-user-secret").Find(&previous).Error; err != nil {
+					return err
+				}
+				if previous.HashedUserID == a1.HashUserID("user-id") {
+					return errors.New("user not migrated to a new user identifier")
+				}
+
+				var event Event
+				if err := db.Table("events").First(&event).Error; err != nil {
+					return err
+				}
+				if event.EventID == "event-id" {
+					return errors.New("events not migrated to a new id")
+				}
+				if *event.HashedUserID != previous.HashedUserID {
+					return fmt.Errorf("unexpected user identifier on event %v", *event.HashedUserID)
+				}
+				return nil
+			},
+			false,
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			db, closeDB := createTestDatabase()
+			defer closeDB()
+
+			if err := test.setup(db); err != nil {
+				t.Fatalf("Error setting up test: %v", err)
+			}
+			relational := relationalDatabase{db: db}
+
+			err := relational.AssociateUserSecret("account-id", "user-id", "encrypted-user-secret")
+			if (err != nil) != test.expectError {
+				t.Errorf("Unexpected error value %v", err)
+			}
+			if err := test.assertion(db); err != nil {
+				t.Errorf("Unexpected assertion error: %v", err)
+			}
+		})
+	}
+}
