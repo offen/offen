@@ -51,42 +51,30 @@ func (r *relationalDatabase) Insert(userID, accountID, payload string) error {
 }
 
 func (r *relationalDatabase) Query(query persistence.Query) (map[string][]persistence.EventResult, error) {
-	userID := query.UserID()
 	var result []Event
 	out := map[string][]persistence.EventResult{}
 
-	if userID == "" {
-		if err := r.db.Preload("User").Find(&result, "account_id in (?)", query.AccountIDs()).Error; err != nil {
-			return nil, fmt.Errorf("relational: error looking up account data for %v: %v", query.AccountIDs(), err)
+	var accounts []Account
+	if err := r.db.Find(&accounts).Error; err != nil {
+		return nil, fmt.Errorf("relational: error looking up all accounts: %v", err)
+	}
+
+	userID := query.UserID()
+	hashedUserIDs := hashUserIDForAccounts(userID, accounts)
+
+	var eventConditions []interface{}
+	if query.Since() != "" {
+		eventConditions = []interface{}{
+			"event_id > ? AND hashed_user_id in (?)",
+			query.Since(),
+			hashedUserIDs,
 		}
 	} else {
-		var accounts []Account
-		if len(query.AccountIDs()) == 0 {
-			if err := r.db.Find(&accounts).Error; err != nil {
-				return nil, fmt.Errorf("relational: error looking up all accounts: %v", err)
-			}
-		} else {
-			if err := r.db.Find(&accounts, "account_id in (?)", query.AccountIDs()).Error; err != nil {
-				return nil, fmt.Errorf("relational: error looking up account data: %v", err)
-			}
-		}
+		eventConditions = []interface{}{"hashed_user_id in (?)", hashedUserIDs}
+	}
 
-		hashedUserIDs := hashUserIDForAccounts(userID, accounts)
-
-		var eventConditions []interface{}
-		if query.Since() != "" {
-			eventConditions = []interface{}{
-				"event_id > ? AND hashed_user_id in (?)",
-				query.Since(),
-				hashedUserIDs,
-			}
-		} else {
-			eventConditions = []interface{}{"hashed_user_id in (?)", hashedUserIDs}
-		}
-
-		if err := r.db.Find(&result, eventConditions...).Error; err != nil {
-			return nil, fmt.Errorf("relational: error looking up events: %v", err)
-		}
+	if err := r.db.Find(&result, eventConditions...).Error; err != nil {
+		return nil, fmt.Errorf("relational: error looking up events: %v", err)
 	}
 
 	for _, match := range result {
@@ -98,29 +86,6 @@ func (r *relationalDatabase) Query(query persistence.Query) (map[string][]persis
 		})
 	}
 	return out, nil
-}
-
-func hashUserIDForAccounts(userID string, accounts []Account) []string {
-	hashes := make(chan string)
-	// in case a user queries for a longer list of account ids (or even all of them)
-	// hashing the user ID against all salts can get relatively expensive, so
-	// computation is being done concurrently
-	for _, account := range accounts {
-		go func(account Account) {
-			hash := account.HashUserID(userID)
-			hashes <- hash
-		}(account)
-	}
-
-	var hashedUserIDs []string
-	for result := range hashes {
-		hashedUserIDs = append(hashedUserIDs, result)
-		if len(hashedUserIDs) == len(accounts) {
-			close(hashes)
-			break
-		}
-	}
-	return hashedUserIDs
 }
 
 func (r *relationalDatabase) Purge(userID string) error {
@@ -175,4 +140,30 @@ outer:
 	}
 
 	return deletedIds, nil
+}
+
+func hashUserIDForAccounts(userID string, accounts []Account) []string {
+	if len(accounts) == 0 {
+		return []string{}
+	}
+	hashes := make(chan string)
+	// in case a user queries for a longer list of account ids (or even all of them)
+	// hashing the user ID against all salts can get relatively expensive, so
+	// computation is being done concurrently
+	for _, account := range accounts {
+		go func(account Account) {
+			hash := account.HashUserID(userID)
+			hashes <- hash
+		}(account)
+	}
+
+	var hashedUserIDs []string
+	for result := range hashes {
+		hashedUserIDs = append(hashedUserIDs, result)
+		if len(hashedUserIDs) == len(accounts) {
+			close(hashes)
+			break
+		}
+	}
+	return hashedUserIDs
 }

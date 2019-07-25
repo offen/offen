@@ -163,7 +163,7 @@ func (r *relationalDatabase) CreateAccount(accountID, name string) error {
 	if encryptErr != nil {
 		return fmt.Errorf("relational: error encrypting account private key: %v", encryptErr)
 	}
-	return r.db.Save(&Account{
+	return r.db.Create(&Account{
 		AccountID:          accountID,
 		Name:               name,
 		PublicKey:          string(publicKey),
