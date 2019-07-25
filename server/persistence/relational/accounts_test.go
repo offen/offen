@@ -157,7 +157,7 @@ func TestRelationalDatabase_GetAccount(t *testing.T) {
 			"",
 			func(r persistence.AccountResult) error {
 				if !reflect.DeepEqual(r, persistence.AccountResult{}) {
-					return fmt.Errorf("unexpected result %#v\n", r)
+					return fmt.Errorf("unexpected result %#v", r)
 				}
 				return nil
 			},
