@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>{% block title %}{% endblock %}</title>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="{{ page.description }}">
+  <meta property="og:site_name" content="{{ SITENAME }}">
+  <meta property="og:locale" content="{{ DEFAULT_LANG }}">
+  <meta property="og:title" content="{{ page.title }}">
+  <meta property="og:description" content="{{ page.description }}">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="{{ SITEURL }}/{{ page.save_as }}">
+  <meta property="og:image" content="{{ SITEURL }}/theme/images/offen-logo-social-media.jpg">
+  <meta name="twitter:image:alt" content="offen logo">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="{{ SITEURL }}/{{ page.save_as }}">
+  <link rel="shortcut icon" type="image/x-icon" href="/theme/images/favicon.ico">
+  <link rel="stylesheet" type="text/css" href="/theme/css/fonts.css">
+  <link rel="stylesheet" type="text/css" href="/theme/styles/index.css">
+  <link rel="stylesheet" type="text/css" href="/theme/css/style.css">
+  {% if OFFEN_ACCOUNT_ID %}
+    <script async src="https://script-alpha.offen.dev/script.js" data-account-id="{{ OFFEN_ACCOUNT_ID }}"></script>
+  {% endif %}
+</head>
+
+<body>
+  <div class="wrapper">
+    <header>
+      <a href="/" title="offen home page" alt="offen home page">
+        <img src="/theme/images/logo.svg" alt="offen logo" width="165" height="102" class="logo">
+      </a>
+    </header>
+
+    {% block content %}{% endblock %}
+  </div>
+</body>
+</html>

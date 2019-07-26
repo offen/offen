@@ -2,7 +2,7 @@ help:
 	@echo "    setup"
 	@echo "        Build the containers and install dependencies."
 	@echo "    bootstrap"
-	@echo "        Create a KMS key and initialize the database."
+	@echo "        Set up keys and seed databases."
 	@echo "        IMPORTANT: this wipes any existing data in your local database."
 
 setup:

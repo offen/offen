@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  homepage:
+    build:
+      context: '.'
+      dockerfile: ./../Dockerfile.python
+    working_dir: /offen/homepage
+    volumes:
+      - ..:/offen
+      - homepagedeps:/root/.local
+    command: make devserver
+    ports:
+      - 8000:8000
+
+volumes:
+  homepagedeps:
