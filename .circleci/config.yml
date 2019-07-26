@@ -26,6 +26,11 @@ deploy_preconditions: &deploy_preconditions
     branches:
       only: /^master$/
 
+build_preconditions: &build_preconditions
+  filters:
+    branches:
+      ignore: gh-pages
+
 jobs:
   kms:
     docker:
@@ -415,18 +420,23 @@ jobs:
 workflows:
   version: 2
   test_build_deploy:
-    branches:
-      ignore:
-        - gh-pages
     jobs:
-      - server
-      - kms
-      - vault
-      - script
-      - auditorium
-      - packages
-      - shared
-      - accounts
+      - server:
+          <<: *build_preconditions
+      - kms:
+          <<: *build_preconditions
+      - vault:
+          <<: *build_preconditions
+      - script:
+          <<: *build_preconditions
+      - auditorium:
+          <<: *build_preconditions
+      - packages:
+          <<: *build_preconditions
+      - shared:
+          <<: *build_preconditions
+      - accounts:
+          <<: *build_preconditions
       - deploy_golang:
           <<: *deploy_preconditions
       - deploy_node:
