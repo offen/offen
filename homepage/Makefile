@@ -71,5 +71,8 @@ endif
 publish:
 	$(PELICAN) $(INPUTDIR) -o $(OUTPUTDIR) -s $(PUBLISHCONF) $(PELICANOPTS)
 
+setup:
+	@docker-compose run homepage pip install --user -r requirements.txt
+
 
 .PHONY: html help clean regenerate serve serve-global devserver stopserver publish

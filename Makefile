@@ -2,7 +2,7 @@ help:
 	@echo "    setup"
 	@echo "        Build the containers and install dependencies."
 	@echo "    bootstrap"
-	@echo "        Create a KMS key and initialize the database."
+	@echo "        Set up keys and seed databases."
 	@echo "        IMPORTANT: this wipes any existing data in your local database."
 
 setup:
@@ -13,7 +13,6 @@ setup:
 	@docker-compose run server go mod download
 	@docker-compose run kms go mod download
 	@docker-compose run accounts pip install --user -r requirements.txt -r requirements-dev.txt
-	@docker-compose run homepage pip install --user -r requirements.txt
 	@echo "Successfully built containers and installed dependencies."
 	@echo "If this is your initial setup, you can run 'make bootstrap' next"
 	@echo "to create the needed local keys and seed the database."

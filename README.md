@@ -37,7 +37,19 @@ You can test your setup by starting the application:
 $ docker-compose up
 ```
 
-which should enable you to access <http://localhost:8080/status> seeing a successful response.
+which should enable you to access <http://localhost:9955/> and use the `auditorium`
+
+### Developing the homepage
+
+In order to ease sharing of styles, the <https://www.offen.dev> site is also part of this repository. It runs in a separate development environment:
+
+```
+$ cd homepage
+$ make setup
+$ docker-compose up
+```
+
+A live reloading development server will run on <http://localhost:8000>.
 
 ### License
 

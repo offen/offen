@@ -15,6 +15,7 @@ var withModel = require('./views/decorators/with-model')
 var withError = require('./views/decorators/with-error')
 var withLayout = require('./views/decorators/with-layout')
 
+sf('./styles/index.css')
 sf('./index.css')
 
 var app = choo()
