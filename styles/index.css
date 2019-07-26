@@ -209,7 +209,7 @@ flex-flow: column wrap;
 justify-content: space-around;
 }
 
-.button-wrapper:first-of-type {
+.navigation-wrapper {
 margin: 60px 0 0 0;
 }
 

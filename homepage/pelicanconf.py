@@ -39,4 +39,6 @@ TAGS_SAVE_AS = None
 # keep this for access to page variable
 DIRECT_TEMPLATES = []
 
-OFFEN_ACCOUNT_ID = None
+GITHUB_ORG = 'https://github.com/offen'
+CONTACT_EMAIL = 'mail@offen.dev'
+PATREON_URL = 'https://www.patreon.com/bePatron?u=21484999'

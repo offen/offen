@@ -1,7 +1,7 @@
 Title: Status | offen
 description: offen is a free and open source analytics software for websites and web applications that allows respectful handling of data.
 save_as: status/index.html
-
+href: /status/
 
 ### Current status
 
@@ -30,15 +30,3 @@ Our product story is based on three key questions. What makes __offen__ stand ou
 #### Publicity
 
 This product story is the starting point for publicty efforts that will start as soon as a beta version is available. They include own blog posts, forum marketing as well as SEO measures.
-
-
-<div class="button-wrapper btn-fill-space">
-<a class="btn btn-color-grey" href="../">Summary</a>
-<a class="btn btn-color-grey" href="../deep-dive/">Deep dive</a>
-<a class="btn btn-color-orange" href="mailto:mail@offen.dev">Contact</a>
-</div>
-
-<div class="button-wrapper btn-fill-space">
-<a class="btn btn-color-orange" href="https://github.com/offen" target="_blank">Get involved</a>
-<a class="btn btn-color-orange" href="https://www.patreon.com/bePatron?u=21484999" target="_blank">Support us</a>
-</div>

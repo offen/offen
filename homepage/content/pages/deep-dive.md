@@ -1,6 +1,7 @@
 Title: Deep dive | offen
 description: offen is a free and open source analytics software for websites and web applications that allows respectful handling of data.
 save_as: deep-dive/index.html
+href: /deep-dive/
 
 ### What is this thing called "my data" and why does seemingly everyone want to get hold of it?
 
@@ -74,19 +75,6 @@ Developing and running __offen__ can only work out when it is entirely *free of 
 __offen__ is created by [Frederik Ring][frederik-ring]{: target="_blank"} and [Hendrik Niefeld][hendrik-niefeld]{: target="_blank"} and is currently being conceptually designed, both as a product as well as as a software.
 
 We are happy about any kind of feedback. From *criticism and praise to contributions or support*, everything is welcome.
-
-<div class="button-wrapper btn-fill-space">
-<a class="btn btn-color-grey" href="../">Summary</a>
-<a class="btn btn-color-grey" href="../status/">Status</a>
-<a class="btn btn-color-orange" href="mailto:mail@offen.dev">Contact</a>
-</div>
-
-<div class="button-wrapper btn-fill-space">
-<a class="btn btn-color-orange" href="https://github.com/offen" target="_blank">Get involved</a>
-<a class="btn btn-color-orange" href="https://www.patreon.com/bePatron?u=21484999" target="_blank">Support us</a>
-</div>
-
----
 
 [hendrik-niefeld]: http://niefeld.com/
 [frederik-ring]: https://www.frederikring.com/
