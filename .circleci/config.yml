@@ -403,7 +403,7 @@ jobs:
 
             cp -a output/. out/.
 
-            mkdir -p out/.circleci && cp -a .circleci/. out/.circleci/.
+            mkdir -p out/.circleci && cp -a ./../.circleci/. out/.circleci/.
             cp CNAME out/CNAME
             cd out
 
@@ -415,6 +415,9 @@ jobs:
 workflows:
   version: 2
   test_build_deploy:
+    branches:
+      ignore:
+        - gh-pages
     jobs:
       - server
       - kms
