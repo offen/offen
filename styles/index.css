@@ -281,8 +281,12 @@ display: flex;
 justify-content: flex-start;
 }
 
-.row h4:first-child {
+.row h4 {
 margin-right: 30px;
+}
+
+.row h4:last-child {
+margin-right: 0;
 }
 
 

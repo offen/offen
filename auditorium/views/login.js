@@ -13,15 +13,15 @@ function view (state, emit) {
   }
   var form = html`
     <form onsubmit=${handleSubmit}>
-      <label>
+      <label class="login-form-label">
         <span>Username:</span>
         <input required type="text" name="username" placeholder="Username">
-      </label>
+      </label class="login-form-label">
       <label>
         <span>Password:</span>
         <input required type="password" name="password" placeholder="Password">
       </label>
-      <label>
+      <label class="login-form-label">
         <input type="submit">
       </label>
     </form>
