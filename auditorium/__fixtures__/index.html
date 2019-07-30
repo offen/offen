@@ -56,6 +56,12 @@
         }), '*')
         loginCalled++
       }
+      if (event.data.type === 'OPTOUT') {
+        event.source.postMessage({
+          responseTo: event.data.respondWith,
+          payload: null
+        }, '*')
+      }
     })
   </script>
 </body>

@@ -174,3 +174,46 @@ function purgeWith (purgeUrl) {
       .then(handleFetchResponse)
   }
 }
+
+exports.optout = optoutWith(process.env.SERVER_HOST + '/opt-out')
+exports.optoutWith = optoutWith
+
+function optoutWith (optoutUrl) {
+  return function () {
+    return safelyReceiveCookies(optoutUrl)
+  }
+}
+
+exports.optin = optoutWith(process.env.SERVER_HOST + '/opt-in')
+exports.optinWith = optinWith
+
+function optinWith (optinUrl) {
+  return function () {
+    return safelyReceiveCookies(optinUrl)
+  }
+}
+
+// This is being used for setting and deleting opt-out cookies. It requires
+// the two-step process so this can really be protected using CORS. If this would
+// use a single call only, CORS would only protect the response payload, yet
+// the Set-Cookie header would also have effects on a request that would be
+// blocked by the CORS configuration. By requiring the server generated payload
+// to actually set the cookie, we can make sure the caller has actually passed
+// the CORS requirements.
+function safelyReceiveCookies (endpointUrl) {
+  return window
+    .fetch(endpointUrl, {
+      method: 'POST',
+      credentials: 'include'
+    })
+    .then(handleFetchResponse)
+    .then(function (params) {
+      var url = new window.URL(endpointUrl)
+      url.search = new window.URLSearchParams(params)
+      return window.fetch(url, {
+        method: 'GET',
+        credentials: 'include'
+      })
+    })
+    .then(handleFetchResponse)
+}

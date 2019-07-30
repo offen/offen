@@ -15,15 +15,16 @@ import (
 
 func main() {
 	var (
-		port               = flag.String("port", os.Getenv("PORT"), "the port the server binds to")
-		connectionString   = flag.String("conn", os.Getenv("POSTGRES_CONNECTION_STRING"), "a database connection string")
-		origin             = flag.String("origin", "http://localhost:9977", "the origin used in CORS headers")
-		logLevel           = flag.String("level", "info", "the application's log level")
-		optoutCookieDomain = flag.String("optout", "localhost", "domain value for the optout cookie")
-		jwtPublicKey       = flag.String("jwt", os.Getenv("JWT_PUBLIC_KEY"), "the location of the JWT public key")
-		secureCookie       = flag.Bool("secure", false, "use secure cookies")
-		encryptionEndpoint = flag.String("kms", os.Getenv("KMS_ENCRYPTION_ENDPOINT"), "the KMS service's encryption endpoint")
-		development        = flag.Bool("develop", os.Getenv("DEVELOPMENT") != "", "add verbose logging")
+		port                 = flag.String("port", os.Getenv("PORT"), "the port the server binds to")
+		connectionString     = flag.String("conn", os.Getenv("POSTGRES_CONNECTION_STRING"), "a database connection string")
+		origin               = flag.String("origin", "http://localhost:9977", "the origin used in CORS headers")
+		logLevel             = flag.String("level", "info", "the application's log level")
+		optoutCookieDomain   = flag.String("optout", "localhost", "domain value for the optout cookie")
+		jwtPublicKey         = flag.String("jwt", os.Getenv("JWT_PUBLIC_KEY"), "the location of the JWT public key")
+		secureCookie         = flag.Bool("secure", false, "use secure cookies")
+		encryptionEndpoint   = flag.String("kms", os.Getenv("KMS_ENCRYPTION_ENDPOINT"), "the KMS service's encryption endpoint")
+		development          = flag.Bool("develop", os.Getenv("DEVELOPMENT") != "", "add verbose logging")
+		cookieExchangeSecret = flag.String("exchangesecret", os.Getenv("COOKIE_EXCHANGE_SECRET"), "the secret used for signing cookie exchange tokens")
 	)
 	flag.Parse()
 
@@ -53,6 +54,7 @@ func main() {
 			router.WithOptoutCookieDomain(*optoutCookieDomain),
 			router.WithCORSOrigin(*origin),
 			router.WithJWTPublicKey(*jwtPublicKey),
+			router.WithCookieExchangeSecret(*cookieExchangeSecret),
 		),
 	}
 

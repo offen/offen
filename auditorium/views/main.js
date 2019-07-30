@@ -14,12 +14,7 @@ function formatPercentage (value) {
 
 function view (state, emit) {
   function handleOptout () {
-    state.model.showPixel = true
-    emit(state.events.RENDER)
-  }
-
-  function handleOptoutSuccess () {
-    emit('offen:query')
+    emit('offen:optout', !state.model.hasOptedOut)
   }
 
   function handlePurge () {
@@ -155,12 +150,6 @@ function view (state, emit) {
     `
     : null
 
-  var optoutPixelSrc = state.model.hasOptedOut
-    ? process.env.OPT_IN_PIXEL_LOCATION
-    : process.env.OPT_OUT_PIXEL_LOCATION
-  var optoutPixel = state.model.showPixel
-    ? html`<img data-role="optout-pixel" src="${optoutPixelSrc}" onload=${handleOptoutSuccess}>`
-    : null
   var manage = !isOperator && state.model.allowsCookies
     ? html`
       <h4>Manage your data</h4>
@@ -171,9 +160,6 @@ function view (state, emit) {
         <button class="btn btn-color-grey" data-role="purge" onclick="${handlePurge}">
           Delete my data
         </button>
-      </div>
-      <div class="opt-out-pixel">
-        ${optoutPixel}
       </div>
     `
     : null

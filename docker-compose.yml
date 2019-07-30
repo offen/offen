@@ -47,6 +47,7 @@ services:
       PORT: 8080
       JWT_PUBLIC_KEY: http://accounts:5000/api/key
       DEVELOPMENT: '1'
+      COOKIE_EXCHANGE_SECRET: Wsttdo4Z3mXV5sTc
     ports:
       - 8080:8080
     command: refresh run
@@ -100,8 +101,6 @@ services:
       - 9955:9955
     environment:
       - VAULT_HOST=http://localhost:9977
-      - OPT_OUT_PIXEL_LOCATION=http://localhost:8080/opt-out
-      - OPT_IN_PIXEL_LOCATION=http://localhost:8080/opt-in
 
   accounts:
     build:

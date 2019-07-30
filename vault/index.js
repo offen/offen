@@ -3,6 +3,7 @@ var handleAnonymousEvent = require('./src/handle-anonymous-event')
 var handleQuery = require('./src/handle-query')
 var handleLogin = require('./src/handle-login')
 var handlePurge = require('./src/handle-purge')
+var handleOptout = require('./src/handle-optout')
 var handleOptoutStatus = require('./src/handle-optout-status')
 var allowsCookies = require('./src/allows-cookies')
 var hasOptedOut = require('./src/user-optout')
@@ -72,6 +73,9 @@ window.addEventListener('message', function (event) {
       break
     case 'PURGE':
       handler = handlePurge
+      break
+    case 'OPTOUT':
+      handler = handleOptout
       break
     case 'OPTOUT_STATUS':
       handler = handleOptoutStatus
