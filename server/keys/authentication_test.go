@@ -7,31 +7,42 @@ import (
 
 func TestAuthentication(t *testing.T) {
 	t.Run("empty secret", func(t *testing.T) {
-		_, err := NewAuthentication(nil, time.Second)
+		_, err := NewAuthentication("test", nil, time.Second)
 		if err == nil {
 			t.Error("Expected error, got nil")
 		}
 	})
 
 	t.Run("expired", func(t *testing.T) {
-		a, err := NewAuthentication([]byte("ABC123"), time.Millisecond)
+		a, err := NewAuthentication("test", []byte("ABC123"), time.Millisecond)
 		if err != nil {
 			t.Fatalf("Unexpected error %v", err)
 		}
 		time.Sleep(2 * time.Millisecond)
-		if err := a.Validate([]byte("ABC123")); err == nil {
+		if err := a.Validate("test", []byte("ABC123")); err == nil {
 			t.Error("Expected error, got nil")
 		}
 	})
 
 	t.Run("ok", func(t *testing.T) {
-		a, err := NewAuthentication([]byte("ABC123"), time.Second)
+		a, err := NewAuthentication("test", []byte("ABC123"), time.Second)
 		if err != nil {
 			t.Fatalf("Unexpected error %v", err)
 		}
 		time.Sleep(2 * time.Millisecond)
-		if err := a.Validate([]byte("ABC123")); err != nil {
+		if err := a.Validate("test", []byte("ABC123")); err != nil {
 			t.Errorf("Unexpected error %v", err)
+		}
+	})
+
+	t.Run("bad scope", func(t *testing.T) {
+		a, err := NewAuthentication("test", []byte("ABC123"), time.Second)
+		if err != nil {
+			t.Fatalf("Unexpected error %v", err)
+		}
+		time.Sleep(2 * time.Millisecond)
+		if err := a.Validate("other", []byte("ABC123")); err == nil {
+			t.Error("Expected error, got nil")
 		}
 	})
 
@@ -42,7 +53,7 @@ func TestAuthentication(t *testing.T) {
 			Signature: "c29tZXRoaW5nLXNvbWV0aGluZw==",
 		}
 		time.Sleep(2 * time.Millisecond)
-		if err := a.Validate([]byte("ABC123")); err == nil {
+		if err := a.Validate("test", []byte("ABC123")); err == nil {
 			t.Error("Expected error, got nil")
 		}
 	})

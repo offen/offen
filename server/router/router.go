@@ -147,11 +147,11 @@ func New(opts ...Config) http.Handler {
 	m.Use(recovery, cors, json)
 
 	optout := m.PathPrefix("/opt-out").Subrouter()
-	optout.HandleFunc("", rt.postOptoutOptin).Methods(http.MethodPost)
+	optout.HandleFunc("", rt.postOptout).Methods(http.MethodPost)
 	optout.HandleFunc("", rt.getOptout).Methods(http.MethodGet)
 
 	optin := m.PathPrefix("/opt-in").Subrouter()
-	optin.HandleFunc("", rt.postOptoutOptin).Methods(http.MethodPost)
+	optin.HandleFunc("", rt.postOptin).Methods(http.MethodPost)
 	optin.HandleFunc("", rt.getOptin).Methods(http.MethodGet)
 
 	exchange := m.PathPrefix("/exchange").Subrouter()
