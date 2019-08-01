@@ -19,9 +19,9 @@ type Authentication struct {
 
 // Validate checks if the authentication is valid against the given secret and
 // if it hasn't expired yet.
-func (a *Authentication) Validate(secret []byte) error {
+func (a *Authentication) Validate(scope string, secret []byte) error {
 	mac := hmac.New(sha256.New, secret)
-	_, writeErr := mac.Write([]byte(fmt.Sprintf("%s-%d", a.Token, a.Expires)))
+	_, writeErr := mac.Write([]byte(fmt.Sprintf("%s-%s-%d", scope, a.Token, a.Expires)))
 	if writeErr != nil {
 		return fmt.Errorf("authentication: error decoding signature: %v", writeErr)
 	}
@@ -41,7 +41,7 @@ func (a *Authentication) Validate(secret []byte) error {
 
 // NewAuthentication generates a new set of credentials using the given secret.
 // The credentials are considered valid until the given deadline has passed.
-func NewAuthentication(secret []byte, deadline time.Duration) (*Authentication, error) {
+func NewAuthentication(scope string, secret []byte, deadline time.Duration) (*Authentication, error) {
 	if len(secret) == 0 {
 		return nil, errors.New("authentication: received empty secret, cannot continue")
 	}
@@ -52,7 +52,7 @@ func NewAuthentication(secret []byte, deadline time.Duration) (*Authentication, 
 	expires := time.Now().Add(deadline).Unix()
 
 	mac := hmac.New(sha256.New, secret)
-	_, writeErr := mac.Write([]byte(fmt.Sprintf("%s-%d", token, expires)))
+	_, writeErr := mac.Write([]byte(fmt.Sprintf("%s-%s-%d", scope, token, expires)))
 	if writeErr != nil {
 		return nil, fmt.Errorf("authentication: error writing signature: %v", writeErr)
 	}

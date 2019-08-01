@@ -16,7 +16,7 @@ func TestRouter_optout(t *testing.T) {
 	}
 	w := httptest.NewRecorder()
 	r := httptest.NewRequest(http.MethodPost, "/", nil)
-	rt.postOptoutOptin(w, r)
+	rt.postOptout(w, r)
 
 	cookies := w.Result().Cookies()
 	if len(cookies) != 0 {
