@@ -18,7 +18,7 @@ window.addEventListener('message', function (event) {
   var message = event.data
   var origin = event.origin
 
-  function withSourceCheck (handler) {
+  function limitSource (handler) {
     return function () {
       if (ALLOWED_HOSTS.indexOf(origin) === -1) {
         console.warn('Incoming message had untrusted origin "' + origin + '", will not process.')
@@ -29,10 +29,6 @@ window.addEventListener('message', function (event) {
   }
 
   function respond (responseMessage) {
-    if (ALLOWED_HOSTS.indexOf(origin) === -1) {
-      console.warn('Incoming message had untrusted origin "' + origin + '", will not respond.')
-      return
-    }
     responseMessage = Object.assign(
       { responseTo: message.respondWith },
       responseMessage
@@ -76,25 +72,46 @@ window.addEventListener('message', function (event) {
       break
     }
     case 'QUERY':
-      handler = withSourceCheck(handleQuery)
+      handler = limitSource(handleQuery)
       break
     case 'LOGIN':
-      handler = withSourceCheck(handleLogin)
+      handler = limitSource(handleLogin)
       break
     case 'PURGE':
-      handler = withSourceCheck(handlePurge)
+      handler = limitSource(handlePurge)
       break
     case 'OPTOUT':
-      handler = withSourceCheck(handleOptout)
+      handler = limitSource(handleOptout)
       break
     case 'OPTOUT_STATUS':
-      handler = withSourceCheck(handleOptoutStatus)
+      handler = limitSource(handleOptoutStatus)
       break
   }
 
-  Promise.resolve(handler(message, respond))
+  Promise.resolve(handler(message))
+    .then(function (response) {
+      if (response) {
+        respond(response)
+      }
+    }, function (err) {
+      // this is not in a catch block on purpose as
+      // it tries to prevent a situation where calling
+      // `respond` throws an error, which would in turn
+      // call it again, throwing another error
+      if (process.env.NODE_ENV !== 'production') {
+        console.error(err)
+      }
+      respond({
+        type: 'ERROR',
+        payload: {
+          error: err.message,
+          stack: err.stack
+        }
+      })
+    })
     .catch(function (err) {
       if (process.env.NODE_ENV !== 'production') {
+        console.log('Error responding to incoming message.')
         console.error(err)
       }
     })

@@ -29,10 +29,6 @@ function store (state, emitter) {
       .catch(function (err) {
         if (process.env.NODE_ENV !== 'production') {
           console.error(err)
-          if (err.originalStack) {
-            console.log('Error has been thrown in vault with original stacktrace:')
-            console.log(err.originalStack)
-          }
         }
         state.error = {
           message: err.message,

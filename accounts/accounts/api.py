@@ -83,6 +83,9 @@ def post_login():
 @json_error
 def get_login():
     auth_cookie = request.cookies.get(COOKIE_KEY)
+    if not auth_cookie:
+        return jsonify({"error": "no auth cookie in request", "status": 401}), 401
+
     public_keys = app.config["JWT_PUBLIC_KEYS"]
 
     token = None

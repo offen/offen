@@ -179,9 +179,9 @@ func New(opts ...Config) http.Handler {
 	events.Handle("", receiveEvents).Methods(http.MethodPost).Queries("anonymous", "1")
 	events.Handle("", userCookie(receiveEvents)).Methods(http.MethodPost)
 
-	m.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	m.NotFoundHandler = cors(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		httputil.RespondWithJSONError(w, errors.New("Not found"), http.StatusNotFound)
-	})
+	}))
 
 	if rt.logger == nil {
 		return m

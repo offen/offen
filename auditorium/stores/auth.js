@@ -17,19 +17,25 @@ function store (state, emitter) {
         return postMessage(queryRequest)
       })
       .then(function (response) {
-        state.authenticatedUser = response.payload.user
-        if (credentials) {
-          state.flash = 'You are now logged in.'
-          emitter.emit(state.events.PUSHSTATE, '/account')
-        }
-      })
-      .catch(function (err) {
-        if (err.status === 401) {
+        if (response.type === 'LOGIN_SUCCESS') {
+          state.authenticatedUser = response.payload.user
+          if (credentials) {
+            state.flash = 'You are now logged in.'
+            emitter.emit(state.events.PUSHSTATE, '/account')
+          }
+          return
+        } else if (response.type === 'LOGIN_FAILURE') {
           state.flash = 'Could not log in. Try again.'
           emitter.emit(state.events.PUSHSTATE, '/login')
           return
         }
-        state.error = err
+        throw new Error('Received unknown response type: ' + response.type)
+      })
+      .catch(function (err) {
+        state.error = {
+          message: err.message,
+          stack: err.originalStack || err.stack
+        }
       })
       .then(function () {
         emitter.emit(state.events.RENDER)

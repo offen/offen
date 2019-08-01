@@ -1,8 +1,8 @@
 var api = require('./api')
 
-module.exports = handleQuery
+module.exports = handleLogin
 
-function handleQuery (message, respond) {
+function handleLogin (message) {
   var credentials = (message.payload && message.payload.credentials) || null
 
   return api.login(credentials)
@@ -13,14 +13,14 @@ function handleQuery (message, respond) {
       }
     })
     .catch(function (err) {
-      return {
-        type: 'ERROR',
-        payload: {
-          error: err.message,
-          stack: err.stack,
-          status: err.status
+      if (err.status === 401) {
+        return {
+          type: 'LOGIN_FAILURE',
+          payload: {
+            message: err.message
+          }
         }
       }
+      throw err
     })
-    .then(respond)
 }
