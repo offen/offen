@@ -9,6 +9,7 @@ var buffer = require('vinyl-buffer')
 var revReplace = require('gulp-rev-replace')
 var sriHash = require('gulp-sri-hash')
 var rename = require('gulp-rename')
+var gap = require('gulp-append-prepend')
 
 gulp.task('clean:pre', function () {
   return gulp
@@ -34,6 +35,9 @@ gulp.task('bundle:script', function () {
     .bundle()
     .pipe(source('index.js'))
     .pipe(buffer())
+    .pipe(gap.prependText('*/'))
+    .pipe(gap.prependFile('./../banner.txt'))
+    .pipe(gap.prependText('/**'))
     .pipe(rev())
     .pipe(gulp.dest('./dist/'))
     .pipe(rev.manifest('./dist/rev-manifest.json', { base: './dist', merge: true }))
@@ -51,6 +55,9 @@ gulp.task('bundle:vendor', function () {
     // the `tinyify` plugin fails on mangling plotly for unknown reasons, so
     // it is being uglified instead: https://github.com/browserify/tinyify/issues/13
     .pipe(uglify())
+    .pipe(gap.prependText('*/'))
+    .pipe(gap.prependFile('./../banner.txt'))
+    .pipe(gap.prependText('/**'))
     .pipe(rev())
     .pipe(gulp.dest('./dist/'))
     .pipe(rev.manifest('./dist/rev-manifest.json', { base: './dist', merge: true }))
@@ -60,6 +67,9 @@ gulp.task('bundle:vendor', function () {
 gulp.task('revreplace', function () {
   return gulp.src('./template.html')
     .pipe(rename('./index.html'))
+    .pipe(gap.prependText('-->'))
+    .pipe(gap.prependFile('./../banner.txt'))
+    .pipe(gap.prependText('<!--'))
     .pipe(revReplace({ manifest: gulp.src('./dist/rev-manifest.json') }))
     .pipe(gulp.dest('./dist/'))
     .pipe(sriHash({ relative: true }))

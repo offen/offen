@@ -11,8 +11,8 @@
     "pretest": "dependency-check package.json",
     "posttest": "standard",
     "fix": "standard --fix",
-    "prebuild": "mkdir -p dist",
-    "build": "browserify index.js -p tinyify > dist/script.js"
+    "prebuild": "mkdir -p dist && echo '/**' > dist/script.js && cat ./../banner.txt >> dist/script.js && echo '*/' >> dist/script.js",
+    "build": "browserify index.js -p tinyify >> dist/script.js"
   },
   "dependencies": {
     "history-events": "^1.0.4",
