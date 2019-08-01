@@ -1,0 +1,9 @@
+offen is a free and open source analytics software for websites and
+web applications that allows for respectful handling of data.
+
+You can access and manage all of your personal data, or opt-out
+at https://auditorium-alpha.offen.dev.
+
+Find out more about why we are building offen at https://www.offen.dev.
+
+All source code is available at https://github.com/offen/offen.

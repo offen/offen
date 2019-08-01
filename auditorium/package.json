@@ -31,6 +31,7 @@
     "dependency-check": "^3.3.0",
     "envify": "^4.1.0",
     "gulp": "^3.9.1",
+    "gulp-append-prepend": "^1.0.8",
     "gulp-clean": "^0.4.0",
     "gulp-rename": "^1.4.0",
     "gulp-rev": "^9.0.0",
