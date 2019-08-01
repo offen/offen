@@ -14,13 +14,14 @@ import (
 )
 
 type router struct {
-	db                 persistence.Database
-	logger             *logrus.Logger
-	secureCookie       bool
-	optoutCookieDomain string
-	userCookieDomain   string
-	corsOrigin         string
-	jwtPublicKey       string
+	db                   persistence.Database
+	logger               *logrus.Logger
+	secureCookie         bool
+	optoutCookieDomain   string
+	userCookieDomain     string
+	corsOrigin           string
+	jwtPublicKey         string
+	cookieExchangeSecret []byte
 }
 
 func (rt *router) logError(err error, message string) {
@@ -114,6 +115,14 @@ func WithJWTPublicKey(k string) Config {
 	}
 }
 
+// WithCookieExchangeSecret sets the secret to be used for signing secured
+// cookie exchange requests
+func WithCookieExchangeSecret(s string) Config {
+	return func(r *router) {
+		r.cookieExchangeSecret = []byte(s)
+	}
+}
+
 // New creates a new application router that reads and writes data
 // to the given database implementation. In the context of the application
 // this expects to be the only top level router in charge of handling all
@@ -126,7 +135,6 @@ func New(opts ...Config) http.Handler {
 	m := mux.NewRouter()
 
 	json := httputil.ContentTypeMiddleware("application/json")
-	gif := httputil.ContentTypeMiddleware("image/gif")
 	cors := httputil.CorsMiddleware(rt.corsOrigin)
 	dropOptout := httputil.OptoutMiddleware(optoutKey)
 	recovery := thunk.HandleSafelyWith(func(err error) {
@@ -136,48 +144,44 @@ func New(opts ...Config) http.Handler {
 	})
 	userCookie := httputil.UserCookieMiddleware(cookieKey, contextKeyCookie)
 
-	m.Use(recovery, cors)
+	m.Use(recovery, cors, json)
 
 	optout := m.PathPrefix("/opt-out").Subrouter()
-	optout.Use(gif)
-	optout.HandleFunc("", rt.optout).Methods(http.MethodGet)
+	optout.HandleFunc("", rt.postOptoutOptin).Methods(http.MethodPost)
+	optout.HandleFunc("", rt.getOptout).Methods(http.MethodGet)
 
 	optin := m.PathPrefix("/opt-in").Subrouter()
-	optin.Use(gif)
-	optin.HandleFunc("", rt.optin).Methods(http.MethodGet)
+	optin.HandleFunc("", rt.postOptoutOptin).Methods(http.MethodPost)
+	optin.HandleFunc("", rt.getOptin).Methods(http.MethodGet)
 
 	exchange := m.PathPrefix("/exchange").Subrouter()
-	exchange.Use(json)
 	exchange.HandleFunc("", rt.getPublicKey).Methods(http.MethodGet)
 	exchange.HandleFunc("", rt.postUserSecret).Methods(http.MethodPost)
 
 	getAuth := httputil.JWTProtect(rt.jwtPublicKey, authKey, authHeader, getAuthorizer)
 	postAuth := httputil.JWTProtect(rt.jwtPublicKey, authKey, authHeader, postAuthorizer)
 	accounts := m.PathPrefix("/accounts").Subrouter()
-	accounts.Use(json)
 	accounts.Handle("", getAuth(http.HandlerFunc(rt.getAccount))).Methods(http.MethodGet)
 	accounts.Handle("", postAuth(http.HandlerFunc(rt.postAccount))).Methods(http.MethodPost)
 
 	deleted := m.PathPrefix("/deleted").Subrouter()
-	deleted.Use(json)
 	deletedEventsForUser := userCookie(http.HandlerFunc(rt.getDeletedEvents))
 	deleted.Handle("", deletedEventsForUser).Methods(http.MethodPost).Queries("user", "1")
 	deleted.HandleFunc("", rt.getDeletedEvents).Methods(http.MethodPost)
 
 	purge := m.PathPrefix("/purge").Subrouter()
-	purge.Use(json, userCookie)
+	purge.Use(userCookie)
 	purge.HandleFunc("", rt.purgeEvents).Methods(http.MethodPost)
 
 	events := m.PathPrefix("/events").Subrouter()
-	events.Use(json)
 	events.Handle("", userCookie(http.HandlerFunc(rt.getEvents))).Methods(http.MethodGet)
 	receiveEvents := dropOptout(http.HandlerFunc(rt.postEvents))
 	events.Handle("", receiveEvents).Methods(http.MethodPost).Queries("anonymous", "1")
 	events.Handle("", userCookie(receiveEvents)).Methods(http.MethodPost)
 
-	m.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	m.NotFoundHandler = cors(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		httputil.RespondWithJSONError(w, errors.New("Not found"), http.StatusNotFound)
-	})
+	}))
 
 	if rt.logger == nil {
 		return m

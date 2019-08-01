@@ -68,6 +68,7 @@ functions:
       CORS_ORIGIN: https://${self:custom.origin.${self:custom.stage}}
       KMS_ENCRYPTION_ENDPOINT: ${self:custom.encryptionEndpoint.${self:custom.stage}}
       POSTGRES_CONNECTION_STRING: ${ssm:/aws/reference/secretsmanager/${self:custom.stage}/server/postgresConnectionString~true}
+      COOKIE_EXCHANGE_SECRET: ${ssm:/aws/reference/secretsmanager/${self:custom.stage}/server/cookieExchangeSecret~true}
     events:
       - http:
           path: '{proxy+}'

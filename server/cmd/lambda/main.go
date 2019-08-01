@@ -37,6 +37,7 @@ func init() {
 	_, secureCookie := os.LookupEnv("SECURE_COOKIE")
 	optoutCookieDomain := os.Getenv("OPTOUT_COOKIE_DOMAIN")
 	jwtPublicKey := os.Getenv("JWT_PUBLIC_KEY")
+	cookieExchangeSecret := os.Getenv("COOKIE_EXCHANGE_SECRET")
 
 	rt := router.New(
 		router.WithDatabase(db),
@@ -45,6 +46,7 @@ func init() {
 		router.WithOptoutCookieDomain(optoutCookieDomain),
 		router.WithCORSOrigin(origin),
 		router.WithJWTPublicKey(jwtPublicKey),
+		router.WithCookieExchangeSecret(cookieExchangeSecret),
 	)
 	adapter = httpadapter.New(rt)
 }

@@ -6,7 +6,13 @@ module.exports = handleAnonymousEvent
 // It is **important** that this handler does **not** call the passed
 // response function as this would try responding to untrusted domains and
 // raise an error.
-function handleAnonymousEvent (message, respond) {
+function handleAnonymousEvent (message) {
   var accountId = message.payload.accountId
   return relayEvent(accountId, message.payload.event, true)
+    .then(function () {
+      return null
+    })
+    .catch(function () {
+      return null
+    })
 }

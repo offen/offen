@@ -13,10 +13,9 @@
         }
       },
       {
-        type: 'ERROR',
+        type: 'LOGIN_FAILURE',
         payload: {
-          error: 'Session expired',
-          status: 401
+          message: 'Session expired'
         }
       },
       {
@@ -55,6 +54,12 @@
           responseTo: event.data.respondWith
         }), '*')
         loginCalled++
+      }
+      if (event.data.type === 'OPTOUT') {
+        event.source.postMessage({
+          responseTo: event.data.respondWith,
+          payload: null
+        }, '*')
       }
     })
   </script>

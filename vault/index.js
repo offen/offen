@@ -3,6 +3,7 @@ var handleAnonymousEvent = require('./src/handle-anonymous-event')
 var handleQuery = require('./src/handle-query')
 var handleLogin = require('./src/handle-login')
 var handlePurge = require('./src/handle-purge')
+var handleOptout = require('./src/handle-optout')
 var handleOptoutStatus = require('./src/handle-optout-status')
 var allowsCookies = require('./src/allows-cookies')
 var hasOptedOut = require('./src/user-optout')
@@ -11,17 +12,23 @@ var hasOptedOut = require('./src/user-optout')
 // by adding `respondWith` to messages. It is important to keep this restricted
 // to trusted applications only, otherwise decrypted event data may leak to
 // third parties.
-var ALLOWED_HOSTS = [process.env.AUDITORIUM_HOST]
+var ALLOWED_HOSTS = [process.env.AUDITORIUM_HOST, process.env.HOMEPAGE_HOST]
 
 window.addEventListener('message', function (event) {
   var message = event.data
   var origin = event.origin
 
-  function respond (responseMessage) {
-    if (ALLOWED_HOSTS.indexOf(origin) === -1) {
-      console.warn('Incoming message had untrusted origin "' + origin + '", will not respond.')
-      return
+  function limitSource (handler) {
+    return function () {
+      if (ALLOWED_HOSTS.indexOf(origin) === -1) {
+        console.warn('Incoming message had untrusted origin "' + origin + '", will not process.')
+        return
+      }
+      return handler.apply(null, [].slice.call(arguments))
     }
+  }
+
+  function respond (responseMessage) {
     responseMessage = Object.assign(
       { responseTo: message.respondWith },
       responseMessage
@@ -65,22 +72,46 @@ window.addEventListener('message', function (event) {
       break
     }
     case 'QUERY':
-      handler = handleQuery
+      handler = limitSource(handleQuery)
       break
     case 'LOGIN':
-      handler = handleLogin
+      handler = limitSource(handleLogin)
       break
     case 'PURGE':
-      handler = handlePurge
+      handler = limitSource(handlePurge)
+      break
+    case 'OPTOUT':
+      handler = limitSource(handleOptout)
       break
     case 'OPTOUT_STATUS':
-      handler = handleOptoutStatus
+      handler = limitSource(handleOptoutStatus)
       break
   }
 
-  Promise.resolve(handler(message, respond))
+  Promise.resolve(handler(message))
+    .then(function (response) {
+      if (response) {
+        respond(response)
+      }
+    }, function (err) {
+      // this is not in a catch block on purpose as
+      // it tries to prevent a situation where calling
+      // `respond` throws an error, which would in turn
+      // call it again, throwing another error
+      if (process.env.NODE_ENV !== 'production') {
+        console.error(err)
+      }
+      respond({
+        type: 'ERROR',
+        payload: {
+          error: err.message,
+          stack: err.stack
+        }
+      })
+    })
     .catch(function (err) {
       if (process.env.NODE_ENV !== 'production') {
+        console.log('Error responding to incoming message.')
         console.error(err)
       }
     })

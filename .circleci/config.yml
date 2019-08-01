@@ -3,13 +3,12 @@ version: 2
 production_env: &production_env
   environment:
     - SERVER_HOST=https://server-alpha.offen.dev
-    - OPT_OUT_PIXEL_LOCATION=https://server-alpha.offen.dev/opt-out
-    - OPT_IN_PIXEL_LOCATION=https://server-alpha.offen.dev/opt-in
     - KMS_HOST=https://kms-alpha.offen.dev
     - SCRIPT_HOST=https://script-alpha.offen.dev
     - AUDITORIUM_HOST=https://auditorium-alpha.offen.dev
     - VAULT_HOST=https://vault-alpha.offen.dev
     - ACCOUNTS_HOST=https://accounts-alpha.offen.dev
+    - HOMEPAGE_HOST=https://www.offen.dev
     - NODE_ENV=production
 
 deploy_preconditions: &deploy_preconditions

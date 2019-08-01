@@ -3,7 +3,7 @@ var getOperatorEvents = require('./get-operator-events')
 
 module.exports = handleQuery
 
-function handleQuery (message, respond) {
+function handleQuery (message) {
   var query = message.payload
     ? message.payload.query
     : null
@@ -22,14 +22,4 @@ function handleQuery (message, respond) {
         }
       }
     })
-    .catch(function (err) {
-      return {
-        type: 'ERROR',
-        payload: {
-          error: err.message,
-          stack: err.stack
-        }
-      }
-    })
-    .then(respond)
 }

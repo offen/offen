@@ -83,16 +83,8 @@ describe('views/main.js', function () {
       var chart = result.querySelector('.chart')
       assert(chart)
 
-      var optoutPixel = result.querySelector('[data-role="optout-pixel"]')
-      assert.strictEqual(optoutPixel, null)
-
       var optoutButton = result.querySelector('[data-role="optout"]')
       assert(optoutButton)
-      optoutButton.dispatchEvent(new window.Event('click'))
-
-      result = mainView(app.state, app.emit)
-      optoutPixel = result.querySelector('[data-role="optout-pixel"]')
-      assert(optoutPixel)
     })
   })
 })

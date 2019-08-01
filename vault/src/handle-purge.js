@@ -4,9 +4,9 @@ var handleQuery = require('./handle-query')
 
 module.exports = handlePurge
 
-function handlePurge (message, respond) {
+function handlePurge (message) {
   return Promise.all([api.purge(), queries.purge()])
     .then(function () {
-      return handleQuery(message, respond)
+      return handleQuery(message)
     })
 }
