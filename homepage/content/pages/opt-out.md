@@ -8,4 +8,21 @@ This will prevent __offen__ from aggregating the actions you have taken on parti
 
 Operators now cannot draw any conclusions from your actions via __offen__. At the same time, however, they *cannot create a better experience* for you and other users.
 
-<img style="-webkit-user-select: none; display:none;" src="https://server-alpha.offen.dev/opt-out">
+<script>
+  var vault = document.createElement('iframe')
+  vault.style.display = 'none'
+  vault.setAttribute('width', '0')
+  vault.setAttribute('height', '0')
+  vault.setAttribute('frameBorder', '0')
+  vault.setAttribute('scrolling', 'no')
+  vault.addEventListener('load', function (e) {
+    vault.contentWindow.postMessage({
+      type: 'OPTOUT',
+      payload: {
+        status: true
+      }
+    }, '*')
+  })
+  vault.src = 'https://vault-alpha.offen.dev'
+  document.body.append(vault)
+</script>

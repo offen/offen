@@ -8,6 +8,7 @@ production_env: &production_env
     - AUDITORIUM_HOST=https://auditorium-alpha.offen.dev
     - VAULT_HOST=https://vault-alpha.offen.dev
     - ACCOUNTS_HOST=https://accounts-alpha.offen.dev
+    - HOMEPAGE_HOST=https://www.offen.dev
     - NODE_ENV=production
 
 deploy_preconditions: &deploy_preconditions

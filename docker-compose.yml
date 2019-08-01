@@ -73,6 +73,7 @@ services:
       - SCRIPT_HOST=http://localhost:9977
       - AUDITORIUM_HOST=http://localhost:9955
       - ACCOUNTS_HOST=http://localhost:5000
+      - HOMEPAGE_HOST=http://localhost:8000
 
   script:
     build:

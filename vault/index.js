@@ -12,11 +12,21 @@ var hasOptedOut = require('./src/user-optout')
 // by adding `respondWith` to messages. It is important to keep this restricted
 // to trusted applications only, otherwise decrypted event data may leak to
 // third parties.
-var ALLOWED_HOSTS = [process.env.AUDITORIUM_HOST]
+var ALLOWED_HOSTS = [process.env.AUDITORIUM_HOST, process.env.HOMEPAGE_HOST]
 
 window.addEventListener('message', function (event) {
   var message = event.data
   var origin = event.origin
+
+  function withSourceCheck (handler) {
+    return function () {
+      if (ALLOWED_HOSTS.indexOf(origin) === -1) {
+        console.warn('Incoming message had untrusted origin "' + origin + '", will not process.')
+        return
+      }
+      return handler.apply(null, [].slice.call(arguments))
+    }
+  }
 
   function respond (responseMessage) {
     if (ALLOWED_HOSTS.indexOf(origin) === -1) {
@@ -66,19 +76,19 @@ window.addEventListener('message', function (event) {
       break
     }
     case 'QUERY':
-      handler = handleQuery
+      handler = withSourceCheck(handleQuery)
       break
     case 'LOGIN':
-      handler = handleLogin
+      handler = withSourceCheck(handleLogin)
       break
     case 'PURGE':
-      handler = handlePurge
+      handler = withSourceCheck(handlePurge)
       break
     case 'OPTOUT':
-      handler = handleOptout
+      handler = withSourceCheck(handleOptout)
       break
     case 'OPTOUT_STATUS':
-      handler = handleOptoutStatus
+      handler = withSourceCheck(handleOptoutStatus)
       break
   }
 
