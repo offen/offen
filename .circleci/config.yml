@@ -313,8 +313,7 @@ jobs:
             sudo apt-get update && sudo apt-get install -qq -y python-pip libpython-dev
             curl -O https://bootstrap.pypa.io/get-pip.py && sudo python get-pip.py
             sudo pip install -q awscli --upgrade
-            export POSTGRES_CONNECTION_STRING=$(aws secretsmanager get-secret-value --secret-id $SECRET_ID_SERVER_CONNECTION_STRING | jq -r '.SecretString')
-            go run cmd/migrate/main.go
+            go run cmd/migrate/main.go -conn $(aws secretsmanager get-secret-value --secret-id $SECRET_ID_SERVER_CONNECTION_STRING | jq -r '.SecretString')
       - run:
           name: Deploy
           working_directory: ~/offen
