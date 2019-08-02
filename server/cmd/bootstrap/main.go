@@ -49,12 +49,15 @@ func main() {
 	defer db.Close()
 	tx := db.Debug().Begin()
 
-	if err := tx.DropTableIfExists("events", "accounts", "users").Error; err != nil {
+	if err := tx.Delete(&relational.Event{}).Error; err != nil {
 		tx.Rollback()
 		panic(err)
 	}
-
-	if err := tx.AutoMigrate(&relational.Event{}, &relational.Account{}, &relational.User{}).Error; err != nil {
+	if err := tx.Delete(&relational.Account{}).Error; err != nil {
+		tx.Rollback()
+		panic(err)
+	}
+	if err := tx.Delete(&relational.User{}).Error; err != nil {
 		tx.Rollback()
 		panic(err)
 	}
