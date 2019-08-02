@@ -33,7 +33,7 @@ func (r *relationalDatabase) GetAccount(accountID string, includeEvents bool, ev
 	}
 
 	if includeEvents {
-		result.EncryptedSecretKey = account.EncryptedSecretKey
+		result.EncryptedPrivateKey = account.EncryptedPrivateKey
 	} else {
 		key, err := account.WrapPublicKey()
 		if err != nil {
@@ -164,10 +164,10 @@ func (r *relationalDatabase) CreateAccount(accountID, name string) error {
 		return fmt.Errorf("relational: error encrypting account private key: %v", encryptErr)
 	}
 	return r.db.Create(&Account{
-		AccountID:          accountID,
-		Name:               name,
-		PublicKey:          string(publicKey),
-		EncryptedSecretKey: string(encryptedPrivateKey),
-		UserSalt:           userSalt,
+		AccountID:           accountID,
+		Name:                name,
+		PublicKey:           string(publicKey),
+		EncryptedPrivateKey: string(encryptedPrivateKey),
+		UserSalt:            userSalt,
 	}).Error
 }

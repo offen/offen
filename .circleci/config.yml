@@ -10,6 +10,7 @@ production_env: &production_env
     - ACCOUNTS_HOST=https://accounts-alpha.offen.dev
     - HOMEPAGE_HOST=https://www.offen.dev
     - NODE_ENV=production
+    - SECRET_ID_SERVER_CONNECTION_STRING=alpha/server/postgresConnectionString
 
 deploy_preconditions: &deploy_preconditions
   requires:
@@ -305,6 +306,14 @@ jobs:
           name: Manually clear go cache
           command: sudo rm -rf /go/pkg/mod
 
+      - run:
+          name: Migrate `server` database
+          command: |
+            sudo apt-get update && sudo apt-get install -qq -y python-pip libpython-dev
+            curl -O https://bootstrap.pypa.io/get-pip.py && sudo python get-pip.py
+            sudo pip install -q awscli --upgrade
+            export POSTGRES_CONNECTION_STRING=$(aws secretsmanager get-secret-value --secret-id $SECRET_ID_SERVER_CONNECTION_STRING | jq -r '.SecretString')
+            go run cmd/migrate/main.go
       - run:
           name: Deploy
           working_directory: ~/offen

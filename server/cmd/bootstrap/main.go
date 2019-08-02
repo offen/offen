@@ -49,12 +49,15 @@ func main() {
 	defer db.Close()
 	tx := db.Debug().Begin()
 
-	if err := tx.DropTableIfExists("events", "accounts", "users").Error; err != nil {
+	if err := tx.Delete(&relational.Event{}).Error; err != nil {
 		tx.Rollback()
 		panic(err)
 	}
-
-	if err := tx.AutoMigrate(&relational.Event{}, &relational.Account{}, &relational.User{}).Error; err != nil {
+	if err := tx.Delete(&relational.Account{}).Error; err != nil {
+		tx.Rollback()
+		panic(err)
+	}
+	if err := tx.Delete(&relational.User{}).Error; err != nil {
 		tx.Rollback()
 		panic(err)
 	}
@@ -84,11 +87,11 @@ func main() {
 			panic(saltErr)
 		}
 		account := relational.Account{
-			AccountID:          account.ID,
-			PublicKey:          string(publicKey),
-			EncryptedSecretKey: string(encryptedKey),
-			UserSalt:           salt,
-			Name:               account.Name,
+			AccountID:           account.ID,
+			PublicKey:           string(publicKey),
+			EncryptedPrivateKey: string(encryptedKey),
+			UserSalt:            salt,
+			Name:                account.Name,
 		}
 		if err := tx.Create(&account).Error; err != nil {
 			tx.Rollback()
