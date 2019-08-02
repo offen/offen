@@ -75,8 +75,8 @@ func TestRelationalDatabase_CreateAccount(t *testing.T) {
 				if account.PublicKey == "" {
 					return errors.New("Unexpected empty public key")
 				}
-				if account.EncryptedSecretKey != "shhhhh,secret" {
-					return fmt.Errorf("Unexpected encrypted secret key %v", account.EncryptedSecretKey)
+				if account.EncryptedPrivateKey != "shhhhh,secret" {
+					return fmt.Errorf("Unexpected encrypted secret key %v", account.EncryptedPrivateKey)
 				}
 				return nil
 			},
@@ -167,11 +167,11 @@ func TestRelationalDatabase_GetAccount(t *testing.T) {
 			"without events",
 			func(db *gorm.DB) error {
 				return db.Create(&Account{
-					AccountID:          "account-id",
-					Name:               "test-name",
-					PublicKey:          publicKey,
-					EncryptedSecretKey: "encrypted-secret-key",
-					UserSalt:           "user-salt",
+					AccountID:           "account-id",
+					Name:                "test-name",
+					PublicKey:           publicKey,
+					EncryptedPrivateKey: "encrypted-secret-key",
+					UserSalt:            "user-salt",
 				}).Error
 			},
 			false,
@@ -180,8 +180,8 @@ func TestRelationalDatabase_GetAccount(t *testing.T) {
 				if r.AccountID != "account-id" {
 					return fmt.Errorf("unexpected account id %v", r.AccountID)
 				}
-				if r.EncryptedSecretKey != "" {
-					return fmt.Errorf("expected empty secret key, got %v", r.EncryptedSecretKey)
+				if r.EncryptedPrivateKey != "" {
+					return fmt.Errorf("expected empty secret key, got %v", r.EncryptedPrivateKey)
 				}
 				if r.Events != nil {
 					return fmt.Errorf("expected nil events, got %v", r.Events)
@@ -197,11 +197,11 @@ func TestRelationalDatabase_GetAccount(t *testing.T) {
 			"including events",
 			func(db *gorm.DB) error {
 				if err := db.Create(&Account{
-					AccountID:          "account-id",
-					Name:               "test-name",
-					PublicKey:          publicKey,
-					EncryptedSecretKey: "encrypted-secret-key",
-					UserSalt:           "user-salt",
+					AccountID:           "account-id",
+					Name:                "test-name",
+					PublicKey:           publicKey,
+					EncryptedPrivateKey: "encrypted-secret-key",
+					UserSalt:            "user-salt",
 				}).Error; err != nil {
 					return err
 				}
@@ -233,8 +233,8 @@ func TestRelationalDatabase_GetAccount(t *testing.T) {
 				if r.AccountID != "account-id" {
 					return fmt.Errorf("unexpected account id %v", r.AccountID)
 				}
-				if r.EncryptedSecretKey != "encrypted-secret-key" {
-					return fmt.Errorf("unexpected secret key %v", r.EncryptedSecretKey)
+				if r.EncryptedPrivateKey != "encrypted-secret-key" {
+					return fmt.Errorf("unexpected secret key %v", r.EncryptedPrivateKey)
 				}
 				userID := "hashed-user-id"
 				if !reflect.DeepEqual(r.Events, &persistence.EventsByAccountID{

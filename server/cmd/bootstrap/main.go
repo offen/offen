@@ -87,11 +87,11 @@ func main() {
 			panic(saltErr)
 		}
 		account := relational.Account{
-			AccountID:          account.ID,
-			PublicKey:          string(publicKey),
-			EncryptedSecretKey: string(encryptedKey),
-			UserSalt:           salt,
-			Name:               account.Name,
+			AccountID:           account.ID,
+			PublicKey:           string(publicKey),
+			EncryptedPrivateKey: string(encryptedKey),
+			UserSalt:            salt,
+			Name:                account.Name,
 		}
 		if err := tx.Create(&account).Error; err != nil {
 			tx.Rollback()
