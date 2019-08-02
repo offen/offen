@@ -22,6 +22,7 @@ type router struct {
 	corsOrigin           string
 	jwtPublicKey         string
 	cookieExchangeSecret []byte
+	retentionPeriod      time.Duration
 }
 
 func (rt *router) logError(err error, message string) {
@@ -44,7 +45,7 @@ func (rt *router) userCookie(userID string) *http.Cookie {
 	return &http.Cookie{
 		Name:     cookieKey,
 		Value:    userID,
-		Expires:  time.Now().Add(time.Hour * 24 * 90),
+		Expires:  time.Now().Add(rt.retentionPeriod),
 		HttpOnly: true,
 		Secure:   rt.secureCookie,
 		Path:     "/",
@@ -53,8 +54,10 @@ func (rt *router) userCookie(userID string) *http.Cookie {
 
 func (rt *router) optoutCookie(optout bool) *http.Cookie {
 	c := &http.Cookie{
-		Name:    optoutKey,
-		Value:   "1",
+		Name:  optoutKey,
+		Value: "1",
+		// the optout cookie is supposed to outlive the software, so
+		// it expires in ~100 years
 		Expires: time.Now().Add(time.Hour * 24 * 365 * 100),
 		Domain:  rt.optoutCookieDomain,
 		Path:    "/",
@@ -120,6 +123,13 @@ func WithJWTPublicKey(k string) Config {
 func WithCookieExchangeSecret(s string) Config {
 	return func(r *router) {
 		r.cookieExchangeSecret = []byte(s)
+	}
+}
+
+// WithRetentionPeriod sets the expected value for retaining event data
+func WithRetentionPeriod(d time.Duration) Config {
+	return func(r *router) {
+		r.retentionPeriod = d
 	}
 }
 

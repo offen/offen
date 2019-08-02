@@ -12,7 +12,11 @@ import (
 // `since` parameter without explicitly providing information about the actual
 // timestamp like a `created_at` value would do.
 func newEventID() (string, error) {
-	t := time.Now()
+	return EventIDAt(time.Now())
+}
+
+// EventIDAt creates a new ULID based on the given timestamp
+func EventIDAt(t time.Time) (string, error) {
 	eventID, err := ulid.New(
 		ulid.Timestamp(t),
 		ulid.Monotonic(rand.New(rand.NewSource(t.UnixNano())), 0),
