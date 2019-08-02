@@ -40,7 +40,7 @@ func init() {
 	jwtPublicKey := os.Getenv("JWT_PUBLIC_KEY")
 	cookieExchangeSecret := os.Getenv("COOKIE_EXCHANGE_SECRET")
 
-	retention, retentionErr := time.ParseDuration("EVENT_RETENTION_PERIOD")
+	retention, retentionErr := time.ParseDuration(os.Getenv("EVENT_RETENTION_PERIOD"))
 	if retentionErr != nil {
 		panic(retentionErr)
 	}
