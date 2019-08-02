@@ -19,7 +19,8 @@ provider:
     KMS_ENCRYPTION_ENDPOINT: ${self:custom.encryptionEndpoint.${self:custom.stage}}
     POSTGRES_CONNECTION_STRING: ${ssm:/aws/reference/secretsmanager/${self:custom.stage}/server/postgresConnectionString~true}
     COOKIE_EXCHANGE_SECRET: ${ssm:/aws/reference/secretsmanager/${self:custom.stage}/server/cookieExchangeSecret~true}
-    EVENT_RETENTION_PERIOD: 4320h
+    EVENT_RETENTION_PERIOD: 4464h
+
 package:
   individually: true
   excludeDevDependencies: false

@@ -26,7 +26,7 @@ func main() {
 		encryptionEndpoint   = flag.String("kms", os.Getenv("KMS_ENCRYPTION_ENDPOINT"), "the KMS service's encryption endpoint")
 		development          = flag.Bool("develop", os.Getenv("DEVELOPMENT") != "", "add verbose logging")
 		cookieExchangeSecret = flag.String("exchangesecret", os.Getenv("COOKIE_EXCHANGE_SECRET"), "the secret used for signing cookie exchange tokens")
-		retentionPeriod      = flag.Duration("retention", time.Hour*4320, "default retention period for event data")
+		retentionPeriod      = flag.Duration("retention", time.Hour*4464, "default retention period for event data")
 	)
 	flag.Parse()
 
