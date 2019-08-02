@@ -22,6 +22,8 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	db.LogMode(true)
 	m := gormigrate.New(db, gormigrate.DefaultOptions, []*gormigrate.Migration{
 		{
 			// An Account entity stores an encrypted version of an RSA keypair.
