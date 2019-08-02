@@ -11,7 +11,15 @@ provider:
   apiName: offen-${self:provider.stage}
   logs:
     restApi: true
-
+  environment:
+    JWT_PUBLIC_KEY: ${self:custom.jwtPublicKey.${self:custom.stage}}
+    SECURE_COOKIE: 1
+    OPTOUT_COOKIE_DOMAIN: ${self:custom.optoutCookieDomain.${self:custom.stage}}
+    CORS_ORIGIN: https://${self:custom.origin.${self:custom.stage}}
+    KMS_ENCRYPTION_ENDPOINT: ${self:custom.encryptionEndpoint.${self:custom.stage}}
+    POSTGRES_CONNECTION_STRING: ${ssm:/aws/reference/secretsmanager/${self:custom.stage}/server/postgresConnectionString~true}
+    COOKIE_EXCHANGE_SECRET: ${ssm:/aws/reference/secretsmanager/${self:custom.stage}/server/cookieExchangeSecret~true}
+    EVENT_RETENTION_PERIOD: 4320h
 package:
   individually: true
   excludeDevDependencies: false
@@ -56,19 +64,18 @@ custom:
     createRoute53Record: false
 
 functions:
+  expire:
+    package:
+      include:
+      - server/bin/expire
+    handler: server/bin/expire
+    events:
+      - schedule: rate(1 day)
   app:
     package:
       include:
       - server/bin/server
     handler: server/bin/server
-    environment:
-      JWT_PUBLIC_KEY: ${self:custom.jwtPublicKey.${self:custom.stage}}
-      SECURE_COOKIE: 1
-      OPTOUT_COOKIE_DOMAIN: ${self:custom.optoutCookieDomain.${self:custom.stage}}
-      CORS_ORIGIN: https://${self:custom.origin.${self:custom.stage}}
-      KMS_ENCRYPTION_ENDPOINT: ${self:custom.encryptionEndpoint.${self:custom.stage}}
-      POSTGRES_CONNECTION_STRING: ${ssm:/aws/reference/secretsmanager/${self:custom.stage}/server/postgresConnectionString~true}
-      COOKIE_EXCHANGE_SECRET: ${ssm:/aws/reference/secretsmanager/${self:custom.stage}/server/cookieExchangeSecret~true}
     events:
       - http:
           path: '{proxy+}'

@@ -2,6 +2,7 @@ package main
 
 import (
 	"os"
+	"time"
 
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/awslabs/aws-lambda-go-api-proxy/httpadapter"
@@ -39,6 +40,11 @@ func init() {
 	jwtPublicKey := os.Getenv("JWT_PUBLIC_KEY")
 	cookieExchangeSecret := os.Getenv("COOKIE_EXCHANGE_SECRET")
 
+	retention, retentionErr := time.ParseDuration("EVENT_RETENTION_PERIOD")
+	if retentionErr != nil {
+		panic(retentionErr)
+	}
+
 	rt := router.New(
 		router.WithDatabase(db),
 		router.WithLogger(logger),
@@ -47,6 +53,7 @@ func init() {
 		router.WithCORSOrigin(origin),
 		router.WithJWTPublicKey(jwtPublicKey),
 		router.WithCookieExchangeSecret(cookieExchangeSecret),
+		router.WithRetentionPeriod(retention),
 	)
 	adapter = httpadapter.New(rt)
 }

@@ -21,5 +21,6 @@ clean-build:
 
 build: clean-build
 	@GOOS=linux go build -o bin/server cmd/lambda/main.go
+	@GOOS=linux go build -o bin/expire cmd/expire/main.go
 
 .PHONY: bootstrap migrate

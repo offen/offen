@@ -76,7 +76,7 @@ func TestRouter_PostEvents(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			rt := router{test.db, nil, false, "", "", "", "", nil}
+			rt := router{test.db, nil, false, "", "", "", "", nil, time.Hour}
 			w := httptest.NewRecorder()
 			r := httptest.NewRequest(http.MethodPost, "/", test.body)
 			r = r.WithContext(context.WithValue(r.Context(), contextKeyCookie, test.userID))
@@ -91,7 +91,7 @@ func TestRouter_PostEvents(t *testing.T) {
 	}
 
 	t.Run("cookie renewal", func(t *testing.T) {
-		rt := router{&mockInsertDatabase{}, nil, true, "", "", "", "", nil}
+		rt := router{&mockInsertDatabase{}, nil, true, "", "", "", "", nil, time.Hour}
 		w := httptest.NewRecorder()
 		r := httptest.NewRequest(http.MethodPost, "/", bytes.NewReader([]byte(`{"accountId":"account-identifier","payload":"payload-value"}`)))
 		r = r.WithContext(context.WithValue(r.Context(), contextKeyCookie, "user-token"))
@@ -110,7 +110,7 @@ func TestRouter_PostEvents(t *testing.T) {
 		if userCookie.Name != "user" {
 			t.Errorf("Unexpected cookie name %s", userCookie.Name)
 		}
-		if userCookie.Expires.Before(time.Now().Add(time.Hour * 24 * 89)) {
+		if userCookie.Expires.Before(time.Now().Add(time.Minute * 59)) {
 			t.Errorf("Unexpected cookie expiry %s", userCookie.Expires)
 		}
 		if userCookie.Secure != true {
@@ -193,7 +193,7 @@ func TestRouter_GetEvents(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			rt := router{test.db, nil, false, "", "", "", "", nil}
+			rt := router{test.db, nil, false, "", "", "", "", nil, time.Hour}
 			w := httptest.NewRecorder()
 			r := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/%s", test.queryString), nil)
 			r = r.WithContext(context.WithValue(r.Context(), contextKeyCookie, test.userID))
@@ -255,7 +255,7 @@ func TestRouter_GetDeletedEvents(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			rt := router{test.db, nil, false, "", "", "", "", nil}
+			rt := router{test.db, nil, false, "", "", "", "", nil, time.Hour}
 			w := httptest.NewRecorder()
 			r := httptest.NewRequest(http.MethodPost, "/", bytes.NewReader([]byte(test.body)))
 
@@ -301,7 +301,7 @@ func TestRouter_PurgeEvents(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			rt := router{test.db, nil, false, "", "", "", "", nil}
+			rt := router{test.db, nil, false, "", "", "", "", nil, time.Hour}
 			w := httptest.NewRecorder()
 			r := httptest.NewRequest(http.MethodPost, "/", nil)
 
