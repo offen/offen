@@ -6,6 +6,7 @@ type Database interface {
 	Query(Query) (map[string][]EventResult, error)
 	GetAccount(accountID string, events bool, eventsSince string) (AccountResult, error)
 	CreateAccount(accountID string) error
+	RetireAccount(accountID string) error
 	GetDeletedEvents(ids []string, userID string) ([]string, error)
 	AssociateUserSecret(accountID, userID, encryptedUserSecret string) error
 	Purge(userID string) error

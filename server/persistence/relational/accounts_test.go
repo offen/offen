@@ -48,6 +48,63 @@ func (m *mockEncrypter) Encrypt([]byte) ([]byte, error) {
 	return m.result, m.err
 }
 
+func TestRelationalDatabase_RetireAccount(t *testing.T) {
+	tests := []struct {
+		name        string
+		setup       func(*gorm.DB) error
+		assertion   func(*gorm.DB) error
+		expectError bool
+	}{
+		{
+			"unknown account",
+			func(db *gorm.DB) error {
+				return nil
+			},
+			func(db *gorm.DB) error {
+				return nil
+			},
+			true,
+		},
+		{
+			"ok",
+			func(db *gorm.DB) error {
+				return db.Create(&Account{AccountID: "account-id"}).Error
+			},
+			func(db *gorm.DB) error {
+				var match Account
+				db.First(&match, "account_id = ?", "account-id")
+				if match.Retired != true {
+					return errors.New("expected account to be retired")
+				}
+				return nil
+			},
+			false,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			db, closeDB := createTestDatabase()
+			defer closeDB()
+
+			if err := test.setup(db); err != nil {
+				t.Fatalf("Unexpected error setting up test %v", err)
+			}
+
+			relational := relationalDatabase{db: db}
+
+			err := relational.RetireAccount("account-id")
+			if (err != nil) != test.expectError {
+				t.Errorf("Unexpected error value %v", err)
+			}
+
+			if err := test.assertion(db); err != nil {
+				t.Errorf("Unexpected assertion error %v", err)
+			}
+		})
+	}
+}
+
 func TestRelationalDatabase_CreateAccount(t *testing.T) {
 	tests := []struct {
 		name        string

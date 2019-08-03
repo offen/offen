@@ -52,3 +52,16 @@ func (rt *router) postAccount(w http.ResponseWriter, r *http.Request) {
 	}
 	w.WriteHeader(http.StatusNoContent)
 }
+
+func (rt *router) deleteAccount(w http.ResponseWriter, r *http.Request) {
+	var payload accountPayload
+	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
+		httputil.RespondWithJSONError(w, fmt.Errorf("router: error parsing request payload: %v", err), http.StatusBadRequest)
+		return
+	}
+	if err := rt.db.RetireAccount(payload.AccountID); err != nil {
+		httputil.RespondWithJSONError(w, fmt.Errorf("router: error retiring account: %v", err), http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusNoContent)
+}

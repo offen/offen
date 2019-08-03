@@ -171,3 +171,14 @@ func (r *relationalDatabase) CreateAccount(accountID string) error {
 		Retired:             false,
 	}).Error
 }
+
+func (r *relationalDatabase) RetireAccount(accountID string) error {
+	var account Account
+	if err := r.db.First(&account, "account_id = ? AND retired = ?", accountID, false).Error; err != nil {
+		if gorm.IsRecordNotFoundError(err) {
+			return persistence.ErrUnknownAccount(fmt.Sprintf("unknown account with id %s or it is already retired", accountID))
+		}
+		return err
+	}
+	return r.db.Model(&Account{AccountID: accountID}).Update("retired", true).Error
+}

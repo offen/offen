@@ -118,13 +118,13 @@ func TestRouter_PostAccount(t *testing.T) {
 		{
 			"bad database",
 			&mockCreateAccountDatabase{err: errors.New("did not work")},
-			`{"accountId":"some-account-id","name":"Woz"}`,
+			`{"accountId":"some-account-id"}`,
 			http.StatusInternalServerError,
 		},
 		{
 			"ok",
 			&mockCreateAccountDatabase{},
-			`{"accountId":"some-account-id","name":"Woz"}`,
+			`{"accountId":"some-account-id"}`,
 			http.StatusNoContent,
 		},
 	}
@@ -134,6 +134,54 @@ func TestRouter_PostAccount(t *testing.T) {
 			w := httptest.NewRecorder()
 			r := httptest.NewRequest(http.MethodPost, "/", strings.NewReader(test.payload))
 			rt.postAccount(w, r)
+			if w.Code != test.expectedStatusCode {
+				t.Errorf("Unexpected status code %v", w.Code)
+			}
+		})
+	}
+}
+
+type mockRetireAccountDatabase struct {
+	persistence.Database
+	err error
+}
+
+func (m *mockRetireAccountDatabase) RetireAccount(string) error {
+	return m.err
+}
+
+func TestRouter_RetireAccount(t *testing.T) {
+	tests := []struct {
+		name               string
+		database           persistence.Database
+		payload            string
+		expectedStatusCode int
+	}{
+		{
+			"bad payload",
+			&mockRetireAccountDatabase{},
+			"this-is-not-json",
+			http.StatusBadRequest,
+		},
+		{
+			"bad database",
+			&mockRetireAccountDatabase{err: errors.New("did not work")},
+			`{"accountId":"some-account-id"}`,
+			http.StatusInternalServerError,
+		},
+		{
+			"ok",
+			&mockRetireAccountDatabase{},
+			`{"accountId":"some-account-id"}`,
+			http.StatusNoContent,
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			rt := router{db: test.database}
+			w := httptest.NewRecorder()
+			r := httptest.NewRequest(http.MethodDelete, "/", strings.NewReader(test.payload))
+			rt.deleteAccount(w, r)
 			if w.Code != test.expectedStatusCode {
 				t.Errorf("Unexpected status code %v", w.Code)
 			}

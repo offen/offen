@@ -20,7 +20,7 @@ class RemoteServerException(Exception):
         )
 
 
-def create_remote_account(account_id):
+def _call_remote_server(account_id, method):
     # expires in 30 seconds as this will mean the HTTP request would have
     # timed out anyways
     expiry = datetime.utcnow() + timedelta(seconds=30)
@@ -30,7 +30,16 @@ def create_remote_account(account_id):
         algorithm="RS256",
     ).decode("utf-8")
 
-    r = requests.post(
+    do_request = None
+    if method == "POST":
+        do_request = requests.post
+    elif method == "DELETE":
+        do_request = requests.delete
+
+    if not do_request:
+        raise Exception("Received unsupported method {}, cannot continue.".format(method))
+
+    r = do_request(
         "{}/accounts".format(app.config["SERVER_HOST"]),
         json={"accountId": account_id},
         headers={"X-RPC-Authentication": encoded},
@@ -41,6 +50,14 @@ def create_remote_account(account_id):
         remote_err = RemoteServerException(err["error"])
         remote_err.status = err["status"]
         raise remote_err
+
+
+def create_remote_account(account_id):
+    return _call_remote_server(account_id, "POST")
+
+
+def retire_remote_account(account_id):
+    return _call_remote_server(account_id, "DELETE")
 
 
 class AccountForm(Form):
@@ -64,6 +81,9 @@ class AccountView(ModelView):
                 db.session.delete(model)
                 db.session.commit()
                 raise server_error
+
+    def after_model_delete(self, model):
+        retire_remote_account(model.account_id)
 
 
 class UserView(ModelView):
