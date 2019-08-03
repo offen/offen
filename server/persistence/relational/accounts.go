@@ -150,7 +150,7 @@ func (r *relationalDatabase) AssociateUserSecret(accountID, userID, encryptedUse
 	}).Error
 }
 
-func (r *relationalDatabase) CreateAccount(accountID, name string) error {
+func (r *relationalDatabase) CreateAccount(accountID string) error {
 	userSalt, userSaltErr := keys.GenerateRandomString(keys.UserSaltLength)
 	if userSaltErr != nil {
 		return fmt.Errorf("relational: error creating new user salt for account: %v", userSaltErr)
@@ -165,9 +165,9 @@ func (r *relationalDatabase) CreateAccount(accountID, name string) error {
 	}
 	return r.db.Create(&Account{
 		AccountID:           accountID,
-		Name:                name,
 		PublicKey:           string(publicKey),
 		EncryptedPrivateKey: string(encryptedPrivateKey),
 		UserSalt:            userSalt,
+		Retired:             false,
 	}).Error
 }

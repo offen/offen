@@ -98,7 +98,7 @@ type mockCreateAccountDatabase struct {
 	err error
 }
 
-func (m *mockCreateAccountDatabase) CreateAccount(string, string) error {
+func (m *mockCreateAccountDatabase) CreateAccount(string) error {
 	return m.err
 }
 

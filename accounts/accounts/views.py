@@ -20,7 +20,7 @@ class RemoteServerException(Exception):
         )
 
 
-def create_remote_account(name, account_id):
+def create_remote_account(account_id):
     # expires in 30 seconds as this will mean the HTTP request would have
     # timed out anyways
     expiry = datetime.utcnow() + timedelta(seconds=30)
@@ -32,7 +32,7 @@ def create_remote_account(name, account_id):
 
     r = requests.post(
         "{}/accounts".format(app.config["SERVER_HOST"]),
-        json={"name": name, "accountId": account_id},
+        json={"accountId": account_id},
         headers={"X-RPC-Authentication": encoded},
     )
 
@@ -59,7 +59,7 @@ class AccountView(ModelView):
     def after_model_change(self, form, model, is_created):
         if is_created:
             try:
-                create_remote_account(model.name, model.account_id)
+                create_remote_account(model.account_id)
             except RemoteServerException as server_error:
                 db.session.delete(model)
                 db.session.commit()
