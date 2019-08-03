@@ -9,7 +9,7 @@ import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/offen/offen/server/persistence/relational"
-	"gopkg.in/gormigrate.v1"
+	gormigrate "gopkg.in/gormigrate.v1"
 )
 
 func main() {
@@ -83,6 +83,25 @@ func main() {
 					}
 				}
 				return txn.Model(&Account{}).DropColumn("encrypted_private_key").Error
+			},
+		},
+		{
+			ID: "2019-08-03-retired-accounts",
+			Migrate: func(txn *gorm.DB) error {
+				type Account struct {
+					Retired bool
+				}
+				txn.AutoMigrate(&Account{})
+				txn.Model(&Account{}).Update("retired", false)
+				return txn.Model(&Account{}).DropColumn("name").Error
+			},
+			Rollback: func(txn *gorm.DB) error {
+				type Account struct {
+					Name string
+				}
+				txn.AutoMigrate(&Account{})
+				txn.Model(&Account{}).Update("name", "not set")
+				return txn.Model(&Account{}).DropColumn("retired").Error
 			},
 		},
 	})

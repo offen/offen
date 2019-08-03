@@ -33,7 +33,7 @@ func (rt *router) postEvents(w http.ResponseWriter, r *http.Request) {
 
 	if err := rt.db.Insert(userID, evt.AccountID, evt.Payload); err != nil {
 		if unknownAccountErr, ok := err.(persistence.ErrUnknownAccount); ok {
-			httputil.RespondWithJSONError(w, unknownAccountErr, http.StatusBadRequest)
+			httputil.RespondWithJSONError(w, unknownAccountErr, http.StatusNotFound)
 			return
 		}
 		if unknownUserErr, ok := err.(persistence.ErrUnknownUser); ok {

@@ -11,7 +11,7 @@ class Account(db.Model):
     __tablename__ = "accounts"
     account_id = db.Column(db.String(36), primary_key=True, default=generate_key)
     name = db.Column(db.Text, nullable=False)
-    users = db.relationship("AccountUserAssociation", back_populates="account")
+    users = db.relationship("AccountUserAssociation", back_populates="account", cascade="delete")
 
     def __repr__(self):
         return self.name

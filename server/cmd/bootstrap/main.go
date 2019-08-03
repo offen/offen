@@ -19,8 +19,7 @@ type bootstrapConfig struct {
 }
 
 type accountConfig struct {
-	Name string `yaml:"name"`
-	ID   string `yaml:"id"`
+	ID string `yaml:"id"`
 }
 
 func main() {
@@ -91,7 +90,7 @@ func main() {
 			PublicKey:           string(publicKey),
 			EncryptedPrivateKey: string(encryptedKey),
 			UserSalt:            salt,
-			Name:                account.Name,
+			Retired:             false,
 		}
 		if err := tx.Create(&account).Error; err != nil {
 			tx.Rollback()

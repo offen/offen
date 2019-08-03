@@ -48,6 +48,63 @@ func (m *mockEncrypter) Encrypt([]byte) ([]byte, error) {
 	return m.result, m.err
 }
 
+func TestRelationalDatabase_RetireAccount(t *testing.T) {
+	tests := []struct {
+		name        string
+		setup       func(*gorm.DB) error
+		assertion   func(*gorm.DB) error
+		expectError bool
+	}{
+		{
+			"unknown account",
+			func(db *gorm.DB) error {
+				return nil
+			},
+			func(db *gorm.DB) error {
+				return nil
+			},
+			true,
+		},
+		{
+			"ok",
+			func(db *gorm.DB) error {
+				return db.Create(&Account{AccountID: "account-id"}).Error
+			},
+			func(db *gorm.DB) error {
+				var match Account
+				db.First(&match, "account_id = ?", "account-id")
+				if match.Retired != true {
+					return errors.New("expected account to be retired")
+				}
+				return nil
+			},
+			false,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			db, closeDB := createTestDatabase()
+			defer closeDB()
+
+			if err := test.setup(db); err != nil {
+				t.Fatalf("Unexpected error setting up test %v", err)
+			}
+
+			relational := relationalDatabase{db: db}
+
+			err := relational.RetireAccount("account-id")
+			if (err != nil) != test.expectError {
+				t.Errorf("Unexpected error value %v", err)
+			}
+
+			if err := test.assertion(db); err != nil {
+				t.Errorf("Unexpected assertion error %v", err)
+			}
+		})
+	}
+}
+
 func TestRelationalDatabase_CreateAccount(t *testing.T) {
 	tests := []struct {
 		name        string
@@ -69,9 +126,6 @@ func TestRelationalDatabase_CreateAccount(t *testing.T) {
 				if err := db.Find(&account).Where("account_id = ?", "account-id").Error; err != nil {
 					return err
 				}
-				if account.Name != "account-name" {
-					return fmt.Errorf("Unexpected account name %v", account.Name)
-				}
 				if account.PublicKey == "" {
 					return errors.New("Unexpected empty public key")
 				}
@@ -87,7 +141,6 @@ func TestRelationalDatabase_CreateAccount(t *testing.T) {
 			func(db *gorm.DB) error {
 				return db.Create(&Account{
 					AccountID: "account-id",
-					Name:      "account-name",
 				}).Error
 			},
 			&mockEncrypter{
@@ -128,7 +181,7 @@ func TestRelationalDatabase_CreateAccount(t *testing.T) {
 				db:         db,
 				encryption: test.encryption,
 			}
-			err := relational.CreateAccount("account-id", "account-name")
+			err := relational.CreateAccount("account-id")
 			if (err != nil) != test.expectError {
 				t.Errorf("Unexpected error value %v", err)
 			}
@@ -168,7 +221,6 @@ func TestRelationalDatabase_GetAccount(t *testing.T) {
 			func(db *gorm.DB) error {
 				return db.Create(&Account{
 					AccountID:           "account-id",
-					Name:                "test-name",
 					PublicKey:           publicKey,
 					EncryptedPrivateKey: "encrypted-secret-key",
 					UserSalt:            "user-salt",
@@ -198,7 +250,6 @@ func TestRelationalDatabase_GetAccount(t *testing.T) {
 			func(db *gorm.DB) error {
 				if err := db.Create(&Account{
 					AccountID:           "account-id",
-					Name:                "test-name",
 					PublicKey:           publicKey,
 					EncryptedPrivateKey: "encrypted-secret-key",
 					UserSalt:            "user-salt",

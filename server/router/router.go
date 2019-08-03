@@ -173,6 +173,7 @@ func New(opts ...Config) http.Handler {
 	accounts := m.PathPrefix("/accounts").Subrouter()
 	accounts.Handle("", getAuth(http.HandlerFunc(rt.getAccount))).Methods(http.MethodGet)
 	accounts.Handle("", postAuth(http.HandlerFunc(rt.postAccount))).Methods(http.MethodPost)
+	accounts.Handle("", postAuth(http.HandlerFunc(rt.deleteAccount))).Methods(http.MethodDelete)
 
 	deleted := m.PathPrefix("/deleted").Subrouter()
 	deletedEventsForUser := userCookie(http.HandlerFunc(rt.getDeletedEvents))

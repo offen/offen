@@ -70,8 +70,8 @@ func TestRouter_PostEvents(t *testing.T) {
 			&mockInsertDatabase{err: persistence.ErrUnknownAccount("unknown account")},
 			bytes.NewReader([]byte(`{"accountId":"account-identifier","payload":"payload-value"}`)),
 			"user-identifier",
-			http.StatusBadRequest,
-			`{"error":"unknown account","status":400}`,
+			http.StatusNotFound,
+			`{"error":"unknown account","status":404}`,
 		},
 	}
 	for _, test := range tests {

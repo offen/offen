@@ -14,11 +14,11 @@ func (r *relationalDatabase) Insert(userID, accountID, payload string) error {
 	}
 
 	var account Account
-	err = r.db.Where(`account_id = ?`, accountID).First(&account).Error
+	err = r.db.Where(`account_id = ? AND retired = ?`, accountID, false).First(&account).Error
 	if err != nil {
 		if gorm.IsRecordNotFoundError(err) {
 			return persistence.ErrUnknownAccount(
-				fmt.Sprintf("unknown account with id %s", accountID),
+				fmt.Sprintf("unknown or retired account with id %s", accountID),
 			)
 		}
 		return fmt.Errorf("relational: error looking up account with id %s: %v", accountID, err)

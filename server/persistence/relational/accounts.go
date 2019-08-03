@@ -150,7 +150,7 @@ func (r *relationalDatabase) AssociateUserSecret(accountID, userID, encryptedUse
 	}).Error
 }
 
-func (r *relationalDatabase) CreateAccount(accountID, name string) error {
+func (r *relationalDatabase) CreateAccount(accountID string) error {
 	userSalt, userSaltErr := keys.GenerateRandomString(keys.UserSaltLength)
 	if userSaltErr != nil {
 		return fmt.Errorf("relational: error creating new user salt for account: %v", userSaltErr)
@@ -165,9 +165,20 @@ func (r *relationalDatabase) CreateAccount(accountID, name string) error {
 	}
 	return r.db.Create(&Account{
 		AccountID:           accountID,
-		Name:                name,
 		PublicKey:           string(publicKey),
 		EncryptedPrivateKey: string(encryptedPrivateKey),
 		UserSalt:            userSalt,
+		Retired:             false,
 	}).Error
+}
+
+func (r *relationalDatabase) RetireAccount(accountID string) error {
+	var account Account
+	if err := r.db.First(&account, "account_id = ? AND retired = ?", accountID, false).Error; err != nil {
+		if gorm.IsRecordNotFoundError(err) {
+			return persistence.ErrUnknownAccount(fmt.Sprintf("unknown account with id %s or it is already retired", accountID))
+		}
+		return err
+	}
+	return r.db.Model(&Account{AccountID: accountID}).Update("retired", true).Error
 }
