@@ -20,6 +20,7 @@ type Query interface {
 	Since() string
 }
 
+// UserResult contains information about a single user entry
 type UserResult struct {
 	HashedUserID        string `json:"hashedUserId"`
 	EncryptedUserSecret string `json:"encryptedUserSecret"`

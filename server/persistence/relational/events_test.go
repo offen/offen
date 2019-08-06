@@ -425,13 +425,11 @@ func TestRelationalDatabase_Query(t *testing.T) {
 				"account-id": []persistence.EventResult{
 					{
 						AccountID: "account-id",
-						UserID:    str(a1.HashUserID("user-id")),
 						Payload:   "payload-1",
 						EventID:   "event-id-1",
 					},
 					{
 						AccountID: "account-id",
-						UserID:    str(a1.HashUserID("user-id")),
 						Payload:   "payload-2",
 						EventID:   "event-id-2",
 					},
@@ -439,7 +437,6 @@ func TestRelationalDatabase_Query(t *testing.T) {
 				"other-account": []persistence.EventResult{
 					{
 						AccountID: "other-account",
-						UserID:    str(a2.HashUserID("user-id")),
 						Payload:   "payload-3",
 						EventID:   "event-id-3",
 					},
@@ -495,7 +492,6 @@ func TestRelationalDatabase_Query(t *testing.T) {
 				"account-id": []persistence.EventResult{
 					{
 						AccountID: "account-id",
-						UserID:    str(a1.HashUserID("user-id")),
 						Payload:   "payload-2",
 						EventID:   "event-id-2",
 					},
@@ -503,7 +499,6 @@ func TestRelationalDatabase_Query(t *testing.T) {
 				"other-account": []persistence.EventResult{
 					{
 						AccountID: "other-account",
-						UserID:    str(a2.HashUserID("user-id")),
 						Payload:   "payload-3",
 						EventID:   "event-id-3",
 					},
