@@ -18,7 +18,13 @@ describe('src/buckets.js', function () {
         'android-app://org.telegrammmm.scam',
         'www.facebook.com',
         'android-app://com.Slack',
-        'android-app://com.Slackers'
+        'android-app://com.Slackers',
+        'www.duckduckgo.com/something',
+        'duckduckgo.com',
+        'duckduckgone.com',
+        'www.baidu.com',
+        'baidu.com/search',
+        'baidu.complete.com'
       ]
       var mapped = referrers.map(mapToBuckets)
       assert.deepStrictEqual(mapped, [
@@ -34,7 +40,13 @@ describe('src/buckets.js', function () {
         'android-app://org.telegrammmm.scam',
         'Facebook',
         'Slack',
-        'android-app://com.Slackers'
+        'android-app://com.Slackers',
+        'DuckDuckGo',
+        'DuckDuckGo',
+        'duckduckgone.com',
+        'Baidu',
+        'Baidu',
+        'baidu.complete.com'
       ])
     })
   })
