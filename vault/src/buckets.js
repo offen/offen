@@ -22,6 +22,14 @@ var buckets = [
   {
     re: /^android-app:\/\/com\.Slack$/,
     name: 'Slack'
+  },
+  {
+    re: /(www\.)?duckduckgo\.com($|\/)*/,
+    name: 'DuckDuckGo'
+  },
+  {
+    re: /(www\.)?baidu\.com($|\/)/,
+    name: 'Baidu'
   }
 ]
 
