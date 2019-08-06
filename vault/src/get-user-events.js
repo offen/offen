@@ -56,6 +56,14 @@ function ensureSyncWith (queries, api) {
           })
       })
       .then(function (events) {
+        events = events.map(function (event) {
+          // User events come without any userId attached as it is implicitly
+          // ensured it is always the same value and saving it locally would
+          // just create a possible leak of identifiers. We need to index on
+          // this value in IndexedDB though, so a fixed value is used instead
+          // of using real data.
+          return Object.assign(event, { userId: 'local' })
+        })
         return queries.putEvents.apply(null, [null].concat(events))
       })
   }

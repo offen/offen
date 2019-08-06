@@ -80,6 +80,7 @@ describe('src/get-user-events', function () {
             null,
             {
               eventId: 'z',
+              userId: 'local',
               accountId: 'account-a',
               payload: { type: 'TEST' }
             }
