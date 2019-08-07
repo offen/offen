@@ -10,9 +10,10 @@ describe('src/database.js', function () {
       assert(db instanceof Dexie)
     })
 
-    it('exposes a `secrets` database', function () {
+    it('exposes a `keys` and a `events` table', function () {
       var db = getDatabase()
-      assert(db.secrets)
+      assert(db.keys)
+      assert(db.events)
     })
 
     it('returns the same instance on subsequent calls', function () {
