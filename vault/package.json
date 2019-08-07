@@ -12,12 +12,12 @@
     "build": "gulp"
   },
   "dependencies": {
-    "date-fns": "^1.30.1",
+    "date-fns": "1.30.1",
     "dexie": "2.0.4",
     "offen": "file:./../packages",
-    "underscore": "^1.9.1",
-    "unibabel": "^2.1.8",
-    "uuid": "^3.3.2"
+    "ulid": "2.3.0",
+    "underscore": "1.9.1",
+    "unibabel": "2.1.8"
   },
   "devDependencies": {
     "browserify": "^16.2.3",

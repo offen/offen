@@ -7,17 +7,41 @@ var getOperatorEventsWith = require('./get-operator-events').getOperatorEventsWi
 describe('src/get-operator-events', function () {
   describe('getOperatorEvents', function () {
     context('with no pending events', function () {
+      var accountJWK
+      var accountKey
+      before(function () {
+        return window.crypto.subtle.generateKey(
+          {
+            name: 'RSA-OAEP',
+            modulusLength: 2048,
+            publicExponent: new Uint8Array([0x01, 0x00, 0x01]),
+            hash: { name: 'SHA-256' }
+          },
+          true,
+          ['encrypt', 'decrypt']
+        )
+          .then(function (_accountKey) {
+            accountKey = _accountKey
+            return window.crypto.subtle.exportKey('jwk', accountKey.privateKey)
+          })
+          .then(function (_accountJWK) {
+            accountJWK = _accountJWK
+          })
+      })
+
       it('syncs the database and returns stats plus account info', function () {
         var mockQueries = {
           getDefaultStats: sinon.stub().resolves({ mock: 'result' }),
           getAllEventIds: sinon.stub().resolves(['a', 'b', 'c', 'd']),
           getLatestEvent: sinon.stub().resolves({ eventId: 'd' }),
           deleteEvents: sinon.stub().resolves(true),
-          putEvents: sinon.stub().resolves(true)
+          putEvents: sinon.stub().resolves(true),
+          putEncryptedUserSecrets: sinon.stub().resolves()
         }
         var mockApi = {
           getDeletedEvents: sinon.stub().resolves({ eventIds: ['a'] }),
-          getAccount: sinon.stub().resolves({ events: {}, name: 'test', accountId: 'account-a' })
+          getAccount: sinon.stub().resolves({ events: {}, name: 'test', accountId: 'account-a' }),
+          decryptPrivateKey: sinon.stub().resolves({ decrypted: accountJWK })
         }
         var getOperatorEvents = getOperatorEventsWith(mockQueries, mockApi)
         return getOperatorEvents({ accountId: 'account-a' })
@@ -25,8 +49,8 @@ describe('src/get-operator-events', function () {
             assert.deepStrictEqual(result, {
               mock: 'result',
               account: {
-                name: 'test',
-                accountId: 'account-a'
+                accountId: 'account-a',
+                privateKey: accountKey.privateKey
               }
             })
           })
@@ -39,7 +63,6 @@ describe('src/get-operator-events', function () {
       var accountKey
       var accountJWK
       var userJWK
-      var encryptedPayload
 
       before(function () {
         return window.crypto.subtle.generateKey(
@@ -52,18 +75,6 @@ describe('src/get-operator-events', function () {
         )
           .then(function (_userSecret) {
             userSecret = _userSecret
-            return window.crypto.subtle.encrypt(
-              {
-                name: 'AES-CTR',
-                counter: new Uint8Array(16),
-                length: 128
-              },
-              userSecret,
-              Unibabel.utf8ToBuffer(JSON.stringify({ type: 'TEST' }))
-            )
-          })
-          .then(function (_encryptedPayload) {
-            encryptedPayload = Unibabel.arrToBase64(new Uint8Array(_encryptedPayload))
             return window.crypto.subtle.exportKey('jwk', userSecret)
           })
           .then(function (_userJWK) {
@@ -104,7 +115,8 @@ describe('src/get-operator-events', function () {
           getAllEventIds: sinon.stub().resolves(['a', 'b', 'c', 'd']),
           getLatestEvent: sinon.stub().resolves({ eventId: 'd' }),
           deleteEvents: sinon.stub().resolves(true),
-          putEvents: sinon.stub().resolves(true)
+          putEvents: sinon.stub().resolves(true),
+          putEncryptedUserSecrets: sinon.stub().resolves()
         }
         var mockApi = {
           getDeletedEvents: sinon.stub().resolves({ eventIds: ['a'] }),
@@ -114,7 +126,7 @@ describe('src/get-operator-events', function () {
                 eventId: 'z',
                 userId: 'user-a',
                 accountId: 'account-a',
-                payload: encryptedPayload
+                payload: 'encryptedPayload'
               }]
             },
             name: 'test',
@@ -152,16 +164,14 @@ describe('src/get-operator-events', function () {
               eventId: 'z',
               userId: 'user-a',
               accountId: 'account-a',
-              payload: {
-                type: 'TEST'
-              }
+              payload: 'encryptedPayload'
             }))
 
             assert.deepStrictEqual(result, {
               mock: 'result',
               account: {
-                name: 'test',
-                accountId: 'account-a'
+                accountId: 'account-a',
+                privateKey: accountKey.privateKey
               }
             })
           })

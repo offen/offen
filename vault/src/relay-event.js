@@ -1,4 +1,4 @@
-var uuid = require('uuid/v4')
+var ULID = require('ulid')
 
 var crypto = require('./crypto')
 var ensureUserSecret = require('./user-secret')
@@ -83,11 +83,11 @@ function getSessionId (accountId) {
       : null
 
     if (!sessionId) {
-      sessionId = uuid()
+      sessionId = ULID.ulid()
       document.cookie = [lookupKey, sessionId].join('=')
     }
   } catch (err) {
-    sessionId = uuid()
+    sessionId = ULID.ulid()
   }
   return sessionId
 }
