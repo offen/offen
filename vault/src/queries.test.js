@@ -2,6 +2,7 @@ var assert = require('assert')
 var subDays = require('date-fns/sub_days')
 var Unibabel = require('unibabel').Unibabel
 var ULID = require('ulid')
+var uuid = require('uuid/v4')
 
 var queries = require('./queries')
 var getDatabase = require('./database')
@@ -29,7 +30,7 @@ describe('src/queries.js', function () {
       var getDefaultStats
 
       beforeEach(function () {
-        db = getDatabase('test-' + ULID.ulid())
+        db = getDatabase('test-' + uuid())
         getDefaultStats = queries.getDefaultStatsWith(function () {
           return db
         })
@@ -89,7 +90,7 @@ describe('src/queries.js', function () {
 
       before(function () {
         var userSecretsById = {}
-        db = getDatabase('test-' + ULID.ulid())
+        db = getDatabase('test-' + uuid())
         getDefaultStats = queries.getDefaultStatsWith(function () {
           return db
         })
@@ -407,7 +408,7 @@ describe('src/queries.js', function () {
     var getLatestEvent
 
     beforeEach(function () {
-      db = getDatabase('test-' + ULID.ulid())
+      db = getDatabase('test-' + uuid())
       getLatestEvent = queries.getLatestEventWith(function () {
         return db
       })
@@ -444,7 +445,7 @@ describe('src/queries.js', function () {
     var getAllEventIds
 
     beforeEach(function () {
-      db = getDatabase('test-' + ULID.ulid())
+      db = getDatabase('test-' + uuid())
       getAllEventIds = queries.getAllEventIdsWith(function () {
         return db
       })

@@ -28,7 +28,7 @@ gulp.task('bundle:script', function () {
 
   return b
     .exclude('dexie')
-    .exclude('ulid')
+    .exclude('uuid')
     .exclude('underscore')
     .exclude('date-fns')
     .exclude('unibabel')
@@ -50,7 +50,7 @@ gulp.task('bundle:vendor', function () {
 
   return b
     .require('dexie')
-    .require('ulid')
+    .require('uuid')
     .require('underscore')
     .require('date-fns')
     .require('unibabel')

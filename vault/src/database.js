@@ -66,7 +66,6 @@ function createDatabase (name) {
   })
 
   db.version(4).stores({
-    secrets: 'accountId', // TODO: replace with `null` once deploying to a new env
     keys: '++,type',
     events: 'eventId,timestamp,[timestamp+accountId],[timestamp+userId]'
   }).upgrade(function (t) {
