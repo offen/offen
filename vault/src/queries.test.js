@@ -138,6 +138,7 @@ describe('src/queries.js', function () {
                 accountId: 'test-account-1',
                 userId: 'test-user-1',
                 eventId: ULID.ulid(minuteAgo.getTime()),
+                timestamp: minuteAgo.toJSON(),
                 payload: {
                   type: 'PAGEVIEW',
                   href: 'https://www.offen.dev',
@@ -151,6 +152,7 @@ describe('src/queries.js', function () {
                 accountId: 'test-account-1',
                 userId: 'test-user-1',
                 eventId: ULID.ulid(minuteAgo.getTime()),
+                timestamp: minuteAgo.toJSON(),
                 payload: {
                   type: 'PAGEVIEW',
                   href: 'https://www.offen.dev/contact',
@@ -164,6 +166,7 @@ describe('src/queries.js', function () {
                 accountId: 'test-account-1',
                 userId: 'test-user-1',
                 eventId: ULID.ulid(subDays(now, 1).getTime()),
+                timestamp: subDays(now, 1).toJSON(),
                 payload: {
                   type: 'PAGEVIEW',
                   href: 'https://www.offen.dev/deep-dive',
@@ -177,6 +180,7 @@ describe('src/queries.js', function () {
                 accountId: 'test-account-1',
                 userId: 'test-user-2',
                 eventId: ULID.ulid(subDays(now, 1).getTime()),
+                timestamp: subDays(now, 1).toJSON(),
                 payload: {
                   type: 'PAGEVIEW',
                   href: 'https://www.offen.dev/deep-dive',
@@ -190,6 +194,7 @@ describe('src/queries.js', function () {
                 accountId: 'test-account-2',
                 userId: 'test-user-1',
                 eventId: ULID.ulid(subDays(now, 2).getTime()),
+                timestamp: subDays(now, 2).toJSON(),
                 payload: {
                   type: 'PAGEVIEW',
                   href: 'https://www.puppies.com',
@@ -203,6 +208,7 @@ describe('src/queries.js', function () {
                 accountId: 'test-account-2',
                 userId: 'test-user-1',
                 eventId: ULID.ulid(subDays(now, 12).getTime()),
+                timestamp: subDays(now, 12).toJSON(),
                 payload: {
                   type: 'PAGEVIEW',
                   href: 'https://www.puppies.com',
@@ -215,16 +221,18 @@ describe('src/queries.js', function () {
               {
                 accountId: 'test-account-1',
                 userId: null,
-                eventId: ULID.ulid(now.getTime()),
+                eventId: ULID.ulid(minuteAgo.getTime()),
+                timestamp: minuteAgo.toJSON(),
                 payload: {
                   type: 'PAGEVIEW',
-                  timestamp: now.toJSON()
+                  timestamp: minuteAgo.toJSON()
                 }
               },
               {
                 accountId: 'test-account-1',
                 userId: null,
                 eventId: ULID.ulid(subDays(now, 12).getTime()),
+                timestamp: subDays(now, 12).toJSON(),
                 payload: {
                   type: 'PAGEVIEW',
                   timestamp: subDays(now, 12).toJSON()
@@ -234,6 +242,7 @@ describe('src/queries.js', function () {
                 accountId: 'test-account-1',
                 userId: null,
                 eventId: ULID.ulid(subDays(now, 4).getTime()),
+                timestamp: subDays(now, 4).toJSON(),
                 payload: {
                   type: 'PAGEVIEW',
                   timestamp: subDays(now, 4).toJSON()

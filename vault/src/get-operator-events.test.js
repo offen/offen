@@ -60,6 +60,7 @@ describe('src/get-operator-events', function () {
     context('with pending events', function () {
       var userSecret
       var encryptedUserSecret
+      var encryptedEventPayload
       var accountKey
       var accountJWK
       var userJWK
@@ -107,6 +108,20 @@ describe('src/get-operator-events', function () {
           .then(function (encrypted) {
             encryptedUserSecret = Unibabel.arrToBase64(new Uint8Array(encrypted))
           })
+          .then(function () {
+            return window.crypto.subtle.encrypt(
+              {
+                name: 'AES-CTR',
+                counter: new Uint8Array(16),
+                length: 128
+              },
+              userSecret,
+              Unibabel.utf8ToBuffer(JSON.stringify({ timestamp: 'timestamp-fixture' }))
+            )
+          })
+          .then(function (encrypted) {
+            encryptedEventPayload = Unibabel.arrToBase64(new Uint8Array(encrypted))
+          })
       })
 
       it('syncs the database and returns stats plus account info', function () {
@@ -126,7 +141,7 @@ describe('src/get-operator-events', function () {
                 eventId: 'z',
                 userId: 'user-a',
                 accountId: 'account-a',
-                payload: 'encryptedPayload'
+                payload: encryptedEventPayload
               }]
             },
             name: 'test',
@@ -164,7 +179,8 @@ describe('src/get-operator-events', function () {
               eventId: 'z',
               userId: 'user-a',
               accountId: 'account-a',
-              payload: 'encryptedPayload'
+              timestamp: 'timestamp-fixture',
+              payload: encryptedEventPayload
             }))
 
             assert.deepStrictEqual(result, {

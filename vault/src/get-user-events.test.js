@@ -27,7 +27,7 @@ describe('src/get-user-events', function () {
               length: 128
             },
             userSecret,
-            Unibabel.utf8ToBuffer(JSON.stringify({ type: 'TEST' }))
+            Unibabel.utf8ToBuffer(JSON.stringify({ type: 'TEST', timestamp: 'timestamp-fixture' }))
           )
             .then(function (_encryptedPayload) {
               encryptedPayload = Unibabel.arrToBase64(new Uint8Array(_encryptedPayload))
@@ -82,7 +82,8 @@ describe('src/get-user-events', function () {
               eventId: 'z',
               userId: 'local',
               accountId: 'account-a',
-              payload: { type: 'TEST' }
+              payload: { type: 'TEST', timestamp: 'timestamp-fixture' },
+              timestamp: 'timestamp-fixture'
             }
           ))
 

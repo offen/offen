@@ -1,6 +1,5 @@
 var _ = require('underscore')
 var Dexie = require('dexie')
-var ULID = require('ulid')
 var startOfHour = require('date-fns/start_of_hour')
 var startOfDay = require('date-fns/start_of_day')
 var startOfWeek = require('date-fns/start_of_week')
@@ -70,13 +69,8 @@ function getDefaultStatsWith (getDatabase) {
     }
 
     var now = (query && query.now) || new Date()
-    // event identifiers are ULIDs that will be created on the server when an
-    // event is accepted. This means they can also be used for selecting time
-    // ranges by the table's primary key.
-    var lowerBound = startOf[resolution](subtract[resolution](now, range - 1))
-    lowerBound = ULID.ulid(lowerBound.getTime())
-    var upperBound = endOf[resolution](now)
-    upperBound = ULID.ulid(upperBound.getTime())
+    var lowerBound = startOf[resolution](subtract[resolution](now, range - 1)).toJSON()
+    var upperBound = endOf[resolution](now).toJSON()
 
     // There are two types of queries happening here: those that rely solely
     // on the IndexedDB indices, and those that require the event payload
@@ -85,7 +79,7 @@ function getDefaultStatsWith (getDatabase) {
     // encryption, yet it seems using the IndexedDB API where possible makes
     // more sense and performs better.
     var decryptedEvents = table
-      .where('eventId')
+      .where('timestamp')
       .between(lowerBound, upperBound)
       .toArray(function (events) {
         // User events are already decrypted, so there is no need to proceed
@@ -104,23 +98,21 @@ function getDefaultStatsWith (getDatabase) {
       .map(function (num, distance) {
         var date = subtract[resolution](now, distance)
 
-        var lowerBound = startOf[resolution](date)
-        lowerBound = ULID.ulid(lowerBound.getTime())
-        var upperBound = endOf[resolution](date)
-        upperBound = ULID.ulid(upperBound.getTime())
+        var lowerBound = startOf[resolution](date).toJSON()
+        var upperBound = endOf[resolution](date).toJSON()
 
         var pageviews = table
-          .where('[eventId+userId]')
+          .where('[timestamp+userId]')
           .between([lowerBound, Dexie.minKey], [upperBound, Dexie.maxKey])
           .count()
 
         var visitors = table
-          .where('[eventId+userId]')
+          .where('[timestamp+userId]')
           .between([lowerBound, Dexie.minKey], [upperBound, Dexie.maxKey])
           .keys(uniqueKeysAt(1))
 
         var accounts = table
-          .where('[eventId+accountId]')
+          .where('[timestamp+accountId]')
           .between([lowerBound, Dexie.minKey], [upperBound, Dexie.maxKey])
           .keys(uniqueKeysAt(1))
 
@@ -141,7 +133,7 @@ function getDefaultStatsWith (getDatabase) {
     // `uniqueUsers` is the number of unique user ids for the given
     //  timerange.
     var uniqueUsers = table
-      .where('[eventId+userId]')
+      .where('[timestamp+userId]')
       .between([lowerBound, Dexie.minKey], [upperBound, Dexie.maxKey])
       .keys(uniqueKeysAt(1))
 
@@ -151,7 +143,7 @@ function getDefaultStatsWith (getDatabase) {
     // so the loss rate can simply be calculated by comparing the count
     // in an index with and one without userId
     var loss = table
-      .where('eventId')
+      .where('timestamp')
       .between(lowerBound, upperBound)
       .count()
       .then(function (allEvents) {
@@ -159,7 +151,7 @@ function getDefaultStatsWith (getDatabase) {
           return 0
         }
         return table
-          .where('[eventId+userId]')
+          .where('[timestamp+userId]')
           .between([lowerBound, Dexie.minKey], [upperBound, Dexie.maxKey])
           .count()
           .then(function (userEvents) {
@@ -169,7 +161,7 @@ function getDefaultStatsWith (getDatabase) {
 
     // This is the number of unique accounts for the given timeframe
     var uniqueAccounts = table
-      .where('[eventId+accountId]')
+      .where('[timestamp+accountId]')
       .between([lowerBound, Dexie.minKey], [upperBound, Dexie.maxKey])
       .keys(uniqueKeysAt(1))
 

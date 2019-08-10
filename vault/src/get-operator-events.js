@@ -63,18 +63,55 @@ function ensureSyncWith (queries, api) {
         return Promise.all([fetchNewEvents, pruneEvents])
           .then(function (results) {
             var payload = results[0]
-            return Promise.all([
-              api.decryptPrivateKey(payload.encryptedPrivateKey)
-                .then(function (response) {
-                  return crypto.importPrivateKey(response.decrypted)
-                }),
-              queries.putEvents.apply(null, [accountId].concat(payload.events)),
-              queries.putEncryptedUserSecrets.apply(null, [accountId].concat(payload.encryptedUserSecrets))
-            ])
-              .then(function (results) {
-                return Object.assign(payload.account, {
-                  privateKey: results[0]
-                })
+            return api.decryptPrivateKey(payload.encryptedPrivateKey)
+              .then(function (response) {
+                return crypto.importPrivateKey(response.decrypted)
+              })
+              .then(function (privateCryptoKey) {
+                var decryptWithAccountKey = crypto.decryptAsymmetricWith(privateCryptoKey)
+                var decryptedUserSecrets = payload.encryptedUserSecrets
+                  .reduce(function (acc, pair) {
+                    acc[pair[0]] = decryptWithAccountKey(pair[1])
+                      .then(function (jwk) {
+                        return crypto.importSymmetricKey(jwk)
+                      })
+                      .then(function (cryptoKey) {
+                        return crypto.decryptSymmetricWith(cryptoKey)
+                      })
+                    return acc
+                  }, {})
+                var eventsWithTimestamps = payload.events
+                  .map(function (event) {
+                    var decryptPayload = event.userId === null
+                      ? Promise.resolve(decryptWithAccountKey)
+                      : decryptedUserSecrets[event.userId]
+                    return decryptPayload
+                      .then(function (decryptFn) {
+                        return decryptFn(event.payload)
+                      })
+                      .then(function (decryptedPayload) {
+                        return Object.assign(
+                          { timestamp: decryptedPayload.timestamp }, event
+                        )
+                      })
+                  })
+                return Promise.all(eventsWithTimestamps)
+                  .then(function (events) {
+                    return Promise
+                      .all([
+                        queries.putEvents.apply(
+                          null, [accountId].concat(events)
+                        ),
+                        queries.putEncryptedUserSecrets.apply(
+                          null, [accountId].concat(payload.encryptedUserSecrets)
+                        )
+                      ])
+                  })
+                  .then(function (results) {
+                    return Object.assign(payload.account, {
+                      privateKey: privateCryptoKey
+                    })
+                  })
               })
           })
       })

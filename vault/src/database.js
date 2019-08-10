@@ -68,7 +68,7 @@ function createDatabase (name) {
   db.version(4).stores({
     secrets: null, // this deletes previously defined tables
     keys: '++,type,[type+userId]',
-    events: 'eventId,[eventId+accountId],[eventId+userId]'
+    events: 'eventId,timestamp,[timestamp+accountId],[timestamp+userId]'
   }).upgrade(function (t) {
     return t.events.clear()
   })
