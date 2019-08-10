@@ -66,11 +66,27 @@ function createDatabase (name) {
   })
 
   db.version(4).stores({
-    secrets: null, // this deletes previously defined tables
-    keys: '++,type,[type+userId]',
+    secrets: 'accountId', // TODO: replace with `null` once deploying to a new env
+    keys: '++,type',
     events: 'eventId,timestamp,[timestamp+accountId],[timestamp+userId]'
   }).upgrade(function (t) {
-    return t.events.clear()
+    return t.secrets.toArray()
+      .then(function (keys) {
+        var key = keys[0]
+        if (!key) {
+          return Dexie.Promise.resolve()
+        }
+        return t.keys.put({
+          type: 'USER_SECRET',
+          value: key.userSecret
+        })
+      })
+      .then(function () {
+        return Dexie.Promise.all([
+          t.events.clear(),
+          t.secrets.clear()
+        ])
+      })
   })
 
   return db
