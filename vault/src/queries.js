@@ -15,7 +15,7 @@ var subMonths = require('date-fns/sub_months')
 
 var getDatabase = require('./database')
 var placeInBucket = require('./buckets')
-var crypto = require('./crypto')
+var decryptEvents = require('./decrypt-events')
 
 var startOf = {
   hours: startOfHour,
@@ -87,7 +87,11 @@ function getDefaultStatsWith (getDatabase) {
         // relatively pointless to store the encrypted events alongside a
         // key that is able to decrypt them.
         return accountId
-          ? decryptEventsWith(getDatabase)(events, accountId, privateKey)
+          ? decryptEvents(
+            events,
+            getEncryptedUserSecretsWith(getDatabase)(accountId),
+            privateKey
+          )
           : events
       })
 
@@ -443,58 +447,4 @@ function getEncryptedUserSecretsWith (getDatabase) {
       .equals(TYPE_ENCRYPTED_USER_SECRET)
       .toArray()
   }
-}
-
-function decryptEventsWith (getDatabase) {
-  return function (encryptedEvents, accountId, privateKey) {
-    var decryptWithAccountKey = crypto.decryptAsymmetricWith(privateKey)
-    return getEncryptedUserSecretsWith(getDatabase)(accountId)
-      .then(function (userSecrets) {
-        var decryptions = userSecrets
-          .map(function (userSecret) {
-            if (decryptEventsWith._cache.keys[userSecret.userId]) {
-              return decryptEventsWith._cache.keys[userSecret.userId]
-            }
-            return decryptWithAccountKey(userSecret.value)
-              .then(function (jwk) {
-                return crypto.importSymmetricKey(jwk)
-              })
-              .then(function (cryptoKey) {
-                var withKey = Object.assign(
-                  {}, userSecret, { cryptoKey: cryptoKey }
-                )
-                decryptEventsWith._cache.keys[withKey.userId] = withKey
-                return withKey
-              })
-          })
-        return Promise.all(decryptions)
-      })
-      .then(function (secrets) {
-        return _.indexBy(secrets, 'userId')
-      })
-      .then(function (secretsById) {
-        var decryptedEvents = encryptedEvents.map(function (event) {
-          if (decryptEventsWith._cache.events[event.eventId]) {
-            return decryptEventsWith._cache.events[event.eventId]
-          }
-          var decryptEvent = event.userId === null
-            ? decryptWithAccountKey
-            : crypto.decryptSymmetricWith(secretsById[event.userId].cryptoKey)
-          return decryptEvent(event.payload)
-            .then(function (decryptedPayload) {
-              var withPayload = Object.assign(
-                {}, event, { payload: decryptedPayload }
-              )
-              decryptEventsWith._cache.events[withPayload.eventId] = withPayload
-              return withPayload
-            })
-        })
-        return Promise.all(decryptedEvents)
-      })
-  }
-}
-
-decryptEventsWith._cache = {
-  keys: {},
-  events: {}
 }

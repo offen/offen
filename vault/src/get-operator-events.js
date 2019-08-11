@@ -3,6 +3,7 @@ var _ = require('underscore')
 var api = require('./api')
 var queries = require('./queries')
 var crypto = require('./crypto')
+var decryptEvents = require('./decrypt-events')
 
 module.exports = getOperatorEventsWith(queries, api)
 module.exports.getOperatorEventsWith = getOperatorEventsWith
@@ -68,34 +69,23 @@ function ensureSyncWith (queries, api) {
                 return crypto.importPrivateKey(response.decrypted)
               })
               .then(function (privateCryptoKey) {
-                var decryptWithAccountKey = crypto.decryptAsymmetricWith(privateCryptoKey)
-                var decryptedUserSecrets = payload.encryptedUserSecrets
-                  .reduce(function (acc, pair) {
-                    acc[pair[0]] = decryptWithAccountKey(pair[1])
-                      .then(function (jwk) {
-                        return crypto.importSymmetricKey(jwk)
-                      })
-                      .then(function (cryptoKey) {
-                        return crypto.decryptSymmetricWith(cryptoKey)
-                      })
-                    return acc
-                  }, {})
-                var eventsWithTimestamps = payload.events
-                  .map(function (event) {
-                    var decryptPayload = event.userId === null
-                      ? Promise.resolve(decryptWithAccountKey)
-                      : decryptedUserSecrets[event.userId]
-                    return decryptPayload
-                      .then(function (decryptFn) {
-                        return decryptFn(event.payload)
-                      })
-                      .then(function (decryptedPayload) {
-                        return Object.assign(
-                          { timestamp: decryptedPayload.timestamp }, event
-                        )
-                      })
+                var userSecrets = payload.encryptedUserSecrets
+                  .map(function (pair) {
+                    return {
+                      userId: pair[0],
+                      value: pair[1]
+                    }
                   })
-                return Promise.all(eventsWithTimestamps)
+                return decryptEvents(
+                  payload.events, userSecrets, privateCryptoKey
+                )
+                  .then(function (decryptedEvents) {
+                    return payload.events.map(function (event, index) {
+                      return Object.assign(
+                        { timestamp: decryptedEvents[index].payload.timestamp }, event
+                      )
+                    })
+                  })
                   .then(function (events) {
                     return Promise
                       .all([
