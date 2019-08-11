@@ -1,9 +1,0 @@
-section {
-display: flex;
-flex-flow: column;
-}
-
-section .footnote {
-padding-top: 30px;
-order: 100;
-}

@@ -37,7 +37,7 @@ CATEGORIES_SAVE_AS = None
 TAGS_SAVE_AS = None
 
 # keep this for access to page variable
-DIRECT_TEMPLATES = []
+DIRECT_TEMPLATES = ['temp']
 
 GITHUB_ORG = 'https://github.com/offen'
 CONTACT_EMAIL = 'mail@offen.dev'
