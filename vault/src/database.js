@@ -65,5 +65,28 @@ function createDatabase (name) {
     return Dexie.waitFor(Promise.resolve())
   })
 
+  db.version(4).stores({
+    keys: '++,type',
+    events: 'eventId,timestamp,[timestamp+accountId],[timestamp+userId]'
+  }).upgrade(function (t) {
+    return t.secrets.toArray()
+      .then(function (keys) {
+        var key = keys[0]
+        if (!key) {
+          return Dexie.Promise.resolve()
+        }
+        return t.keys.put({
+          type: 'USER_SECRET',
+          value: key.userSecret
+        })
+      })
+      .then(function () {
+        return Dexie.Promise.all([
+          t.events.clear(),
+          t.secrets.clear()
+        ])
+      })
+  })
+
   return db
 }

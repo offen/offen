@@ -12,7 +12,10 @@ function handleAnalyticsEvent (message) {
     .then(function () {
       return null
     })
-    .catch(function () {
+    .catch(function (err) {
+      if (process.env.NODE_ENV !== 'production') {
+        console.error(err)
+      }
       return null
     })
 }

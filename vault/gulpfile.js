@@ -28,6 +28,10 @@ gulp.task('bundle:script', function () {
 
   return b
     .exclude('dexie')
+    .exclude('uuid')
+    .exclude('underscore')
+    .exclude('date-fns')
+    .exclude('unibabel')
     .plugin('tinyify')
     .bundle()
     .pipe(source('index.js'))
@@ -46,6 +50,10 @@ gulp.task('bundle:vendor', function () {
 
   return b
     .require('dexie')
+    .require('uuid')
+    .require('underscore')
+    .require('date-fns')
+    .require('unibabel')
     .plugin('tinyify')
     .bundle()
     .pipe(source('vendor.js'))

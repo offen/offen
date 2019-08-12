@@ -1,12 +1,30 @@
 var assert = require('assert')
-var uuid = require('uuid/v4')
 var subDays = require('date-fns/sub_days')
+var Unibabel = require('unibabel').Unibabel
+var ULID = require('ulid')
+var uuid = require('uuid/v4')
 
 var queries = require('./queries')
 var getDatabase = require('./database')
 
 describe('src/queries.js', function () {
-  describe('getDefaultStats(db, query)', function () {
+  describe('getDefaultStats(accountId, query, privateKey)', function () {
+    var accountKey
+    before(function () {
+      return window.crypto.subtle.generateKey(
+        {
+          name: 'RSA-OAEP',
+          modulusLength: 2048,
+          publicExponent: new Uint8Array([0x01, 0x00, 0x01]),
+          hash: { name: 'SHA-256' }
+        },
+        true,
+        ['encrypt', 'decrypt']
+      )
+        .then(function (_accountKey) {
+          accountKey = _accountKey
+        })
+    })
     context('with no data present', function () {
       var db
       var getDefaultStats
@@ -23,7 +41,7 @@ describe('src/queries.js', function () {
       })
 
       it('returns an object of the correct shape without failing', function () {
-        return getDefaultStats('test-account')
+        return getDefaultStats('test-account', {}, accountKey.privateKey)
           .then(function (data) {
             assert.deepStrictEqual(
               Object.keys(data),
@@ -51,7 +69,10 @@ describe('src/queries.js', function () {
       })
 
       it('handles queries correctly', function () {
-        return getDefaultStats('test-account', { range: 12, resolution: 'weeks' })
+        return getDefaultStats(
+          'test-account', { range: 12, resolution: 'weeks' },
+          accountKey.privateKey
+        )
           .then(function (data) {
             assert.strictEqual(data.pageviews.length, 12)
           })
@@ -67,128 +88,210 @@ describe('src/queries.js', function () {
       var getDefaultStats
       var now
 
-      beforeEach(function () {
+      before(function () {
+        var userSecretsById = {}
         db = getDatabase('test-' + uuid())
         getDefaultStats = queries.getDefaultStatsWith(function () {
           return db
         })
         // this is a sunday morning
-        now = new Date('2019-07-14T10:00:00.000Z')
-        return db.events.bulkAdd([
-          {
-            accountId: 'test-account-1',
-            userId: 'test-user-1',
-            eventId: 'test-event-1',
-            payload: {
-              type: 'PAGEVIEW',
-              href: 'https://www.offen.dev',
-              title: 'Transparent web analytics',
-              sessionId: 'session-id-1',
-              referrer: '',
-              timestamp: now.toJSON()
-            }
-          },
-          {
-            accountId: 'test-account-1',
-            userId: 'test-user-1',
-            eventId: 'test-event-2',
-            payload: {
-              type: 'PAGEVIEW',
-              href: 'https://www.offen.dev/contact',
-              title: 'Contact',
-              sessionId: 'session-id-1',
-              referrer: '',
-              timestamp: now.toJSON()
-            }
-          },
-          {
-            accountId: 'test-account-1',
-            userId: 'test-user-1',
-            eventId: 'test-event-3',
-            payload: {
-              type: 'PAGEVIEW',
-              href: 'https://www.offen.dev/deep-dive',
-              title: 'Deep dive',
-              sessionId: 'session-id-2',
-              referrer: 'https://www.offen.dev',
-              timestamp: subDays(now, 1).toJSON()
-            }
-          },
-          {
-            accountId: 'test-account-1',
-            userId: 'test-user-2',
-            eventId: 'test-event-4',
-            payload: {
-              type: 'PAGEVIEW',
-              href: 'https://www.offen.dev/deep-dive',
-              title: 'Deep dive',
-              sessionId: 'session-id-3',
-              referrer: '',
-              timestamp: subDays(now, 1).toJSON()
-            }
-          },
-          {
-            accountId: 'test-account-2',
-            userId: 'test-user-1',
-            eventId: 'test-event-5',
-            payload: {
-              type: 'PAGEVIEW',
-              href: 'https://www.puppies.com',
-              title: 'Very cute',
-              sessionId: 'session-id-4',
-              referrer: 'https://www.cute.com',
-              timestamp: subDays(now, 2).toJSON()
-            }
-          },
-          {
-            accountId: 'test-account-2',
-            userId: 'test-user-1',
-            eventId: 'test-event-6',
-            payload: {
-              type: 'PAGEVIEW',
-              href: 'https://www.puppies.com',
-              title: 'Very cute',
-              sessionId: 'session-id-5',
-              referrer: '',
-              timestamp: subDays(now, 12).toJSON()
-            }
-          },
-          {
-            accountId: 'test-account-1',
-            userId: null,
-            eventId: 'test-event-7',
-            payload: {
-              type: 'PAGEVIEW',
-              timestamp: now.toJSON()
-            }
-          },
-          {
-            accountId: 'test-account-1',
-            userId: null,
-            eventId: 'test-event-8',
-            payload: {
-              type: 'PAGEVIEW',
-              timestamp: subDays(now, 12).toJSON()
-            }
-          },
-          {
-            accountId: 'test-account-1',
-            userId: null,
-            eventId: 'test-event-9',
-            payload: {
-              type: 'PAGEVIEW',
-              timestamp: subDays(now, 4).toJSON()
-            }
-          }
-        ])
+        now = new Date('2019-07-14T10:01:00.000Z')
+        var userSecrets = ['test-user-1', 'test-user-2']
+          .map(function (userId) {
+            return window.crypto.subtle
+              .generateKey(
+                {
+                  name: 'AES-CTR',
+                  length: 256
+                },
+                true,
+                ['encrypt', 'decrypt']
+              )
+              .then(function (userSecret) {
+                userSecretsById[userId] = userSecret
+                return window.crypto.subtle.exportKey('jwk', userSecret)
+              })
+              .then(function (jwk) {
+                return window.crypto.subtle
+                  .encrypt(
+                    {
+                      name: 'RSA-OAEP'
+                    },
+                    accountKey.publicKey,
+                    Unibabel.utf8ToBuffer(JSON.stringify(jwk))
+                  )
+                  .then(function (encrypted) {
+                    return Unibabel.arrToBase64(new Uint8Array(encrypted))
+                  })
+              })
+          })
+        return Promise.all(userSecrets)
+          .then(function (encryptedSecrets) {
+            return db.keys.bulkAdd([
+              { type: 'ENCRYPTED_USER_SECRET', userId: 'test-user-1', value: encryptedSecrets[0] },
+              { type: 'ENCRYPTED_USER_SECRET', userId: 'test-user-2', value: encryptedSecrets[1] }
+            ])
+          })
+          .then(function (res) {
+            var minuteAgo = new Date('2019-07-14T10:00:30.000Z')
+            var events = [
+              {
+                accountId: 'test-account-1',
+                userId: 'test-user-1',
+                eventId: ULID.ulid(minuteAgo.getTime()),
+                timestamp: minuteAgo.toJSON(),
+                payload: {
+                  type: 'PAGEVIEW',
+                  href: 'https://www.offen.dev',
+                  title: 'Transparent web analytics',
+                  sessionId: 'session-id-1',
+                  referrer: '',
+                  timestamp: minuteAgo.toJSON()
+                }
+              },
+              {
+                accountId: 'test-account-1',
+                userId: 'test-user-1',
+                eventId: ULID.ulid(minuteAgo.getTime()),
+                timestamp: minuteAgo.toJSON(),
+                payload: {
+                  type: 'PAGEVIEW',
+                  href: 'https://www.offen.dev/contact',
+                  title: 'Contact',
+                  sessionId: 'session-id-1',
+                  referrer: '',
+                  timestamp: minuteAgo.toJSON()
+                }
+              },
+              {
+                accountId: 'test-account-1',
+                userId: 'test-user-1',
+                eventId: ULID.ulid(subDays(now, 1).getTime()),
+                timestamp: subDays(now, 1).toJSON(),
+                payload: {
+                  type: 'PAGEVIEW',
+                  href: 'https://www.offen.dev/deep-dive',
+                  title: 'Deep dive',
+                  sessionId: 'session-id-2',
+                  referrer: 'https://www.offen.dev',
+                  timestamp: subDays(now, 1).toJSON()
+                }
+              },
+              {
+                accountId: 'test-account-1',
+                userId: 'test-user-2',
+                eventId: ULID.ulid(subDays(now, 1).getTime()),
+                timestamp: subDays(now, 1).toJSON(),
+                payload: {
+                  type: 'PAGEVIEW',
+                  href: 'https://www.offen.dev/deep-dive',
+                  title: 'Deep dive',
+                  sessionId: 'session-id-3',
+                  referrer: '',
+                  timestamp: subDays(now, 1).toJSON()
+                }
+              },
+              {
+                accountId: 'test-account-2',
+                userId: 'test-user-1',
+                eventId: ULID.ulid(subDays(now, 2).getTime()),
+                timestamp: subDays(now, 2).toJSON(),
+                payload: {
+                  type: 'PAGEVIEW',
+                  href: 'https://www.puppies.com',
+                  title: 'Very cute',
+                  sessionId: 'session-id-4',
+                  referrer: 'https://www.cute.com',
+                  timestamp: subDays(now, 2).toJSON()
+                }
+              },
+              {
+                accountId: 'test-account-2',
+                userId: 'test-user-1',
+                eventId: ULID.ulid(subDays(now, 12).getTime()),
+                timestamp: subDays(now, 12).toJSON(),
+                payload: {
+                  type: 'PAGEVIEW',
+                  href: 'https://www.puppies.com',
+                  title: 'Very cute',
+                  sessionId: 'session-id-5',
+                  referrer: '',
+                  timestamp: subDays(now, 12).toJSON()
+                }
+              },
+              {
+                accountId: 'test-account-1',
+                userId: null,
+                eventId: ULID.ulid(minuteAgo.getTime()),
+                timestamp: minuteAgo.toJSON(),
+                payload: {
+                  type: 'PAGEVIEW',
+                  timestamp: minuteAgo.toJSON()
+                }
+              },
+              {
+                accountId: 'test-account-1',
+                userId: null,
+                eventId: ULID.ulid(subDays(now, 12).getTime()),
+                timestamp: subDays(now, 12).toJSON(),
+                payload: {
+                  type: 'PAGEVIEW',
+                  timestamp: subDays(now, 12).toJSON()
+                }
+              },
+              {
+                accountId: 'test-account-1',
+                userId: null,
+                eventId: ULID.ulid(subDays(now, 4).getTime()),
+                timestamp: subDays(now, 4).toJSON(),
+                payload: {
+                  type: 'PAGEVIEW',
+                  timestamp: subDays(now, 4).toJSON()
+                }
+              }
+            ].map(function (event) {
+              if (!event.userId) {
+                return window.crypto.subtle
+                  .encrypt(
+                    {
+                      name: 'RSA-OAEP'
+                    },
+                    accountKey.publicKey,
+                    Unibabel.utf8ToBuffer(JSON.stringify(event.payload))
+                  )
+                  .then(function (encryptedEventPayload) {
+                    event.payload = Unibabel.arrToBase64(new Uint8Array(encryptedEventPayload))
+                    return event
+                  })
+              }
+              return window.crypto.subtle
+                .encrypt(
+                  {
+                    name: 'AES-CTR',
+                    counter: new Uint8Array(16),
+                    length: 128
+                  },
+                  userSecretsById[event.userId],
+                  Unibabel.utf8ToBuffer(JSON.stringify(event.payload))
+                )
+                .then(function (encryptedEventPayload) {
+                  event.payload = Unibabel.arrToBase64(new Uint8Array(encryptedEventPayload))
+                  return event
+                })
+            })
+            return Promise.all(events)
+          })
+          .then(function (events) {
+            return db.events.bulkAdd(events)
+          })
       })
 
-      afterEach(function () {
+      after(function () {
         return db.delete()
       })
 
       it('calculates stats correctly using defaults', function () {
-        return getDefaultStats('test-account', { now: now })
+        return getDefaultStats('test-account', { now: now }, accountKey.privateKey)
           .then(function (data) {
             assert.deepStrictEqual(
               Object.keys(data),
@@ -222,13 +325,16 @@ describe('src/queries.js', function () {
             assert.strictEqual(data.pageviews[3].visitors, 0)
 
             assert.strictEqual(data.bounceRate, 0.75)
-
             assert.strictEqual(data.loss, 1 - (5 / 7))
           })
       })
 
       it('calculates stats correctly with a weekly query', function () {
-        return getDefaultStats('test-account', { range: 2, resolution: 'weeks', now: now })
+        return getDefaultStats(
+          'test-account',
+          { range: 2, resolution: 'weeks', now: now },
+          accountKey.privateKey
+        )
           .then(function (data) {
             assert.deepStrictEqual(
               Object.keys(data),
@@ -260,7 +366,11 @@ describe('src/queries.js', function () {
       })
 
       it('calculates stats correctly with a hourly query', function () {
-        return getDefaultStats('test-account', { range: 12, resolution: 'hours', now: now })
+        return getDefaultStats(
+          'test-account',
+          { range: 12, resolution: 'hours', now: now },
+          accountKey.privateKey
+        )
           .then(function (data) {
             assert.deepStrictEqual(
               Object.keys(data),

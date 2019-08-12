@@ -62,7 +62,9 @@ function ensureSyncWith (queries, api) {
           // just create a possible leak of identifiers. We need to index on
           // this value in IndexedDB though, so a fixed value is used instead
           // of using real data.
-          return Object.assign(event, { userId: 'local' })
+          return Object.assign(
+            event, { userId: 'local', timestamp: event.payload.timestamp }
+          )
         })
         return queries.putEvents.apply(null, [null].concat(events))
       })
