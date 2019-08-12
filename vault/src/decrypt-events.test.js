@@ -79,7 +79,11 @@ describe('src/decrypt-event.js', function () {
           },
           {
             userId: 'unknown-user',
-            payload: 'bogus'
+            payload: encryptedEventPayload
+          },
+          {
+            userId: 'user-id',
+            payload: 'bogus-value'
           }
         ],
         [

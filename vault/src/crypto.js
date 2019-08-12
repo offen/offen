@@ -4,6 +4,12 @@ exports.decryptSymmetricWith = decryptSymmetricWith
 
 function decryptSymmetricWith (cryptoKey) {
   return function (encryptedValue) {
+    var bytes
+    try {
+      bytes = Unibabel.base64ToArr(encryptedValue)
+    } catch (err) {
+      return Promise.reject(err)
+    }
     return window.crypto.subtle.decrypt(
       {
         name: 'AES-CTR',
@@ -11,7 +17,7 @@ function decryptSymmetricWith (cryptoKey) {
         length: 128
       },
       cryptoKey,
-      Unibabel.base64ToArr(encryptedValue)
+      bytes
     )
       .then(parseDecrypted)
   }
@@ -21,6 +27,12 @@ exports.encryptSymmetricWith = encryptSymmetricWith
 
 function encryptSymmetricWith (cryptoKey) {
   return function (unencryptedValue) {
+    var bytes
+    try {
+      bytes = Unibabel.utf8ToBuffer(JSON.stringify(unencryptedValue))
+    } catch (err) {
+      return Promise.reject(err)
+    }
     return window.crypto.subtle.encrypt(
       {
         name: 'AES-CTR',
@@ -28,7 +40,7 @@ function encryptSymmetricWith (cryptoKey) {
         length: 128
       },
       cryptoKey,
-      Unibabel.utf8ToBuffer(JSON.stringify(unencryptedValue))
+      bytes
     )
       .then(encodeEncrypted)
   }
@@ -38,12 +50,18 @@ exports.decryptAsymmetricWith = decryptAsymmetricWith
 
 function decryptAsymmetricWith (privateCryptoKey) {
   return function (encryptedValue) {
+    var bytes
+    try {
+      bytes = Unibabel.base64ToArr(encryptedValue)
+    } catch (err) {
+      return Promise.reject(err)
+    }
     return window.crypto.subtle.decrypt(
       {
         name: 'RSA-OAEP'
       },
       privateCryptoKey,
-      Unibabel.base64ToArr(encryptedValue)
+      bytes
     )
       .then(parseDecrypted)
   }
@@ -53,12 +71,18 @@ exports.encryptAsymmetricWith = encryptAsymmetricWith
 
 function encryptAsymmetricWith (publicCryptoKey) {
   return function (unencryptedValue) {
+    var bytes
+    try {
+      bytes = Unibabel.utf8ToBuffer(JSON.stringify(unencryptedValue))
+    } catch (err) {
+      return Promise.reject(err)
+    }
     return window.crypto.subtle.encrypt(
       {
         name: 'RSA-OAEP'
       },
       publicCryptoKey,
-      Unibabel.utf8ToBuffer(JSON.stringify(unencryptedValue))
+      bytes
     )
       .then(encodeEncrypted)
   }
