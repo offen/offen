@@ -28,6 +28,9 @@ function fetchOperatorEventsWith (api, queries) {
           .map(function (hashedUserId) {
             return [hashedUserId, account.userSecrets[hashedUserId]]
           })
+          .filter(function (pair) {
+            return pair[1]
+          })
         var returnedEvents = _.flatten(Object.values(account.events || {}), true)
         return {
           events: returnedEvents,
