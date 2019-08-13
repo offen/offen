@@ -85,7 +85,8 @@ function ensureSyncWith (queries, api) {
                   .then(function (decryptedEvents) {
                     return decryptedEvents.map(function (decryptedEvent) {
                       // decryption might skip events on erroneous payloads
-                      // so we need to look up the sibling like this
+                      // so we need to look up the sibling like this instead
+                      // of using the index
                       var match = _.findWhere(payload.events, { eventId: decryptedEvent.eventId })
                       return Object.assign(
                         { timestamp: decryptedEvent.payload.timestamp }, match

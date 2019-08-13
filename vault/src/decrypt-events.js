@@ -8,12 +8,16 @@ module.exports.decryptEventsWith = decryptEventsWith
 function decryptEventsWith (cache) {
   return function (encryptedEvents, userSecrets, privateKey) {
     var decryptWithAccountKey = crypto.decryptAsymmetricWith(privateKey)
-    return Promise.resolve(userSecrets)
-      .then(function (userSecrets) {
-        var decryptions = userSecrets
-          .map(function (userSecret) {
-            if (cache && cache[userSecret.userId]) {
-              return cache[userSecret.userId]
+
+    function getMatchingUserSecret (userId) {
+      function doDecrypt () {
+        return Promise.resolve(userSecrets)
+          .then(function (userSecrets) {
+            var userSecret = _.findWhere(userSecrets, { userId: userId })
+            if (!userSecret) {
+              return Promise.reject(
+                new Error('Unable to find matching user secret')
+              )
             }
 
             return decryptWithAccountKey(userSecret.value)
@@ -22,54 +26,50 @@ function decryptEventsWith (cache) {
                 var withKey = Object.assign(
                   {}, userSecret, { cryptoKey: cryptoKey }
                 )
-                if (cache) {
-                  cache[withKey.userId] = withKey
-                }
                 return withKey
               })
           })
-        return Promise.all(decryptions)
-      })
-      .then(function (decryptedSecrets) {
-        return Promise.all([
-          _.indexBy(decryptedSecrets, 'userId'),
-          encryptedEvents
-        ])
-      })
-      .then(function (results) {
-        var secretsById = results[0]
-        var encryptedEvents = results[1]
-        var decryptedEvents = encryptedEvents
-          .map(function (event) {
-            if (cache && cache[event.eventId]) {
-              return cache[event.eventId]
-            }
+      }
+      if (cache) {
+        cache[userId] = cache[userId] || doDecrypt()
+        return cache[userId]
+      }
+      return doDecrypt()
+    }
 
-            var decryptEvent
-            if (event.userId === null) {
-              decryptEvent = decryptWithAccountKey
-            } else {
-              var userSecret = secretsById[event.userId] && secretsById[event.userId].cryptoKey
-              if (!userSecret) {
-                return null
-              }
-              decryptEvent = crypto.decryptSymmetricWith(userSecret)
-            }
-            return decryptEvent(event.payload)
-              .then(function (decryptedPayload) {
-                var withPayload = Object.assign(
-                  {}, event, { payload: decryptedPayload }
-                )
-                if (cache) {
-                  cache[withPayload.eventId] = withPayload
+    var decryptedEvents = encryptedEvents
+      .map(function (encryptedEvent) {
+        if (cache && cache[encryptedEvent.eventId]) {
+          return cache[encryptedEvent.eventId]
+        }
+        var decryptPayload
+        if (encryptedEvent.userId === null) {
+          decryptPayload = decryptWithAccountKey
+        } else {
+          decryptPayload = function (payload) {
+            return getMatchingUserSecret(encryptedEvent.userId)
+              .then(function (userSecret) {
+                if (!userSecret) {
+                  return null
                 }
-                return withPayload
+                return crypto.decryptSymmetricWith(userSecret.cryptoKey)(payload)
               })
-              .catch(function () {
-                return null
-              })
+          }
+        }
+        return decryptPayload(encryptedEvent.payload)
+          .then(function (decryptedPayload) {
+            var withDecryptedPayload = Object.assign(
+              {}, encryptedEvent, { payload: decryptedPayload }
+            )
+            if (cache) {
+              cache[withDecryptedPayload.eventId] = withDecryptedPayload
+            }
+            return withDecryptedPayload
           })
-        return Promise.all(decryptedEvents).then(_.compact)
+          .catch(function () {
+            return null
+          })
       })
+    return Promise.all(decryptedEvents).then(_.compact)
   }
 }
