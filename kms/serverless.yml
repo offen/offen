@@ -55,8 +55,8 @@ functions:
         - kms/bin/kms
     handler: kms/bin/kms
     environment:
+      STAGE: ${self:custom.stage}
       CORS_ORIGIN: https://${self:custom.origin.${self:custom.stage}}
-      KEY_CONTENT: '${ssm:/aws/reference/secretsmanager/${self:custom.stage}/kms/key~true}'
       JWT_PUBLIC_KEY: ${self:custom.jwtPublicKey.${self:custom.stage}}
       COOKIE_DOMAIN: ${self:custom.cookieDomain.${self:custom.stage}}
     events:
