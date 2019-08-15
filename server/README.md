@@ -47,15 +47,3 @@ make test
 ```
 make build
 ```
-
-### Command line flags
-
-The application is configured using environment flags on startup. The following values are used:
-
-  - `port`: the port the server binds to (default 8080)
-  - `conn`: a database connection string
-  - `dialect`: the database dialect used by the given connection string (default "postgres")
-  - `key`: the path to a SSL key in PEM format
-  - `cert`: the path to a SSL certificate in PEM format
-  - `origin`: the origin used in CORS headers (default "*")
-  - `level`: the application's log level (default "info")

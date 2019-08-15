@@ -5,14 +5,14 @@ import (
 	"log"
 	"net/http"
 
-	serverconfig "github.com/offen/offen/kms/config/server"
+	httpconfig "github.com/offen/offen/kms/config/http"
 	keymanager "github.com/offen/offen/kms/keymanager/local"
 	"github.com/offen/offen/kms/router"
 	"github.com/sirupsen/logrus"
 )
 
 func main() {
-	cfg, cfgErr := serverconfig.New()
+	cfg, cfgErr := httpconfig.New()
 	if cfgErr != nil {
 		log.Fatalf("Unable to create runtime configuration: %v", cfgErr)
 	}

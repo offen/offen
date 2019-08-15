@@ -63,6 +63,7 @@ jobs:
         environment:
           - POSTGRES_CONNECTION_STRING=postgres://circle:test@localhost:5432/circle_test?sslmode=disable
           - PORT=8080
+          - EVENT_RETENTION_PERIOD=4464h
       - image: circleci/postgres:11.2-alpine
         environment:
           - POSTGRES_USER=circle

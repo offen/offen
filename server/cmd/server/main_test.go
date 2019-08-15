@@ -3,7 +3,6 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 	"os"
 	"strings"
@@ -12,9 +11,6 @@ import (
 )
 
 func TestMain(m *testing.M) {
-	oldArgs := os.Args
-	defer func() { os.Args = oldArgs }()
-	os.Args = append(os.Args, fmt.Sprintf("-conn=%s", os.Getenv("POSTGRES_CONNECTION_STRING")))
 	go main()
 	time.Sleep(time.Millisecond * 50)
 	os.Exit(m.Run())

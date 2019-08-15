@@ -1,4 +1,4 @@
-package server
+package http
 
 import (
 	"io/ioutil"
@@ -9,7 +9,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type serverConfig struct {
+type httpConfig struct {
 	keyContent   string
 	corsOrigin   string
 	jwtPublicKey string
@@ -21,17 +21,17 @@ const (
 	defaultLogLevel = logrus.InfoLevel
 )
 
-func (s *serverConfig) KeyContent() string     { return s.keyContent }
-func (s *serverConfig) CorsOrigin() string     { return s.corsOrigin }
-func (s *serverConfig) JWTPublicKey() string   { return s.jwtPublicKey }
-func (s *serverConfig) LogLevel() logrus.Level { return s.logLevel }
-func (s *serverConfig) Port() int              { return s.port }
+func (h *httpConfig) KeyContent() string     { return h.keyContent }
+func (h *httpConfig) CorsOrigin() string     { return h.corsOrigin }
+func (h *httpConfig) JWTPublicKey() string   { return h.jwtPublicKey }
+func (h *httpConfig) LogLevel() logrus.Level { return h.logLevel }
+func (h *httpConfig) Port() int              { return h.port }
 
 // New creates a set of configuration values for running the KMS application
 // as a HTTP server application. The defaults used are currently optimized for
 // the local development setup.
 func New() (config.Config, error) {
-	cfg := serverConfig{
+	cfg := httpConfig{
 		logLevel: defaultLogLevel,
 	}
 

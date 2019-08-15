@@ -7,10 +7,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/aws/aws-sdk-go/service/secretsmanager"
-
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/secretsmanager"
 	"github.com/offen/offen/server/config"
 	"github.com/sirupsen/logrus"
 )
