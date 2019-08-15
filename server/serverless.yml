@@ -33,6 +33,7 @@ package:
 plugins:
   - serverless-domain-manager
   - serverless-apigw-binary
+  - serverless-pseudo-parameters
 
 custom:
   stage: ${opt:stage, self:provider.stage}
