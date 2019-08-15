@@ -11,6 +11,11 @@ provider:
   apiName: offen-${self:provider.stage}
   logs:
     restApi: true
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - secretsmanager:GetSecretValue
+      Resource: arn:aws:secretsmanager:eu-central-1:#{AWS::AccountId}:secret:${self:custom.stage}/*
 
 package:
   exclude:
@@ -21,6 +26,7 @@ package:
 
 plugins:
   - serverless-domain-manager
+  - serverless-pseudo-parameters
 
 custom:
   stage: ${opt:stage, self:provider.stage}
