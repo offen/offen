@@ -5,12 +5,12 @@ var queries = require('./queries')
 var crypto = require('./crypto')
 var decryptEvents = require('./decrypt-events')
 
-module.exports = getOperatorEventsWith(queries, api)
+module.exports = getOperatorEventsWith(queries, api, {})
 module.exports.getOperatorEventsWith = getOperatorEventsWith
 
-function getOperatorEventsWith (queries, api) {
+function getOperatorEventsWith (queries, api, cache) {
   return function (query) {
-    return ensureSyncWith(queries, api)(query.accountId)
+    return ensureSyncWith(queries, api, cache)(query.accountId)
       .then(function (account) {
         return queries.getDefaultStats(query.accountId, query, account.privateKey)
           .then(function (stats) {
@@ -44,8 +44,11 @@ function fetchOperatorEventsWith (api, queries) {
   }
 }
 
-function ensureSyncWith (queries, api) {
+function ensureSyncWith (queries, api, cache) {
   return function (accountId) {
+    if (cache && cache[accountId]) {
+      return Promise.resolve(cache[accountId])
+    }
     return queries.getAllEventIds(accountId)
       .then(function (knownEventIds) {
         var fetchNewEvents = queries.getLatestEvent(accountId)
@@ -105,9 +108,13 @@ function ensureSyncWith (queries, api) {
                       ])
                   })
                   .then(function (results) {
-                    return Object.assign(payload.account, {
+                    var result = Object.assign(payload.account, {
                       privateKey: privateCryptoKey
                     })
+                    if (cache) {
+                      cache[accountId] = result
+                    }
+                    return result
                   })
               })
           })
