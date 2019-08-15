@@ -100,7 +100,7 @@ func New() (config.Config, error) {
 
 func getSecret(svc *secretsmanager.SecretsManager, secretID string) (string, error) {
 	input := &secretsmanager.GetSecretValueInput{
-		SecretId: aws.String(fmt.Sprintf("%s/kms/%s", os.Getenv("STAGE"), secretID)),
+		SecretId: aws.String(fmt.Sprintf("%s/server/%s", os.Getenv("STAGE"), secretID)),
 	}
 	result, err := svc.GetSecretValue(input)
 	if err != nil {
