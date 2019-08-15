@@ -19,10 +19,13 @@ describe('src/decorators/with-title.js', function () {
       app = choo()
     })
 
-    it('sets the page title to the given value', function () {
+    it('sets the page title to the given value', function (done) {
       var wrappedView = withTitle('this is a test')(testView)
+      app.emitter.on(app.state.events.DOMTITLECHANGE, function (title) {
+        assert.strictEqual(title, 'this is a test')
+        done()
+      })
       wrappedView(app.state, app.emit)
-      assert.strictEqual(document.title, 'this is a test')
     })
   })
 })
