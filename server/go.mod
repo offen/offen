@@ -4,6 +4,7 @@ go 1.12
 
 require (
 	github.com/aws/aws-lambda-go v1.11.1
+	github.com/aws/aws-sdk-go v1.23.1
 	github.com/awslabs/aws-lambda-go-api-proxy v0.3.0
 	github.com/denisenkom/go-mssqldb v0.0.0-20190423183735-731ef375ac02 // indirect
 	github.com/felixge/httpsnoop v1.0.0
