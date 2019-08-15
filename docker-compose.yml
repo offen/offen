@@ -12,6 +12,7 @@ services:
     environment:
       KEY_FILE: key.txt
       PORT: 8081
+      CORS_ORIGIN: http://localhost:9977
       JWT_PUBLIC_KEY: http://accounts:5000/api/key
     ports:
       - 8081:8081

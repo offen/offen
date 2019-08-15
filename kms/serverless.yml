@@ -11,6 +11,11 @@ provider:
   apiName: offen-${self:provider.stage}
   logs:
     restApi: true
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - secretsmanager:GetSecretValue
+      Resource: arn:aws:secretsmanager:eu-central-1:#{AWS::AccountId}:secret:${self:custom.stage}/*
 
 package:
   exclude:
@@ -21,6 +26,7 @@ package:
 
 plugins:
   - serverless-domain-manager
+  - serverless-pseudo-parameters
 
 custom:
   stage: ${opt:stage, self:provider.stage}
@@ -55,8 +61,8 @@ functions:
         - kms/bin/kms
     handler: kms/bin/kms
     environment:
+      STAGE: ${self:custom.stage}
       CORS_ORIGIN: https://${self:custom.origin.${self:custom.stage}}
-      KEY_CONTENT: '${ssm:/aws/reference/secretsmanager/${self:custom.stage}/kms/key~true}'
       JWT_PUBLIC_KEY: ${self:custom.jwtPublicKey.${self:custom.stage}}
       COOKIE_DOMAIN: ${self:custom.cookieDomain.${self:custom.stage}}
     events:
