@@ -29,37 +29,32 @@
     var loginCalled = 0
     window.addEventListener('message', function (event) {
       if (event.data.type === 'QUERY') {
-        event.source.postMessage({
-          responseTo: event.data.respondWith,
+        event.ports[0].postMessage({
           payload: {
             result: {
               value: 99
             }
           }
-        }, '*')
+        })
       }
       if (event.data.type === 'OPTOUT_STATUS') {
-        event.source.postMessage({
-          responseTo: event.data.respondWith,
+        event.ports[0].postMessage({
           payload: {
             result: {
               hasOptedOut: false,
               allowsCookies: true
             }
           }
-        }, '*')
+        })
       }
       if (event.data.type === 'LOGIN') {
-        event.source.postMessage(Object.assign(loginResponses[loginCalled], {
-          responseTo: event.data.respondWith
-        }), '*')
+        event.ports[0].postMessage(loginResponses[loginCalled])
         loginCalled++
       }
       if (event.data.type === 'OPTOUT') {
-        event.source.postMessage({
-          responseTo: event.data.respondWith,
+        event.ports[0].postMessage({
           payload: null
-        }, '*')
+        })
       }
     })
   </script>

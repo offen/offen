@@ -8,8 +8,10 @@ var handleOptoutStatus = require('./src/handle-optout-status')
 var allowsCookies = require('./src/allows-cookies')
 var hasOptedOut = require('./src/user-optout')
 
+var SKIP_TOKEN = '__SKIP_TOKEN__'
+
 // This is a list of all host applications that are allowed to request data
-// by adding `respondWith` to messages. It is important to keep this restricted
+// by in response to messages. It is important to keep this restricted
 // to trusted applications only, otherwise decrypted event data may leak to
 // third parties.
 var ALLOWED_HOSTS = [process.env.AUDITORIUM_HOST, process.env.HOMEPAGE_HOST]
@@ -17,23 +19,16 @@ var ALLOWED_HOSTS = [process.env.AUDITORIUM_HOST, process.env.HOMEPAGE_HOST]
 window.addEventListener('message', function (event) {
   var message = event.data
   var origin = event.origin
+  var ports = event.ports
 
-  function limitSource (handler) {
+  function withRestrictedOrigin (handler) {
     return function () {
       if (ALLOWED_HOSTS.indexOf(origin) === -1) {
         console.warn('Incoming message had untrusted origin "' + origin + '", will not process.')
-        return
+        return SKIP_TOKEN
       }
       return handler.apply(null, [].slice.call(arguments))
     }
-  }
-
-  function respond (responseMessage) {
-    responseMessage = Object.assign(
-      { responseTo: message.respondWith },
-      responseMessage
-    )
-    return event.source.postMessage(responseMessage, origin)
   }
 
   var handler = function () {
@@ -72,28 +67,30 @@ window.addEventListener('message', function (event) {
       break
     }
     case 'QUERY':
-      handler = limitSource(handleQuery)
+      handler = withRestrictedOrigin(handleQuery)
       break
     case 'LOGIN':
-      handler = limitSource(handleLogin)
+      handler = withRestrictedOrigin(handleLogin)
       break
     case 'PURGE':
-      handler = limitSource(handlePurge)
+      handler = withRestrictedOrigin(handlePurge)
       break
     case 'OPTOUT':
-      handler = limitSource(handleOptout)
+      handler = withRestrictedOrigin(handleOptout)
       break
     case 'OPTOUT_STATUS':
-      handler = limitSource(handleOptoutStatus)
+      handler = withRestrictedOrigin(handleOptoutStatus)
       break
   }
 
+  function respond (message) {
+    if (ports && ports.length && message !== SKIP_TOKEN) {
+      ports[0].postMessage(message)
+    }
+  }
+
   Promise.resolve(handler(message))
-    .then(function (response) {
-      if (response) {
-        respond(response)
-      }
-    }, function (err) {
+    .then(respond, function (err) {
       // this is not in a catch block on purpose as
       // it tries to prevent a situation where calling
       // `respond` throws an error, which would in turn

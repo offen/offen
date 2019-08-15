@@ -11,11 +11,10 @@
           hey: 'there'
         }, '*')
       }
-      if (event.data.respondWith) {
-        event.source.postMessage({
-          value: event.data.value,
-          responseTo: event.data.respondWith
-        }, '*')
+      if (event.data.expectResponse) {
+        event.ports[0].postMessage({
+          value: event.data.value
+        })
       }
     })
   </script>

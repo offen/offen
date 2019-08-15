@@ -20,7 +20,7 @@ describe('vault/index.js', function () {
 
       window.addEventListener('message', handleMessage)
 
-      createVault('http://localhost:9876', true)
+      createVault('http://localhost:9876')
         .then(function (postMessage) {
           var iframeElements = document.querySelectorAll('iframe')
           assert.strictEqual(iframeElements.length, 1)
@@ -32,15 +32,15 @@ describe('vault/index.js', function () {
           assert.strictEqual(vaultElement.getAttribute('width'), '0')
 
           assert.strictEqual(typeof postMessage, 'function')
-          return postMessage({ please: 'respond' })
+          return postMessage({ please: 'respond' }, false)
         })
         .catch(finishTest)
     })
 
-    it('handles responses when the message contains a `respondWith` key', function () {
-      return createVault('http://localhost:9876', true)
+    it('handles responses when passing a second argument', function () {
+      return createVault('http://localhost:9876')
         .then(function (postMessage) {
-          return postMessage({ value: 12, respondWith: 'respond-token' })
+          return postMessage({ value: 12, expectResponse: true }, true)
         })
         .then(function (response) {
           assert.deepStrictEqual(response, { value: 12 })
