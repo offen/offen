@@ -15,6 +15,7 @@ import (
 )
 
 type lambdaConfig struct {
+	sync.Mutex
 	connectionString     string
 	corsOrigin           string
 	optoutCookieDomain   string
@@ -63,23 +64,27 @@ func New() (config.Config, error) {
 		wg.Add(2)
 
 		go func() {
+			defer wg.Done()
 			connectionString, err := getSecret(svc, "postgresConnectionString")
 			if err != nil {
 				errors <- err
 				return
 			}
+			cfg.Lock()
 			cfg.connectionString = connectionString
-			wg.Done()
+			cfg.Unlock()
 		}()
 
 		go func() {
+			defer wg.Done()
 			cookieExchangeSecret, err := getSecret(svc, "cookieExchangeSecret")
 			if err != nil {
 				errors <- err
 				return
 			}
+			cfg.Lock()
 			cfg.cookieExchangeSecret = cookieExchangeSecret
-			wg.Done()
+			cfg.Unlock()
 		}()
 		wg.Wait()
 		close(done)
