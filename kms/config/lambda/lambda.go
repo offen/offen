@@ -9,17 +9,21 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/secretsmanager"
 	"github.com/offen/offen/kms/config"
+	"github.com/sirupsen/logrus"
 )
 
 type lambdaConfig struct {
 	keyContent   string
 	corsOrigin   string
 	jwtPublicKey string
+	logLevel     logrus.Level
 }
 
-func (l *lambdaConfig) KeyContent() string   { return l.keyContent }
-func (l *lambdaConfig) CorsOrigin() string   { return l.corsOrigin }
-func (l *lambdaConfig) JWTPublicKey() string { return l.jwtPublicKey }
+func (l *lambdaConfig) KeyContent() string     { return l.keyContent }
+func (l *lambdaConfig) CorsOrigin() string     { return l.corsOrigin }
+func (l *lambdaConfig) JWTPublicKey() string   { return l.jwtPublicKey }
+func (l *lambdaConfig) Port() int              { return 0 }
+func (l *lambdaConfig) LogLevel() logrus.Level { return l.logLevel }
 
 // New creates a new configuration to use when running the application
 // in the context of AWS Lambda, sourcing values from both AWS SecretsManager
@@ -28,6 +32,7 @@ func New() (config.Config, error) {
 	cfg := lambdaConfig{
 		jwtPublicKey: os.Getenv("JWT_PUBLIC_KEY"),
 		corsOrigin:   "*",
+		logLevel:     logrus.InfoLevel,
 	}
 	if val, ok := os.LookupEnv("CORS_ORIGIN"); ok {
 		cfg.corsOrigin = val

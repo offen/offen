@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/base64"
+	"log"
 
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/awslabs/aws-lambda-go-api-proxy/httpadapter"
@@ -14,13 +15,13 @@ import (
 var adapter *httpadapter.HandlerAdapter
 
 func init() {
-	logger := logrus.New()
-	logger.SetLevel(logrus.InfoLevel)
-
 	cfg, cfgErr := lambdaconfig.New()
 	if cfgErr != nil {
-		logger.WithError(cfgErr).Fatal("Unable to create runtime configuration")
+		log.Fatalf("Unable to create runtime configuration: %v", cfgErr)
 	}
+
+	logger := logrus.New()
+	logger.SetLevel(cfg.LogLevel())
 
 	manager, err := keymanager.New(func() ([]byte, error) {
 		return base64.StdEncoding.DecodeString(cfg.KeyContent())
