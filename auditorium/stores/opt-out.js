@@ -1,4 +1,3 @@
-var uuid = require('uuid/v4')
 var vault = require('offen/vault')
 
 module.exports = store
@@ -9,12 +8,11 @@ function store (state, emitter) {
       .then(function (postMessage) {
         var optoutRequest = {
           type: 'OPTOUT',
-          respondWith: uuid(),
           payload: {
             status: status
           }
         }
-        return postMessage(optoutRequest)
+        return postMessage(optoutRequest, true)
       })
       .then(function () {
         emitter.emit('offen:query')

@@ -1,4 +1,3 @@
-var uuid = require('uuid/v4')
 var vault = require('offen/vault')
 
 module.exports = store
@@ -9,12 +8,11 @@ function store (state, emitter) {
       .then(function (postMessage) {
         var queryRequest = {
           type: 'LOGIN',
-          respondWith: uuid(),
           payload: credentials
             ? { credentials: credentials }
             : null
         }
-        return postMessage(queryRequest)
+        return postMessage(queryRequest, true)
       })
       .then(function (response) {
         if (response.type === 'LOGIN_SUCCESS') {
