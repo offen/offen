@@ -1,11 +1,11 @@
 package main
 
 import (
-	"os"
-	"time"
+	"log"
 
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/awslabs/aws-lambda-go-api-proxy/httpadapter"
+	lambdaconfig "github.com/offen/offen/server/config/lambda"
 	"github.com/offen/offen/server/keys/remote"
 	"github.com/offen/offen/server/persistence/relational"
 	"github.com/offen/offen/server/router"
@@ -15,45 +15,33 @@ import (
 var adapter *httpadapter.HandlerAdapter
 
 func init() {
-	logger := logrus.New()
-	logger.SetLevel(logrus.InfoLevel)
+	cfg, cfgErr := lambdaconfig.New()
+	if cfgErr != nil {
+		log.Fatalf("Error creating runtime configuration: %v", cfgErr)
+	}
 
-	postgresConnectionString := os.Getenv("POSTGRES_CONNECTION_STRING")
-	encryptionEndpoint := os.Getenv("KMS_ENCRYPTION_ENDPOINT")
-	encrypter := remote.New(encryptionEndpoint)
+	logger := logrus.New()
+	logger.SetLevel(cfg.LogLevel())
+
+	encrypter := remote.New(cfg.EncryptionEndpoint())
 
 	db, err := relational.New(
-		relational.WithConnectionString(postgresConnectionString),
+		relational.WithConnectionString(cfg.ConnectionString()),
 		relational.WithEncryption(encrypter),
 	)
 	if err != nil {
 		panic(err)
 	}
 
-	origin := "*"
-	if val, ok := os.LookupEnv("CORS_ORIGIN"); ok {
-		origin = val
-	}
-
-	_, secureCookie := os.LookupEnv("SECURE_COOKIE")
-	optoutCookieDomain := os.Getenv("OPTOUT_COOKIE_DOMAIN")
-	jwtPublicKey := os.Getenv("JWT_PUBLIC_KEY")
-	cookieExchangeSecret := os.Getenv("COOKIE_EXCHANGE_SECRET")
-
-	retention, retentionErr := time.ParseDuration(os.Getenv("EVENT_RETENTION_PERIOD"))
-	if retentionErr != nil {
-		panic(retentionErr)
-	}
-
 	rt := router.New(
 		router.WithDatabase(db),
 		router.WithLogger(logger),
-		router.WithSecureCookie(secureCookie),
-		router.WithOptoutCookieDomain(optoutCookieDomain),
-		router.WithCORSOrigin(origin),
-		router.WithJWTPublicKey(jwtPublicKey),
-		router.WithCookieExchangeSecret(cookieExchangeSecret),
-		router.WithRetentionPeriod(retention),
+		router.WithSecureCookie(cfg.SecureCookie()),
+		router.WithOptoutCookieDomain(cfg.OptoutCookieDomain()),
+		router.WithCORSOrigin(cfg.CorsOrigin()),
+		router.WithJWTPublicKey(cfg.JWTPublicKey()),
+		router.WithCookieExchangeSecret(cfg.CookieExchangeSecret()),
+		router.WithRetentionPeriod(cfg.RetentionPeriod()),
 	)
 	adapter = httpadapter.New(rt)
 }

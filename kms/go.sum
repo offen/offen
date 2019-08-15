@@ -45,6 +45,7 @@ github.com/m90/go-thunk v1.0.0/go.mod h1:wIbJp3g6c3Um6mEN+2xwwZPcCtidCvZitH4EpzV
 github.com/miscreant/miscreant-go v0.0.0-20181010193435-325cbd69228b h1:VPhrxAgvd0d0xSZP4P8zzWZntso2NE0m69dmDEXM53I=
 github.com/miscreant/miscreant-go v0.0.0-20181010193435-325cbd69228b/go.mod h1:Vj6lPE3LxPymcFxg7hm9aDIJWCyhJMnxSNC/y9ZHtN8=
 github.com/offen/offen v0.0.0-20190813082815-f9b9c18b43de h1:9syCkvh3wqqAiWjeKB/7VeEwk3UUh2YCQd1JOwKR2ME=
+github.com/offen/offen v0.0.0-20190815084616-756f4ced7a9e h1:ckvthHNLLVWPFGQf5dNi77/fDV1jlGtt+pR1PrCK1gI=
 github.com/onsi/ginkgo v1.6.0/go.mod h1:lLunBs/Ym6LB5Z9jYTR76FiuTmxDTDusOGeTQH+WWjE=
 github.com/onsi/ginkgo v1.8.0 h1:VkHVNpR4iVnU8XQR6DBm8BqYjN7CRzw+xKUbVVbbW9w=
 github.com/onsi/ginkgo v1.8.0/go.mod h1:lLunBs/Ym6LB5Z9jYTR76FiuTmxDTDusOGeTQH+WWjE=

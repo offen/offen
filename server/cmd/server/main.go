@@ -1,13 +1,11 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"log"
 	"net/http"
-	"os"
-	"time"
 
+	httpconfig "github.com/offen/offen/server/config/http"
 	"github.com/offen/offen/server/keys/remote"
 	"github.com/offen/offen/server/persistence/relational"
 	"github.com/offen/offen/server/router"
@@ -15,49 +13,35 @@ import (
 )
 
 func main() {
-	var (
-		port                 = flag.String("port", os.Getenv("PORT"), "the port the server binds to")
-		connectionString     = flag.String("conn", os.Getenv("POSTGRES_CONNECTION_STRING"), "a database connection string")
-		origin               = flag.String("origin", "http://localhost:9977", "the origin used in CORS headers")
-		logLevel             = flag.String("level", "info", "the application's log level")
-		optoutCookieDomain   = flag.String("optout", "localhost", "domain value for the optout cookie")
-		jwtPublicKey         = flag.String("jwt", os.Getenv("JWT_PUBLIC_KEY"), "the location of the JWT public key")
-		secureCookie         = flag.Bool("secure", false, "use secure cookies")
-		encryptionEndpoint   = flag.String("kms", os.Getenv("KMS_ENCRYPTION_ENDPOINT"), "the KMS service's encryption endpoint")
-		development          = flag.Bool("develop", os.Getenv("DEVELOPMENT") != "", "add verbose logging")
-		cookieExchangeSecret = flag.String("exchangesecret", os.Getenv("COOKIE_EXCHANGE_SECRET"), "the secret used for signing cookie exchange tokens")
-		retentionPeriod      = flag.Duration("retention", time.Hour*4464, "default retention period for event data")
-	)
-	flag.Parse()
+	cfg, cfgErr := httpconfig.New()
+	if cfgErr != nil {
+		log.Fatalf("Error creating runtime configuration: %v", cfgErr)
+	}
 
 	logger := logrus.New()
-	parsedLogLevel, parseErr := logrus.ParseLevel(*logLevel)
-	if parseErr != nil {
-		logger.WithError(parseErr).Fatalf("unable to parse given log level %s", *logLevel)
-	}
-	logger.SetLevel(parsedLogLevel)
+	logger.SetLevel(cfg.LogLevel())
 
-	encryption := remote.New(*encryptionEndpoint)
+	encryption := remote.New(cfg.EncryptionEndpoint())
 	db, err := relational.New(
-		relational.WithConnectionString(*connectionString),
+		relational.WithConnectionString(cfg.ConnectionString()),
 		relational.WithEncryption(encryption),
-		relational.WithLogging(*development),
+		relational.WithLogging(cfg.Development()),
 	)
 	if err != nil {
 		logger.WithError(err).Fatal("unable to establish database connection")
 	}
 
 	srv := &http.Server{
-		Addr: fmt.Sprintf("0.0.0.0:%s", *port),
+		Addr: fmt.Sprintf("0.0.0.0:%d", cfg.Port()),
 		Handler: router.New(
 			router.WithDatabase(db),
 			router.WithLogger(logger),
-			router.WithSecureCookie(*secureCookie),
-			router.WithOptoutCookieDomain(*optoutCookieDomain),
-			router.WithCORSOrigin(*origin),
-			router.WithJWTPublicKey(*jwtPublicKey),
-			router.WithCookieExchangeSecret(*cookieExchangeSecret),
-			router.WithRetentionPeriod(*retentionPeriod),
+			router.WithSecureCookie(cfg.SecureCookie()),
+			router.WithOptoutCookieDomain(cfg.OptoutCookieDomain()),
+			router.WithCORSOrigin(cfg.CorsOrigin()),
+			router.WithJWTPublicKey(cfg.JWTPublicKey()),
+			router.WithCookieExchangeSecret(cfg.CookieExchangeSecret()),
+			router.WithRetentionPeriod(cfg.RetentionPeriod()),
 		),
 	}
 
