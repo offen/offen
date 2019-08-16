@@ -28,6 +28,7 @@ gulp.task('bundle:script', function () {
 
   return b
     .exclude('dexie')
+    .plugin('tinyify')
     .bundle()
     .pipe(source('index.js'))
     .pipe(buffer())

@@ -215,7 +215,7 @@ function getDefaultStatsWith (getDatabase) {
     // name assigned to their bucket.
     var referrers = decryptedEvents
       .then(function (events) {
-        const perHost = events
+        var perHost = events
           .filter(function (event) {
             if (event.userId === null || !event.payload || !event.payload.referrer) {
               return false
@@ -237,7 +237,7 @@ function getDefaultStatsWith (getDatabase) {
             acc[referrerValue]++
             return acc
           }, {})
-        const unique = Object.keys(perHost)
+        var unique = Object.keys(perHost)
           .map(function (host) {
             return { host: host, pageviews: perHost[host] }
           })
