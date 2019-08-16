@@ -168,8 +168,9 @@ func New(opts ...Config) http.Handler {
 	exchange.HandleFunc("", rt.getPublicKey).Methods(http.MethodGet)
 	exchange.HandleFunc("", rt.postUserSecret).Methods(http.MethodPost)
 
-	getAuth := httputil.JWTProtect(rt.jwtPublicKey, authKey, authHeader, getAuthorizer)
-	postAuth := httputil.JWTProtect(rt.jwtPublicKey, authKey, authHeader, postAuthorizer)
+	keyCache := httputil.NewDefaultKeyCache(httputil.DefaultCacheExpiry)
+	getAuth := httputil.JWTProtect(rt.jwtPublicKey, authKey, authHeader, getAuthorizer, keyCache)
+	postAuth := httputil.JWTProtect(rt.jwtPublicKey, authKey, authHeader, postAuthorizer, keyCache)
 	accounts := m.PathPrefix("/accounts").Subrouter()
 	accounts.Handle("", getAuth(http.HandlerFunc(rt.getAccount))).Methods(http.MethodGet)
 	accounts.Handle("", postAuth(http.HandlerFunc(rt.postAccount))).Methods(http.MethodPost)

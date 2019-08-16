@@ -71,9 +71,10 @@ func New(opts ...Config) http.Handler {
 
 	decrypt := m.PathPrefix("/decrypt").Subrouter()
 	if rt.jwtPublicKey != "" {
+		keyCache := httputil.NewDefaultKeyCache(httputil.DefaultCacheExpiry)
 		auth := httputil.JWTProtect(rt.jwtPublicKey, "auth", "", func(*http.Request, map[string]interface{}) error {
 			return nil
-		})
+		}, keyCache)
 		decrypt.Use(auth)
 	}
 
