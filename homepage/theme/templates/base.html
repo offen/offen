@@ -25,9 +25,8 @@
   {% endif %}
 </head>
 <body>
-  
-  <!--- MENU start -->
-  <div class='menu'>
+
+  <div class="menu">
     <section class="nav-bar">
       <div class="nav-container">
         <div class="brand">
@@ -46,10 +45,10 @@
               <a>Auditorium</a>
               <ul class="nav-dropdown">
                 <li>
-                  <a href="#">for Operators</a>
+                  <a href="/auditorium/operator/">for Operators</a>
                 </li>
                 <li>
-                  <a href="#">for Users</a>
+                  <a href="/auditorium/user/">for Users</a>
                 </li>
               </ul>
             </li>
@@ -67,31 +66,48 @@
       </div>
     </section>
   </div>
-  <!--- MENU end -->
 
-  <!--- INDEX SETUP start -->
   {% if page.href == "/" %}
-    <div class='intro'>
-      <div class='container-reader'>
-        INTRO
+    <div class="intro">
+      <div class="container-reader">
+        <h1>
+          <strong>offen</strong> is a free and open source analytics software for websites and web applications that allows respectful handling of data.
+        </h1>
+      </div>
+    </div>
+    <div class="feature">
+      <div class="container-full">
+        FEATURE
+      </div>
+    </div>
+    <div class="cta-top">
+      <div class="container-full">
+        CTA TOP
       </div>
     </div>
   {% endif %}
-  <!--- INDEX SETUP end -->
 
   {% if page.href == "/" %}
-    <div class='content-index'>
+    <div class="content-index">
+  {% else %}
+    <div class="content">
   {% endif %}
-  {% if page.href != "/" %}
-  <div class='content'>
+  {% if page.href == "/auditorium/operator/" or page.href == "/auditorium/user/" %}
+      <div class="container-full">
+  {% else %}
+      <div class="container-reader">
   {% endif %}
-      <div class='container-reader'>
       {% block content %}{% endblock %}
       </div>
-    </div>
+  </div>
 
-  <div class='footer'>
-    <div class='container-full'>
+  <div class="cta-bottom">
+    <div class="container-full">
+      CTA BOTTOM
+    </div>
+  </div>
+  <div class="footer">
+    <div class="container-full">
      FOOTER
    </div>
   </div>
