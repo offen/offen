@@ -10,3 +10,7 @@ Usage metrics come with explanations about their meaning, relevance, usage and p
 __Offen__ treats both users and operators as parties of equal importance. Users can expect full transparency and are encouraged to make *autonomous and informed decisions regarding the use of their data*. Operators are enabled to gain insights while respecting their users' privacy and data.
 
 __Offen__ is currently in the early stages of development and is applying for funds to sustain its development. An early alpha version is running on this site: you can *visit the [auditorium](https://auditorium-alpha.offen.dev)* to access your data.
+
+<div class="btn-wrapper">
+<a class="btn btn-color-yellow" href="/deep-dive/">Deep dive</a>
+</div>

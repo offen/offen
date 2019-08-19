@@ -36,7 +36,6 @@ LAYOUT
 }
 .intro {
   width: 100%;
-  height: 400px;
   margin: 70px 0 0 0;
   background-color: var(--yellow-mid);
 }
@@ -149,10 +148,6 @@ color: var(--grey-bright);
 }
 
 
-
-
-
-
 /* ---------------------------------------------------
 TYPO ELEMENTS
 ----------------------------------------------------*/
@@ -164,9 +159,6 @@ hr {
   margin: 80px 0 20px 0;
   border-top: 1px solid var(--grey-bright);
 }
-.intro h1 {
-  color: var(--white);
-}
 blockquote {
   margin: 0;
   padding: 0 0 0 20px;
@@ -174,7 +166,7 @@ blockquote {
   border-left: 1px solid var(--grey-bright);
 }
 strong {
-  font-weight: 700
+  font-weight: 700;
 }
 strong,
 h1 strong,
@@ -185,15 +177,62 @@ h3 strong {
   color: var(--black-mid);
 }
 em {
-background: linear-gradient(transparent 66%, var(--yellow-bright) 66%);
-font-style: normal;
+  background: linear-gradient(transparent 66%, var(--yellow-bright) 66%);
+  font-style: normal;
 }
 .footnote {
   color: var(--grey-bright);
 }
 ol {
-padding-inline-start: 20px;
+  padding-inline-start: 20px;
 }
+
+
+/* ---------------------------------------------------
+BUTTONS
+----------------------------------------------------*/
+.btn-wrapper {
+  margin: 40px 0 0 0;
+}
+.btn {
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0px;
+  padding: 8px 30px;
+  text-align: center;
+  text-decoration: none;
+}
+.btn-color-yellow,
+.btn-color-yellow:visited,
+.btn-color-yellow:link,
+.btn-color-yellow:hover,
+.btn-color-yellow:active {
+  font-weight: 700;
+  background: var(--white);
+  color: var(--yellow-mid);
+  border: solid var(--yellow-mid) 5px;
+}
+.btn-color-yellow-black,
+.btn-color-yellow-black:visited,
+.btn-color-yellow-black:link,
+.btn-color-yellow-black:hover,
+.btn-color-yellow-black:active {
+  font-weight: 700;
+  background: var(--black-mid);
+  color: var(--yellow-mid);
+  border: solid var(--yellow-mid) 5px;
+}
+.btn-color-black,
+.btn-color-black:visited,
+.btn-color-black:link,
+.btn-color-black:hover,
+.btn-color-black:active {
+  font-weight: 700;
+  background: var(--yellow-mid);
+  color: var(--black-mid);
+  border: solid var(--black-mid) 5px;
+}
+
 
 /* ---------------------------------------------------
 MENU
@@ -209,7 +248,7 @@ MENU
 }
 .brand a,
 .brand a:visited {
-  color: var(--black-mid);;
+  color: var(--black-mid);
   text-decoration: none;
 }
 .nav-container {
@@ -233,12 +272,12 @@ nav ul li a:visited {
   padding: 0 20px;
   line-height: 70px;
   background: var(--yellow-mid);
-  color: var(--black-mid);;
+  color: var(--black-mid);
   text-decoration: none;
 }
 nav ul li a:hover,
 nav ul li a:visited:hover {
-  color: var(--black-mid);;
+  color: var(--black-mid);
 }
 nav ul li a:not(:only-child):after,
 nav ul li a:visited:not(:only-child):after {
@@ -320,7 +359,7 @@ nav ul li ul li a {
   border-radius: 1px;
   height: 3px;
   width: 35px;
-  background: var(--black-mid);;
+  background: var(--black-mid);
   position: absolute;
   display: block;
   content: '';
@@ -344,3 +383,8 @@ nav ul li ul li a {
 #nav-toggle.active span:after {
   transform: rotate(-45deg);
 }
+
+
+/* ---------------------------------------------------
+IMAGES
+----------------------------------------------------*/

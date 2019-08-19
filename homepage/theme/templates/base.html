@@ -42,7 +42,7 @@
               <a href="/status/">Status</a>
             </li>
             <li>
-              <a>Auditorium</a>
+              <a href="#">Auditorium</a>
               <ul class="nav-dropdown">
                 <li>
                   <a href="/auditorium/operator/">for Operators</a>
@@ -70,9 +70,15 @@
   {% if page.href == "/" %}
     <div class="intro">
       <div class="container-reader">
+        <a href="/" title="offen home page" alt="offen home page">
+          <img src="/theme/images/offen-logo-letters-only-white.svg" alt="offen logo" width="172" height="76">
+        </a>
         <h1>
-          <strong>offen</strong> is a free and open source analytics software for websites and web applications that allows respectful handling of data.
+          is a free and open source analytics software for websites and web applications that allows respectful handling of data.
         </h1>
+        <div class="btn-wrapper">
+        <a class="btn btn-color-black" href="{{GITHUB_ORG}}" target="_blank">Get involved</a>
+        </div>
       </div>
     </div>
     <div class="feature">
@@ -83,6 +89,9 @@
     <div class="cta-top">
       <div class="container-full">
         CTA TOP
+        <div class="btn-wrapper">
+        <a class="btn btn-color-yellow-black" href="/status/">Status</a>
+        </div>
       </div>
     </div>
   {% endif %}
@@ -108,7 +117,9 @@
   </div>
   <div class="footer">
     <div class="container-full">
-     FOOTER
+      <a href="/" title="offen home page" alt="offen home page">
+        <img src="/theme/images/offen-logo-letters-only-grey.svg" alt="offen logo" width="86" height="38">
+      </a>
    </div>
   </div>
 
