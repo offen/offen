@@ -305,7 +305,7 @@ nav ul li ul li a {
   height: 70px;
   width: 70px;
 }
-
+/* Mobile Styles */
 @media only screen and (max-width: 960px) {
   .nav-mobile {
     display: block;
@@ -339,7 +339,7 @@ nav ul li ul li a {
     */
 	}
 }
-
+/* Desktop Styles */
 @media screen and (min-width: 961px) {
   .nav-list {
     display: block !important;
@@ -386,5 +386,44 @@ nav ul li ul li a {
 
 
 /* ---------------------------------------------------
-IMAGES
+CARDS
 ----------------------------------------------------*/
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  word-wrap: break-word;
+  background-clip: border-box;
+}
+.card-body {
+  flex: 1 1 auto;
+  text-align: center;
+}
+.card-deck {
+  display: flex;
+  flex-direction: column;
+}
+.card-deck .card {
+  margin: 0 0 15px 0;
+}
+
+/* Mobile Styles */
+@media only screen and (max-width: 960px) {
+
+}
+
+/* Desktop Styles */
+@media only screen and (min-width: 961px) {
+  /* Card */
+  .card-deck {
+    flex-flow: row wrap;
+    margin: 0 -15px 0 -15px;
+  }
+  .card-deck .card {
+    display: flex;
+    flex: 1 0 0%;
+    flex-direction: column;
+    margin: 0 15px 0 15px;
+  }
+}
