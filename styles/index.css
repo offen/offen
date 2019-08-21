@@ -45,7 +45,6 @@ LAYOUT
 }
 .cta-top {
   width: 100%;
-  height: 200px;
   color: var(--yellow-mid);
   background-color: var(--black-mid);
 }
@@ -58,7 +57,8 @@ LAYOUT
   width: 100%;
   background-color: var(--white);
 }
-.cta-bottom {
+.cta-bottom,
+.outro {
   width: 100%;
   background-color: var(--yellow-mid);
 }
@@ -82,7 +82,7 @@ LAYOUT
     padding: 40px 40px 0 40px;
   }
 }
-/* Tablet Styles */
+/* Mobile Styles */
 @media only screen and (min-width: 600px) and (max-width: 960px) {
   .container-reader,
   .container-full {
@@ -91,7 +91,6 @@ LAYOUT
     padding: 60px 20px 120px 20px;
   }
 }
-/* Mobile Styles */
 @media only screen and (max-width: 960px) {
   .container-reader,
   .container-full,
@@ -99,7 +98,18 @@ LAYOUT
     padding: 60px 20px 120px 20px;
   }
 }
-
+/* Mobile Styles*/
+@media only screen and (max-width: 480px) {
+  .menu {
+    position: static;
+  }
+  .intro {
+    margin: 0;
+  }
+  .content {
+    margin: 0;
+  }
+}
 
 /* ---------------------------------------------------
 CARDS
@@ -113,11 +123,21 @@ CARDS
   max-width: 400px;
   color: var(--black-mid);
 }
+.cta-top .card,
+.outro .card {
+  max-width: 600px;
+}
+.cta-top .card {
+  color: var(--yellow-mid);
+}
 .footer-card p {
-  margin: 0 0 4px 0;
+  margin: 0 0 2px 0;
 }
 .footer-card:nth-child(1),
 .footer-card:nth-child(2) {
+  margin: 0 0 20px 0;
+}
+.card-gfx {
   margin: 0 0 20px 0;
 }
 /* Mobile Styles */
@@ -138,20 +158,17 @@ CARDS
   .footer-card {
     text-align: center;
   }
-  .card-gfx {
-    margin: 0 0 20px 0;
-  }
-}
-/* Tablet Styles */
-@media only screen and (min-width: 600px) and (max-width: 960px) {
-
 }
 /* Desktop Styles */
 @media only screen and (min-width: 961px) {
   .card-deck,
-  .card,
-  .footer-card-deck {
+  .footer-card-deck,
+  .cta-top .card,
+  .outro .card {
     flex-direction: row;
+  }
+  .card {
+    flex-direction: column;
   }
   .card-deck {
     justify-content: space-evenly;
@@ -161,10 +178,17 @@ CARDS
   }
   .card-gfx,
   .card-text {
+    text-align: center;
+  }
+  .cta-top .card-gfx,
+  .cta-top .card-text,
+  .outro .card-gfx,
+  .outro .card-text {
     text-align: left;
   }
-  .card-gfx {
-    margin: 0 20px 0 0;
+  .cta-top .card-gfx,
+  .outro .card-gfx {
+    margin: 0 40px 0 0;
   }
   .footer-card-deck {
     justify-content: space-between;
@@ -175,7 +199,7 @@ CARDS
   }
   .footer-card:nth-child(3) {
     text-align: right;
-    flex-grow: 10;
+    flex-grow: 8;
   }
 }
 
@@ -186,7 +210,6 @@ TYPO
 body {
   background-color: var(--white);
   font: 18px/1.5 "Noto Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 18px;
   line-height: 1.5;
   font-weight: 400;
   word-wrap: break-word;
@@ -196,13 +219,8 @@ h1,
 h2,
 h3,
 h4 {
-  font-size: 28px;
   font-weight: 400;
   color: var(--black-mid);
-}
-h3,
-h4 {
-  font-size: 18px;
 }
 h3 {
   margin: 0 0 20px 0;
@@ -213,8 +231,27 @@ p + h3 {
 h4 {
   color: var(--grey-mid);
 }
-
-
+/* Desktop Styles */
+@media only screen and (min-width: 481px) {
+  body {
+    font-size: 14px;
+  }
+  h1,
+  h2{
+    font-size: 28px;
+  }
+  h3,
+  h4 {
+    font-size: 14px;
+  }
+}
+/* Mobile Styles */
+@media only screen and (max-width: 480px) {
+  h1,
+  h2 {
+    font-size: 20px;
+  }
+}
 /* ---------------------------------------------------
 LINKS
 ----------------------------------------------------*/
@@ -234,7 +271,11 @@ ol li p a:hover,
 ol li p a:focus {
 color: var(--grey-bright);
 }
-
+.footer a,
+.footer a:hover,
+.footer a:focus {
+  font-weight: 400;
+}
 
 /* ---------------------------------------------------
 TYPO ELEMENTS
@@ -263,6 +304,11 @@ h3 strong {
   text-decoration: none;
   font-weight: 400;
   color: var(--black-mid);
+}
+.footer h3,
+.footer h4 {
+  color: var(--yellow-mid);
+  margin: 0 0 2px 0;
 }
 em {
   background: linear-gradient(transparent 66%, var(--yellow-bright) 66%);
@@ -325,6 +371,9 @@ BUTTONS
 /* ---------------------------------------------------
 MENU
 ----------------------------------------------------*/
+.nav-list {
+  margin: 0 0 40px 0;
+}
 .nav-bar {
   height: 70px;
 }
@@ -333,11 +382,8 @@ MENU
   padding: 12px 0 0 20px;
   float: left;
   line-height: 70px;
-}
-.brand a,
-.brand a:visited {
-  color: var(--black-mid);
-  text-decoration: none;
+  opacity: 0;
+  }
 }
 .nav-container {
   margin: 0 auto;
@@ -412,20 +458,20 @@ nav ul li ul li a {
     padding: 15px;
     line-height: 20px;
 	  padding-left: 25%;
-
   }
   nav ul li ul li a {
     padding-left: 30%;
   }
+  nav ul li:last-child a {
+    padding-bottom: 60px;
+  }
+  nav ul li:last-child a {
+    box-shadow: 0px 7px 15px -6px rgba(57,53,42,0.2);
+  }
+
   .nav-dropdown {
     position: static;
   }
-	.brand a img {
-    /*
-		max-height: 60px;
-		margin-top: 5px;
-    */
-	}
 }
 /* Desktop Styles */
 @media screen and (min-width: 961px) {
@@ -438,20 +484,22 @@ nav ul li ul li a {
   left: 18px;
   top: 22px;
   cursor: pointer;
-  padding: 10px 35px 16px 0px;
+  padding: 12px 35px 16px 0px;
 }
 #nav-toggle span,
 #nav-toggle span:before,
 #nav-toggle span:after {
   cursor: pointer;
   border-radius: 1px;
-  height: 3px;
+  height: 2px;
   width: 35px;
   background: var(--black-mid);
   position: absolute;
   display: block;
   content: '';
+  /*
   transition: all 300ms ease-in-out;
+  */
 }
 #nav-toggle span:before {
   top: -10px;
@@ -470,4 +518,12 @@ nav ul li ul li a {
 }
 #nav-toggle.active span:after {
   transform: rotate(-45deg);
+}
+
+
+/* ---------------------------------------------------
+GRAPHICS
+----------------------------------------------------*/
+.sign {
+  margin: 0 0 20px 0;
 }
