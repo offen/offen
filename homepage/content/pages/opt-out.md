@@ -4,9 +4,9 @@ save_as: opt-out/index.html
 
 ### You are opted out
 
-This will prevent __Offen__ from aggregating the actions you have taken on participating websites.
+This will prevent __offen__ from aggregating the actions you have taken on participating websites.
 
-Operators now cannot draw any conclusions from your actions via __Offen__. At the same time, however, they *cannot create a better experience* for you and other users.
+Operators now cannot draw any conclusions from your actions via __offen__. At the same time, however, they *cannot create a better experience* for you and other users.
 
 <script>
   var vault = document.createElement('iframe')

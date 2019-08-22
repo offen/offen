@@ -9,6 +9,7 @@ ROOTS
 --black-mid: #39352A;
 --grey-mid: #898989;
 --grey-bright: #D5D5D5;
+--turquoise-bright: #BBD9D3;
 --white: #FFF;
 }
 
@@ -41,7 +42,7 @@ LAYOUT
 }
 .feature {
   width: 100%;
-  background-color: var(--grey-bright);
+  background-color: var(--turquoise-bright);
 }
 .cta-top {
   width: 100%;
@@ -199,7 +200,7 @@ CARDS
   }
   .footer-card:nth-child(3) {
     text-align: right;
-    flex-grow: 8;
+    flex-grow: 10;
   }
 }
 
@@ -238,7 +239,7 @@ h4 {
   }
   h1,
   h2{
-    font-size: 28px;
+    font-size: 26px;
   }
   h3,
   h4 {
@@ -314,6 +315,10 @@ em {
   background: linear-gradient(transparent 66%, var(--yellow-bright) 66%);
   font-style: normal;
 }
+.intro em {
+  background: linear-gradient(transparent 66%, var(--turquoise-bright) 66%);
+  font-style: normal;
+}
 .footnote {
   color: var(--grey-bright);
 }
@@ -377,13 +382,15 @@ MENU
 .nav-bar {
   height: 70px;
 }
-.brand {
+.brand,
+.brand-index {
   position: absolute;
   padding: 12px 0 0 20px;
   float: left;
   line-height: 70px;
+}
+.brand-index {
   opacity: 0;
-  }
 }
 .nav-container {
   margin: 0 auto;

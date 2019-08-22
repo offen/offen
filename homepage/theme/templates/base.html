@@ -29,12 +29,19 @@
   <div class="menu">
     <section class="nav-bar">
       <div class="nav-container">
+        {% if page.href == "/" %}
+        <div class="brand-index">
+        {% else %}
         <div class="brand">
+        {% endif %}
           <a href="/"><img src="/theme/images/offen-brand-white.svg" alt="offen logo" width="42" height="46" class="logo"></a>
         </div>
         <nav>
           <div class="nav-mobile"><a id="nav-toggle" href="#!"><span></span></a></div>
           <ul class="nav-list">
+            <li>
+              <a href="/">Summary</a>
+            </li>
             <li>
               <a href="/deep-dive/">Deep dive</a>
             </li>
@@ -74,7 +81,7 @@
           <img src="/theme/images/offen-sign-brand-white.svg" alt="offen logo" width="152" height="94">
         </div>
         <h1>
-          is a free and open source analytics software for websites and web applications that allows respectful handling of data.
+          is a free and <em>open source analytics software</em> for websites and web applications that allows <em>respectful handling of data.</em>
         </h1>
         <div class="btn-wrapper">
         <a class="btn btn-color-black" href="{{GITHUB_ORG}}" target="_blank">Get involved</a>
@@ -121,7 +128,7 @@
                 <img src="/theme/images/illustration.svg" width="179" height="122">
               </div>
               <div class="card-text">
-              Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
+              Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Sit amet, consectetuer adipiscing elit.
                 <div class="btn-wrapper">
                 <a class="btn btn-color-yellow-black" href="/status/">Status</a>
                 </div>
@@ -186,7 +193,7 @@
               <img src="/theme/images/illustration.svg" width="179" height="122">
             </div>
             <div class="card-text">
-            Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
+            Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Sit amet, consectetuer adipiscing elit.
               <div class="btn-wrapper">
               <a class="btn btn-color-black" href="{{PATREON_URL}}">Support us</a>
               </div>
