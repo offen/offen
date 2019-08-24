@@ -17,9 +17,12 @@
   <meta name="twitter:card" content="summary_large_image">
   <link rel="canonical" href="{{ SITEURL }}/{{ page.save_as }}">
   <link rel="shortcut icon" type="image/x-icon" href="/theme/images/favicon.ico">
+  <link rel="stylesheet" type="text/css" href="/theme/css/normalize.css">
   <link rel="stylesheet" type="text/css" href="/theme/css/fonts.css">
   <link rel="stylesheet" type="text/css" href="/theme/styles/index.css">
+  <!--
   <link rel="stylesheet" type="text/css" href="/theme/css/style.css">
+  -->
   {% if OFFEN_ACCOUNT_ID %}
     <script async src="https://script-alpha.offen.dev/script.js" data-account-id="{{ OFFEN_ACCOUNT_ID }}"></script>
   {% endif %}
@@ -77,14 +80,19 @@
   {% if page.href == "/" %}
     <div class="intro">
       <div class="container-reader">
-        <div class="sign">
-          <img src="/theme/images/offen-sign-brand-white.svg" alt="offen logo" width="152" height="94">
-        </div>
-        <h1>
-          is a free and <em>open source analytics software</em> for websites and web applications that allows <em>respectful handling of data.</em>
-        </h1>
-        <div class="btn-wrapper">
-        <a class="btn btn-color-black" href="{{GITHUB_ORG}}" target="_blank">Get involved</a>
+        <div class="bg">
+          <div class="sign">
+            <img src="/theme/images/offen-sign-brand-white.svg" alt="offen logo" width="152" height="94">
+          </div>
+          <h1>
+            Transparent web analytics for operators and users
+          </h1>
+          <p>
+            <strong>offen</strong> is a free and open source analytics software for websites and web applications that allows respectful handling of data.
+          </p>
+          <div class="btn-wrapper">
+          <a class="btn btn-color-black" href="{{GITHUB_ORG}}" target="_blank">Get involved</a>
+          </div>
         </div>
       </div>
     </div>
@@ -130,7 +138,7 @@
               <div class="card-text">
               Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Sit amet, consectetuer adipiscing elit.
                 <div class="btn-wrapper">
-                <a class="btn btn-color-yellow-black" href="/status/">Status</a>
+                <a class="btn btn-color-yellow" href="/status/">Status</a>
                 </div>
             </div>
           </div>
@@ -226,10 +234,9 @@
       </div>
     </div>
   </div>
-
-  <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-  <script  src="/theme/scripts/menu.js"></script>
-  <script  src="/theme/scripts/fade.js"></script>
+  <script src="/theme/scripts/jquery-3.4.1.min.js"></script>
+  <script src="/theme/scripts/menu.js"></script>
+  <script src="/theme/scripts/fade.js"></script>
 
 </body>
 </html>
