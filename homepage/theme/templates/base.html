@@ -80,7 +80,7 @@
   {% if page.href == "/" %}
     <div class="intro">
       <div class="container-reader">
-        <div class="bg">
+        <div class="bg" id="bg-intro">
           <div class="sign">
             <img src="/theme/images/offen-sign-brand-white.svg" alt="offen logo" width="152" height="94">
           </div>
@@ -91,7 +91,7 @@
             <strong>offen</strong> is a free and open source analytics software for websites and web applications that allows respectful handling of data.
           </p>
           <div class="btn-wrapper">
-          <a class="btn btn-color-black" href="{{GITHUB_ORG}}" target="_blank">Get involved</a>
+            <a class="btn btn-color-black" href="{{GITHUB_ORG}}" target="_blank">Get involved</a>
           </div>
         </div>
       </div>
@@ -101,27 +101,33 @@
       <div class="container-full">
         <div class="card-deck">
           <div class="card">
-            <div class="card-gfx">
-              <img src="/theme/images/illustration.svg" width="179" height="122">
-            </div>
-            <div class="card-text">
-              Feature Text 1 - Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.
-            </div>
-          </div>
-          <div class="card">
-            <div class="card-gfx">
-              <img src="/theme/images/illustration.svg" width="179" height="122">
-            </div>
-            <div class="card-text">
-              Feature Text 2 - Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.
+            <div class="bg" id="bg-feature-a">
+              <h2>
+                Free & Open Source
+              </h2>
+              <p>
+                Anyone can audit our code to verify it works as intended. <strong>offen</strong> will always be available free of charge.
+              </p>
             </div>
           </div>
           <div class="card">
-            <div class="card-gfx">
-              <img src="/theme/images/illustration.svg" width="179" height="122">
+            <div class="bg" id="bg-feature-b">
+              <h2>
+                Fair & Secure
+              </h2>
+              <p>
+                Pay respect to your website visitors and gain insights as a user at the same time. All data is encrypted end-to-end.
+              </p>
             </div>
-            <div class="card-text">
-              Feature Text 3 - Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.
+          </div>
+          <div class="card">
+            <div class="bg" id="bg-feature-c">
+              <h2>
+                Easy to use
+              </h2>
+              <p>
+                Simply paste our code into the source of your website. Users can visit the auditorium to access their data.
+              </p>
             </div>
           </div>
         </div>
@@ -132,14 +138,16 @@
       <div class="container-full">
         <div class="card-deck">
           <div class="card">
-              <div class="card-gfx">
-                <img src="/theme/images/illustration.svg" width="179" height="122">
+            <div class="bg" id="bg-cta-top">
+              <h2>
+                Build in progress
+              </h2>
+              <p>
+                What is already up and running and where we want to go.
+              </p>
+              <div class="btn-wrapper">
+                <a class="btn btn-color-white" href="/status/">Project status</a>
               </div>
-              <div class="card-text">
-              Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Sit amet, consectetuer adipiscing elit.
-                <div class="btn-wrapper">
-                <a class="btn btn-color-yellow" href="/status/">Status</a>
-                </div>
             </div>
           </div>
         </div>
@@ -165,30 +173,51 @@
   <div class="cta-bottom">
     <div class="container-full">
       <div class="card-deck">
+
         <div class="card">
-          <div class="card-text">
-            Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
+          <div class="bg" id="bg-cta-bottom">
+            <h2>
+              Transparent web analytics
+            </h2>
+            <p>
+              <strong>offen</strong> is a free and open source analytics software for websites and web applications that allows respectful handling of data.
+            </p>
             <div class="btn-wrapper">
-            <a class="btn btn-color-black" href="{{GITHUB_ORG}}" target="_blank">Get involved</a>
+              <a class="btn btn-color-black" href="{{GITHUB_ORG}}">Get involved</a>
             </div>
           </div>
         </div>
+
         <div class="card">
-          <div class="card-text">
-            Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
+          <div class="bg" id="bg-cta-bottom">
+            <h2>
+              Build in progress
+            </h2>
+            <p>
+              What is already up and running and where we want to go.
+            </p>
             <div class="btn-wrapper">
-            <a class="btn btn-color-black" href="/status/" target="_blank">Status</a>
+              <a class="btn btn-color-black" href="/status/">Project status</a>
             </div>
           </div>
         </div>
+
         <div class="card">
-          <div class="card-text">
-            Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
+          <div class="bg" id="bg-cta-bottom">
+            <h2>
+              Charitable purpose
+            </h2>
+            <p>
+              We're working hard to ensure that <strong>offen</strong> is independent, cutting-edge and can be sustained for years to come.
+            </p>
             <div class="btn-wrapper">
-            <a class="btn btn-color-black" href="{{PATREON_URL}}" target="_blank">Support Us</a>
+              <a class="btn btn-color-black" href="{{PATREON_URL}}">Support us</a>
             </div>
           </div>
         </div>
+
+
+
       </div>
     </div>
   </div>
@@ -197,14 +226,16 @@
     <div class="container-full">
       <div class="card-deck">
         <div class="card">
-            <div class="card-gfx">
-              <img src="/theme/images/illustration.svg" width="179" height="122">
-            </div>
-            <div class="card-text">
-            Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Sit amet, consectetuer adipiscing elit.
-              <div class="btn-wrapper">
+          <div class="bg" id="bg-outro">
+            <h2>
+              Charitable purpose
+            </h2>
+            <p>
+              We're working hard to ensure that <strong>offen</strong> is independent, cutting-edge and can be sustained for years to come.
+            </p>
+            <div class="btn-wrapper">
               <a class="btn btn-color-black" href="{{PATREON_URL}}">Support us</a>
-              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -215,8 +246,9 @@
   <div class="footer">
     <div class="footer-card-deck">
       <div class="footer-card">
-        <h3>offen</h3>
-        <h3>Transparent web analytics</h4>
+        <h3><strong>offen</strong></h3>
+        <h4>Transparent web analytics</h4>
+        <h4>for everyone</h4>
       </div>
       <div class="footer-card">
         <p>

@@ -124,21 +124,18 @@ CARDS
   max-width: 400px;
   color: var(--black-mid);
 }
-.cta-top .card,
-.outro .card {
-  max-width: 600px;
-}
 .cta-top .card {
   color: var(--yellow-mid);
+}
+.card h2,
+.card p  {
+  text-align: center;
 }
 .footer-card p {
   margin: 0 0 2px 0;
 }
 .footer-card:nth-child(1),
 .footer-card:nth-child(2) {
-  margin: 0 0 20px 0;
-}
-.card-gfx {
   margin: 0 0 20px 0;
 }
 /* Mobile Styles */
@@ -154,8 +151,6 @@ CARDS
   .card:nth-child(2) {
     margin: 80px 0 80px 0;
   }
-  .card-gfx,
-  .card-text,
   .footer-card {
     text-align: center;
   }
@@ -176,20 +171,6 @@ CARDS
   }
   .card:nth-child(2) {
     margin: 0 40px 0 40px;
-  }
-  .card-gfx,
-  .card-text {
-    text-align: center;
-  }
-  .cta-top .card-gfx,
-  .cta-top .card-text,
-  .outro .card-gfx,
-  .outro .card-text {
-    text-align: left;
-  }
-  .cta-top .card-gfx,
-  .outro .card-gfx {
-    margin: 0 40px 0 0;
   }
   .footer-card-deck {
     justify-content: space-between;
@@ -304,8 +285,13 @@ blockquote {
   border-left: 1px solid var(--grey-bright);
 }
 strong,
-h1 + p strong {
+h1 + p strong,
+.bg strong {
   font-weight: 700;
+}
+.footer-card h3 strong {
+  font-weight: 700;
+  color: var(--yellow-mid);
 }
 strong,
 h3 strong {
@@ -366,7 +352,15 @@ BUTTONS
   color: var(--black-mid);
   border: solid var(--black-mid) 5px;
 }
-
+.btn-color-white,
+.btn-color-white:visited,
+.btn-color-white:link,
+.btn-color-white:hover,
+.btn-color-white:active {
+  font-weight: 700;
+  color: var(--white);
+  border: solid var(--white) 5px;
+}
 
 /* ---------------------------------------------------
 MENU
@@ -526,13 +520,66 @@ nav ul li ul li a {
 /* ---------------------------------------------------
 GRAPHICS
 ----------------------------------------------------*/
-.intro .bg {
+.bg h2 {
+  margin: 0 0 10px 0;
+}
+#bg-intro {
   width: 75%;
-  background: url(/theme/images/temp.svg) no-repeat center;
+  background: url(/theme/images/gfx-intro.svg) no-repeat center;
+  background-size: cover;
+}
+/*-------------------------*/
+#bg-feature-a,
+#bg-feature-b,
+#bg-feature-c {
+  background: url(/theme/images/gfx-feature-a.svg) no-repeat center;
+  background-size: cover;
+}
+/*-------------------------*/
+#bg-cta-top {
+  width: 75%;
+}
+#bg-cta-top h2,
+#bg-cta-top p {
+  color: var(--white);
+}
+#bg-cta-top h2,
+#bg-cta-top p,
+#bg-cta-top .btn-wrapper {
+  text-align: right;
+}
+#bg-cta-top {
+  background: url(/theme/images/gfx-cta-top.svg) no-repeat center;
+  background-size: cover;
+}
+/*-------------------------*/
+#bg-outro {
+  width: 75%;
+}
+#bg-outro h2,
+#bg-outro p,
+#bg-outro .btn-wrapper {
+  text-align: right;
+}
+#bg-outro {
+  background: url(/theme/images/gfx-outro.svg) no-repeat center;
+  background-size: cover;
+}
+/*-------------------------*/
+#bg-cta-bottom {
+  width: 75%;
+}
+#bg-cta-bottom h2,
+#bg-cta-bottom p,
+#bg-cta-bottom .btn-wrapper {
+  text-align: right;
+}
+#bg-cta-bottom {
+  background: url(/theme/images/gfx-outro.svg) no-repeat center;
   background-size: cover;
 }
 @media only screen and (max-width: 480px) {
-  .intro .bg {
+  #bg-intro {
     width: 100%;
     background-size: 440px;
   }
