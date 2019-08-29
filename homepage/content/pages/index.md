@@ -3,6 +3,8 @@ description: offen is a free and open source analytics software for websites and
 save_as: index.html
 href: /
 
+## Summary
+
 __offen__ is a web analytics software that gives users access to the data they are generating. Not only operators running sites or applications are given able to use the analytics tools, but also *the users themselves are granted access to and ownership of their data*.
 
 Usage metrics come with explanations about their meaning, relevance, usage and possible privacy implications. __offen__ also details *which kind of data is not collected*. All data can be deleted selectively or in its entirety by the users, or the collection can be disabled altogether.

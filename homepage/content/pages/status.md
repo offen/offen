@@ -3,7 +3,7 @@ description: offen is a free and open source analytics software for websites and
 save_as: status/index.html
 href: /status/
 
-### Current status
+## Project status
 
 #### July 2019
 We have deployed an alpha version of __offen__ that we are currently testing on a few select sites. Usage data is collected and can be accessed by both users and site operators. Users can opt out and delete their data at any time. You can *follow the development at [github.com/offen/offen](https://github.com/offen/offen)*

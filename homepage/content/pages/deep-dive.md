@@ -3,6 +3,8 @@ description: offen is a free and open source analytics software for websites and
 save_as: deep-dive/index.html
 href: /deep-dive/
 
+## Deep dive
+
 ### What is this thing called "my data" and why does seemingly everyone want to get hold of it?
 
 It has a ring, gives a slight spine-chilling sensation and generates a whole lot of clicks: consumer magazines like German "Computer Bild" caution about "Google espionage" [^1] just like the internet has countless tutorials on turning off numerous "data leeches" [^2]. Interestingly, diving into these realms will have you accidentally catching the next toolbar, malware infection or even worse [^3].

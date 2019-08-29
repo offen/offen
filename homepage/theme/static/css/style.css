@@ -6,10 +6,10 @@ ROOTS
 :root {
 --yellow-mid: #F7BF08;
 --yellow-bright: #fde28c;
+--mint-mid: #BBD9D3;
 --black-mid: #39352A;
 --grey-mid: #898989;
 --grey-bright: #D5D5D5;
---turquoise-bright: #BBD9D3;
 --white: #FFF;
 }
 
@@ -25,12 +25,13 @@ BASICS
 
 
 /* ---------------------------------------------------
-LAYOUT
+LAYOUT & SPACER
 ----------------------------------------------------*/
 .menu {
   width: 100%;
   height: 70px;
   position: fixed;
+  z-index: 1;
   top: 0;
   right: 0;
   background-color: var(--yellow-mid);
@@ -42,12 +43,10 @@ LAYOUT
 }
 .feature {
   width: 100%;
-  background-color: var(--turquoise-bright);
 }
 .cta-top {
   width: 100%;
   color: var(--yellow-mid);
-  background-color: var(--black-mid);
 }
 .content {
   width: 100%;
@@ -61,13 +60,19 @@ LAYOUT
 .cta-bottom,
 .outro {
   width: 100%;
-  background-color: var(--yellow-mid);
 }
 .footer {
   width: 100%;
   min-height: 300px;
   color: var(--grey-mid);
   background-color: var(--black-mid);
+}
+.spacer-intro {
+  width: 430px;
+}
+.spacer-right {
+  width: 400px;
+  margin: 0 0 0 auto;
 }
 /* Desktop Styles */
 @media only screen and (min-width: 961px) {
@@ -110,7 +115,15 @@ LAYOUT
   .content {
     margin: 0;
   }
+  .spacer-intro {
+    width: 300px;
+  }
+  .spacer-right {
+    width: 100%;
+    margin: 0;
+  }
 }
+
 
 /* ---------------------------------------------------
 CARDS
@@ -121,14 +134,11 @@ CARDS
   display: flex;
 }
 .card {
-  max-width: 400px;
+  max-width: 300px;
   color: var(--black-mid);
 }
-.cta-top .card {
-  color: var(--yellow-mid);
-}
 .card h2,
-.card p  {
+.card p {
   text-align: center;
 }
 .footer-card p {
@@ -149,7 +159,7 @@ CARDS
     align-self: center;
   }
   .card:nth-child(2) {
-    margin: 80px 0 80px 0;
+    margin: 100px 0 100px 0;
   }
   .footer-card {
     text-align: center;
@@ -158,9 +168,7 @@ CARDS
 /* Desktop Styles */
 @media only screen and (min-width: 961px) {
   .card-deck,
-  .footer-card-deck,
-  .cta-top .card,
-  .outro .card {
+  .footer-card-deck {
     flex-direction: row;
   }
   .card {
@@ -206,6 +214,7 @@ h2 {
 }
 h3,
 h4 {
+  font-size: 14px;
   font-weight: 400;
   color: var(--black-mid);
 }
@@ -227,10 +236,6 @@ h4 {
   h1 {
     margin: 20px 0 10px 0;
   }
-  h3,
-  h4 {
-    font-size: 14px;
-  }
 }
 /* Mobile Styles */
 @media only screen and (max-width: 480px) {
@@ -239,6 +244,8 @@ h4 {
     font-size: 22px;
   }
 }
+
+
 /* ---------------------------------------------------
 LINKS
 ----------------------------------------------------*/
@@ -264,14 +271,56 @@ color: var(--grey-bright);
   font-weight: 400;
 }
 
+
 /* ---------------------------------------------------
 TYPO ELEMENTS
 ----------------------------------------------------*/
-p {
-  margin: 0 0 20px 0;
-}
 h1 + p {
   color: var(--black-mid);
+}
+.bg h2 {
+  margin: 0 0 10px 0;
+}
+#bg-cta-top h2,
+#bg-cta-top p,
+#bg-cta-top .btn-wrapper,
+#bg-outro h2,
+#bg-outro p,
+#bg-outro .btn-wrapper {
+  text-align: right;
+}
+#bg-cta-bottom .btn-wrapper {
+  text-align: center;
+}
+#bg-cta-top h2,
+#bg-cta-top p {
+  color: var(--white);
+}
+#bg-outro h2,
+#bg-outro p {
+  color: var(--black-mid);
+}
+strong,
+h1 + p strong,
+.bg strong {
+  font-weight: 700;
+}
+.container-reader h2 {
+  margin: 0 0 20px 0;
+  color: var(--grey-bright);
+}
+strong,
+h3 strong {
+  text-decoration: none;
+  font-weight: 400;
+  color: var(--black-mid);
+}
+.cta-top strong {
+  color: var(--white);
+}
+.content-index p,
+.content p {
+  margin: 0 0 20px 0;
 }
 hr {
   height: 0;
@@ -284,39 +333,24 @@ blockquote {
   font-style: italic;
   border-left: 1px solid var(--grey-bright);
 }
-strong,
-h1 + p strong,
-.bg strong {
-  font-weight: 700;
+ol {
+  padding-inline-start: 20px;
+}
+em {
+  background: linear-gradient(transparent 66%, var(--yellow-bright) 66%);
+  font-style: normal;
 }
 .footer-card h3 strong {
   font-weight: 700;
   color: var(--yellow-mid);
-}
-strong,
-h3 strong {
-  text-decoration: none;
-  font-weight: 400;
-  color: var(--black-mid);
 }
 .footer h3,
 .footer h4 {
   color: var(--yellow-mid);
   margin: 0 0 2px 0;
 }
-em {
-  background: linear-gradient(transparent 66%, var(--yellow-bright) 66%);
-  font-style: normal;
-}
-.intro em {
-  background: linear-gradient(transparent 66%, var(--turquoise-bright) 66%);
-  font-style: normal;
-}
 .footnote {
   color: var(--grey-bright);
-}
-ol {
-  padding-inline-start: 20px;
 }
 
 
@@ -361,6 +395,7 @@ BUTTONS
   color: var(--white);
   border: solid var(--white) 5px;
 }
+
 
 /* ---------------------------------------------------
 MENU
@@ -464,7 +499,6 @@ nav ul li ul li a {
   nav ul li:last-child a {
     box-shadow: 0px 7px 15px -6px rgba(57,53,42,0.2);
   }
-
   .nav-dropdown {
     position: static;
   }
@@ -520,67 +554,22 @@ nav ul li ul li a {
 /* ---------------------------------------------------
 GRAPHICS
 ----------------------------------------------------*/
-.bg h2 {
-  margin: 0 0 10px 0;
-}
 #bg-intro {
-  width: 75%;
   background: url(/theme/images/gfx-intro.svg) no-repeat center;
-  background-size: cover;
 }
 /*-------------------------*/
-#bg-feature-a,
-#bg-feature-b,
-#bg-feature-c {
-  background: url(/theme/images/gfx-feature-a.svg) no-repeat center;
-  background-size: cover;
+#bg-feature {
+  background: url(/theme/images/gfx-pattern-mint-bright.svg) center;
 }
 /*-------------------------*/
 #bg-cta-top {
-  width: 75%;
-}
-#bg-cta-top h2,
-#bg-cta-top p {
-  color: var(--white);
-}
-#bg-cta-top h2,
-#bg-cta-top p,
-#bg-cta-top .btn-wrapper {
-  text-align: right;
-}
-#bg-cta-top {
-  background: url(/theme/images/gfx-cta-top.svg) no-repeat center;
-  background-size: cover;
+  background: url(/theme/images/gfx-object-white.svg) center;
 }
 /*-------------------------*/
 #bg-outro {
-  width: 75%;
-}
-#bg-outro h2,
-#bg-outro p,
-#bg-outro .btn-wrapper {
-  text-align: right;
-}
-#bg-outro {
-  background: url(/theme/images/gfx-outro.svg) no-repeat center;
-  background-size: cover;
+  background: url(/theme/images/gfx-pattern-yellow-bright.svg) center;
 }
 /*-------------------------*/
 #bg-cta-bottom {
-  width: 75%;
-}
-#bg-cta-bottom h2,
-#bg-cta-bottom p,
-#bg-cta-bottom .btn-wrapper {
-  text-align: right;
-}
-#bg-cta-bottom {
-  background: url(/theme/images/gfx-outro.svg) no-repeat center;
-  background-size: cover;
-}
-@media only screen and (max-width: 480px) {
-  #bg-intro {
-    width: 100%;
-    background-size: 440px;
-  }
+  background: url(/theme/images/gfx-pattern-yellow-bright.svg) center;
 }

@@ -52,17 +52,6 @@
               <a href="/status/">Status</a>
             </li>
             <li>
-              <a href="#">Auditorium</a>
-              <ul class="nav-dropdown">
-                <li>
-                  <a href="/auditorium/operator/">for Operators</a>
-                </li>
-                <li>
-                  <a href="/auditorium/user/">for Users</a>
-                </li>
-              </ul>
-            </li>
-            <li>
               <a href="mailto:{{CONTACT_EMAIL}}">Contact</a>
             </li>
             <li>
@@ -72,58 +61,56 @@
               <a href="{{PATREON_URL}}" target="_blank">Support Us</a>
             </li>
           </ul>
-        </nav>
-      </div>
-    </section>
-  </div>
+          </nav>
+        </div>
+      </section>
+    </div>
 
   {% if page.href == "/" %}
     <div class="intro">
-      <div class="container-reader">
-        <div class="bg" id="bg-intro">
-          <div class="sign">
-            <img src="/theme/images/offen-sign-brand-white.svg" alt="offen logo" width="152" height="94">
-          </div>
-          <h1>
-            Transparent web analytics for operators and users
-          </h1>
-          <p>
-            <strong>offen</strong> is a free and open source analytics software for websites and web applications that allows respectful handling of data.
-          </p>
-          <div class="btn-wrapper">
-            <a class="btn btn-color-black" href="{{GITHUB_ORG}}" target="_blank">Get involved</a>
+      <div class="bg" id="bg-intro">
+        <div class="container-reader">
+          <div class="spacer-intro">
+            <div class="sign">
+              <img src="/theme/images/offen-sign-brand-white.svg" alt="offen logo" width="152" height="94">
+            </div>
+            <h1>
+              <em>Transparent web analytics for operators and users</em>
+            </h1>
+            <p>
+              <strong>offen</strong> is a free and open source analytics software for websites and web applications that allows respectful handling of data.
+            </p>
+            <div class="btn-wrapper">
+              <a class="btn btn-color-black" href="{{GITHUB_ORG}}" target="_blank">Get involved</a>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
     <div class="feature">
-      <div class="container-full">
-        <div class="card-deck">
-          <div class="card">
-            <div class="bg" id="bg-feature-a">
+      <div class="bg" id="bg-feature">
+        <div class="container-full">
+          <div class="card-deck">
+            <div class="card">
               <h2>
-                Free & Open Source
+                <em>Free & Open</em>
               </h2>
               <p>
-                Anyone can audit our code to verify it works as intended. <strong>offen</strong> will always be available free of charge.
+                Anyone can audit our open source code to verify it works as intended. <strong>offen</strong> will always be available free of charge.
               </p>
             </div>
-          </div>
-          <div class="card">
-            <div class="bg" id="bg-feature-b">
+            <div class="card">
               <h2>
-                Fair & Secure
+                <em>Fair & Secure</em>
               </h2>
               <p>
                 Pay respect to your website visitors and gain insights as a user at the same time. All data is encrypted end-to-end.
               </p>
             </div>
-          </div>
-          <div class="card">
-            <div class="bg" id="bg-feature-c">
+            <div class="card">
               <h2>
-                Easy to use
+                <em>Easy to use</em>
               </h2>
               <p>
                 Simply paste our code into the source of your website. Users can visit the auditorium to access their data.
@@ -134,20 +121,19 @@
       </div>
     </div>
 
+
     <div class="cta-top">
-      <div class="container-full">
-        <div class="card-deck">
-          <div class="card">
-            <div class="bg" id="bg-cta-top">
-              <h2>
-                Build in progress
-              </h2>
-              <p>
-                What is already up and running and where we want to go.
-              </p>
-              <div class="btn-wrapper">
-                <a class="btn btn-color-white" href="/status/">Project status</a>
-              </div>
+      <div class="bg" id="bg-cta-top">
+        <div class="container-reader">
+          <div class="spacer-right">
+            <h2>
+              In the making
+            </h2>
+            <p>
+              <strong>offen</strong> is still in alpha. Discover what is already up and running and where we want to go in the coming months.
+            </p>
+            <div class="btn-wrapper">
+              <a class="btn btn-color-white" href="/status/">Project status</a>
             </div>
           </div>
         </div>
@@ -171,41 +157,34 @@
 
   {% if page.href != "/" %}
   <div class="cta-bottom">
-    <div class="container-full">
-      <div class="card-deck">
-
-        <div class="card">
-          <div class="bg" id="bg-cta-bottom">
+    <div class="bg" id="bg-cta-bottom">
+      <div class="container-full">
+        <div class="card-deck">
+          <div class="card">
             <h2>
-              Transparent web analytics
+              Participate
             </h2>
             <p>
-              <strong>offen</strong> is a free and open source analytics software for websites and web applications that allows respectful handling of data.
+              Development of <strong>offen</strong> has just started. Do not hesitate to make a contribution and help us handle data with respect.
             </p>
             <div class="btn-wrapper">
               <a class="btn btn-color-black" href="{{GITHUB_ORG}}">Get involved</a>
             </div>
           </div>
-        </div>
-
-        <div class="card">
-          <div class="bg" id="bg-cta-bottom">
+          <div class="card">
             <h2>
-              Build in progress
+              In the making
             </h2>
             <p>
-              What is already up and running and where we want to go.
+              This project is still in alpha. Discover what is already up and running and where we want to go in the coming months.
             </p>
             <div class="btn-wrapper">
               <a class="btn btn-color-black" href="/status/">Project status</a>
             </div>
           </div>
-        </div>
-
-        <div class="card">
-          <div class="bg" id="bg-cta-bottom">
+          <div class="card">
             <h2>
-              Charitable purpose
+              Good cause
             </h2>
             <p>
               We're working hard to ensure that <strong>offen</strong> is independent, cutting-edge and can be sustained for years to come.
@@ -215,27 +194,22 @@
             </div>
           </div>
         </div>
-
-
-
       </div>
     </div>
   </div>
   {% else %}
   <div class="outro">
-    <div class="container-full">
-      <div class="card-deck">
-        <div class="card">
-          <div class="bg" id="bg-outro">
-            <h2>
-              Charitable purpose
-            </h2>
-            <p>
-              We're working hard to ensure that <strong>offen</strong> is independent, cutting-edge and can be sustained for years to come.
-            </p>
-            <div class="btn-wrapper">
-              <a class="btn btn-color-black" href="{{PATREON_URL}}">Support us</a>
-            </div>
+    <div class="bg" id="bg-outro">
+      <div class="container-reader">
+        <div class="spacer-right">
+          <h2>
+            Good cause
+          </h2>
+          <p>
+            We're working hard to ensure that <strong>offen</strong> is independent, cutting-edge and can be sustained for years to come.
+          </p>
+          <div class="btn-wrapper">
+            <a class="btn btn-color-black" href="{{PATREON_URL}}">Support us</a>
           </div>
         </div>
       </div>
@@ -252,17 +226,17 @@
       </div>
       <div class="footer-card">
         <p>
-          <a href="#">Contact</a>
+          <a href="mailto:{{CONTACT_EMAIL}}">Contact</a>
         </p>
         <p>
-          <a href="#">Our data policy</a>
+          <a href="{{GITHUB_ORG}}">GitHub</a>
         </p>
         <p>
-          <a href="#">Privacy</a>
+          <a href="{{PATREON_URL}}">Support Us</a>
         </p>
       </div>
       <div class="footer-card">
-        August 2019
+        September 2019
       </div>
     </div>
   </div>
