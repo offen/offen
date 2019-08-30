@@ -17,12 +17,9 @@
   <meta name="twitter:card" content="summary_large_image">
   <link rel="canonical" href="{{ SITEURL }}/{{ page.save_as }}">
   <link rel="shortcut icon" type="image/x-icon" href="/theme/images/favicon.ico">
-  <link rel="stylesheet" type="text/css" href="/theme/css/normalize.css">
-  <link rel="stylesheet" type="text/css" href="/theme/css/fonts.css">
-  <!--
-  <link rel="stylesheet" type="text/css" href="/theme/styles/index.css">
-  -->
-  <link rel="stylesheet" type="text/css" href="/theme/css/style.css">
+  {% assets filters="cssmin", output="css/style.min.css", "css/normalize.css", "css/fonts.css", "css/style.css" %}
+      <link rel="stylesheet" href="{{ SITEURL }}/{{ ASSET_URL }}">
+  {% endassets %}
   {% if OFFEN_ACCOUNT_ID %}
     <script async src="https://script-alpha.offen.dev/script.js" data-account-id="{{ OFFEN_ACCOUNT_ID }}"></script>
   {% endif %}
@@ -40,7 +37,7 @@
           <a href="/"><img src="/theme/images/offen-brand-white.svg" alt="offen logo" width="42" height="46" class="logo"></a>
         </div>
         <nav>
-          <div class="nav-mobile"><a id="nav-toggle" href="#!"><span></span></a></div>
+          <div class="nav-mobile"><span id="nav-toggle"><span></span></span></div>
           <ul class="nav-list">
             <li>
               <a href="/">Summary</a>
@@ -240,9 +237,8 @@
       </div>
     </div>
   </div>
-  <script src="/theme/scripts/jquery-3.4.1.min.js"></script>
-  <script src="/theme/scripts/menu.js"></script>
-  <script src="/theme/scripts/fade.js"></script>
-
+  {% assets filters="rjsmin", output="scripts/packed.js", "scripts/jquery-3.4.1.min.js", "scripts/menu.js", "scripts/fade.js" %}
+      <script src="{{ SITEURL }}/{{ ASSET_URL }}"></script>
+  {% endassets %}
 </body>
 </html>
