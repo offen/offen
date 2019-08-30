@@ -39,19 +39,19 @@ function decorateWithDefaults (view, title) {
 }
 
 app.route(
-  '/account/:accountId',
+  '/auditorium/account/:accountId',
   decorateWithDefaults(withAuthentication()(withModel()(mainView)), 'offen auditorium')
 )
 app.route(
-  '/account',
+  '/auditorium/account',
   decorateWithDefaults(withAuthentication()(accountView), 'offen accounts')
 )
 app.route(
-  '/login',
+  '/auditorium/login',
   decorateWithDefaults(loginView, 'offen login')
 )
 app.route(
-  '/',
+  '/auditorium',
   decorateWithDefaults(withModel()(mainView), 'offen auditorium')
 )
 app.route(

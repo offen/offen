@@ -1,37 +1,18 @@
 version: '3'
 
 services:
-  kms:
-    build:
-      context: '.'
-      dockerfile: Dockerfile.golang
-    working_dir: /offen/kms
+  proxy:
+    image: nginx:1.17-alpine
     volumes:
-      - .:/offen
-      - kmsdeps:/go/pkg/mod
-    environment:
-      KEY_FILE: key.txt
-      PORT: 8081
-      CORS_ORIGIN: http://localhost:9977
-      JWT_PUBLIC_KEY: http://accounts:5000/api/key
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./styles:/code/styles
     ports:
-      - 8081:8081
-    command: refresh run
-    links:
-      - accounts
-
-  server_database:
-    image: postgres:11.2
-    environment:
-      POSTGRES_PASSWORD: develop
-
-  accounts_database:
-    image: mysql:5.7
-    ports:
-      - "3306:3306"
-    environment:
-      MYSQL_DATABASE: mysql
-      MYSQL_ROOT_PASSWORD: develop
+      - 8080:80
+    depends_on:
+      - server
+      - auditorium
+      - vault
+      - script
 
   server:
     build:
@@ -52,13 +33,14 @@ services:
       DEVELOPMENT: '1'
       COOKIE_EXCHANGE_SECRET: Wsttdo4Z3mXV5sTc
       EVENT_RETENTION_PERIOD: 4464h
-    ports:
-      - 8080:8080
     command: refresh run
     links:
       - server_database
-    depends_on:
-      - kms
+
+  server_database:
+    image: postgres:11.2
+    environment:
+      POSTGRES_PASSWORD: develop
 
   vault:
     build:
@@ -69,13 +51,11 @@ services:
       - .:/offen
       - vaultdeps:/offen/vault/node_modules
     command: npm start -- --port 9977
-    ports:
-      - 9977:9977
     environment:
       - SERVER_HOST=http://localhost:8080
       - KMS_HOST=http://localhost:8081
       - SCRIPT_HOST=http://localhost:9977
-      - AUDITORIUM_HOST=http://localhost:9955
+      - AUDITORIUM_HOST=http://localhost:8080
       - ACCOUNTS_HOST=http://localhost:5000
       - HOMEPAGE_HOST=http://localhost:8000
 
@@ -88,10 +68,8 @@ services:
       - .:/offen
       - scriptdeps:/offen/script/node_modules
     command: npm start -- --port 9966
-    ports:
-      - 9966:9966
     environment:
-      - VAULT_HOST=http://localhost:9977
+      - VAULT_HOST=http://localhost:8080/vault/
 
   auditorium:
     build:
@@ -102,38 +80,11 @@ services:
       - .:/offen
       - auditoriumdeps:/offen/auditorium/node_modules
     command: npm start -- --port 9955
-    ports:
-      - 9955:9955
     environment:
-      - VAULT_HOST=http://localhost:9977
-
-  accounts:
-    build:
-      context: '.'
-      dockerfile: Dockerfile.python
-    working_dir: /offen/accounts
-    volumes:
-      - .:/offen
-      - ./bootstrap.yml:/offen/accounts/bootstrap.yml
-      - accountdeps:/root/.local
-    command: flask run --host 0.0.0.0
-    ports:
-      - 5000:5000
-    links:
-      - accounts_database
-    environment:
-      CONFIG_CLASS: accounts.config.LocalConfig
-      FLASK_APP: accounts:app
-      FLASK_ENV: development
-      MYSQL_CONNECTION_STRING: mysql+pymysql://root:develop@accounts_database:3306/mysql
-      CORS_ORIGIN: http://localhost:9977
-      SERVER_HOST: http://server:8080
-      SESSION_SECRET: vndJRFJTiyjfgtTF
+      - VAULT_HOST=http://localhost:8080/vault/
 
 volumes:
-  kmsdeps:
   serverdeps:
   scriptdeps:
   auditoriumdeps:
   vaultdeps:
-  accountdeps:

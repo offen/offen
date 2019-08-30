@@ -145,7 +145,6 @@ func New(opts ...Config) http.Handler {
 	m := mux.NewRouter()
 
 	json := httputil.ContentTypeMiddleware("application/json")
-	cors := httputil.CorsMiddleware(rt.corsOrigin)
 	dropOptout := httputil.OptoutMiddleware(optoutKey)
 	recovery := thunk.HandleSafelyWith(func(err error) {
 		if rt.logger != nil {
@@ -154,7 +153,7 @@ func New(opts ...Config) http.Handler {
 	})
 	userCookie := httputil.UserCookieMiddleware(cookieKey, contextKeyCookie)
 
-	m.Use(recovery, cors, json)
+	m.Use(recovery, json)
 
 	optout := m.PathPrefix("/opt-out").Subrouter()
 	optout.HandleFunc("", rt.postOptout).Methods(http.MethodPost)
@@ -191,9 +190,9 @@ func New(opts ...Config) http.Handler {
 	events.Handle("", receiveEvents).Methods(http.MethodPost).Queries("anonymous", "1")
 	events.Handle("", userCookie(receiveEvents)).Methods(http.MethodPost)
 
-	m.NotFoundHandler = cors(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	m.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		httputil.RespondWithJSONError(w, errors.New("Not found"), http.StatusNotFound)
-	}))
+	})
 
 	if rt.logger == nil {
 		return m
