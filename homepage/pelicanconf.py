@@ -4,12 +4,10 @@ from __future__ import unicode_literals
 import logging
 
 # If your site is available via HTTPS, make sure SITEURL begins with https://
-#SITEURL = 'https://www.offen.dev'
 RELATIVE_URLS = False
 
 AUTHOR = 'offen'
 SITENAME = 'offen'
-SITEURL = 'https://www.offen.dev'
 PATH = 'content'
 TIMEZONE = 'Europe/Berlin'
 DEFAULT_LANG = 'en'
@@ -29,6 +27,9 @@ THEME = './theme'
 
 # Delete the output directory before generating new files.
 DELETE_OUTPUT_DIRECTORY = True
+
+PLUGIN_PATHS = ['./plugins']
+PLUGINS = ['assets']
 
 # dont create following standard pages
 AUTHORS_SAVE_AS = None
