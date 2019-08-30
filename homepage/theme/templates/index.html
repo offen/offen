@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block brand %}
+  <div class="brand-index">
+    {{ super() }}
+  </div>
+{% endblock %}
+
+{% block content %}
+  <div class="intro">
+    <div class="bg" id="bg-intro">
+      <div class="container-reader">
+        <div class="spacer-intro">
+          <div class="sign">
+            <img src="/theme/images/offen-sign-brand-white.svg" alt="offen logo" width="152" height="94">
+          </div>
+          <h1>
+            <em>Transparent web analytics for operators and users</em>
+          </h1>
+          <p>
+            <strong>offen</strong> is a free and open source analytics software for websites and web applications that allows respectful handling of data.
+          </p>
+          <div class="btn-wrapper">
+            <a class="btn btn-color-black" href="{{GITHUB_ORG}}" target="_blank">Get involved</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="feature">
+    <div class="bg" id="bg-feature">
+      <div class="container-full">
+        <div class="card-deck">
+          <div class="card">
+            <h2>
+              <em>Free & Open</em>
+            </h2>
+            <p>
+              Anyone can audit our open source code to verify it works as intended. <strong>offen</strong> will always be available free of charge.
+            </p>
+          </div>
+          <div class="card">
+            <h2>
+              <em>Fair & Secure</em>
+            </h2>
+            <p>
+              Pay respect to your website visitors and gain insights as a user at the same time. All data is encrypted end-to-end.
+            </p>
+          </div>
+          <div class="card">
+            <h2>
+              <em>Easy to use</em>
+            </h2>
+            <p>
+              Simply paste our code into the source of your website. Users can visit the auditorium to access their data.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="cta-top">
+    <div class="bg" id="bg-cta-top">
+      <div class="container-reader">
+        <div class="spacer-right">
+          <h2>
+            In the making
+          </h2>
+          <p>
+            <strong>offen</strong> is still in alpha. Discover what is already up and running and where we want to go in the coming months.
+          </p>
+          <div class="btn-wrapper">
+            <a class="btn btn-color-white" href="/status/">Project status</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="content-index">
+    <div class="container-reader">
+      {{ page.content }}
+    </div>
+  </div>
+{% endblock %}
+
+{% block outro %}
+  <div class="outro">
+    <div class="bg" id="bg-outro">
+      <div class="container-reader">
+        <div class="spacer-right">
+          <h2>
+            Good cause
+          </h2>
+          <p>
+            We're working hard to ensure that <strong>offen</strong> is independent, cutting-edge and can be sustained for years to come.
+          </p>
+          <div class="btn-wrapper">
+            <a class="btn btn-color-black" href="{{PATREON_URL}}">Support us</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

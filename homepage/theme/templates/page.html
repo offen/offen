@@ -1,13 +1,7 @@
 {% extends "base.html" %}
 
-<!--
-{% block title %}
-  {{ page.title }}
-{% endblock %}
--->
-
-{% block content %}
-    {% block page_content %}
-      {{ page.content }}
-    {% endblock %}
+{% block brand %}
+  <div class="brand">
+    {{ super() }}
+  </div>
 {% endblock %}

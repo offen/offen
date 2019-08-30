@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block brand %}
+  <div class="brand">
+    {{ super() }}
+  </div>
+{% endblock %}
+
+{% block content %}
+  <div class="content">
+    <div class="container-full">
+      {{ page.content }}
+    </div>
+  </div>
+{% endblock %}
