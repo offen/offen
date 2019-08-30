@@ -1,7 +1,8 @@
 ;(function ($) {
   $(document).ready(function () {
     $(window).scroll(function () {
-      $('.brand-index').css('opacity', 0 + $(window).scrollTop() / 100)
+      var scrollProgress = parseInt($(window).scrollTop(), 10)
+      $('.brand-index').css('opacity', Math.min(scrollProgress / 100, 1))
     })
   })
 })(window.jQuery)
