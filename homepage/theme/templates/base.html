@@ -26,13 +26,13 @@
     <script async src="https://script-alpha.offen.dev/script.js" data-account-id="{{ OFFEN_ACCOUNT_ID }}"></script>
   {% endif %}
 </head>
-<body>
+<body class="{{page.template}}">
   <div class="menu">
     <section class="nav-bar">
       <div class="nav-container">
-        {% block brand %}
+        <div class="brand">
           <a href="/"><img src="/theme/images/offen-brand-white.svg" alt="offen logo" width="42" height="46" class="logo"></a>
-        {% endblock %}
+        </div>
         <nav>
           <div class="nav-mobile"><span id="nav-toggle"><span></span></span></div>
           <ul class="nav-list">
