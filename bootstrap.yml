@@ -1,4 +1,4 @@
-users:
+account_users:
   - email: develop@offen.dev
     password: develop
     accounts:

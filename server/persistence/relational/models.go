@@ -28,14 +28,30 @@ type User struct {
 	EncryptedUserSecret string
 }
 
+type AccountUser struct {
+	UserID         string `gorm:"primary_key"`
+	HashedEmail    string
+	HashedPassword string
+	Salt           string
+}
+
+type AccountUserRelationship struct {
+	RelationshipID                    string `gorm:"primary_key"`
+	UserID                            string
+	AccountID                         string
+	PasswordEncryptedKeyEncryptionKey string
+	EmailEncryptedKeyEncryptionKey    string
+}
+
 // Account stores information about an account.
 type Account struct {
 	AccountID           string `gorm:"primary_key"`
+	Name                string
 	PublicKey           string
 	EncryptedPrivateKey string
 	UserSalt            string
-	Events              []Event `gorm:"foreignkey:AccountID;association_foreignkey:AccountID"`
 	Retired             bool
+	Events              []Event `gorm:"foreignkey:AccountID;association_foreignkey:AccountID"`
 }
 
 // HashUserID uses the account's `UserSalt` to create a hashed version of a

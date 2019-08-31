@@ -10,6 +10,7 @@ services:
       - 8080:80
       - 8081:81
     depends_on:
+      - homepage
       - server
       - auditorium
       - vault
@@ -34,6 +35,7 @@ services:
       DEVELOPMENT: '1'
       COOKIE_EXCHANGE_SECRET: Wsttdo4Z3mXV5sTc
       EVENT_RETENTION_PERIOD: 4464h
+      ACCOUNT_USER_EMAIL_SALT: UwBkP24HCUYqy0Eq
     command: refresh run
     links:
       - server_database
