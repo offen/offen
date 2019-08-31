@@ -15,9 +15,6 @@ type httpConfig struct {
 	secureCookie         bool
 	development          bool
 	connectionString     string
-	corsOrigin           string
-	optoutCookieDomain   string
-	jwtPublicKey         string
 	encryptionEndpoint   string
 	cookieExchangeSecret string
 	retentionPeriod      time.Duration
@@ -25,10 +22,7 @@ type httpConfig struct {
 
 func (h *httpConfig) Port() int                      { return h.port }
 func (h *httpConfig) ConnectionString() string       { return h.connectionString }
-func (h *httpConfig) CorsOrigin() string             { return h.corsOrigin }
 func (h *httpConfig) LogLevel() logrus.Level         { return logrus.InfoLevel }
-func (h *httpConfig) OptoutCookieDomain() string     { return h.optoutCookieDomain }
-func (h *httpConfig) JWTPublicKey() string           { return h.jwtPublicKey }
 func (h *httpConfig) SecureCookie() bool             { return h.secureCookie }
 func (h *httpConfig) EncryptionEndpoint() string     { return h.encryptionEndpoint }
 func (h *httpConfig) Development() bool              { return h.development }
@@ -44,9 +38,6 @@ func New() (config.Config, error) {
 	cfg := httpConfig{
 		port:                 defaultPort,
 		connectionString:     os.Getenv("POSTGRES_CONNECTION_STRING"),
-		corsOrigin:           os.Getenv("CORS_ORIGIN"),
-		optoutCookieDomain:   os.Getenv("OPTOUT_COOKIE_DOMAIN"),
-		jwtPublicKey:         os.Getenv("JWT_PUBLIC_KEY"),
 		secureCookie:         os.Getenv("SECURE_COOKIE") != "",
 		encryptionEndpoint:   os.Getenv("KMS_ENCRYPTION_ENDPOINT"),
 		development:          os.Getenv("DEVELOPMENT") != "",

@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/felixge/httpsnoop"
 	"github.com/gorilla/mux"
 	"github.com/m90/go-thunk"
 	"github.com/offen/offen/server/persistence"
@@ -17,10 +16,7 @@ type router struct {
 	db                   persistence.Database
 	logger               *logrus.Logger
 	secureCookie         bool
-	optoutCookieDomain   string
 	userCookieDomain     string
-	corsOrigin           string
-	jwtPublicKey         string
 	cookieExchangeSecret []byte
 	retentionPeriod      time.Duration
 }
@@ -37,7 +33,6 @@ const (
 	cookieKey                   = "user"
 	optoutKey                   = "optout"
 	authKey                     = "auth"
-	authHeader                  = "X-RPC-Authentication"
 	contextKeyCookie contextKey = iota
 )
 
@@ -59,7 +54,6 @@ func (rt *router) optoutCookie(optout bool) *http.Cookie {
 		// the optout cookie is supposed to outlive the software, so
 		// it expires in ~100 years
 		Expires: time.Now().Add(time.Hour * 24 * 365 * 100),
-		Domain:  rt.optoutCookieDomain,
 		Path:    "/",
 		// this cookie is supposed to be read by the client so it can
 		// stop operating before even sending requests
@@ -94,27 +88,6 @@ func WithLogger(l *logrus.Logger) Config {
 func WithSecureCookie(sc bool) Config {
 	return func(r *router) {
 		r.secureCookie = sc
-	}
-}
-
-// WithOptoutCookieDomain defines the domain `optout` cookies will use
-func WithOptoutCookieDomain(cd string) Config {
-	return func(r *router) {
-		r.optoutCookieDomain = cd
-	}
-}
-
-// WithCORSOrigin sets the CORS origin used on response headers
-func WithCORSOrigin(o string) Config {
-	return func(r *router) {
-		r.corsOrigin = o
-	}
-}
-
-// WithJWTPublicKey sets the endpoint to fetch the JWT Public Key
-func WithJWTPublicKey(k string) Config {
-	return func(r *router) {
-		r.jwtPublicKey = k
 	}
 }
 
@@ -167,13 +140,8 @@ func New(opts ...Config) http.Handler {
 	exchange.HandleFunc("", rt.getPublicKey).Methods(http.MethodGet)
 	exchange.HandleFunc("", rt.postUserSecret).Methods(http.MethodPost)
 
-	keyCache := httputil.NewDefaultKeyCache(httputil.DefaultCacheExpiry)
-	getAuth := httputil.JWTProtect(rt.jwtPublicKey, authKey, authHeader, getAuthorizer, keyCache)
-	postAuth := httputil.JWTProtect(rt.jwtPublicKey, authKey, authHeader, postAuthorizer, keyCache)
 	accounts := m.PathPrefix("/accounts").Subrouter()
-	accounts.Handle("", getAuth(http.HandlerFunc(rt.getAccount))).Methods(http.MethodGet)
-	accounts.Handle("", postAuth(http.HandlerFunc(rt.postAccount))).Methods(http.MethodPost)
-	accounts.Handle("", postAuth(http.HandlerFunc(rt.deleteAccount))).Methods(http.MethodDelete)
+	accounts.Handle("", http.HandlerFunc(rt.getAccount)).Methods(http.MethodGet)
 
 	deleted := m.PathPrefix("/deleted").Subrouter()
 	deletedEventsForUser := userCookie(http.HandlerFunc(rt.getDeletedEvents))
@@ -194,16 +162,5 @@ func New(opts ...Config) http.Handler {
 		httputil.RespondWithJSONError(w, errors.New("Not found"), http.StatusNotFound)
 	})
 
-	if rt.logger == nil {
-		return m
-	}
-
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		metrics := httpsnoop.CaptureMetrics(m, w, r)
-		rt.logger.WithFields(logrus.Fields{
-			"status":   metrics.Code,
-			"duration": metrics.Duration.Seconds(),
-			"size":     metrics.Written,
-		}).Infof("%s %s", r.Method, r.RequestURI)
-	})
+	return m
 }

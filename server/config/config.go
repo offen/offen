@@ -14,15 +14,8 @@ type Config interface {
 	// the connection string including credentials of the PostgreSQL
 	// database to connect to
 	ConnectionString() string
-	// the origin value used in CORS headers
-	CorsOrigin() string
 	// the severity level used for logging
 	LogLevel() logrus.Level
-	// the domain value opt out cookies will be issued with
-	OptoutCookieDomain() string
-	// the location (URL) that returns the public key used for
-	// signing authentication JWTs
-	JWTPublicKey() string
 	// whether to issue secure (HTTPS only) cookies
 	SecureCookie() bool
 	// the endpoint used for encrypting private keys when creating

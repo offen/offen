@@ -8,6 +8,7 @@ services:
       - ./styles:/code/styles
     ports:
       - 8080:80
+      - 8081:81
     depends_on:
       - server
       - auditorium
@@ -83,8 +84,21 @@ services:
     environment:
       - VAULT_HOST=http://localhost:8080/vault/
 
+  homepage:
+    build:
+      context: '.'
+      dockerfile: ./Dockerfile.python
+    working_dir: /offen/homepage
+    volumes:
+      - .:/offen
+      - homepagedeps:/root/.local
+    command: make devserver
+    ports:
+      - 8000:8000
+
 volumes:
   serverdeps:
   scriptdeps:
   auditoriumdeps:
   vaultdeps:
+  homepagedeps:
