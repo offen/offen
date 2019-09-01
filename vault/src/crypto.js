@@ -4,17 +4,19 @@ exports.decryptSymmetricWith = decryptSymmetricWith
 
 function decryptSymmetricWith (cryptoKey) {
   return function (encryptedValue) {
+    var chunks = encryptedValue.split(' ')
     var bytes
+    var nonce
     try {
-      bytes = Unibabel.base64ToArr(encryptedValue)
+      nonce = Unibabel.base64ToArr(chunks[0])
+      bytes = Unibabel.base64ToArr(chunks[1])
     } catch (err) {
       return Promise.reject(err)
     }
     return window.crypto.subtle.decrypt(
       {
-        name: 'AES-CTR',
-        counter: new Uint8Array(16),
-        length: 128
+        name: 'AES-GCM',
+        iv: nonce
       },
       cryptoKey,
       bytes
@@ -33,16 +35,20 @@ function encryptSymmetricWith (cryptoKey) {
     } catch (err) {
       return Promise.reject(err)
     }
+    var nonce = window.crypto.getRandomValues(new Uint8Array(12))
     return window.crypto.subtle.encrypt(
       {
-        name: 'AES-CTR',
-        counter: new Uint8Array(16),
+        name: 'AES-GCM',
+        iv: nonce,
         length: 128
       },
       cryptoKey,
       bytes
     )
       .then(encodeEncrypted)
+      .then(function (encrypted) {
+        return [encodeEncrypted(nonce), encrypted].join(' ')
+      })
   }
 }
 
@@ -125,7 +131,7 @@ function importSymmetricKey (symmetricJWK) {
     'jwk',
     symmetricJWK,
     {
-      name: 'AES-CTR'
+      name: 'AES-GCM'
     },
     false,
     ['encrypt', 'decrypt']
@@ -137,7 +143,7 @@ exports.createSymmetricKey = createSymmetricKey
 function createSymmetricKey () {
   return window.crypto.subtle.generateKey(
     {
-      name: 'AES-CTR',
+      name: 'AES-GCM',
       length: 256
     },
     true,
