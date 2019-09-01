@@ -10,6 +10,7 @@ type Database interface {
 	GetDeletedEvents(ids []string, userID string) ([]string, error)
 	AssociateUserSecret(accountID, userID, encryptedUserSecret string) error
 	Purge(userID string) error
+	Login(email, password string) ([]LoginResult, error)
 }
 
 // Query defines a set of filters to limit the set of results to be returned
@@ -49,4 +50,9 @@ type AccountResult struct {
 	EncryptedPrivateKey string             `json:"encryptedPrivateKey,omitempty"`
 	Events              *EventsByAccountID `json:"events,omitempty"`
 	UserSecrets         *SecretsByUserID   `json:"userSecrets,omitempty"`
+}
+
+type LoginResult struct {
+	AccountID        string      `json:"accountId"`
+	KeyEncryptionKey interface{} `json:"keyEncryptionKey"`
 }

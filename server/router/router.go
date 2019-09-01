@@ -148,6 +148,9 @@ func New(opts ...Config) http.Handler {
 	deleted.Handle("", deletedEventsForUser).Methods(http.MethodPost).Queries("user", "1")
 	deleted.HandleFunc("", rt.getDeletedEvents).Methods(http.MethodPost)
 
+	login := m.PathPrefix("/login").Subrouter()
+	login.HandleFunc("", rt.getLogin).Methods(http.MethodGet)
+
 	purge := m.PathPrefix("/purge").Subrouter()
 	purge.Use(userCookie)
 	purge.HandleFunc("", rt.purgeEvents).Methods(http.MethodPost)

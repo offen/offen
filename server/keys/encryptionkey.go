@@ -29,19 +29,32 @@ func EncryptWith(key, value []byte) ([]byte, error) {
 		return nil, err
 	}
 
-	// Never use more than 2^32 random nonces with a given key because of the risk of a repeat.
-	nonce := make([]byte, 12)
-	if _, err := io.ReadFull(rand.Reader, nonce); err != nil {
-		return nil, err
-	}
-
 	aesgcm, err := cipher.NewGCM(block)
 	if err != nil {
 		return nil, err
 	}
 
-	ciphertext := aesgcm.Seal(nil, nonce, value, nil)
+	// Never use more than 2^32 random nonces with a given key because of the risk of a repeat.
+	nonce := make([]byte, aesgcm.NonceSize())
+	if _, err := io.ReadFull(rand.Reader, nonce); err != nil {
+		return nil, err
+	}
+	ciphertext := aesgcm.Seal(nonce, nonce, value, nil)
 	return ciphertext, nil
+}
+
+func DecryptWith(key, value []byte) ([]byte, error) {
+	block, blockErr := aes.NewCipher(key)
+	if blockErr != nil {
+		return nil, fmt.Errorf("error creating cipher: %v", blockErr)
+	}
+	aesgcm, gcmErr := cipher.NewGCM(block)
+	if gcmErr != nil {
+		return nil, fmt.Errorf("error creating gcm: %v", gcmErr)
+	}
+	nonceSize := aesgcm.NonceSize()
+	nonce, ciphertext := value[:nonceSize], value[nonceSize:]
+	return aesgcm.Open(nil, nonce, ciphertext, nil)
 }
 
 func DeriveKey(value string, salt []byte) ([]byte, error) {
@@ -54,6 +67,10 @@ func DeriveKey(value string, salt []byte) ([]byte, error) {
 
 func HashPassword(pw string) ([]byte, error) {
 	return bcrypt.GenerateFromPassword([]byte(pw), 16)
+}
+
+func ComparePassword(password, hash string) error {
+	return bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 }
 
 func HashEmail(email string, salt string) ([]byte, error) {

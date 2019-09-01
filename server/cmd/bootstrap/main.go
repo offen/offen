@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/base64"
+	"encoding/hex"
 	"flag"
 	"fmt"
 	"io/ioutil"
@@ -188,8 +189,8 @@ func main() {
 				RelationshipID:                    relationshipID.String(),
 				UserID:                            userID.String(),
 				AccountID:                         accountID,
-				PasswordEncryptedKeyEncryptionKey: base64.StdEncoding.EncodeToString(passwordEncryptedKey),
-				EmailEncryptedKeyEncryptionKey:    base64.StdEncoding.EncodeToString(emailEncryptedKey),
+				PasswordEncryptedKeyEncryptionKey: hex.EncodeToString(passwordEncryptedKey),
+				EmailEncryptedKeyEncryptionKey:    hex.EncodeToString(emailEncryptedKey),
 			}
 			relationshipCreations = append(relationshipCreations, r)
 		}
