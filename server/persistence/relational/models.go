@@ -2,8 +2,6 @@ package relational
 
 import (
 	"crypto/sha256"
-	"crypto/x509"
-	"encoding/pem"
 	"errors"
 	"fmt"
 
@@ -65,20 +63,9 @@ func (a *Account) HashUserID(userID string) string {
 // WrapPublicKey returns the public key of an account's keypair in
 // JSON WebKey format.
 func (a *Account) WrapPublicKey() (jwk.Key, error) {
-	decoded, _ := pem.Decode([]byte(a.PublicKey))
-
-	if decoded == nil {
+	s, err := jwk.ParseString(a.PublicKey)
+	if err != nil {
 		return nil, errors.New("failed decoding stored key value")
 	}
-
-	pub, pubErr := x509.ParsePKCS1PublicKey(decoded.Bytes)
-	if pubErr != nil {
-		return nil, pubErr
-	}
-
-	key, keyErr := jwk.New(pub)
-	if keyErr != nil {
-		return nil, keyErr
-	}
-	return key, nil
+	return s.Keys[0], nil
 }

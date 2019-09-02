@@ -139,7 +139,7 @@ function postUserSecretWith (exchangeUrl) {
   }
 }
 
-exports.login = loginWith(process.env.ACCOUNTS_HOST + '/api/login')
+exports.login = loginWith(process.env.SERVER_HOST + '/login')
 exports.loginWith = loginWith
 
 function loginWith (loginUrl) {

@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/base64"
-	"encoding/hex"
 	"flag"
 	"fmt"
 	"io/ioutil"
@@ -97,7 +96,7 @@ func main() {
 			tx.Rollback()
 			panic(encryptionKeyErr)
 		}
-		encryptedPrivateKey, encryptedPrivateKeyErr := keys.EncryptWith(encryptionKey, privateKey)
+		encryptedPrivateKey, privateKeyNonce, encryptedPrivateKeyErr := keys.EncryptWith(encryptionKey, privateKey)
 		if encryptedPrivateKeyErr != nil {
 			tx.Rollback()
 			panic(encryptedPrivateKeyErr)
@@ -110,11 +109,15 @@ func main() {
 		}
 
 		account := relational.Account{
-			AccountID:           account.ID,
-			PublicKey:           string(publicKey),
-			EncryptedPrivateKey: base64.StdEncoding.EncodeToString(encryptedPrivateKey),
-			UserSalt:            salt,
-			Retired:             false,
+			AccountID: account.ID,
+			PublicKey: string(publicKey),
+			EncryptedPrivateKey: fmt.Sprintf(
+				"%s %s",
+				base64.StdEncoding.EncodeToString(privateKeyNonce),
+				base64.StdEncoding.EncodeToString(encryptedPrivateKey),
+			),
+			UserSalt: salt,
+			Retired:  false,
 		}
 		accountCreations = append(accountCreations, accountCreation{
 			account:       account,
@@ -162,35 +165,44 @@ func main() {
 				tx.Rollback()
 				panic(fmt.Errorf("account with id %s not found", accountID))
 			}
-			passwordBasedKey, passwordBasedKeyErr := keys.DeriveKey(accountUser.Password, []byte(salt))
-			if passwordBasedKeyErr != nil {
+
+			passwordDerivedKey, passwordDerivedKeyErr := keys.DeriveKey(accountUser.Password, []byte(salt))
+			if passwordDerivedKeyErr != nil {
 				tx.Rollback()
-				panic(passwordBasedKeyErr)
+				panic(passwordDerivedKeyErr)
 			}
-			passwordEncryptedKey, passwordEncryptedKeyErr := keys.EncryptWith(passwordBasedKey, encryptionKey)
-			if passwordEncryptedKeyErr != nil {
+			encryptedPasswordDerivedKey, passwordEncryptionNonce, encryptionErr := keys.EncryptWith(passwordDerivedKey, encryptionKey)
+			if encryptionErr != nil {
 				tx.Rollback()
-				panic(passwordEncryptedKeyErr)
+				panic(encryptionErr)
 			}
 
-			emailBasedKey, emailBasedKeyErr := keys.DeriveKey(accountUser.Email, []byte(salt))
-			if emailBasedKeyErr != nil {
+			emailDerivedKey, emailDerivedKeyErr := keys.DeriveKey(accountUser.Email, []byte(salt))
+			if emailDerivedKeyErr != nil {
 				tx.Rollback()
-				panic(emailBasedKeyErr)
+				panic(emailDerivedKeyErr)
 			}
-			emailEncryptedKey, emailEncryptedKeyErr := keys.EncryptWith(emailBasedKey, encryptionKey)
-			if emailEncryptedKeyErr != nil {
+			encryptedEmailDerivedKey, emailEncryptionNonce, encryptionErr := keys.EncryptWith(emailDerivedKey, encryptionKey)
+			if encryptionErr != nil {
 				tx.Rollback()
-				panic(emailEncryptedKeyErr)
+				panic(encryptionErr)
 			}
 
 			relationshipID := uuid.NewV4()
 			r := relational.AccountUserRelationship{
-				RelationshipID:                    relationshipID.String(),
-				UserID:                            userID.String(),
-				AccountID:                         accountID,
-				PasswordEncryptedKeyEncryptionKey: hex.EncodeToString(passwordEncryptedKey),
-				EmailEncryptedKeyEncryptionKey:    hex.EncodeToString(emailEncryptedKey),
+				RelationshipID: relationshipID.String(),
+				UserID:         userID.String(),
+				AccountID:      accountID,
+				PasswordEncryptedKeyEncryptionKey: fmt.Sprintf(
+					"%s %s",
+					base64.StdEncoding.EncodeToString(passwordEncryptionNonce),
+					base64.StdEncoding.EncodeToString(encryptedPasswordDerivedKey),
+				),
+				EmailEncryptedKeyEncryptionKey: fmt.Sprintf(
+					"%s %s",
+					base64.StdEncoding.EncodeToString(emailEncryptionNonce),
+					base64.StdEncoding.EncodeToString(encryptedEmailDerivedKey),
+				),
 			}
 			relationshipCreations = append(relationshipCreations, r)
 		}

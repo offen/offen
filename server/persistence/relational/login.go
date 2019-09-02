@@ -2,8 +2,8 @@ package relational
 
 import (
 	"encoding/base64"
-	"encoding/hex"
 	"fmt"
+	"strings"
 
 	"github.com/lestrrat-go/jwx/jwk"
 
@@ -24,7 +24,6 @@ func (r *relationalDatabase) Login(email, password string) ([]persistence.LoginR
 		return nil, err
 	}
 
-	fmt.Printf("account user: %#v\n", accountUser)
 	pwDerivedKey, pwDerivedKeyErr := keys.DeriveKey(password, []byte(accountUser.Salt))
 	if pwDerivedKeyErr != nil {
 		return nil, pwDerivedKeyErr
@@ -35,8 +34,11 @@ func (r *relationalDatabase) Login(email, password string) ([]persistence.LoginR
 
 	var results []persistence.LoginResult
 	for _, relationship := range relationships {
-		keyBytes, _ := hex.DecodeString(relationship.PasswordEncryptedKeyEncryptionKey)
-		decryptedKey, decryptedKeyErr := keys.DecryptWith(pwDerivedKey, keyBytes)
+		chunks := strings.Split(relationship.PasswordEncryptedKeyEncryptionKey, " ")
+		nonce, _ := base64.StdEncoding.DecodeString(chunks[0])
+		key, _ := base64.StdEncoding.DecodeString(chunks[1])
+
+		decryptedKey, decryptedKeyErr := keys.DecryptWith(pwDerivedKey, key, nonce)
 		if decryptedKeyErr != nil {
 			return nil, fmt.Errorf("relational: failed decrypting key encryption key for account %s: %v", relationship.AccountID, decryptedKeyErr)
 		}

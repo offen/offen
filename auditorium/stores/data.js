@@ -45,12 +45,12 @@ function store (state, emitter) {
     })
   })
 
-  emitter.on('offen:query', function (data) {
+  emitter.on('offen:query', function (data, authenticatedUser) {
     handleRequest({
       type: 'QUERY',
       payload: data
-        ? { query: data }
-        : null
+        ? { query: data, authenticatedUser: authenticatedUser }
+        : { authenticatedUser: authenticatedUser }
     })
   })
 

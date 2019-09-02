@@ -6,7 +6,7 @@ function withModel () {
   return function (originalView) {
     return function (state, emit) {
       if (!state.model) {
-        emit('offen:query', Object.assign({}, state.params, state.query))
+        emit('offen:query', Object.assign({}, state.params, state.query), state.authenticatedUser)
         var loading = html`
           <p class="loading">Fetching the latest data...</p>
         `

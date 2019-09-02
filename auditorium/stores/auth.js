@@ -16,7 +16,7 @@ function store (state, emitter) {
       })
       .then(function (response) {
         if (response.type === 'LOGIN_SUCCESS') {
-          state.authenticatedUser = response.payload.user
+          state.authenticatedUser = response.payload
           if (credentials) {
             state.flash = 'You are now logged in.'
             emitter.emit(state.events.PUSHSTATE, '/account')

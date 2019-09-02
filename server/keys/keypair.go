@@ -3,9 +3,11 @@ package keys
 import (
 	"crypto/rand"
 	"crypto/rsa"
-	"crypto/x509"
-	"encoding/pem"
+	"encoding/json"
 	"errors"
+	"fmt"
+
+	"github.com/lestrrat-go/jwx/jwk"
 )
 
 // GenerateRSAKeypair creates an RSA key pair of the requested length
@@ -16,19 +18,18 @@ func GenerateRSAKeypair(bits int) ([]byte, []byte, error) {
 	}
 	public, ok := key.Public().(*rsa.PublicKey)
 	if !ok {
-		return nil, nil, errors.New("local: error reading public key from private key")
+		return nil, nil, errors.New("keys: error reading public key from private key")
 	}
-	publicPem := pem.EncodeToMemory(
-		&pem.Block{
-			Type:  "RSA PUBLIC KEY",
-			Bytes: x509.MarshalPKCS1PublicKey(public),
-		},
-	)
-	privatePem := pem.EncodeToMemory(
-		&pem.Block{
-			Type:  "RSA PRIVATE KEY",
-			Bytes: x509.MarshalPKCS1PrivateKey(key),
-		},
-	)
-	return publicPem, privatePem, nil
+	publicJWK, publicJWKErr := jwk.New(public)
+	if publicJWKErr != nil {
+		return nil, nil, fmt.Errorf("keys: error serializing public key: %v", publicJWKErr)
+	}
+	privateJWK, privateJWKErr := jwk.New(key)
+	if privateJWKErr != nil {
+		return nil, nil, fmt.Errorf("keys: error serializing privaze key: %v", privateJWKErr)
+	}
+
+	publicBytes, _ := json.Marshal(publicJWK)
+	privateBytes, _ := json.Marshal(privateJWK)
+	return publicBytes, privateBytes, nil
 }

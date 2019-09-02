@@ -23,27 +23,27 @@ func GenerateEncryptionKey(size int) ([]byte, error) {
 	return key, nil
 }
 
-func EncryptWith(key, value []byte) ([]byte, error) {
+func EncryptWith(key, value []byte) ([]byte, []byte, error) {
 	block, err := aes.NewCipher(key)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	aesgcm, err := cipher.NewGCM(block)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	// Never use more than 2^32 random nonces with a given key because of the risk of a repeat.
 	nonce := make([]byte, aesgcm.NonceSize())
 	if _, err := io.ReadFull(rand.Reader, nonce); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
-	ciphertext := aesgcm.Seal(nonce, nonce, value, nil)
-	return ciphertext, nil
+	ciphertext := aesgcm.Seal(nil, nonce, value, nil)
+	return ciphertext, nonce, nil
 }
 
-func DecryptWith(key, value []byte) ([]byte, error) {
+func DecryptWith(key, value, nonce []byte) ([]byte, error) {
 	block, blockErr := aes.NewCipher(key)
 	if blockErr != nil {
 		return nil, fmt.Errorf("error creating cipher: %v", blockErr)
@@ -52,9 +52,7 @@ func DecryptWith(key, value []byte) ([]byte, error) {
 	if gcmErr != nil {
 		return nil, fmt.Errorf("error creating gcm: %v", gcmErr)
 	}
-	nonceSize := aesgcm.NonceSize()
-	nonce, ciphertext := value[:nonceSize], value[nonceSize:]
-	return aesgcm.Open(nil, nonce, ciphertext, nil)
+	return aesgcm.Open(nil, nonce, value, nil)
 }
 
 func DeriveKey(value string, salt []byte) ([]byte, error) {
