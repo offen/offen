@@ -1,22 +1,5 @@
 var handleFetchResponse = require('offen/fetch-response')
 
-exports.decryptPrivateKey = decryptPrivateKeyWith(process.env.KMS_HOST + '/decrypt')
-exports.decryptPrivateKeyWith = decryptPrivateKeyWith
-
-function decryptPrivateKeyWith (kmsUrl) {
-  return function (encryptedKey) {
-    var url = new window.URL(kmsUrl)
-    url.search = new window.URLSearchParams({ jwk: '1' })
-    return window
-      .fetch(url, {
-        method: 'POST',
-        credentials: 'include',
-        body: JSON.stringify({ encrypted: encryptedKey })
-      })
-      .then(handleFetchResponse)
-  }
-}
-
 exports.getAccount = getAccountWith(process.env.SERVER_HOST + '/accounts')
 exports.getAccountWith = getAccountWith
 
@@ -194,8 +177,8 @@ function optinWith (optinUrl) {
 }
 
 // This is being used for setting and deleting opt-out cookies. It requires
-// the two-step process so this can really be protected using CORS. If this would
-// use a single call only, CORS would only protect the response payload, yet
+// the two-step process so this can really be protected using the Same-Origin-Policy.
+// If this would use a single call only, CORS would only protect the response payload, yet
 // the Set-Cookie header would also have effects on a request that would be
 // blocked by the CORS configuration. By requiring the server generated payload
 // to actually set the cookie, we can make sure the caller has actually passed

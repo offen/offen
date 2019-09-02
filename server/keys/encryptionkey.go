@@ -64,7 +64,7 @@ func DeriveKey(value string, salt []byte) ([]byte, error) {
 }
 
 func HashPassword(pw string) ([]byte, error) {
-	return bcrypt.GenerateFromPassword([]byte(pw), 16)
+	return bcrypt.GenerateFromPassword([]byte(pw), bcrypt.DefaultCost)
 }
 
 func ComparePassword(password, hash string) error {
