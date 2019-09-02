@@ -3,7 +3,6 @@ version: 2
 production_env: &production_env
   environment:
     - SERVER_HOST=https://server-alpha.offen.dev
-    - KMS_HOST=https://kms-alpha.offen.dev
     - SCRIPT_HOST=https://script-alpha.offen.dev
     - AUDITORIUM_HOST=https://auditorium-alpha.offen.dev
     - VAULT_HOST=https://vault-alpha.offen.dev
@@ -15,7 +14,6 @@ production_env: &production_env
 deploy_preconditions: &deploy_preconditions
   requires:
     - server
-    - kms
     - vault
     - script
     - auditorium
@@ -32,31 +30,6 @@ build_preconditions: &build_preconditions
       ignore: gh-pages
 
 jobs:
-  kms:
-    docker:
-      - image: circleci/golang:1.12
-        environment:
-          - PORT=8081
-    working_directory: ~/offen/kms
-    steps:
-      - checkout:
-          path: ~/offen
-      - restore_cache:
-          key: offen-kms-{{ checksum "go.mod" }}
-      - run:
-          name: Download modules
-          command: go mod download
-      - save_cache:
-          paths:
-            - /go/pkg/mod
-          key: offen-kms-{{ checksum "go.mod" }}
-      - run:
-          name: Generate one-off key file
-          command: make bootstrap
-      - run:
-          name: Run tests
-          command: make test-ci
-
   server:
     docker:
       - image: circleci/golang:1.12
@@ -297,12 +270,6 @@ jobs:
           name: Manually clear go cache
           command: sudo rm -rf /go/pkg/mod
 
-      - restore_cache:
-          key: offen-kms-{{ checksum "kms/go.mod" }}
-      - run:
-          name: Build kms service
-          working_directory: ~/offen/kms
-          command: make build
       - run:
           name: Manually clear go cache
           command: sudo rm -rf /go/pkg/mod
@@ -321,8 +288,6 @@ jobs:
           command: |
             echo "Deploying server ..."
             $(npm bin)/sls deploy --config server/serverless.yml
-            echo "Deploying kms ..."
-            $(npm bin)/sls deploy --config kms/serverless.yml
 
   deploy_node:
     docker:
@@ -436,8 +401,6 @@ workflows:
   test_build_deploy:
     jobs:
       - server:
-          <<: *build_preconditions
-      - kms:
           <<: *build_preconditions
       - vault:
           <<: *build_preconditions
