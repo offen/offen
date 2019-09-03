@@ -3,9 +3,11 @@ description: offen is a free and open source analytics software for websites and
 save_as: deep-dive/index.html
 href: /deep-dive/
 
+## Deep dive
+
 ### What is this thing called "my data" and why does seemingly everyone want to get hold of it?
 
-It has a ring, gives a slight spine-chilling sensation and generates a whole lot of clicks: consumer magazines like German "Computer Bild" caution about "Google espionage" [^1] just like the internet has countless tutorials on turning off numerous "data leeches" [^2]. Interestingly, diving into these realms will have you accidentally catching the next toolbar, malware infection or even worse [^3].
+It has a ring, gives a slight spine-chilling sensation and generates a whole lot of clicks: consumer magazines like German "Computer Bild" caution about "Google espionage" [^1] just like the internet has countless tutorials on turning off numerous "data leeches"[^2].  Interestingly, diving into these realms will have you accidentally catching the next toolbar, malware infection or even worse [^3].
 
 [^1]: Gegen Google-Spionage wehren <https://www.computerbild.de/artikel/cb-Ratgeber-Kurse-Wissen-Was-weiss-Google-ueber-Sie-2799009.html>
 [^2]: Datenkrake Windows 10: So schalten Sie auff&auml;llige Funktionen ab <https://praxistipps.chip.de/datenkrake-windows-10-so-schalten-sie-auffaellige-funktionen-ab_99652>

@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <title>{% block title %}{% endblock %}</title>
+  <title>
+    {% block title %}{{ page.title }}{% endblock %}
+  </title>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -18,23 +19,125 @@
   <meta name="twitter:card" content="summary_large_image">
   <link rel="canonical" href="{{ SITEURL }}/{{ page.save_as }}">
   <link rel="shortcut icon" type="image/x-icon" href="/theme/images/favicon.ico">
-  <link rel="stylesheet" type="text/css" href="/theme/css/fonts.css">
-  <link rel="stylesheet" type="text/css" href="/theme/styles/index.css">
-  <link rel="stylesheet" type="text/css" href="/theme/css/style.css">
+  {% assets filters="cssmin", output="css/style.min.css", "css/normalize.css", "css/fonts.css", "css/style.css" %}
+    <link rel="stylesheet" href="{{ SITEURL }}/{{ ASSET_URL }}">
+  {% endassets %}
   {% if OFFEN_ACCOUNT_ID %}
     <script async src="https://script-alpha.offen.dev/script.js" data-account-id="{{ OFFEN_ACCOUNT_ID }}"></script>
   {% endif %}
 </head>
-
-<body>
-  <div class="wrapper">
-    <header>
-      <a href="/" title="offen home page" alt="offen home page">
-        <img src="/theme/images/logo.svg" alt="offen logo" width="165" height="102" class="logo">
-      </a>
-    </header>
-
-    {% block content %}{% endblock %}
+<body class="{{page.template}}">
+  <div class="menu">
+    <section class="nav-bar">
+      <div class="nav-container">
+        <div class="brand">
+          <a href="/"><img src="/theme/images/offen-brand-white.svg" alt="offen logo" width="42" height="46" class="logo"></a>
+        </div>
+        <nav>
+          <div class="nav-mobile"><span id="nav-toggle"><span></span></span></div>
+          <ul class="nav-list">
+            <li>
+              <a href="/">Summary</a>
+            </li>
+            <li>
+              <a href="/deep-dive/">Deep dive</a>
+            </li>
+            <li>
+              <a href="/status/">Status</a>
+            </li>
+            <li>
+              <a href="mailto:{{CONTACT_EMAIL}}">Contact</a>
+            </li>
+            <li>
+              <a href="{{GITHUB_ORG}}" target="_blank">Get involved</a>
+            </li>
+            <li>
+              <a href="{{PATREON_URL}}" target="_blank">Support Us</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </section>
   </div>
+
+  {% block content %}
+    <div class="content">
+      <div class="container-reader">
+        {{ page.content }}
+      </div>
+    </div>
+  {% endblock %}
+
+  {% block outro %}
+    <div class="cta-bottom">
+      <div class="bg" id="bg-cta-bottom">
+        <div class="container-full">
+          <div class="card-deck">
+            <div class="card">
+              <h2>
+                Participate
+              </h2>
+              <p>
+                Development of <strong>offen</strong> has just started. Do not hesitate to make a contribution and help us handle data with respect.
+              </p>
+              <div class="btn-wrapper">
+                <a class="btn btn-color-black" href="{{GITHUB_ORG}}" target="_blank">Get involved</a>
+              </div>
+            </div>
+            <div class="card">
+              <h2>
+                In the making
+              </h2>
+              <p>
+                This project is still in alpha. Discover what is already up and running and where we want to go in the coming months.
+              </p>
+              <div class="btn-wrapper">
+                <a class="btn btn-color-black" href="/status/">Project status</a>
+              </div>
+            </div>
+            <div class="card">
+              <h2>
+                Good cause
+              </h2>
+              <p>
+                We're working hard to ensure that <strong>offen</strong> is independent, cutting-edge and can be sustained for years to come.
+              </p>
+              <div class="btn-wrapper">
+                <a class="btn btn-color-black" href="{{PATREON_URL}}" target="_blank">Support us</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endblock %}
+
+  <div class="footer">
+    <div class="footer-card-deck">
+      <div class="footer-card">
+        <h3><strong>offen</strong></h3>
+        <h4>Transparent web analytics</h4>
+        <h4>for everyone</h4>
+      </div>
+      <div class="footer-card">
+        <p>
+          <a href="mailto:{{CONTACT_EMAIL}}">Contact</a>
+        </p>
+        <p>
+          <a href="{{GITHUB_ORG}}" target="_blank">GitHub</a>
+        </p>
+        <p>
+          <a href="{{PATREON_URL}}" target="_blank">Support Us</a>
+        </p>
+      </div>
+      <div class="footer-card">
+        September 2019
+      </div>
+    </div>
+  </div>
+
+  {% assets filters="rjsmin", output="scripts/packed.js", "scripts/jquery-3.4.1.min.js", "scripts/menu.js", "scripts/fade.js" %}
+    <script src="{{ SITEURL }}/{{ ASSET_URL }}"></script>
+  {% endassets %}
 </body>
 </html>

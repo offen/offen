@@ -19,9 +19,6 @@ CATEGORY_FEED_ATOM = 'feeds/{slug}.atom.xml'
 
 DELETE_OUTPUT_DIRECTORY = True
 
-# Following items are often useful when publishing
-
-#DISQUS_SITENAME = ""
-#GOOGLE_ANALYTICS = ""
+PLUGINS += ['optimize_images']
 
 OFFEN_ACCOUNT_ID = "5ec8345a-2a45-4eb9-92e5-8d9e5684db58"

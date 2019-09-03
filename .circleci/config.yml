@@ -378,7 +378,7 @@ jobs:
 
   deploy_homepage:
     docker:
-      - image: circleci/python:3.6
+      - image: circleci/python:3.6-node
     working_directory: ~/offen/homepage
     environment:
       - SOURCE_BRANCH: master
@@ -398,6 +398,11 @@ jobs:
           paths:
             - ~/offen/homepage/venv
           key: offen-homepage-{{ checksum "requirements.txt" }}
+      - run:
+          name: Install image optimization deps
+          command: |
+            npm install svgo -g
+            sudo apt-get install libjpeg-progs optipng
       - run:
           name: Deploy
           command: |

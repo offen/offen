@@ -3,10 +3,11 @@ description: offen is a free and open source analytics software for websites and
 save_as: status/index.html
 href: /status/
 
-### Current status
+## Project status
 
-#### July 2019
-We have deployed an alpha version of __offen__ that we are currently testing on a few select sites. Usage data is collected and can be accessed by both users and site operators. Users can opt out and delete their data at any time. You can *follow the development at [github.com/offen/offen](https://github.com/offen/offen)*
+### September 2019
+
+We have deployed an alpha version of __offen__ that we are currently testing on a few select sites. Usage data is collected and can be accessed by both users and site operators. Users can opt out and delete their data at any time. You can *follow the development at [github.com/offen/offen](https://github.com/offen/offen){: target="_blank"}*
 
 ---
 
@@ -29,4 +30,4 @@ Our product story is based on three key questions. What makes __offen__ stand ou
 
 #### Publicity
 
-This product story is the starting point for publicty efforts that will start as soon as a beta version is available. They include own blog posts, forum marketing as well as SEO measures.
+This product story is the starting point for publicity efforts that will start as soon as a beta version is available. They include own blog posts, forum marketing as well as SEO measures.
