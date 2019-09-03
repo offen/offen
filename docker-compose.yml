@@ -31,7 +31,6 @@ services:
       POSTGRES_CONNECTION_STRING: postgres://postgres:develop@server_database:5432/postgres?sslmode=disable
       KMS_ENCRYPTION_ENDPOINT: http://kms:8081/encrypt
       PORT: 8080
-      JWT_PUBLIC_KEY: http://accounts:5000/api/key
       DEVELOPMENT: '1'
       COOKIE_EXCHANGE_SECRET: Wsttdo4Z3mXV5sTc
       EVENT_RETENTION_PERIOD: 4464h
@@ -59,7 +58,6 @@ services:
       - KMS_HOST=http://localhost:8081
       - SCRIPT_HOST=http://localhost:9977
       - AUDITORIUM_HOST=http://localhost:8080
-      - ACCOUNTS_HOST=http://localhost:5000
       - HOMEPAGE_HOST=http://localhost:8000
 
   script:

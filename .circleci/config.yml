@@ -6,7 +6,6 @@ production_env: &production_env
     - SCRIPT_HOST=https://script-alpha.offen.dev
     - AUDITORIUM_HOST=https://auditorium-alpha.offen.dev
     - VAULT_HOST=https://vault-alpha.offen.dev
-    - ACCOUNTS_HOST=https://accounts-alpha.offen.dev
     - HOMEPAGE_HOST=https://www.offen.dev
     - NODE_ENV=production
     - SECRET_ID_SERVER_CONNECTION_STRING=alpha/server/postgresConnectionString
@@ -19,7 +18,6 @@ deploy_preconditions: &deploy_preconditions
     - auditorium
     - packages
     - shared
-    - accounts
   filters:
     branches:
       only: /^master$/
@@ -172,75 +170,6 @@ jobs:
       - run:
           name: Run tests
           command: npm test
-
-  accounts:
-    docker:
-      - image: circleci/python:3.6
-        environment:
-          CONFIG_CLASS: accounts.config.LocalConfig
-          MYSQL_CONNECTION_STRING: mysql://root:circle@127.0.0.1:3306/circle
-      - image: circleci/mysql:5.7
-        environment:
-          - MYSQL_ROOT_PASSWORD=circle
-          - MYSQL_DATABASE=circle
-          - MYSQL_HOST=127.0.0.1
-    working_directory: ~/offen/accounts
-    steps:
-      - checkout:
-          path: ~/offen
-      - restore_cache:
-          key: offen-accounts-{{ checksum "requirements.txt" }}-{{ checksum "requirements-dev.txt" }}
-      - run:
-          name: Install dependencies
-          command: |
-            python3 -m venv venv
-            . venv/bin/activate
-            pip install -r requirements.txt
-            pip install -r requirements-dev.txt
-      - save_cache:
-          paths:
-            - ~/offen/accounts/venv
-          key: offen-accounts-{{ checksum "requirements.txt" }}-{{ checksum "requirements-dev.txt" }}
-      - run:
-          name: Waiting for MySQL to be ready
-          command: |
-            for i in `seq 1 10`;
-            do
-              nc -z localhost 3306 && echo Success && exit 0
-              echo -n .
-              sleep 1
-            done
-            echo Failed waiting for MySQL && exit 1
-      - run:
-          name: Run tests
-          command: |
-            . venv/bin/activate
-            cp ~/offen/bootstrap.yml .
-            make test-ci
-
-  deploy_python:
-    docker:
-      - image: circleci/python:3.6-node
-        <<: *production_env
-    working_directory: ~/offen
-    steps:
-      - checkout:
-          path: ~/offen
-      - restore_cache:
-          key: offen-deploy-{{ checksum "package.json" }}
-      - run:
-          name: Install dependencies
-          command: npm install
-      - save_cache:
-          paths:
-            - ~/offen/packages/node_modules
-          key: offen-packages-{{ checksum "package.json" }}
-      - run:
-          name: Deploy
-          working_directory: ~/offen/accounts
-          command: |
-            echo "Deploying accounts ..."
-            $(npm bin)/sls deploy
 
   deploy_golang:
     docker:
@@ -411,8 +340,6 @@ workflows:
       - packages:
           <<: *build_preconditions
       - shared:
-          <<: *build_preconditions
-      - accounts:
           <<: *build_preconditions
       - deploy_golang:
           <<: *deploy_preconditions
