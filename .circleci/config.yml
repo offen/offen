@@ -401,7 +401,7 @@ jobs:
       - run:
           name: Install image optimization deps
           command: |
-            npm install svgo -g
+            sudo npm install svgo -g
             sudo apt-get install libjpeg-progs optipng
       - run:
           name: Deploy
