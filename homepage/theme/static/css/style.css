@@ -352,6 +352,11 @@ em {
 .footnote {
   color: var(--grey-bright);
 }
+/* reposition for fixed menu */
+.footnote li {
+  margin-top: -75px;
+  padding-top: 75px;
+}
 
 
 /* ---------------------------------------------------
