@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"github.com/lestrrat-go/jwx/jwk"
-
 	"github.com/offen/offen/server/keys"
 	"github.com/offen/offen/server/persistence"
 )
@@ -46,7 +45,14 @@ func (r *relationalDatabase) Login(email, password string) ([]persistence.LoginR
 		if kErr != nil {
 			return nil, kErr
 		}
+
+		var account Account
+		if err := r.db.Where("account_id = ?", relationship.AccountID).First(&account).Error; err != nil {
+			return nil, err
+		}
+
 		result := persistence.LoginResult{
+			AccountName:      account.Name,
 			AccountID:        relationship.AccountID,
 			KeyEncryptionKey: k,
 		}

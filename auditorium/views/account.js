@@ -3,15 +3,15 @@ var html = require('choo/html')
 module.exports = view
 
 function view (state, emit) {
-  var availableAccounts = state.authenticatedUser.accounts
+  var availableAccounts = state.authenticatedUser
     .slice()
     .sort(function (a, b) {
-      return a.name.localeCompare(b.name)
+      return a.accountName.localeCompare(b.name)
     })
     .map(function (account) {
       return html`
         <li>
-          <a href="/account/${account.accountId}">${account.name}</a>
+          <a href="/auditorium/account/${account.accountId}">${account.accountName}</a>
         </li>
       `
     })

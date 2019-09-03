@@ -150,6 +150,7 @@ func New(opts ...Config) http.Handler {
 
 	login := m.PathPrefix("/login").Subrouter()
 	login.HandleFunc("", rt.getLogin).Methods(http.MethodGet)
+	login.HandleFunc("", rt.postLogin).Methods(http.MethodPost)
 
 	purge := m.PathPrefix("/purge").Subrouter()
 	purge.Use(userCookie)

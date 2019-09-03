@@ -53,6 +53,7 @@ type AccountResult struct {
 }
 
 type LoginResult struct {
+	AccountName      string      `json:"accountName"`
 	AccountID        string      `json:"accountId"`
 	KeyEncryptionKey interface{} `json:"keyEncryptionKey"`
 }

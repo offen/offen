@@ -110,6 +110,7 @@ func main() {
 
 		account := relational.Account{
 			AccountID: account.ID,
+			Name:      account.Name,
 			PublicKey: string(publicKey),
 			EncryptedPrivateKey: fmt.Sprintf(
 				"%s %s",
