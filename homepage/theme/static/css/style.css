@@ -406,14 +406,13 @@ MENU
 .nav-bar {
   height: 70px;
 }
-.brand,
-.brand-index {
+.brand {
   position: absolute;
   padding: 12px 0 0 20px;
   float: left;
   line-height: 70px;
 }
-.brand-index {
+body.index .brand {
   opacity: 0;
 }
 .nav-container {
