@@ -51,12 +51,6 @@ services:
       - .:/offen
       - vaultdeps:/offen/vault/node_modules
     command: npm start -- --port 9977
-    environment:
-      - SERVER_HOST=http://localhost:8080
-      - KMS_HOST=http://localhost:8081
-      - SCRIPT_HOST=http://localhost:9977
-      - AUDITORIUM_HOST=http://localhost:8080
-      - HOMEPAGE_HOST=http://localhost:8081
 
   script:
     build:
@@ -68,7 +62,7 @@ services:
       - scriptdeps:/offen/script/node_modules
     command: npm start -- --port 9966
     environment:
-      - VAULT_HOST=http://localhost:8080/vault/
+      - VAULT_HOST=/vault/
 
   auditorium:
     build:
@@ -80,7 +74,7 @@ services:
       - auditoriumdeps:/offen/auditorium/node_modules
     command: npm start -- --port 9955
     environment:
-      - VAULT_HOST=http://localhost:8080/vault/
+      - VAULT_HOST=/vault/
 
   homepage:
     build:

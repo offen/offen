@@ -14,7 +14,7 @@ var SKIP_TOKEN = '__SKIP_TOKEN__'
 // by in response to messages. It is important to keep this restricted
 // to trusted applications only, otherwise decrypted event data may leak to
 // third parties.
-var ALLOWED_HOSTS = [process.env.AUDITORIUM_HOST, process.env.HOMEPAGE_HOST]
+var ALLOWED_HOSTS = [window.location.origin]
 
 window.addEventListener('message', function (event) {
   var message = event.data

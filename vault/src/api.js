@@ -1,6 +1,6 @@
 var handleFetchResponse = require('offen/fetch-response')
 
-exports.getAccount = getAccountWith(process.env.SERVER_HOST + '/accounts')
+exports.getAccount = getAccountWith(window.location.origin + '/api/accounts')
 exports.getAccountWith = getAccountWith
 
 function getAccountWith (accountsUrl) {
@@ -19,7 +19,7 @@ function getAccountWith (accountsUrl) {
   }
 }
 
-exports.getEvents = getEventsWith(process.env.SERVER_HOST + '/events')
+exports.getEvents = getEventsWith(window.location.origin + '/api/events')
 exports.getEventsWith = getEventsWith
 
 function getEventsWith (accountsUrl) {
@@ -45,7 +45,7 @@ function getEventsWith (accountsUrl) {
   }
 }
 
-exports.postEvent = postEventWith(process.env.SERVER_HOST + '/events')
+exports.postEvent = postEventWith(window.location.origin + '/api/events')
 exports.postEventWith = postEventWith
 
 function postEventWith (eventsUrl) {
@@ -67,7 +67,7 @@ function postEventWith (eventsUrl) {
   }
 }
 
-exports.getDeletedEvents = getDeletedEventsWith(process.env.SERVER_HOST + '/deleted')
+exports.getDeletedEvents = getDeletedEventsWith(window.location.origin + '/api/deleted')
 exports.getDeletedEventsWith = getDeletedEventsWith
 
 function getDeletedEventsWith (deletedEventsUrl) {
@@ -88,7 +88,7 @@ function getDeletedEventsWith (deletedEventsUrl) {
   }
 }
 
-exports.getPublicKey = getPublicKeyWith(process.env.SERVER_HOST + '/exchange')
+exports.getPublicKey = getPublicKeyWith(window.location.origin + '/api/exchange')
 exports.getPublicKeyWith = getPublicKeyWith
 
 function getPublicKeyWith (exchangeUrl) {
@@ -107,7 +107,7 @@ function getPublicKeyWith (exchangeUrl) {
   }
 }
 
-exports.postUserSecret = postUserSecretWith(process.env.SERVER_HOST + '/exchange')
+exports.postUserSecret = postUserSecretWith(window.location.origin + '/api/exchange')
 exports.postUserSecretWith = postUserSecretWith
 
 function postUserSecretWith (exchangeUrl) {
@@ -122,7 +122,7 @@ function postUserSecretWith (exchangeUrl) {
   }
 }
 
-exports.login = loginWith(process.env.SERVER_HOST + '/login')
+exports.login = loginWith(window.location.origin + '/api/login')
 exports.loginWith = loginWith
 
 function loginWith (loginUrl) {
@@ -144,7 +144,7 @@ function loginWith (loginUrl) {
   }
 }
 
-exports.purge = purgeWith(process.env.SERVER_HOST + '/purge')
+exports.purge = purgeWith(window.location.origin + '/api/purge')
 exports.purgeWith = purgeWith
 
 function purgeWith (purgeUrl) {
@@ -158,7 +158,7 @@ function purgeWith (purgeUrl) {
   }
 }
 
-exports.optout = optoutWith(process.env.SERVER_HOST + '/opt-out')
+exports.optout = optoutWith(window.location.origin + '/api/opt-out')
 exports.optoutWith = optoutWith
 
 function optoutWith (optoutUrl) {
@@ -167,7 +167,7 @@ function optoutWith (optoutUrl) {
   }
 }
 
-exports.optin = optoutWith(process.env.SERVER_HOST + '/opt-in')
+exports.optin = optoutWith(window.location.origin + '/api/opt-in')
 exports.optinWith = optinWith
 
 function optinWith (optinUrl) {

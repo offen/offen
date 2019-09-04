@@ -25,7 +25,7 @@ function createVault (host) {
         return new Promise(function (resolve, reject) {
           if (!waitForResponse) {
             try {
-              vault.contentWindow.postMessage(message, host)
+              vault.contentWindow.postMessage(message, window.location.origin)
               resolve(null)
             } catch (err) {
               reject(err)
@@ -47,7 +47,7 @@ function createVault (host) {
           channel.port1.onmessageerror = function (err) {
             reject(err)
           }
-          vault.contentWindow.postMessage(message, host, [channel.port2])
+          vault.contentWindow.postMessage(message, window.location.origin, [channel.port2])
         })
       }
       resolve(postMessage)
