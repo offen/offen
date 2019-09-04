@@ -10,6 +10,7 @@ require (
 	github.com/felixge/httpsnoop v1.0.0
 	github.com/gofrs/uuid v3.2.0+incompatible
 	github.com/gorilla/mux v1.6.2
+	github.com/gorilla/securecookie v1.1.1
 	github.com/jinzhu/gorm v1.9.2
 	github.com/jinzhu/now v1.0.0 // indirect
 	github.com/kr/pretty v0.1.0 // indirect

@@ -10,28 +10,28 @@ import (
 	"github.com/offen/offen/server/persistence"
 )
 
-func (r *relationalDatabase) Login(email, password string) ([]persistence.LoginResult, error) {
+func (r *relationalDatabase) Login(email, password string) (persistence.LoginResult, error) {
 	var accountUser AccountUser
 	hashedEmail, hashedEmailErr := keys.HashEmail(email, r.emailSalt)
 	if hashedEmailErr != nil {
-		return nil, hashedEmailErr
+		return persistence.LoginResult{}, hashedEmailErr
 	}
 	if err := r.db.Where("hashed_email = ?", base64.StdEncoding.EncodeToString(hashedEmail)).First(&accountUser).Error; err != nil {
-		return nil, err
+		return persistence.LoginResult{}, err
 	}
 	if err := keys.ComparePassword(password, accountUser.HashedPassword); err != nil {
-		return nil, err
+		return persistence.LoginResult{}, err
 	}
 
 	pwDerivedKey, pwDerivedKeyErr := keys.DeriveKey(password, []byte(accountUser.Salt))
 	if pwDerivedKeyErr != nil {
-		return nil, pwDerivedKeyErr
+		return persistence.LoginResult{}, pwDerivedKeyErr
 	}
 
 	var relationships []AccountUserRelationship
 	r.db.Where("user_id = ?", accountUser.UserID).Find(&relationships)
 
-	var results []persistence.LoginResult
+	var results []persistence.LoginAccountResult
 	for _, relationship := range relationships {
 		chunks := strings.Split(relationship.PasswordEncryptedKeyEncryptionKey, " ")
 		nonce, _ := base64.StdEncoding.DecodeString(chunks[0])
@@ -39,19 +39,19 @@ func (r *relationalDatabase) Login(email, password string) ([]persistence.LoginR
 
 		decryptedKey, decryptedKeyErr := keys.DecryptWith(pwDerivedKey, key, nonce)
 		if decryptedKeyErr != nil {
-			return nil, fmt.Errorf("relational: failed decrypting key encryption key for account %s: %v", relationship.AccountID, decryptedKeyErr)
+			return persistence.LoginResult{}, fmt.Errorf("relational: failed decrypting key encryption key for account %s: %v", relationship.AccountID, decryptedKeyErr)
 		}
 		k, kErr := jwk.New(decryptedKey)
 		if kErr != nil {
-			return nil, kErr
+			return persistence.LoginResult{}, kErr
 		}
 
 		var account Account
 		if err := r.db.Where("account_id = ?", relationship.AccountID).First(&account).Error; err != nil {
-			return nil, err
+			return persistence.LoginResult{}, err
 		}
 
-		result := persistence.LoginResult{
+		result := persistence.LoginAccountResult{
 			AccountName:      account.Name,
 			AccountID:        relationship.AccountID,
 			KeyEncryptionKey: k,
@@ -59,5 +59,13 @@ func (r *relationalDatabase) Login(email, password string) ([]persistence.LoginR
 		results = append(results, result)
 	}
 
-	return results, nil
+	return persistence.LoginResult{
+		UserID:   accountUser.UserID,
+		Accounts: results,
+	}, nil
+}
+
+func (r *relationalDatabase) LookupUser(userID string) error {
+	var user AccountUser
+	return r.db.Where("user_id = ?", userID).First(&user).Error
 }

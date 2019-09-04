@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
+	"github.com/gorilla/securecookie"
 	"github.com/m90/go-thunk"
 	"github.com/offen/offen/server/persistence"
 	httputil "github.com/offen/offen/server/shared/http"
@@ -15,6 +16,7 @@ import (
 type router struct {
 	db                   persistence.Database
 	logger               *logrus.Logger
+	cookieSigner         *securecookie.SecureCookie
 	secureCookie         bool
 	userCookieDomain     string
 	cookieExchangeSecret []byte
@@ -66,6 +68,25 @@ func (rt *router) optoutCookie(optout bool) *http.Cookie {
 	return c
 }
 
+func (rt *router) authCookie(userID string, delete bool) (*http.Cookie, error) {
+	c := http.Cookie{
+		Name:     authKey,
+		HttpOnly: true,
+		SameSite: http.SameSiteDefaultMode,
+	}
+	if delete {
+		c.Expires = time.Unix(0, 0)
+	} else {
+		value, err := rt.cookieSigner.MaxAge(24*60*60).Encode(authKey, userID)
+		if err != nil {
+			return nil, err
+		}
+		c.Value = value
+	}
+	return &c, nil
+
+}
+
 // Config adds a configuration value to the router
 type Config func(*router)
 
@@ -115,6 +136,8 @@ func New(opts ...Config) http.Handler {
 	for _, opt := range opts {
 		opt(&rt)
 	}
+
+	rt.cookieSigner = securecookie.New([]byte(rt.cookieExchangeSecret), nil)
 	m := mux.NewRouter()
 
 	json := httputil.ContentTypeMiddleware("application/json")

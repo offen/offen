@@ -10,7 +10,7 @@ module.exports.getOperatorEventsWith = getOperatorEventsWith
 
 function getOperatorEventsWith (queries, api, cache) {
   return function (query, authenticatedUser) {
-    var key = _.findWhere(authenticatedUser, { accountId: query.accountId }).keyEncryptionKey
+    var key = _.findWhere(authenticatedUser.accounts, { accountId: query.accountId }).keyEncryptionKey
     return ensureSyncWith(queries, api, cache)(query.accountId, key)
       .then(function (account) {
         return queries.getDefaultStats(query.accountId, query, account.privateKey)
