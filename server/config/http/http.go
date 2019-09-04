@@ -17,6 +17,7 @@ type httpConfig struct {
 	connectionString     string
 	encryptionEndpoint   string
 	cookieExchangeSecret string
+	accountUserSalt      string
 	retentionPeriod      time.Duration
 }
 
@@ -28,6 +29,7 @@ func (h *httpConfig) EncryptionEndpoint() string     { return h.encryptionEndpoi
 func (h *httpConfig) Development() bool              { return h.development }
 func (h *httpConfig) CookieExchangeSecret() string   { return h.cookieExchangeSecret }
 func (h *httpConfig) RetentionPeriod() time.Duration { return h.retentionPeriod }
+func (h *httpConfig) AccountUserSalt() string        { return h.accountUserSalt }
 
 const (
 	defaultPort = 8080
@@ -42,6 +44,7 @@ func New() (config.Config, error) {
 		encryptionEndpoint:   os.Getenv("KMS_ENCRYPTION_ENDPOINT"),
 		development:          os.Getenv("DEVELOPMENT") != "",
 		cookieExchangeSecret: os.Getenv("COOKIE_EXCHANGE_SECRET"),
+		accountUserSalt:      os.Getenv("ACCOUNT_USER_SALT"),
 	}
 
 	if override, ok := os.LookupEnv("PORT"); ok {

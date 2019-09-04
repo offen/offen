@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 
 	httpconfig "github.com/offen/offen/server/config/http"
 	"github.com/offen/offen/server/keys/remote"
@@ -27,7 +26,7 @@ func main() {
 		relational.WithConnectionString(cfg.ConnectionString()),
 		relational.WithEncryption(encryption),
 		relational.WithLogging(cfg.Development()),
-		relational.WithEmailSalt(os.Getenv("ACCOUNT_USER_EMAIL_SALT")),
+		relational.WithEmailSalt(cfg.AccountUserSalt()),
 	)
 	if err != nil {
 		logger.WithError(err).Fatal("unable to establish database connection")

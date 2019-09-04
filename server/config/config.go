@@ -28,4 +28,6 @@ type Config interface {
 	CookieExchangeSecret() string
 	// the desired retention period of all event data
 	RetentionPeriod() time.Duration
+	// the salt used when hashing the email address associated to an account
+	AccountUserSalt() string
 }
