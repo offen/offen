@@ -30,6 +30,7 @@ func (r *relationalDatabase) GetAccount(accountID string, includeEvents bool, ev
 
 	result := persistence.AccountResult{
 		AccountID: account.AccountID,
+		Name:      account.Name,
 	}
 
 	if includeEvents {

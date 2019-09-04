@@ -36,10 +36,7 @@ function fetchOperatorEventsWith (api, queries) {
         return {
           events: returnedEvents,
           encryptedUserSecrets: returnedUserSecrets,
-          encryptedPrivateKey: account.encryptedPrivateKey,
-          account: {
-            accountId: account.accountId
-          }
+          account: account
         }
       })
   }
@@ -73,7 +70,7 @@ function ensureSyncWith (queries, api, cache) {
             var payload = results[0]
             return crypto.importSymmetricKey(keyEncryptionJWK)
               .then(function (cryptoKey) {
-                return crypto.decryptSymmetricWith(cryptoKey)(payload.encryptedPrivateKey)
+                return crypto.decryptSymmetricWith(cryptoKey)(payload.account.encryptedPrivateKey)
               })
               .then(function (privateJWK) {
                 return crypto.importPrivateKey(privateJWK)

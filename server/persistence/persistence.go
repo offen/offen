@@ -46,6 +46,7 @@ type SecretsByUserID map[string]string
 // AccountResult is the data returned from looking up an account by id
 type AccountResult struct {
 	AccountID           string             `json:"accountId"`
+	Name                string             `json:"name"`
 	PublicKey           interface{}        `json:"publicKey,omitempty"`
 	EncryptedPrivateKey string             `json:"encryptedPrivateKey,omitempty"`
 	Events              *EventsByAccountID `json:"events,omitempty"`

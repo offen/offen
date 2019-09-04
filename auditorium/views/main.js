@@ -26,13 +26,10 @@ function view (state, emit) {
   var accountHeader = null
   var pageTitle
   if (isOperator) {
-    var matchingAccount = _.find(state.authenticatedUser, function (account) {
-      return account.accountId === state.model.account.accountId
-    })
     accountHeader = html`
-      <h3><strong>You are viewing data as</strong> operator <strong>with account</strong> ${matchingAccount.accountName}.</h3>
+      <h3><strong>You are viewing data as</strong> operator <strong>with account</strong> ${state.model.account.name}.</h3>
     `
-    pageTitle = matchingAccount.accountName + ' | ' + state.title
+    pageTitle = state.model.account.name + ' | ' + state.title
   } else {
     accountHeader = html`
       <h3><strong>You are viewing data as</strong> user.</h3>
