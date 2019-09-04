@@ -20,7 +20,6 @@ clean-build:
 	@rm -rf bin
 
 build: clean-build
-	@GOOS=linux go build -o bin/server cmd/lambda/main.go
-	@GOOS=linux go build -o bin/expire cmd/expire/main.go
+	@GOOS=linux go build -o bin/server cmd/server/main.go
 
 .PHONY: bootstrap migrate
