@@ -1,9 +1,10 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <div class="content">
-    <div class="container-full">
-      {{ page.content }}
-    </div>
-  </div>
+  <div id="app-host"></div>
+{% endblock %}
+
+{% block scripts %}
+  {{ super () }}
+  <script src="{{AUDITORIUM_SCRIPT}}"></script>
 {% endblock %}

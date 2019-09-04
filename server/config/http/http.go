@@ -44,7 +44,7 @@ func New() (config.Config, error) {
 		encryptionEndpoint:   os.Getenv("KMS_ENCRYPTION_ENDPOINT"),
 		development:          os.Getenv("DEVELOPMENT") != "",
 		cookieExchangeSecret: os.Getenv("COOKIE_EXCHANGE_SECRET"),
-		accountUserSalt:      os.Getenv("ACCOUNT_USER_SALT"),
+		accountUserSalt:      os.Getenv("ACCOUNT_USER_EMAIL_SALT"),
 	}
 
 	if override, ok := os.LookupEnv("PORT"); ok {

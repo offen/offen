@@ -26,7 +26,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 var host = document.createElement('div')
-document.body.appendChild(host)
+document.querySelector('#app-host').appendChild(host)
 
 app.use(dataStore)
 app.use(authStore)

@@ -57,6 +57,6 @@ font-weight: 400;
 color: #404040;
 }
 
-.opt-out-pixel {
-display: none;
+.section-auditorium {
+min-height: 100vh;
 }

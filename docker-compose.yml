@@ -56,7 +56,7 @@ services:
       - KMS_HOST=http://localhost:8081
       - SCRIPT_HOST=http://localhost:9977
       - AUDITORIUM_HOST=http://localhost:8080
-      - HOMEPAGE_HOST=http://localhost:8000
+      - HOMEPAGE_HOST=http://localhost:8081
 
   script:
     build:
@@ -93,6 +93,8 @@ services:
     command: make devserver
     ports:
       - 8000:8000
+    environment:
+      DEBUG: 1
 
 volumes:
   serverdeps:
