@@ -31,6 +31,7 @@ type AccountUser struct {
 	HashedEmail    string
 	HashedPassword string
 	Salt           string
+	Relationships  []AccountUserRelationship `gorm:"foreignkey:UserID;association_foreignkey:UserID"`
 }
 
 type AccountUserRelationship struct {

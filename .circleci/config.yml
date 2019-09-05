@@ -225,7 +225,5 @@ workflows:
           <<: *build_preconditions
       - packages:
           <<: *build_preconditions
-      - shared:
-          <<: *build_preconditions
       - deploy_homepage:
           <<: *deploy_preconditions

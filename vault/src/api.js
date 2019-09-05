@@ -6,10 +6,8 @@ exports.getAccountWith = getAccountWith
 function getAccountWith (accountsUrl) {
   return function (accountId, params) {
     params = params || {}
-    var url = new window.URL(accountsUrl)
-    url.search = new window.URLSearchParams(
-      Object.assign(params, { accountId: accountId })
-    )
+    var url = new window.URL(accountsUrl + '/' + accountId)
+    url.search = new window.URLSearchParams(params)
     return window
       .fetch(url, {
         method: 'GET',

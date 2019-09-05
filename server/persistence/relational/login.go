@@ -65,7 +65,19 @@ func (r *relationalDatabase) Login(email, password string) (persistence.LoginRes
 	}, nil
 }
 
-func (r *relationalDatabase) LookupUser(userID string) error {
+func (r *relationalDatabase) LookupUser(userID string) (persistence.LoginResult, error) {
 	var user AccountUser
-	return r.db.Where("user_id = ?", userID).First(&user).Error
+	if err := r.db.Preload("Relationships").Where("user_id = ?", userID).First(&user).Error; err != nil {
+		return persistence.LoginResult{}, err
+	}
+	result := persistence.LoginResult{
+		UserID:   user.UserID,
+		Accounts: []persistence.LoginAccountResult{},
+	}
+	for _, relationship := range user.Relationships {
+		result.Accounts = append(result.Accounts, persistence.LoginAccountResult{
+			AccountID: relationship.AccountID,
+		})
+	}
+	return result, nil
 }

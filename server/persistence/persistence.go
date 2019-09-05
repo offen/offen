@@ -5,13 +5,11 @@ type Database interface {
 	Insert(userID, accountID, payload string) error
 	Query(Query) (map[string][]EventResult, error)
 	GetAccount(accountID string, events bool, eventsSince string) (AccountResult, error)
-	CreateAccount(accountID string) error
-	RetireAccount(accountID string) error
 	GetDeletedEvents(ids []string, userID string) ([]string, error)
 	AssociateUserSecret(accountID, userID, encryptedUserSecret string) error
 	Purge(userID string) error
 	Login(email, password string) (LoginResult, error)
-	LookupUser(userID string) error
+	LookupUser(userID string) (LoginResult, error)
 }
 
 // Query defines a set of filters to limit the set of results to be returned
@@ -57,6 +55,15 @@ type AccountResult struct {
 type LoginResult struct {
 	UserID   string               `json:"userId"`
 	Accounts []LoginAccountResult `json:"accounts"`
+}
+
+func (l *LoginResult) CanAccessAccount(accountID string) bool {
+	for _, account := range l.Accounts {
+		if accountID == account.AccountID {
+			return true
+		}
+	}
+	return false
 }
 
 type LoginAccountResult struct {

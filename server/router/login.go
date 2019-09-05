@@ -55,7 +55,7 @@ func (rt *router) getLogin(w http.ResponseWriter, r *http.Request) {
 		httputil.RespondWithJSONError(w, fmt.Errorf("error decoding cookie value: %v", err), http.StatusUnauthorized)
 		return
 	}
-	if err := rt.db.LookupUser(userID); err != nil {
+	if _, err := rt.db.LookupUser(userID); err != nil {
 		authCookie, _ = rt.authCookie("", true)
 		http.SetCookie(w, authCookie)
 		httputil.RespondWithJSONError(w, fmt.Errorf("user with id %s does not exist: %v", userID, err), http.StatusNotFound)
