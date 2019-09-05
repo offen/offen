@@ -2,6 +2,7 @@ package relational
 
 import (
 	"crypto/sha256"
+	"encoding/base64"
 	"errors"
 	"fmt"
 
@@ -56,8 +57,9 @@ type Account struct {
 // HashUserID uses the account's `UserSalt` to create a hashed version of a
 // user identifier that is unique per account.
 func (a *Account) HashUserID(userID string) string {
-	joined := fmt.Sprintf("%s-%s", a.UserSalt, userID)
-	hashed := sha256.Sum256([]byte(joined))
+	b, _ := base64.StdEncoding.DecodeString(a.UserSalt)
+	joined := append([]byte(userID), b...)
+	hashed := sha256.Sum256(joined)
 	return fmt.Sprintf("%x", hashed)
 }
 

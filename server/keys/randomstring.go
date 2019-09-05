@@ -6,13 +6,14 @@ import (
 	"fmt"
 )
 
-// GenerateRandomString returns a printable random string of the requested length
-func GenerateRandomString(length int) (string, error) {
+// GenerateRandomValue returns a slice of random values encoded as a
+// Base64 string. This means the returned string will likely be longer than
+// the requested length.
+func GenerateRandomValue(length int) (string, error) {
 	b := make([]byte, length)
 	_, err := rand.Read(b)
 	if err != nil {
-		return "", fmt.Errorf("local: error creating random string: %v", err)
+		return "", fmt.Errorf("keys: error creating random value: %v", err)
 	}
-	s := base64.URLEncoding.EncodeToString(b)
-	return s[:length], nil
+	return base64.URLEncoding.EncodeToString(b), nil
 }

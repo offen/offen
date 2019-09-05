@@ -1,16 +1,11 @@
-package main
+package relational
 
 import (
 	"encoding/base64"
-	"flag"
 	"fmt"
-	"io/ioutil"
-	"os"
 
 	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/offen/offen/server/keys"
-	"github.com/offen/offen/server/persistence/relational"
 	uuid "github.com/satori/go.uuid"
 	yaml "gopkg.in/yaml.v2"
 )
@@ -33,82 +28,89 @@ type accountUser struct {
 
 type accountCreation struct {
 	encryptionKey []byte
-	account       relational.Account
+	account       Account
 }
 
-func main() {
-	var (
-		source     = flag.String("source", "bootstrap.yml", "the configuration file")
-		connection = flag.String("conn", os.Getenv("POSTGRES_CONNECTION_STRING"), "a postgres connection string")
-		emailSalt  = flag.String("salt", os.Getenv("ACCOUNT_USER_EMAIL_SALT"), "the salt value used when hashing account user emails")
-	)
-	flag.Parse()
-
-	read, readErr := ioutil.ReadFile(*source)
-	if readErr != nil {
-		panic(readErr)
-	}
-
+func Bootstrap(data []byte, db *gorm.DB, emailSalt []byte) error {
 	var config bootstrapConfig
-	if err := yaml.Unmarshal(read, &config); err != nil {
-		panic(err)
-	}
-
-	db, err := gorm.Open("postgres", *connection)
-	if err != nil {
-		panic(err)
+	if err := yaml.Unmarshal(data, &config); err != nil {
+		return err
 	}
 
 	defer db.Close()
 	tx := db.Debug().Begin()
 
-	if err := tx.Delete(&relational.Event{}).Error; err != nil {
+	if err := tx.Delete(&Event{}).Error; err != nil {
 		tx.Rollback()
-		panic(err)
+		return err
 	}
-	if err := tx.Delete(&relational.Account{}).Error; err != nil {
+	if err := tx.Delete(&Account{}).Error; err != nil {
 		tx.Rollback()
-		panic(err)
+		return err
 	}
-	if err := tx.Delete(&relational.User{}).Error; err != nil {
+	if err := tx.Delete(&User{}).Error; err != nil {
 		tx.Rollback()
-		panic(err)
+		return err
 	}
-	if err := tx.Delete(&relational.AccountUser{}).Error; err != nil {
+	if err := tx.Delete(&AccountUser{}).Error; err != nil {
 		tx.Rollback()
-		panic(err)
+		return err
 	}
-	if err := tx.Delete(&relational.AccountUserRelationship{}).Error; err != nil {
+	if err := tx.Delete(&AccountUserRelationship{}).Error; err != nil {
 		tx.Rollback()
-		panic(err)
+		return err
 	}
 
+	accounts, accountUsers, relationships, err := bootstrapAccounts(&config, emailSalt)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	for _, account := range accounts {
+		if err := tx.Create(&account).Error; err != nil {
+			tx.Rollback()
+			return err
+		}
+	}
+	for _, accountUser := range accountUsers {
+		if err := tx.Create(&accountUser).Error; err != nil {
+			tx.Rollback()
+			return err
+		}
+	}
+	for _, relationship := range relationships {
+		if err := tx.Create(&relationship).Error; err != nil {
+			tx.Rollback()
+			return err
+		}
+	}
+	tx.Commit()
+	return nil
+}
+
+func bootstrapAccounts(config *bootstrapConfig, emailSalt []byte) ([]Account, []AccountUser, []AccountUserRelationship, error) {
 	accountCreations := []accountCreation{}
 	for _, account := range config.Accounts {
 		publicKey, privateKey, keyErr := keys.GenerateRSAKeypair(keys.RSAKeyLength)
 		if keyErr != nil {
-			tx.Rollback()
-			panic(keyErr)
+			return nil, nil, nil, keyErr
 		}
 
 		encryptionKey, encryptionKeyErr := keys.GenerateEncryptionKey(keys.DefaultEncryptionKeySize)
 		if encryptionKeyErr != nil {
-			tx.Rollback()
-			panic(encryptionKeyErr)
+			return nil, nil, nil, encryptionKeyErr
 		}
 		encryptedPrivateKey, privateKeyNonce, encryptedPrivateKeyErr := keys.EncryptWith(encryptionKey, privateKey)
 		if encryptedPrivateKeyErr != nil {
-			tx.Rollback()
-			panic(encryptedPrivateKeyErr)
+			return nil, nil, nil, encryptedPrivateKeyErr
 		}
 
-		salt, saltErr := keys.GenerateRandomString(keys.UserSaltLength)
+		salt, saltErr := keys.GenerateRandomValue(keys.UserSaltLength)
 		if saltErr != nil {
-			tx.Rollback()
-			panic(saltErr)
+			return nil, nil, nil, saltErr
 		}
 
-		account := relational.Account{
+		record := Account{
 			AccountID: account.ID,
 			Name:      account.Name,
 			PublicKey: string(publicKey),
@@ -121,32 +123,29 @@ func main() {
 			Retired:  false,
 		}
 		accountCreations = append(accountCreations, accountCreation{
-			account:       account,
+			account:       record,
 			encryptionKey: encryptionKey,
 		})
 	}
 
-	accountUserCreations := []relational.AccountUser{}
-	relationshipCreations := []relational.AccountUserRelationship{}
+	accountUserCreations := []AccountUser{}
+	relationshipCreations := []AccountUserRelationship{}
 
 	for _, accountUser := range config.AccountUsers {
 		userID := uuid.NewV4()
 		hashedPw, hashedPwErr := keys.HashPassword(accountUser.Password)
 		if hashedPwErr != nil {
-			tx.Rollback()
-			panic(hashedPwErr)
+			return nil, nil, nil, hashedPwErr
 		}
-		hashedEmail, hashedEmailErr := keys.HashEmail(accountUser.Email, *emailSalt)
+		hashedEmail, hashedEmailErr := keys.HashEmail(accountUser.Email, emailSalt)
 		if hashedEmailErr != nil {
-			tx.Rollback()
-			panic(hashedEmailErr)
+			return nil, nil, nil, hashedEmailErr
 		}
-		salt, saltErr := keys.GenerateRandomString(8)
+		salt, saltErr := keys.GenerateRandomValue(8)
 		if saltErr != nil {
-			tx.Rollback()
-			panic(saltErr)
+			return nil, nil, nil, saltErr
 		}
-		user := relational.AccountUser{
+		user := AccountUser{
 			UserID:         userID.String(),
 			HashedPassword: string(hashedPw),
 			Salt:           salt,
@@ -163,34 +162,29 @@ func main() {
 				}
 			}
 			if encryptionKey == nil {
-				tx.Rollback()
-				panic(fmt.Errorf("account with id %s not found", accountID))
+				return nil, nil, nil, fmt.Errorf("account with id %s not found", accountID)
 			}
 
 			passwordDerivedKey, passwordDerivedKeyErr := keys.DeriveKey(accountUser.Password, []byte(salt))
 			if passwordDerivedKeyErr != nil {
-				tx.Rollback()
-				panic(passwordDerivedKeyErr)
+				return nil, nil, nil, passwordDerivedKeyErr
 			}
 			encryptedPasswordDerivedKey, passwordEncryptionNonce, encryptionErr := keys.EncryptWith(passwordDerivedKey, encryptionKey)
 			if encryptionErr != nil {
-				tx.Rollback()
-				panic(encryptionErr)
+				return nil, nil, nil, encryptionErr
 			}
 
 			emailDerivedKey, emailDerivedKeyErr := keys.DeriveKey(accountUser.Email, []byte(salt))
 			if emailDerivedKeyErr != nil {
-				tx.Rollback()
-				panic(emailDerivedKeyErr)
+				return nil, nil, nil, emailDerivedKeyErr
 			}
 			encryptedEmailDerivedKey, emailEncryptionNonce, encryptionErr := keys.EncryptWith(emailDerivedKey, encryptionKey)
 			if encryptionErr != nil {
-				tx.Rollback()
-				panic(encryptionErr)
+				return nil, nil, nil, encryptionErr
 			}
 
 			relationshipID := uuid.NewV4()
-			r := relational.AccountUserRelationship{
+			r := AccountUserRelationship{
 				RelationshipID: relationshipID.String(),
 				UserID:         userID.String(),
 				AccountID:      accountID,
@@ -208,16 +202,9 @@ func main() {
 			relationshipCreations = append(relationshipCreations, r)
 		}
 	}
-
-	for _, account := range accountCreations {
-		tx.Create(&account.account)
+	var accounts []Account
+	for _, creation := range accountCreations {
+		accounts = append(accounts, creation.account)
 	}
-	for _, accountUser := range accountUserCreations {
-		tx.Create(&accountUser)
-	}
-	for _, relationship := range relationshipCreations {
-		tx.Create(&relationship)
-	}
-	tx.Commit()
-	fmt.Println("Successfully bootstrapped database for development.")
+	return accounts, accountUserCreations, relationshipCreations, nil
 }

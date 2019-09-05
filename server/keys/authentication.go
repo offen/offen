@@ -45,7 +45,7 @@ func NewAuthentication(scope string, secret []byte, deadline time.Duration) (*Au
 	if len(secret) == 0 {
 		return nil, errors.New("authentication: received empty secret, cannot continue")
 	}
-	token, tokenErr := GenerateRandomString(16)
+	token, tokenErr := GenerateRandomValue(16)
 	if tokenErr != nil {
 		return nil, fmt.Errorf("authentication: error creating token: %v", tokenErr)
 	}
