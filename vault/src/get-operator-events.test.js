@@ -4,11 +4,14 @@ var Unibabel = require('unibabel').Unibabel
 
 var getOperatorEventsWith = require('./get-operator-events').getOperatorEventsWith
 
-describe.skip('src/get-operator-events', function () {
+describe('src/get-operator-events', function () {
   describe('getOperatorEvents', function () {
     context('with no pending events', function () {
       var accountKey
+      var keyEncryptionJWK
+      var encryptedPrivateKey
       before(function () {
+        var keyEncryptionKey
         return window.crypto.subtle.generateKey(
           {
             name: 'RSA-OAEP',
@@ -21,6 +24,39 @@ describe.skip('src/get-operator-events', function () {
         )
           .then(function (_accountKey) {
             accountKey = _accountKey
+          })
+          .then(function () {
+            return window.crypto.subtle.generateKey(
+              {
+                name: 'AES-GCM',
+                length: 256
+              },
+              true,
+              ['encrypt', 'decrypt']
+            )
+          })
+          .then(function (_keyEncryptionKey) {
+            keyEncryptionKey = _keyEncryptionKey
+            return window.crypto.subtle.exportKey('jwk', keyEncryptionKey)
+          })
+          .then(function (_keyEncryptionJWK) {
+            keyEncryptionJWK = _keyEncryptionJWK
+            return window.crypto.subtle.exportKey('jwk', accountKey.privateKey)
+          })
+          .then(function (accountPrivateJWK) {
+            var nonce = window.crypto.getRandomValues(new Uint8Array(12))
+            return window.crypto.subtle.encrypt(
+              {
+                name: 'AES-GCM',
+                iv: nonce,
+                length: 128
+              },
+              keyEncryptionKey,
+              Unibabel.utf8ToBuffer(JSON.stringify(accountPrivateJWK))
+            )
+              .then(function (encrypted) {
+                encryptedPrivateKey = Unibabel.arrToBase64(new Uint8Array(nonce)) + ' ' + Unibabel.arrToBase64(new Uint8Array(encrypted))
+              })
           })
       })
 
@@ -35,13 +71,13 @@ describe.skip('src/get-operator-events', function () {
         }
         var mockApi = {
           getDeletedEvents: sinon.stub().resolves({ eventIds: ['a'] }),
-          getAccount: sinon.stub().resolves({ events: {}, name: 'test', accountId: 'account-a' })
+          getAccount: sinon.stub().resolves({ accountId: 'account-a', encryptedPrivateKey: encryptedPrivateKey })
         }
         var getOperatorEvents = getOperatorEventsWith(mockQueries, mockApi)
         return getOperatorEvents(
           { accountId: 'account-a' },
           { accounts: [
-            { accountId: 'account-a', keyEncryptionKey: {} }
+            { accountId: 'account-a', keyEncryptionKey: keyEncryptionJWK }
           ]
           }
         )
@@ -50,7 +86,8 @@ describe.skip('src/get-operator-events', function () {
               mock: 'result',
               account: {
                 accountId: 'account-a',
-                privateKey: accountKey.privateKey
+                privateKey: accountKey.privateKey,
+                encryptedPrivateKey: encryptedPrivateKey
               }
             })
           })
@@ -62,9 +99,11 @@ describe.skip('src/get-operator-events', function () {
       var encryptedUserSecret
       var encryptedEventPayload
       var accountKey
-      var accountJWK
       var userJWK
       var nonce
+      var keyEncryptionKey
+      var keyEncryptionJWK
+      var encryptedPrivateKey
 
       before(function () {
         return window.crypto.subtle.generateKey(
@@ -94,10 +133,6 @@ describe.skip('src/get-operator-events', function () {
           })
           .then(function (_accountKey) {
             accountKey = _accountKey
-            return window.crypto.subtle.exportKey('jwk', accountKey.privateKey)
-          })
-          .then(function (_accountJWK) {
-            accountJWK = _accountJWK
             return window.crypto.subtle.encrypt(
               {
                 name: 'RSA-OAEP'
@@ -124,6 +159,39 @@ describe.skip('src/get-operator-events', function () {
           .then(function (encrypted) {
             encryptedEventPayload = Unibabel.arrToBase64(nonce) + ' ' + Unibabel.arrToBase64(new Uint8Array(encrypted))
           })
+          .then(function () {
+            return window.crypto.subtle.generateKey(
+              {
+                name: 'AES-GCM',
+                length: 256
+              },
+              true,
+              ['encrypt', 'decrypt']
+            )
+          })
+          .then(function (_keyEncryptionKey) {
+            keyEncryptionKey = _keyEncryptionKey
+            return window.crypto.subtle.exportKey('jwk', keyEncryptionKey)
+          })
+          .then(function (_keyEncryptionJWK) {
+            keyEncryptionJWK = _keyEncryptionJWK
+            return window.crypto.subtle.exportKey('jwk', accountKey.privateKey)
+          })
+          .then(function (accountPrivateJWK) {
+            var nonce = window.crypto.getRandomValues(new Uint8Array(12))
+            return window.crypto.subtle.encrypt(
+              {
+                name: 'AES-GCM',
+                iv: nonce,
+                length: 128
+              },
+              keyEncryptionKey,
+              Unibabel.utf8ToBuffer(JSON.stringify(accountPrivateJWK))
+            )
+              .then(function (encrypted) {
+                encryptedPrivateKey = Unibabel.arrToBase64(new Uint8Array(nonce)) + ' ' + Unibabel.arrToBase64(new Uint8Array(encrypted))
+              })
+          })
       })
 
       it('syncs the database and returns stats plus account info', function () {
@@ -146,17 +214,22 @@ describe.skip('src/get-operator-events', function () {
                 payload: encryptedEventPayload
               }]
             },
-            name: 'test',
             userSecrets: {
               'user-a': encryptedUserSecret
             },
+            name: 'test',
             accountId: 'account-a',
-            encryptedPrivateKey: 'ENCRYPTED_PRIVATE_KEY'
-          }),
-          decryptPrivateKey: sinon.stub().resolves({ decrypted: accountJWK })
+            encryptedPrivateKey: encryptedPrivateKey
+          })
         }
         var getOperatorEvents = getOperatorEventsWith(mockQueries, mockApi)
-        return getOperatorEvents({ accountId: 'account-a' })
+        return getOperatorEvents(
+          { accountId: 'account-a' },
+          { accounts: [
+            { accountId: 'account-a', keyEncryptionKey: keyEncryptionJWK }
+          ]
+          }
+        )
           .then(function (result) {
             assert(mockQueries.getAllEventIds.calledOnce)
             assert(mockQueries.getAllEventIds.calledWith('account-a'))
@@ -170,9 +243,6 @@ describe.skip('src/get-operator-events', function () {
             assert(mockApi.getAccount.calledOnce)
             assert(mockApi.getAccount.calledWith('account-a'))
 
-            assert(mockApi.decryptPrivateKey.calledOnce)
-            assert(mockApi.decryptPrivateKey.calledWith('ENCRYPTED_PRIVATE_KEY'))
-
             assert(mockQueries.deleteEvents.calledOnce)
             assert(mockQueries.deleteEvents.calledWith('account-a', 'a'))
 
@@ -184,14 +254,6 @@ describe.skip('src/get-operator-events', function () {
               timestamp: 'timestamp-fixture',
               payload: encryptedEventPayload
             }))
-
-            assert.deepStrictEqual(result, {
-              mock: 'result',
-              account: {
-                accountId: 'account-a',
-                privateKey: accountKey.privateKey
-              }
-            })
           })
       })
     })
