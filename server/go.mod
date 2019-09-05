@@ -4,10 +4,7 @@ go 1.12
 
 require (
 	github.com/aws/aws-lambda-go v1.11.1
-	github.com/aws/aws-sdk-go v1.23.1
-	github.com/awslabs/aws-lambda-go-api-proxy v0.3.0
 	github.com/denisenkom/go-mssqldb v0.0.0-20190423183735-731ef375ac02 // indirect
-	github.com/felixge/httpsnoop v1.0.0
 	github.com/gofrs/uuid v3.2.0+incompatible
 	github.com/gorilla/mux v1.6.2
 	github.com/gorilla/securecookie v1.1.1
@@ -20,7 +17,6 @@ require (
 	github.com/satori/go.uuid v1.2.0
 	github.com/sirupsen/logrus v1.4.2
 	golang.org/x/crypto v0.0.0-20190325154230-a5d413f7728c
-	google.golang.org/api v0.3.1
 	gopkg.in/gormigrate.v1 v1.6.0
 	gopkg.in/yaml.v2 v2.2.2
 )

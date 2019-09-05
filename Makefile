@@ -1,9 +1,12 @@
+
 help:
 	@echo "    setup"
-	@echo "        Build the containers and install dependencies."
+	@echo "        Build the development containers and install dependencies."
 	@echo "    bootstrap"
 	@echo "        Set up keys and seed databases."
 	@echo "        IMPORTANT: this wipes any existing data in your local database."
+	@echo "    build"
+	@echo "        Build the production containers."
 
 setup:
 	@docker-compose build

@@ -37,24 +37,26 @@ function decorateWithDefaults (view, title) {
   return wrapper(view)
 }
 
+var base = (document.querySelector('base') && document.querySelector('base').getAttribute('href')) || '/'
+
 app.route(
-  '/auditorium/account/:accountId',
+  base + 'account/:accountId',
   decorateWithDefaults(withAuthentication()(withModel()(mainView)), 'offen auditorium')
 )
 app.route(
-  '/auditorium/account',
+  base + 'account',
   decorateWithDefaults(withAuthentication()(accountView), 'offen accounts')
 )
 app.route(
-  '/auditorium/login',
+  base + 'login',
   decorateWithDefaults(loginView, 'offen login')
 )
 app.route(
-  '/auditorium',
+  base.replace(/\/$/, ''),
   decorateWithDefaults(withModel()(mainView), 'offen auditorium')
 )
 app.route(
-  '/*',
+  base + '*',
   decorateWithDefaults(notFoundView, 'Not found')
 )
 
