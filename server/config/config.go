@@ -18,16 +18,13 @@ type Config interface {
 	LogLevel() logrus.Level
 	// whether to issue secure (HTTPS only) cookies
 	SecureCookie() bool
-	// the endpoint used for encrypting private keys when creating
-	// a new account
-	EncryptionEndpoint() string
 	// a flag triggering certain development-only behavior like logging
 	// SQL queries
 	Development() bool
 	// a secret string used for signing payloads when issueing optout cookies
-	CookieExchangeSecret() string
+	CookieExchangeSecret() []byte
 	// the desired retention period of all event data
 	RetentionPeriod() time.Duration
 	// the salt used when hashing the email address associated to an account
-	AccountUserSalt() string
+	AccountUserSalt() []byte
 }

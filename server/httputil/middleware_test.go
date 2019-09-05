@@ -8,20 +8,6 @@ import (
 	"testing"
 )
 
-func TestContentTypeMiddleware(t *testing.T) {
-	t.Run("default", func(t *testing.T) {
-		wrapped := ContentTypeMiddleware("application/json")(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			w.Write([]byte("OK"))
-		}))
-		w := httptest.NewRecorder()
-		r := httptest.NewRequest(http.MethodGet, "/", nil)
-		wrapped.ServeHTTP(w, r)
-		if h := w.Header().Get("Content-Type"); h != "application/json" {
-			t.Errorf("Unexpected header value %v", h)
-		}
-	})
-}
-
 func TestOptoutMiddleware(t *testing.T) {
 	wrapped := OptoutMiddleware("optout")(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("hey there"))

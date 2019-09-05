@@ -3,7 +3,6 @@ module github.com/offen/offen/server
 go 1.12
 
 require (
-	github.com/aws/aws-lambda-go v1.11.1
 	github.com/denisenkom/go-mssqldb v0.0.0-20190423183735-731ef375ac02 // indirect
 	github.com/gofrs/uuid v3.2.0+incompatible
 	github.com/gorilla/mux v1.6.2

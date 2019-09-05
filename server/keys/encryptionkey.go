@@ -71,7 +71,7 @@ func ComparePassword(password, hash string) error {
 	return bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 }
 
-func HashEmail(email string, salt string) ([]byte, error) {
-	result := sha256.Sum256([]byte(fmt.Sprintf("%s-%s", email, salt)))
+func HashEmail(email string, salt []byte) ([]byte, error) {
+	result := sha256.Sum256(append([]byte(email), salt...))
 	return result[:], nil
 }

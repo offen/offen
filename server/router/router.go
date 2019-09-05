@@ -114,9 +114,9 @@ func WithSecureCookie(sc bool) Config {
 
 // WithCookieExchangeSecret sets the secret to be used for signing secured
 // cookie exchange requests
-func WithCookieExchangeSecret(s string) Config {
+func WithCookieExchangeSecret(b []byte) Config {
 	return func(r *router) {
-		r.cookieExchangeSecret = []byte(s)
+		r.cookieExchangeSecret = b
 	}
 }
 

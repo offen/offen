@@ -14,7 +14,7 @@ import (
 type relationalDatabase struct {
 	db         *gorm.DB
 	encryption keys.Encrypter
-	emailSalt  string
+	emailSalt  []byte
 }
 
 // New creates a persistence layer that connects to a PostgreSQL database
@@ -40,7 +40,7 @@ type dbOptions struct {
 	connectionString string
 	encryption       keys.Encrypter
 	logger           bool
-	emailSalt        string
+	emailSalt        []byte
 }
 
 // Config is a function that adds a configuration option to the constructor
@@ -69,8 +69,8 @@ func WithLogging(l bool) Config {
 	}
 }
 
-func WithEmailSalt(s string) Config {
+func WithEmailSalt(b []byte) Config {
 	return func(opts *dbOptions) {
-		opts.emailSalt = s
+		opts.emailSalt = b
 	}
 }
