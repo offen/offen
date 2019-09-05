@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"net/http"
 
+	httputil "github.com/offen/offen/server/httputil"
 	"github.com/offen/offen/server/persistence"
-	httputil "github.com/offen/offen/server/shared/http"
 )
 
 func (rt *router) getAccount(w http.ResponseWriter, r *http.Request) {

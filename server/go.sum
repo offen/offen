@@ -99,6 +99,7 @@ github.com/offen/offen v0.0.0-20190712193144-d835326b3b39 h1:1Na7i7dVnqi+yiTVSUH
 github.com/offen/offen v0.0.0-20190727132256-12c69c1ff721 h1:f0tPYXIUlLlyQikbERUg6+CMvRtfRBXhtq1TxmnyL0w=
 github.com/offen/offen v0.0.0-20190815084616-756f4ced7a9e h1:ckvthHNLLVWPFGQf5dNi77/fDV1jlGtt+pR1PrCK1gI=
 github.com/offen/offen v0.0.0-20190816092350-00082f451c19 h1:LVbxz8PjanoFyHZHXTCp/O5tzVcCDvigrmMeaMfqryk=
+github.com/offen/offen v0.0.0-20190903202041-9ad853efc2d1 h1:xT+/5gWjlRVINYHlwjIHOSlK3YmAkokkq2ih54uR+PU=
 github.com/oklog/ulid v1.3.1 h1:EGfNDEx6MqHz8B3uNV6QAib1UR2Lm97sHi3ocA6ESJ4=
 github.com/oklog/ulid v1.3.1/go.mod h1:CirwcVhetQ6Lv90oh/F+FBtV6XMibvdAFo93nm5qn4U=
 github.com/onsi/ginkgo v1.6.0/go.mod h1:lLunBs/Ym6LB5Z9jYTR76FiuTmxDTDusOGeTQH+WWjE=

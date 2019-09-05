@@ -50,8 +50,8 @@ RUN make publish
 FROM nginx:1.17-alpine
 
 COPY --from=homepage /code/homepage/output /www/data
+COPY --from=script /code/script/dist /www/data
 COPY --from=auditorium /code/auditorium/dist /www/data/auditorium
-COPY --from=script /code/script/dist /www/data/script
 COPY --from=vault /code/vault/dist /www/data/vault
 COPY ./build/proxy/nginx.conf /etc/nginx/nginx.conf
 

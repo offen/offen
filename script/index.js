@@ -8,7 +8,7 @@ var bootstrap = require('./src/bootstrap')
 var accountId = document.currentScript && document.currentScript.dataset.accountId
 
 function collectPageview () {
-  bootstrap(process.env.VAULT_HOST, accountId)
+  bootstrap(process.env.VAULT_HOST || '/vault/', accountId)
     .catch(function (err) {
       if (process.env.NODE_ENV !== 'production') {
         console.error(err)

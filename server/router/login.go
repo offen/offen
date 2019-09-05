@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
-	httputil "github.com/offen/offen/server/shared/http"
+	httputil "github.com/offen/offen/server/httputil"
 )
 
 type loginCredentials struct {

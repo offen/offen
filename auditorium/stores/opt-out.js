@@ -4,7 +4,7 @@ module.exports = store
 
 function store (state, emitter) {
   emitter.on('offen:optout', function (status) {
-    vault(process.env.VAULT_HOST)
+    vault(process.env.VAULT_HOST || '/vault/')
       .then(function (postMessage) {
         var optoutRequest = {
           type: 'OPTOUT',

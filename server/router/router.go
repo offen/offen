@@ -8,8 +8,8 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/gorilla/securecookie"
 	"github.com/m90/go-thunk"
+	httputil "github.com/offen/offen/server/httputil"
 	"github.com/offen/offen/server/persistence"
-	httputil "github.com/offen/offen/server/shared/http"
 	"github.com/sirupsen/logrus"
 )
 
@@ -140,7 +140,6 @@ func New(opts ...Config) http.Handler {
 	rt.cookieSigner = securecookie.New([]byte(rt.cookieExchangeSecret), nil)
 	m := mux.NewRouter()
 
-	json := httputil.ContentTypeMiddleware("application/json")
 	dropOptout := httputil.OptoutMiddleware(optoutKey)
 	recovery := thunk.HandleSafelyWith(func(err error) {
 		if rt.logger != nil {
@@ -149,7 +148,7 @@ func New(opts ...Config) http.Handler {
 	})
 	userCookie := httputil.UserCookieMiddleware(cookieKey, contextKeyCookie)
 
-	m.Use(recovery, json)
+	m.Use(recovery)
 
 	optout := m.PathPrefix("/opt-out").Subrouter()
 	optout.HandleFunc("", rt.postOptout).Methods(http.MethodPost)

@@ -8,8 +8,8 @@ import (
 	"strconv"
 	"time"
 
+	httputil "github.com/offen/offen/server/httputil"
 	"github.com/offen/offen/server/keys"
-	httputil "github.com/offen/offen/server/shared/http"
 )
 
 func serveCookie(cookie *http.Cookie, w http.ResponseWriter, r *http.Request) {

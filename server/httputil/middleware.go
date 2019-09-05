@@ -1,34 +1,10 @@
-package http
+package httputil
 
 import (
 	"context"
 	"errors"
 	"net/http"
 )
-
-// CorsMiddleware ensures the wrapped handler will respond with proper CORS
-// headers using the given origin.
-func CorsMiddleware(origin string) func(http.Handler) http.Handler {
-	return func(next http.Handler) http.Handler {
-		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Access-Control-Allow-Credentials", "true")
-			w.Header().Set("Access-Control-Allow-Methods", "POST,GET")
-			w.Header().Set("Access-Control-Allow-Origin", origin)
-			next.ServeHTTP(w, r)
-		})
-	}
-}
-
-// ContentTypeMiddleware ensuresthe wrapped handler will respond with a
-// content type header of the given value.
-func ContentTypeMiddleware(contentType string) func(http.Handler) http.Handler {
-	return func(next http.Handler) http.Handler {
-		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Add("Content-Type", contentType)
-			next.ServeHTTP(w, r)
-		})
-	}
-}
 
 // OptoutMiddleware drops all requests to the given handler that are sent with
 // a cookie of the given name,

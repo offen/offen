@@ -17,7 +17,6 @@ deploy_preconditions: &deploy_preconditions
     - script
     - auditorium
     - packages
-    - shared
   filters:
     branches:
       only: /^master$/
@@ -67,20 +66,6 @@ jobs:
           command: |
             cp ~/offen/bootstrap.yml .
             make test-ci
-
-  shared:
-    docker:
-      - image: circleci/golang:1.12
-    working_directory: ~/offen/shared
-    steps:
-      - checkout:
-          path: ~/offen
-      - run:
-          name: Install dependencies
-          command: go get ./...
-      - run:
-          name: Run tests
-          command: make test
 
   vault:
     docker:

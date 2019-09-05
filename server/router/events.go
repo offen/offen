@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"net/url"
 
+	httputil "github.com/offen/offen/server/httputil"
 	"github.com/offen/offen/server/persistence"
-	httputil "github.com/offen/offen/server/shared/http"
 )
 
 type inboundEventPayload struct {

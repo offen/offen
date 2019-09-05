@@ -8,7 +8,6 @@ services:
       - ./styles:/code/styles
     ports:
       - 8080:80
-      - 8081:81
     depends_on:
       - homepage
       - server
@@ -26,7 +25,6 @@ services:
       - ./bootstrap.yml:/offen/server/bootstrap.yml
       - serverdeps:/go/pkg/mod
     environment:
-      CORS_ORIGIN: http://localhost:9977
       POSTGRES_CONNECTION_STRING: postgres://postgres:develop@server_database:5432/postgres?sslmode=disable
       PORT: 8080
       DEVELOPMENT: '1'
@@ -61,8 +59,6 @@ services:
       - .:/offen
       - scriptdeps:/offen/script/node_modules
     command: npm start -- --port 9966
-    environment:
-      - VAULT_HOST=/vault/
 
   auditorium:
     build:
@@ -73,8 +69,6 @@ services:
       - .:/offen
       - auditoriumdeps:/offen/auditorium/node_modules
     command: npm start -- --port 9955
-    environment:
-      - VAULT_HOST=/vault/
 
   homepage:
     build:
