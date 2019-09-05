@@ -101,7 +101,7 @@ describe('src/queries.js', function () {
             return window.crypto.subtle
               .generateKey(
                 {
-                  name: 'AES-CTR',
+                  name: 'AES-GCM',
                   length: 256
                 },
                 true,
@@ -264,18 +264,19 @@ describe('src/queries.js', function () {
                     return event
                   })
               }
+              var nonce = window.crypto.getRandomValues(new Uint8Array(12))
               return window.crypto.subtle
                 .encrypt(
                   {
-                    name: 'AES-CTR',
-                    counter: new Uint8Array(16),
+                    name: 'AES-GCM',
+                    iv: nonce,
                     length: 128
                   },
                   userSecretsById[event.userId],
                   Unibabel.utf8ToBuffer(JSON.stringify(event.payload))
                 )
                 .then(function (encryptedEventPayload) {
-                  event.payload = Unibabel.arrToBase64(new Uint8Array(encryptedEventPayload))
+                  event.payload = Unibabel.arrToBase64(nonce) + ' ' + Unibabel.arrToBase64(new Uint8Array(encryptedEventPayload))
                   return event
                 })
             })

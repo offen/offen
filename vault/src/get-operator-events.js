@@ -10,8 +10,11 @@ module.exports.getOperatorEventsWith = getOperatorEventsWith
 
 function getOperatorEventsWith (queries, api, cache) {
   return function (query, authenticatedUser) {
-    var key = _.findWhere(authenticatedUser.accounts, { accountId: query.accountId }).keyEncryptionKey
-    return ensureSyncWith(queries, api, cache)(query.accountId, key)
+    var matchingAccount = _.findWhere(authenticatedUser.accounts, { accountId: query.accountId })
+    if (!matchingAccount) {
+      return Promise.reject(new Error('No matching key found for account with id ' + query.accountId))
+    }
+    return ensureSyncWith(queries, api, cache)(query.accountId, matchingAccount.keyEncryptionKey)
       .then(function (account) {
         return queries.getDefaultStats(query.accountId, query, account.privateKey)
           .then(function (stats) {

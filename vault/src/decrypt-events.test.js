@@ -12,10 +12,11 @@ describe('src/decrypt-event.js', function () {
     var accountKey
     var userSecret
     var userJWK
+    var nonce
     before(function () {
       return window.crypto.subtle.generateKey(
         {
-          name: 'AES-CTR',
+          name: 'AES-GCM',
           length: 256
         },
         true,
@@ -55,10 +56,11 @@ describe('src/decrypt-event.js', function () {
           encryptedUserSecret = Unibabel.arrToBase64(new Uint8Array(encrypted))
         })
         .then(function () {
+          nonce = window.crypto.getRandomValues(new Uint8Array(12))
           return window.crypto.subtle.encrypt(
             {
-              name: 'AES-CTR',
-              counter: new Uint8Array(16),
+              name: 'AES-GCM',
+              iv: nonce,
               length: 128
             },
             userSecret,
@@ -66,7 +68,7 @@ describe('src/decrypt-event.js', function () {
           )
         })
         .then(function (encrypted) {
-          encryptedEventPayload = Unibabel.arrToBase64(new Uint8Array(encrypted))
+          encryptedEventPayload = Unibabel.arrToBase64(nonce) + ' ' + Unibabel.arrToBase64(new Uint8Array(encrypted))
         })
     })
 
