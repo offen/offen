@@ -64,3 +64,37 @@ func (rt *router) getLogin(w http.ResponseWriter, r *http.Request) {
 	b, _ := json.Marshal(map[string]string{"userId": userID})
 	w.Write(b)
 }
+
+type changePasswordRequest struct {
+	ChangedPassword string `json:"changedPassword"`
+	CurrentPassword string `json:"currentPassword`
+}
+
+func (rt *router) postChangePassword(w http.ResponseWriter, r *http.Request) {
+	authCookie, err := r.Cookie(authKey)
+	if err != nil {
+		httputil.RespondWithJSONError(w, errors.New("no auth cookie present"), http.StatusUnauthorized)
+		return
+	}
+	var userID string
+	if err := rt.cookieSigner.Decode(authKey, authCookie.Value, &userID); err != nil {
+		authCookie, _ = rt.authCookie("", true)
+		http.SetCookie(w, authCookie)
+		httputil.RespondWithJSONError(w, fmt.Errorf("error decoding cookie value: %v", err), http.StatusUnauthorized)
+		return
+	}
+
+	var req changePasswordRequest
+	defer r.Body.Close()
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		httputil.RespondWithJSONError(w, fmt.Errorf("error decoding request payload: %v", err), http.StatusBadRequest)
+		return
+	}
+	if err := rt.db.ChangePassword(userID, req.CurrentPassword, req.ChangedPassword); err != nil {
+		httputil.RespondWithJSONError(w, fmt.Errorf("error changing password: %v", err), http.StatusInternalServerError)
+		return
+	}
+	cookie, _ := rt.authCookie("", true)
+	http.SetCookie(w, cookie)
+	w.WriteHeader(http.StatusNoContent)
+}

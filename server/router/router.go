@@ -18,7 +18,6 @@ type router struct {
 	logger               *logrus.Logger
 	cookieSigner         *securecookie.SecureCookie
 	secureCookie         bool
-	userCookieDomain     string
 	cookieExchangeSecret []byte
 	retentionPeriod      time.Duration
 }
@@ -173,6 +172,9 @@ func New(opts ...Config) http.Handler {
 	login := m.PathPrefix("/login").Subrouter()
 	login.HandleFunc("", rt.getLogin).Methods(http.MethodGet)
 	login.HandleFunc("", rt.postLogin).Methods(http.MethodPost)
+
+	changePassword := m.PathPrefix("/change-password").Subrouter()
+	changePassword.HandleFunc("", rt.postChangePassword).Methods(http.MethodPost)
 
 	purge := m.PathPrefix("/purge").Subrouter()
 	purge.Use(userCookie)

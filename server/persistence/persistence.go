@@ -10,6 +10,7 @@ type Database interface {
 	Purge(userID string) error
 	Login(email, password string) (LoginResult, error)
 	LookupUser(userID string) (LoginResult, error)
+	ChangePassword(userID, currentPassword, changedPassword string) error
 }
 
 // Query defines a set of filters to limit the set of results to be returned

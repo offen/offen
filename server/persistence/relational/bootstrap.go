@@ -147,7 +147,7 @@ func bootstrapAccounts(config *bootstrapConfig, emailSalt []byte) ([]Account, []
 		}
 		user := AccountUser{
 			UserID:         userID.String(),
-			HashedPassword: string(hashedPw),
+			HashedPassword: hashedPw,
 			Salt:           salt,
 			HashedEmail:    base64.StdEncoding.EncodeToString(hashedEmail),
 		}

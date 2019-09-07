@@ -5,6 +5,7 @@ import (
 	"crypto/cipher"
 	"crypto/rand"
 	"crypto/sha256"
+	"encoding/base64"
 	"fmt"
 	"io"
 
@@ -63,12 +64,21 @@ func DeriveKey(value string, salt []byte) ([]byte, error) {
 	return dk, nil
 }
 
-func HashPassword(pw string) ([]byte, error) {
-	return bcrypt.GenerateFromPassword([]byte(pw), bcrypt.DefaultCost)
+func HashPassword(pw string) (string, error) {
+	b, err := bcrypt.GenerateFromPassword([]byte(pw), bcrypt.DefaultCost)
+	if err != nil {
+		return "", err
+	}
+	return base64.StdEncoding.EncodeToString(b), nil
 }
 
 func ComparePassword(password, hash string) error {
-	return bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+	b, err := base64.StdEncoding.DecodeString(hash)
+	if err != nil {
+		return err
+	}
+	fmt.Println("comparing", string(b), password)
+	return bcrypt.CompareHashAndPassword(b, []byte(password))
 }
 
 func HashEmail(email string, salt []byte) ([]byte, error) {

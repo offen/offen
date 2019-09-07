@@ -9,4 +9,8 @@ function store (state, emitter) {
       emitter.emit(state.events.RENDER)
     })
   })
+  emitter.on('offen:flash', function (message) {
+    state.flash = message
+    emitter.emit(state.events.RENDER)
+  })
 }

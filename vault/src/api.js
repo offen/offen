@@ -142,6 +142,24 @@ function loginWith (loginUrl) {
   }
 }
 
+exports.changePassword = changePasswordWith(window.location.origin + '/api/change-password')
+exports.changePasswordWith = changePasswordWith
+
+function changePasswordWith (loginUrl) {
+  return function (currentPassword, changedPassword) {
+    return window
+      .fetch(loginUrl, {
+        method: 'POST',
+        credentials: 'include',
+        body: JSON.stringify({
+          changedPassword: changedPassword,
+          currentPassword: currentPassword
+        })
+      })
+      .then(handleFetchResponse)
+  }
+}
+
 exports.purge = purgeWith(window.location.origin + '/api/purge')
 exports.purgeWith = purgeWith
 
