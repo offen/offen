@@ -8,24 +8,20 @@ import (
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
-	"github.com/offen/offen/server/keys"
 	"github.com/offen/offen/server/persistence"
 )
 
 var publicKey = `
------BEGIN RSA PUBLIC KEY-----
-MIICCgKCAgEAv3dlQ+5f7GfcJkctx59+Cyoygf+snYdRmU6gdaZ5hoB+mCe4DeEa
-3hl42S6HfMJI/qfotmL3J67eP4r+dCqtRvjzUUMSyBDqbtatSndIZ+M1meIn8676
-2xrm5aSUYO5egyD9QwcxoUiNSgea3+5DWKlA8FeH8ViFFfiPM59n2BlbqB9vh5Ps
-fQldsn2HQzW86UWnvBU3OKKRzVxFEJ3HLIc2C3XifcKGo7aZjthUVcrX2KrHK5Mp
-Vcxh+HicKOGbkjOGlTO6ybEO259n4mPj3mlzgRjZznGY/5c/pNfKBoi/EvZTR5rH
-FmlmSQ6HjqqRa0oEOFjGZqLPsZGtTV6kDVCNGE8iaBNn5cvzeGP8nu+FgVILIvpH
-C0A6iarc5Q3BSOoJFVPfmSQoQrwiLlBRRiMGEl2YVjOJ1YH+uBXJlH8LkT1jFmQ/
-kTEq5D2Ej6W/KW9wVJjGvLkphlmbqhECMsSzz79q2blKD8WwoxQO3xvH/vLLTBUN
-62GDbF2Iozpbly+74Tu4uruLgXRukm30kfaAqPrnOSSNDI5EIMoqPh4n1L9S05vD
-57CJIw83Lr67SuMgCzXnR0CgV/U+8iVO772BqsPilbOA3yRbaW9DOQJWTcDn+gwb
-kkGaifOHQRQyqOSH4cUXORZt8DECJRt69kjg1F5SBfjGed4kVhIp4nUCAwEAAQ==
------END RSA PUBLIC KEY-----
+{
+  "alg": "RSA-OAEP-256",
+  "e": "AQAB",
+  "ext": true,
+  "key_ops": [
+    "encrypt"
+  ],
+  "kty": "RSA",
+  "n": "rJGC_lJ8tpAq8xaPFnvbkZDNUQxQ47_1gJ1A_TIM03uK2KuI1m-4DQsBmT8RfcRhI-ecvY5D4cqXmwKZxBXii7QjQeoFg3TApT4E4l1ZF4EBO_D9-1nlwM4C17Ip9Cardu09kp1vv2FVML0zFGCrS8Dvo4oQBtoieA_MmSyKRpJPN0we4gYxftjqpVym1cCsIeR7riBS_FvMsXph-R7OLKEiL_y4WUoi4wWal5Z3MsSYRRj4hwm-nllAwu2_dOtHSh8L8PlhqShDSNrn31feicpeMr08NVTMaJZjoLIXR_CT3V_E_E2JkKsrj8lWmp34ww7iMSWRE8woSXjv75Ieow"
+}
 `
 
 func createTestDatabase() (*gorm.DB, func() error) {
@@ -46,150 +42,6 @@ type mockEncrypter struct {
 
 func (m *mockEncrypter) Encrypt([]byte) ([]byte, error) {
 	return m.result, m.err
-}
-
-func TestRelationalDatabase_RetireAccount(t *testing.T) {
-	tests := []struct {
-		name        string
-		setup       func(*gorm.DB) error
-		assertion   func(*gorm.DB) error
-		expectError bool
-	}{
-		{
-			"unknown account",
-			func(db *gorm.DB) error {
-				return nil
-			},
-			func(db *gorm.DB) error {
-				return nil
-			},
-			true,
-		},
-		{
-			"ok",
-			func(db *gorm.DB) error {
-				return db.Create(&Account{AccountID: "account-id"}).Error
-			},
-			func(db *gorm.DB) error {
-				var match Account
-				db.First(&match, "account_id = ?", "account-id")
-				if match.Retired != true {
-					return errors.New("expected account to be retired")
-				}
-				return nil
-			},
-			false,
-		},
-	}
-
-	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-			db, closeDB := createTestDatabase()
-			defer closeDB()
-
-			if err := test.setup(db); err != nil {
-				t.Fatalf("Unexpected error setting up test %v", err)
-			}
-
-			relational := relationalDatabase{db: db}
-
-			err := relational.RetireAccount("account-id")
-			if (err != nil) != test.expectError {
-				t.Errorf("Unexpected error value %v", err)
-			}
-
-			if err := test.assertion(db); err != nil {
-				t.Errorf("Unexpected assertion error %v", err)
-			}
-		})
-	}
-}
-
-func TestRelationalDatabase_CreateAccount(t *testing.T) {
-	tests := []struct {
-		name        string
-		setup       func(*gorm.DB) error
-		encryption  keys.Encrypter
-		assertion   func(*gorm.DB) error
-		expectError bool
-	}{
-		{
-			"ok",
-			func(db *gorm.DB) error {
-				return nil
-			},
-			&mockEncrypter{
-				result: []byte("shhhhh,secret"),
-			},
-			func(db *gorm.DB) error {
-				var account Account
-				if err := db.Find(&account).Where("account_id = ?", "account-id").Error; err != nil {
-					return err
-				}
-				if account.PublicKey == "" {
-					return errors.New("Unexpected empty public key")
-				}
-				if account.EncryptedPrivateKey != "shhhhh,secret" {
-					return fmt.Errorf("Unexpected encrypted secret key %v", account.EncryptedPrivateKey)
-				}
-				return nil
-			},
-			false,
-		},
-		{
-			"account exists",
-			func(db *gorm.DB) error {
-				return db.Create(&Account{
-					AccountID: "account-id",
-				}).Error
-			},
-			&mockEncrypter{
-				result: []byte("shhhhh,secret"),
-			},
-			func(db *gorm.DB) error {
-				return nil
-			},
-			true,
-		},
-		{
-			"encryption error",
-			func(db *gorm.DB) error {
-				return nil
-			},
-			&mockEncrypter{
-				err: errors.New("did not work"),
-			},
-			func(db *gorm.DB) error {
-				count := 0
-				db.Find(&Account{}).Where("account_id = ?", "account-id").Count(&count)
-				if count != 0 {
-					return errors.New("Unexpected account creation")
-				}
-				return nil
-			},
-			true,
-		},
-	}
-	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-			db, cleanUp := createTestDatabase()
-			defer cleanUp()
-			if err := test.setup(db); err != nil {
-				t.Fatalf("Unexpected error setting up test %v", err)
-			}
-			relational := &relationalDatabase{
-				db:         db,
-				encryption: test.encryption,
-			}
-			err := relational.CreateAccount("account-id")
-			if (err != nil) != test.expectError {
-				t.Errorf("Unexpected error value %v", err)
-			}
-			if err := test.assertion(db); err != nil {
-				t.Errorf("Unexpected assertion error %v", err)
-			}
-		})
-	}
 }
 
 func TestRelationalDatabase_GetAccount(t *testing.T) {

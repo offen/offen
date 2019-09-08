@@ -12,8 +12,9 @@ import (
 // Event is any analytics event that will be stored in the database. It is
 // uniquely tied to an Account and a User model.
 type Event struct {
-	EventID      string `gorm:"primary_key"`
-	AccountID    string
+	EventID   string `gorm:"primary_key"`
+	AccountID string
+	// the user id is nullable for anonymous events
 	HashedUserID *string
 	Payload      string
 	User         User `gorm:"foreignkey:HashedUserID;association_foreignkey:HashedUserID"`

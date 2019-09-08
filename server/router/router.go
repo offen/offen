@@ -161,7 +161,7 @@ func New(opts ...Config) http.Handler {
 	exchange.HandleFunc("", rt.getPublicKey).Methods(http.MethodGet)
 	exchange.HandleFunc("", rt.postUserSecret).Methods(http.MethodPost)
 
-	accounts := m.PathPrefix("/accounts/{accountId}").Subrouter()
+	accounts := m.PathPrefix("/accounts/{accountID}").Subrouter()
 	accounts.Handle("", http.HandlerFunc(rt.getAccount)).Methods(http.MethodGet)
 
 	deleted := m.PathPrefix("/deleted").Subrouter()

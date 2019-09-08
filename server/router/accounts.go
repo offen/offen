@@ -13,7 +13,7 @@ import (
 
 func (rt *router) getAccount(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	accountID := vars["accountId"]
+	accountID := vars["accountID"]
 
 	authCookie, authCookieErr := r.Cookie(authKey)
 	if authCookieErr != nil {

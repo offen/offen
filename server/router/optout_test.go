@@ -11,7 +11,6 @@ import (
 
 func TestRouter_optout(t *testing.T) {
 	rt := router{
-		optoutCookieDomain:   "test.offen.dev",
 		cookieExchangeSecret: []byte("top-secret"),
 	}
 	w := httptest.NewRecorder()
@@ -47,9 +46,5 @@ func TestRouter_optout(t *testing.T) {
 	cookie := cookies[0]
 	if cookie.Name != "optout" {
 		t.Errorf("Unexpected cookie name %s", cookie.Name)
-	}
-
-	if cookie.Domain != "test.offen.dev" {
-		t.Errorf("Unexpected cookie domain %s", cookie.Domain)
 	}
 }

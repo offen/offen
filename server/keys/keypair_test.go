@@ -1,9 +1,9 @@
 package keys
 
 import (
-	"crypto/x509"
-	"encoding/pem"
 	"testing"
+
+	"github.com/lestrrat-go/jwx/jwk"
 )
 
 func TestGenerateRSAKeyPair(t *testing.T) {
@@ -19,16 +19,11 @@ func TestGenerateRSAKeyPair(t *testing.T) {
 			t.Errorf("Unexpected error %v", err)
 		}
 
-		privateBlock, _ := pem.Decode(private)
-		_, privateErr := x509.ParsePKCS1PrivateKey(privateBlock.Bytes)
-		if privateErr != nil {
-			t.Errorf("Unexpected error %v", privateErr)
+		if _, err := jwk.ParseBytes(private); err != nil {
+			t.Errorf("Unexpected error %v", err)
 		}
-
-		publicBlock, _ := pem.Decode(public)
-		_, publicErr := x509.ParsePKCS1PublicKey(publicBlock.Bytes)
-		if publicErr != nil {
-			t.Errorf("Unexpected error %v", publicErr)
+		if _, err := jwk.ParseBytes(public); err != nil {
+			t.Errorf("Unexpected error %v", err)
 		}
 	})
 }
