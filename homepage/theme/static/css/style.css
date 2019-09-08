@@ -244,7 +244,11 @@ h4 {
     font-size: 22px;
   }
 }
-
+@media only screen and (max-width: 330px) {
+  .spacer-intro {
+      width: 250px;
+  }
+}
 
 /* ---------------------------------------------------
 LINKS
@@ -264,11 +268,6 @@ ol li p a,
 ol li p a:hover,
 ol li p a:focus {
 color: var(--grey-bright);
-}
-.footer a,
-.footer a:hover,
-.footer a:focus {
-  font-weight: 400;
 }
 
 
@@ -406,7 +405,7 @@ BUTTONS
 MENU
 ----------------------------------------------------*/
 .nav-list {
-  margin: 0 0 40px 0;
+  margin: 0 10px 40px 0;
 }
 .nav-bar {
   height: 70px;
@@ -440,9 +439,10 @@ nav ul li a:visited {
   display: block;
   padding: 0 20px;
   line-height: 70px;
+  text-decoration: none;
+  font-weight: 700;
   background: var(--yellow-mid);
   color: var(--black-mid);
-  text-decoration: none;
 }
 nav ul li a:hover,
 nav ul li a:visited:hover {
@@ -476,6 +476,9 @@ nav ul li ul li a {
 }
 /* Mobile Styles */
 @media only screen and (max-width: 960px) {
+  .nav-list {
+    margin: 0 0 40px 0;
+  }
   .nav-mobile {
     display: block;
   }
@@ -526,7 +529,7 @@ nav ul li ul li a {
   cursor: pointer;
   border-radius: 1px;
   height: 2px;
-  width: 35px;
+  width: 25px;
   background: var(--black-mid);
   position: absolute;
   display: block;
@@ -536,10 +539,10 @@ nav ul li ul li a {
   */
 }
 #nav-toggle span:before {
-  top: -10px;
+  top: -8px;
 }
 #nav-toggle span:after {
-  bottom: -10px;
+  bottom: -8px;
 }
 #nav-toggle.active span {
   background-color: transparent;
