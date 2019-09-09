@@ -1,5 +1,5 @@
 branch-defaults:
-  default:
+  master:
     environment: staging
     group_suffix: null
 global:
