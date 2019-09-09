@@ -19,8 +19,8 @@ func main() {
 	migrateCmd := flag.NewFlagSet("migrate", flag.ExitOnError)
 
 	if len(os.Args) < 2 {
-		fmt.Println("Expected a subcommand to be given")
-		os.Exit(1)
+		fmt.Println("No subcommand given. Exiting")
+		os.Exit(0)
 	}
 
 	switch os.Args[1] {
@@ -37,6 +37,7 @@ func main() {
 		fmt.Println(value)
 	case "bootstrap":
 		var (
+			migration  = bootstrapCmd.Bool("migration", true, "run migrations")
 			source     = bootstrapCmd.String("source", "bootstrap.yml", "the configuration file")
 			connection = bootstrapCmd.String("conn", os.Getenv("POSTGRES_CONNECTION_STRING"), "the postgres connection string")
 			emailSalt  = bootstrapCmd.String("salt", os.Getenv("ACCOUNT_USER_EMAIL_SALT"), "the salt value used when hashing account user emails")
@@ -56,6 +57,13 @@ func main() {
 		if dbErr != nil {
 			fmt.Printf("Error establishing database connection: %v", dbErr)
 			os.Exit(1)
+		}
+
+		if *migration {
+			if err := relational.Migrate(db); err != nil {
+				fmt.Printf("Error migrating database: %v\n", err)
+				os.Exit(1)
+			}
 		}
 
 		if err := relational.Bootstrap(read, db, saltBytes); err != nil {

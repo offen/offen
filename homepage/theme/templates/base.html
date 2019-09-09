@@ -23,7 +23,7 @@
     <link rel="stylesheet" href="/{{ ASSET_URL }}">
   {% endassets %}
   {% if OFFEN_ACCOUNT_ID %}
-    <script async src="https://script-alpha.offen.dev/script.js" data-account-id="{{ OFFEN_ACCOUNT_ID }}"></script>
+    <script async src="/script.js" data-account-id="{{ OFFEN_ACCOUNT_ID }}"></script>
   {% endif %}
 </head>
 <body class="{{page.template}}">

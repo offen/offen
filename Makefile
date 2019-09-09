@@ -23,8 +23,8 @@ bootstrap:
 	@docker-compose run server make bootstrap
 
 build:
-	@docker build -t offen-server:latest -f build/server/Dockerfile .
-	@docker build -t offen-proxy:latest -f build/proxy/Dockerfile .
+	@docker build -t offen/server:latest -f build/server/Dockerfile .
+	@docker build -t offen/proxy:latest -f build/proxy/Dockerfile .
 
 secret:
 	@docker-compose run server make secret

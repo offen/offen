@@ -1,16 +1,6 @@
 version: 2
 
-production_env: &production_env
-  environment:
-    - SERVER_HOST=https://server-alpha.offen.dev
-    - SCRIPT_HOST=https://script-alpha.offen.dev
-    - AUDITORIUM_HOST=https://auditorium-alpha.offen.dev
-    - VAULT_HOST=https://vault-alpha.offen.dev
-    - HOMEPAGE_HOST=https://www.offen.dev
-    - NODE_ENV=production
-    - SECRET_ID_SERVER_CONNECTION_STRING=alpha/server/postgresConnectionString
-
-deploy_preconditions: &deploy_preconditions
+build_preconditions: &build_preconditions
   requires:
     - server
     - vault
@@ -21,10 +11,12 @@ deploy_preconditions: &deploy_preconditions
     branches:
       only: /^master$/
 
-build_preconditions: &build_preconditions
+deploy_preconditions: &deploy_preconditions
+  requires:
+    - build
   filters:
     branches:
-      ignore: gh-pages
+      only: /^master$/
 
 jobs:
   server:
@@ -156,74 +148,70 @@ jobs:
           name: Run tests
           command: npm test
 
-  deploy_homepage:
+  build:
     docker:
-      - image: circleci/python:3.6-node
-    working_directory: ~/offen/homepage
-    environment:
-      - SOURCE_BRANCH: master
-      - TARGET_BRANCH: gh-pages
+      - image: docker:18-git
+    working_directory: ~/offen
     steps:
-      - checkout:
-          path: ~/offen
+      - checkout
+      - setup_remote_docker
       - restore_cache:
-          key: offen-homepage-{{ checksum "requirements.txt" }}
-      - run:
-          name: Install dependencies
-          command: |
-            python -m venv venv
-            source venv/bin/activate
-            pip install -r requirements.txt
-      - save_cache:
+          keys:
+            - v1-{{ .Branch }}
           paths:
-            - ~/offen/homepage/venv
-          key: offen-homepage-{{ checksum "requirements.txt" }}
+            - /caches/proxy.tar
+            - /caches/server.tar
       - run:
-          name: Install image optimization deps
+          name: Load Docker image layer cache
           command: |
-            sudo npm install svgo -g
-            sudo apt-get install libjpeg-progs optipng
+            set +o pipefail
+            docker load -i /caches/app.tar | true
       - run:
-          name: Deploy
+          name: Build application Docker image
           command: |
-            source venv/bin/activate
+            docker build --cache-from=offen/proxy -t offen/proxy:latest -f build/proxy/Dockerfile .
+            docker build --cache-from=offen/server -t offen/server:latest -f build/server/Dockerfile .
+      - run:
+          name: Save Docker image layer cache
+          command: |
+            mkdir -p /caches
+            docker save -o /caches/proxy.tar offen/proxy
+            docker save -o /caches/server.tar offen/server
+      - save_cache:
+          key: v1-{{ .Branch }}-{{ epoch }}
+          paths:
+            - /caches/app.tar
+      - deploy:
+          name: Push application Docker image
+          command: |
+            echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
+            docker push offen/server:latest
+            docker push offen/proxy:latest
 
-            git config --global user.email $GH_EMAIL
-            git config --global user.name $GH_NAME
-
-            git clone $CIRCLE_REPOSITORY_URL out
-
-            cd out
-            git checkout $TARGET_BRANCH || git checkout --orphan $TARGET_BRANCH
-            git rm -rf .
-            cd ..
-
-            make publish
-
-            cp -a output/. out/.
-
-            mkdir -p out/.circleci && cp -a ./../.circleci/. out/.circleci/.
-            cp CNAME out/CNAME
-            cd out
-
-            git add -A
-            git commit -m "Automated deployment to GitHub Pages: ${CIRCLE_SHA1}" --allow-empty
-
-            git push origin $TARGET_BRANCH
+  deploy:
+    working_directory: ~/offen
+    docker:
+      - image: circleci/python:3.6
+    steps:
+      - checkout
+      - run:
+          name: Installing deployment dependencies
+          command: |
+            sudo pip install awsebcli --upgrade
+      - run:
+          name: Deploying
+          command: eb deploy staging
 
 workflows:
   version: 2
   test_build_deploy:
     jobs:
-      - server:
+      - server
+      - vault
+      - script
+      - auditorium
+      - packages
+      - build:
           <<: *build_preconditions
-      - vault:
-          <<: *build_preconditions
-      - script:
-          <<: *build_preconditions
-      - auditorium:
-          <<: *build_preconditions
-      - packages:
-          <<: *build_preconditions
-      - deploy_homepage:
+      - deploy:
           <<: *deploy_preconditions
