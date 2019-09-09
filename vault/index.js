@@ -40,7 +40,7 @@ window.addEventListener('message', function (event) {
         handler = function () {
           console.log('This page is using offen to collect usage statistics.')
           console.log('You have opted out of data collection, no data is being collected.')
-          console.log('Find out more at "https://www.offen.dev".')
+          console.log('Find out more about offen at "https://www.offen.dev".')
           return Promise.resolve()
         }
       } else if (!allowsCookies()) {
@@ -54,8 +54,8 @@ window.addEventListener('message', function (event) {
       } else {
         handler = function () {
           console.log('This page is using offen to collect usage statistics.')
-          console.log('You can access and manage all of your personal data or opt-out at "' + process.env.AUDITORIUM_HOST + '".')
-          console.log('Find out more at "https://www.offen.dev".')
+          console.log('You can access and manage all of your personal data or opt-out at "' + window.location.origin + '/auditorium/".')
+          console.log('Find out more about offen at "https://www.offen.dev".')
           return handleAnalyticsEvent.apply(null, [].slice.call(arguments))
         }
       }
