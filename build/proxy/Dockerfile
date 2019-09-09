@@ -1,34 +1,43 @@
 FROM node:10 as auditorium
 
-COPY ./auditorium /code/auditorium
+COPY ./auditorium/package.json /code/deps/package.json
 COPY ./packages /code/packages
+WORKDIR /code/deps
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
+RUN npm install
+COPY ./auditorium /code/auditorium
 COPY ./styles /code/styles
 COPY ./banner.txt /code/banner.txt
 WORKDIR /code/auditorium
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
-RUN npm install
+RUN cp -a /code/deps/node_modules /code/auditorium/
 ENV NODE_ENV production
 RUN npm run build
 
 FROM node:10 as script
 
-COPY ./script /code/script
+COPY ./script/package.json /code/deps/package.json
 COPY ./packages /code/packages
-COPY ./banner.txt /code/banner.txt
-WORKDIR /code/script
+WORKDIR /code/deps
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 RUN npm install
+COPY ./script /code/script
+COPY ./banner.txt /code/banner.txt
+WORKDIR /code/script
+RUN cp -a /code/deps/node_modules /code/script/
 ENV NODE_ENV production
 RUN npm run build
 
 FROM node:10 as vault
 
-COPY ./vault /code/vault
+COPY ./vault/package.json /code/deps/package.json
 COPY ./packages /code/packages
-COPY ./banner.txt /code/banner.txt
-WORKDIR /code/vault
+WORKDIR /code/deps
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 RUN npm install
+COPY ./vault /code/vault
+COPY ./banner.txt /code/banner.txt
+WORKDIR /code/vault
+RUN cp -a /code/deps/node_modules /code/vault/
 ENV NODE_ENV production
 RUN npm run build
 
