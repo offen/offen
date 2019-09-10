@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"time"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
@@ -17,10 +18,11 @@ func main() {
 	secretCmd := flag.NewFlagSet("secret", flag.ExitOnError)
 	bootstrapCmd := flag.NewFlagSet("bootstrap", flag.ExitOnError)
 	migrateCmd := flag.NewFlagSet("migrate", flag.ExitOnError)
+	expireCmd := flag.NewFlagSet("expire", flag.ExitOnError)
 
 	if len(os.Args) < 2 {
 		fmt.Println("No subcommand given. Exiting")
-		os.Exit(0)
+		os.Exit(1)
 	}
 
 	switch os.Args[1] {
@@ -87,6 +89,24 @@ func main() {
 			os.Exit(1)
 		}
 		fmt.Println("Successfully ran database migrations")
+	case "expire":
+		var (
+			connection      = migrateCmd.String("conn", os.Getenv("POSTGRES_CONNECTION_STRING"), "the postgres connection string")
+			retentionPeriod = migrateCmd.Duration("retention", time.Hour*4464, "the desired ttl for events")
+		)
+		expireCmd.Parse(os.Args[2:])
+		db, dbErr := gorm.Open("postgres", *connection)
+		if dbErr != nil {
+			fmt.Printf("Error establishing database connection: %v", dbErr)
+			os.Exit(1)
+		}
+
+		affected, err := relational.Expire(db, *retentionPeriod)
+		if err != nil {
+			fmt.Printf("Error expiring events: %v\n", err)
+			os.Exit(1)
+		}
+		fmt.Printf("Successfully expired %d events\n", affected)
 	default:
 		fmt.Printf("Unknown subcommand %s\n", os.Args[1])
 		os.Exit(1)
