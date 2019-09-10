@@ -351,7 +351,8 @@ function deleteUserSecretWith (getDatabase) {
   return function (accountId) {
     var db = getDatabase(accountId)
     return db.keys
-      .delete({ type: TYPE_USER_SECRET })
+      .where({ type: TYPE_USER_SECRET })
+      .delete()
   }
 }
 

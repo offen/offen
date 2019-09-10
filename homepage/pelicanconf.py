@@ -43,4 +43,3 @@ DIRECT_TEMPLATES = []
 GITHUB_ORG = 'https://github.com/offen'
 CONTACT_EMAIL = 'mail@offen.dev'
 PATREON_URL = 'https://www.patreon.com/bePatron?u=21484999'
-AUDITORIUM_SCRIPT = 'http://localhost:8080/auditorium/index.js'
