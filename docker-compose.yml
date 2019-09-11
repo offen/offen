@@ -31,6 +31,7 @@ services:
       COOKIE_EXCHANGE_SECRET: 3P+w6QetKO3Kn8h1YyRlCw==
       EVENT_RETENTION_PERIOD: 4464h
       ACCOUNT_USER_EMAIL_SALT: JuhbRA4lCdo8rt5qVdLpk3==
+      SECURE_COOKIE: 'off'
     command: refresh run
     links:
       - server_database

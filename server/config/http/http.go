@@ -45,7 +45,7 @@ func New() (config.Config, error) {
 	cfg := httpConfig{
 		port:                 defaultPort,
 		connectionString:     os.Getenv("POSTGRES_CONNECTION_STRING"),
-		secureCookie:         os.Getenv("SECURE_COOKIE") != "",
+		secureCookie:         os.Getenv("SECURE_COOKIE") != "off",
 		development:          os.Getenv("DEVELOPMENT") != "",
 		cookieExchangeSecret: os.Getenv("COOKIE_EXCHANGE_SECRET"),
 		accountUserSalt:      os.Getenv("ACCOUNT_USER_EMAIL_SALT"),
