@@ -1,10 +1,10 @@
 FROM node:10 as auditorium
 
-COPY ./auditorium/package.json /code/deps/package.json
+COPY ./auditorium/package.json ./auditorium/package-lock.json /code/deps/
 COPY ./packages /code/packages
 WORKDIR /code/deps
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
-RUN npm install
+RUN npm ci
 COPY ./auditorium /code/auditorium
 COPY ./styles /code/styles
 COPY ./banner.txt /code/banner.txt
@@ -15,11 +15,11 @@ RUN npm run build
 
 FROM node:10 as script
 
-COPY ./script/package.json /code/deps/package.json
+COPY ./script/package.json ./script/package-lock.json /code/deps/
 COPY ./packages /code/packages
 WORKDIR /code/deps
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
-RUN npm install
+RUN npm ci
 COPY ./script /code/script
 COPY ./banner.txt /code/banner.txt
 WORKDIR /code/script
@@ -29,11 +29,11 @@ RUN npm run build
 
 FROM node:10 as vault
 
-COPY ./vault/package.json /code/deps/package.json
+COPY ./vault/package.json ./vault/package-lock.json /code/deps/
 COPY ./packages /code/packages
 WORKDIR /code/deps
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
-RUN npm install
+RUN npm ci
 COPY ./vault /code/vault
 COPY ./banner.txt /code/banner.txt
 WORKDIR /code/vault
