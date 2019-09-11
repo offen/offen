@@ -6,7 +6,6 @@ import (
 	"net/http"
 
 	httpconfig "github.com/offen/offen/server/config/http"
-	"github.com/offen/offen/server/keys/remote"
 	"github.com/offen/offen/server/persistence/relational"
 	"github.com/offen/offen/server/router"
 	"github.com/sirupsen/logrus"
@@ -21,11 +20,10 @@ func main() {
 	logger := logrus.New()
 	logger.SetLevel(cfg.LogLevel())
 
-	encryption := remote.New(cfg.EncryptionEndpoint())
 	db, err := relational.New(
 		relational.WithConnectionString(cfg.ConnectionString()),
-		relational.WithEncryption(encryption),
 		relational.WithLogging(cfg.Development()),
+		relational.WithEmailSalt(cfg.AccountUserSalt()),
 	)
 	if err != nil {
 		logger.WithError(err).Fatal("unable to establish database connection")
@@ -37,9 +35,6 @@ func main() {
 			router.WithDatabase(db),
 			router.WithLogger(logger),
 			router.WithSecureCookie(cfg.SecureCookie()),
-			router.WithOptoutCookieDomain(cfg.OptoutCookieDomain()),
-			router.WithCORSOrigin(cfg.CorsOrigin()),
-			router.WithJWTPublicKey(cfg.JWTPublicKey()),
 			router.WithCookieExchangeSecret(cfg.CookieExchangeSecret()),
 			router.WithRetentionPeriod(cfg.RetentionPeriod()),
 		),

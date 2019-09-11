@@ -1,8 +1,0 @@
-*.pem
-*.dot
-__pycache__
-*.log
-.vscode/
-.pytest_cache
-venv/
-*.pyc

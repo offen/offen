@@ -16,7 +16,6 @@ var withModel = require('./views/decorators/with-model')
 var withError = require('./views/decorators/with-error')
 var withLayout = require('./views/decorators/with-layout')
 
-sf('./styles/index.css')
 sf('./index.css')
 
 var app = choo()
@@ -26,7 +25,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 var host = document.createElement('div')
-document.body.appendChild(host)
+document.querySelector('#app-host').appendChild(host)
 
 app.use(dataStore)
 app.use(authStore)
@@ -38,24 +37,26 @@ function decorateWithDefaults (view, title) {
   return wrapper(view)
 }
 
+var base = (document.querySelector('base') && document.querySelector('base').getAttribute('href')) || '/'
+
 app.route(
-  '/account/:accountId',
+  base + 'account/:accountId',
   decorateWithDefaults(withAuthentication()(withModel()(mainView)), 'offen auditorium')
 )
 app.route(
-  '/account',
+  base + 'account',
   decorateWithDefaults(withAuthentication()(accountView), 'offen accounts')
 )
 app.route(
-  '/login',
+  base + 'login',
   decorateWithDefaults(loginView, 'offen login')
 )
 app.route(
-  '/',
+  base.replace(/\/$/, ''),
   decorateWithDefaults(withModel()(mainView), 'offen auditorium')
 )
 app.route(
-  '/*',
+  base + '*',
   decorateWithDefaults(notFoundView, 'Not found')
 )
 

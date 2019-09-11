@@ -8,8 +8,12 @@ function handleQuery (message) {
     ? message.payload.query
     : null
 
+  var authenticatedUser = message.payload
+    ? message.payload.authenticatedUser
+    : null
+
   var lookup = (query && query.accountId)
-    ? getOperatorEvents(query)
+    ? getOperatorEvents(query, authenticatedUser)
     : getUserEvents(query)
 
   return lookup

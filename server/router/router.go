@@ -5,22 +5,19 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/felixge/httpsnoop"
 	"github.com/gorilla/mux"
+	"github.com/gorilla/securecookie"
 	"github.com/m90/go-thunk"
+	httputil "github.com/offen/offen/server/httputil"
 	"github.com/offen/offen/server/persistence"
-	httputil "github.com/offen/offen/server/shared/http"
 	"github.com/sirupsen/logrus"
 )
 
 type router struct {
 	db                   persistence.Database
 	logger               *logrus.Logger
+	cookieSigner         *securecookie.SecureCookie
 	secureCookie         bool
-	optoutCookieDomain   string
-	userCookieDomain     string
-	corsOrigin           string
-	jwtPublicKey         string
 	cookieExchangeSecret []byte
 	retentionPeriod      time.Duration
 }
@@ -37,7 +34,6 @@ const (
 	cookieKey                   = "user"
 	optoutKey                   = "optout"
 	authKey                     = "auth"
-	authHeader                  = "X-RPC-Authentication"
 	contextKeyCookie contextKey = iota
 )
 
@@ -59,7 +55,6 @@ func (rt *router) optoutCookie(optout bool) *http.Cookie {
 		// the optout cookie is supposed to outlive the software, so
 		// it expires in ~100 years
 		Expires: time.Now().Add(time.Hour * 24 * 365 * 100),
-		Domain:  rt.optoutCookieDomain,
 		Path:    "/",
 		// this cookie is supposed to be read by the client so it can
 		// stop operating before even sending requests
@@ -70,6 +65,25 @@ func (rt *router) optoutCookie(optout bool) *http.Cookie {
 		c.Expires = time.Unix(0, 0)
 	}
 	return c
+}
+
+func (rt *router) authCookie(userID string, delete bool) (*http.Cookie, error) {
+	c := http.Cookie{
+		Name:     authKey,
+		HttpOnly: true,
+		SameSite: http.SameSiteDefaultMode,
+	}
+	if delete {
+		c.Expires = time.Unix(0, 0)
+	} else {
+		value, err := rt.cookieSigner.MaxAge(24*60*60).Encode(authKey, userID)
+		if err != nil {
+			return nil, err
+		}
+		c.Value = value
+	}
+	return &c, nil
+
 }
 
 // Config adds a configuration value to the router
@@ -97,32 +111,11 @@ func WithSecureCookie(sc bool) Config {
 	}
 }
 
-// WithOptoutCookieDomain defines the domain `optout` cookies will use
-func WithOptoutCookieDomain(cd string) Config {
-	return func(r *router) {
-		r.optoutCookieDomain = cd
-	}
-}
-
-// WithCORSOrigin sets the CORS origin used on response headers
-func WithCORSOrigin(o string) Config {
-	return func(r *router) {
-		r.corsOrigin = o
-	}
-}
-
-// WithJWTPublicKey sets the endpoint to fetch the JWT Public Key
-func WithJWTPublicKey(k string) Config {
-	return func(r *router) {
-		r.jwtPublicKey = k
-	}
-}
-
 // WithCookieExchangeSecret sets the secret to be used for signing secured
 // cookie exchange requests
-func WithCookieExchangeSecret(s string) Config {
+func WithCookieExchangeSecret(b []byte) Config {
 	return func(r *router) {
-		r.cookieExchangeSecret = []byte(s)
+		r.cookieExchangeSecret = b
 	}
 }
 
@@ -142,10 +135,10 @@ func New(opts ...Config) http.Handler {
 	for _, opt := range opts {
 		opt(&rt)
 	}
+
+	rt.cookieSigner = securecookie.New([]byte(rt.cookieExchangeSecret), nil)
 	m := mux.NewRouter()
 
-	json := httputil.ContentTypeMiddleware("application/json")
-	cors := httputil.CorsMiddleware(rt.corsOrigin)
 	dropOptout := httputil.OptoutMiddleware(optoutKey)
 	recovery := thunk.HandleSafelyWith(func(err error) {
 		if rt.logger != nil {
@@ -154,7 +147,7 @@ func New(opts ...Config) http.Handler {
 	})
 	userCookie := httputil.UserCookieMiddleware(cookieKey, contextKeyCookie)
 
-	m.Use(recovery, cors, json)
+	m.Use(recovery)
 
 	optout := m.PathPrefix("/opt-out").Subrouter()
 	optout.HandleFunc("", rt.postOptout).Methods(http.MethodPost)
@@ -168,18 +161,20 @@ func New(opts ...Config) http.Handler {
 	exchange.HandleFunc("", rt.getPublicKey).Methods(http.MethodGet)
 	exchange.HandleFunc("", rt.postUserSecret).Methods(http.MethodPost)
 
-	keyCache := httputil.NewDefaultKeyCache(httputil.DefaultCacheExpiry)
-	getAuth := httputil.JWTProtect(rt.jwtPublicKey, authKey, authHeader, getAuthorizer, keyCache)
-	postAuth := httputil.JWTProtect(rt.jwtPublicKey, authKey, authHeader, postAuthorizer, keyCache)
-	accounts := m.PathPrefix("/accounts").Subrouter()
-	accounts.Handle("", getAuth(http.HandlerFunc(rt.getAccount))).Methods(http.MethodGet)
-	accounts.Handle("", postAuth(http.HandlerFunc(rt.postAccount))).Methods(http.MethodPost)
-	accounts.Handle("", postAuth(http.HandlerFunc(rt.deleteAccount))).Methods(http.MethodDelete)
+	accounts := m.PathPrefix("/accounts/{accountID}").Subrouter()
+	accounts.Handle("", http.HandlerFunc(rt.getAccount)).Methods(http.MethodGet)
 
 	deleted := m.PathPrefix("/deleted").Subrouter()
 	deletedEventsForUser := userCookie(http.HandlerFunc(rt.getDeletedEvents))
 	deleted.Handle("", deletedEventsForUser).Methods(http.MethodPost).Queries("user", "1")
 	deleted.HandleFunc("", rt.getDeletedEvents).Methods(http.MethodPost)
+
+	login := m.PathPrefix("/login").Subrouter()
+	login.HandleFunc("", rt.getLogin).Methods(http.MethodGet)
+	login.HandleFunc("", rt.postLogin).Methods(http.MethodPost)
+
+	changePassword := m.PathPrefix("/change-password").Subrouter()
+	changePassword.HandleFunc("", rt.postChangePassword).Methods(http.MethodPost)
 
 	purge := m.PathPrefix("/purge").Subrouter()
 	purge.Use(userCookie)
@@ -191,20 +186,9 @@ func New(opts ...Config) http.Handler {
 	events.Handle("", receiveEvents).Methods(http.MethodPost).Queries("anonymous", "1")
 	events.Handle("", userCookie(receiveEvents)).Methods(http.MethodPost)
 
-	m.NotFoundHandler = cors(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	m.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		httputil.RespondWithJSONError(w, errors.New("Not found"), http.StatusNotFound)
-	}))
-
-	if rt.logger == nil {
-		return m
-	}
-
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		metrics := httpsnoop.CaptureMetrics(m, w, r)
-		rt.logger.WithFields(logrus.Fields{
-			"status":   metrics.Code,
-			"duration": metrics.Duration.Seconds(),
-			"size":     metrics.Written,
-		}).Infof("%s %s", r.Method, r.RequestURI)
 	})
+
+	return m
 }

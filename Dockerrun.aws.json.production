@@ -1,0 +1,31 @@
+{
+  "AWSEBDockerrunVersion": 2,
+  "volumes": [],
+  "containerDefinitions": [
+    {
+      "name": "proxy",
+      "image": "offen/proxy:stable",
+      "essential": true,
+      "memory": 128,
+      "portMappings": [
+        {
+          "hostPort": 80,
+          "containerPort": 80
+        }
+      ],
+      "dependsOn": [
+        {
+          "containerName": "server",
+          "condition": "START"
+        }
+      ],
+      "links": ["server"]
+    },
+    {
+      "name": "server",
+      "image": "offen/server:stable",
+      "essential": true,
+      "memory": 256
+    }
+  ]
+}

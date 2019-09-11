@@ -5,7 +5,6 @@ import (
 
 	"github.com/gofrs/uuid"
 	"github.com/jinzhu/gorm"
-	"github.com/offen/offen/server/keys"
 	"github.com/offen/offen/server/persistence"
 )
 
@@ -30,6 +29,7 @@ func (r *relationalDatabase) GetAccount(accountID string, includeEvents bool, ev
 
 	result := persistence.AccountResult{
 		AccountID: account.AccountID,
+		Name:      account.Name,
 	}
 
 	if includeEvents {
@@ -148,37 +148,4 @@ func (r *relationalDatabase) AssociateUserSecret(accountID, userID, encryptedUse
 		EncryptedUserSecret: encryptedUserSecret,
 		HashedUserID:        hashedUserID,
 	}).Error
-}
-
-func (r *relationalDatabase) CreateAccount(accountID string) error {
-	userSalt, userSaltErr := keys.GenerateRandomString(keys.UserSaltLength)
-	if userSaltErr != nil {
-		return fmt.Errorf("relational: error creating new user salt for account: %v", userSaltErr)
-	}
-	publicKey, privateKey, keyErr := keys.GenerateRSAKeypair(keys.RSAKeyLength)
-	if keyErr != nil {
-		return fmt.Errorf("relational: error creating new key pair for account: %v", keyErr)
-	}
-	encryptedPrivateKey, encryptErr := r.encryption.Encrypt(privateKey)
-	if encryptErr != nil {
-		return fmt.Errorf("relational: error encrypting account private key: %v", encryptErr)
-	}
-	return r.db.Create(&Account{
-		AccountID:           accountID,
-		PublicKey:           string(publicKey),
-		EncryptedPrivateKey: string(encryptedPrivateKey),
-		UserSalt:            userSalt,
-		Retired:             false,
-	}).Error
-}
-
-func (r *relationalDatabase) RetireAccount(accountID string) error {
-	var account Account
-	if err := r.db.First(&account, "account_id = ? AND retired = ?", accountID, false).Error; err != nil {
-		if gorm.IsRecordNotFoundError(err) {
-			return persistence.ErrUnknownAccount(fmt.Sprintf("unknown account with id %s or it is already retired", accountID))
-		}
-		return err
-	}
-	return r.db.Model(&Account{AccountID: accountID}).Update("retired", true).Error
 }

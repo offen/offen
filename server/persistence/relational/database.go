@@ -14,6 +14,7 @@ import (
 type relationalDatabase struct {
 	db         *gorm.DB
 	encryption keys.Encrypter
+	emailSalt  []byte
 }
 
 // New creates a persistence layer that connects to a PostgreSQL database
@@ -31,7 +32,7 @@ func New(configs ...Config) (persistence.Database, error) {
 		return nil, fmt.Errorf("relational: error opening database: %v", err)
 	}
 
-	return &relationalDatabase{db, opts.encryption}, nil
+	return &relationalDatabase{db, opts.encryption, opts.emailSalt}, nil
 }
 
 type dbOptions struct {
@@ -39,6 +40,7 @@ type dbOptions struct {
 	connectionString string
 	encryption       keys.Encrypter
 	logger           bool
+	emailSalt        []byte
 }
 
 // Config is a function that adds a configuration option to the constructor
@@ -64,5 +66,11 @@ func WithEncryption(e keys.Encrypter) Config {
 func WithLogging(l bool) Config {
 	return func(opts *dbOptions) {
 		opts.logger = l
+	}
+}
+
+func WithEmailSalt(b []byte) Config {
+	return func(opts *dbOptions) {
+		opts.emailSalt = b
 	}
 }

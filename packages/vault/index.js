@@ -20,12 +20,13 @@ function createVault (host) {
   vault.setAttribute('scrolling', 'no')
 
   createVault[host] = new Promise(function (resolve, reject) {
-    vault.addEventListener('load', function () {
+    vault.addEventListener('load', function (e) {
       function postMessage (message, waitForResponse) {
         return new Promise(function (resolve, reject) {
+          var origin = new window.URL(vault.src).origin
           if (!waitForResponse) {
             try {
-              vault.contentWindow.postMessage(message, host)
+              vault.contentWindow.postMessage(message, origin)
               resolve(null)
             } catch (err) {
               reject(err)
@@ -47,7 +48,7 @@ function createVault (host) {
           channel.port1.onmessageerror = function (err) {
             reject(err)
           }
-          vault.contentWindow.postMessage(message, host, [channel.port2])
+          vault.contentWindow.postMessage(message, origin, [channel.port2])
         })
       }
       resolve(postMessage)

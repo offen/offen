@@ -6,19 +6,42 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/gorilla/mux"
+	httputil "github.com/offen/offen/server/httputil"
 	"github.com/offen/offen/server/persistence"
-	httputil "github.com/offen/offen/server/shared/http"
 )
 
 func (rt *router) getAccount(w http.ResponseWriter, r *http.Request) {
-	since := r.URL.Query().Get("since")
-	accountID := r.URL.Query().Get("accountId")
-	if accountID == "" {
-		httputil.RespondWithJSONError(w, errors.New("no accountId parameter given"), http.StatusBadRequest)
+	vars := mux.Vars(r)
+	accountID := vars["accountID"]
+
+	authCookie, authCookieErr := r.Cookie(authKey)
+	if authCookieErr != nil {
+		httputil.RespondWithJSONError(w, errors.New("missing authentication token"), http.StatusForbidden)
 		return
 	}
 
-	result, err := rt.db.GetAccount(accountID, true, since)
+	var userID string
+	if err := rt.cookieSigner.Decode(authKey, authCookie.Value, &userID); err != nil {
+		authCookie, _ = rt.authCookie("", true)
+		http.SetCookie(w, authCookie)
+		httputil.RespondWithJSONError(w, fmt.Errorf("error decoding cookie value: %v", err), http.StatusUnauthorized)
+		return
+	}
+
+	user, userErr := rt.db.LookupUser(userID)
+	if userErr != nil {
+		authCookie, _ = rt.authCookie("", true)
+		http.SetCookie(w, authCookie)
+		httputil.RespondWithJSONError(w, fmt.Errorf("user with id %s does not exist: %v", userID, userErr), http.StatusNotFound)
+	}
+
+	if ok := user.CanAccessAccount(accountID); !ok {
+		httputil.RespondWithJSONError(w, fmt.Errorf("user does not have permissions to access account %s", accountID), http.StatusNotFound)
+		return
+	}
+
+	result, err := rt.db.GetAccount(accountID, true, r.URL.Query().Get("since"))
 	if err != nil {
 		if _, ok := err.(persistence.ErrUnknownAccount); ok {
 			httputil.RespondWithJSONError(w, fmt.Errorf("account %s not found", accountID), http.StatusNotFound)
@@ -38,30 +61,4 @@ func (rt *router) getAccount(w http.ResponseWriter, r *http.Request) {
 
 type accountPayload struct {
 	AccountID string `json:"accountId"`
-}
-
-func (rt *router) postAccount(w http.ResponseWriter, r *http.Request) {
-	var payload accountPayload
-	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
-		httputil.RespondWithJSONError(w, fmt.Errorf("router: error parsing request payload: %v", err), http.StatusBadRequest)
-		return
-	}
-	if err := rt.db.CreateAccount(payload.AccountID); err != nil {
-		httputil.RespondWithJSONError(w, fmt.Errorf("router: error creating account: %v", err), http.StatusInternalServerError)
-		return
-	}
-	w.WriteHeader(http.StatusNoContent)
-}
-
-func (rt *router) deleteAccount(w http.ResponseWriter, r *http.Request) {
-	var payload accountPayload
-	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
-		httputil.RespondWithJSONError(w, fmt.Errorf("router: error parsing request payload: %v", err), http.StatusBadRequest)
-		return
-	}
-	if err := rt.db.RetireAccount(payload.AccountID); err != nil {
-		httputil.RespondWithJSONError(w, fmt.Errorf("router: error retiring account: %v", err), http.StatusInternalServerError)
-		return
-	}
-	w.WriteHeader(http.StatusNoContent)
 }

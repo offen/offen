@@ -1,32 +1,13 @@
 var handleFetchResponse = require('offen/fetch-response')
 
-exports.decryptPrivateKey = decryptPrivateKeyWith(process.env.KMS_HOST + '/decrypt')
-exports.decryptPrivateKeyWith = decryptPrivateKeyWith
-
-function decryptPrivateKeyWith (kmsUrl) {
-  return function (encryptedKey) {
-    var url = new window.URL(kmsUrl)
-    url.search = new window.URLSearchParams({ jwk: '1' })
-    return window
-      .fetch(url, {
-        method: 'POST',
-        credentials: 'include',
-        body: JSON.stringify({ encrypted: encryptedKey })
-      })
-      .then(handleFetchResponse)
-  }
-}
-
-exports.getAccount = getAccountWith(process.env.SERVER_HOST + '/accounts')
+exports.getAccount = getAccountWith(window.location.origin + '/api/accounts')
 exports.getAccountWith = getAccountWith
 
 function getAccountWith (accountsUrl) {
   return function (accountId, params) {
     params = params || {}
-    var url = new window.URL(accountsUrl)
-    url.search = new window.URLSearchParams(
-      Object.assign(params, { accountId: accountId })
-    )
+    var url = new window.URL(accountsUrl + '/' + accountId)
+    url.search = new window.URLSearchParams(params)
     return window
       .fetch(url, {
         method: 'GET',
@@ -36,7 +17,7 @@ function getAccountWith (accountsUrl) {
   }
 }
 
-exports.getEvents = getEventsWith(process.env.SERVER_HOST + '/events')
+exports.getEvents = getEventsWith(window.location.origin + '/api/events')
 exports.getEventsWith = getEventsWith
 
 function getEventsWith (accountsUrl) {
@@ -62,7 +43,7 @@ function getEventsWith (accountsUrl) {
   }
 }
 
-exports.postEvent = postEventWith(process.env.SERVER_HOST + '/events')
+exports.postEvent = postEventWith(window.location.origin + '/api/events')
 exports.postEventWith = postEventWith
 
 function postEventWith (eventsUrl) {
@@ -84,7 +65,7 @@ function postEventWith (eventsUrl) {
   }
 }
 
-exports.getDeletedEvents = getDeletedEventsWith(process.env.SERVER_HOST + '/deleted')
+exports.getDeletedEvents = getDeletedEventsWith(window.location.origin + '/api/deleted')
 exports.getDeletedEventsWith = getDeletedEventsWith
 
 function getDeletedEventsWith (deletedEventsUrl) {
@@ -105,7 +86,7 @@ function getDeletedEventsWith (deletedEventsUrl) {
   }
 }
 
-exports.getPublicKey = getPublicKeyWith(process.env.SERVER_HOST + '/exchange')
+exports.getPublicKey = getPublicKeyWith(window.location.origin + '/api/exchange')
 exports.getPublicKeyWith = getPublicKeyWith
 
 function getPublicKeyWith (exchangeUrl) {
@@ -124,7 +105,7 @@ function getPublicKeyWith (exchangeUrl) {
   }
 }
 
-exports.postUserSecret = postUserSecretWith(process.env.SERVER_HOST + '/exchange')
+exports.postUserSecret = postUserSecretWith(window.location.origin + '/api/exchange')
 exports.postUserSecretWith = postUserSecretWith
 
 function postUserSecretWith (exchangeUrl) {
@@ -139,7 +120,7 @@ function postUserSecretWith (exchangeUrl) {
   }
 }
 
-exports.login = loginWith(process.env.ACCOUNTS_HOST + '/api/login')
+exports.login = loginWith(window.location.origin + '/api/login')
 exports.loginWith = loginWith
 
 function loginWith (loginUrl) {
@@ -161,7 +142,25 @@ function loginWith (loginUrl) {
   }
 }
 
-exports.purge = purgeWith(process.env.SERVER_HOST + '/purge')
+exports.changePassword = changePasswordWith(window.location.origin + '/api/change-password')
+exports.changePasswordWith = changePasswordWith
+
+function changePasswordWith (loginUrl) {
+  return function (currentPassword, changedPassword) {
+    return window
+      .fetch(loginUrl, {
+        method: 'POST',
+        credentials: 'include',
+        body: JSON.stringify({
+          changedPassword: changedPassword,
+          currentPassword: currentPassword
+        })
+      })
+      .then(handleFetchResponse)
+  }
+}
+
+exports.purge = purgeWith(window.location.origin + '/api/purge')
 exports.purgeWith = purgeWith
 
 function purgeWith (purgeUrl) {
@@ -175,7 +174,7 @@ function purgeWith (purgeUrl) {
   }
 }
 
-exports.optout = optoutWith(process.env.SERVER_HOST + '/opt-out')
+exports.optout = optoutWith(window.location.origin + '/api/opt-out')
 exports.optoutWith = optoutWith
 
 function optoutWith (optoutUrl) {
@@ -184,7 +183,7 @@ function optoutWith (optoutUrl) {
   }
 }
 
-exports.optin = optoutWith(process.env.SERVER_HOST + '/opt-in')
+exports.optin = optoutWith(window.location.origin + '/api/opt-in')
 exports.optinWith = optinWith
 
 function optinWith (optinUrl) {
@@ -194,8 +193,8 @@ function optinWith (optinUrl) {
 }
 
 // This is being used for setting and deleting opt-out cookies. It requires
-// the two-step process so this can really be protected using CORS. If this would
-// use a single call only, CORS would only protect the response payload, yet
+// the two-step process so this can really be protected using the Same-Origin-Policy.
+// If this would use a single call only, CORS would only protect the response payload, yet
 // the Set-Cookie header would also have effects on a request that would be
 // blocked by the CORS configuration. By requiring the server generated payload
 // to actually set the cookie, we can make sure the caller has actually passed

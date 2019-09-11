@@ -8,7 +8,7 @@ describe('src/relay-event.js', function () {
     beforeEach(function (done) {
       window.crypto.subtle.generateKey(
         {
-          name: 'AES-CTR',
+          name: 'AES-GCM',
           length: 256
         },
         true,

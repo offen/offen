@@ -5,11 +5,12 @@ type Database interface {
 	Insert(userID, accountID, payload string) error
 	Query(Query) (map[string][]EventResult, error)
 	GetAccount(accountID string, events bool, eventsSince string) (AccountResult, error)
-	CreateAccount(accountID string) error
-	RetireAccount(accountID string) error
 	GetDeletedEvents(ids []string, userID string) ([]string, error)
 	AssociateUserSecret(accountID, userID, encryptedUserSecret string) error
 	Purge(userID string) error
+	Login(email, password string) (LoginResult, error)
+	LookupUser(userID string) (LoginResult, error)
+	ChangePassword(userID, currentPassword, changedPassword string) error
 }
 
 // Query defines a set of filters to limit the set of results to be returned
@@ -45,8 +46,29 @@ type SecretsByUserID map[string]string
 // AccountResult is the data returned from looking up an account by id
 type AccountResult struct {
 	AccountID           string             `json:"accountId"`
+	Name                string             `json:"name"`
 	PublicKey           interface{}        `json:"publicKey,omitempty"`
 	EncryptedPrivateKey string             `json:"encryptedPrivateKey,omitempty"`
 	Events              *EventsByAccountID `json:"events,omitempty"`
 	UserSecrets         *SecretsByUserID   `json:"userSecrets,omitempty"`
+}
+
+type LoginResult struct {
+	UserID   string               `json:"userId"`
+	Accounts []LoginAccountResult `json:"accounts"`
+}
+
+func (l *LoginResult) CanAccessAccount(accountID string) bool {
+	for _, account := range l.Accounts {
+		if accountID == account.AccountID {
+			return true
+		}
+	}
+	return false
+}
+
+type LoginAccountResult struct {
+	AccountName      string      `json:"accountName"`
+	AccountID        string      `json:"accountId"`
+	KeyEncryptionKey interface{} `json:"keyEncryptionKey"`
 }

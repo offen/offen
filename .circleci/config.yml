@@ -1,69 +1,32 @@
 version: 2
 
-production_env: &production_env
-  environment:
-    - SERVER_HOST=https://server-alpha.offen.dev
-    - KMS_HOST=https://kms-alpha.offen.dev
-    - SCRIPT_HOST=https://script-alpha.offen.dev
-    - AUDITORIUM_HOST=https://auditorium-alpha.offen.dev
-    - VAULT_HOST=https://vault-alpha.offen.dev
-    - ACCOUNTS_HOST=https://accounts-alpha.offen.dev
-    - HOMEPAGE_HOST=https://www.offen.dev
-    - NODE_ENV=production
-    - SECRET_ID_SERVER_CONNECTION_STRING=alpha/server/postgresConnectionString
-
-deploy_preconditions: &deploy_preconditions
+build_preconditions: &build_preconditions
   requires:
     - server
-    - kms
     - vault
     - script
     - auditorium
     - packages
-    - shared
-    - accounts
   filters:
     branches:
       only: /^master$/
 
-build_preconditions: &build_preconditions
+deploy_preconditions: &deploy_preconditions
+  requires:
+    - build
   filters:
     branches:
-      ignore: gh-pages
+      only: /^master$/
 
 jobs:
-  kms:
-    docker:
-      - image: circleci/golang:1.12
-        environment:
-          - PORT=8081
-    working_directory: ~/offen/kms
-    steps:
-      - checkout:
-          path: ~/offen
-      - restore_cache:
-          key: offen-kms-{{ checksum "go.mod" }}
-      - run:
-          name: Download modules
-          command: go mod download
-      - save_cache:
-          paths:
-            - /go/pkg/mod
-          key: offen-kms-{{ checksum "go.mod" }}
-      - run:
-          name: Generate one-off key file
-          command: make bootstrap
-      - run:
-          name: Run tests
-          command: make test-ci
-
   server:
     docker:
       - image: circleci/golang:1.12
         environment:
-          - POSTGRES_CONNECTION_STRING=postgres://circle:test@localhost:5432/circle_test?sslmode=disable
-          - PORT=8080
-          - EVENT_RETENTION_PERIOD=4464h
+          POSTGRES_CONNECTION_STRING: postgres://circle:test@localhost:5432/circle_test?sslmode=disable
+          PORT: 8080
+          EVENT_RETENTION_PERIOD: 4464h
+          COOKIE_EXCHANGE_SECRET: VswgMshC4mPDfey8o+yScg==
       - image: circleci/postgres:11.2-alpine
         environment:
           - POSTGRES_USER=circle
@@ -96,20 +59,6 @@ jobs:
           command: |
             cp ~/offen/bootstrap.yml .
             make test-ci
-
-  shared:
-    docker:
-      - image: circleci/golang:1.12
-    working_directory: ~/offen/shared
-    steps:
-      - checkout:
-          path: ~/offen
-      - run:
-          name: Install dependencies
-          command: go get ./...
-      - run:
-          name: Run tests
-          command: make test
 
   vault:
     docker:
@@ -200,262 +149,75 @@ jobs:
           name: Run tests
           command: npm test
 
-  accounts:
+  build:
+    docker:
+      - image: docker:18-git
+    environment:
+      SITEURL: https://www.offen.dev
+      DOCKER_TAGE: stable
+    working_directory: ~/offen
+    steps:
+      - checkout
+      - setup_remote_docker
+      - restore_cache:
+          keys:
+            - v1-{{ .Branch }}
+          paths:
+            - /caches/proxy.tar
+            - /caches/server.tar
+      - run:
+          name: Load Docker image layer cache
+          command: |
+            set +o pipefail
+            docker load -i /caches/app.tar | true
+      - run:
+          name: Build application Docker image
+          command: |
+            docker build --cache-from=offen/proxy -t offen/proxy:latest -f build/proxy/Dockerfile .
+            docker build --cache-from=offen/server -t offen/server:latest -f build/server/Dockerfile .
+      - run:
+          name: Save Docker image layer cache
+          command: |
+            mkdir -p /caches
+            docker save -o /caches/proxy.tar offen/proxy
+            docker save -o /caches/server.tar offen/server
+      - save_cache:
+          key: v1-{{ .Branch }}-{{ epoch }}
+          paths:
+            - /caches/app.tar
+      - deploy:
+          name: Push application Docker image
+          command: |
+            echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
+            docker push offen/server:latest
+            docker push offen/proxy:latest
+
+  deploy:
+    working_directory: ~/offen
     docker:
       - image: circleci/python:3.6
-        environment:
-          CONFIG_CLASS: accounts.config.LocalConfig
-          MYSQL_CONNECTION_STRING: mysql://root:circle@127.0.0.1:3306/circle
-      - image: circleci/mysql:5.7
-        environment:
-          - MYSQL_ROOT_PASSWORD=circle
-          - MYSQL_DATABASE=circle
-          - MYSQL_HOST=127.0.0.1
-    working_directory: ~/offen/accounts
     steps:
-      - checkout:
-          path: ~/offen
-      - restore_cache:
-          key: offen-accounts-{{ checksum "requirements.txt" }}-{{ checksum "requirements-dev.txt" }}
+      - checkout
       - run:
-          name: Install dependencies
+          name: Installing deployment dependencies
           command: |
-            python3 -m venv venv
-            . venv/bin/activate
-            pip install -r requirements.txt
-            pip install -r requirements-dev.txt
-      - save_cache:
-          paths:
-            - ~/offen/accounts/venv
-          key: offen-accounts-{{ checksum "requirements.txt" }}-{{ checksum "requirements-dev.txt" }}
+            sudo pip install awsebcli --upgrade
       - run:
-          name: Waiting for MySQL to be ready
+          name: Deploying
           command: |
-            for i in `seq 1 10`;
-            do
-              nc -z localhost 3306 && echo Success && exit 0
-              echo -n .
-              sleep 1
-            done
-            echo Failed waiting for MySQL && exit 1
-      - run:
-          name: Run tests
-          command: |
-            . venv/bin/activate
-            cp ~/offen/bootstrap.yml .
-            make test-ci
-
-  deploy_python:
-    docker:
-      - image: circleci/python:3.6-node
-        <<: *production_env
-    working_directory: ~/offen
-    steps:
-      - checkout:
-          path: ~/offen
-      - restore_cache:
-          key: offen-deploy-{{ checksum "package.json" }}
-      - run:
-          name: Install dependencies
-          command: npm install
-      - save_cache:
-          paths:
-            - ~/offen/packages/node_modules
-          key: offen-packages-{{ checksum "package.json" }}
-      - run:
-          name: Deploy
-          working_directory: ~/offen/accounts
-          command: |
-            echo "Deploying accounts ..."
-            $(npm bin)/sls deploy
-
-  deploy_golang:
-    docker:
-      - image: circleci/golang:1.12-node
-        <<: *production_env
-    working_directory: ~/offen
-    steps:
-      - checkout:
-          path: ~/offen
-      - restore_cache:
-          key: offen-deploy-{{ checksum "package.json" }}
-      - run:
-          name: Install dependencies
-          command: npm install
-      - save_cache:
-          paths:
-            - ~/offen/packages/node_modules
-          key: offen-packages-{{ checksum "package.json" }}
-
-      - restore_cache:
-          key: offen-server-{{ checksum "server/go.mod" }}
-      - run:
-          name: Build server service
-          working_directory: ~/offen/server
-          command: make build
-      - run:
-          name: Manually clear go cache
-          command: sudo rm -rf /go/pkg/mod
-
-      - restore_cache:
-          key: offen-kms-{{ checksum "kms/go.mod" }}
-      - run:
-          name: Build kms service
-          working_directory: ~/offen/kms
-          command: make build
-      - run:
-          name: Manually clear go cache
-          command: sudo rm -rf /go/pkg/mod
-
-      - run:
-          name: Migrate `server` database
-          working_directory: ~/offen/server
-          command: |
-            sudo apt-get update && sudo apt-get install -qq -y python-pip libpython-dev
-            curl -O https://bootstrap.pypa.io/get-pip.py && sudo python get-pip.py
-            sudo pip install -q awscli --upgrade
-            go run cmd/migrate/main.go -conn $(aws secretsmanager get-secret-value --secret-id $SECRET_ID_SERVER_CONNECTION_STRING | jq -r '.SecretString')
-      - run:
-          name: Deploy
-          working_directory: ~/offen
-          command: |
-            echo "Deploying server ..."
-            $(npm bin)/sls deploy --config server/serverless.yml
-            echo "Deploying kms ..."
-            $(npm bin)/sls deploy --config kms/serverless.yml
-
-  deploy_node:
-    docker:
-      - image: circleci/node:10
-        <<: *production_env
-    working_directory: ~/offen
-    steps:
-      - checkout:
-          path: ~/offen
-      - restore_cache:
-          key: offen-deploy-{{ checksum "package.json" }}
-      - run:
-          name: Install dependencies
-          command: npm install
-      - save_cache:
-          paths:
-            - ~/offen/packages/node_modules
-          key: offen-packages-{{ checksum "package.json" }}
-      - restore_cache:
-          key: offen-auditorium-{{ checksum "auditorium/package.json" }}
-      - run:
-          name: Build auditorium service
-          working_directory: ~/offen/auditorium
-          command: npm run build
-
-      - restore_cache:
-          key: offen-script-{{ checksum "script/package.json" }}
-      - run:
-          name: Build script service
-          working_directory: ~/offen/script
-          command: npm run build
-
-      - restore_cache:
-          key: offen-vault-{{ checksum "vault/package.json" }}
-      - run:
-          name: Build vault service
-          working_directory: ~/offen/vault
-          command: npm run build
-
-      - run:
-          name: Deploy
-          working_directory: ~/offen
-          command: |
-            echo "Deploying auditorium ..."
-            $(npm bin)/sls deploy --config auditorium/serverless.yml
-            $(npm bin)/sls client deploy --config auditorium/serverless.yml --no-confirm
-            echo "Deploying script ..."
-            $(npm bin)/sls deploy --config script/serverless.yml
-            $(npm bin)/sls client deploy --config script/serverless.yml --no-confirm
-            echo "Deploying vault ..."
-            $(npm bin)/sls deploy --config vault/serverless.yml
-            $(npm bin)/sls client deploy --config vault/serverless.yml --no-confirm
-
-  deploy_homepage:
-    docker:
-      - image: circleci/python:3.6-node
-    working_directory: ~/offen/homepage
-    environment:
-      - SOURCE_BRANCH: master
-      - TARGET_BRANCH: gh-pages
-    steps:
-      - checkout:
-          path: ~/offen
-      - restore_cache:
-          key: offen-homepage-{{ checksum "requirements.txt" }}
-      - run:
-          name: Install dependencies
-          command: |
-            python -m venv venv
-            source venv/bin/activate
-            pip install -r requirements.txt
-      - save_cache:
-          paths:
-            - ~/offen/homepage/venv
-          key: offen-homepage-{{ checksum "requirements.txt" }}
-      - run:
-          name: Install image optimization deps
-          command: |
-            sudo npm install svgo -g
-            sudo apt-get install libjpeg-progs optipng
-      - run:
-          name: Deploy
-          command: |
-            source venv/bin/activate
-
-            git config --global user.email $GH_EMAIL
-            git config --global user.name $GH_NAME
-
-            git clone $CIRCLE_REPOSITORY_URL out
-
-            cd out
-            git checkout $TARGET_BRANCH || git checkout --orphan $TARGET_BRANCH
-            git rm -rf .
-            cd ..
-
-            make publish
-
-            cp -a output/. out/.
-
-            mkdir -p out/.circleci && cp -a ./../.circleci/. out/.circleci/.
-            cp CNAME out/CNAME
-            cd out
-
-            git add -A
-            git commit -m "Automated deployment to GitHub Pages: ${CIRCLE_SHA1}" --allow-empty
-
-            git push origin $TARGET_BRANCH
+            cp Dockerrun.aws.json.production Dockerrun.aws.json
+            eb deploy
 
 workflows:
   version: 2
   test_build_deploy:
     jobs:
-      - server:
+      - server
+      - vault
+      - script
+      - auditorium
+      - packages
+      - build:
           <<: *build_preconditions
-      - kms:
-          <<: *build_preconditions
-      - vault:
-          <<: *build_preconditions
-      - script:
-          <<: *build_preconditions
-      - auditorium:
-          <<: *build_preconditions
-      - packages:
-          <<: *build_preconditions
-      - shared:
-          <<: *build_preconditions
-      - accounts:
-          <<: *build_preconditions
-      - deploy_golang:
-          <<: *deploy_preconditions
-      - deploy_node:
-          <<: *deploy_preconditions
-      - deploy_python:
-          <<: *deploy_preconditions
-      - deploy_homepage:
+      - deploy:
           <<: *deploy_preconditions

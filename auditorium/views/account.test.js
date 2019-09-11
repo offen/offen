@@ -11,9 +11,9 @@ describe('views/account.js', function () {
     app.state.authenticatedUser = {
       userId: 'some-user-id',
       accounts: [
-        { name: 'name-a', id: 'some-id-a' },
-        { name: 'name-b', id: 'some-id-b' },
-        { name: 'name-c', id: 'some-id-c' }
+        { accountName: 'name-a', accountId: 'some-id-a' },
+        { accountName: 'name-b', accountId: 'some-id-b' },
+        { accountName: 'name-c', accountId: 'some-id-c' }
       ]
     }
     app._setCache(app.state)

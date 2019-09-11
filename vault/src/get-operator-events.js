@@ -9,8 +9,12 @@ module.exports = getOperatorEventsWith(queries, api, {})
 module.exports.getOperatorEventsWith = getOperatorEventsWith
 
 function getOperatorEventsWith (queries, api, cache) {
-  return function (query) {
-    return ensureSyncWith(queries, api, cache)(query.accountId)
+  return function (query, authenticatedUser) {
+    var matchingAccount = _.findWhere(authenticatedUser.accounts, { accountId: query.accountId })
+    if (!matchingAccount) {
+      return Promise.reject(new Error('No matching key found for account with id ' + query.accountId))
+    }
+    return ensureSyncWith(queries, api, cache)(query.accountId, matchingAccount.keyEncryptionKey)
       .then(function (account) {
         return queries.getDefaultStats(query.accountId, query, account.privateKey)
           .then(function (stats) {
@@ -35,17 +39,14 @@ function fetchOperatorEventsWith (api, queries) {
         return {
           events: returnedEvents,
           encryptedUserSecrets: returnedUserSecrets,
-          encryptedPrivateKey: account.encryptedPrivateKey,
-          account: {
-            accountId: account.accountId
-          }
+          account: account
         }
       })
   }
 }
 
 function ensureSyncWith (queries, api, cache) {
-  return function (accountId) {
+  return function (accountId, keyEncryptionJWK) {
     if (cache && cache[accountId]) {
       return Promise.resolve(cache[accountId])
     }
@@ -70,9 +71,12 @@ function ensureSyncWith (queries, api, cache) {
         return Promise.all([fetchNewEvents, pruneEvents])
           .then(function (results) {
             var payload = results[0]
-            return api.decryptPrivateKey(payload.encryptedPrivateKey)
-              .then(function (response) {
-                return crypto.importPrivateKey(response.decrypted)
+            return crypto.importSymmetricKey(keyEncryptionJWK)
+              .then(function (cryptoKey) {
+                return crypto.decryptSymmetricWith(cryptoKey)(payload.account.encryptedPrivateKey)
+              })
+              .then(function (privateJWK) {
+                return crypto.importPrivateKey(privateJWK)
               })
               .then(function (privateCryptoKey) {
                 var userSecrets = payload.encryptedUserSecrets

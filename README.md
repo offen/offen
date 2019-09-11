@@ -9,7 +9,7 @@ This repository contains all source code needed to build and run __offen__, both
 
 ---
 
-Development of __offen__ has just started, so instructions are rare and things will stay highly volatile for quite some while. Also __do not use the software in its current state__ as it is still missing crucial pieces in protecting the data end to end.
+Development of __offen__ has just started, so instructions are rare and things will stay highly volatile for quite some while.
 
 Guidelines for running and developing the Software will be added when it makes sense to do so.
 
@@ -37,19 +37,7 @@ You can test your setup by starting the application:
 $ docker-compose up
 ```
 
-which should enable you to access <http://localhost:9955/> and use the `auditorium`
-
-### Developing the homepage
-
-In order to ease sharing of styles, the <https://www.offen.dev> site is also part of this repository. It runs in a separate development environment:
-
-```
-$ cd homepage
-$ make setup
-$ docker-compose up
-```
-
-A live reloading development server will run on <http://localhost:8000>.
+which should enable you to access <http://localhost:8080/auditorium/> and use the `auditorium`
 
 ### License
 

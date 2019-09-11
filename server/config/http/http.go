@@ -1,6 +1,7 @@
 package http
 
 import (
+	"encoding/base64"
 	"fmt"
 	"os"
 	"strconv"
@@ -15,25 +16,25 @@ type httpConfig struct {
 	secureCookie         bool
 	development          bool
 	connectionString     string
-	corsOrigin           string
-	optoutCookieDomain   string
-	jwtPublicKey         string
-	encryptionEndpoint   string
 	cookieExchangeSecret string
+	accountUserSalt      string
 	retentionPeriod      time.Duration
 }
 
-func (h *httpConfig) Port() int                      { return h.port }
-func (h *httpConfig) ConnectionString() string       { return h.connectionString }
-func (h *httpConfig) CorsOrigin() string             { return h.corsOrigin }
-func (h *httpConfig) LogLevel() logrus.Level         { return logrus.InfoLevel }
-func (h *httpConfig) OptoutCookieDomain() string     { return h.optoutCookieDomain }
-func (h *httpConfig) JWTPublicKey() string           { return h.jwtPublicKey }
-func (h *httpConfig) SecureCookie() bool             { return h.secureCookie }
-func (h *httpConfig) EncryptionEndpoint() string     { return h.encryptionEndpoint }
-func (h *httpConfig) Development() bool              { return h.development }
-func (h *httpConfig) CookieExchangeSecret() string   { return h.cookieExchangeSecret }
+func (h *httpConfig) Port() int                { return h.port }
+func (h *httpConfig) ConnectionString() string { return h.connectionString }
+func (h *httpConfig) LogLevel() logrus.Level   { return logrus.InfoLevel }
+func (h *httpConfig) SecureCookie() bool       { return h.secureCookie }
+func (h *httpConfig) Development() bool        { return h.development }
+func (h *httpConfig) CookieExchangeSecret() []byte {
+	b, _ := base64.StdEncoding.DecodeString(h.cookieExchangeSecret)
+	return b
+}
 func (h *httpConfig) RetentionPeriod() time.Duration { return h.retentionPeriod }
+func (h *httpConfig) AccountUserSalt() []byte {
+	b, _ := base64.StdEncoding.DecodeString(h.accountUserSalt)
+	return b
+}
 
 const (
 	defaultPort = 8080
@@ -44,13 +45,10 @@ func New() (config.Config, error) {
 	cfg := httpConfig{
 		port:                 defaultPort,
 		connectionString:     os.Getenv("POSTGRES_CONNECTION_STRING"),
-		corsOrigin:           os.Getenv("CORS_ORIGIN"),
-		optoutCookieDomain:   os.Getenv("OPTOUT_COOKIE_DOMAIN"),
-		jwtPublicKey:         os.Getenv("JWT_PUBLIC_KEY"),
 		secureCookie:         os.Getenv("SECURE_COOKIE") != "",
-		encryptionEndpoint:   os.Getenv("KMS_ENCRYPTION_ENDPOINT"),
 		development:          os.Getenv("DEVELOPMENT") != "",
 		cookieExchangeSecret: os.Getenv("COOKIE_EXCHANGE_SECRET"),
+		accountUserSalt:      os.Getenv("ACCOUNT_USER_EMAIL_SALT"),
 	}
 
 	if override, ok := os.LookupEnv("PORT"); ok {

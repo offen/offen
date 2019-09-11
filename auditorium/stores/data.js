@@ -4,11 +4,11 @@ module.exports = store
 
 function store (state, emitter) {
   function handleRequest (request) {
-    var fetchQuery = vault(process.env.VAULT_HOST)
+    var fetchQuery = vault(process.env.VAULT_HOST || '/vault/')
       .then(function (postMessage) {
         return postMessage(request, true)
       })
-    var fetchOptoutStatus = vault(process.env.VAULT_HOST)
+    var fetchOptoutStatus = vault(process.env.VAULT_HOST || '/vault/')
       .then(function (postMessage) {
         var request = {
           type: 'OPTOUT_STATUS',
@@ -45,12 +45,12 @@ function store (state, emitter) {
     })
   })
 
-  emitter.on('offen:query', function (data) {
+  emitter.on('offen:query', function (data, authenticatedUser) {
     handleRequest({
       type: 'QUERY',
       payload: data
-        ? { query: data }
-        : null
+        ? { query: data, authenticatedUser: authenticatedUser }
+        : { authenticatedUser: authenticatedUser }
     })
   })
 

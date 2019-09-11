@@ -8,10 +8,13 @@ install:
 	@go mod download
 
 bootstrap: migrate
-	@go run cmd/bootstrap/main.go
+	@go run cmd/offen/main.go bootstrap
 
 migrate:
-	@go run cmd/migrate/main.go
+	@go run cmd/offen/main.go migrate
+
+secret:
+	@go run cmd/offen/main.go secret
 
 test-ci: bootstrap
 	@go test ./... -cover -tags="integration"
@@ -20,7 +23,9 @@ clean-build:
 	@rm -rf bin
 
 build: clean-build
-	@GOOS=linux go build -o bin/server cmd/lambda/main.go
-	@GOOS=linux go build -o bin/expire cmd/expire/main.go
+	@GOOS=linux go build -o bin/server cmd/server/main.go
 
-.PHONY: bootstrap migrate
+build-cli: clean-build
+	@GOOS=linux go build -o bin/offen cmd/offen/main.go
+
+.PHONY: bootstrap migrate secret

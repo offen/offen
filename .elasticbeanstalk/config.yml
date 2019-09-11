@@ -1,0 +1,19 @@
+branch-defaults:
+  local-proxy:
+    environment: production
+  master:
+    environment: production
+    group_suffix: null
+global:
+  application_name: offen
+  branch: null
+  default_ec2_keyname: aws-eb
+  default_platform: Multi-container Docker 18.06.1-ce (Generic)
+  default_region: eu-central-1
+  include_git_submodules: true
+  instance_profile: null
+  platform_name: null
+  platform_version: null
+  repository: null
+  sc: null
+  workspace_type: Application

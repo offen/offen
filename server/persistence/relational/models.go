@@ -2,8 +2,7 @@ package relational
 
 import (
 	"crypto/sha256"
-	"crypto/x509"
-	"encoding/pem"
+	"encoding/base64"
 	"errors"
 	"fmt"
 
@@ -13,8 +12,9 @@ import (
 // Event is any analytics event that will be stored in the database. It is
 // uniquely tied to an Account and a User model.
 type Event struct {
-	EventID      string `gorm:"primary_key"`
-	AccountID    string
+	EventID   string `gorm:"primary_key"`
+	AccountID string
+	// the user id is nullable for anonymous events
 	HashedUserID *string
 	Payload      string
 	User         User `gorm:"foreignkey:HashedUserID;association_foreignkey:HashedUserID"`
@@ -28,41 +28,48 @@ type User struct {
 	EncryptedUserSecret string
 }
 
+type AccountUser struct {
+	UserID         string `gorm:"primary_key"`
+	HashedEmail    string
+	HashedPassword string
+	Salt           string
+	Relationships  []AccountUserRelationship `gorm:"foreignkey:UserID;association_foreignkey:UserID"`
+}
+
+type AccountUserRelationship struct {
+	RelationshipID                    string `gorm:"primary_key"`
+	UserID                            string
+	AccountID                         string
+	PasswordEncryptedKeyEncryptionKey string
+	EmailEncryptedKeyEncryptionKey    string
+}
+
 // Account stores information about an account.
 type Account struct {
 	AccountID           string `gorm:"primary_key"`
+	Name                string
 	PublicKey           string
 	EncryptedPrivateKey string
 	UserSalt            string
-	Events              []Event `gorm:"foreignkey:AccountID;association_foreignkey:AccountID"`
 	Retired             bool
+	Events              []Event `gorm:"foreignkey:AccountID;association_foreignkey:AccountID"`
 }
 
 // HashUserID uses the account's `UserSalt` to create a hashed version of a
 // user identifier that is unique per account.
 func (a *Account) HashUserID(userID string) string {
-	joined := fmt.Sprintf("%s-%s", a.UserSalt, userID)
-	hashed := sha256.Sum256([]byte(joined))
+	b, _ := base64.StdEncoding.DecodeString(a.UserSalt)
+	joined := append([]byte(userID), b...)
+	hashed := sha256.Sum256(joined)
 	return fmt.Sprintf("%x", hashed)
 }
 
 // WrapPublicKey returns the public key of an account's keypair in
 // JSON WebKey format.
 func (a *Account) WrapPublicKey() (jwk.Key, error) {
-	decoded, _ := pem.Decode([]byte(a.PublicKey))
-
-	if decoded == nil {
+	s, err := jwk.ParseString(a.PublicKey)
+	if err != nil {
 		return nil, errors.New("failed decoding stored key value")
 	}
-
-	pub, pubErr := x509.ParsePKCS1PublicKey(decoded.Bytes)
-	if pubErr != nil {
-		return nil, pubErr
-	}
-
-	key, keyErr := jwk.New(pub)
-	if keyErr != nil {
-		return nil, keyErr
-	}
-	return key, nil
+	return s.Keys[0], nil
 }

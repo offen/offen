@@ -4,26 +4,21 @@ var handleQuery = require('./src/handle-query')
 var handleLogin = require('./src/handle-login')
 var handlePurge = require('./src/handle-purge')
 var handleOptout = require('./src/handle-optout')
+var handleChangePassword = require('./src/handle-change-password')
 var handleOptoutStatus = require('./src/handle-optout-status')
 var allowsCookies = require('./src/allows-cookies')
 var hasOptedOut = require('./src/user-optout')
 
 var SKIP_TOKEN = '__SKIP_TOKEN__'
 
-// This is a list of all host applications that are allowed to request data
-// by in response to messages. It is important to keep this restricted
-// to trusted applications only, otherwise decrypted event data may leak to
-// third parties.
-var ALLOWED_HOSTS = [process.env.AUDITORIUM_HOST, process.env.HOMEPAGE_HOST]
-
 window.addEventListener('message', function (event) {
   var message = event.data
   var origin = event.origin
   var ports = event.ports
 
-  function withRestrictedOrigin (handler) {
+  function withSameOrigin (handler) {
     return function () {
-      if (ALLOWED_HOSTS.indexOf(origin) === -1) {
+      if (origin !== window.location.origin) {
         console.warn('Incoming message had untrusted origin "' + origin + '", will not process.')
         return SKIP_TOKEN
       }
@@ -45,7 +40,7 @@ window.addEventListener('message', function (event) {
         handler = function () {
           console.log('This page is using offen to collect usage statistics.')
           console.log('You have opted out of data collection, no data is being collected.')
-          console.log('Find out more at "https://www.offen.dev".')
+          console.log('Find out more about offen at "https://www.offen.dev".')
           return Promise.resolve()
         }
       } else if (!allowsCookies()) {
@@ -59,27 +54,30 @@ window.addEventListener('message', function (event) {
       } else {
         handler = function () {
           console.log('This page is using offen to collect usage statistics.')
-          console.log('You can access and manage all of your personal data or opt-out at "' + process.env.AUDITORIUM_HOST + '".')
-          console.log('Find out more at "https://www.offen.dev".')
+          console.log('You can access and manage all of your personal data or opt-out at "' + window.location.origin + '/auditorium/".')
+          console.log('Find out more about offen at "https://www.offen.dev".')
           return handleAnalyticsEvent.apply(null, [].slice.call(arguments))
         }
       }
       break
     }
     case 'QUERY':
-      handler = withRestrictedOrigin(handleQuery)
+      handler = withSameOrigin(handleQuery)
       break
     case 'LOGIN':
-      handler = withRestrictedOrigin(handleLogin)
+      handler = withSameOrigin(handleLogin)
       break
     case 'PURGE':
-      handler = withRestrictedOrigin(handlePurge)
+      handler = withSameOrigin(handlePurge)
       break
     case 'OPTOUT':
-      handler = withRestrictedOrigin(handleOptout)
+      handler = withSameOrigin(handleOptout)
       break
     case 'OPTOUT_STATUS':
-      handler = withRestrictedOrigin(handleOptoutStatus)
+      handler = withSameOrigin(handleOptoutStatus)
+      break
+    case 'CHANGE_PASSWORD':
+      handler = withSameOrigin(handleChangePassword)
       break
   }
 

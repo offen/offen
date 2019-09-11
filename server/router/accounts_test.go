@@ -2,62 +2,76 @@ package router
 
 import (
 	"errors"
-	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
 
+	"github.com/gorilla/mux"
+	"github.com/gorilla/securecookie"
 	"github.com/offen/offen/server/persistence"
 )
 
 type mockAccountDatabase struct {
 	persistence.Database
-	result persistence.AccountResult
-	err    error
+	result      persistence.AccountResult
+	loginResult persistence.LoginResult
+	err         error
 }
 
 func (m *mockAccountDatabase) GetAccount(string, bool, string) (persistence.AccountResult, error) {
 	return m.result, m.err
 }
 
+func (m *mockAccountDatabase) LookupUser(string) (persistence.LoginResult, error) {
+	return m.loginResult, nil
+}
+
 func TestRouter_GetAccount(t *testing.T) {
 	tests := []struct {
 		name               string
-		query              string
+		accountID          string
 		database           persistence.Database
 		expectedStatusCode int
 		expectedBody       string
 	}{
 		{
-			"no account id",
-			"since=1234",
-			&mockAccountDatabase{},
-			http.StatusBadRequest,
-			`{"error":"no accountId parameter given","status":400}`,
-		},
-		{
 			"persistence error",
-			"accountId=account-a",
+			"account-a",
 			&mockAccountDatabase{
 				err: errors.New("did not work"),
+				loginResult: persistence.LoginResult{
+					Accounts: []persistence.LoginAccountResult{
+						{AccountID: "account-a"},
+					},
+				},
 			},
 			http.StatusInternalServerError,
 			`{"error":"did not work","status":500}`,
 		},
 		{
 			"unknown account",
-			"accountId=account-z",
+			"account-z",
 			&mockAccountDatabase{
 				err: persistence.ErrUnknownAccount("unknown account z"),
+				loginResult: persistence.LoginResult{
+					Accounts: []persistence.LoginAccountResult{
+						{AccountID: "account-z"},
+					},
+				},
 			},
 			http.StatusNotFound,
 			`{"error":"account account-z not found","status":404}`,
 		},
 		{
 			"bad result",
-			"accountId=account-a",
+			"account-a",
 			&mockAccountDatabase{
+				loginResult: persistence.LoginResult{
+					Accounts: []persistence.LoginAccountResult{
+						{AccountID: "account-a"},
+					},
+				},
 				result: persistence.AccountResult{
 					PublicKey: func() string {
 						return "haha, whoops"
@@ -69,121 +83,37 @@ func TestRouter_GetAccount(t *testing.T) {
 		},
 		{
 			"ok",
-			"accountId=account-a",
+			"account-a",
 			&mockAccountDatabase{
 				result: persistence.AccountResult{},
+				loginResult: persistence.LoginResult{
+					Accounts: []persistence.LoginAccountResult{
+						{AccountID: "account-a"},
+					},
+				},
 			},
 			http.StatusOK,
-			`{"accountId":""}`,
+			`{"accountId":"","name":""}`,
 		},
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			rt := router{db: test.database}
+			cookieSigner := securecookie.New([]byte("abc123"), nil)
+			auth, _ := cookieSigner.Encode("auth", test.accountID)
+			rt := router{db: test.database, cookieSigner: cookieSigner}
 			w := httptest.NewRecorder()
-			r := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/?%s", test.query), nil)
+			r := httptest.NewRequest(http.MethodGet, "/", nil)
+			r = mux.SetURLVars(r, map[string]string{"accountID": test.accountID})
+			r.AddCookie(&http.Cookie{
+				Value: auth,
+				Name:  "auth",
+			})
 			rt.getAccount(w, r)
 			if w.Code != test.expectedStatusCode {
 				t.Errorf("Unexpected status code %v", w.Code)
 			}
 			if !strings.Contains(w.Body.String(), test.expectedBody) {
 				t.Errorf("Unexpected response body %s", w.Body.String())
-			}
-		})
-	}
-}
-
-type mockCreateAccountDatabase struct {
-	persistence.Database
-	err error
-}
-
-func (m *mockCreateAccountDatabase) CreateAccount(string) error {
-	return m.err
-}
-
-func TestRouter_PostAccount(t *testing.T) {
-	tests := []struct {
-		name               string
-		database           persistence.Database
-		payload            string
-		expectedStatusCode int
-	}{
-		{
-			"bad payload",
-			&mockCreateAccountDatabase{},
-			"this-is-not-json",
-			http.StatusBadRequest,
-		},
-		{
-			"bad database",
-			&mockCreateAccountDatabase{err: errors.New("did not work")},
-			`{"accountId":"some-account-id"}`,
-			http.StatusInternalServerError,
-		},
-		{
-			"ok",
-			&mockCreateAccountDatabase{},
-			`{"accountId":"some-account-id"}`,
-			http.StatusNoContent,
-		},
-	}
-	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-			rt := router{db: test.database}
-			w := httptest.NewRecorder()
-			r := httptest.NewRequest(http.MethodPost, "/", strings.NewReader(test.payload))
-			rt.postAccount(w, r)
-			if w.Code != test.expectedStatusCode {
-				t.Errorf("Unexpected status code %v", w.Code)
-			}
-		})
-	}
-}
-
-type mockRetireAccountDatabase struct {
-	persistence.Database
-	err error
-}
-
-func (m *mockRetireAccountDatabase) RetireAccount(string) error {
-	return m.err
-}
-
-func TestRouter_RetireAccount(t *testing.T) {
-	tests := []struct {
-		name               string
-		database           persistence.Database
-		payload            string
-		expectedStatusCode int
-	}{
-		{
-			"bad payload",
-			&mockRetireAccountDatabase{},
-			"this-is-not-json",
-			http.StatusBadRequest,
-		},
-		{
-			"bad database",
-			&mockRetireAccountDatabase{err: errors.New("did not work")},
-			`{"accountId":"some-account-id"}`,
-			http.StatusInternalServerError,
-		},
-		{
-			"ok",
-			&mockRetireAccountDatabase{},
-			`{"accountId":"some-account-id"}`,
-			http.StatusNoContent,
-		},
-	}
-	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-			rt := router{db: test.database}
-			w := httptest.NewRecorder()
-			r := httptest.NewRequest(http.MethodDelete, "/", strings.NewReader(test.payload))
-			rt.deleteAccount(w, r)
-			if w.Code != test.expectedStatusCode {
-				t.Errorf("Unexpected status code %v", w.Code)
 			}
 		})
 	}

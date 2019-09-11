@@ -20,10 +20,10 @@
   <link rel="canonical" href="{{ SITEURL }}/{{ page.save_as }}">
   <link rel="shortcut icon" type="image/x-icon" href="/theme/images/favicon.ico">
   {% assets filters="cssmin", output="css/style.min.css", "css/normalize.css", "css/fonts.css", "css/style.css" %}
-    <link rel="stylesheet" href="{{ SITEURL }}/{{ ASSET_URL }}">
+    <link rel="stylesheet" href="/{{ ASSET_URL }}">
   {% endassets %}
   {% if OFFEN_ACCOUNT_ID %}
-    <script async src="https://script-alpha.offen.dev/script.js" data-account-id="{{ OFFEN_ACCOUNT_ID }}"></script>
+    <script async src="/script.js" data-account-id="{{ OFFEN_ACCOUNT_ID }}"></script>
   {% endif %}
 </head>
 <body class="{{page.template}}">
@@ -136,8 +136,10 @@
     </div>
   </div>
 
-  {% assets filters="rjsmin", output="scripts/packed.js", "scripts/jquery-3.4.1.min.js", "scripts/menu.js", "scripts/fade.js" %}
-    <script src="{{ SITEURL }}/{{ ASSET_URL }}"></script>
-  {% endassets %}
+  {% block scripts %}
+    {% assets filters="rjsmin", output="scripts/packed.js", "scripts/jquery-3.4.1.min.js", "scripts/menu.js", "scripts/fade.js" %}
+      <script src="/{{ ASSET_URL }}"></script>
+    {% endassets %}
+  {% endblock %}
 </body>
 </html>
