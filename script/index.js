@@ -6,9 +6,11 @@ var bootstrap = require('./src/bootstrap')
 // this needs to be called on module level as otherwise the value will be undefined
 // again
 var accountId = document.currentScript && document.currentScript.dataset.accountId
+var scriptHost = document.currentScript && document.currentScript.src
+var scriptUrl = new window.URL(scriptHost)
 
 function collectPageview () {
-  bootstrap(process.env.VAULT_HOST || '/vault/', accountId)
+  bootstrap(process.env.VAULT_HOST || scriptUrl.origin + '/vault/', accountId)
     .catch(function (err) {
       if (process.env.NODE_ENV !== 'production') {
         console.error(err)
