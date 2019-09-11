@@ -154,7 +154,7 @@ jobs:
       - image: docker:18-git
     environment:
       SITEURL: https://www.offen.dev
-      DOCKER_TAGE: stable
+      DOCKER_IMAGE_TAG: stable
     working_directory: ~/offen
     steps:
       - checkout
@@ -189,8 +189,8 @@ jobs:
           name: Push application Docker image
           command: |
             echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
-            docker push offen/server:latest
-            docker push offen/proxy:latest
+            docker push offen/server:$DOCKER_IMAGE_TAG
+            docker push offen/proxy:$DOCKER_IMAGE_TAG
 
   deploy:
     working_directory: ~/offen
