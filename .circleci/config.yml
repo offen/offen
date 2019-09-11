@@ -169,12 +169,13 @@ jobs:
           name: Load Docker image layer cache
           command: |
             set +o pipefail
-            docker load -i /caches/app.tar | true
+            docker load -i /caches/proxy.tar | true
+            docker load -i /caches/server.tar | true
       - run:
           name: Build application Docker image
           command: |
-            docker build -t offen/server:$DOCKER_IMAGE_TAG -f build/server/Dockerfile .
-            docker build --build-arg siteurl=$SITEURL -t offen/proxy:$DOCKER_IMAGE_TAG -f build/proxy/Dockerfile .
+            docker build --cache-from=offen/server -t offen/server:$DOCKER_IMAGE_TAG -f build/server/Dockerfile .
+            docker build --build-arg --cache-from=offen/proxy siteurl=$SITEURL -t offen/proxy:$DOCKER_IMAGE_TAG -f build/proxy/Dockerfile .
       - run:
           name: Save Docker image layer cache
           command: |
