@@ -23,9 +23,10 @@ jobs:
     docker:
       - image: circleci/golang:1.12
         environment:
-          - POSTGRES_CONNECTION_STRING=postgres://circle:test@localhost:5432/circle_test?sslmode=disable
-          - PORT=8080
-          - EVENT_RETENTION_PERIOD=4464h
+          POSTGRES_CONNECTION_STRING: postgres://circle:test@localhost:5432/circle_test?sslmode=disable
+          PORT: 8080
+          EVENT_RETENTION_PERIOD: 4464h
+          COOKIE_EXCHANGE_SECRET: VswgMshC4mPDfey8o+yScg==
       - image: circleci/postgres:11.2-alpine
         environment:
           - POSTGRES_USER=circle
@@ -151,6 +152,9 @@ jobs:
   build:
     docker:
       - image: docker:18-git
+    environment:
+      SITEURL: https://www.offen.dev
+      DOCKER_TAGE: stable
     working_directory: ~/offen
     steps:
       - checkout
@@ -200,7 +204,9 @@ jobs:
             sudo pip install awsebcli --upgrade
       - run:
           name: Deploying
-          command: eb deploy
+          command: |
+            cp Dockerrun.aws.json.production Dockerrun.aws.json
+            eb deploy
 
 workflows:
   version: 2

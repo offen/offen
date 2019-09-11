@@ -22,9 +22,11 @@ bootstrap:
 	@echo "Bootstrapping Server service ..."
 	@docker-compose run server make bootstrap
 
+DOCKER_IMAGE_TAG ?= latest
+
 build:
-	@docker build -t offen/server:latest -f build/server/Dockerfile .
-	@docker build -t offen/proxy:latest -f build/proxy/Dockerfile .
+	@docker build -t offen/server:${DOCKER_IMAGE_TAG} -f build/server/Dockerfile .
+	@docker build --build-arg siteurl=${SITEURL} -t offen/proxy:${DOCKER_IMAGE_TAG} -f build/proxy/Dockerfile .
 
 secret:
 	@docker-compose run server make secret

@@ -1,6 +1,8 @@
 branch-defaults:
+  local-proxy:
+    environment: production
   master:
-    environment: staging
+    environment: production
     group_suffix: null
 global:
   application_name: offen

@@ -15,5 +15,5 @@ func GenerateRandomValue(length int) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("keys: error creating random value: %v", err)
 	}
-	return base64.URLEncoding.EncodeToString(b), nil
+	return base64.StdEncoding.EncodeToString(b), nil
 }

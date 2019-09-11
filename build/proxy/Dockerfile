@@ -43,6 +43,9 @@ RUN npm run build
 
 FROM nikolaik/python-nodejs:python3.6-nodejs10 as homepage
 
+ARG siteurl
+ENV SITEURL=$siteurl
+
 COPY ./homepage /code/homepage
 COPY ./styles /code/styles
 

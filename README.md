@@ -9,7 +9,7 @@ This repository contains all source code needed to build and run __offen__, both
 
 ---
 
-Development of __offen__ has just started, so instructions are rare and things will stay highly volatile for quite some while. Also __do not use the software in its current state__ as it is still missing crucial pieces in protecting the data end to end.
+Development of __offen__ has just started, so instructions are rare and things will stay highly volatile for quite some while.
 
 Guidelines for running and developing the Software will be added when it makes sense to do so.
 

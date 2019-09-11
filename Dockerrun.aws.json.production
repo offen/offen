@@ -4,7 +4,7 @@
   "containerDefinitions": [
     {
       "name": "proxy",
-      "image": "offen/proxy:latest",
+      "image": "offen/proxy:stable",
       "essential": true,
       "memory": 128,
       "portMappings": [
@@ -23,9 +23,9 @@
     },
     {
       "name": "server",
-      "image": "offen/server:latest",
+      "image": "offen/server:stable",
       "essential": true,
-      "memory": 128
+      "memory": 256
     }
   ]
 }
