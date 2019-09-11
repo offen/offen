@@ -185,7 +185,8 @@ jobs:
       - save_cache:
           key: v1-{{ .Branch }}-{{ epoch }}
           paths:
-            - /caches/app.tar
+            - /caches/proxy.tar
+            - /caches/server.tar
       - deploy:
           name: Push application Docker image
           command: |
