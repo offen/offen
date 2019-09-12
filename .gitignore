@@ -1,7 +1,6 @@
 .vscode
 .serverless
 node_modules/
-package-lock.json
 # mkcert certificates
 *.pem
 venv/
