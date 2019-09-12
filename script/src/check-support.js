@@ -19,6 +19,9 @@ function checkSupport (callback) {
   if (!err && !supportsFetch()) {
     err = new Error('Browser does not support window.fetch which is required')
   }
+  if (!err && !supportsURL()) {
+    err = new Error('Browser does not support window.URL which is required')
+  }
 
   setTimeout(function () {
     callback(err)
@@ -39,4 +42,8 @@ function supportsIndexedDb () {
 
 function supportsFetch () {
   return typeof window.fetch === 'function'
+}
+
+function supportsURL () {
+  return typeof window.URL === 'function'
 }
