@@ -8,7 +8,6 @@ var runSequence = require('run-sequence')
 var buffer = require('vinyl-buffer')
 var revReplace = require('gulp-rev-replace')
 var sriHash = require('gulp-sri-hash')
-var rename = require('gulp-rename')
 var gap = require('gulp-append-prepend')
 
 gulp.task('clean:pre', function () {
@@ -65,8 +64,7 @@ gulp.task('bundle:vendor', function () {
 })
 
 gulp.task('revreplace', function () {
-  return gulp.src('./template.html')
-    .pipe(rename('./index.html'))
+  return gulp.src('./index.html')
     .pipe(gap.prependText('-->'))
     .pipe(gap.prependFile('./../banner.txt'))
     .pipe(gap.prependText('<!--'))
