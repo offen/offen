@@ -197,15 +197,23 @@ jobs:
   deploy:
     working_directory: ~/offen
     docker:
-      - image: circleci/python:3.6
+      - image: circleci/golang:1.12
     steps:
       - checkout
       - run:
-          name: Installing deployment dependencies
+          name: Install deployment dependencies
           command: |
+            sudo apt-get update && sudo apt-get install -qq -y python-pip libpython-dev
+            curl -O https://bootstrap.pypa.io/get-pip.py && sudo python get-pip.py
+            sudo pip install -q awscli --upgrade
             sudo pip install awsebcli --upgrade
       - run:
-          name: Deploying
+          name: Run database migrations
+          working_directory: ~/offen/server
+          command: |
+            go run cmd/offen/main.go migrate -conn $(aws secretsmanager get-secret-value --secret-id production/postgresConnectionString | jq -r '.SecretString')
+      - run:
+          name: Deploy
           command: |
             cp Dockerrun.aws.json.production Dockerrun.aws.json
             eb deploy
