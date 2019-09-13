@@ -6,7 +6,6 @@ WORKDIR /code/deps
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 RUN npm ci
 COPY ./auditorium /code/auditorium
-COPY ./styles /code/styles
 COPY ./banner.txt /code/banner.txt
 WORKDIR /code/auditorium
 RUN cp -a /code/deps/node_modules /code/auditorium/
@@ -47,7 +46,6 @@ ARG siteurl
 ENV SITEURL=$siteurl
 
 COPY ./homepage /code/homepage
-COPY ./styles /code/styles
 
 RUN npm install svgo -g
 RUN apt-get update \
