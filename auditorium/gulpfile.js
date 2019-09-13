@@ -74,16 +74,10 @@ gulp.task('revreplace', function () {
     .pipe(gulp.dest('./dist/'))
 })
 
-gulp.task('fonts', function () {
-  return gulp.src('./styles/fonts/**/*.*', { base: '.' })
-    .pipe(gulp.dest('./dist'))
-})
-
 gulp.task('default', function () {
   return runSequence(
     'clean:pre',
     ['bundle:script', 'bundle:vendor'],
-    'fonts',
     'revreplace',
     'clean:post'
   )
