@@ -29,9 +29,9 @@ func TestRouter_optout(t *testing.T) {
 	}{}
 	b, _ := ioutil.ReadAll(w.Body)
 	json.Unmarshal(b, &a)
-
 	w2 := httptest.NewRecorder()
 	r2 := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/?expires=%d&signature=%s&token=%s", a.Expires, a.Signature, a.Token), nil)
+
 	rt.getOptout(w2, r2)
 
 	if w2.Code != http.StatusNoContent {
