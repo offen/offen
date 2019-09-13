@@ -70,7 +70,7 @@ gulp.task('revreplace', function () {
     .pipe(gap.prependText('<!--'))
     .pipe(revReplace({ manifest: gulp.src('./dist/rev-manifest.json') }))
     .pipe(gulp.dest('./dist/'))
-    .pipe(sriHash({ relative: true }))
+    .pipe(sriHash({ relative: true, selector: 'script[src]' }))
     .pipe(gulp.dest('./dist/'))
 })
 
