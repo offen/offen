@@ -26,7 +26,7 @@ func (a *Authentication) Validate(scope string, secret []byte) error {
 		return fmt.Errorf("authentication: error decoding signature: %v", writeErr)
 	}
 	expectedMAC := mac.Sum(nil)
-	sig, sigErr := base64.URLEncoding.DecodeString(a.Signature)
+	sig, sigErr := base64.StdEncoding.DecodeString(a.Signature)
 	if sigErr != nil {
 		return fmt.Errorf("authentication: error decoding signature: %v", sigErr)
 	}
@@ -60,6 +60,6 @@ func NewAuthentication(scope string, secret []byte, deadline time.Duration) (*Au
 	return &Authentication{
 		Expires:   expires,
 		Token:     token,
-		Signature: base64.URLEncoding.EncodeToString(mac.Sum(nil)),
+		Signature: base64.StdEncoding.EncodeToString(mac.Sum(nil)),
 	}, nil
 }
