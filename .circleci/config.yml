@@ -160,16 +160,6 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
-      - run:
-          name: Define target environment
-          command: |
-            if [ "${CIRCLE_BRANCH}" == "master" ]; then
-              echo 'export SITEURL="https://www.offen.dev"' >> $BASH_ENV
-              echo 'export DOCKER_IMAGE_TAG="stable"' >> $BASH_ENV
-            else
-              echo 'export SITEURL="https://staging.offen.dev"' >> $BASH_ENV
-              echo 'export DOCKER_IMAGE_TAG="latest"' >> $BASH_ENV
-            fi
       - restore_cache:
           keys:
             - v1-{{ .Branch }}
@@ -185,6 +175,13 @@ jobs:
       - run:
           name: Build application Docker image
           command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              export SITEURL="https://www.offen.dev"
+              export DOCKER_IMAGE_TAG="stable"
+            else
+              export SITEURL="https://staging.offen.dev"
+              export DOCKER_IMAGE_TAG="latest"
+            fi
             docker build -t offen/server:$DOCKER_IMAGE_TAG -f build/server/Dockerfile .
             docker build --build-arg siteurl=$SITEURL -t offen/proxy:$DOCKER_IMAGE_TAG -f build/proxy/Dockerfile .
       - run:
@@ -201,6 +198,11 @@ jobs:
       - deploy:
           name: Push application Docker image
           command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              export DOCKER_IMAGE_TAG="stable"
+            else
+              export DOCKER_IMAGE_TAG="latest"
+            fi
             echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
             docker push offen/server:$DOCKER_IMAGE_TAG
             docker push offen/proxy:$DOCKER_IMAGE_TAG
