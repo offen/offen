@@ -21,7 +21,11 @@ func (r *relationalDatabase) Login(email, password string) (persistence.LoginRes
 		return persistence.LoginResult{}, err
 	}
 
-	if err := keys.ComparePassword(password, accountUser.HashedPassword); err != nil {
+	pwBytes, pwErr := base64.StdEncoding.DecodeString(accountUser.HashedPassword)
+	if pwErr != nil {
+		return persistence.LoginResult{}, fmt.Errorf("relational: error decoding stored password: %v", pwErr)
+	}
+	if err := keys.ComparePassword(password, pwBytes); err != nil {
 		return persistence.LoginResult{}, err
 	}
 
@@ -90,7 +94,11 @@ func (r *relationalDatabase) ChangePassword(userID, currentPassword, changedPass
 		return fmt.Errorf("relational: error looking up user: %v", err)
 	}
 
-	if err := keys.ComparePassword(currentPassword, accountUser.HashedPassword); err != nil {
+	pwBytes, pwErr := base64.StdEncoding.DecodeString(accountUser.HashedPassword)
+	if pwErr != nil {
+		return fmt.Errorf("relational: error decoding password: %v", pwErr)
+	}
+	if err := keys.ComparePassword(currentPassword, pwBytes); err != nil {
 		return fmt.Errorf("relational: current password did not match: %v", err)
 	}
 
@@ -109,7 +117,7 @@ func (r *relationalDatabase) ChangePassword(userID, currentPassword, changedPass
 		return fmt.Errorf("relational: error hashing new password: %v", hashErr)
 	}
 
-	accountUser.HashedPassword = newPasswordHash
+	accountUser.HashedPassword = base64.StdEncoding.EncodeToString(newPasswordHash)
 	txn := r.db.Begin()
 	if err := txn.Save(&accountUser).Error; err != nil {
 		txn.Rollback()

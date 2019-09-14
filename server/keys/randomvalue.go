@@ -6,15 +6,24 @@ import (
 	"fmt"
 )
 
-type stringEncoder interface {
+// StringEncoder can encode a byte slice into a printable string.
+type StringEncoder interface {
 	EncodeToString([]byte) string
 }
 
-func randomBytes(length int, e stringEncoder) (string, error) {
+func randomBytes(length int) ([]byte, error) {
 	b := make([]byte, length)
 	_, err := rand.Read(b)
 	if err != nil {
-		return "", fmt.Errorf("keys: error reading random bytes: %v", err)
+		return nil, fmt.Errorf("keys: error reading random bytes: %v", err)
+	}
+	return b, nil
+}
+
+func randomBytesWithEncoding(length int, e StringEncoder) (string, error) {
+	b, err := randomBytes(length)
+	if err != nil {
+		return "", err
 	}
 	return e.EncodeToString(b), nil
 }
@@ -23,11 +32,11 @@ func randomBytes(length int, e stringEncoder) (string, error) {
 // Base64 string. This means the returned string will likely be longer than
 // the requested length.
 func GenerateRandomValue(length int) (string, error) {
-	return randomBytes(length, base64.StdEncoding)
+	return randomBytesWithEncoding(length, base64.StdEncoding)
 }
 
-// GenerateRandomURLValue returns a slice of random values encoded as a
+// GenerateRandomValueWith returns a slice of random values encoded as a
 // URL-sage Base64 string.
-func GenerateRandomURLValue(length int) (string, error) {
-	return randomBytes(length, base64.URLEncoding)
+func GenerateRandomValueWith(length int, encoder StringEncoder) (string, error) {
+	return randomBytesWithEncoding(length, encoder)
 }

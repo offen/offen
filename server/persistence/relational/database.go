@@ -5,16 +5,14 @@ import (
 	"os"
 
 	"github.com/jinzhu/gorm"
-	"github.com/offen/offen/server/keys"
 	// GORM imports the dialects for side effects only
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/offen/offen/server/persistence"
 )
 
 type relationalDatabase struct {
-	db         *gorm.DB
-	encryption keys.Encrypter
-	emailSalt  []byte
+	db        *gorm.DB
+	emailSalt []byte
 }
 
 // New creates a persistence layer that connects to a PostgreSQL database
@@ -32,13 +30,12 @@ func New(configs ...Config) (persistence.Database, error) {
 		return nil, fmt.Errorf("relational: error opening database: %v", err)
 	}
 
-	return &relationalDatabase{db, opts.encryption, opts.emailSalt}, nil
+	return &relationalDatabase{db, opts.emailSalt}, nil
 }
 
 type dbOptions struct {
 	dialect          string
 	connectionString string
-	encryption       keys.Encrypter
 	logger           bool
 	emailSalt        []byte
 }
@@ -54,14 +51,6 @@ func WithConnectionString(connectionString string) Config {
 	}
 }
 
-// WithEncryption adds a keyOps instance to be used for encrypting new keys for
-// accounts
-func WithEncryption(e keys.Encrypter) Config {
-	return func(opts *dbOptions) {
-		opts.encryption = e
-	}
-}
-
 // WithLogging will print additional debug information when set to true
 func WithLogging(l bool) Config {
 	return func(opts *dbOptions) {
@@ -69,6 +58,7 @@ func WithLogging(l bool) Config {
 	}
 }
 
+// WithEmailSalt sets the salt value that is used for hashing email addresses
 func WithEmailSalt(b []byte) Config {
 	return func(opts *dbOptions) {
 		opts.emailSalt = b
