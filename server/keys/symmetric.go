@@ -61,7 +61,7 @@ func DecryptWith(key, value, nonce []byte) ([]byte, error) {
 // DeriveKey wraps package scrypt in order to derive a symmetric key from the
 // given value (most likely a password) and the given salt.
 func DeriveKey(value string, salt []byte) ([]byte, error) {
-	dk, err := scrypt.Key([]byte(value), salt, 1<<15, 8, 1, 32)
+	dk, err := scrypt.Key([]byte(value), salt, 1<<15, 8, 1, DefaultEncryptionKeySize)
 	if err != nil {
 		return nil, fmt.Errorf("keys: error creating derived key: %v", err)
 	}
