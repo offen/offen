@@ -10,7 +10,8 @@ import (
 )
 
 // Authentication contains a set of values that can be used for granting
-// access to certain resources to third parties
+// access to certain resources to third parties. All characters in the contained
+// strings are expected to be URL-safe.
 type Authentication struct {
 	Expires   int64  `json:"expires"`
 	Token     string `json:"token"`
@@ -45,7 +46,7 @@ func NewAuthentication(scope string, secret []byte, deadline time.Duration) (*Au
 	if len(secret) == 0 {
 		return nil, errors.New("authentication: received empty secret, cannot continue")
 	}
-	token, tokenErr := GenerateRandomURLValue(16)
+	token, tokenErr := GenerateRandomValueWith(16, base64.URLEncoding)
 	if tokenErr != nil {
 		return nil, fmt.Errorf("authentication: error creating token: %v", tokenErr)
 	}
