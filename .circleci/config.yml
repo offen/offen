@@ -9,14 +9,18 @@ build_preconditions: &build_preconditions
     - packages
   filters:
     branches:
-      only: /^master$/
+      only:
+        - master
+        - development
 
 deploy_preconditions: &deploy_preconditions
   requires:
     - build
   filters:
     branches:
-      only: /^master$/
+      only:
+        - master
+        - development
 
 jobs:
   server:
@@ -152,13 +156,20 @@ jobs:
   build:
     docker:
       - image: docker:18-git
-    environment:
-      SITEURL: https://www.offen.dev
-      DOCKER_IMAGE_TAG: stable
     working_directory: ~/offen
     steps:
       - checkout
       - setup_remote_docker
+      - run:
+          name: Define target environment
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              echo 'export SITEURL="https://www.offen.dev"' >> $BASH_ENV
+              echo 'export DOCKER_IMAGE_TAG="stable"' >> $BASH_ENV
+            else
+              echo 'export SITEURL="https://staging.offen.dev"' >> $BASH_ENV
+              echo 'export DOCKER_IMAGE_TAG="latest"' >> $BASH_ENV
+            fi
       - restore_cache:
           keys:
             - v1-{{ .Branch }}
@@ -201,6 +212,14 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Define target environment
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              echo 'export TARGET_ENVIRONMENT="production"' >> $BASH_ENV
+            else
+              echo 'export TARGET_ENVIRONMENT="staging"' >> $BASH_ENV
+            fi
+      - run:
           name: Install deployment dependencies
           command: |
             sudo apt-get update && sudo apt-get install -qq -y python-pip libpython-dev
@@ -211,11 +230,11 @@ jobs:
           name: Run database migrations
           working_directory: ~/offen/server
           command: |
-            go run cmd/offen/main.go migrate -conn $(aws secretsmanager get-secret-value --secret-id production/postgresConnectionString | jq -r '.SecretString')
+            go run cmd/offen/main.go migrate -conn $(aws secretsmanager get-secret-value --secret-id $TARGET_ENVIRONMENT/postgresConnectionString | jq -r '.SecretString')
       - run:
           name: Deploy
           command: |
-            cp Dockerrun.aws.json.production Dockerrun.aws.json
+            cp Dockerrun.aws.json.$TARGET_ENVIRONMENT Dockerrun.aws.json
             eb deploy
 
 workflows:
