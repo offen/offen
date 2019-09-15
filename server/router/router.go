@@ -8,7 +8,6 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/gorilla/securecookie"
 	"github.com/m90/go-thunk"
-	httputil "github.com/offen/offen/server/httputil"
 	"github.com/offen/offen/server/persistence"
 	"github.com/sirupsen/logrus"
 )
@@ -139,13 +138,13 @@ func New(opts ...Config) http.Handler {
 	rt.cookieSigner = securecookie.New([]byte(rt.cookieExchangeSecret), nil)
 	m := mux.NewRouter()
 
-	dropOptout := httputil.OptoutMiddleware(optoutKey)
+	dropOptout := optoutMiddleware(optoutKey)
 	recovery := thunk.HandleSafelyWith(func(err error) {
 		if rt.logger != nil {
 			rt.logger.WithError(err).Error("Internal server error")
 		}
 	})
-	userCookie := httputil.UserCookieMiddleware(cookieKey, contextKeyCookie)
+	userCookie := userCookieMiddleware(cookieKey, contextKeyCookie)
 
 	m.Use(recovery)
 
@@ -187,7 +186,7 @@ func New(opts ...Config) http.Handler {
 	events.Handle("", userCookie(receiveEvents)).Methods(http.MethodPost)
 
 	m.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		httputil.RespondWithJSONError(w, errors.New("Not found"), http.StatusNotFound)
+		respondWithJSONError(w, errors.New("Not found"), http.StatusNotFound)
 	})
 
 	return m

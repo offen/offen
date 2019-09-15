@@ -7,7 +7,6 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	httputil "github.com/offen/offen/server/httputil"
 	"github.com/offen/offen/server/persistence"
 )
 
@@ -17,7 +16,7 @@ func (rt *router) getAccount(w http.ResponseWriter, r *http.Request) {
 
 	authCookie, authCookieErr := r.Cookie(authKey)
 	if authCookieErr != nil {
-		httputil.RespondWithJSONError(w, errors.New("missing authentication token"), http.StatusForbidden)
+		respondWithJSONError(w, errors.New("missing authentication token"), http.StatusForbidden)
 		return
 	}
 
@@ -25,7 +24,7 @@ func (rt *router) getAccount(w http.ResponseWriter, r *http.Request) {
 	if err := rt.cookieSigner.Decode(authKey, authCookie.Value, &userID); err != nil {
 		authCookie, _ = rt.authCookie("", true)
 		http.SetCookie(w, authCookie)
-		httputil.RespondWithJSONError(w, fmt.Errorf("error decoding cookie value: %v", err), http.StatusUnauthorized)
+		respondWithJSONError(w, fmt.Errorf("error decoding cookie value: %v", err), http.StatusUnauthorized)
 		return
 	}
 
@@ -33,27 +32,27 @@ func (rt *router) getAccount(w http.ResponseWriter, r *http.Request) {
 	if userErr != nil {
 		authCookie, _ = rt.authCookie("", true)
 		http.SetCookie(w, authCookie)
-		httputil.RespondWithJSONError(w, fmt.Errorf("user with id %s does not exist: %v", userID, userErr), http.StatusNotFound)
+		respondWithJSONError(w, fmt.Errorf("user with id %s does not exist: %v", userID, userErr), http.StatusNotFound)
 	}
 
 	if ok := user.CanAccessAccount(accountID); !ok {
-		httputil.RespondWithJSONError(w, fmt.Errorf("user does not have permissions to access account %s", accountID), http.StatusNotFound)
+		respondWithJSONError(w, fmt.Errorf("user does not have permissions to access account %s", accountID), http.StatusNotFound)
 		return
 	}
 
 	result, err := rt.db.GetAccount(accountID, true, r.URL.Query().Get("since"))
 	if err != nil {
 		if _, ok := err.(persistence.ErrUnknownAccount); ok {
-			httputil.RespondWithJSONError(w, fmt.Errorf("account %s not found", accountID), http.StatusNotFound)
+			respondWithJSONError(w, fmt.Errorf("account %s not found", accountID), http.StatusNotFound)
 			return
 		}
 		rt.logError(err, "error looking up account")
-		httputil.RespondWithJSONError(w, err, http.StatusInternalServerError)
+		respondWithJSONError(w, err, http.StatusInternalServerError)
 		return
 	}
 	b, err := json.Marshal(&result)
 	if err != nil {
-		httputil.RespondWithJSONError(w, err, http.StatusInternalServerError)
+		respondWithJSONError(w, err, http.StatusInternalServerError)
 		return
 	}
 	w.Write(b)

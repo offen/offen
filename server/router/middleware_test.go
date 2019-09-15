@@ -1,4 +1,4 @@
-package httputil
+package router
 
 import (
 	"fmt"
@@ -9,7 +9,7 @@ import (
 )
 
 func TestOptoutMiddleware(t *testing.T) {
-	wrapped := OptoutMiddleware("optout")(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	wrapped := optoutMiddleware("optout")(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("hey there"))
 	}))
 	t.Run("with header", func(t *testing.T) {
@@ -44,7 +44,7 @@ func TestOptoutMiddleware(t *testing.T) {
 }
 
 func TestUserCookieMiddleware(t *testing.T) {
-	wrapped := UserCookieMiddleware("user", 1)(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	wrapped := userCookieMiddleware("user", 1)(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		value := r.Context().Value(1)
 		fmt.Fprintf(w, "value is %v", value)
 	}))
