@@ -189,6 +189,9 @@ func New(opts ...Config) http.Handler {
 	events.Handle("", receiveEvents).Methods(http.MethodPost).Queries("anonymous", "1")
 	events.Handle("", userCookie(receiveEvents)).Methods(http.MethodPost)
 
+	health := m.PathPrefix("/healthz").Subrouter()
+	health.HandleFunc("", rt.getHealth).Methods(http.MethodGet)
+
 	m.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		respondWithJSONError(w, errors.New("Not found"), http.StatusNotFound)
 	})
