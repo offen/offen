@@ -3,6 +3,7 @@ package router
 import (
 	"context"
 	"errors"
+	"fmt"
 	"net/http"
 )
 
@@ -33,6 +34,37 @@ func userCookieMiddleware(cookieKey string, contextKey interface{}) func(http.Ha
 			}
 			r = r.WithContext(
 				context.WithValue(r.Context(), contextKey, c.Value),
+			)
+			next.ServeHTTP(w, r)
+		})
+	}
+}
+
+func (rt *router) accountUserMiddleware(cookieKey string, contextKey interface{}) func(http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			authCookie, authCookieErr := r.Cookie(cookieKey)
+			if authCookieErr != nil {
+				respondWithJSONError(w, errors.New("missing authentication token"), http.StatusUnauthorized)
+				return
+			}
+
+			var userID string
+			if err := rt.cookieSigner.Decode(authKey, authCookie.Value, &userID); err != nil {
+				authCookie, _ = rt.authCookie("")
+				http.SetCookie(w, authCookie)
+				respondWithJSONError(w, fmt.Errorf("error decoding cookie value: %v", err), http.StatusUnauthorized)
+				return
+			}
+
+			user, userErr := rt.db.LookupUser(userID)
+			if userErr != nil {
+				authCookie, _ = rt.authCookie("")
+				http.SetCookie(w, authCookie)
+				respondWithJSONError(w, fmt.Errorf("user with id %s does not exist: %v", userID, userErr), http.StatusNotFound)
+			}
+			r = r.WithContext(
+				context.WithValue(r.Context(), contextKey, user),
 			)
 			next.ServeHTTP(w, r)
 		})

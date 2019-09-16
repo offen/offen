@@ -34,6 +34,7 @@ const (
 	optoutKey                   = "optout"
 	authKey                     = "auth"
 	contextKeyCookie contextKey = iota
+	contextKeyAuth
 )
 
 func (rt *router) userCookie(userID string) *http.Cookie {
@@ -145,6 +146,7 @@ func New(opts ...Config) http.Handler {
 		}
 	})
 	userCookie := userCookieMiddleware(cookieKey, contextKeyCookie)
+	accountAuth := rt.accountUserMiddleware(authKey, contextKeyAuth)
 
 	m.Use(recovery)
 
@@ -161,6 +163,7 @@ func New(opts ...Config) http.Handler {
 	exchange.HandleFunc("", rt.postUserSecret).Methods(http.MethodPost)
 
 	accounts := m.PathPrefix("/accounts/{accountID}").Subrouter()
+	accounts.Use(accountAuth)
 	accounts.Handle("", http.HandlerFunc(rt.getAccount)).Methods(http.MethodGet)
 
 	deleted := m.PathPrefix("/deleted").Subrouter()
@@ -169,10 +172,11 @@ func New(opts ...Config) http.Handler {
 	deleted.HandleFunc("", rt.getDeletedEvents).Methods(http.MethodPost)
 
 	login := m.PathPrefix("/login").Subrouter()
-	login.HandleFunc("", rt.getLogin).Methods(http.MethodGet)
+	login.Handle("", accountAuth(http.HandlerFunc(rt.getLogin))).Methods(http.MethodGet)
 	login.HandleFunc("", rt.postLogin).Methods(http.MethodPost)
 
 	changePassword := m.PathPrefix("/change-password").Subrouter()
+	changePassword.Use(accountAuth)
 	changePassword.HandleFunc("", rt.postChangePassword).Methods(http.MethodPost)
 
 	purge := m.PathPrefix("/purge").Subrouter()

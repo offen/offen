@@ -14,25 +14,10 @@ func (rt *router) getAccount(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	accountID := vars["accountID"]
 
-	authCookie, authCookieErr := r.Cookie(authKey)
-	if authCookieErr != nil {
-		respondWithJSONError(w, errors.New("missing authentication token"), http.StatusForbidden)
+	user, ok := r.Context().Value(contextKeyAuth).(persistence.LoginResult)
+	if !ok {
+		respondWithJSONError(w, errors.New("could not find user object in request context"), http.StatusInternalServerError)
 		return
-	}
-
-	var userID string
-	if err := rt.cookieSigner.Decode(authKey, authCookie.Value, &userID); err != nil {
-		authCookie, _ = rt.authCookie("")
-		http.SetCookie(w, authCookie)
-		respondWithJSONError(w, fmt.Errorf("error decoding cookie value: %v", err), http.StatusUnauthorized)
-		return
-	}
-
-	user, userErr := rt.db.LookupUser(userID)
-	if userErr != nil {
-		authCookie, _ = rt.authCookie("")
-		http.SetCookie(w, authCookie)
-		respondWithJSONError(w, fmt.Errorf("user with id %s does not exist: %v", userID, userErr), http.StatusNotFound)
 	}
 
 	if ok := user.CanAccessAccount(accountID); !ok {

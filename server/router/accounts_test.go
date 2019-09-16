@@ -1,7 +1,7 @@
 package router
 
 import (
-	"errors"
+	"context"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -14,17 +14,12 @@ import (
 
 type mockAccountDatabase struct {
 	persistence.Database
-	result      persistence.AccountResult
-	loginResult persistence.LoginResult
-	err         error
+	result persistence.AccountResult
+	err    error
 }
 
 func (m *mockAccountDatabase) GetAccount(string, bool, string) (persistence.AccountResult, error) {
 	return m.result, m.err
-}
-
-func (m *mockAccountDatabase) LookupUser(string) (persistence.LoginResult, error) {
-	return m.loginResult, nil
 }
 
 func TestRouter_GetAccount(t *testing.T) {
@@ -36,61 +31,10 @@ func TestRouter_GetAccount(t *testing.T) {
 		expectedBody       string
 	}{
 		{
-			"persistence error",
-			"account-a",
-			&mockAccountDatabase{
-				err: errors.New("did not work"),
-				loginResult: persistence.LoginResult{
-					Accounts: []persistence.LoginAccountResult{
-						{AccountID: "account-a"},
-					},
-				},
-			},
-			http.StatusInternalServerError,
-			`{"error":"did not work","status":500}`,
-		},
-		{
-			"unknown account",
-			"account-z",
-			&mockAccountDatabase{
-				err: persistence.ErrUnknownAccount("unknown account z"),
-				loginResult: persistence.LoginResult{
-					Accounts: []persistence.LoginAccountResult{
-						{AccountID: "account-z"},
-					},
-				},
-			},
-			http.StatusNotFound,
-			`{"error":"account account-z not found","status":404}`,
-		},
-		{
-			"bad result",
-			"account-a",
-			&mockAccountDatabase{
-				loginResult: persistence.LoginResult{
-					Accounts: []persistence.LoginAccountResult{
-						{AccountID: "account-a"},
-					},
-				},
-				result: persistence.AccountResult{
-					PublicKey: func() string {
-						return "haha, whoops"
-					},
-				},
-			},
-			http.StatusInternalServerError,
-			`{"error":"json: unsupported type: func() string","status":500}`,
-		},
-		{
 			"ok",
 			"account-a",
 			&mockAccountDatabase{
 				result: persistence.AccountResult{},
-				loginResult: persistence.LoginResult{
-					Accounts: []persistence.LoginAccountResult{
-						{AccountID: "account-a"},
-					},
-				},
 			},
 			http.StatusOK,
 			`{"accountId":"","name":""}`,
@@ -103,6 +47,17 @@ func TestRouter_GetAccount(t *testing.T) {
 			rt := router{db: test.database, cookieSigner: cookieSigner}
 			w := httptest.NewRecorder()
 			r := httptest.NewRequest(http.MethodGet, "/", nil)
+			r = r.WithContext(
+				context.WithValue(
+					context.Background(),
+					contextKeyAuth,
+					persistence.LoginResult{
+						Accounts: []persistence.LoginAccountResult{
+							{AccountID: "account-a"},
+						},
+					},
+				),
+			)
 			r = mux.SetURLVars(r, map[string]string{"accountID": test.accountID})
 			r.AddCookie(&http.Cookie{
 				Value: auth,
