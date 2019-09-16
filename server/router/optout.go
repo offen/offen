@@ -8,7 +8,6 @@ import (
 	"strconv"
 	"time"
 
-	httputil "github.com/offen/offen/server/httputil"
 	"github.com/offen/offen/server/keys"
 )
 
@@ -29,7 +28,7 @@ func (rt *router) generateOneTimeAuth(scope string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		authentication, err := keys.NewAuthentication(scope, rt.cookieExchangeSecret, time.Second*30)
 		if err != nil {
-			httputil.RespondWithJSONError(w, fmt.Errorf("error initiating authentication exchange: %v", err), http.StatusInternalServerError)
+			respondWithJSONError(w, fmt.Errorf("error initiating authentication exchange: %v", err), http.StatusInternalServerError)
 			return
 		}
 		b, _ := json.Marshal(authentication)
@@ -60,7 +59,7 @@ func (rt *router) validateOnetimeAuth(scope string, v url.Values) error {
 
 func (rt *router) getOptout(w http.ResponseWriter, r *http.Request) {
 	if err := rt.validateOnetimeAuth(scopeOptout, r.URL.Query()); err != nil {
-		httputil.RespondWithJSONError(w, fmt.Errorf("credentials not valid: %v", err), http.StatusForbidden)
+		respondWithJSONError(w, fmt.Errorf("credentials not valid: %v", err), http.StatusForbidden)
 		return
 	}
 	serveCookie(rt.optoutCookie(true), w, r)
@@ -68,7 +67,7 @@ func (rt *router) getOptout(w http.ResponseWriter, r *http.Request) {
 
 func (rt *router) getOptin(w http.ResponseWriter, r *http.Request) {
 	if err := rt.validateOnetimeAuth(scopeOptin, r.URL.Query()); err != nil {
-		httputil.RespondWithJSONError(w, fmt.Errorf("credentials not valid: %v", err), http.StatusForbidden)
+		respondWithJSONError(w, fmt.Errorf("credentials not valid: %v", err), http.StatusForbidden)
 		return
 	}
 	serveCookie(rt.optoutCookie(false), w, r)

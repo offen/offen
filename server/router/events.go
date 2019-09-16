@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"net/url"
 
-	httputil "github.com/offen/offen/server/httputil"
 	"github.com/offen/offen/server/persistence"
 )
 
@@ -27,21 +26,21 @@ func (rt *router) postEvents(w http.ResponseWriter, r *http.Request) {
 	evt := inboundEventPayload{}
 	defer r.Body.Close()
 	if err := json.NewDecoder(r.Body).Decode(&evt); err != nil {
-		httputil.RespondWithJSONError(w, err, http.StatusBadRequest)
+		respondWithJSONError(w, err, http.StatusBadRequest)
 		return
 	}
 
 	if err := rt.db.Insert(userID, evt.AccountID, evt.Payload); err != nil {
 		if unknownAccountErr, ok := err.(persistence.ErrUnknownAccount); ok {
-			httputil.RespondWithJSONError(w, unknownAccountErr, http.StatusNotFound)
+			respondWithJSONError(w, unknownAccountErr, http.StatusNotFound)
 			return
 		}
 		if unknownUserErr, ok := err.(persistence.ErrUnknownUser); ok {
-			httputil.RespondWithJSONError(w, unknownUserErr, http.StatusBadRequest)
+			respondWithJSONError(w, unknownUserErr, http.StatusBadRequest)
 			return
 		}
 		rt.logError(err, "error writing event payload")
-		httputil.RespondWithJSONError(w, err, http.StatusInternalServerError)
+		respondWithJSONError(w, err, http.StatusInternalServerError)
 		return
 	}
 
@@ -79,7 +78,7 @@ type getResponse struct {
 func (rt *router) getEvents(w http.ResponseWriter, r *http.Request) {
 	userID, ok := r.Context().Value(contextKeyCookie).(string)
 	if !ok {
-		httputil.RespondWithJSONError(
+		respondWithJSONError(
 			w,
 			errBadRequestContext,
 			http.StatusInternalServerError,
@@ -93,7 +92,7 @@ func (rt *router) getEvents(w http.ResponseWriter, r *http.Request) {
 
 	result, err := rt.db.Query(&query)
 	if err != nil {
-		httputil.RespondWithJSONError(w, err, http.StatusInternalServerError)
+		respondWithJSONError(w, err, http.StatusInternalServerError)
 		return
 	}
 	// the query result gets wrapped in a top level object before marshalling
@@ -103,7 +102,7 @@ func (rt *router) getEvents(w http.ResponseWriter, r *http.Request) {
 	}
 	b, err := json.Marshal(outbound)
 	if err != nil {
-		httputil.RespondWithJSONError(w, err, http.StatusInternalServerError)
+		respondWithJSONError(w, err, http.StatusInternalServerError)
 		return
 	}
 	w.Write(b)
@@ -118,12 +117,12 @@ func (rt *router) getDeletedEvents(w http.ResponseWriter, r *http.Request) {
 
 	query := deletedQuery{}
 	if err := json.NewDecoder(r.Body).Decode(&query); err != nil {
-		httputil.RespondWithJSONError(w, err, http.StatusBadRequest)
+		respondWithJSONError(w, err, http.StatusBadRequest)
 		return
 	}
 	deleted, err := rt.db.GetDeletedEvents(query.EventIDs, userID)
 	if err != nil {
-		httputil.RespondWithJSONError(w, err, http.StatusInternalServerError)
+		respondWithJSONError(w, err, http.StatusInternalServerError)
 		return
 	}
 	out := deletedQuery{
@@ -136,7 +135,7 @@ func (rt *router) getDeletedEvents(w http.ResponseWriter, r *http.Request) {
 func (rt *router) purgeEvents(w http.ResponseWriter, r *http.Request) {
 	userID, _ := r.Context().Value(contextKeyCookie).(string)
 	if err := rt.db.Purge(userID); err != nil {
-		httputil.RespondWithJSONError(w, fmt.Errorf("router: error purging user events: %v", err), http.StatusInternalServerError)
+		respondWithJSONError(w, fmt.Errorf("router: error purging user events: %v", err), http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusNoContent)
