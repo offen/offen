@@ -9,14 +9,18 @@ build_preconditions: &build_preconditions
     - packages
   filters:
     branches:
-      only: /^master$/
+      only:
+        - master
+        - development
 
 deploy_preconditions: &deploy_preconditions
   requires:
     - build
   filters:
     branches:
-      only: /^master$/
+      only:
+        - master
+        - development
 
 jobs:
   server:
@@ -152,9 +156,6 @@ jobs:
   build:
     docker:
       - image: docker:18-git
-    environment:
-      SITEURL: https://www.offen.dev
-      DOCKER_IMAGE_TAG: stable
     working_directory: ~/offen
     steps:
       - checkout
@@ -174,6 +175,13 @@ jobs:
       - run:
           name: Build application Docker image
           command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              export SITEURL="https://www.offen.dev"
+              export DOCKER_IMAGE_TAG="stable"
+            else
+              export SITEURL="https://staging.offen.dev"
+              export DOCKER_IMAGE_TAG="latest"
+            fi
             docker build -t offen/server:$DOCKER_IMAGE_TAG -f build/server/Dockerfile .
             docker build --build-arg siteurl=$SITEURL -t offen/proxy:$DOCKER_IMAGE_TAG -f build/proxy/Dockerfile .
       - run:
@@ -190,6 +198,11 @@ jobs:
       - deploy:
           name: Push application Docker image
           command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              export DOCKER_IMAGE_TAG="stable"
+            else
+              export DOCKER_IMAGE_TAG="latest"
+            fi
             echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
             docker push offen/server:$DOCKER_IMAGE_TAG
             docker push offen/proxy:$DOCKER_IMAGE_TAG
@@ -201,6 +214,14 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Define target environment
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              echo 'export TARGET_ENVIRONMENT="production"' >> $BASH_ENV
+            else
+              echo 'export TARGET_ENVIRONMENT="staging"' >> $BASH_ENV
+            fi
+      - run:
           name: Install deployment dependencies
           command: |
             sudo apt-get update && sudo apt-get install -qq -y python-pip libpython-dev
@@ -211,11 +232,11 @@ jobs:
           name: Run database migrations
           working_directory: ~/offen/server
           command: |
-            go run cmd/offen/main.go migrate -conn $(aws secretsmanager get-secret-value --secret-id production/postgresConnectionString | jq -r '.SecretString')
+            go run cmd/offen/main.go migrate -conn $(aws secretsmanager get-secret-value --secret-id $TARGET_ENVIRONMENT/postgresConnectionString | jq -r '.SecretString')
       - run:
           name: Deploy
           command: |
-            cp Dockerrun.aws.json.production Dockerrun.aws.json
+            cp Dockerrun.aws.json.$TARGET_ENVIRONMENT Dockerrun.aws.json
             eb deploy
 
 workflows:

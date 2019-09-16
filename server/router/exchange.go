@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	"github.com/gofrs/uuid"
-	httputil "github.com/offen/offen/server/httputil"
 	"github.com/offen/offen/server/persistence"
 )
 
@@ -13,17 +12,17 @@ func (rt *router) getPublicKey(w http.ResponseWriter, r *http.Request) {
 	account, err := rt.db.GetAccount(r.URL.Query().Get("accountId"), false, "")
 	if err != nil {
 		if _, ok := err.(persistence.ErrUnknownAccount); ok {
-			httputil.RespondWithJSONError(w, err, http.StatusBadRequest)
+			respondWithJSONError(w, err, http.StatusBadRequest)
 			return
 		}
 		rt.logError(err, "error looking up account")
-		httputil.RespondWithJSONError(w, err, http.StatusInternalServerError)
+		respondWithJSONError(w, err, http.StatusInternalServerError)
 		return
 	}
 	b, err := json.Marshal(account)
 	if err != nil {
 		rt.logError(err, "error marshaling account to JSON")
-		httputil.RespondWithJSONError(w, err, http.StatusInternalServerError)
+		respondWithJSONError(w, err, http.StatusInternalServerError)
 		return
 	}
 	w.Write(b)
@@ -43,7 +42,7 @@ func (rt *router) postUserSecret(w http.ResponseWriter, r *http.Request) {
 	} else {
 		newID, newIDErr := uuid.NewV4()
 		if newIDErr != nil {
-			httputil.RespondWithJSONError(w, newIDErr, http.StatusInternalServerError)
+			respondWithJSONError(w, newIDErr, http.StatusInternalServerError)
 			return
 		}
 		userID = newID.String()
@@ -52,12 +51,12 @@ func (rt *router) postUserSecret(w http.ResponseWriter, r *http.Request) {
 	payload := userSecretPayload{}
 	defer r.Body.Close()
 	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
-		httputil.RespondWithJSONError(w, err, http.StatusBadRequest)
+		respondWithJSONError(w, err, http.StatusBadRequest)
 		return
 	}
 
 	if err := rt.db.AssociateUserSecret(payload.AccountID, userID, payload.EncryptedUserSecret); err != nil {
-		httputil.RespondWithJSONError(w, err, http.StatusBadRequest)
+		respondWithJSONError(w, err, http.StatusBadRequest)
 		return
 	}
 

@@ -1,4 +1,4 @@
-package httputil
+package router
 
 import (
 	"encoding/json"
@@ -16,9 +16,7 @@ func jsonError(err error, status int) []byte {
 	return b
 }
 
-// RespondWithJSONError writes the given error to the given response writer
-// while wrapping it into a JSON payload.
-func RespondWithJSONError(w http.ResponseWriter, err error, status int) {
+func respondWithJSONError(w http.ResponseWriter, err error, status int) {
 	w.WriteHeader(status)
 	w.Write(jsonError(err, status))
 }

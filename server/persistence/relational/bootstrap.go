@@ -4,9 +4,9 @@ import (
 	"encoding/base64"
 	"fmt"
 
+	uuid "github.com/gofrs/uuid"
 	"github.com/jinzhu/gorm"
 	"github.com/offen/offen/server/keys"
-	uuid "github.com/satori/go.uuid"
 	yaml "gopkg.in/yaml.v2"
 )
 
@@ -132,7 +132,10 @@ func bootstrapAccounts(config *bootstrapConfig, emailSalt []byte) ([]Account, []
 	relationshipCreations := []AccountUserRelationship{}
 
 	for _, accountUser := range config.AccountUsers {
-		userID := uuid.NewV4()
+		userID, idErr := uuid.NewV4()
+		if idErr != nil {
+			return nil, nil, nil, idErr
+		}
 		hashedPw, hashedPwErr := keys.HashPassword(accountUser.Password)
 		if hashedPwErr != nil {
 			return nil, nil, nil, hashedPwErr
@@ -147,8 +150,8 @@ func bootstrapAccounts(config *bootstrapConfig, emailSalt []byte) ([]Account, []
 		}
 		user := AccountUser{
 			UserID:         userID.String(),
-			HashedPassword: hashedPw,
 			Salt:           salt,
+			HashedPassword: base64.StdEncoding.EncodeToString(hashedPw),
 			HashedEmail:    base64.StdEncoding.EncodeToString(hashedEmail),
 		}
 		accountUserCreations = append(accountUserCreations, user)
@@ -183,7 +186,10 @@ func bootstrapAccounts(config *bootstrapConfig, emailSalt []byte) ([]Account, []
 				return nil, nil, nil, encryptionErr
 			}
 
-			relationshipID := uuid.NewV4()
+			relationshipID, idErr := uuid.NewV4()
+			if idErr != nil {
+				return nil, nil, nil, idErr
+			}
 			r := AccountUserRelationship{
 				RelationshipID: relationshipID.String(),
 				UserID:         userID.String(),

@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
-	httputil "github.com/offen/offen/server/httputil"
+	"github.com/offen/offen/server/persistence"
 )
 
 type loginCredentials struct {
@@ -17,25 +17,25 @@ type loginCredentials struct {
 func (rt *router) postLogin(w http.ResponseWriter, r *http.Request) {
 	var credentials loginCredentials
 	if err := json.NewDecoder(r.Body).Decode(&credentials); err != nil {
-		httputil.RespondWithJSONError(w, err, http.StatusBadRequest)
+		respondWithJSONError(w, err, http.StatusBadRequest)
 		return
 	}
 	defer r.Body.Close()
 	result, err := rt.db.Login(credentials.Username, credentials.Password)
 	if err != nil {
-		httputil.RespondWithJSONError(w, err, http.StatusUnauthorized)
+		respondWithJSONError(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	b, err := json.Marshal(result)
 	if err != nil {
-		httputil.RespondWithJSONError(w, err, http.StatusInternalServerError)
+		respondWithJSONError(w, err, http.StatusInternalServerError)
 		return
 	}
 
-	authCookie, authCookieErr := rt.authCookie(result.UserID, false)
+	authCookie, authCookieErr := rt.authCookie(result.UserID)
 	if authCookieErr != nil {
-		httputil.RespondWithJSONError(w, authCookieErr, http.StatusInternalServerError)
+		respondWithJSONError(w, authCookieErr, http.StatusInternalServerError)
 		return
 	}
 	http.SetCookie(w, authCookie)
@@ -43,58 +43,39 @@ func (rt *router) postLogin(w http.ResponseWriter, r *http.Request) {
 }
 
 func (rt *router) getLogin(w http.ResponseWriter, r *http.Request) {
-	authCookie, err := r.Cookie(authKey)
-	if err != nil {
-		httputil.RespondWithJSONError(w, errors.New("no auth cookie present"), http.StatusUnauthorized)
-		return
-	}
-	var userID string
-	if err := rt.cookieSigner.Decode(authKey, authCookie.Value, &userID); err != nil {
-		authCookie, _ = rt.authCookie("", true)
+	user, ok := r.Context().Value(contextKeyAuth).(persistence.LoginResult)
+	if !ok {
+		authCookie, _ := rt.authCookie("")
 		http.SetCookie(w, authCookie)
-		httputil.RespondWithJSONError(w, fmt.Errorf("error decoding cookie value: %v", err), http.StatusUnauthorized)
+		respondWithJSONError(w, errors.New("could not authorize request"), http.StatusUnauthorized)
 		return
 	}
-	if _, err := rt.db.LookupUser(userID); err != nil {
-		authCookie, _ = rt.authCookie("", true)
-		http.SetCookie(w, authCookie)
-		httputil.RespondWithJSONError(w, fmt.Errorf("user with id %s does not exist: %v", userID, err), http.StatusNotFound)
-		return
-	}
-	b, _ := json.Marshal(map[string]string{"userId": userID})
+	b, _ := json.Marshal(map[string]string{"userId": user.UserID})
 	w.Write(b)
 }
 
 type changePasswordRequest struct {
 	ChangedPassword string `json:"changedPassword"`
-	CurrentPassword string `json:"currentPassword`
+	CurrentPassword string `json:"currentPassword"`
 }
 
 func (rt *router) postChangePassword(w http.ResponseWriter, r *http.Request) {
-	authCookie, err := r.Cookie(authKey)
-	if err != nil {
-		httputil.RespondWithJSONError(w, errors.New("no auth cookie present"), http.StatusUnauthorized)
+	user, ok := r.Context().Value(contextKeyAuth).(persistence.LoginResult)
+	if !ok {
+		respondWithJSONError(w, errors.New("user object not found on request context"), http.StatusInternalServerError)
 		return
 	}
-	var userID string
-	if err := rt.cookieSigner.Decode(authKey, authCookie.Value, &userID); err != nil {
-		authCookie, _ = rt.authCookie("", true)
-		http.SetCookie(w, authCookie)
-		httputil.RespondWithJSONError(w, fmt.Errorf("error decoding cookie value: %v", err), http.StatusUnauthorized)
-		return
-	}
-
 	var req changePasswordRequest
 	defer r.Body.Close()
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		httputil.RespondWithJSONError(w, fmt.Errorf("error decoding request payload: %v", err), http.StatusBadRequest)
+		respondWithJSONError(w, fmt.Errorf("error decoding request payload: %v", err), http.StatusBadRequest)
 		return
 	}
-	if err := rt.db.ChangePassword(userID, req.CurrentPassword, req.ChangedPassword); err != nil {
-		httputil.RespondWithJSONError(w, fmt.Errorf("error changing password: %v", err), http.StatusInternalServerError)
+	if err := rt.db.ChangePassword(user.UserID, req.CurrentPassword, req.ChangedPassword); err != nil {
+		respondWithJSONError(w, fmt.Errorf("error changing password: %v", err), http.StatusInternalServerError)
 		return
 	}
-	cookie, _ := rt.authCookie("", true)
+	cookie, _ := rt.authCookie("")
 	http.SetCookie(w, cookie)
 	w.WriteHeader(http.StatusNoContent)
 }

@@ -8,7 +8,6 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/gorilla/securecookie"
 	"github.com/m90/go-thunk"
-	httputil "github.com/offen/offen/server/httputil"
 	"github.com/offen/offen/server/persistence"
 	"github.com/sirupsen/logrus"
 )
@@ -35,6 +34,7 @@ const (
 	optoutKey                   = "optout"
 	authKey                     = "auth"
 	contextKeyCookie contextKey = iota
+	contextKeyAuth
 )
 
 func (rt *router) userCookie(userID string) *http.Cookie {
@@ -67,13 +67,13 @@ func (rt *router) optoutCookie(optout bool) *http.Cookie {
 	return c
 }
 
-func (rt *router) authCookie(userID string, delete bool) (*http.Cookie, error) {
+func (rt *router) authCookie(userID string) (*http.Cookie, error) {
 	c := http.Cookie{
 		Name:     authKey,
 		HttpOnly: true,
 		SameSite: http.SameSiteDefaultMode,
 	}
-	if delete {
+	if userID == "" {
 		c.Expires = time.Unix(0, 0)
 	} else {
 		value, err := rt.cookieSigner.MaxAge(24*60*60).Encode(authKey, userID)
@@ -139,13 +139,14 @@ func New(opts ...Config) http.Handler {
 	rt.cookieSigner = securecookie.New([]byte(rt.cookieExchangeSecret), nil)
 	m := mux.NewRouter()
 
-	dropOptout := httputil.OptoutMiddleware(optoutKey)
+	dropOptout := optoutMiddleware(optoutKey)
 	recovery := thunk.HandleSafelyWith(func(err error) {
 		if rt.logger != nil {
 			rt.logger.WithError(err).Error("Internal server error")
 		}
 	})
-	userCookie := httputil.UserCookieMiddleware(cookieKey, contextKeyCookie)
+	userCookie := userCookieMiddleware(cookieKey, contextKeyCookie)
+	accountAuth := rt.accountUserMiddleware(authKey, contextKeyAuth)
 
 	m.Use(recovery)
 
@@ -162,6 +163,7 @@ func New(opts ...Config) http.Handler {
 	exchange.HandleFunc("", rt.postUserSecret).Methods(http.MethodPost)
 
 	accounts := m.PathPrefix("/accounts/{accountID}").Subrouter()
+	accounts.Use(accountAuth)
 	accounts.Handle("", http.HandlerFunc(rt.getAccount)).Methods(http.MethodGet)
 
 	deleted := m.PathPrefix("/deleted").Subrouter()
@@ -170,10 +172,11 @@ func New(opts ...Config) http.Handler {
 	deleted.HandleFunc("", rt.getDeletedEvents).Methods(http.MethodPost)
 
 	login := m.PathPrefix("/login").Subrouter()
-	login.HandleFunc("", rt.getLogin).Methods(http.MethodGet)
+	login.Handle("", accountAuth(http.HandlerFunc(rt.getLogin))).Methods(http.MethodGet)
 	login.HandleFunc("", rt.postLogin).Methods(http.MethodPost)
 
 	changePassword := m.PathPrefix("/change-password").Subrouter()
+	changePassword.Use(accountAuth)
 	changePassword.HandleFunc("", rt.postChangePassword).Methods(http.MethodPost)
 
 	purge := m.PathPrefix("/purge").Subrouter()
@@ -187,7 +190,7 @@ func New(opts ...Config) http.Handler {
 	events.Handle("", userCookie(receiveEvents)).Methods(http.MethodPost)
 
 	m.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		httputil.RespondWithJSONError(w, errors.New("Not found"), http.StatusNotFound)
+		respondWithJSONError(w, errors.New("Not found"), http.StatusNotFound)
 	})
 
 	return m
