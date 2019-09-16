@@ -66,13 +66,13 @@ func (rt *router) optoutCookie(optout bool) *http.Cookie {
 	return c
 }
 
-func (rt *router) authCookie(userID string, delete bool) (*http.Cookie, error) {
+func (rt *router) authCookie(userID string) (*http.Cookie, error) {
 	c := http.Cookie{
 		Name:     authKey,
 		HttpOnly: true,
 		SameSite: http.SameSiteDefaultMode,
 	}
-	if delete {
+	if userID == "" {
 		c.Expires = time.Unix(0, 0)
 	} else {
 		value, err := rt.cookieSigner.MaxAge(24*60*60).Encode(authKey, userID)

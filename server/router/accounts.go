@@ -22,7 +22,7 @@ func (rt *router) getAccount(w http.ResponseWriter, r *http.Request) {
 
 	var userID string
 	if err := rt.cookieSigner.Decode(authKey, authCookie.Value, &userID); err != nil {
-		authCookie, _ = rt.authCookie("", true)
+		authCookie, _ = rt.authCookie("")
 		http.SetCookie(w, authCookie)
 		respondWithJSONError(w, fmt.Errorf("error decoding cookie value: %v", err), http.StatusUnauthorized)
 		return
@@ -30,7 +30,7 @@ func (rt *router) getAccount(w http.ResponseWriter, r *http.Request) {
 
 	user, userErr := rt.db.LookupUser(userID)
 	if userErr != nil {
-		authCookie, _ = rt.authCookie("", true)
+		authCookie, _ = rt.authCookie("")
 		http.SetCookie(w, authCookie)
 		respondWithJSONError(w, fmt.Errorf("user with id %s does not exist: %v", userID, userErr), http.StatusNotFound)
 	}

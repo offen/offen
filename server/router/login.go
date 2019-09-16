@@ -31,7 +31,7 @@ func (rt *router) postLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	authCookie, authCookieErr := rt.authCookie(result.UserID, false)
+	authCookie, authCookieErr := rt.authCookie(result.UserID)
 	if authCookieErr != nil {
 		respondWithJSONError(w, authCookieErr, http.StatusInternalServerError)
 		return
@@ -48,13 +48,13 @@ func (rt *router) getLogin(w http.ResponseWriter, r *http.Request) {
 	}
 	var userID string
 	if err := rt.cookieSigner.Decode(authKey, authCookie.Value, &userID); err != nil {
-		authCookie, _ = rt.authCookie("", true)
+		authCookie, _ = rt.authCookie("")
 		http.SetCookie(w, authCookie)
 		respondWithJSONError(w, fmt.Errorf("error decoding cookie value: %v", err), http.StatusUnauthorized)
 		return
 	}
 	if _, err := rt.db.LookupUser(userID); err != nil {
-		authCookie, _ = rt.authCookie("", true)
+		authCookie, _ = rt.authCookie("")
 		http.SetCookie(w, authCookie)
 		respondWithJSONError(w, fmt.Errorf("user with id %s does not exist: %v", userID, err), http.StatusNotFound)
 		return
@@ -65,7 +65,7 @@ func (rt *router) getLogin(w http.ResponseWriter, r *http.Request) {
 
 type changePasswordRequest struct {
 	ChangedPassword string `json:"changedPassword"`
-	CurrentPassword string `json:"currentPassword`
+	CurrentPassword string `json:"currentPassword"`
 }
 
 func (rt *router) postChangePassword(w http.ResponseWriter, r *http.Request) {
@@ -76,7 +76,7 @@ func (rt *router) postChangePassword(w http.ResponseWriter, r *http.Request) {
 	}
 	var userID string
 	if err := rt.cookieSigner.Decode(authKey, authCookie.Value, &userID); err != nil {
-		authCookie, _ = rt.authCookie("", true)
+		authCookie, _ = rt.authCookie("")
 		http.SetCookie(w, authCookie)
 		respondWithJSONError(w, fmt.Errorf("error decoding cookie value: %v", err), http.StatusUnauthorized)
 		return
@@ -92,7 +92,7 @@ func (rt *router) postChangePassword(w http.ResponseWriter, r *http.Request) {
 		respondWithJSONError(w, fmt.Errorf("error changing password: %v", err), http.StatusInternalServerError)
 		return
 	}
-	cookie, _ := rt.authCookie("", true)
+	cookie, _ := rt.authCookie("")
 	http.SetCookie(w, cookie)
 	w.WriteHeader(http.StatusNoContent)
 }
