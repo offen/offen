@@ -21,6 +21,11 @@ func (r *relationalDatabase) Login(email, password string) (persistence.LoginRes
 		return persistence.LoginResult{}, err
 	}
 
+	saltBytes, saltErr := base64.StdEncoding.DecodeString(accountUser.Salt)
+	if saltErr != nil {
+		return persistence.LoginResult{}, fmt.Errorf("relational: error decoding salt: %v", saltErr)
+	}
+
 	pwBytes, pwErr := base64.StdEncoding.DecodeString(accountUser.HashedPassword)
 	if pwErr != nil {
 		return persistence.LoginResult{}, fmt.Errorf("relational: error decoding stored password: %v", pwErr)
@@ -29,7 +34,7 @@ func (r *relationalDatabase) Login(email, password string) (persistence.LoginRes
 		return persistence.LoginResult{}, err
 	}
 
-	pwDerivedKey, pwDerivedKeyErr := keys.DeriveKey(password, []byte(accountUser.Salt))
+	pwDerivedKey, pwDerivedKeyErr := keys.DeriveKey(password, saltBytes)
 	if pwDerivedKeyErr != nil {
 		return persistence.LoginResult{}, pwDerivedKeyErr
 	}
@@ -102,12 +107,17 @@ func (r *relationalDatabase) ChangePassword(userID, currentPassword, changedPass
 		return fmt.Errorf("relational: current password did not match: %v", err)
 	}
 
-	keyFromCurrentPassword, keyErr := keys.DeriveKey(currentPassword, []byte(accountUser.Salt))
+	saltBytes, saltErr := base64.StdEncoding.DecodeString(accountUser.Salt)
+	if saltErr != nil {
+		return fmt.Errorf("relational: error decoding salt: %v", saltErr)
+	}
+
+	keyFromCurrentPassword, keyErr := keys.DeriveKey(currentPassword, saltBytes)
 	if keyErr != nil {
 		return keyErr
 	}
 
-	keyFromChangedPassword, keyErr := keys.DeriveKey(changedPassword, []byte(accountUser.Salt))
+	keyFromChangedPassword, keyErr := keys.DeriveKey(changedPassword, saltBytes)
 	if keyErr != nil {
 		return keyErr
 	}
@@ -159,12 +169,17 @@ func (r *relationalDatabase) ChangeEmail(userID, emailAddress, password string) 
 		return fmt.Errorf("relational: current password did not match: %v", err)
 	}
 
-	keyFromCurrentPassword, keyErr := keys.DeriveKey(password, []byte(accountUser.Salt))
+	saltBytes, saltErr := base64.StdEncoding.DecodeString(accountUser.Salt)
+	if saltErr != nil {
+		return fmt.Errorf("relational: error decoding salt: %v", saltErr)
+	}
+
+	keyFromCurrentPassword, keyErr := keys.DeriveKey(password, saltBytes)
 	if keyErr != nil {
 		return fmt.Errorf("relational: error deriving key from password: %v", keyErr)
 	}
 
-	emailDerivedKey, deriveKeyErr := keys.DeriveKey(emailAddress, []byte(accountUser.Salt))
+	emailDerivedKey, deriveKeyErr := keys.DeriveKey(emailAddress, saltBytes)
 	if deriveKeyErr != nil {
 		return fmt.Errorf("relational: error deriving key from email address: %v", deriveKeyErr)
 	}
