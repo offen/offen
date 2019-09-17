@@ -30,9 +30,9 @@ function view (state, emit) {
     if (formData.get('changed') !== formData.get('repeat')) {
       return emit('offen:flash', 'Passwords did not match. Please try again.')
     }
-    emit('offen:change-password', {
-      current: formData.get('current'),
-      changed: formData.get('changed')
+    emit('offen:change-credentials', {
+      currentPassword: formData.get('current'),
+      changedPassword: formData.get('changed')
     })
   }
 
@@ -60,7 +60,7 @@ function view (state, emit) {
   function handleChangeEmail (e) {
     e.preventDefault()
     var formData = new window.FormData(e.currentTarget)
-    emit('offen:change-email', {
+    emit('offen:change-credentials', {
       password: formData.get('password'),
       emailAddress: formData.get('email-address')
     })

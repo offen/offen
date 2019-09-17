@@ -40,55 +40,25 @@ function store (state, emitter) {
       })
   })
 
-  emitter.on('offen:change-password', function (update) {
+  emitter.on('offen:change-credentials', function (update) {
     vault(process.env.VAULT_HOST || '/vault/')
       .then(function (postMessage) {
         var queryRequest = {
-          type: 'CHANGE_PASSWORD',
+          type: 'CHANGE_CREDENTIALS',
           payload: update
         }
         return postMessage(queryRequest, true)
       })
       .then(function (response) {
-        if (response.type === 'CHANGE_PASSWORD_SUCCESS') {
-          state.authenticatedUser = null
+        if (response.type === 'CHANGE_CREDENTIALS_SUCCESS') {
+          Object.assign(state, {
+            authenticatedUser: null,
+            flash: 'Please log in again, using your new credentials.'
+          })
           emitter.emit(state.events.PUSHSTATE, '/auditorium/login')
-          state.flash = 'Please log in again, using your new password.'
           return
-        } else if (response.type === 'CHANGE_PASSWORD_FAILURE') {
-          state.flash = 'Could not change password. Try again.'
-          return
-        }
-        throw new Error('Received unknown response type: ' + response.type)
-      })
-      .catch(function (err) {
-        state.error = {
-          message: err.message,
-          stack: err.originalStack || err.stack
-        }
-      })
-      .then(function () {
-        emitter.emit(state.events.RENDER)
-      })
-  })
-
-  emitter.on('offen:change-email', function (update) {
-    vault(process.env.VAULT_HOST || '/vault/')
-      .then(function (postMessage) {
-        var queryRequest = {
-          type: 'CHANGE_EMAIL',
-          payload: update
-        }
-        return postMessage(queryRequest, true)
-      })
-      .then(function (response) {
-        if (response.type === 'CHANGE_EMAIL_SUCCESS') {
-          state.authenticatedUser = null
-          emitter.emit(state.events.PUSHSTATE, '/auditorium/login')
-          state.flash = 'Please log in again, using your new email address.'
-          return
-        } else if (response.type === 'CHANGE_EMAIL_FAILURE') {
-          state.flash = 'Could not change email address. Try again.'
+        } else if (response.type === 'CHANGE_CREDENTIALS_FAILURE') {
+          state.flash = 'Could not change credentials. Try again.'
           return
         }
         throw new Error('Received unknown response type: ' + response.type)

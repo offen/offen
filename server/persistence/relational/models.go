@@ -28,6 +28,8 @@ type User struct {
 	EncryptedUserSecret string
 }
 
+// AccountUser is a person that can log in and access data related to all
+// associated accounts.
 type AccountUser struct {
 	UserID         string `gorm:"primary_key"`
 	HashedEmail    string
@@ -36,6 +38,8 @@ type AccountUser struct {
 	Relationships  []AccountUserRelationship `gorm:"foreignkey:UserID;association_foreignkey:UserID"`
 }
 
+// AccountUserRelationship contains the encrypted KeyEncryptionKeys needed for
+// an AccountUser to access the data of the account it links to.
 type AccountUserRelationship struct {
 	RelationshipID                    string `gorm:"primary_key"`
 	UserID                            string
