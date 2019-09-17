@@ -39,6 +39,7 @@ function store (state, emitter) {
         emitter.emit(state.events.RENDER)
       })
   })
+
   emitter.on('offen:change-password', function (update) {
     vault(process.env.VAULT_HOST || '/vault/')
       .then(function (postMessage) {
@@ -56,6 +57,38 @@ function store (state, emitter) {
           return
         } else if (response.type === 'CHANGE_PASSWORD_FAILURE') {
           state.flash = 'Could not change password. Try again.'
+          return
+        }
+        throw new Error('Received unknown response type: ' + response.type)
+      })
+      .catch(function (err) {
+        state.error = {
+          message: err.message,
+          stack: err.originalStack || err.stack
+        }
+      })
+      .then(function () {
+        emitter.emit(state.events.RENDER)
+      })
+  })
+
+  emitter.on('offen:change-email', function (update) {
+    vault(process.env.VAULT_HOST || '/vault/')
+      .then(function (postMessage) {
+        var queryRequest = {
+          type: 'CHANGE_EMAIL',
+          payload: update
+        }
+        return postMessage(queryRequest, true)
+      })
+      .then(function (response) {
+        if (response.type === 'CHANGE_EMAIL_SUCCESS') {
+          state.authenticatedUser = null
+          emitter.emit(state.events.PUSHSTATE, '/auditorium/login')
+          state.flash = 'Please log in again, using your new email address.'
+          return
+        } else if (response.type === 'CHANGE_EMAIL_FAILURE') {
+          state.flash = 'Could not change email address. Try again.'
           return
         }
         throw new Error('Received unknown response type: ' + response.type)

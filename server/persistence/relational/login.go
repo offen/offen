@@ -144,3 +144,59 @@ func (r *relationalDatabase) ChangePassword(userID, currentPassword, changedPass
 
 	return txn.Commit().Error
 }
+
+func (r *relationalDatabase) ChangeEmail(userID, emailAddress, password string) error {
+	var accountUser AccountUser
+	if err := r.db.Preload("Relationships").Where("user_id = ?", userID).First(&accountUser).Error; err != nil {
+		return fmt.Errorf("relational: error looking up user: %v", err)
+	}
+
+	pwBytes, pwErr := base64.StdEncoding.DecodeString(accountUser.HashedPassword)
+	if pwErr != nil {
+		return fmt.Errorf("relational: error decoding password: %v", pwErr)
+	}
+	if err := keys.ComparePassword(password, pwBytes); err != nil {
+		return fmt.Errorf("relational: current password did not match: %v", err)
+	}
+
+	keyFromCurrentPassword, keyErr := keys.DeriveKey(password, []byte(accountUser.Salt))
+	if keyErr != nil {
+		return fmt.Errorf("relational: error deriving key from password: %v", keyErr)
+	}
+
+	emailDerivedKey, deriveKeyErr := keys.DeriveKey(emailAddress, []byte(accountUser.Salt))
+	if deriveKeyErr != nil {
+		return fmt.Errorf("relational: error deriving key from email address: %v", deriveKeyErr)
+	}
+
+	hashedEmail, hashErr := keys.HashEmail(emailAddress, r.emailSalt)
+	if hashErr != nil {
+		return fmt.Errorf("relational: error hashing updated email address: %v", hashErr)
+	}
+
+	txn := r.db.Begin()
+	accountUser.HashedEmail = base64.StdEncoding.EncodeToString(hashedEmail)
+	if err := txn.Save(&accountUser).Error; err != nil {
+		txn.Rollback()
+		return err
+	}
+	for _, relationship := range accountUser.Relationships {
+		chunks := strings.Split(relationship.PasswordEncryptedKeyEncryptionKey, " ")
+		nonce, _ := base64.StdEncoding.DecodeString(chunks[0])
+		value, _ := base64.StdEncoding.DecodeString(chunks[1])
+		decryptedKey, decryptionErr := keys.DecryptWith(keyFromCurrentPassword, value, nonce)
+		if decryptionErr != nil {
+			txn.Rollback()
+			return decryptionErr
+		}
+		reencryptedKey, nonce, reencryptionErr := keys.EncryptWith(emailDerivedKey, decryptedKey)
+		if reencryptionErr != nil {
+			txn.Rollback()
+			return reencryptionErr
+		}
+		relationship.EmailEncryptedKeyEncryptionKey = base64.StdEncoding.EncodeToString(nonce) + " " + base64.StdEncoding.EncodeToString(reencryptedKey)
+		txn.Save(&relationship)
+	}
+
+	return txn.Commit().Error
+}

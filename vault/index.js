@@ -5,6 +5,7 @@ var handleLogin = require('./src/handle-login')
 var handlePurge = require('./src/handle-purge')
 var handleOptout = require('./src/handle-optout')
 var handleChangePassword = require('./src/handle-change-password')
+var handleChangeEmail = require('./src/handle-change-email')
 var handleOptoutStatus = require('./src/handle-optout-status')
 var allowsCookies = require('./src/allows-cookies')
 var hasOptedOut = require('./src/user-optout')
@@ -78,6 +79,9 @@ window.addEventListener('message', function (event) {
       break
     case 'CHANGE_PASSWORD':
       handler = withSameOrigin(handleChangePassword)
+      break
+    case 'CHANGE_EMAIL':
+      handler = withSameOrigin(handleChangeEmail)
       break
   }
 

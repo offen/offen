@@ -179,6 +179,10 @@ func New(opts ...Config) http.Handler {
 	changePassword.Use(accountAuth)
 	changePassword.HandleFunc("", rt.postChangePassword).Methods(http.MethodPost)
 
+	changeEmail := m.PathPrefix("/change-email").Subrouter()
+	changeEmail.Use(accountAuth)
+	changeEmail.HandleFunc("", rt.postChangeEmail).Methods(http.MethodPost)
+
 	purge := m.PathPrefix("/purge").Subrouter()
 	purge.Use(userCookie)
 	purge.HandleFunc("", rt.purgeEvents).Methods(http.MethodPost)
