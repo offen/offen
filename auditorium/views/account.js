@@ -24,21 +24,21 @@ function view (state, emit) {
     </ul>
   `
 
-  function handleSubmit (e) {
+  function handleChangePassword (e) {
     e.preventDefault()
     var formData = new window.FormData(e.currentTarget)
     if (formData.get('changed') !== formData.get('repeat')) {
       return emit('offen:flash', 'Passwords did not match. Please try again.')
     }
-    emit('offen:change-password', {
-      current: formData.get('current'),
-      changed: formData.get('changed')
+    emit('offen:change-credentials', {
+      currentPassword: formData.get('current'),
+      changedPassword: formData.get('changed')
     })
   }
 
   var changePasswordForm = html`
     <h2>Change Password:</h2>
-    <form onsubmit="${handleSubmit}">
+    <form onsubmit="${handleChangePassword}">
       <label class="form-label">
         <span>Current password:</span>
         <input type="password" name="current">
@@ -57,8 +57,35 @@ function view (state, emit) {
     </form>
   `
 
+  function handleChangeEmail (e) {
+    e.preventDefault()
+    var formData = new window.FormData(e.currentTarget)
+    emit('offen:change-credentials', {
+      password: formData.get('password'),
+      emailAddress: formData.get('email-address')
+    })
+  }
+
+  var changeEmailForm = html`
+    <h2>Change email address:</h2>
+    <form onsubmit="${handleChangeEmail}">
+      <label class="form-label">
+        <span>New email address:</span>
+        <input type="text" name="email-address">
+      </label>
+      <label class="form-label">
+        <span>Your Password:</span>
+        <input type="password" name="password">
+      </label>
+      <label class="form-label">
+        <input type="submit">
+      </label>
+    </form>
+  `
+
   return html`
     ${loggedInMessage}
     ${changePasswordForm}
+    ${changeEmailForm}
   `
 }

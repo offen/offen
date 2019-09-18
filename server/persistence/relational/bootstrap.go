@@ -148,6 +148,7 @@ func bootstrapAccounts(config *bootstrapConfig, emailSalt []byte) ([]Account, []
 		if saltErr != nil {
 			return nil, nil, nil, saltErr
 		}
+		saltBytes, _ := base64.StdEncoding.DecodeString(salt)
 		user := AccountUser{
 			UserID:         userID.String(),
 			Salt:           salt,
@@ -168,7 +169,7 @@ func bootstrapAccounts(config *bootstrapConfig, emailSalt []byte) ([]Account, []
 				return nil, nil, nil, fmt.Errorf("account with id %s not found", accountID)
 			}
 
-			passwordDerivedKey, passwordDerivedKeyErr := keys.DeriveKey(accountUser.Password, []byte(salt))
+			passwordDerivedKey, passwordDerivedKeyErr := keys.DeriveKey(accountUser.Password, saltBytes)
 			if passwordDerivedKeyErr != nil {
 				return nil, nil, nil, passwordDerivedKeyErr
 			}
@@ -177,7 +178,7 @@ func bootstrapAccounts(config *bootstrapConfig, emailSalt []byte) ([]Account, []
 				return nil, nil, nil, encryptionErr
 			}
 
-			emailDerivedKey, emailDerivedKeyErr := keys.DeriveKey(accountUser.Email, []byte(salt))
+			emailDerivedKey, emailDerivedKeyErr := keys.DeriveKey(accountUser.Email, saltBytes)
 			if emailDerivedKeyErr != nil {
 				return nil, nil, nil, emailDerivedKeyErr
 			}

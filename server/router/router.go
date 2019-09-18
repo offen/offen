@@ -136,7 +136,7 @@ func New(opts ...Config) http.Handler {
 		opt(&rt)
 	}
 
-	rt.cookieSigner = securecookie.New([]byte(rt.cookieExchangeSecret), nil)
+	rt.cookieSigner = securecookie.New(rt.cookieExchangeSecret, nil)
 	m := mux.NewRouter()
 
 	dropOptout := optoutMiddleware(optoutKey)
@@ -179,6 +179,10 @@ func New(opts ...Config) http.Handler {
 	changePassword.Use(accountAuth)
 	changePassword.HandleFunc("", rt.postChangePassword).Methods(http.MethodPost)
 
+	changeEmail := m.PathPrefix("/change-email").Subrouter()
+	changeEmail.Use(accountAuth)
+	changeEmail.HandleFunc("", rt.postChangeEmail).Methods(http.MethodPost)
+
 	purge := m.PathPrefix("/purge").Subrouter()
 	purge.Use(userCookie)
 	purge.HandleFunc("", rt.purgeEvents).Methods(http.MethodPost)
@@ -188,6 +192,9 @@ func New(opts ...Config) http.Handler {
 	receiveEvents := dropOptout(http.HandlerFunc(rt.postEvents))
 	events.Handle("", receiveEvents).Methods(http.MethodPost).Queries("anonymous", "1")
 	events.Handle("", userCookie(receiveEvents)).Methods(http.MethodPost)
+
+	health := m.PathPrefix("/healthz").Subrouter()
+	health.HandleFunc("", rt.getHealth).Methods(http.MethodGet)
 
 	m.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		respondWithJSONError(w, errors.New("Not found"), http.StatusNotFound)
