@@ -79,3 +79,29 @@ func (rt *router) postChangePassword(w http.ResponseWriter, r *http.Request) {
 	http.SetCookie(w, cookie)
 	w.WriteHeader(http.StatusNoContent)
 }
+
+type changeEmailRequest struct {
+	EmailAddress string `json:"emailAddress"`
+	Password     string `json:"password"`
+}
+
+func (rt *router) postChangeEmail(w http.ResponseWriter, r *http.Request) {
+	user, ok := r.Context().Value(contextKeyAuth).(persistence.LoginResult)
+	if !ok {
+		respondWithJSONError(w, errors.New("user object not found on request context"), http.StatusInternalServerError)
+		return
+	}
+	var req changeEmailRequest
+	defer r.Body.Close()
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		respondWithJSONError(w, fmt.Errorf("error decoding request payload: %v", err), http.StatusBadRequest)
+		return
+	}
+	if err := rt.db.ChangeEmail(user.UserID, req.EmailAddress, req.Password); err != nil {
+		respondWithJSONError(w, fmt.Errorf("error changing email address: %v", err), http.StatusInternalServerError)
+		return
+	}
+	cookie, _ := rt.authCookie("")
+	http.SetCookie(w, cookie)
+	w.WriteHeader(http.StatusNoContent)
+}

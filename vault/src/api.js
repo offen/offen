@@ -160,6 +160,24 @@ function changePasswordWith (loginUrl) {
   }
 }
 
+exports.changeEmail = changeEmailWith(window.location.origin + '/api/change-email')
+exports.changeEmailWith = changeEmailWith
+
+function changeEmailWith (loginUrl) {
+  return function (emailAddress, password) {
+    return window
+      .fetch(loginUrl, {
+        method: 'POST',
+        credentials: 'include',
+        body: JSON.stringify({
+          emailAddress: emailAddress,
+          password: password
+        })
+      })
+      .then(handleFetchResponse)
+  }
+}
+
 exports.purge = purgeWith(window.location.origin + '/api/purge')
 exports.purgeWith = purgeWith
 

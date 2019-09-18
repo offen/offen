@@ -11,6 +11,7 @@ type Database interface {
 	Login(email, password string) (LoginResult, error)
 	LookupUser(userID string) (LoginResult, error)
 	ChangePassword(userID, currentPassword, changedPassword string) error
+	ChangeEmail(userID, emailAddress, password string) error
 	CheckHealth() error
 }
 

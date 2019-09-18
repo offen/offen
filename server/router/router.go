@@ -136,7 +136,7 @@ func New(opts ...Config) http.Handler {
 		opt(&rt)
 	}
 
-	rt.cookieSigner = securecookie.New([]byte(rt.cookieExchangeSecret), nil)
+	rt.cookieSigner = securecookie.New(rt.cookieExchangeSecret, nil)
 	m := mux.NewRouter()
 
 	dropOptout := optoutMiddleware(optoutKey)
@@ -178,6 +178,10 @@ func New(opts ...Config) http.Handler {
 	changePassword := m.PathPrefix("/change-password").Subrouter()
 	changePassword.Use(accountAuth)
 	changePassword.HandleFunc("", rt.postChangePassword).Methods(http.MethodPost)
+
+	changeEmail := m.PathPrefix("/change-email").Subrouter()
+	changeEmail.Use(accountAuth)
+	changeEmail.HandleFunc("", rt.postChangeEmail).Methods(http.MethodPost)
 
 	purge := m.PathPrefix("/purge").Subrouter()
 	purge.Use(userCookie)
