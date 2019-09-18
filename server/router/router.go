@@ -136,7 +136,7 @@ func New(opts ...Config) http.Handler {
 		opt(&rt)
 	}
 
-	rt.cookieSigner = securecookie.New([]byte(rt.cookieExchangeSecret), nil)
+	rt.cookieSigner = securecookie.New(rt.cookieExchangeSecret, nil)
 	m := mux.NewRouter()
 
 	dropOptout := optoutMiddleware(optoutKey)

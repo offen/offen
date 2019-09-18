@@ -18,11 +18,23 @@ type Authentication struct {
 	Signature string `json:"signature"`
 }
 
+func joinArgs(scope string, token []byte, expires int64) []byte {
+	out := []byte{}
+	out = append(out, []byte(scope)...)
+	out = append(out, token...)
+	out = append(out, []byte(fmt.Sprintf("%d", expires))...)
+	return out
+}
+
 // Validate checks if the authentication is valid against the given secret and
 // if it hasn't expired yet.
 func (a *Authentication) Validate(scope string, secret []byte) error {
 	mac := hmac.New(sha256.New, secret)
-	_, writeErr := mac.Write([]byte(fmt.Sprintf("%s-%s-%d", scope, a.Token, a.Expires)))
+	tokenBytes, tokenErr := base64.URLEncoding.DecodeString(a.Token)
+	if tokenErr != nil {
+		return fmt.Errorf("authentication: error decoding token: %v", tokenErr)
+	}
+	_, writeErr := mac.Write(joinArgs(scope, tokenBytes, a.Expires))
 	if writeErr != nil {
 		return fmt.Errorf("authentication: error decoding signature: %v", writeErr)
 	}
@@ -46,21 +58,28 @@ func NewAuthentication(scope string, secret []byte, deadline time.Duration) (*Au
 	if len(secret) == 0 {
 		return nil, errors.New("authentication: received empty secret, cannot continue")
 	}
+
 	token, tokenErr := GenerateRandomValueWith(16, base64.URLEncoding)
 	if tokenErr != nil {
 		return nil, fmt.Errorf("authentication: error creating token: %v", tokenErr)
 	}
+	tokenBytes, tokenBytesErr := base64.URLEncoding.DecodeString(token)
+	if tokenBytesErr != nil {
+		return nil, fmt.Errorf("authentication: error decoding token: %v", tokenBytesErr)
+	}
+
 	expires := time.Now().Add(deadline).Unix()
 
 	mac := hmac.New(sha256.New, secret)
-	_, writeErr := mac.Write([]byte(fmt.Sprintf("%s-%s-%d", scope, token, expires)))
+	_, writeErr := mac.Write(joinArgs(scope, tokenBytes, expires))
 	if writeErr != nil {
 		return nil, fmt.Errorf("authentication: error writing signature: %v", writeErr)
 	}
+	signature := mac.Sum(nil)
 
 	return &Authentication{
 		Expires:   expires,
 		Token:     token,
-		Signature: base64.URLEncoding.EncodeToString(mac.Sum(nil)),
+		Signature: base64.URLEncoding.EncodeToString(signature),
 	}, nil
 }
