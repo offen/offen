@@ -155,6 +155,62 @@ func (r *relationalDatabase) ChangePassword(userID, currentPassword, changedPass
 	return txn.Commit().Error
 }
 
+func (r *relationalDatabase) ResetPassword(emailAddress, password string, oneTimeKey []byte) error {
+	hashedEmail, hashErr := keys.HashEmail(emailAddress, r.emailSalt)
+	if hashErr != nil {
+		return fmt.Errorf("error hashing given email address: %v", hashErr)
+	}
+
+	var accountUser AccountUser
+	if err := r.db.Where("hashed_email = ?", base64.StdEncoding.EncodeToString(hashedEmail)).First(&accountUser).Error; err != nil {
+		return fmt.Errorf("error looking up user: %v", err)
+	}
+
+	saltBytes, saltErr := base64.StdEncoding.DecodeString(accountUser.Salt)
+	if saltErr != nil {
+		return fmt.Errorf("error decoding salt for account user: %v", saltErr)
+	}
+
+	passwordDerivedKey, deriveErr := keys.DeriveKey(password, saltBytes)
+	if deriveErr != nil {
+		return fmt.Errorf("error deriving key from password: %v", deriveErr)
+	}
+
+	var relationships []AccountUserRelationship
+	r.db.Where("user_id = ?", accountUser.UserID).Find(&relationships)
+
+	txn := r.db.Begin()
+	for _, relationship := range relationships {
+		chunks := strings.Split(relationship.OneTimeEncryptedKeyEncryptionKey, " ")
+		nonce, _ := base64.StdEncoding.DecodeString(chunks[0])
+		cipher, _ := base64.StdEncoding.DecodeString(chunks[1])
+		keyEncryptionKey, decryptionErr := keys.DecryptWith(oneTimeKey, cipher, nonce)
+		if decryptionErr != nil {
+			txn.Rollback()
+			return fmt.Errorf("error decrypting key encryption key: %v", decryptionErr)
+		}
+		passwordEncryptedKey, passwordNonce, encryptionErr := keys.EncryptWith(passwordDerivedKey, keyEncryptionKey)
+		if encryptionErr != nil {
+			txn.Rollback()
+			return fmt.Errorf("error re-encrypting key encryption key: %v", encryptionErr)
+		}
+		relationship.PasswordEncryptedKeyEncryptionKey = fmt.Sprintf(
+			"%s %s",
+			base64.StdEncoding.EncodeToString(passwordNonce),
+			base64.StdEncoding.EncodeToString(passwordEncryptedKey),
+		)
+		relationship.OneTimeEncryptedKeyEncryptionKey = ""
+		txn.Save(&relationship)
+	}
+	passwordHash, hashErr := keys.HashPassword(password)
+	if hashErr != nil {
+		txn.Rollback()
+		return fmt.Errorf("error hashing password: %v", hashErr)
+	}
+	txn.Model(&accountUser).Update("hashed_password", base64.StdEncoding.EncodeToString(passwordHash))
+	return txn.Commit().Error
+}
+
 func (r *relationalDatabase) ChangeEmail(userID, emailAddress, password string) error {
 	var accountUser AccountUser
 	if err := r.db.Preload("Relationships").Where("user_id = ?", userID).First(&accountUser).Error; err != nil {

@@ -106,4 +106,38 @@ function store (state, emitter) {
         emitter.emit(state.events.RENDER)
       })
   })
+
+  emitter.on('offen:reset-password', function (update) {
+    vault(process.env.VAULT_HOST || '/vault/')
+      .then(function (postMessage) {
+        var queryRequest = {
+          type: 'RESET_PASSWORD',
+          payload: update
+        }
+        return postMessage(queryRequest, true)
+      })
+      .then(function (response) {
+        if (response.type === 'RESET_PASSWORD_SUCCESS') {
+          Object.assign(state, {
+            authenticatedUser: null,
+            flash: 'Please log in again, using your new credentials.'
+          })
+          emitter.emit(state.events.PUSHSTATE, '/auditorium/login')
+          return
+        } else if (response.type === 'RESET_PASSWORD_FAILURE') {
+          state.flash = 'Could not handle your request, please try again.'
+          return
+        }
+        throw new Error('Received unknown response type: ' + response.type)
+      })
+      .catch(function (err) {
+        state.error = {
+          message: err.message,
+          stack: err.originalStack || err.stack
+        }
+      })
+      .then(function () {
+        emitter.emit(state.events.RENDER)
+      })
+  })
 }

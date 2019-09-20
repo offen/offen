@@ -19,7 +19,7 @@ function view (state, emit) {
     <form onsubmit=${handleSubmit}>
       <label class="form-label">
         <span>Email address:</span>
-        <input required type="email" name="email-adress" placeholder="Your email address">
+        <input required type="email" name="email-address" placeholder="Your email address">
       </label class="form-label">
       <label class="form-label">
         <span>New password:</span>

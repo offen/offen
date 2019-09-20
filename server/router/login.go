@@ -1,7 +1,6 @@
 package router
 
 import (
-	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -124,7 +123,7 @@ func (rt *router) postForgotPassword(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNoContent)
 		return
 	}
-	signedToken, signErr := rt.cookieSigner.MaxAge(24*60*60).Encode("reset", base64.URLEncoding.EncodeToString(token))
+	signedToken, signErr := rt.cookieSigner.MaxAge(24*60*60).Encode("reset", token)
 	if signErr != nil {
 		rt.logError(signErr, "error signing token")
 		w.WriteHeader(http.StatusNoContent)
@@ -132,5 +131,30 @@ func (rt *router) postForgotPassword(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Println("TOKEN", signedToken)
+	w.WriteHeader(http.StatusNoContent)
+}
+
+type resetPasswordRequest struct {
+	EmailAddress string `json:"emailAddress"`
+	Password     string `json:"password"`
+	Token        string `json:"token"`
+}
+
+func (rt *router) postResetPassword(w http.ResponseWriter, r *http.Request) {
+	var req resetPasswordRequest
+	defer r.Body.Close()
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		respondWithJSONError(w, fmt.Errorf("error decoding response body: %v", err), http.StatusBadRequest)
+		return
+	}
+	var key []byte
+	if err := rt.cookieSigner.Decode("reset", req.Token, &key); err != nil {
+		respondWithJSONError(w, fmt.Errorf("error decoding signed token: %v", err), http.StatusBadRequest)
+		return
+	}
+
+	if err := rt.db.ResetPassword(req.EmailAddress, req.Password, key); err != nil {
+		rt.logError(err, "error resetting password")
+	}
 	w.WriteHeader(http.StatusNoContent)
 }

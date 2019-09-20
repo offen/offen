@@ -182,6 +182,9 @@ func New(opts ...Config) http.Handler {
 	forgotPassword := m.PathPrefix("/forgot-password").Subrouter()
 	forgotPassword.HandleFunc("", rt.postForgotPassword).Methods(http.MethodPost)
 
+	resetPassword := m.PathPrefix("/reset-password").Subrouter()
+	resetPassword.HandleFunc("", rt.postResetPassword).Methods(http.MethodPost)
+
 	changeEmail := m.PathPrefix("/change-email").Subrouter()
 	changeEmail.Use(accountAuth)
 	changeEmail.HandleFunc("", rt.postChangeEmail).Methods(http.MethodPost)
