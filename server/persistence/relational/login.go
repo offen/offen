@@ -215,3 +215,54 @@ func (r *relationalDatabase) ChangeEmail(userID, emailAddress, password string) 
 
 	return txn.Commit().Error
 }
+
+func (r *relationalDatabase) GenerateOneTimeKey(emailAddress string) ([]byte, error) {
+	hashedEmail, hashErr := keys.HashEmail(emailAddress, r.emailSalt)
+	if hashErr != nil {
+		return nil, fmt.Errorf("error hashing given email address: %v", hashErr)
+	}
+	
+	var accountUser AccountUser
+	if err := r.db.Preload("Relationships").Where("hashed_email = ?", base64.StdEncoding.EncodeToString(hashedEmail)).First(&accountUser).Error; err != nil {
+		return nil, fmt.Errorf("error looking up user: %v", err) 
+	}
+
+	saltBytes, saltErr := base64.StdEncoding.DecodeString(accountUser.Salt)
+	if saltErr != nil {
+		return nil, fmt.Errorf("error decoding salt for account user: %v", saltErr)
+	}
+
+	emailDerivedKey, deriveErr := keys.DeriveKey(emailAddress, saltBytes)
+	if deriveErr != nil {
+		return nil, fmt.Errorf("error deriving key from email address: %v", deriveErr)
+	}
+	oneTimeKey, _ := keys.GenerateRandomValue(keys.DefaultEncryptionKeySize)
+	oneTimeKeyBytes, _ := base64.StdEncoding.DecodeString(oneTimeKey)
+
+	txn := r.db.Begin()
+	for _, relationship := range accountUser.Relationships {
+		chunks := strings.Split(relationship.EmailEncryptedKeyEncryptionKey, " ")
+		nonce, _ := base64.StdEncoding.DecodeString(chunks[0])
+		cipher, _ := base64.StdEncoding.DecodeString(chunks[1])
+		decryptedKey, decryptErr := keys.DecryptWith(emailDerivedKey, cipher, nonce)
+		if decryptErr != nil {
+			txn.Rollback()
+			return nil, fmt.Errorf("error decrypting email encrypted key: %v", decryptErr)
+		}
+		oneTimeEncryptedKey, nonce, encryptErr := keys.EncryptWith(oneTimeKeyBytes, decryptedKey)
+		if encryptErr != nil {
+			txn.Rollback()
+			return nil, fmt.Errorf("error encrypting key with one time key: %v", encryptErr)
+		}
+		relationship.OneTimeEncryptedKeyEncryptionKey = fmt.Sprintf(
+			"%s %s",
+			base64.StdEncoding.EncodeToString(nonce),
+			base64.StdEncoding.EncodeToString(oneTimeEncryptedKey),
+		)
+		if err := txn.Save(&relationship).Error; err != nil {
+			txn.Rollback()
+			return nil, fmt.Errorf("error updating relationship record: %v", err)
+		}
+	}
+	return oneTimeKeyBytes, txn.Commit().Error
+}

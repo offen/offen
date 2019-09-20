@@ -7,6 +7,8 @@ var optOutStore = require('./stores/opt-out')
 var bailOutStore = require('./stores/bail-out')
 var mainView = require('./views/main')
 var loginView = require('./views/login')
+var forgotPasswordView = require('./views/forgot-password')
+var resetPasswordView = require('./views/reset-password')
 var accountView = require('./views/account')
 var notFoundView = require('./views/404')
 var withAuthentication = require('./views/decorators/with-authentication')
@@ -47,6 +49,14 @@ app.route(
 app.route(
   base + 'login',
   decorateWithDefaults(loginView, 'offen login')
+)
+app.route(
+  base + 'forgot-password',
+  decorateWithDefaults(forgotPasswordView, 'offen forgot password')
+)
+app.route(
+  base + 'reset-password/:token',
+  decorateWithDefaults(resetPasswordView, 'offen reset password')
 )
 app.route(
   base.replace(/\/$/, ''),

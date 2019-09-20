@@ -160,6 +160,22 @@ function changePasswordWith (loginUrl) {
   }
 }
 
+exports.forgotPassword = forgotPasswordWith(window.location.origin + '/api/forgot-password')
+exports.forgotPasswordWith = forgotPasswordWith
+
+function forgotPasswordWith (loginUrl) {
+  return function (emailAddress) {
+    return window
+      .fetch(loginUrl, {
+        method: 'POST',
+        body: JSON.stringify({
+          emailAddress: emailAddress
+        })
+      })
+      .then(handleFetchResponse)
+  }
+}
+
 exports.changeEmail = changeEmailWith(window.location.origin + '/api/change-email')
 exports.changeEmailWith = changeEmailWith
 

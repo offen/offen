@@ -1,6 +1,7 @@
 package router
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -103,5 +104,33 @@ func (rt *router) postChangeEmail(w http.ResponseWriter, r *http.Request) {
 	}
 	cookie, _ := rt.authCookie("")
 	http.SetCookie(w, cookie)
+	w.WriteHeader(http.StatusNoContent)
+}
+
+type forgotPasswordRequest struct {
+	EmailAddress string `json:"emailAddress"`
+}
+
+func (rt *router) postForgotPassword(w http.ResponseWriter, r *http.Request) {
+	var req forgotPasswordRequest
+	defer r.Body.Close()
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		respondWithJSONError(w, fmt.Errorf("error decoding request body: %v", err), http.StatusBadRequest)
+		return
+	}
+	token, err := rt.db.GenerateOneTimeKey(req.EmailAddress)
+	if err != nil {
+		rt.logError(err, "error generating one time key")
+		w.WriteHeader(http.StatusNoContent)
+		return
+	}
+	signedToken, signErr := rt.cookieSigner.MaxAge(24*60*60).Encode("reset", base64.URLEncoding.EncodeToString(token))
+	if signErr != nil {
+		rt.logError(signErr, "error signing token")
+		w.WriteHeader(http.StatusNoContent)
+		return
+	}
+
+	fmt.Println("TOKEN", signedToken)
 	w.WriteHeader(http.StatusNoContent)
 }

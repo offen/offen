@@ -13,6 +13,7 @@ type Database interface {
 	ChangePassword(userID, currentPassword, changedPassword string) error
 	ChangeEmail(userID, emailAddress, password string) error
 	CheckHealth() error
+	GenerateOneTimeKey(emailAddress string) ([]byte, error)
 }
 
 // Query defines a set of filters to limit the set of results to be returned
