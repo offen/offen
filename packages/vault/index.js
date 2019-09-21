@@ -58,12 +58,16 @@ function createVault (host) {
     })
   })
 
-  if (document.body) {
-    document.body.appendChild(vault)
-  } else {
-    document.addEventListener('DOMContentLoaded', function () {
+  switch (document.readyState) {
+    case 'complete':
+    case 'loaded':
+    case 'interactive':
       document.body.appendChild(vault)
-    })
+      break
+    default:
+      document.addEventListener('DOMContentLoaded', function () {
+        document.body.appendChild(vault)
+      })
   }
   return createVault[host]
 }
