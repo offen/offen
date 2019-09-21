@@ -47,7 +47,7 @@ exports.handleOptoutStatusWith = handleOptoutStatusWith
 function handleOptoutStatusWith (hasOptedOut, allowsCookies) {
   return function (message) {
     return {
-      type: 'OPTOUT_STATUS',
+      type: 'OPTOUT_STATUS_SUCCESS',
       payload: {
         hasOptedOut: hasOptedOut(),
         allowsCookies: allowsCookies()
@@ -76,7 +76,7 @@ function handleQueryWith (getUserEvents, getOperatorEvents) {
     return lookup
       .then(function (result) {
         return {
-          type: 'QUERY_RESULT',
+          type: 'QUERY_SUCCESS',
           payload: {
             query: query,
             result: result
@@ -149,11 +149,10 @@ exports.handleChangeCredentials = handleChangeCredentialsWith(api)
 exports.handleChangeCredentialsWith = handleChangeCredentialsWith
 
 function handleChangeCredentialsWith (api) {
-  return function (message) {
+  return proxyThunk(function (payload) {
     var doRequest = function () {
       return Promise.reject(new Error('Could not match message payload.'))
     }
-    var payload = message.payload
     if (payload.currentPassword && payload.changedPassword) {
       doRequest = function () {
         return api.changePassword(payload.currentPassword, payload.changedPassword)
@@ -164,66 +163,42 @@ function handleChangeCredentialsWith (api) {
       }
     }
     return doRequest()
-      .then(function (response) {
-        return {
-          type: 'CHANGE_CREDENTIALS_SUCCESS'
-        }
-      })
-      .catch(function (err) {
-        if (err.status === 401) {
-          return {
-            type: 'CHANGE_CREDENTIALS_FAILURE',
-            payload: {
-              message: err.message
-            }
-          }
-        }
-        throw err
-      })
-  }
+  })
 }
 
 exports.handleForgotPassword = handleForgotPasswordWith(api)
 exports.handleForgotPasswordWith = handleForgotPasswordWith
 
 function handleForgotPasswordWith (api) {
-  return function (message) {
-    return api.forgotPassword(message.payload.emailAddress, message.payload.urlTemplate)
-      .then(function (response) {
-        return {
-          type: 'FORGOT_PASSWORD_SUCCESS'
-        }
-      })
-      .catch(function (err) {
-        if (err.status < 500) {
-          return {
-            type: 'FORGOT_PASSWORD_FAILURE',
-            payload: {
-              message: err.message
-            }
-          }
-        }
-        throw err
-      })
-  }
+  return proxyThunk(function (payload) {
+    return api.forgotPassword(payload.emailAddress, payload.urlTemplate)
+  })
 }
 
 exports.handleResetPassword = handleResetPasswordWith(api)
 exports.handleResetPasswordWith = handleResetPasswordWith
 
 function handleResetPasswordWith (api) {
-  return function (message) {
-    var payload = message.payload
+  return proxyThunk(function (payload) {
     return api.resetPassword(payload.emailAddress, payload.password, payload.token)
+  })
+}
+
+// proxyThunk can be used to create a handler that simply calls through
+// to an api method without needing any further logic other than signalling
+// success or failure
+function proxyThunk (thunk) {
+  return function (message) {
+    return thunk(message.payload)
       .then(function (response) {
         return {
-          type: 'RESET_PASSWORD_SUCCESS'
+          type: message.type + '_SUCCESS'
         }
       })
       .catch(function (err) {
         if (err.status < 500) {
           return {
-            type: 'RESET_PASSWORD_FAILURE',
+            type: message.type + '_FAILURE',
             payload: {
               message: err.message
             }
