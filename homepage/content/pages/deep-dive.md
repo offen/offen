@@ -71,12 +71,3 @@ Users and operators are given intuitive and accessibility-focused tools for anal
 ### Modus Operandi
 
 Developing and running __offen__ can only work out when it is entirely *free of any kind of economic constraints or goals* and its only objective is *contributing to the common good*. Development of a prototype is reliant on public grants or similar funding sources. Long term operation of the software, just like its maintenance and continued development, is tied to resources granted by foundations or being donated by the public.
-
-### Status Quo
-
-__offen__ is created by [Frederik Ring][frederik-ring]{: target="_blank"} and [Hendrik Niefeld][hendrik-niefeld]{: target="_blank"} and is currently being conceptually designed, both as a product as well as as a software.
-
-We are happy about any kind of feedback. From *criticism and praise to contributions or support*, everything is welcome.
-
-[hendrik-niefeld]: http://niefeld.com/
-[frederik-ring]: https://www.frederikring.com/
