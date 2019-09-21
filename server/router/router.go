@@ -8,12 +8,14 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/gorilla/securecookie"
 	"github.com/m90/go-thunk"
+	"github.com/offen/offen/server/mailer"
 	"github.com/offen/offen/server/persistence"
 	"github.com/sirupsen/logrus"
 )
 
 type router struct {
 	db                   persistence.Database
+	mailer               mailer.Mailer
 	logger               *logrus.Logger
 	cookieSigner         *securecookie.SecureCookie
 	secureCookie         bool
@@ -100,6 +102,13 @@ func WithDatabase(db persistence.Database) Config {
 func WithLogger(l *logrus.Logger) Config {
 	return func(r *router) {
 		r.logger = l
+	}
+}
+
+// WithMailer sets the mailer the router will use
+func WithMailer(m mailer.Mailer) Config {
+	return func(r *router) {
+		r.mailer = m
 	}
 }
 

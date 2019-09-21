@@ -14,7 +14,7 @@ function view (state, emit) {
   var form = html`
     <form onsubmit=${handleSubmit}>
       <label class="form-label">
-        <span>E-Mail Address:</span>
+        <span>Email Address:</span>
         <input required type="email" name="username" placeholder="E-Mail-Address">
       </label class="form-label">
       <label>
