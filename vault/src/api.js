@@ -164,12 +164,13 @@ exports.forgotPassword = forgotPasswordWith(window.location.origin + '/api/forgo
 exports.forgotPasswordWith = forgotPasswordWith
 
 function forgotPasswordWith (forgotUrl) {
-  return function (emailAddress) {
+  return function (emailAddress, urlTemplate) {
     return window
       .fetch(forgotUrl, {
         method: 'POST',
         body: JSON.stringify({
-          emailAddress: emailAddress
+          emailAddress: emailAddress,
+          urlTemplate: urlTemplate
         })
       })
       .then(handleFetchResponse)

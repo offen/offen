@@ -5,7 +5,7 @@ module.exports.handleForgotPasswordWith = handleForgotPasswordWith
 
 function handleForgotPasswordWith (api) {
   return function (message) {
-    return api.forgotPassword(message.payload.emailAddress)
+    return api.forgotPassword(message.payload.emailAddress, message.payload.urlTemplate)
       .then(function (response) {
         return {
           type: 'FORGOT_PASSWORD_SUCCESS'

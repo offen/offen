@@ -5,7 +5,9 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"strings"
 
+	"github.com/go-gomail/gomail"
 	"github.com/offen/offen/server/persistence"
 )
 
@@ -108,6 +110,7 @@ func (rt *router) postChangeEmail(w http.ResponseWriter, r *http.Request) {
 
 type forgotPasswordRequest struct {
 	EmailAddress string `json:"emailAddress"`
+	URLTemplate  string `json:"urlTemplate"`
 }
 
 type forgotPasswordCredentials struct {
@@ -138,7 +141,16 @@ func (rt *router) postForgotPassword(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println("CREDS", signedCredentials)
+	m := gomail.NewMessage()
+	m.SetHeader("From", "no-reply@offen.dev")
+	m.SetHeader("To", "frederik.ring@gmail.com")
+	m.SetHeader("Subject", "Reset your password")
+	m.SetBody("text/plain", strings.Replace(req.URLTemplate, "{token}", signedCredentials, -1))
+
+	d := gomail.NewDialer("email-smtp.eu-west-1.amazonaws.com", 587, "XXXX", "XXXX")
+	if err := d.DialAndSend(m); err != nil {
+		panic(err)
+	}
 	w.WriteHeader(http.StatusNoContent)
 }
 

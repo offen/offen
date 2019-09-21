@@ -7,7 +7,8 @@ function view (state, emit) {
     e.preventDefault()
     var formData = new window.FormData(e.currentTarget)
     emit('offen:forgot-password', {
-      emailAddress: formData.get('email-address')
+      emailAddress: formData.get('email-address'),
+      urlTemplate: window.location.href + '/{token}'
     })
   }
   var form = html`
