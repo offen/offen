@@ -51,12 +51,12 @@ app.route(
   decorateWithDefaults(loginView, 'offen login')
 )
 app.route(
-  base + 'forgot-password',
-  decorateWithDefaults(forgotPasswordView, 'offen forgot password')
-)
-app.route(
   base + 'reset-password/:token',
   decorateWithDefaults(resetPasswordView, 'offen reset password')
+)
+app.route(
+  base + 'reset-password',
+  decorateWithDefaults(forgotPasswordView, 'offen forgot password')
 )
 app.route(
   base.replace(/\/$/, ''),

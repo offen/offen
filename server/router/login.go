@@ -110,6 +110,11 @@ type forgotPasswordRequest struct {
 	EmailAddress string `json:"emailAddress"`
 }
 
+type forgotPasswordCredentials struct {
+	Token        []byte
+	EmailAddress string
+}
+
 func (rt *router) postForgotPassword(w http.ResponseWriter, r *http.Request) {
 	var req forgotPasswordRequest
 	defer r.Body.Close()
@@ -123,14 +128,17 @@ func (rt *router) postForgotPassword(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNoContent)
 		return
 	}
-	signedToken, signErr := rt.cookieSigner.MaxAge(24*60*60).Encode("reset", token)
+	signedCredentials, signErr := rt.cookieSigner.MaxAge(24*60*60).Encode("credentials", forgotPasswordCredentials{
+		Token:        token,
+		EmailAddress: req.EmailAddress,
+	})
 	if signErr != nil {
 		rt.logError(signErr, "error signing token")
 		w.WriteHeader(http.StatusNoContent)
 		return
 	}
 
-	fmt.Println("TOKEN", signedToken)
+	fmt.Println("CREDS", signedCredentials)
 	w.WriteHeader(http.StatusNoContent)
 }
 
@@ -147,13 +155,17 @@ func (rt *router) postResetPassword(w http.ResponseWriter, r *http.Request) {
 		respondWithJSONError(w, fmt.Errorf("error decoding response body: %v", err), http.StatusBadRequest)
 		return
 	}
-	var key []byte
-	if err := rt.cookieSigner.Decode("reset", req.Token, &key); err != nil {
+	var credentials forgotPasswordCredentials
+	if err := rt.cookieSigner.Decode("credentials", req.Token, &credentials); err != nil {
 		respondWithJSONError(w, fmt.Errorf("error decoding signed token: %v", err), http.StatusBadRequest)
 		return
 	}
+	if credentials.EmailAddress != req.EmailAddress {
+		respondWithJSONError(w, errors.New("given email address did not match token"), http.StatusBadRequest)
+		return
+	}
 
-	if err := rt.db.ResetPassword(req.EmailAddress, req.Password, key); err != nil {
+	if err := rt.db.ResetPassword(req.EmailAddress, req.Password, credentials.Token); err != nil {
 		rt.logError(err, "error resetting password")
 	}
 	w.WriteHeader(http.StatusNoContent)

@@ -25,7 +25,7 @@ function view (state, emit) {
         <input type="submit">
       </label>
     </form>
-    <a href="./forgot-password">Forgot password?</a>
+    <a href="./reset-password">Forgot password?</a>
   `
 
   return form
