@@ -14,6 +14,7 @@ setup:
 	@docker-compose run vault npm install
 	@docker-compose run auditorium npm install
 	@docker-compose run server go mod download
+	@docker-compose run homepage pip install --user -r requirements.txt
 	@echo "Successfully built containers and installed dependencies."
 	@echo "If this is your initial setup, you can run 'make bootstrap' next"
 	@echo "to create the needed local keys and seed the database."
