@@ -1,11 +1,4 @@
-var handleAnalyticsEvent = require('./src/handle-analytics-event')
-var handleAnonymousEvent = require('./src/handle-anonymous-event')
-var handleQuery = require('./src/handle-query')
-var handleLogin = require('./src/handle-login')
-var handlePurge = require('./src/handle-purge')
-var handleOptout = require('./src/handle-optout')
-var handleChangeCredentials = require('./src/handle-change-credentials')
-var handleOptoutStatus = require('./src/handle-optout-status')
+var handler = require('./src/handler')
 var allowsCookies = require('./src/allows-cookies')
 var hasOptedOut = require('./src/user-optout')
 
@@ -26,7 +19,7 @@ window.addEventListener('message', function (event) {
     }
   }
 
-  var handler = function () {
+  var match = function () {
     return Promise.reject(
       new Error(
         'Received message of unknown type "' + message.type + '", skipping.'
@@ -37,47 +30,53 @@ window.addEventListener('message', function (event) {
   switch (message.type) {
     case 'EVENT': {
       if (hasOptedOut()) {
-        handler = function () {
+        match = function () {
           console.log('This page is using offen to collect usage statistics.')
           console.log('You have opted out of data collection, no data is being collected.')
           console.log('Find out more about offen at "https://www.offen.dev".')
           return Promise.resolve()
         }
       } else if (!allowsCookies()) {
-        handler = function () {
+        match = function () {
           console.log('This page is using offen to collect usage statistics.')
           console.log('Your setup prevents or you have disabled third party cookies in your browser\'s settings.')
           console.log('Basic usage data will be collected anonymously.')
           console.log('Find out more at "https://www.offen.dev".')
-          return handleAnonymousEvent.apply(null, [].slice.call(arguments))
+          return handler.handleAnonymousEvent.apply(null, [].slice.call(arguments))
         }
       } else {
-        handler = function () {
+        match = function () {
           console.log('This page is using offen to collect usage statistics.')
           console.log('You can access and manage all of your personal data or opt-out at "' + window.location.origin + '/auditorium/".')
           console.log('Find out more about offen at "https://www.offen.dev".')
-          return handleAnalyticsEvent.apply(null, [].slice.call(arguments))
+          return handler.handleAnalyticsEvent.apply(null, [].slice.call(arguments))
         }
       }
       break
     }
     case 'QUERY':
-      handler = withSameOrigin(handleQuery)
-      break
-    case 'LOGIN':
-      handler = withSameOrigin(handleLogin)
+      match = withSameOrigin(handler.handleQuery)
       break
     case 'PURGE':
-      handler = withSameOrigin(handlePurge)
+      match = withSameOrigin(handler.handlePurge)
       break
     case 'OPTOUT':
-      handler = withSameOrigin(handleOptout)
+      match = withSameOrigin(handler.handleOptout)
       break
     case 'OPTOUT_STATUS':
-      handler = withSameOrigin(handleOptoutStatus)
+      match = withSameOrigin(handler.handleOptoutStatus)
+      break
+    case 'LOGIN':
+      match = withSameOrigin(handler.handleLogin)
       break
     case 'CHANGE_CREDENTIALS':
-      handler = withSameOrigin(handleChangeCredentials)
+      match = withSameOrigin(handler.handleChangeCredentials)
+      break
+    case 'FORGOT_PASSWORD':
+      match = withSameOrigin(handler.handleForgotPassword)
+      break
+    case 'RESET_PASSWORD':
+      match = withSameOrigin(handler.handleResetPassword)
       break
   }
 
@@ -87,7 +86,7 @@ window.addEventListener('message', function (event) {
     }
   }
 
-  Promise.resolve(handler(message))
+  Promise.resolve(match(message))
     .then(respond, function (err) {
       // this is not in a catch block on purpose as
       // it tries to prevent a situation where calling

@@ -8,6 +8,9 @@ import (
 	"time"
 
 	"github.com/offen/offen/server/config"
+	"github.com/offen/offen/server/mailer"
+	"github.com/offen/offen/server/mailer/localmailer"
+	"github.com/offen/offen/server/mailer/smtpmailer"
 	"github.com/sirupsen/logrus"
 )
 
@@ -34,6 +37,18 @@ func (h *httpConfig) RetentionPeriod() time.Duration { return h.retentionPeriod 
 func (h *httpConfig) AccountUserSalt() []byte {
 	b, _ := base64.StdEncoding.DecodeString(h.accountUserSalt)
 	return b
+}
+
+func (h *httpConfig) Mailer() mailer.Mailer {
+	if h.Development() {
+		return localmailer.New()
+	}
+	user, pass, host := os.Getenv("SMTP_USER"), os.Getenv("SMTP_PASSWORD"), os.Getenv("SMTP_HOST")
+	port, err := strconv.Atoi(os.Getenv("SMTP_PORT"))
+	if err != nil {
+		port = 587
+	}
+	return smtpmailer.New(host, user, pass, port)
 }
 
 const (

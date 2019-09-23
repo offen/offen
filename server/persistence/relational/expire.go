@@ -7,6 +7,8 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
+// Expire deletes all events in the give database that are older than the given
+// retention threshold.
 func Expire(db *gorm.DB, retention time.Duration) (int, error) {
 	limit := time.Now().Add(-retention)
 	deadline, deadlineErr := EventIDAt(limit)

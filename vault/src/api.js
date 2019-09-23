@@ -160,6 +160,41 @@ function changePasswordWith (loginUrl) {
   }
 }
 
+exports.forgotPassword = forgotPasswordWith(window.location.origin + '/api/forgot-password')
+exports.forgotPasswordWith = forgotPasswordWith
+
+function forgotPasswordWith (forgotUrl) {
+  return function (emailAddress, urlTemplate) {
+    return window
+      .fetch(forgotUrl, {
+        method: 'POST',
+        body: JSON.stringify({
+          emailAddress: emailAddress,
+          urlTemplate: urlTemplate
+        })
+      })
+      .then(handleFetchResponse)
+  }
+}
+
+exports.resetPassword = resetPasswordWith(window.location.origin + '/api/reset-password')
+exports.resetPasswordWith = resetPasswordWith
+
+function resetPasswordWith (resetUrl) {
+  return function (emailAddress, password, token) {
+    return window
+      .fetch(resetUrl, {
+        method: 'POST',
+        body: JSON.stringify({
+          emailAddress: emailAddress,
+          password: password,
+          token: token
+        })
+      })
+      .then(handleFetchResponse)
+  }
+}
+
 exports.changeEmail = changeEmailWith(window.location.origin + '/api/change-email')
 exports.changeEmailWith = changeEmailWith
 

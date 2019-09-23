@@ -31,7 +31,9 @@ type accountCreation struct {
 	account       Account
 }
 
-func Bootstrap(data []byte, db *gorm.DB, emailSalt []byte) error {
+// Bootstrap seeds a blank database with the given account and user
+// data. This is likely only ever used in development.
+func Bootstrap(db *gorm.DB, data []byte, emailSalt []byte) error {
 	var config bootstrapConfig
 	if err := yaml.Unmarshal(data, &config); err != nil {
 		return err

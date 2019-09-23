@@ -68,7 +68,7 @@ func main() {
 			}
 		}
 
-		if err := relational.Bootstrap(read, db, saltBytes); err != nil {
+		if err := relational.Bootstrap(db, read, saltBytes); err != nil {
 			fmt.Printf("Error bootstrapping database: %v\n", err)
 			os.Exit(1)
 		}

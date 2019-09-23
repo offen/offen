@@ -37,6 +37,7 @@ func main() {
 			router.WithSecureCookie(cfg.SecureCookie()),
 			router.WithCookieExchangeSecret(cfg.CookieExchangeSecret()),
 			router.WithRetentionPeriod(cfg.RetentionPeriod()),
+			router.WithMailer(cfg.Mailer()),
 		),
 	}
 
