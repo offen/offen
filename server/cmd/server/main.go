@@ -6,7 +6,6 @@ import (
 	"net/http"
 
 	httpconfig "github.com/offen/offen/server/config/http"
-	"github.com/offen/offen/server/mailer/localmailer"
 	"github.com/offen/offen/server/persistence/relational"
 	"github.com/offen/offen/server/router"
 	"github.com/sirupsen/logrus"
@@ -38,7 +37,7 @@ func main() {
 			router.WithSecureCookie(cfg.SecureCookie()),
 			router.WithCookieExchangeSecret(cfg.CookieExchangeSecret()),
 			router.WithRetentionPeriod(cfg.RetentionPeriod()),
-			router.WithMailer(localmailer.New()),
+			router.WithMailer(cfg.Mailer()),
 		),
 	}
 
