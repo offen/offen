@@ -5,6 +5,9 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"strings"
+
+	"github.com/offen/offen/server/mailer"
 
 	"github.com/offen/offen/server/persistence"
 )
@@ -103,5 +106,80 @@ func (rt *router) postChangeEmail(w http.ResponseWriter, r *http.Request) {
 	}
 	cookie, _ := rt.authCookie("")
 	http.SetCookie(w, cookie)
+	w.WriteHeader(http.StatusNoContent)
+}
+
+type forgotPasswordRequest struct {
+	EmailAddress string `json:"emailAddress"`
+	URLTemplate  string `json:"urlTemplate"`
+}
+
+type forgotPasswordCredentials struct {
+	Token        []byte
+	EmailAddress string
+}
+
+func (rt *router) postForgotPassword(w http.ResponseWriter, r *http.Request) {
+	var req forgotPasswordRequest
+	defer r.Body.Close()
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		respondWithJSONError(w, fmt.Errorf("error decoding request body: %v", err), http.StatusBadRequest)
+		return
+	}
+	token, err := rt.db.GenerateOneTimeKey(req.EmailAddress)
+	if err != nil {
+		rt.logError(err, "error generating one time key")
+		w.WriteHeader(http.StatusNoContent)
+		return
+	}
+	signedCredentials, signErr := rt.cookieSigner.MaxAge(24*60*60).Encode("credentials", forgotPasswordCredentials{
+		Token:        token,
+		EmailAddress: req.EmailAddress,
+	})
+	if signErr != nil {
+		rt.logError(signErr, "error signing token")
+		w.WriteHeader(http.StatusNoContent)
+		return
+	}
+
+	resetURL := strings.Replace(req.URLTemplate, "{token}", signedCredentials, -1)
+	emailBody, bodyErr := mailer.RenderForgotPasswordMessage(map[string]string{"url": resetURL})
+	if bodyErr != nil {
+		respondWithJSONError(w, fmt.Errorf("error rendering email message: %v", err), http.StatusInternalServerError)
+		return
+	}
+	if err := rt.mailer.Send("no-reply@offen.dev", req.EmailAddress, "Reset your password", emailBody); err != nil {
+		respondWithJSONError(w, fmt.Errorf("error sending email message: %v", err), http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusNoContent)
+}
+
+type resetPasswordRequest struct {
+	EmailAddress string `json:"emailAddress"`
+	Password     string `json:"password"`
+	Token        string `json:"token"`
+}
+
+func (rt *router) postResetPassword(w http.ResponseWriter, r *http.Request) {
+	var req resetPasswordRequest
+	defer r.Body.Close()
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		respondWithJSONError(w, fmt.Errorf("error decoding response body: %v", err), http.StatusBadRequest)
+		return
+	}
+	var credentials forgotPasswordCredentials
+	if err := rt.cookieSigner.Decode("credentials", req.Token, &credentials); err != nil {
+		respondWithJSONError(w, fmt.Errorf("error decoding signed token: %v", err), http.StatusBadRequest)
+		return
+	}
+	if credentials.EmailAddress != req.EmailAddress {
+		respondWithJSONError(w, errors.New("given email address did not match token"), http.StatusBadRequest)
+		return
+	}
+
+	if err := rt.db.ResetPassword(req.EmailAddress, req.Password, credentials.Token); err != nil {
+		rt.logError(err, "error resetting password")
+	}
 	w.WriteHeader(http.StatusNoContent)
 }

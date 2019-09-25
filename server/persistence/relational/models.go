@@ -46,6 +46,7 @@ type AccountUserRelationship struct {
 	AccountID                         string
 	PasswordEncryptedKeyEncryptionKey string
 	EmailEncryptedKeyEncryptionKey    string
+	OneTimeEncryptedKeyEncryptionKey  string
 }
 
 // Account stores information about an account.

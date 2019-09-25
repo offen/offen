@@ -9,8 +9,9 @@ COPY ./server /code/server
 ENV CGO_ENABLED 0
 RUN make build
 
-FROM scratch
+FROM alpine:3.6 as certs
 
+RUN apk add -U --no-cache ca-certificates
 COPY --from=builder /code/server/bin/server /
 
 ENV PORT 3000

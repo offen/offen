@@ -3,6 +3,7 @@ package config
 import (
 	"time"
 
+	"github.com/offen/offen/server/mailer"
 	"github.com/sirupsen/logrus"
 )
 
@@ -27,4 +28,6 @@ type Config interface {
 	RetentionPeriod() time.Duration
 	// the salt used when hashing the email address associated to an account
 	AccountUserSalt() []byte
+	// the mailer instance to use
+	Mailer() mailer.Mailer
 }

@@ -8,12 +8,14 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/gorilla/securecookie"
 	"github.com/m90/go-thunk"
+	"github.com/offen/offen/server/mailer"
 	"github.com/offen/offen/server/persistence"
 	"github.com/sirupsen/logrus"
 )
 
 type router struct {
 	db                   persistence.Database
+	mailer               mailer.Mailer
 	logger               *logrus.Logger
 	cookieSigner         *securecookie.SecureCookie
 	secureCookie         bool
@@ -103,6 +105,13 @@ func WithLogger(l *logrus.Logger) Config {
 	}
 }
 
+// WithMailer sets the mailer the router will use
+func WithMailer(m mailer.Mailer) Config {
+	return func(r *router) {
+		r.mailer = m
+	}
+}
+
 // WithSecureCookie determines whether the application will issue
 // secure (HTTPS-only) cookies
 func WithSecureCookie(sc bool) Config {
@@ -178,6 +187,12 @@ func New(opts ...Config) http.Handler {
 	changePassword := m.PathPrefix("/change-password").Subrouter()
 	changePassword.Use(accountAuth)
 	changePassword.HandleFunc("", rt.postChangePassword).Methods(http.MethodPost)
+
+	forgotPassword := m.PathPrefix("/forgot-password").Subrouter()
+	forgotPassword.HandleFunc("", rt.postForgotPassword).Methods(http.MethodPost)
+
+	resetPassword := m.PathPrefix("/reset-password").Subrouter()
+	resetPassword.HandleFunc("", rt.postResetPassword).Methods(http.MethodPost)
 
 	changeEmail := m.PathPrefix("/change-email").Subrouter()
 	changeEmail.Use(accountAuth)
