@@ -9,7 +9,7 @@ COPY ./server /code/server
 ENV CGO_ENABLED 0
 RUN make build
 
-FROM alpine:3.6 as certs
+FROM alpine:3.10
 
 RUN apk add -U --no-cache ca-certificates
 COPY --from=builder /code/server/bin/server /
