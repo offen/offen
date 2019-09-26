@@ -4,7 +4,6 @@ var browserify = require('browserify')
 var source = require('vinyl-source-stream')
 var uglify = require('gulp-uglify')
 var rev = require('gulp-rev')
-var runSequence = require('run-sequence')
 var buffer = require('vinyl-buffer')
 var revReplace = require('gulp-rev-replace')
 var sriHash = require('gulp-sri-hash')
@@ -12,13 +11,13 @@ var gap = require('gulp-append-prepend')
 
 gulp.task('clean:pre', function () {
   return gulp
-    .src('./dist', { read: false })
+    .src('./dist', { read: false, allowEmpty: true })
     .pipe(clean())
 })
 
 gulp.task('clean:post', function () {
   return gulp
-    .src('./dist/*.json', { read: false })
+    .src('./dist/*.json', { read: false, allowEmpty: true })
     .pipe(clean())
 })
 
@@ -74,11 +73,9 @@ gulp.task('revreplace', function () {
     .pipe(gulp.dest('./dist/'))
 })
 
-gulp.task('default', function () {
-  return runSequence(
-    'clean:pre',
-    ['bundle:script', 'bundle:vendor'],
-    'revreplace',
-    'clean:post'
-  )
-})
+gulp.task('default', gulp.series(
+  'clean:pre',
+  gulp.parallel('bundle:script', 'bundle:vendor'),
+  'revreplace',
+  'clean:post'
+))
