@@ -25,7 +25,7 @@ deploy_preconditions: &deploy_preconditions
 jobs:
   server:
     docker:
-      - image: circleci/golang:1.12
+      - image: circleci/golang:1.13
         environment:
           POSTGRES_CONNECTION_STRING: postgres://circle:test@localhost:5432/circle_test?sslmode=disable
           PORT: 8080
