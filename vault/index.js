@@ -3,9 +3,9 @@ var handler = require('./src/handler')
 var allowsCookies = require('./src/allows-cookies')
 var hasOptedOut = require('./src/user-optout')
 
-var vault = router()
+var register = router()
 
-vault.on('EVENT', optOutMiddleware, anonymousMiddleware, function (event, respond, next) {
+register('EVENT', optOutMiddleware, anonymousMiddleware, function (event, respond, next) {
   console.log('This page is using offen to collect usage statistics.')
   console.log('You can access and manage all of your personal data or opt-out at "' + window.location.origin + '/auditorium/".')
   console.log('Find out more about offen at "https://www.offen.dev".')
@@ -13,18 +13,16 @@ vault.on('EVENT', optOutMiddleware, anonymousMiddleware, function (event, respon
     .catch(next)
 })
 
-// all handler that are registered after this middleware are subject
-// to same origin restrictions, i.e. will be called by the auditorium only.
-vault.use(sameOriginMiddleware)
+register('OPTOUT', sameOriginMiddleware, callHandler(handler.handleOptout))
+register('OPTOUT_STATUS', sameOriginMiddleware, callHandler(handler.handleOptoutStatus))
+register('QUERY', sameOriginMiddleware, callHandler(handler.handleQuery))
+register('PURGE', sameOriginMiddleware, callHandler(handler.handlePurge))
+register('LOGIN', sameOriginMiddleware, callHandler(handler.handleLogin))
+register('CHANGE_CREDENTIALS', sameOriginMiddleware, callHandler(handler.handleChangeCredentials))
+register('FORGOT_PASSWORD', sameOriginMiddleware, callHandler(handler.handleForgotPassword))
+register('RESET_PASSWORD', sameOriginMiddleware, callHandler(handler.handleResetPassword))
 
-vault.on('OPTOUT', callHandler(handler.handleOptout))
-vault.on('OPTOUT_STATUS', callHandler(handler.handleOptoutStatus))
-vault.on('QUERY', callHandler(handler.handleQuery))
-vault.on('PURGE', callHandler(handler.handlePurge))
-vault.on('LOGIN', callHandler(handler.handleLogin))
-vault.on('CHANGE_CREDENTIALS', callHandler(handler.handleChangeCredentials))
-vault.on('FORGOT_PASSWORD', callHandler(handler.handleForgotPassword))
-vault.on('RESET_PASSWORD', callHandler(handler.handleResetPassword))
+module.exports = register
 
 function sameOriginMiddleware (event, respond, next) {
   if (event.origin !== window.location.origin) {
