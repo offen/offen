@@ -29,14 +29,17 @@ func main() {
 	case "secret":
 		var (
 			length = secretCmd.Int("length", 16, "the length in bytes")
+			count  = secretCmd.Int("count", 1, "the number of secrets to generate")
 		)
 		secretCmd.Parse(os.Args[2:])
-		value, err := keys.GenerateRandomValue(*length)
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
+		for i := 0; i < *count; i++ {
+			value, err := keys.GenerateRandomValue(*length)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+			fmt.Println(value)
 		}
-		fmt.Println(value)
 	case "bootstrap":
 		var (
 			migration  = bootstrapCmd.Bool("migration", true, "run migrations")
