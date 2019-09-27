@@ -2,7 +2,6 @@ module.exports = router
 
 function router () {
   var registeredRoutes = {}
-  var registeredMiddleware = []
   window.addEventListener('message', function (event) {
     function respond (message) {
       if (event.ports && event.ports.length) {
@@ -38,13 +37,8 @@ function router () {
     callNext()
   })
 
-  return {
-    on: function (messageType /* , ...handlerFns */) {
-      var handlerFns = [].slice.call(arguments, 1)
-      registeredRoutes[messageType] = registeredMiddleware.slice().concat(handlerFns)
-    },
-    use: function (/* ...handlerFns */) {
-      registeredMiddleware = registeredMiddleware.concat([].slice.call(arguments))
-    }
+  return function (messageType /* , ...stack */) {
+    var stack = [].slice.call(arguments, 1)
+    registeredRoutes[messageType] = stack
   }
 }
