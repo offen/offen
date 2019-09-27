@@ -1,8 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*- #
-from __future__ import unicode_literals
-import logging
-
 # If your site is available via HTTPS, make sure SITEURL begins with https://
 RELATIVE_URLS = False
 
@@ -21,7 +16,6 @@ AUTHOR_FEED_RSS = None
 
 # pagination
 DEFAULT_PAGINATION = False
-
 
 THEME = './theme'
 
@@ -43,3 +37,5 @@ DIRECT_TEMPLATES = []
 GITHUB_ORG = 'https://github.com/offen'
 CONTACT_EMAIL = 'mail@offen.dev'
 PATREON_URL = 'https://www.patreon.com/bePatron?u=21484999'
+
+OFFEN_ACCOUNT_ID = '9b63c4d8-65c0-438c-9d30-cc4b01173393'
