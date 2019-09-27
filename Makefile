@@ -7,6 +7,8 @@ help:
 	@echo "        IMPORTANT: this wipes any existing data in your local database."
 	@echo "    build"
 	@echo "        Build the production containers."
+	@echo "    secret"
+	@echo "        Generate a random base64 encoded secret"
 
 setup:
 	@docker-compose build
@@ -17,11 +19,17 @@ setup:
 	@docker-compose run homepage pip install --user -r requirements.txt
 	@echo "Successfully built containers and installed dependencies."
 	@echo "If this is your initial setup, you can run 'make bootstrap' next"
-	@echo "to create the needed local keys and seed the database."
+	@echo "to create seed the database."
 
 bootstrap:
 	@echo "Bootstrapping Server service ..."
 	@docker-compose run server make bootstrap
+	@echo ""
+	@echo "You can now log into the development backend using the following credentials:"
+	@echo ""
+	@echo "Email: develop@offen.dev"
+	@echo "Password: develop"
+	@echo ""
 
 DOCKER_IMAGE_TAG ?= latest
 

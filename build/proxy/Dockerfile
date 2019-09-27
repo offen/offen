@@ -40,7 +40,7 @@ RUN cp -a /code/deps/node_modules /code/vault/
 ENV NODE_ENV production
 RUN npm run build
 
-FROM nikolaik/python-nodejs:python3.6-nodejs10 as homepage
+FROM nikolaik/python-nodejs:python3.7-nodejs10 as homepage
 
 ARG siteurl
 ENV SITEURL=$siteurl
