@@ -7,6 +7,7 @@ RUN go mod download
 COPY ./server /code/server
 
 ENV CGO_ENABLED 0
+ENV GOOS linux
 RUN make build
 
 FROM alpine:3.10
@@ -17,4 +18,4 @@ COPY --from=builder /code/server/bin/server /
 ENV PORT 3000
 EXPOSE 3000
 
-CMD ["/server"]
+CMD ["/offen", "serve"]
