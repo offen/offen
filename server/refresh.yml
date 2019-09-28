@@ -3,6 +3,8 @@ included_extensions:
   - .go
 build_path: /tmp
 build_delay: 200ms
-build_target_path : ./cmd/server
+build_target_path : ./cmd/offen
+command_flags:
+  - serve
 binary_name: refresh-build
 enable_colors: true

@@ -11,6 +11,7 @@ import (
 )
 
 func TestMain(m *testing.M) {
+	os.Args[1] = "serve"
 	go main()
 	time.Sleep(time.Millisecond * 50)
 	os.Exit(m.Run())

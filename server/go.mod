@@ -17,6 +17,7 @@ require (
 	github.com/sirupsen/logrus v1.4.2
 	golang.org/x/crypto v0.0.0-20190325154230-a5d413f7728c
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
+	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df // indirect
 	gopkg.in/gormigrate.v1 v1.6.0
 	gopkg.in/yaml.v2 v2.2.2
 )

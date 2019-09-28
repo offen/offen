@@ -5,13 +5,18 @@ import (
 	"flag"
 	"fmt"
 	"io/ioutil"
+	"log"
+	"net/http"
 	"os"
 	"time"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
+	httpconfig "github.com/offen/offen/server/config/http"
 	"github.com/offen/offen/server/keys"
 	"github.com/offen/offen/server/persistence/relational"
+	"github.com/offen/offen/server/router"
+	"github.com/sirupsen/logrus"
 )
 
 func main() {
@@ -21,8 +26,7 @@ func main() {
 	expireCmd := flag.NewFlagSet("expire", flag.ExitOnError)
 
 	if len(os.Args) < 2 {
-		fmt.Println("No subcommand given. Exiting")
-		os.Exit(1)
+		log.Fatal("No subcommand given. Exiting")
 	}
 
 	switch os.Args[1] {
@@ -35,8 +39,7 @@ func main() {
 		for i := 0; i < *count; i++ {
 			value, err := keys.GenerateRandomValue(*length)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				log.Fatalf("Error creating secret: %v", err)
 			}
 			fmt.Println(value)
 		}
@@ -50,30 +53,25 @@ func main() {
 		bootstrapCmd.Parse(os.Args[2:])
 		read, readErr := ioutil.ReadFile(*source)
 		if readErr != nil {
-			fmt.Printf("Error reading configuration file %s: %v", *source, readErr)
-			os.Exit(1)
+			log.Fatalf("Error reading configuration file %s: %v", *source, readErr)
 		}
 		saltBytes, saltErr := base64.StdEncoding.DecodeString(*emailSalt)
 		if saltErr != nil {
-			fmt.Printf("Error decoding given salt: %v\n", saltErr)
-			os.Exit(1)
+			log.Fatalf("Error decoding given salt: %v\n", saltErr)
 		}
 		db, dbErr := gorm.Open("postgres", *connection)
 		if dbErr != nil {
-			fmt.Printf("Error establishing database connection: %v", dbErr)
-			os.Exit(1)
+			log.Fatalf("Error establishing database connection: %v", dbErr)
 		}
 
 		if *migration {
 			if err := relational.Migrate(db); err != nil {
-				fmt.Printf("Error migrating database: %v\n", err)
-				os.Exit(1)
+				log.Fatalf("Error migrating database: %v\n", err)
 			}
 		}
 
 		if err := relational.Bootstrap(db, read, saltBytes); err != nil {
-			fmt.Printf("Error bootstrapping database: %v\n", err)
-			os.Exit(1)
+			log.Fatalf("Error bootstrapping database: %v\n", err)
 		}
 		fmt.Println("Successfully boostrapped database")
 	case "migrate":
@@ -83,13 +81,11 @@ func main() {
 		migrateCmd.Parse(os.Args[2:])
 		db, dbErr := gorm.Open("postgres", *connection)
 		if dbErr != nil {
-			fmt.Printf("Error establishing database connection: %v", dbErr)
-			os.Exit(1)
+			log.Fatalf("Error establishing database connection: %v", dbErr)
 		}
 
 		if err := relational.Migrate(db); err != nil {
-			fmt.Printf("Error running database migrations: %v\n", err)
-			os.Exit(1)
+			log.Fatalf("Error running database migrations: %v\n", err)
 		}
 		fmt.Println("Successfully ran database migrations")
 	case "expire":
@@ -100,18 +96,48 @@ func main() {
 		expireCmd.Parse(os.Args[2:])
 		db, dbErr := gorm.Open("postgres", *connection)
 		if dbErr != nil {
-			fmt.Printf("Error establishing database connection: %v", dbErr)
-			os.Exit(1)
+			log.Fatalf("Error establishing database connection: %v", dbErr)
 		}
 
 		affected, err := relational.Expire(db, *retentionPeriod)
 		if err != nil {
-			fmt.Printf("Error expiring events: %v\n", err)
-			os.Exit(1)
+			log.Fatalf("Error expiring events: %v\n", err)
 		}
 		fmt.Printf("Successfully expired %d events\n", affected)
+	case "serve":
+		cfg, cfgErr := httpconfig.New()
+		if cfgErr != nil {
+			log.Fatalf("Error creating runtime configuration: %v", cfgErr)
+		}
+
+		logger := logrus.New()
+		logger.SetLevel(cfg.LogLevel())
+
+		db, err := relational.New(
+			relational.WithConnectionString(cfg.ConnectionString()),
+			relational.WithLogging(cfg.Development()),
+			relational.WithEmailSalt(cfg.AccountUserSalt()),
+		)
+		if err != nil {
+			logger.WithError(err).Fatal("unable to establish database connection")
+		}
+
+		srv := &http.Server{
+			Addr: fmt.Sprintf("0.0.0.0:%d", cfg.Port()),
+			Handler: router.New(
+				router.WithDatabase(db),
+				router.WithLogger(logger),
+				router.WithSecureCookie(cfg.SecureCookie()),
+				router.WithCookieExchangeSecret(cfg.CookieExchangeSecret()),
+				router.WithRetentionPeriod(cfg.RetentionPeriod()),
+				router.WithMailer(cfg.Mailer()),
+			),
+		}
+
+		if err := srv.ListenAndServe(); err != nil {
+			log.Fatal(err)
+		}
 	default:
-		fmt.Printf("Unknown subcommand %s\n", os.Args[1])
-		os.Exit(1)
+		log.Fatalf("Unknown subcommand %s\n", os.Args[1])
 	}
 }
