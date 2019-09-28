@@ -23,6 +23,6 @@ clean-build:
 	@rm -rf bin
 
 build: clean-build
-	@go build -o bin/server cmd/offen/main.go
+	@go build -o bin/offen cmd/offen/main.go
 
 .PHONY: bootstrap migrate secret

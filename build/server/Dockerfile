@@ -13,7 +13,7 @@ RUN make build
 FROM alpine:3.10
 
 RUN apk add -U --no-cache ca-certificates
-COPY --from=builder /code/server/bin/server /
+COPY --from=builder /code/server/bin/offen /
 
 ENV PORT 3000
 EXPOSE 3000
