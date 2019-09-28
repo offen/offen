@@ -22,7 +22,6 @@ function checkSupport (callback) {
   if (!err && !supportsURL()) {
     err = new Error('Browser does not support window.URL which is required')
   }
-
   setTimeout(function () {
     callback(err)
   }, 0)
