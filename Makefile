@@ -7,6 +7,8 @@ help:
 	@echo "        IMPORTANT: this wipes any existing data in your local database."
 	@echo "    build"
 	@echo "        Build the production containers."
+	@echo "    secret"
+	@echo "        Generate a random base64 encoded secret"
 
 setup:
 	@docker-compose build
@@ -17,17 +19,24 @@ setup:
 	@docker-compose run homepage pip install --user -r requirements.txt
 	@echo "Successfully built containers and installed dependencies."
 	@echo "If this is your initial setup, you can run 'make bootstrap' next"
-	@echo "to create the needed local keys and seed the database."
+	@echo "to create seed the database."
 
 bootstrap:
 	@echo "Bootstrapping Server service ..."
 	@docker-compose run server make bootstrap
+	@echo ""
+	@echo "You can now log into the development backend using the following credentials:"
+	@echo ""
+	@echo "Email: develop@offen.dev"
+	@echo "Password: develop"
+	@echo ""
 
 DOCKER_IMAGE_TAG ?= latest
+ROBOTS_FILE ?= robots.txt.staging
 
 build:
 	@docker build -t offen/server:${DOCKER_IMAGE_TAG} -f build/server/Dockerfile .
-	@docker build --build-arg siteurl=${SITEURL} -t offen/proxy:${DOCKER_IMAGE_TAG} -f build/proxy/Dockerfile .
+	@docker build --build-arg siteurl=${SITEURL} --build-arg robots=${ROBOTS_FILE} -t offen/proxy:${DOCKER_IMAGE_TAG} -f build/proxy/Dockerfile .
 
 secret:
 	@docker-compose run server make secret

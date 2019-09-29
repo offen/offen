@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "budo index.js --pushstate",
-    "test": "npm run server & (npm run mochify; status=$?; kill $(lsof -t -i:9876); exit $status)",
+    "test": "npm run server & (VAULT_HOST=http://localhost:9876 npm run mochify; status=$?; kill $(lsof -t -i:9876); exit $status)",
     "mochify": "mochify --chrome $(which google-chrome) --allow-chrome-as-root {,**}/*.test.js",
     "server": "http-server __fixtures__ -p 9876 -s",
     "pretest": "dependency-check package.json",
@@ -16,11 +16,12 @@
   },
   "dependencies": {
     "history-events": "^1.0.4",
-    "offen": "file:./../packages"
+    "offen": "file:./../packages",
+    "on-idle": "^3.1.4"
   },
   "devDependencies": {
     "browserify": "^16.2.3",
-    "budo": "^11.6.2",
+    "budo": "^11.6.3",
     "dependency-check": "^3.3.0",
     "envify": "^4.1.0",
     "http-server": "^0.11.1",

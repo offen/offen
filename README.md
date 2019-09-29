@@ -1,6 +1,5 @@
 # offen
 [![CircleCI](https://circleci.com/gh/offen/offen/tree/master.svg?style=svg)](https://circleci.com/gh/offen/offen/tree/master)
-[![Pivotal Tracker](https://img.shields.io/static/v1.svg?label=Project+Planning&message=Pivotal+Tracker&color=informational)](https://www.pivotaltracker.com/n/projects/2334535)
 [![Patreon](https://img.shields.io/static/v1.svg?label=patreon&message=donate&color=e85b46)](https://www.patreon.com/offen)
 
 > The offen analytics software
@@ -11,9 +10,7 @@ This repository contains all source code needed to build and run __offen__, both
 
 Development of __offen__ has just started, so instructions are rare and things will stay highly volatile for quite some while.
 
-Guidelines for running and developing the Software will be added when it makes sense to do so.
-
-Project planning and issue tracking is done using [Pivotal Tracker](https://www.pivotaltracker.com/n/projects/2334535), but feel free to open a GitHub issue if you have a question or found a bug.
+Guidelines for running and developing the Software will be added when it makes sense to do so. If you have questions in the meantime, feel free to open an issue.
 
 ### Developing the application
 
@@ -25,7 +22,7 @@ After cloning the repository, you can build the containers and install dependenc
 $ make setup
 ```
 
-Next, create a local encryption key for the `kms` service and seed the database for the `server` application:
+Next seed the database for the `server` application:
 
 ```sh
 $ make bootstrap
