@@ -1,4 +1,4 @@
-module.exports = pageview
+exports.pageview = pageview
 
 function pageview () {
   return {

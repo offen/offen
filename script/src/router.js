@@ -24,9 +24,9 @@ function router (vaultUrl) {
   channel.port2.onmessage = function (event) {
     // clone the message so it can be mutated while
     // being passed through the middleware stack
-    var message = Object.assign({}, event.data)
+    var context = JSON.parse(JSON.stringify(event.data.context))
 
-    var stack = (registeredEvents[message.type] || []).slice()
+    var stack = (registeredEvents[event.data.type] || []).slice()
     function callNext () {
       function next (err) {
         if (err) {
@@ -38,10 +38,14 @@ function router (vaultUrl) {
         callNext()
       }
 
-      var nextHandler = stack.shift() || function (message, send, next) {
+      var nextHandler = stack.shift() || function fallthrough (message, send, next) {
         next(new Error('Event of type "' + event.data.type + '" not handled.'))
       }
-      nextHandler(message, send, next)
+      try {
+        nextHandler(context, send, next)
+      } catch (err) {
+        next(err)
+      }
     }
 
     callNext()
@@ -52,10 +56,11 @@ function router (vaultUrl) {
       var stack = [].slice.call(arguments, 1)
       registeredEvents[eventType] = stack
     },
-    dispatch: function (eventType, message) {
+    dispatch: function (eventType, context) {
+      context = context || {}
       channel.port1.postMessage({
         type: eventType,
-        payload: message
+        context: context
       })
     }
   }
