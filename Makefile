@@ -32,10 +32,11 @@ bootstrap:
 	@echo ""
 
 DOCKER_IMAGE_TAG ?= latest
+ROBOTS_FILE ?= robots.txt.staging
 
 build:
 	@docker build -t offen/server:${DOCKER_IMAGE_TAG} -f build/server/Dockerfile .
-	@docker build --build-arg siteurl=${SITEURL} -t offen/proxy:${DOCKER_IMAGE_TAG} -f build/proxy/Dockerfile .
+	@docker build --build-arg siteurl=${SITEURL} --build-arg robots=${ROBOTS_FILE} -t offen/proxy:${DOCKER_IMAGE_TAG} -f build/proxy/Dockerfile .
 
 secret:
 	@docker-compose run server make secret

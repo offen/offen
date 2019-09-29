@@ -11,6 +11,7 @@ ENV GOOS linux
 RUN make build
 
 FROM alpine:3.10
+LABEL maintainer="mail@offen.dev"
 
 RUN apk add -U --no-cache ca-certificates
 COPY --from=builder /code/server/bin/offen /

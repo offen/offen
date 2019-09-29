@@ -178,12 +178,14 @@ jobs:
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
               export SITEURL="https://www.offen.dev"
               export DOCKER_IMAGE_TAG="stable"
+              export ROBOTS_FILE="robots.txt.production"
             else
               export SITEURL="https://staging.offen.dev"
               export DOCKER_IMAGE_TAG="latest"
+              export ROBOTS_FILE="robots.txt.staging"
             fi
             docker build -t offen/server:$DOCKER_IMAGE_TAG -f build/server/Dockerfile .
-            docker build --build-arg siteurl=$SITEURL -t offen/proxy:$DOCKER_IMAGE_TAG -f build/proxy/Dockerfile .
+            docker build --build-arg siteurl=$SITEURL --build-arg robots=$ROBOTS_FILE -t offen/proxy:$DOCKER_IMAGE_TAG -f build/proxy/Dockerfile .
       - run:
           name: Save Docker image layer cache
           command: |

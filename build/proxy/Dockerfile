@@ -58,11 +58,16 @@ RUN pip install --user -r requirements.txt
 RUN make publish
 
 FROM nginx:1.17-alpine
+LABEL maintainer="mail@offen.dev"
+
+ARG robots
+ENV ROBOTS_FILE=$robots
 
 COPY --from=homepage /code/homepage/output /www/data
 COPY --from=script /code/script/dist /www/data
 COPY --from=auditorium /code/auditorium/dist /www/data/auditorium
 COPY --from=vault /code/vault/dist /www/data/vault
+COPY ./build/proxy/$ROBOTS_FILE /www/data/robots.txt
 COPY ./build/proxy/nginx.conf /etc/nginx/nginx.conf
 
 EXPOSE 80
