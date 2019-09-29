@@ -1,5 +1,4 @@
 var assert = require('assert')
-
 var checkSupport = require('./check-support')
 
 describe('src/check-support.js', function () {
