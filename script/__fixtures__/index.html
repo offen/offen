@@ -6,7 +6,7 @@
 <body>
   <script type="text/javascript">
     window.addEventListener('message', function (event) {
-      event.source.postMessage(event.data, '*')
+      event.ports[0].postMessage(event.data)
     })
   </script>
 </body>

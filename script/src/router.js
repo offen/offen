@@ -1,19 +1,16 @@
+var onIdle = require('on-idle')
 var vault = require('offen/vault')
 
 module.exports = router
 
 function router (vaultUrl) {
-  function send (message) {
+  function send (message, expectResponse) {
     return vault(vaultUrl)
       .then(function (postMessage) {
         return new Promise(function (resolve) {
-          if ('requestIdleCallback' in window) {
-            window.requestIdleCallback(function () {
-              resolve(postMessage(message))
-            })
-          } else {
-            resolve(postMessage(message))
-          }
+          onIdle(function () {
+            resolve(postMessage(message, expectResponse))
+          })
         })
       })
   }
