@@ -2,7 +2,8 @@ module.exports = router
 
 function router () {
   var registeredRoutes = {}
-  window.addEventListener('message', function (event) {
+
+  function listen (event) {
     function respond (message) {
       if (event.ports && event.ports.length) {
         event.ports[0].postMessage(message)
@@ -35,10 +36,18 @@ function router () {
     }
 
     callNext()
-  })
+  }
 
-  return function (messageType /* , ...stack */) {
+  window.addEventListener('message', listen)
+
+  var register = function (messageType /* , ...stack */) {
     var stack = [].slice.call(arguments, 1)
     registeredRoutes[messageType] = stack
   }
+
+  register.unbind = function () {
+    window.removeEventListener('message', listen)
+  }
+
+  return register
 }

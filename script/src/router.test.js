@@ -5,7 +5,7 @@ describe('src/router.js', function () {
   describe('router(vaultUrl)', function () {
     it('exposes a middleware enabled event emitter', function (done) {
       var app = router(process.env.VAULT_HOST)
-      app.on('KEY', function (context, send, next) {
+      app.on('TEST', function (context, send, next) {
         context.other = true
         next()
       }, function (context, send, next) {
@@ -23,23 +23,24 @@ describe('src/router.js', function () {
           .catch(done)
       })
 
-      app.dispatch('KEY', { some: 'value' })
+      app.dispatch('TEST', { some: 'value' })
     })
 
     it('skips the stack on error', function (done) {
       var app = router(process.env.VAULT_HOST)
 
-      app.on('KEY', function (context, send, next) {
-        next(new Error('Do not send'))
-      }, function (context, send, next) {
-        done(new Error('Unexpectedly called final handler'))
-      })
-
-      setTimeout(function () {
+      var timeout = setTimeout(function () {
         done()
       }, 50)
 
-      app.dispatch('KEY', { some: 'value' })
+      app.on('TEST', function (context, send, next) {
+        next(new Error('Do not send'))
+      }, function (context, send, next) {
+        window.clearTimeout(timeout)
+        done(new Error('Unexpectedly called final handler'))
+      })
+
+      app.dispatch('TEST', { some: 'value' })
     })
   })
 })
