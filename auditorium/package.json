@@ -26,7 +26,7 @@
     "@babel/preset-env": "^7.4.5",
     "babelify": "^10.0.0",
     "browserify": "^16.2.3",
-    "budo": "^11.6.2",
+    "budo": "^11.6.3",
     "dependency-check": "^3.3.0",
     "envify": "^4.1.0",
     "gulp": "^4.0.2",
