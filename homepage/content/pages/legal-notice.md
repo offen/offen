@@ -12,7 +12,7 @@ Musterstr. 00
 
 ### Contact Information
 Telephone: 000000000  
-E-Mail: mail@offen.de  
+E-Mail: mail@offen.dev  
 Internet address: www.offen.dev  
 
 ### Graphics and Image Sources
