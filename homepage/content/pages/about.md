@@ -13,7 +13,7 @@ __offen__ is created by [Frederik Ring][frederik-ring]{: target="_blank"} and [H
 [hendrik-niefeld]: http://niefeld.com/
 [frederik-ring]: https://www.frederikring.com/
 
-[![NLnet Foundation](/theme/images/nlnet-logo.svg){:width="160px" height="60px" class="image-text-small"}](https://nlnet.nl/){: target="_blank"}
+[![NLnet Foundation](/theme/images/nlnet-logo.svg){:width="160px" height="60px" class="image-text-custom"}](https://nlnet.nl/){: target="_blank"}
 
 We are happy to work with [NLnet Foundation][nlnet-foundation]{: target="_blank"} who complement our activities within their [Next Generation Internet][next-generation-internet]{: target="_blank"} initiative.
 
