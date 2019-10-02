@@ -21,6 +21,6 @@ exports.set = setConsentStatus
 
 function setConsentStatus (expressConsent) {
   var status = expressConsent ? 'allow' : 'deny'
-  var expires = new Date(Date.now() + 10 * 365 * 24 * 60 * 60 * 1000)
+  var expires = new Date(Date.now() + 100 * 365 * 24 * 60 * 60 * 1000)
   document.cookie = 'consent=' + status + '; expires="' + expires.toUTCString() + '"; path=/'
 }

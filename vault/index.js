@@ -47,7 +47,7 @@ function optInMiddleware (event, respond, next) {
         Array.prototype.forEach.call(document.querySelectorAll('.js-consent'), function (node) {
           node.addEventListener('click', function (e) {
             resolve(e.target.dataset.status)
-            respond.applyStyles({
+            respond.styleHost({
               styles: {
                 display: 'none'
               },
@@ -57,7 +57,7 @@ function optInMiddleware (event, respond, next) {
             })
           })
         })
-        respond.applyStyles({
+        respond.styleHost({
           styles: {
             position: 'fixed',
             right: '0',
