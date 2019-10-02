@@ -1,22 +1,22 @@
-
 help:
 	@echo "    setup"
 	@echo "        Build the development containers and install dependencies."
+	@echo "    update"
+	@echo "        Install / update dependencies in the containers."
 	@echo "    bootstrap"
-	@echo "        Set up keys and seed databases."
-	@echo "        IMPORTANT: this wipes any existing data in your local database."
+	@echo "        Set up and seed databases."
+	@echo "        **IMPORTANT**: this wipes any existing data in your local database."
 	@echo "    build"
-	@echo "        Build the production containers."
+	@echo "        Build the production images."
 	@echo "    secret"
 	@echo "        Generate a random base64 encoded secret"
 
-setup:
+setup: dev-build update howto
+
+dev-build:
 	@docker-compose build
-	@docker-compose run script npm install
-	@docker-compose run vault npm install
-	@docker-compose run auditorium npm install
-	@docker-compose run server go mod download
-	@docker-compose run homepage pip install --user -r requirements.txt
+
+howto:
 	@echo "Successfully built containers and installed dependencies."
 	@echo "If this is your initial setup, you can run 'make bootstrap' next"
 	@echo "to create seed the database."
@@ -31,6 +31,14 @@ bootstrap:
 	@echo "Password: develop"
 	@echo ""
 
+update:
+	@echo "Installing / updating dependencies ..."
+	@docker-compose run script npm install
+	@docker-compose run vault npm install
+	@docker-compose run auditorium npm install
+	@docker-compose run server go mod download
+	@docker-compose run homepage pip install --user -r requirements.txt
+
 DOCKER_IMAGE_TAG ?= latest
 ROBOTS_FILE ?= robots.txt.staging
 
@@ -41,4 +49,4 @@ build:
 secret:
 	@docker-compose run server make secret
 
-.PHONY: setup bootstrap build secret
+.PHONY: setup build bootstrap build secret
