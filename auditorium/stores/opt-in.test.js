@@ -1,9 +1,9 @@
 var choo = require('choo')
 
-var optOut = require('./opt-out')
+var optIn = require('./opt-in')
 
-describe('stores/opt-out.js', function () {
-  describe('optOut(state, emitter)', function () {
+describe('stores/opt-in.js', function () {
+  describe('optIn(state, emitter)', function () {
     var app
     beforeEach(function () {
       app = choo()
@@ -11,8 +11,8 @@ describe('stores/opt-out.js', function () {
       app._setCache(app.state)
     })
 
-    it('delegates an opt-out request to the vault', function (done) {
-      optOut(app.state, app.emitter)
+    it('delegates an opt-in request to the vault', function (done) {
+      optIn(app.state, app.emitter)
 
       app.emitter.on('offen:query', function () {
         done()
@@ -21,7 +21,7 @@ describe('stores/opt-out.js', function () {
         done(new Error('Unexpected render call'))
       })
 
-      app.emitter.emit('offen:optout', true)
+      app.emitter.emit('offen:optin', true)
     })
   })
 })

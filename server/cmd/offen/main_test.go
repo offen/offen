@@ -61,6 +61,7 @@ func TestEvents_Post(t *testing.T) {
 			t.Fatalf("Unexpected error %v", err)
 		}
 		req.AddCookie(&http.Cookie{Name: "user", Value: "3c6ccb0c-ff58-40dd-a588-9ba5b927e89a"})
+		req.AddCookie(&http.Cookie{Name: "consent", Value: "allow"})
 
 		res, err := http.DefaultClient.Do(req)
 		if err != nil {
@@ -94,6 +95,7 @@ func TestEvents_Post(t *testing.T) {
 			t.Fatalf("Unexpected error %v", err)
 		}
 		req.AddCookie(&http.Cookie{Name: "user", Value: "3c6ccb0c-ff58-40dd-a588-9ba5b927e89a"})
+		req.AddCookie(&http.Cookie{Name: "consent", Value: "allow"})
 
 		res, err := http.DefaultClient.Do(req)
 		if err != nil {

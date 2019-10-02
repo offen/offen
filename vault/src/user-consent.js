@@ -1,6 +1,6 @@
-module.exports = optoutStatus
+module.exports = consentStatus
 
-function optoutStatus () {
+function consentStatus () {
   var matches = document.cookie.split(';')
     .map(function (s) {
       return s.trim()
