@@ -14,13 +14,17 @@ if (!window.URL || !window.URLSearchParams) {
 
 var register = router()
 
-register('EVENT', optInMiddleware, eventDuplexerMiddleware, anonymousMiddleware, function (event, respond, next) {
-  console.log(__('This page is using offen to collect usage statistics.'))
-  console.log(__('You can access and manage all of your personal data or opt-out at "%s/auditorium/".', window.location.origin))
-  console.log(__('Find out more about offen at "https://www.offen.dev".'))
-  handler.handleAnalyticsEvent(event.data)
-    .catch(next)
-})
+register('EVENT',
+  eventDuplexerMiddleware,
+  anonymousMiddleware,
+  optInMiddleware,
+  function (event, respond, next) {
+    console.log(__('This page is using offen to collect usage statistics.'))
+    console.log(__('You can access and manage all of your personal data or opt-out at "%s/auditorium/".', window.location.origin))
+    console.log(__('Find out more about offen at "https://www.offen.dev".'))
+    handler.handleAnalyticsEvent(event.data)
+      .catch(next)
+  })
 
 register('QUERY', sameOriginMiddleware, callHandler(handler.handleQuery))
 register('OPTIN_STATUS', sameOriginMiddleware, callHandler(handler.handleOptinStatus))
@@ -34,13 +38,12 @@ register('RESET_PASSWORD', sameOriginMiddleware, callHandler(handler.handleReset
 module.exports = register
 
 function optInMiddleware (event, respond, next) {
-  var status = consentStatus()
+  var status = consentStatus.get()
   if (!status) {
-    var expires = new Date(Date.now() + 10 * 365 * 24 * 60 * 60 * 1000)
     status = window.confirm('Are you ok with us collecting usage data?')
       ? 'allow'
       : 'deny'
-    document.cookie = 'consent=' + status + '; expires="' + expires.toUTCString() + '"; path=/'
+    consentStatus.set(status)
   }
 
   if (status === 'allow') {
@@ -48,7 +51,7 @@ function optInMiddleware (event, respond, next) {
   }
   console.log('This page is using offen to collect usage statistics.')
   console.log('You have opted out of data collection, no data is being collected.')
-  console.log('Find out more about offen at "https://www.offen.dev".')
+  console.log('Find out more about offen at "' + window.location.origin + '".')
 }
 
 function eventDuplexerMiddleware (event, respond, next) {

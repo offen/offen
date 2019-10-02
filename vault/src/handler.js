@@ -28,15 +28,15 @@ function handleAnonymousEventWith (relayEvent) {
   }
 }
 
-exports.handleOptinStatus = handleOptinStatusWith(consentStatus, allowsCookies)
+exports.handleOptinStatus = handleOptinStatusWith(consentStatus.get, allowsCookies)
 exports.handleOptinStatusWith = handleOptinStatusWith
 
-function handleOptinStatusWith (consentStatus, allowsCookies) {
+function handleOptinStatusWith (getConsentStatus, allowsCookies) {
   return function (message) {
     return {
       type: 'OPTIN_STATUS_SUCCESS',
       payload: {
-        hasOptedIn: consentStatus() === 'allow',
+        hasOptedIn: getConsentStatus() === 'allow',
         allowsCookies: allowsCookies()
       }
     }
@@ -48,12 +48,7 @@ exports.handleOptinWith = handleOptinWith
 
 function handleOptinWith () {
   return function (message) {
-    var status = 'deny'
-    if (message.payload.expressConsent) {
-      status = 'allow'
-    }
-    var expires = new Date(Date.now() + 10 * 365 * 24 * 60 * 60 * 1000)
-    document.cookie = 'consent=' + status + '; expires="' + expires.toUTCString() + '"; path=/'
+    consentStatus.set(message.payload.expressConsent)
     return {
       type: 'OPTIN_SUCCESS',
       payload: null
