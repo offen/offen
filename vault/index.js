@@ -1,6 +1,7 @@
 var router = require('./src/router')
 var handler = require('./src/handler')
 var allowsCookies = require('./src/allows-cookies')
+var consentStatus = require('./src/user-consent')
 var getSessionId = require('./src/session-id')
 
 if (!window.fetch) {
@@ -13,7 +14,7 @@ if (!window.URL || !window.URLSearchParams) {
 
 var register = router()
 
-register('EVENT', eventDuplexerMiddleware, anonymousMiddleware, function (event, respond, next) {
+register('EVENT', optInMiddleware, eventDuplexerMiddleware, anonymousMiddleware, function (event, respond, next) {
   console.log(__('This page is using offen to collect usage statistics.'))
   console.log(__('You can access and manage all of your personal data or opt-out at "%s/auditorium/".', window.location.origin))
   console.log(__('Find out more about offen at "https://www.offen.dev".'))
@@ -21,8 +22,9 @@ register('EVENT', eventDuplexerMiddleware, anonymousMiddleware, function (event,
     .catch(next)
 })
 
-register('OPTOUT_STATUS', sameOriginMiddleware, callHandler(handler.handleOptoutStatus))
 register('QUERY', sameOriginMiddleware, callHandler(handler.handleQuery))
+register('OPTIN_STATUS', sameOriginMiddleware, callHandler(handler.handleOptinStatus))
+register('OPTIN', sameOriginMiddleware, callHandler(handler.handleOptin))
 register('PURGE', sameOriginMiddleware, callHandler(handler.handlePurge))
 register('LOGIN', sameOriginMiddleware, callHandler(handler.handleLogin))
 register('CHANGE_CREDENTIALS', sameOriginMiddleware, callHandler(handler.handleChangeCredentials))
@@ -30,6 +32,24 @@ register('FORGOT_PASSWORD', sameOriginMiddleware, callHandler(handler.handleForg
 register('RESET_PASSWORD', sameOriginMiddleware, callHandler(handler.handleResetPassword))
 
 module.exports = register
+
+function optInMiddleware (event, respond, next) {
+  var status = consentStatus()
+  if (!status) {
+    var expires = new Date(Date.now() + 10 * 365 * 24 * 60 * 60 * 1000)
+    status = window.confirm('Are you ok with us collecting usage data?')
+      ? 'allow'
+      : 'deny'
+    document.cookie = 'consent=' + status + '; expires="' + expires.toUTCString() + '"; path=/'
+  }
+
+  if (status === 'allow') {
+    return next()
+  }
+  console.log('This page is using offen to collect usage statistics.')
+  console.log('You have opted out of data collection, no data is being collected.')
+  console.log('Find out more about offen at "https://www.offen.dev".')
+}
 
 function eventDuplexerMiddleware (event, respond, next) {
   // eventDuplexerMiddleware adds properties to an event that could be subject to spoofing
@@ -65,7 +85,7 @@ function anonymousMiddleware (event, respond, next) {
   console.log(__('This page is using offen to collect usage statistics.'))
   console.log(__('Your setup prevents or you have disabled third party cookies in your browser\'s settings.'))
   console.log(__('Basic usage data will be collected anonymously.'))
-  console.log(__('Find out more at "https://www.offen.dev".'))
+  console.log(__('Find out more at "%s".', window.location.origin))
   handler.handleAnonymousEvent(event.data)
     .catch(next)
 }

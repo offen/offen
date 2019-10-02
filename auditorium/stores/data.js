@@ -10,21 +10,21 @@ function store (state, emitter) {
       .then(function (postMessage) {
         return postMessage(request, true)
       })
-    var fetchOptoutStatus = vault(process.env.VAULT_HOST || '/vault/')
+    var fetchOptinStatus = vault(process.env.VAULT_HOST || '/vault/')
       .then(function (postMessage) {
         var request = {
-          type: 'OPTOUT_STATUS',
+          type: 'OPTIN_STATUS',
           payload: null
         }
         return postMessage(request, true)
       })
 
-    Promise.all([fetchQuery, fetchOptoutStatus])
+    Promise.all([fetchQuery, fetchOptinStatus])
       .then(function (results) {
         var queryMessage = results[0]
-        var optoutMessage = results[1]
+        var optinMessage = results[1]
         state.model = queryMessage.payload.result
-        Object.assign(state.model, optoutMessage.payload)
+        Object.assign(state.model, optinMessage.payload)
         state.flash = onSuccessMessage
       })
       .catch(function (err) {

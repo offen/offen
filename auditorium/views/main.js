@@ -74,6 +74,10 @@ function formatNumber (value, factor) {
 }
 
 function view (state, emit) {
+  function handleOptin () {
+    emit('offen:optin', !state.model.hasOptedIn)
+  }
+
   function handlePurge () {
     emit('offen:purge')
   }
@@ -103,6 +107,8 @@ function view (state, emit) {
       <p class="dib pa2 br2 bg-black-05 mt0 mb2">
         ${raw(__('You are viewing your <strong>user</strong> data.'))}
       </p>
+      ${!state.model.hasOptedIn ? html`<p><strong>${__('You have not opted in to data collection. You can use the buttons below to do so.')}</strong></p>` : null}
+      ${state.model.allowsCookies ? null : html`<p><strong>${__('Your browser does not allow 3rd party cookies. We respect this setting and collect only very basic data in this case, yet it also means we cannot display any data to you here.')}</strong></p>`}
     `
     if (!state.model.allowsCookies) {
       var noCookiesCopy = __('Your browser does not allow 3rd party cookies. We respect this setting and collect only very basic data in this case, yet it also means we cannot display any data to you here.')
@@ -202,7 +208,7 @@ function view (state, emit) {
         <button class="pointer w-100-ns f5 link dim bn ph3 pv2 mr1 mb2 dib br1 white bg-mid-gray" data-role="purge" onclick="${handlePurge}">
           ${raw(__('Delete my <strong>user</strong> data'))}
         </button>
-        <button class="pointer w-100-ns f5 link bn ph3 pv2 mb3 dib br1 white bg-black-05" data-role="optin" disabled>
+        <button class="pointer w-100-ns f5 link bn ph3 pv2 mb3 dib br1 white bg-black-05" data-role="optin" disabled onclick="${handleOptin}">
           ${__('Opt me in')}
         </button>
       </div>

@@ -1,6 +1,7 @@
 var api = require('./api')
 var queries = require('./queries')
 var relayEvent = require('./relay-event')
+var consentStatus = require('./user-consent')
 var allowsCookies = require('./allows-cookies')
 var getUserEvents = require('./get-user-events')
 var getOperatorEvents = require('./get-operator-events')
@@ -27,16 +28,35 @@ function handleAnonymousEventWith (relayEvent) {
   }
 }
 
-exports.handleOptoutStatus = handleOptoutStatusWith(allowsCookies)
-exports.handleOptoutStatusWith = handleOptoutStatusWith
+exports.handleOptinStatus = handleOptinStatusWith(consentStatus, allowsCookies)
+exports.handleOptinStatusWith = handleOptinStatusWith
 
-function handleOptoutStatusWith (allowsCookies) {
+function handleOptinStatusWith (consentStatus, allowsCookies) {
   return function (message) {
     return {
-      type: 'OPTOUT_STATUS_SUCCESS',
+      type: 'OPTIN_STATUS_SUCCESS',
       payload: {
+        hasOptedIn: consentStatus() === 'allow',
         allowsCookies: allowsCookies()
       }
+    }
+  }
+}
+
+exports.handleOptin = handleOptinWith()
+exports.handleOptinWith = handleOptinWith
+
+function handleOptinWith () {
+  return function (message) {
+    var status = 'deny'
+    if (message.payload.expressConsent) {
+      status = 'allow'
+    }
+    var expires = new Date(Date.now() + 10 * 365 * 24 * 60 * 60 * 1000)
+    document.cookie = 'consent=' + status + '; expires="' + expires.toUTCString() + '"; path=/'
+    return {
+      type: 'OPTIN_SUCCESS',
+      payload: null
     }
   }
 }
