@@ -79,8 +79,6 @@ services:
       - .:/offen
       - homepagedeps:/root/.local
     command: make devserver
-    ports:
-      - 8000:8000
     environment:
       DEBUG: 1
 
