@@ -585,6 +585,20 @@ GRAPHICS
 /* ---------------------------------------------------
 IMAGES
 ----------------------------------------------------*/
-.image-text-small {
+img {
+  display: block;
+}
+.image-text-custom {
   margin: 10px 0 -15px 0;
+}
+.image-text-560-315 {
+  width: 560px;
+  height: 315px;
+}
+
+@media only screen and (max-width: 600px) {
+  .image-text-560-315 {
+    max-width:100%;
+    height: auto;
+  }
 }
