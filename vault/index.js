@@ -38,20 +38,50 @@ register('RESET_PASSWORD', sameOriginMiddleware, callHandler(handler.handleReset
 module.exports = register
 
 function optInMiddleware (event, respond, next) {
-  var status = consentStatus.get()
-  if (!status) {
-    status = window.confirm('Are you ok with us collecting usage data?')
-      ? 'allow'
-      : 'deny'
-    consentStatus.set(status)
-  }
-
-  if (status === 'allow') {
-    return next()
-  }
-  console.log('This page is using offen to collect usage statistics.')
-  console.log('You have opted out of data collection, no data is being collected.')
-  console.log('Find out more about offen at "' + window.location.origin + '".')
+  Promise.resolve(consentStatus.get())
+    .then(function (status) {
+      if (status) {
+        return status
+      }
+      return new Promise(function (resolve) {
+        Array.prototype.forEach.call(document.querySelectorAll('.js-consent'), function (node) {
+          node.addEventListener('click', function (e) {
+            resolve(e.target.dataset.status)
+            respond.applyStyles({
+              styles: {
+                display: 'none'
+              },
+              attributes: {
+                height: '0'
+              }
+            })
+          })
+        })
+        respond.applyStyles({
+          styles: {
+            position: 'fixed',
+            right: '0',
+            bottom: '0',
+            left: '0',
+            width: '100%',
+            display: 'block',
+            backgroundColor: 'hotpink'
+          },
+          attributes: {
+            height: '50'
+          }
+        })
+      })
+    })
+    .then(function (status) {
+      consentStatus.set(status === 'allow')
+      if (status === 'allow') {
+        return next()
+      }
+      console.log('This page is using offen to collect usage statistics.')
+      console.log('You have opted out of data collection, no data is being collected.')
+      console.log('Find out more about offen at "' + window.location.origin + '".')
+    })
 }
 
 function eventDuplexerMiddleware (event, respond, next) {

@@ -9,6 +9,11 @@ function router () {
         event.ports[0].postMessage(message)
       }
     }
+    respond.applyStyles = function (data) {
+      if (event.ports && event.ports.length >= 2) {
+        event.ports[1].postMessage(data)
+      }
+    }
 
     var stack = (registeredRoutes[event.data.type] || []).slice()
 
