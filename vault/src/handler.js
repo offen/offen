@@ -12,7 +12,8 @@ exports.handleAnalyticsEventWith = handleAnalyticsEventWith
 function handleAnalyticsEventWith (relayEvent) {
   return function (message) {
     var accountId = message.payload.accountId
-    return relayEvent(accountId, message.payload.event, false)
+    var event = message.payload.event
+    return relayEvent(accountId, event, false)
   }
 }
 
@@ -22,7 +23,8 @@ exports.handleAnonymousEventWith = handleAnonymousEventWith
 function handleAnonymousEventWith (relayEvent) {
   return function (message) {
     var accountId = message.payload.accountId
-    return relayEvent(accountId, message.payload.event, true)
+    var event = message.payload.event
+    return relayEvent(accountId, event, true)
   }
 }
 
