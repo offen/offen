@@ -5,7 +5,7 @@ href: /status/
 
 ## Project status
 
-### October 2019
+### September 2019
 
 We have deployed an alpha version of __offen__ that we are currently testing on a few select sites. Usage data is collected and can be accessed by both users and site operators. Users can opt out and delete their data at any time. You can *follow the development at [github.com/offen/offen](https://github.com/offen/offen){: target="_blank"}*
 
