@@ -1,3 +1,5 @@
+from datetime import datetime
+from calendar import month_name
 # If your site is available via HTTPS, make sure SITEURL begins with https://
 RELATIVE_URLS = False
 
@@ -6,6 +8,8 @@ SITENAME = 'offen'
 PATH = 'content'
 TIMEZONE = 'Europe/Berlin'
 DEFAULT_LANG = 'en'
+
+BUILD_DATE = '{} {}'.format(month_name[datetime.today().month], datetime.today().year)
 
 # Feed generation is usually not desired when developing
 FEED_ALL_ATOM = None
