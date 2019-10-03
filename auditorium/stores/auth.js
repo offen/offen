@@ -12,7 +12,7 @@ function store (state, emitter) {
             ? { credentials: credentials }
             : null
         }
-        return postMessage(queryRequest, true)
+        return postMessage(queryRequest)
       })
       .then(function (response) {
         if (response.type === 'LOGIN_SUCCESS') {
@@ -47,7 +47,7 @@ function store (state, emitter) {
           type: 'CHANGE_CREDENTIALS',
           payload: update
         }
-        return postMessage(queryRequest, true)
+        return postMessage(queryRequest)
       })
       .then(function (response) {
         if (response.type === 'CHANGE_CREDENTIALS_SUCCESS') {
@@ -81,7 +81,7 @@ function store (state, emitter) {
           type: 'FORGOT_PASSWORD',
           payload: update
         }
-        return postMessage(queryRequest, true)
+        return postMessage(queryRequest)
       })
       .then(function (response) {
         if (response.type === 'FORGOT_PASSWORD_SUCCESS') {
@@ -114,7 +114,7 @@ function store (state, emitter) {
           type: 'RESET_PASSWORD',
           payload: update
         }
-        return postMessage(queryRequest, true)
+        return postMessage(queryRequest)
       })
       .then(function (response) {
         if (response.type === 'RESET_PASSWORD_SUCCESS') {

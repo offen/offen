@@ -21,7 +21,7 @@ function createVault (host) {
 
   createVault[host] = new Promise(function (resolve, reject) {
     vault.addEventListener('load', function (e) {
-      function postMessage (message, waitForResponse) {
+      function postMessage (message) {
         return new Promise(function (resolve, reject) {
           var origin = new window.URL(vault.src).origin
           var messageChannel = new window.MessageChannel()

@@ -48,7 +48,7 @@ exports.handleOptinWith = handleOptinWith
 
 function handleOptinWith () {
   return function (message) {
-    consentStatus.set(message.payload.expressConsent)
+    consentStatus.set(message.payload.expressConsent ? consentStatus.ALLOW : consentStatus.DENY)
     return {
       type: 'OPTIN_SUCCESS',
       payload: null

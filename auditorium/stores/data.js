@@ -8,7 +8,7 @@ function store (state, emitter) {
     state.updatePending = true
     var fetchQuery = vault(process.env.VAULT_HOST || '/vault/')
       .then(function (postMessage) {
-        return postMessage(request, true)
+        return postMessage(request)
       })
     var fetchOptinStatus = vault(process.env.VAULT_HOST || '/vault/')
       .then(function (postMessage) {
@@ -16,7 +16,7 @@ function store (state, emitter) {
           type: 'OPTIN_STATUS',
           payload: null
         }
-        return postMessage(request, true)
+        return postMessage(request)
       })
 
     Promise.all([fetchQuery, fetchOptinStatus])

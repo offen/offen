@@ -43,39 +43,36 @@ function optInMiddleware (event, respond, next) {
       if (status) {
         return status
       }
-      return new Promise(function (resolve) {
-        Array.prototype.forEach.call(document.querySelectorAll('.js-consent'), function (node) {
-          node.addEventListener('click', function (e) {
-            resolve(e.target.dataset.status)
-            respond.styleHost({
-              styles: {
-                display: 'none'
-              },
-              attributes: {
-                height: '0'
-              }
-            })
-          })
-        })
-        respond.styleHost({
-          styles: {
-            position: 'fixed',
-            right: '0',
-            bottom: '0',
-            left: '0',
-            width: '100%',
-            display: 'block',
-            backgroundColor: 'hotpink'
-          },
-          attributes: {
-            height: '50'
-          }
-        })
+      respond.styleHost({
+        styles: {
+          position: 'fixed',
+          right: '0',
+          bottom: '0',
+          left: '0',
+          width: '100%',
+          display: 'block',
+          backgroundColor: 'hotpink'
+        },
+        attributes: {
+          height: '100'
+        }
       })
+      return consentStatus.askForConsent()
+        .then(function (result) {
+          respond.styleHost({
+            styles: {
+              display: 'none'
+            },
+            attributes: {
+              height: '0'
+            }
+          })
+          return result
+        })
     })
     .then(function (status) {
-      consentStatus.set(status === 'allow')
-      if (status === 'allow') {
+      consentStatus.set(status)
+      if (status === consentStatus.ALLOW) {
         return next()
       }
       console.log('This page is using offen to collect usage statistics.')

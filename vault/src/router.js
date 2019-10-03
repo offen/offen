@@ -5,12 +5,12 @@ function router () {
 
   function listen (event) {
     function respond (message) {
-      if (event.ports && event.ports.length) {
+      if (event.ports && event.ports.length > 0) {
         event.ports[0].postMessage(message)
       }
     }
     respond.styleHost = function (data) {
-      if (event.ports && event.ports.length >= 2) {
+      if (event.ports && event.ports.length > 1) {
         event.ports[1].postMessage(data)
       }
     }

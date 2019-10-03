@@ -12,7 +12,7 @@ function store (state, emitter) {
             expressConsent: allow
           }
         }
-        return postMessage(optoutRequest, true)
+        return postMessage(optoutRequest)
       })
       .then(function () {
         emitter.emit('offen:query')
