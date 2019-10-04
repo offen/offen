@@ -136,53 +136,79 @@ func WithRetentionPeriod(d time.Duration) Config {
 // to the given database implementation. In the context of the application
 // this expects to be the only top level router in charge of handling all
 // incoming HTTP requests.
-func New(opts ...Config) http.Handler {
+func New(opts ...Config) *gin.Engine {
 	rt := router{}
 	for _, opt := range opts {
 		opt(&rt)
 	}
-
 	rt.cookieSigner = securecookie.New(rt.cookieExchangeSecret, nil)
+
 	m := gin.New()
 	m.Use(gin.Recovery())
 
 	m.GET("/healthz", rt.getHealth)
 
-	dropOptout := optoutMiddleware(optoutKey)
-	userCookie := userCookieMiddleware(cookieKey, contextKeyCookie)
-	accountAuth := rt.accountUserMiddleware(authKey, contextKeyAuth)
+	m.GET("/", func(c *gin.Context) {
+		c.String(http.StatusOK, "Index page TBD")
+	})
 
-	m.GET("/opt-out", rt.getOptout)
-	m.POST("/opt-in", rt.postOptin)
-	m.GET("/opt-in", rt.getOptin)
-	m.POST("/opt-out", rt.postOptout)
+	m.StaticFS("/vault", http.Dir("./public/vault"))
+	m.StaticFile("/script.js", "./public/script.js")
 
-	m.GET("/exchange", rt.getPublicKey)
-	m.POST("/exchange", rt.postUserSecret)
+	{
+		auditorium := gin.New()
+		auditorium.StaticFS("/auditorium", http.Dir("./public/auditorium"))
+		auditorium.NoRoute(func(c *gin.Context) {
+			c.Status(http.StatusOK)
+			c.File("./public/auditorium/index.html")
+		})
+		m.Any("/auditorium/*delegateToClientRouter", auditorium.HandleContext)
+	}
 
-	m.GET("/accounts/:accountID", accountAuth, rt.getAccount)
+	{
+		api := gin.New()
+		dropOptout := optoutMiddleware(optoutKey)
+		userCookie := userCookieMiddleware(cookieKey, contextKeyCookie)
+		accountAuth := rt.accountUserMiddleware(authKey, contextKeyAuth)
 
-	m.POST("/deleted/user", userCookie, rt.getDeletedEvents)
-	m.POST("/deleted", rt.getDeletedEvents)
-	m.POST("/purge", userCookie, rt.purgeEvents)
+		routes := api.Group("/api")
+		routes.GET("/opt-out", rt.getOptout)
+		routes.POST("/opt-in", rt.postOptin)
+		routes.GET("/opt-in", rt.getOptin)
+		routes.POST("/opt-out", rt.postOptout)
 
-	m.GET("/login", accountAuth, rt.getLogin)
-	m.POST("/login", rt.postLogin)
+		routes.GET("/exchange", rt.getPublicKey)
+		routes.POST("/exchange", rt.postUserSecret)
 
-	m.POST("/change-password", accountAuth, rt.postChangePassword)
-	m.POST("/change-email", accountAuth, rt.postChangeEmail)
-	m.POST("/forgot-password", rt.postForgotPassword)
-	m.POST("/reset-password", rt.postResetPassword)
+		routes.GET("/accounts/:accountID", accountAuth, rt.getAccount)
 
-	m.GET("/events", userCookie, rt.getEvents)
-	m.POST("/events/anonymous", dropOptout, rt.postEvents)
-	m.POST("/events", dropOptout, userCookie, rt.postEvents)
+		routes.POST("/deleted/user", userCookie, rt.getDeletedEvents)
+		routes.POST("/deleted", rt.getDeletedEvents)
+		routes.POST("/purge", userCookie, rt.purgeEvents)
+
+		routes.GET("/login", accountAuth, rt.getLogin)
+		routes.POST("/login", rt.postLogin)
+
+		routes.POST("/change-password", accountAuth, rt.postChangePassword)
+		routes.POST("/change-email", accountAuth, rt.postChangeEmail)
+		routes.POST("/forgot-password", rt.postForgotPassword)
+		routes.POST("/reset-password", rt.postResetPassword)
+
+		routes.GET("/events", userCookie, rt.getEvents)
+		routes.POST("/events/anonymous", dropOptout, rt.postEvents)
+		routes.POST("/events", dropOptout, userCookie, rt.postEvents)
+
+		api.NoRoute(func(c *gin.Context) {
+			newJSONError(
+				errors.New("not found"),
+				http.StatusNotFound,
+			).Pipe(c)
+		})
+		m.Any("/api/*delegateToSubrouter", api.HandleContext)
+	}
 
 	m.NoRoute(func(c *gin.Context) {
-		newJSONError(
-			errors.New("not found"),
-			http.StatusNotFound,
-		).Pipe(c)
+		c.String(http.StatusNotFound, "404 - Not found")
 	})
 	return m
 }
