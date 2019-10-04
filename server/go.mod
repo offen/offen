@@ -4,6 +4,7 @@ go 1.12
 
 require (
 	github.com/denisenkom/go-mssqldb v0.0.0-20190423183735-731ef375ac02 // indirect
+	github.com/gin-gonic/gin v1.4.0
 	github.com/go-gomail/gomail v0.0.0-20160411212932-81ebce5c23df
 	github.com/gofrs/uuid v3.2.0+incompatible
 	github.com/gorilla/mux v1.6.2
@@ -12,7 +13,6 @@ require (
 	github.com/jinzhu/now v1.0.0 // indirect
 	github.com/kr/pretty v0.1.0 // indirect
 	github.com/lestrrat-go/jwx v0.9.0
-	github.com/m90/go-thunk v1.0.0
 	github.com/oklog/ulid v1.3.1
 	github.com/sirupsen/logrus v1.4.2
 	golang.org/x/crypto v0.0.0-20190325154230-a5d413f7728c
