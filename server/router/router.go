@@ -1,7 +1,6 @@
 package router
 
 import (
-	"errors"
 	"net/http"
 	"time"
 
@@ -165,47 +164,36 @@ func New(opts ...Config) *gin.Engine {
 		m.Any("/auditorium/*delegateToClientRouter", auditorium.HandleContext)
 	}
 
-	{
-		api := gin.New()
-		dropOptout := optoutMiddleware(optoutKey)
-		userCookie := userCookieMiddleware(cookieKey, contextKeyCookie)
-		accountAuth := rt.accountUserMiddleware(authKey, contextKeyAuth)
+	dropOptout := optoutMiddleware(optoutKey)
+	userCookie := userCookieMiddleware(cookieKey, contextKeyCookie)
+	accountAuth := rt.accountUserMiddleware(authKey, contextKeyAuth)
 
-		routes := api.Group("/api")
-		routes.GET("/opt-out", rt.getOptout)
-		routes.POST("/opt-in", rt.postOptin)
-		routes.GET("/opt-in", rt.getOptin)
-		routes.POST("/opt-out", rt.postOptout)
+	api := m.Group("/api")
+	api.GET("/opt-out", rt.getOptout)
+	api.POST("/opt-in", rt.postOptin)
+	api.GET("/opt-in", rt.getOptin)
+	api.POST("/opt-out", rt.postOptout)
 
-		routes.GET("/exchange", rt.getPublicKey)
-		routes.POST("/exchange", rt.postUserSecret)
+	api.GET("/exchange", rt.getPublicKey)
+	api.POST("/exchange", rt.postUserSecret)
 
-		routes.GET("/accounts/:accountID", accountAuth, rt.getAccount)
+	api.GET("/accounts/:accountID", accountAuth, rt.getAccount)
 
-		routes.POST("/deleted/user", userCookie, rt.getDeletedEvents)
-		routes.POST("/deleted", rt.getDeletedEvents)
-		routes.POST("/purge", userCookie, rt.purgeEvents)
+	api.POST("/deleted/user", userCookie, rt.getDeletedEvents)
+	api.POST("/deleted", rt.getDeletedEvents)
+	api.POST("/purge", userCookie, rt.purgeEvents)
 
-		routes.GET("/login", accountAuth, rt.getLogin)
-		routes.POST("/login", rt.postLogin)
+	api.GET("/login", accountAuth, rt.getLogin)
+	api.POST("/login", rt.postLogin)
 
-		routes.POST("/change-password", accountAuth, rt.postChangePassword)
-		routes.POST("/change-email", accountAuth, rt.postChangeEmail)
-		routes.POST("/forgot-password", rt.postForgotPassword)
-		routes.POST("/reset-password", rt.postResetPassword)
+	api.POST("/change-password", accountAuth, rt.postChangePassword)
+	api.POST("/change-email", accountAuth, rt.postChangeEmail)
+	api.POST("/forgot-password", rt.postForgotPassword)
+	api.POST("/reset-password", rt.postResetPassword)
 
-		routes.GET("/events", userCookie, rt.getEvents)
-		routes.POST("/events/anonymous", dropOptout, rt.postEvents)
-		routes.POST("/events", dropOptout, userCookie, rt.postEvents)
-
-		api.NoRoute(func(c *gin.Context) {
-			newJSONError(
-				errors.New("not found"),
-				http.StatusNotFound,
-			).Pipe(c)
-		})
-		m.Any("/api/*delegateToSubrouter", api.HandleContext)
-	}
+	api.GET("/events", userCookie, rt.getEvents)
+	api.POST("/events/anonymous", dropOptout, rt.postEvents)
+	api.POST("/events", dropOptout, userCookie, rt.postEvents)
 
 	m.NoRoute(func(c *gin.Context) {
 		c.String(http.StatusNotFound, "404 - Not found")
