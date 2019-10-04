@@ -28,7 +28,7 @@ func (rt *router) postEvents(c *gin.Context) {
 		newJSONError(
 			fmt.Errorf("router: error decoding request payload: %v", err),
 			http.StatusBadRequest,
-		).Respond(c)
+		).Pipe(c)
 		return
 	}
 
@@ -37,20 +37,20 @@ func (rt *router) postEvents(c *gin.Context) {
 			newJSONError(
 				unknownAccountErr,
 				http.StatusNotFound,
-			).Respond(c)
+			).Pipe(c)
 			return
 		}
 		if unknownUserErr, ok := err.(persistence.ErrUnknownUser); ok {
 			newJSONError(
 				unknownUserErr,
 				http.StatusBadRequest,
-			).Respond(c)
+			).Pipe(c)
 			return
 		}
 		newJSONError(
 			fmt.Errorf("router: error persisting event: %v", err),
 			http.StatusInternalServerError,
-		).Respond(c)
+		).Pipe(c)
 		return
 	}
 	// this handler might be called without a cookie / i.e. receiving an
@@ -89,7 +89,7 @@ func (rt *router) getEvents(c *gin.Context) {
 		newJSONError(
 			errBadRequestContext,
 			http.StatusInternalServerError,
-		).Respond(c)
+		).Pipe(c)
 		return
 	}
 	query := getQuery{
@@ -102,7 +102,7 @@ func (rt *router) getEvents(c *gin.Context) {
 		newJSONError(
 			fmt.Errorf("router: error performing event query: %v", err),
 			http.StatusInternalServerError,
-		).Respond(c)
+		).Pipe(c)
 		return
 	}
 	// the query result gets wrapped in a top level object before marshalling
@@ -125,7 +125,7 @@ func (rt *router) getDeletedEvents(c *gin.Context) {
 		newJSONError(
 			fmt.Errorf("router: error decoding request payload: %v", err),
 			http.StatusBadRequest,
-		).Respond(c)
+		).Pipe(c)
 		return
 	}
 	deleted, err := rt.db.GetDeletedEvents(query.EventIDs, userID)
@@ -133,7 +133,7 @@ func (rt *router) getDeletedEvents(c *gin.Context) {
 		newJSONError(
 			fmt.Errorf("router: error getting deleted events: %v", err),
 			http.StatusInternalServerError,
-		).Respond(c)
+		).Pipe(c)
 		return
 	}
 	out := deletedQuery{
@@ -148,7 +148,7 @@ func (rt *router) purgeEvents(c *gin.Context) {
 		newJSONError(
 			fmt.Errorf("router: error purging user events: %v", err),
 			http.StatusInternalServerError,
-		).Respond(c)
+		).Pipe(c)
 		return
 	}
 	c.Status(http.StatusNoContent)

@@ -8,9 +8,12 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 func TestMain(m *testing.M) {
+	gin.SetMode(gin.ReleaseMode)
 	os.Args[1] = "serve"
 	go main()
 	time.Sleep(time.Millisecond * 50)

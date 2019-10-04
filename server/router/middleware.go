@@ -14,6 +14,7 @@ func optoutMiddleware(cookieName string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if _, err := c.Request.Cookie(cookieName); err == nil {
 			c.Status(http.StatusNoContent)
+			c.Abort()
 			return
 		}
 		c.Next()
@@ -30,7 +31,7 @@ func userCookieMiddleware(cookieKey, contextKey string) gin.HandlerFunc {
 			newJSONError(
 				errors.New("user cookie: received no or blank identifier"),
 				http.StatusBadRequest,
-			).Respond(c)
+			).Pipe(c)
 			return
 		}
 		c.Set(contextKey, ck.Value)
@@ -46,7 +47,7 @@ func (rt *router) accountUserMiddleware(cookieKey, contextKey string) gin.Handle
 			newJSONError(
 				errors.New("router: missing authentication token"),
 				http.StatusUnauthorized,
-			).Respond(c)
+			).Pipe(c)
 			return
 		}
 
@@ -57,7 +58,7 @@ func (rt *router) accountUserMiddleware(cookieKey, contextKey string) gin.Handle
 			newJSONError(
 				fmt.Errorf("error decoding cookie value: %v", err),
 				http.StatusUnauthorized,
-			).Respond(c)
+			).Pipe(c)
 			return
 		}
 
@@ -68,7 +69,7 @@ func (rt *router) accountUserMiddleware(cookieKey, contextKey string) gin.Handle
 			newJSONError(
 				fmt.Errorf("user with id %s does not exist: %v", userID, userErr),
 				http.StatusNotFound,
-			).Respond(c)
+			).Pipe(c)
 			return
 		}
 		c.Set(contextKey, user)

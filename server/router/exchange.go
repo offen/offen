@@ -16,13 +16,13 @@ func (rt *router) getPublicKey(c *gin.Context) {
 			newJSONError(
 				fmt.Errorf("router: unknown account: %v", err),
 				http.StatusBadRequest,
-			).Respond(c)
+			).Pipe(c)
 			return
 		}
 		newJSONError(
 			fmt.Errorf("router: error looking up account: %v", err),
 			http.StatusInternalServerError,
-		).Respond(c)
+		).Pipe(c)
 		return
 	}
 	c.JSON(http.StatusOK, account)
@@ -45,7 +45,7 @@ func (rt *router) postUserSecret(c *gin.Context) {
 			newJSONError(
 				fmt.Errorf("router: error generating new user id: %v", newIDErr),
 				http.StatusInternalServerError,
-			).Respond(c)
+			).Pipe(c)
 			return
 		}
 		userID = newID.String()
@@ -56,7 +56,7 @@ func (rt *router) postUserSecret(c *gin.Context) {
 		newJSONError(
 			fmt.Errorf("router: error decoding response body: %v", err),
 			http.StatusBadRequest,
-		).Respond(c)
+		).Pipe(c)
 		return
 	}
 
@@ -64,7 +64,7 @@ func (rt *router) postUserSecret(c *gin.Context) {
 		newJSONError(
 			fmt.Errorf("router: error associating user secret: %v", err),
 			http.StatusBadRequest,
-		).Respond(c)
+		).Pipe(c)
 		return
 	}
 

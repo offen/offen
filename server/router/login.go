@@ -59,7 +59,7 @@ func (rt *router) getLogin(c *gin.Context) {
 		newJSONError(
 			errors.New("could not authorize request"),
 			http.StatusUnauthorized,
-		).Respond(c)
+		).Pipe(c)
 		return
 	}
 	c.JSON(http.StatusOK, map[string]string{"userId": user.UserID})
@@ -76,7 +76,7 @@ func (rt *router) postChangePassword(c *gin.Context) {
 		newJSONError(
 			errors.New("router: user object not found on request context"),
 			http.StatusInternalServerError,
-		).Respond(c)
+		).Pipe(c)
 		return
 	}
 	var req changePasswordRequest
@@ -84,14 +84,14 @@ func (rt *router) postChangePassword(c *gin.Context) {
 		newJSONError(
 			fmt.Errorf("router: error decoding request payload: %v", err),
 			http.StatusBadRequest,
-		).Respond(c)
+		).Pipe(c)
 		return
 	}
 	if err := rt.db.ChangePassword(user.UserID, req.CurrentPassword, req.ChangedPassword); err != nil {
 		newJSONError(
 			fmt.Errorf("router: error changing password: %v", err),
 			http.StatusInternalServerError,
-		).Respond(c)
+		).Pipe(c)
 		return
 	}
 	cookie, _ := rt.authCookie("")
@@ -110,7 +110,7 @@ func (rt *router) postChangeEmail(c *gin.Context) {
 		newJSONError(
 			errors.New("router: user object not found on request context"),
 			http.StatusInternalServerError,
-		).Respond(c)
+		).Pipe(c)
 		return
 	}
 	var req changeEmailRequest
@@ -118,14 +118,14 @@ func (rt *router) postChangeEmail(c *gin.Context) {
 		newJSONError(
 			fmt.Errorf("router: error decoding request payload: %v", err),
 			http.StatusBadRequest,
-		).Respond(c)
+		).Pipe(c)
 		return
 	}
 	if err := rt.db.ChangeEmail(user.UserID, req.EmailAddress, req.Password); err != nil {
 		newJSONError(
 			fmt.Errorf("router: error changing email address: %v", err),
 			http.StatusInternalServerError,
-		).Respond(c)
+		).Pipe(c)
 		return
 	}
 	cookie, _ := rt.authCookie("")
@@ -152,7 +152,7 @@ func (rt *router) postForgotPassword(c *gin.Context) {
 		newJSONError(
 			fmt.Errorf("router: error decoding request body: %v", err),
 			http.StatusBadRequest,
-		).Respond(c)
+		).Pipe(c)
 		return
 	}
 	token, err := rt.db.GenerateOneTimeKey(req.EmailAddress)
@@ -177,14 +177,14 @@ func (rt *router) postForgotPassword(c *gin.Context) {
 		newJSONError(
 			fmt.Errorf("router: error rendering email message: %v", err),
 			http.StatusInternalServerError,
-		).Respond(c)
+		).Pipe(c)
 		return
 	}
 	if err := rt.mailer.Send("no-reply@offen.dev", req.EmailAddress, "Reset your password", emailBody); err != nil {
 		newJSONError(
 			fmt.Errorf("error sending email message: %v", err),
 			http.StatusInternalServerError,
-		).Respond(c)
+		).Pipe(c)
 		return
 	}
 	c.Status(http.StatusNoContent)
@@ -202,7 +202,7 @@ func (rt *router) postResetPassword(c *gin.Context) {
 		newJSONError(
 			fmt.Errorf("router: error decoding response body: %v", err),
 			http.StatusBadRequest,
-		).Respond(c)
+		).Pipe(c)
 		return
 	}
 	var credentials forgotPasswordCredentials
@@ -210,14 +210,14 @@ func (rt *router) postResetPassword(c *gin.Context) {
 		newJSONError(
 			fmt.Errorf("error decoding signed token: %v", err),
 			http.StatusBadRequest,
-		).Respond(c)
+		).Pipe(c)
 		return
 	}
 	if credentials.EmailAddress != req.EmailAddress {
 		newJSONError(
 			errors.New("given email address did not match token"),
 			http.StatusBadRequest,
-		).Respond(c)
+		).Pipe(c)
 		return
 	}
 

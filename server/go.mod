@@ -7,7 +7,6 @@ require (
 	github.com/gin-gonic/gin v1.4.0
 	github.com/go-gomail/gomail v0.0.0-20160411212932-81ebce5c23df
 	github.com/gofrs/uuid v3.2.0+incompatible
-	github.com/gorilla/mux v1.6.2
 	github.com/gorilla/securecookie v1.1.1
 	github.com/jinzhu/gorm v1.9.2
 	github.com/jinzhu/now v1.0.0 // indirect

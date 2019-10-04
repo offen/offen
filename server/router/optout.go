@@ -30,7 +30,7 @@ func (rt *router) generateOneTimeAuth(scope string) gin.HandlerFunc {
 			newJSONError(
 				fmt.Errorf("router: error initiating authentication exchange: %v", err),
 				http.StatusInternalServerError,
-			).Respond(c)
+			).Pipe(c)
 			return
 		}
 		c.JSON(http.StatusOK, authentication)
@@ -63,7 +63,7 @@ func (rt *router) getOptout(c *gin.Context) {
 		newJSONError(
 			fmt.Errorf("router: credentials not valid: %v", err),
 			http.StatusForbidden,
-		).Respond(c)
+		).Pipe(c)
 		return
 	}
 	http.SetCookie(c.Writer, rt.optoutCookie(true))
@@ -75,7 +75,7 @@ func (rt *router) getOptin(c *gin.Context) {
 		newJSONError(
 			fmt.Errorf("router: credentials not valid: %v", err),
 			http.StatusForbidden,
-		).Respond(c)
+		).Pipe(c)
 		return
 	}
 	http.SetCookie(c.Writer, rt.optoutCookie(false))

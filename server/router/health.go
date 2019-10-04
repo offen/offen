@@ -12,8 +12,8 @@ func (rt *router) getHealth(c *gin.Context) {
 		newJSONError(
 			fmt.Errorf("router: failed checking health of connected persistence layer: %v", err),
 			http.StatusBadGateway,
-		).Respond(c)
+		).Pipe(c)
 		return
 	}
-	c.Status(http.StatusNoContent)
+	c.JSON(http.StatusOK, map[string]bool{"ok": true})
 }

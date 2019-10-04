@@ -17,7 +17,7 @@ func (rt *router) getAccount(c *gin.Context) {
 		newJSONError(
 			errors.New("could not find user object in request context"),
 			http.StatusNotFound,
-		).Respond(c)
+		).Pipe(c)
 		return
 	}
 
@@ -25,7 +25,7 @@ func (rt *router) getAccount(c *gin.Context) {
 		newJSONError(
 			fmt.Errorf("user does not have permissions to access account %s", accountID),
 			http.StatusForbidden,
-		).Respond(c)
+		).Pipe(c)
 		return
 	}
 
@@ -35,13 +35,13 @@ func (rt *router) getAccount(c *gin.Context) {
 			newJSONError(
 				fmt.Errorf("account %s not found", accountID),
 				http.StatusNotFound,
-			).Respond(c)
+			).Pipe(c)
 			return
 		}
 		newJSONError(
 			fmt.Errorf("router: error looking up account: %v", err),
 			http.StatusInternalServerError,
-		).Respond(c)
+		).Pipe(c)
 		return
 	}
 	c.JSON(http.StatusOK, result)

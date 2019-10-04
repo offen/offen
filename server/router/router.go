@@ -143,7 +143,8 @@ func New(opts ...Config) http.Handler {
 	}
 
 	rt.cookieSigner = securecookie.New(rt.cookieExchangeSecret, nil)
-	m := gin.Default()
+	m := gin.New()
+	m.Use(gin.Recovery())
 
 	m.GET("/healthz", rt.getHealth)
 
@@ -151,38 +152,37 @@ func New(opts ...Config) http.Handler {
 	userCookie := userCookieMiddleware(cookieKey, contextKeyCookie)
 	accountAuth := rt.accountUserMiddleware(authKey, contextKeyAuth)
 
-	api := m.Group("/api")
-	api.GET("/opt-out", rt.getOptout)
-	api.POST("/opt-in", rt.postOptin)
-	api.GET("/opt-in", rt.getOptin)
-	api.POST("/opt-out", rt.postOptin)
+	m.GET("/opt-out", rt.getOptout)
+	m.POST("/opt-in", rt.postOptin)
+	m.GET("/opt-in", rt.getOptin)
+	m.POST("/opt-out", rt.postOptout)
 
-	api.GET("/exchange", rt.getPublicKey)
-	api.POST("/exchange", rt.postUserSecret)
+	m.GET("/exchange", rt.getPublicKey)
+	m.POST("/exchange", rt.postUserSecret)
 
-	api.GET("/accounts/:accountID", accountAuth, rt.getAccount)
+	m.GET("/accounts/:accountID", accountAuth, rt.getAccount)
 
-	api.POST("/deleted/user", userCookie, rt.getDeletedEvents)
-	api.POST("/deleted", rt.getDeletedEvents)
-	api.POST("/purge", userCookie, rt.purgeEvents)
+	m.POST("/deleted/user", userCookie, rt.getDeletedEvents)
+	m.POST("/deleted", rt.getDeletedEvents)
+	m.POST("/purge", userCookie, rt.purgeEvents)
 
-	api.GET("/login", accountAuth, rt.getLogin)
-	api.POST("/login", rt.postLogin)
+	m.GET("/login", accountAuth, rt.getLogin)
+	m.POST("/login", rt.postLogin)
 
-	api.POST("/change-password", accountAuth, rt.postChangePassword)
-	api.POST("/change-email", accountAuth, rt.postChangeEmail)
-	api.POST("/forgot-password", rt.postForgotPassword)
-	api.POST("/reset-password", rt.postResetPassword)
+	m.POST("/change-password", accountAuth, rt.postChangePassword)
+	m.POST("/change-email", accountAuth, rt.postChangeEmail)
+	m.POST("/forgot-password", rt.postForgotPassword)
+	m.POST("/reset-password", rt.postResetPassword)
 
-	api.GET("/events", userCookie, rt.getEvents)
-	api.POST("/events/anonymous", dropOptout, rt.postEvents)
-	api.POST("/events", dropOptout, userCookie, rt.postEvents)
+	m.GET("/events", userCookie, rt.getEvents)
+	m.POST("/events/anonymous", dropOptout, rt.postEvents)
+	m.POST("/events", dropOptout, userCookie, rt.postEvents)
 
 	m.NoRoute(func(c *gin.Context) {
 		newJSONError(
 			errors.New("not found"),
 			http.StatusNotFound,
-		).Respond(c)
+		).Pipe(c)
 	})
 	return m
 }
