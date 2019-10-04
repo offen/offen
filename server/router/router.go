@@ -1,11 +1,15 @@
 package router
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/securecookie"
+	"github.com/offen/offen/server/assets/auditorium"
+	"github.com/offen/offen/server/assets/script"
+	"github.com/offen/offen/server/assets/vault"
 	"github.com/offen/offen/server/mailer"
 	"github.com/offen/offen/server/persistence"
 	"github.com/sirupsen/logrus"
@@ -151,17 +155,55 @@ func New(opts ...Config) *gin.Engine {
 		c.String(http.StatusOK, "Index page TBD")
 	})
 
-	m.StaticFS("/vault", http.Dir("./public/vault"))
-	m.StaticFile("/script.js", "./public/script.js")
+	// In development, these routes will be served by a different nginx
+	// upstream. They are only relevant when building the application into
+	// a single binary that inlines the filesystems.
+	m.StaticFS("/vault", vault.FS)
+	m.GET("/script.js", func(c *gin.Context) {
+		f, err := script.FS.Open("/script.js")
+		if err != nil {
+			c.AbortWithError(
+				http.StatusNotFound,
+				fmt.Errorf("router: unable to find script file: %v", err),
+			)
+			return
+		}
+		stat, err := f.Stat()
+		if err != nil {
+			c.AbortWithError(
+				http.StatusInternalServerError,
+				fmt.Errorf("router: error reading size of script file: %v", err),
+			)
+			return
+		}
+		c.DataFromReader(http.StatusOK, stat.Size(), "application/javascript", f, map[string]string{})
+	})
 
 	{
-		auditorium := gin.New()
-		auditorium.StaticFS("/auditorium", http.Dir("./public/auditorium"))
-		auditorium.NoRoute(func(c *gin.Context) {
+		a := gin.New()
+		a.StaticFS("/auditorium", auditorium.FS)
+		a.NoRoute(func(c *gin.Context) {
 			c.Status(http.StatusOK)
-			c.File("./public/auditorium/index.html")
+			fmt.Println("a", auditorium.FS)
+			f, err := auditorium.FS.Open("/index.html")
+			if err != nil {
+				c.AbortWithError(
+					http.StatusNotFound,
+					fmt.Errorf("router: unable to find index file: %v", err),
+				)
+				return
+			}
+			stat, err := f.Stat()
+			if err != nil {
+				c.AbortWithError(
+					http.StatusInternalServerError,
+					fmt.Errorf("router: error reading size of index file: %v", err),
+				)
+				return
+			}
+			c.DataFromReader(http.StatusOK, stat.Size(), "text/html", f, map[string]string{})
 		})
-		m.Any("/auditorium/*delegateToClientRouter", auditorium.HandleContext)
+		m.Any("/auditorium/*delegateToClientRouter", a.HandleContext)
 	}
 
 	dropOptout := optoutMiddleware(optoutKey)

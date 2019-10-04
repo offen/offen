@@ -8,7 +8,7 @@ type errorResponse struct {
 }
 
 func (e *errorResponse) Pipe(c *gin.Context) {
-	c.JSON(e.Status, e)
+	c.AbortWithStatusJSON(e.Status, e)
 }
 
 func newJSONError(err error, status int) *errorResponse {

@@ -22,7 +22,6 @@ services:
     volumes:
       - .:/offen
       - ./bootstrap.yml:/offen/server/bootstrap.yml
-      - ./public:/offen/server/public
       - serverdeps:/go/pkg/mod
     environment:
       POSTGRES_CONNECTION_STRING: postgres://postgres:develop@server_database:5432/postgres?sslmode=disable

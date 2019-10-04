@@ -45,8 +45,17 @@ FROM golang:1.13 as server
 COPY ./server/go.mod ./server/go.sum /code/server/
 WORKDIR /code/server
 RUN go mod download
+RUN go get github.com/rakyll/statik
 
 COPY ./server /code/server
+
+COPY --from=script /code/script/dist /public/script
+COPY --from=auditorium /code/auditorium/dist /public/auditorium
+COPY --from=vault /code/vault/dist /public/vault
+
+RUN statik -dest assets/vault -src /public/vault
+RUN statik -dest assets/auditorium -src /public/auditorium
+RUN statik -dest assets/script -src /public/script
 
 ENV CGO_ENABLED 0
 ENV GOOS linux
@@ -56,9 +65,6 @@ FROM alpine:3.10
 LABEL maintainer="mail@offen.dev"
 
 RUN apk add -U --no-cache ca-certificates
-COPY --from=script /code/script/dist /public
-COPY --from=auditorium /code/auditorium/dist /public/auditorium
-COPY --from=vault /code/vault/dist /public/vault
 COPY --from=server /code/server/bin/offen /
 
 ENV GIN_MODE "release"
