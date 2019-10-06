@@ -1,8 +1,12 @@
 .vscode
-.serverless
-node_modules/
 *.pem
-venv/
 
 bootstrap-alpha.yml
 Dockerrun.aws.json
+
+node_modules/
+dist/
+*.log
+
+bin/
+statik.go
