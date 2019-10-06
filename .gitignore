@@ -1,7 +1,6 @@
 .vscode
 .serverless
 node_modules/
-public/
 *.pem
 venv/
 

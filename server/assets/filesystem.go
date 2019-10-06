@@ -7,7 +7,7 @@ import (
 	"github.com/rakyll/statik/fs"
 )
 
-// FS is a file system containing the static assets for serving the auditorium
+// FS is a file system containing the static assets for serving the application
 var FS http.FileSystem
 
 func init() {
@@ -18,6 +18,6 @@ func init() {
 		// been populated. The filesystem will likely not match the requested
 		// files. In development live-reloading static assets will be routed through
 		// nginx instead.
-		FS = http.Dir("./")
+		FS = http.Dir("./public")
 	}
 }

@@ -147,60 +147,53 @@ func New(opts ...Config) http.Handler {
 	// In development, these routes will be served by a different nginx
 	// upstream. They are only relevant when building the application into
 	// a single binary that inlines the filesystems.
-	files := http.NewServeMux()
-	files.Handle("/auditorium/", singlePageAppMiddleware("/auditorium/")(http.FileServer(assets.FS)))
-	files.Handle("/", http.FileServer(assets.FS))
 	static := http.NewServeMux()
-	static.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		switch uri := r.RequestURI; {
-		case uri == "/":
-			w.Write([]byte("Index Page TBD"))
-		default:
-			files.ServeHTTP(w, r)
-		}
-	})
+	fileServer := http.FileServer(assets.FS)
+	static.Handle("/auditorium/", singlePageAppMiddleware("/auditorium/")(fileServer))
+	static.Handle("/", fileServer)
 
 	dropOptout := optoutMiddleware(optoutKey)
 	userCookie := userCookieMiddleware(cookieKey, contextKeyCookie)
 	accountAuth := rt.accountUserMiddleware(authKey, contextKeyAuth)
 
-	api := gin.New()
-	api.Use(gin.Recovery())
+	app := gin.New()
+	app.Use(gin.Recovery())
+	app.GET("/healthz", rt.getHealth)
 	{
-		api.GET("/healthz", rt.getHealth)
-		g := api.Group("/api")
-		g.GET("/opt-out", rt.getOptout)
-		g.POST("/opt-in", rt.postOptin)
-		g.GET("/opt-in", rt.getOptin)
-		g.POST("/opt-out", rt.postOptout)
+		api := app.Group("/api")
+		api.GET("/opt-out", rt.getOptout)
+		api.POST("/opt-in", rt.postOptin)
+		api.GET("/opt-in", rt.getOptin)
+		api.POST("/opt-out", rt.postOptout)
 
-		g.GET("/exchange", rt.getPublicKey)
-		g.POST("/exchange", rt.postUserSecret)
+		api.GET("/exchange", rt.getPublicKey)
+		api.POST("/exchange", rt.postUserSecret)
 
-		g.GET("/accounts/:accountID", accountAuth, rt.getAccount)
+		api.GET("/accounts/:accountID", accountAuth, rt.getAccount)
 
-		g.POST("/deleted/user", userCookie, rt.getDeletedEvents)
-		g.POST("/deleted", rt.getDeletedEvents)
-		g.POST("/purge", userCookie, rt.purgeEvents)
+		api.POST("/deleted/user", userCookie, rt.getDeletedEvents)
+		api.POST("/deleted", rt.getDeletedEvents)
+		api.POST("/purge", userCookie, rt.purgeEvents)
 
-		g.GET("/login", accountAuth, rt.getLogin)
-		g.POST("/login", rt.postLogin)
+		api.GET("/login", accountAuth, rt.getLogin)
+		api.POST("/login", rt.postLogin)
 
-		g.POST("/change-password", accountAuth, rt.postChangePassword)
-		g.POST("/change-email", accountAuth, rt.postChangeEmail)
-		g.POST("/forgot-password", rt.postForgotPassword)
-		g.POST("/reset-password", rt.postResetPassword)
+		api.POST("/change-password", accountAuth, rt.postChangePassword)
+		api.POST("/change-email", accountAuth, rt.postChangeEmail)
+		api.POST("/forgot-password", rt.postForgotPassword)
+		api.POST("/reset-password", rt.postResetPassword)
 
-		g.GET("/events", userCookie, rt.getEvents)
-		g.POST("/events/anonymous", dropOptout, rt.postEvents)
-		g.POST("/events", dropOptout, userCookie, rt.postEvents)
+		api.GET("/events", userCookie, rt.getEvents)
+		api.POST("/events/anonymous", dropOptout, rt.postEvents)
+		api.POST("/events", dropOptout, userCookie, rt.postEvents)
 	}
 
 	m := http.NewServeMux()
 	m.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		switch uri := r.RequestURI; {
-		case strings.HasPrefix(uri, "/api/") || strings.HasPrefix(uri, "/healthz"):
-			api.ServeHTTP(w, r)
+		case strings.HasPrefix(uri, "/api/"),
+			strings.HasPrefix(uri, "/healthz"):
+			app.ServeHTTP(w, r)
 		default:
 			static.ServeHTTP(w, r)
 		}

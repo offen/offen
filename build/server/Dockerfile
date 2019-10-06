@@ -49,10 +49,10 @@ RUN go mod download
 COPY ./server /code/server
 
 RUN go get github.com/rakyll/statik
-COPY --from=script /code/script/dist /public
-COPY --from=auditorium /code/auditorium/dist /public/auditorium
-COPY --from=vault /code/vault/dist /public/vault
-RUN statik -dest assets/vault -src /public/vault
+COPY --from=script /code/script/dist /code/server/public
+COPY --from=auditorium /code/auditorium/dist /code/server/public/auditorium
+COPY --from=vault /code/vault/dist /code/server/public/vault
+RUN statik -dest assets -src public
 
 ENV CGO_ENABLED 0
 ENV GOOS linux
