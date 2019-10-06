@@ -1,9 +1,9 @@
-package auditorium
+package assets
 
 import (
 	"net/http"
 
-	_ "github.com/offen/offen/server/assets/auditorium/statik"
+	_ "github.com/offen/offen/server/assets/statik"
 	"github.com/rakyll/statik/fs"
 )
 

@@ -1,15 +1,13 @@
 package router
 
 import (
-	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/securecookie"
-	"github.com/offen/offen/server/assets/auditorium"
-	"github.com/offen/offen/server/assets/script"
-	"github.com/offen/offen/server/assets/vault"
+	"github.com/offen/offen/server/assets"
 	"github.com/offen/offen/server/mailer"
 	"github.com/offen/offen/server/persistence"
 	"github.com/sirupsen/logrus"
@@ -139,106 +137,73 @@ func WithRetentionPeriod(d time.Duration) Config {
 // to the given database implementation. In the context of the application
 // this expects to be the only top level router in charge of handling all
 // incoming HTTP requests.
-func New(opts ...Config) *gin.Engine {
+func New(opts ...Config) http.Handler {
 	rt := router{}
 	for _, opt := range opts {
 		opt(&rt)
 	}
 	rt.cookieSigner = securecookie.New(rt.cookieExchangeSecret, nil)
 
-	m := gin.New()
-	m.Use(gin.Recovery())
-
-	m.GET("/healthz", rt.getHealth)
-
-	m.GET("/", func(c *gin.Context) {
-		c.String(http.StatusOK, "Index page TBD")
-	})
-
 	// In development, these routes will be served by a different nginx
 	// upstream. They are only relevant when building the application into
 	// a single binary that inlines the filesystems.
-	m.StaticFS("/vault", vault.FS)
-	m.GET("/script.js", func(c *gin.Context) {
-		f, err := script.FS.Open("/script.js")
-		if err != nil {
-			c.AbortWithError(
-				http.StatusNotFound,
-				fmt.Errorf("router: unable to find script file: %v", err),
-			)
-			return
+	files := http.NewServeMux()
+	files.Handle("/auditorium/", singlePageAppMiddleware("/auditorium/")(http.FileServer(assets.FS)))
+	files.Handle("/", http.FileServer(assets.FS))
+	static := http.NewServeMux()
+	static.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		switch uri := r.RequestURI; {
+		case uri == "/":
+			w.Write([]byte("Index Page TBD"))
+		default:
+			files.ServeHTTP(w, r)
 		}
-		stat, err := f.Stat()
-		if err != nil {
-			c.AbortWithError(
-				http.StatusInternalServerError,
-				fmt.Errorf("router: error reading size of script file: %v", err),
-			)
-			return
-		}
-		c.DataFromReader(http.StatusOK, stat.Size(), "application/javascript", f, map[string]string{})
 	})
-
-	{
-		a := gin.New()
-		a.StaticFS("/auditorium", auditorium.FS)
-		a.NoRoute(func(c *gin.Context) {
-			c.Status(http.StatusOK)
-			fmt.Println("a", auditorium.FS)
-			f, err := auditorium.FS.Open("/index.html")
-			if err != nil {
-				c.AbortWithError(
-					http.StatusNotFound,
-					fmt.Errorf("router: unable to find index file: %v", err),
-				)
-				return
-			}
-			stat, err := f.Stat()
-			if err != nil {
-				c.AbortWithError(
-					http.StatusInternalServerError,
-					fmt.Errorf("router: error reading size of index file: %v", err),
-				)
-				return
-			}
-			c.DataFromReader(http.StatusOK, stat.Size(), "text/html", f, map[string]string{})
-		})
-		m.Any("/auditorium/*delegateToClientRouter", a.HandleContext)
-	}
 
 	dropOptout := optoutMiddleware(optoutKey)
 	userCookie := userCookieMiddleware(cookieKey, contextKeyCookie)
 	accountAuth := rt.accountUserMiddleware(authKey, contextKeyAuth)
 
-	api := m.Group("/api")
-	api.GET("/opt-out", rt.getOptout)
-	api.POST("/opt-in", rt.postOptin)
-	api.GET("/opt-in", rt.getOptin)
-	api.POST("/opt-out", rt.postOptout)
+	api := gin.New()
+	api.Use(gin.Recovery())
+	{
+		api.GET("/healthz", rt.getHealth)
+		g := api.Group("/api")
+		g.GET("/opt-out", rt.getOptout)
+		g.POST("/opt-in", rt.postOptin)
+		g.GET("/opt-in", rt.getOptin)
+		g.POST("/opt-out", rt.postOptout)
 
-	api.GET("/exchange", rt.getPublicKey)
-	api.POST("/exchange", rt.postUserSecret)
+		g.GET("/exchange", rt.getPublicKey)
+		g.POST("/exchange", rt.postUserSecret)
 
-	api.GET("/accounts/:accountID", accountAuth, rt.getAccount)
+		g.GET("/accounts/:accountID", accountAuth, rt.getAccount)
 
-	api.POST("/deleted/user", userCookie, rt.getDeletedEvents)
-	api.POST("/deleted", rt.getDeletedEvents)
-	api.POST("/purge", userCookie, rt.purgeEvents)
+		g.POST("/deleted/user", userCookie, rt.getDeletedEvents)
+		g.POST("/deleted", rt.getDeletedEvents)
+		g.POST("/purge", userCookie, rt.purgeEvents)
 
-	api.GET("/login", accountAuth, rt.getLogin)
-	api.POST("/login", rt.postLogin)
+		g.GET("/login", accountAuth, rt.getLogin)
+		g.POST("/login", rt.postLogin)
 
-	api.POST("/change-password", accountAuth, rt.postChangePassword)
-	api.POST("/change-email", accountAuth, rt.postChangeEmail)
-	api.POST("/forgot-password", rt.postForgotPassword)
-	api.POST("/reset-password", rt.postResetPassword)
+		g.POST("/change-password", accountAuth, rt.postChangePassword)
+		g.POST("/change-email", accountAuth, rt.postChangeEmail)
+		g.POST("/forgot-password", rt.postForgotPassword)
+		g.POST("/reset-password", rt.postResetPassword)
 
-	api.GET("/events", userCookie, rt.getEvents)
-	api.POST("/events/anonymous", dropOptout, rt.postEvents)
-	api.POST("/events", dropOptout, userCookie, rt.postEvents)
+		g.GET("/events", userCookie, rt.getEvents)
+		g.POST("/events/anonymous", dropOptout, rt.postEvents)
+		g.POST("/events", dropOptout, userCookie, rt.postEvents)
+	}
 
-	m.NoRoute(func(c *gin.Context) {
-		c.String(http.StatusNotFound, "404 - Not found")
+	m := http.NewServeMux()
+	m.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		switch uri := r.RequestURI; {
+		case strings.HasPrefix(uri, "/api/") || strings.HasPrefix(uri, "/healthz"):
+			api.ServeHTTP(w, r)
+		default:
+			static.ServeHTTP(w, r)
+		}
 	})
 	return m
 }
