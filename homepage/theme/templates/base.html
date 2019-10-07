@@ -22,7 +22,7 @@
   {% assets filters="cssmin", output="css/style.min.css", "css/normalize.css", "css/fonts.css", "css/style.css" %}
     <link rel="stylesheet" href="/{{ ASSET_URL }}">
   {% endassets %}
-  {% if OFFEN_ACCOUNT_ID %}
+  {% if OFFEN_ACCOUNT_ID and not page.no_stats %}
     <script async src="/script.js" data-account-id="{{ OFFEN_ACCOUNT_ID }}"></script>
   {% endif %}
 </head>

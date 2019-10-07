@@ -1,22 +1,19 @@
 package router
 
-import (
-	"encoding/json"
-	"net/http"
-)
+import "github.com/gin-gonic/gin"
 
 type errorResponse struct {
 	Error  string `json:"error"`
 	Status int    `json:"status"`
 }
 
-func jsonError(err error, status int) []byte {
-	r := errorResponse{err.Error(), status}
-	b, _ := json.Marshal(r)
-	return b
+func (e *errorResponse) Pipe(c *gin.Context) {
+	c.AbortWithStatusJSON(e.Status, e)
 }
 
-func respondWithJSONError(w http.ResponseWriter, err error, status int) {
-	w.WriteHeader(status)
-	w.Write(jsonError(err, status))
+func newJSONError(err error, status int) *errorResponse {
+	return &errorResponse{
+		Error:  err.Error(),
+		Status: status,
+	}
 }

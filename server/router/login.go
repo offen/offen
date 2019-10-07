@@ -1,14 +1,13 @@
 package router
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
 	"strings"
 
+	"github.com/gin-gonic/gin"
 	"github.com/offen/offen/server/mailer"
-
 	"github.com/offen/offen/server/persistence"
 )
 
@@ -17,44 +16,53 @@ type loginCredentials struct {
 	Password string `json:"password"`
 }
 
-func (rt *router) postLogin(w http.ResponseWriter, r *http.Request) {
+func (rt *router) postLogin(c *gin.Context) {
 	var credentials loginCredentials
-	if err := json.NewDecoder(r.Body).Decode(&credentials); err != nil {
-		respondWithJSONError(w, err, http.StatusBadRequest)
-		return
-	}
-	defer r.Body.Close()
-	result, err := rt.db.Login(credentials.Username, credentials.Password)
-	if err != nil {
-		respondWithJSONError(w, err, http.StatusUnauthorized)
+	if err := c.BindJSON(&credentials); err != nil {
+		jsonErr := newJSONError(
+			fmt.Errorf("router: error decoding request payload: %v", err),
+			http.StatusBadRequest,
+		)
+		c.JSON(jsonErr.Status, jsonErr)
 		return
 	}
 
-	b, err := json.Marshal(result)
+	result, err := rt.db.Login(credentials.Username, credentials.Password)
 	if err != nil {
-		respondWithJSONError(w, err, http.StatusInternalServerError)
+		jsonErr := newJSONError(
+			fmt.Errorf("router: error logging in: %v", err),
+			http.StatusUnauthorized,
+		)
+		c.JSON(jsonErr.Status, jsonErr)
 		return
 	}
 
 	authCookie, authCookieErr := rt.authCookie(result.UserID)
 	if authCookieErr != nil {
-		respondWithJSONError(w, authCookieErr, http.StatusInternalServerError)
+		jsonErr := newJSONError(
+			fmt.Errorf("router: error creating auth cookie: %v", authCookieErr),
+			http.StatusInternalServerError,
+		)
+		c.JSON(jsonErr.Status, jsonErr)
 		return
 	}
-	http.SetCookie(w, authCookie)
-	w.Write(b)
+
+	http.SetCookie(c.Writer, authCookie)
+	c.JSON(http.StatusOK, result)
 }
 
-func (rt *router) getLogin(w http.ResponseWriter, r *http.Request) {
-	user, ok := r.Context().Value(contextKeyAuth).(persistence.LoginResult)
+func (rt *router) getLogin(c *gin.Context) {
+	user, ok := c.Value(contextKeyAuth).(persistence.LoginResult)
 	if !ok {
 		authCookie, _ := rt.authCookie("")
-		http.SetCookie(w, authCookie)
-		respondWithJSONError(w, errors.New("could not authorize request"), http.StatusUnauthorized)
+		http.SetCookie(c.Writer, authCookie)
+		newJSONError(
+			errors.New("could not authorize request"),
+			http.StatusUnauthorized,
+		).Pipe(c)
 		return
 	}
-	b, _ := json.Marshal(map[string]string{"userId": user.UserID})
-	w.Write(b)
+	c.JSON(http.StatusOK, map[string]string{"userId": user.UserID})
 }
 
 type changePasswordRequest struct {
@@ -62,25 +70,33 @@ type changePasswordRequest struct {
 	CurrentPassword string `json:"currentPassword"`
 }
 
-func (rt *router) postChangePassword(w http.ResponseWriter, r *http.Request) {
-	user, ok := r.Context().Value(contextKeyAuth).(persistence.LoginResult)
+func (rt *router) postChangePassword(c *gin.Context) {
+	user, ok := c.Value(contextKeyAuth).(persistence.LoginResult)
 	if !ok {
-		respondWithJSONError(w, errors.New("user object not found on request context"), http.StatusInternalServerError)
+		newJSONError(
+			errors.New("router: user object not found on request context"),
+			http.StatusInternalServerError,
+		).Pipe(c)
 		return
 	}
 	var req changePasswordRequest
-	defer r.Body.Close()
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		respondWithJSONError(w, fmt.Errorf("error decoding request payload: %v", err), http.StatusBadRequest)
+	if err := c.BindJSON(&req); err != nil {
+		newJSONError(
+			fmt.Errorf("router: error decoding request payload: %v", err),
+			http.StatusBadRequest,
+		).Pipe(c)
 		return
 	}
 	if err := rt.db.ChangePassword(user.UserID, req.CurrentPassword, req.ChangedPassword); err != nil {
-		respondWithJSONError(w, fmt.Errorf("error changing password: %v", err), http.StatusInternalServerError)
+		newJSONError(
+			fmt.Errorf("router: error changing password: %v", err),
+			http.StatusInternalServerError,
+		).Pipe(c)
 		return
 	}
 	cookie, _ := rt.authCookie("")
-	http.SetCookie(w, cookie)
-	w.WriteHeader(http.StatusNoContent)
+	http.SetCookie(c.Writer, cookie)
+	c.Status(http.StatusNoContent)
 }
 
 type changeEmailRequest struct {
@@ -88,25 +104,33 @@ type changeEmailRequest struct {
 	Password     string `json:"password"`
 }
 
-func (rt *router) postChangeEmail(w http.ResponseWriter, r *http.Request) {
-	user, ok := r.Context().Value(contextKeyAuth).(persistence.LoginResult)
+func (rt *router) postChangeEmail(c *gin.Context) {
+	user, ok := c.Value(contextKeyAuth).(persistence.LoginResult)
 	if !ok {
-		respondWithJSONError(w, errors.New("user object not found on request context"), http.StatusInternalServerError)
+		newJSONError(
+			errors.New("router: user object not found on request context"),
+			http.StatusInternalServerError,
+		).Pipe(c)
 		return
 	}
 	var req changeEmailRequest
-	defer r.Body.Close()
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		respondWithJSONError(w, fmt.Errorf("error decoding request payload: %v", err), http.StatusBadRequest)
+	if err := c.BindJSON(&req); err != nil {
+		newJSONError(
+			fmt.Errorf("router: error decoding request payload: %v", err),
+			http.StatusBadRequest,
+		).Pipe(c)
 		return
 	}
 	if err := rt.db.ChangeEmail(user.UserID, req.EmailAddress, req.Password); err != nil {
-		respondWithJSONError(w, fmt.Errorf("error changing email address: %v", err), http.StatusInternalServerError)
+		newJSONError(
+			fmt.Errorf("router: error changing email address: %v", err),
+			http.StatusInternalServerError,
+		).Pipe(c)
 		return
 	}
 	cookie, _ := rt.authCookie("")
-	http.SetCookie(w, cookie)
-	w.WriteHeader(http.StatusNoContent)
+	http.SetCookie(c.Writer, cookie)
+	c.Status(http.StatusNoContent)
 }
 
 type forgotPasswordRequest struct {
@@ -119,17 +143,22 @@ type forgotPasswordCredentials struct {
 	EmailAddress string
 }
 
-func (rt *router) postForgotPassword(w http.ResponseWriter, r *http.Request) {
+func (rt *router) postForgotPassword(c *gin.Context) {
+	// this route responds to erroneous requests with 204 status codes on
+	// purpose in order not to leak information about existing accounts
+	// to attackers that try to brute force a successful login
 	var req forgotPasswordRequest
-	defer r.Body.Close()
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		respondWithJSONError(w, fmt.Errorf("error decoding request body: %v", err), http.StatusBadRequest)
+	if err := c.BindJSON(&req); err != nil {
+		newJSONError(
+			fmt.Errorf("router: error decoding request body: %v", err),
+			http.StatusBadRequest,
+		).Pipe(c)
 		return
 	}
 	token, err := rt.db.GenerateOneTimeKey(req.EmailAddress)
 	if err != nil {
 		rt.logError(err, "error generating one time key")
-		w.WriteHeader(http.StatusNoContent)
+		c.Status(http.StatusNoContent)
 		return
 	}
 	signedCredentials, signErr := rt.cookieSigner.MaxAge(24*60*60).Encode("credentials", forgotPasswordCredentials{
@@ -138,21 +167,27 @@ func (rt *router) postForgotPassword(w http.ResponseWriter, r *http.Request) {
 	})
 	if signErr != nil {
 		rt.logError(signErr, "error signing token")
-		w.WriteHeader(http.StatusNoContent)
+		c.Status(http.StatusNoContent)
 		return
 	}
 
 	resetURL := strings.Replace(req.URLTemplate, "{token}", signedCredentials, -1)
 	emailBody, bodyErr := mailer.RenderForgotPasswordMessage(map[string]string{"url": resetURL})
 	if bodyErr != nil {
-		respondWithJSONError(w, fmt.Errorf("error rendering email message: %v", err), http.StatusInternalServerError)
+		newJSONError(
+			fmt.Errorf("router: error rendering email message: %v", err),
+			http.StatusInternalServerError,
+		).Pipe(c)
 		return
 	}
 	if err := rt.mailer.Send("no-reply@offen.dev", req.EmailAddress, "Reset your password", emailBody); err != nil {
-		respondWithJSONError(w, fmt.Errorf("error sending email message: %v", err), http.StatusInternalServerError)
+		newJSONError(
+			fmt.Errorf("error sending email message: %v", err),
+			http.StatusInternalServerError,
+		).Pipe(c)
 		return
 	}
-	w.WriteHeader(http.StatusNoContent)
+	c.Status(http.StatusNoContent)
 }
 
 type resetPasswordRequest struct {
@@ -161,25 +196,33 @@ type resetPasswordRequest struct {
 	Token        string `json:"token"`
 }
 
-func (rt *router) postResetPassword(w http.ResponseWriter, r *http.Request) {
+func (rt *router) postResetPassword(c *gin.Context) {
 	var req resetPasswordRequest
-	defer r.Body.Close()
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		respondWithJSONError(w, fmt.Errorf("error decoding response body: %v", err), http.StatusBadRequest)
+	if err := c.BindJSON(&req); err != nil {
+		newJSONError(
+			fmt.Errorf("router: error decoding response body: %v", err),
+			http.StatusBadRequest,
+		).Pipe(c)
 		return
 	}
 	var credentials forgotPasswordCredentials
 	if err := rt.cookieSigner.Decode("credentials", req.Token, &credentials); err != nil {
-		respondWithJSONError(w, fmt.Errorf("error decoding signed token: %v", err), http.StatusBadRequest)
+		newJSONError(
+			fmt.Errorf("error decoding signed token: %v", err),
+			http.StatusBadRequest,
+		).Pipe(c)
 		return
 	}
 	if credentials.EmailAddress != req.EmailAddress {
-		respondWithJSONError(w, errors.New("given email address did not match token"), http.StatusBadRequest)
+		newJSONError(
+			errors.New("given email address did not match token"),
+			http.StatusBadRequest,
+		).Pipe(c)
 		return
 	}
 
 	if err := rt.db.ResetPassword(req.EmailAddress, req.Password, credentials.Token); err != nil {
 		rt.logError(err, "error resetting password")
 	}
-	w.WriteHeader(http.StatusNoContent)
+	c.Status(http.StatusNoContent)
 }

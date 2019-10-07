@@ -34,6 +34,8 @@ services:
     command: refresh run
     links:
       - server_database
+    ports:
+      - 8081:8080
 
   server_database:
     image: postgres:11.2

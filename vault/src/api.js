@@ -50,7 +50,7 @@ function postEventWith (eventsUrl) {
   return function (accountId, payload, anonymous) {
     var url = new window.URL(eventsUrl)
     if (anonymous) {
-      url.search = new window.URLSearchParams({ anonymous: '1' })
+      url.pathname += '/anonymous'
     }
     return window
       .fetch(url, {
@@ -72,7 +72,7 @@ function getDeletedEventsWith (deletedEventsUrl) {
   return function (eventIds, isUser) {
     var url = new window.URL(deletedEventsUrl)
     if (isUser) {
-      url.search = new window.URLSearchParams({ user: '1' })
+      url.pathname += '/user'
     }
     return window
       .fetch(url, {

@@ -1,22 +1,21 @@
 package router
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
 	"strconv"
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/offen/offen/server/keys"
 )
 
-func serveCookie(cookie *http.Cookie, w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Last-Modified", time.Now().UTC().Format(http.TimeFormat))
-	w.Header().Set("Cache-Control", "no-cache")
-	w.Header().Set("Pragma", "no-cache")
-	http.SetCookie(w, cookie)
-	w.WriteHeader(http.StatusNoContent)
+func serveCookieWithEmptyBody(c *gin.Context) {
+	c.Header("Last-Modified", time.Now().UTC().Format(http.TimeFormat))
+	c.Header("Cache-Control", "no-cache")
+	c.Header("Pragma", "no-cache")
+	c.Status(http.StatusNoContent)
 }
 
 const (
@@ -24,24 +23,26 @@ const (
 	scopeOptout = "optout"
 )
 
-func (rt *router) generateOneTimeAuth(scope string) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
+func (rt *router) generateOneTimeAuth(scope string) gin.HandlerFunc {
+	return func(c *gin.Context) {
 		authentication, err := keys.NewAuthentication(scope, rt.cookieExchangeSecret, time.Second*30)
 		if err != nil {
-			respondWithJSONError(w, fmt.Errorf("error initiating authentication exchange: %v", err), http.StatusInternalServerError)
+			newJSONError(
+				fmt.Errorf("router: error initiating authentication exchange: %v", err),
+				http.StatusInternalServerError,
+			).Pipe(c)
 			return
 		}
-		b, _ := json.Marshal(authentication)
-		w.Write(b)
+		c.JSON(http.StatusOK, authentication)
 	}
 }
 
-func (rt *router) postOptout(w http.ResponseWriter, r *http.Request) {
-	rt.generateOneTimeAuth(scopeOptout)(w, r)
+func (rt *router) postOptout(c *gin.Context) {
+	rt.generateOneTimeAuth(scopeOptout)(c)
 }
 
-func (rt *router) postOptin(w http.ResponseWriter, r *http.Request) {
-	rt.generateOneTimeAuth(scopeOptin)(w, r)
+func (rt *router) postOptin(c *gin.Context) {
+	rt.generateOneTimeAuth(scopeOptin)(c)
 }
 
 func (rt *router) validateOnetimeAuth(scope string, v url.Values) error {
@@ -57,18 +58,26 @@ func (rt *router) validateOnetimeAuth(scope string, v url.Values) error {
 	return requestAuth.Validate(scope, rt.cookieExchangeSecret)
 }
 
-func (rt *router) getOptout(w http.ResponseWriter, r *http.Request) {
-	if err := rt.validateOnetimeAuth(scopeOptout, r.URL.Query()); err != nil {
-		respondWithJSONError(w, fmt.Errorf("credentials not valid: %v", err), http.StatusForbidden)
+func (rt *router) getOptout(c *gin.Context) {
+	if err := rt.validateOnetimeAuth(scopeOptout, c.Request.URL.Query()); err != nil {
+		newJSONError(
+			fmt.Errorf("router: credentials not valid: %v", err),
+			http.StatusForbidden,
+		).Pipe(c)
 		return
 	}
-	serveCookie(rt.optoutCookie(true), w, r)
+	http.SetCookie(c.Writer, rt.optoutCookie(true))
+	serveCookieWithEmptyBody(c)
 }
 
-func (rt *router) getOptin(w http.ResponseWriter, r *http.Request) {
-	if err := rt.validateOnetimeAuth(scopeOptin, r.URL.Query()); err != nil {
-		respondWithJSONError(w, fmt.Errorf("credentials not valid: %v", err), http.StatusForbidden)
+func (rt *router) getOptin(c *gin.Context) {
+	if err := rt.validateOnetimeAuth(scopeOptin, c.Request.URL.Query()); err != nil {
+		newJSONError(
+			fmt.Errorf("router: credentials not valid: %v", err),
+			http.StatusForbidden,
+		).Pipe(c)
 		return
 	}
-	serveCookie(rt.optoutCookie(false), w, r)
+	http.SetCookie(c.Writer, rt.optoutCookie(false))
+	serveCookieWithEmptyBody(c)
 }

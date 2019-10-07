@@ -6,6 +6,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/gin-gonic/gin"
 	"github.com/offen/offen/server/persistence"
 )
 
@@ -23,9 +24,11 @@ func TestRouter_getHealth(t *testing.T) {
 		rt := router{
 			db: &mockHealthChecker{},
 		}
+		m := gin.New()
+		m.GET("/", rt.getHealth)
 		w := httptest.NewRecorder()
 		r := httptest.NewRequest(http.MethodGet, "/", nil)
-		rt.getHealth(w, r)
+		m.ServeHTTP(w, r)
 		if w.Code != http.StatusOK {
 			t.Errorf("Unexpected status code %v", w.Code)
 		}
@@ -36,9 +39,11 @@ func TestRouter_getHealth(t *testing.T) {
 				err: errors.New("did not work"),
 			},
 		}
+		m := gin.New()
+		m.GET("/", rt.getHealth)
 		w := httptest.NewRecorder()
 		r := httptest.NewRequest(http.MethodGet, "/", nil)
-		rt.getHealth(w, r)
+		m.ServeHTTP(w, r)
 		if w.Code != http.StatusBadGateway {
 			t.Errorf("Unexpected status code %v", w.Code)
 		}
