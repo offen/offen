@@ -78,7 +78,7 @@ func TestEvents_Post(t *testing.T) {
 		if err != nil {
 			t.Fatalf("Unexpected error %v", err)
 		}
-
+		req.AddCookie(&http.Cookie{Name: "consent", Value: "allow"})
 		res, err := http.DefaultClient.Do(req)
 		if err != nil {
 			t.Fatalf("Unexpected error %v", err)
