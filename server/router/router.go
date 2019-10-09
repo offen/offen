@@ -19,6 +19,7 @@ type router struct {
 	logger               *logrus.Logger
 	cookieSigner         *securecookie.SecureCookie
 	secureCookie         bool
+	revision             string
 	cookieExchangeSecret []byte
 	retentionPeriod      time.Duration
 }
@@ -96,6 +97,13 @@ func WithDatabase(db persistence.Database) Config {
 	}
 }
 
+// WithRevision sets the current revision
+func WithRevision(rev string) Config {
+	return func(r *router) {
+		r.revision = rev
+	}
+}
+
 // WithLogger sets the logger the router will use
 func WithLogger(l *logrus.Logger) Config {
 	return func(r *router) {
@@ -159,6 +167,7 @@ func New(opts ...Config) http.Handler {
 	app := gin.New()
 	app.Use(gin.Recovery())
 	app.GET("/healthz", rt.getHealth)
+	app.GET("/versionz", rt.getVersion)
 	{
 		api := app.Group("/api")
 		api.GET("/opt-out", rt.getOptout)
@@ -192,7 +201,8 @@ func New(opts ...Config) http.Handler {
 	m.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		switch uri := r.RequestURI; {
 		case strings.HasPrefix(uri, "/api/"),
-			strings.HasPrefix(uri, "/healthz"):
+			strings.HasPrefix(uri, "/healthz"),
+			strings.HasPrefix(uri, "/versionz"):
 			app.ServeHTTP(w, r)
 		default:
 			static.ServeHTTP(w, r)
