@@ -27,12 +27,12 @@ function view (state, emit) {
   var pageTitle
   if (isOperator) {
     accountHeader = html`
-      <h4>You are viewing data as <strong>operator</strong> with account <strong>${state.model.account.name}</strong>.</h4>
+      <h5>You are viewing data as <strong>operator</strong> with account <strong>${state.model.account.name}</strong>.</h5>
     `
     pageTitle = state.model.account.name + ' | ' + state.title
   } else {
     accountHeader = html`
-      <h4>You are viewing data as <strong>user</strong>.</h4>
+      <h5>You are viewing data as <strong>user</strong>.</h5>
       ${state.model.hasOptedOut ? html`<p><strong>You have opted out. Clear your cookies to opt in.</strong></p>` : null}
       ${state.model.allowsCookies ? null : html`<p><strong>Your browser does not allow 3rd party cookies. We respect this setting and collect only very basic data in this case, yet it also means we cannot display any data to you here.</strong></p>`}
     `
@@ -55,7 +55,7 @@ function view (state, emit) {
     if (range.query || Object.keys(foreign).length) {
       url += '?' + new window.URLSearchParams(Object.assign(foreign, range.query))
     }
-    var anchor =  html`<a href="${url}">${range.display}</a>`
+    var anchor = html`<a href="${url}">${range.display}</a>`
     return html`
       <li>
         ${active ? html`<strong>${anchor}</strong>` : anchor}
