@@ -42,7 +42,7 @@ DOCKER_IMAGE_TAG ?= latest
 ROBOTS_FILE ?= robots.txt.staging
 
 build:
-	@docker build --build-arg rev=$(shell git rev-parse --short HEAD) -t offen/server:${DOCKER_IMAGE_TAG} -f build/server/Dockerfile .
+	@docker build --build-arg rev=$(shell git rev-parse --short HEAD) -t offen/server:${DOCKER_IMAGE_TAG} -f build/Dockerfile .
 
 secret:
 	@docker-compose run server make secret
