@@ -131,6 +131,7 @@ func main() {
 				router.WithCookieExchangeSecret(cfg.CookieExchangeSecret()),
 				router.WithRetentionPeriod(cfg.RetentionPeriod()),
 				router.WithMailer(cfg.Mailer()),
+				router.WithRevision(cfg.Revision()),
 			),
 		}
 

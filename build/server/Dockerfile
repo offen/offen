@@ -48,6 +48,10 @@ RUN go mod download
 
 COPY ./server /code/server
 
+ARG rev
+ENV GIT_REVISION=$rev
+RUN echo $GIT_REVISION
+
 RUN go get github.com/rakyll/statik
 COPY --from=script /code/script/dist /code/server/public
 COPY --from=auditorium /code/auditorium/dist /code/server/public/auditorium
@@ -56,10 +60,10 @@ RUN statik -dest assets -src public
 
 ENV CGO_ENABLED 0
 ENV GOOS linux
-RUN make build
+RUN go build -ldflags "-X github.com/offen/offen/server/config/http.Revision=$GIT_REVISION" -o bin/offen cmd/offen/main.go
 
 FROM alpine:3.10
-LABEL maintainer="mail@offen.dev"
+LABEL maintainer="offen <mail@offen.dev>"
 
 RUN apk add -U --no-cache ca-certificates
 COPY --from=server /code/server/bin/offen /

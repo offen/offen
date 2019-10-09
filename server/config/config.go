@@ -30,4 +30,6 @@ type Config interface {
 	AccountUserSalt() []byte
 	// the mailer instance to use
 	Mailer() mailer.Mailer
+	// a revision identifier of the running application
+	Revision() string
 }

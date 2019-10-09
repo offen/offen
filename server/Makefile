@@ -19,10 +19,4 @@ secret:
 test-ci: bootstrap
 	@go test ./... -cover -tags="integration"
 
-clean-build:
-	@rm -rf bin
-
-build: clean-build
-	@go build -o bin/offen cmd/offen/main.go
-
 .PHONY: bootstrap migrate secret
