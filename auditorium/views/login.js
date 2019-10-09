@@ -13,19 +13,29 @@ function view (state, emit) {
   }
   var form = html`
     <form onsubmit=${handleSubmit}>
-      <label class="form-label">
-        <span>Email Address:</span>
-        <input required type="email" name="username" placeholder="E-Mail-Address">
-      </label class="form-label">
-      <label>
-        <span>Password:</span>
-        <input required type="password" name="password" placeholder="Password">
-      </label>
-      <label class="form-label">
-        <input type="submit">
-      </label>
+      <div class="row">
+        <div class="eight columns">
+          <label>
+            Email Address:
+          </label>
+          <input class="u-full-width" required type="email" name="username" placeholder="E-Mail-Address">
+        </div>
+      </div>
+      <div class="row">
+        <div class="eight columns">
+          <label>
+            Password:
+          </label>
+          <input class="u-full-width" required type="password" name="password" placeholder="Password">
+        </div>
+      </div>
+      <div class="row">
+        <div class="eight columns">
+          <input type="submit" class="u-full-width" value="Log In">
+        </div>
+      </div>
+      <a href="./reset-password">Forgot password?</a>
     </form>
-    <a href="./reset-password">Forgot password?</a>
   `
 
   return form

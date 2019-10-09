@@ -27,14 +27,14 @@ function view (state, emit) {
   var pageTitle
   if (isOperator) {
     accountHeader = html`
-      <h3><strong>You are viewing data as</strong> operator <strong>with account</strong> ${state.model.account.name}.</h3>
+      <h4>You are viewing data as <strong>operator</strong> with account <strong>${state.model.account.name}</strong>.</h4>
     `
     pageTitle = state.model.account.name + ' | ' + state.title
   } else {
     accountHeader = html`
-      <h3><strong>You are viewing data as</strong> user.</h3>
-      ${state.model.hasOptedOut ? html`<h3><strong>You have opted out. Clear your cookies to opt in.</strong></h3>` : null}
-      ${state.model.allowsCookies ? null : html`<h3><strong>Your browser does not allow 3rd party cookies. We respect this setting and collect only very basic data in this case, yet it also means we cannot display any data to you here.</strong></h3>`}
+      <h4>You are viewing data as <strong>user</strong>.</h4>
+      ${state.model.hasOptedOut ? html`<p><strong>You have opted out. Clear your cookies to opt in.</strong></p>` : null}
+      ${state.model.allowsCookies ? null : html`<p><strong>Your browser does not allow 3rd party cookies. We respect this setting and collect only very basic data in this case, yet it also means we cannot display any data to you here.</strong></p>`}
     `
     pageTitle = 'user | ' + state.title
   }
@@ -55,14 +55,16 @@ function view (state, emit) {
     if (range.query || Object.keys(foreign).length) {
       url += '?' + new window.URLSearchParams(Object.assign(foreign, range.query))
     }
+    var anchor =  html`<a href="${url}">${range.display}</a>`
     return html`
-      <li class="${active ? 'active' : null}">
-        <a href="${url}">${range.display}</a>
+      <li>
+        ${active ? html`<strong>${anchor}</strong>` : anchor}
       </li>
     `
   })
   var rangeSelector = html`
-    <h4>Show data from the: <ul class="range-selector">${ranges}</ul></h4>
+    <h4>Show data from the:</h4>
+    <ul>${ranges}</ul>
   `
 
   var uniqueEntities = isOperator
@@ -74,10 +76,20 @@ function view (state, emit) {
   var uniqueSessions = state.model.uniqueSessions
   var usersAndSessions = html`
     <div class="row">
-      <h4><strong>${uniqueEntities}</strong> unique ${entityName} </h4>
-      <h4><strong>${uniqueSessions}</strong> unique sessions</h4>
-      <h4><strong>${formatPercentage(state.model.bounceRate)}%</strong> bounce rate</h4>
-      ${isOperator ? html`<h4><strong>${formatPercentage(state.model.loss)}%</strong> plus</h4>` : null}
+      <div class="six columns">
+        <h4><strong>${uniqueEntities}</strong> unique ${entityName} </h4>
+      </div>
+      <div class="six columns">
+        <h4><strong>${uniqueSessions}</strong> unique sessions</h4>
+      </div>
+    </div>
+    <div class="row">
+      <div class="six columns">
+        <h4><strong>${formatPercentage(state.model.bounceRate)}%</strong> bounce rate</h4>
+      </div>
+      <div class="six columns">
+        ${isOperator ? html`<h4><strong>${formatPercentage(state.model.loss)}%</strong> plus</h4>` : null}
+      </div>
     </div>
   `
 
@@ -102,7 +114,7 @@ function view (state, emit) {
 
   var pages = html`
     <h4>Top pages</h4>
-    <table class="table-full-width">
+    <table class="u-full-width">
       <thead>
         <tr>
           <td>URL</td>
@@ -127,7 +139,7 @@ function view (state, emit) {
   var referrers = referrerData.length
     ? html`
       <h4>Top referrers</h4>
-      <table class="table-full-width">
+      <table class="u-full-width">
         <thead>
           <tr>
             <td>Host</td>
@@ -144,13 +156,17 @@ function view (state, emit) {
   var manage = !isOperator && state.model.allowsCookies
     ? html`
       <h4>Manage your data</h4>
-      <div class="button-wrapper btn-fill-space">
-        <button class="btn btn-color-grey" data-role="optout" onclick="${handleOptout}">
-          ${state.model.hasOptedOut ? 'Opt in' : 'Opt out'}
-        </button>
-        <button class="btn btn-color-grey" data-role="purge" onclick="${handlePurge}">
-          Delete my data
-        </button>
+      <div class="row">
+        <div class="six columns">
+          <button class="btn u-full-width" data-role="optout" onclick="${handleOptout}">
+            ${state.model.hasOptedOut ? 'Opt in' : 'Opt out'}
+          </button>
+        </div>
+        <div class="six columns">
+          <button class="btn u-full-width" data-role="purge" onclick="${handlePurge}">
+            Delete my data
+          </button>
+        </div>
       </div>
     `
     : null

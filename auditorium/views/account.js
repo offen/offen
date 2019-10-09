@@ -37,23 +37,37 @@ function view (state, emit) {
   }
 
   var changePasswordForm = html`
-    <h2>Change Password:</h2>
+    <h5>Change Password:</h5>
     <form onsubmit="${handleChangePassword}">
-      <label class="form-label">
-        <span>Current password:</span>
-        <input type="password" name="current">
-      </label>
-      <label class="form-label">
-        <span>New password:</span>
-        <input type="password" name="changed">
-      </label>
-      <label class="form-label">
-        <span>Repeat new password:</span>
-        <input type="password" name="repeat">
-      </label>
-      <label class="form-label">
-        <input type="submit">
-      </label>
+      <div class="row">
+        <div class="eight columns">
+          <label>
+            Current password:
+          </label>
+          <input class="u-full-width" type="password" name="current">
+        </div>
+      </div>
+      <div class="row">
+        <div class="eight columns">
+          <label>
+            New password:
+          </label>
+          <input class="u-full-width" type="password" name="changed">
+        </div>
+      </div>
+      <div class="row">
+        <div class="eight columns">
+          <label>
+            Repeat new password:
+          </label>
+          <input class="u-full-width" type="password" name="repeat">
+        </div>
+      </div>
+      <div class="row">
+        <div class="eight columns">
+          <input class="u-full-width" type="submit" value="Change password">
+        </div>
+      </div>
     </form>
   `
 
@@ -67,24 +81,35 @@ function view (state, emit) {
   }
 
   var changeEmailForm = html`
-    <h2>Change email address:</h2>
+    <h5>Change email address:</h5>
     <form onsubmit="${handleChangeEmail}">
-      <label class="form-label">
-        <span>New email address:</span>
-        <input type="text" name="email-address">
-      </label>
-      <label class="form-label">
-        <span>Your Password:</span>
-        <input type="password" name="password">
-      </label>
-      <label class="form-label">
-        <input type="submit">
-      </label>
+      <div class="row">
+        <div class="eight columns">
+          <label>
+            New email address:
+          </label>
+          <input class="u-full-width" type="text" name="email-address">
+        </div>
+      </div>
+      <div class="row">
+        <div class="eight columns">
+          <label>
+            Your Password:
+          </label>
+          <input class="u-full-width" type="password" name="password">
+        </div>
+      </div>
+      <div class="row">
+        <div class="eight columns">
+          <input class="u-full-width" type="submit" value="Change Email address">
+        </div>
+      </div>
     </form>
   `
 
   return html`
     ${loggedInMessage}
+    <hr>
     ${changePasswordForm}
     ${changeEmailForm}
   `
