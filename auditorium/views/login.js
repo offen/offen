@@ -34,7 +34,7 @@ function view (state, emit) {
           <input type="submit" class="u-full-width" value="Log In">
         </div>
       </div>
-      <a href="./reset-password">Forgot password?</a>
+      <a href="./reset-password/">Forgot password?</a>
     </form>
   `
 

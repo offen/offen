@@ -19,12 +19,12 @@ function store (state, emitter) {
           state.authenticatedUser = response.payload
           if (credentials) {
             state.flash = 'You are now logged in.'
-            emitter.emit(state.events.PUSHSTATE, '/auditorium/account')
+            emitter.emit(state.events.PUSHSTATE, '/auditorium/account/')
           }
           return
         } else if (response.type === 'LOGIN_FAILURE') {
           state.flash = 'Could not log in. Try again.'
-          emitter.emit(state.events.PUSHSTATE, '/auditorium/login')
+          emitter.emit(state.events.PUSHSTATE, '/auditorium/login/')
           return
         }
         throw new Error('Received unknown response type: ' + response.type)
@@ -55,7 +55,7 @@ function store (state, emitter) {
             authenticatedUser: null,
             flash: 'Please log in again, using your new credentials.'
           })
-          emitter.emit(state.events.PUSHSTATE, '/auditorium/login')
+          emitter.emit(state.events.PUSHSTATE, '/auditorium/login/')
           return
         } else if (response.type === 'CHANGE_CREDENTIALS_FAILURE') {
           state.flash = 'Could not change credentials. Try again.'
@@ -122,7 +122,7 @@ function store (state, emitter) {
             authenticatedUser: null,
             flash: 'Please log in again, using your new credentials.'
           })
-          emitter.emit(state.events.PUSHSTATE, '/auditorium/login')
+          emitter.emit(state.events.PUSHSTATE, '/auditorium/login/')
           return
         } else if (response.type === 'RESET_PASSWORD_FAILURE') {
           state.flash = 'Could not handle your request, please try again.'
