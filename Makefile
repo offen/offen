@@ -7,7 +7,7 @@ help:
 	@echo "        Set up and seed databases."
 	@echo "        **IMPORTANT**: this wipes any existing data in your local database."
 	@echo "    build"
-	@echo "        Build the production images."
+	@echo "        Build a local docker image."
 	@echo "    secret"
 	@echo "        Generate a random base64 encoded secret"
 
@@ -38,11 +38,11 @@ update:
 	@docker-compose run auditorium npm install
 	@docker-compose run server go mod download
 
-DOCKER_IMAGE_TAG ?= latest
+DOCKER_IMAGE_TAG ?= local
 ROBOTS_FILE ?= robots.txt.staging
 
 build:
-	@docker build --build-arg rev=$(shell git rev-parse --short HEAD) -t offen/server:${DOCKER_IMAGE_TAG} -f build/Dockerfile .
+	@docker build --build-arg rev=$(shell git rev-parse --short HEAD) -t offen/offen:${DOCKER_IMAGE_TAG} -f build/Dockerfile .
 
 secret:
 	@docker-compose run server make secret

@@ -37,7 +37,7 @@ function view (state, emit) {
   }
 
   var changePasswordForm = html`
-    <h5>Change Password:</h5>
+    <h5>Change password:</h5>
     <form onsubmit="${handleChangePassword}">
       <div class="row">
         <div class="eight columns">

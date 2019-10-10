@@ -155,12 +155,12 @@ jobs:
           keys:
             - v1-{{ .Branch }}
           paths:
-            - /caches/server.tar
+            - /caches/offen.tar
       - run:
           name: Load Docker image layer cache
           command: |
             set +o pipefail
-            docker load -i /caches/server.tar | true
+            docker load -i /caches/offen.tar | true
       - run:
           name: Build application Docker image
           command: |
@@ -174,12 +174,12 @@ jobs:
               export DOCKER_IMAGE_TAG="latest"
               export ROBOTS_FILE="robots.txt.staging"
             fi
-            docker build --build-arg rev=$OFFEN_GIT_REVISION -t offen/server:$DOCKER_IMAGE_TAG -f build/server/Dockerfile .
+            docker build --build-arg rev=$OFFEN_GIT_REVISION -t offen/offen:$DOCKER_IMAGE_TAG -f build/server/Dockerfile .
       - run:
           name: Save Docker image layer cache
           command: |
             mkdir -p /caches
-            docker save -o /caches/server.tar offen/server
+            docker save -o /caches/offen.tar offen/offen
       - save_cache:
           key: v1-{{ .Branch }}-{{ epoch }}
           paths:
@@ -193,7 +193,7 @@ jobs:
               export DOCKER_IMAGE_TAG="latest"
             fi
             echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
-            docker push offen/server:$DOCKER_IMAGE_TAG
+            docker push offen/offen:$DOCKER_IMAGE_TAG
 
 workflows:
   version: 2
