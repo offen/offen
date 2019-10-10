@@ -174,7 +174,7 @@ jobs:
               export DOCKER_IMAGE_TAG="latest"
               export ROBOTS_FILE="robots.txt.staging"
             fi
-            docker build --build-arg rev=$OFFEN_GIT_REVISION -t offen/offen:$DOCKER_IMAGE_TAG -f build/server/Dockerfile .
+            docker build --build-arg rev=$OFFEN_GIT_REVISION -t offen/offen:$DOCKER_IMAGE_TAG -f build/Dockerfile .
       - run:
           name: Save Docker image layer cache
           command: |
