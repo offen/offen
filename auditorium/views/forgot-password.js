@@ -13,13 +13,19 @@ function view (state, emit) {
   }
   var form = html`
     <form onsubmit=${handleSubmit}>
-      <label class="form-label">
-        <span>Email Address:</span>
-        <input required type="email" name="email-address" placeholder="Your email address">
-      </label class="form-label">
-      <label class="form-label">
-        <input type="submit">
-      </label>
+      <div class="row">
+        <div class="eight columns">
+          <label>
+            <span>Email Address:</span>
+          </label>
+          <input class="u-full-width" required type="email" name="email-address" placeholder="Your email address">
+        </div>
+      </div>
+      <div class="row">
+        <div class="eight columns">
+          <input type="submit" value="Send Email">
+        </div>
+      </div>
     </form>
   `
 

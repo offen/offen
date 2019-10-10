@@ -13,15 +13,6 @@ build_preconditions: &build_preconditions
         - master
         - development
 
-deploy_preconditions: &deploy_preconditions
-  requires:
-    - build
-  filters:
-    branches:
-      only:
-        - master
-        - development
-
 jobs:
   server:
     docker:
@@ -164,14 +155,12 @@ jobs:
           keys:
             - v1-{{ .Branch }}
           paths:
-            - /caches/proxy.tar
-            - /caches/server.tar
+            - /caches/offen.tar
       - run:
           name: Load Docker image layer cache
           command: |
             set +o pipefail
-            docker load -i /caches/proxy.tar | true
-            docker load -i /caches/server.tar | true
+            docker load -i /caches/offen.tar | true
       - run:
           name: Build application Docker image
           command: |
@@ -185,18 +174,15 @@ jobs:
               export DOCKER_IMAGE_TAG="latest"
               export ROBOTS_FILE="robots.txt.staging"
             fi
-            docker build --build-arg rev=$OFFEN_GIT_REVISION -t offen/server:$DOCKER_IMAGE_TAG -f build/server/Dockerfile .
-            docker build --build-arg siteurl=$SITEURL --build-arg robots=$ROBOTS_FILE -t offen/proxy:$DOCKER_IMAGE_TAG -f build/proxy/Dockerfile .
+            docker build --build-arg rev=$OFFEN_GIT_REVISION -t offen/offen:$DOCKER_IMAGE_TAG -f build/server/Dockerfile .
       - run:
           name: Save Docker image layer cache
           command: |
             mkdir -p /caches
-            docker save -o /caches/proxy.tar offen/proxy
-            docker save -o /caches/server.tar offen/server
+            docker save -o /caches/offen.tar offen/offen
       - save_cache:
           key: v1-{{ .Branch }}-{{ epoch }}
           paths:
-            - /caches/proxy.tar
             - /caches/server.tar
       - deploy:
           name: Push application Docker image
@@ -207,44 +193,11 @@ jobs:
               export DOCKER_IMAGE_TAG="latest"
             fi
             echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
-            docker push offen/server:$DOCKER_IMAGE_TAG
-            docker push offen/proxy:$DOCKER_IMAGE_TAG
-
-  deploy:
-    working_directory: ~/offen
-    docker:
-      - image: circleci/golang:1.12
-    steps:
-      - checkout
-      - run:
-          name: Define target environment
-          command: |
-            if [ "${CIRCLE_BRANCH}" == "master" ]; then
-              echo 'export TARGET_ENVIRONMENT="production"' >> $BASH_ENV
-            else
-              echo 'export TARGET_ENVIRONMENT="staging"' >> $BASH_ENV
-            fi
-      - run:
-          name: Install deployment dependencies
-          command: |
-            sudo apt-get update && sudo apt-get install -qq -y python-pip libpython-dev
-            curl -O https://bootstrap.pypa.io/get-pip.py && sudo python get-pip.py
-            sudo pip install -q awscli --upgrade
-            sudo pip install awsebcli --upgrade
-      - run:
-          name: Run database migrations
-          working_directory: ~/offen/server
-          command: |
-            go run cmd/offen/main.go migrate -conn $(aws secretsmanager get-secret-value --secret-id $TARGET_ENVIRONMENT/postgresConnectionString | jq -r '.SecretString')
-      - run:
-          name: Deploy
-          command: |
-            cp Dockerrun.aws.json.$TARGET_ENVIRONMENT Dockerrun.aws.json
-            eb deploy
+            docker push offen/offen:$DOCKER_IMAGE_TAG
 
 workflows:
   version: 2
-  test_build_deploy:
+  test_build:
     jobs:
       - server
       - vault
@@ -253,5 +206,3 @@ workflows:
       - packages
       - build:
           <<: *build_preconditions
-      - deploy:
-          <<: *deploy_preconditions

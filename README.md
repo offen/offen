@@ -8,10 +8,6 @@ This repository contains all source code needed to build and run __offen__, both
 
 ---
 
-Development of __offen__ has just started, so instructions are rare and things will stay highly volatile for quite some while.
-
-Guidelines for running and developing the Software will be added when it makes sense to do so. If you have questions in the meantime, feel free to open an issue.
-
 ### Developing the application
 
 The development setup requires `docker` and `docker-compose` to be installed.

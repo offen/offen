@@ -17,22 +17,36 @@ function view (state, emit) {
   }
   var form = html`
     <form onsubmit=${handleSubmit}>
-      <label class="form-label">
-        <span>Email address:</span>
-        <input required type="email" name="email-address" placeholder="Your email address">
-      </label class="form-label">
-      <label class="form-label">
-        <span>New password:</span>
-        <input required type="password" name="password" placeholder="Your new password">
-      </label class="form-label">
-      <label class="form-label">
-        <span>Repeat password:</span>
-        <input required type="password" name="repeat-password" placeholder="Repeat password">
-      </label class="form-label">
+      <div class="row">
+        <div class="eight columns">
+          <label>
+            Email address:
+          </label>
+          <input class="u-full-width" required type="email" name="email-address" placeholder="Your email address">
+        </div>
+      </div>
+      <div class="row">
+        <div class="eight columns">
+          <label>
+            New password:
+          </label>
+          <input class="u-full-width" required type="password" name="password" placeholder="Your new password">
+        </div>
+      </div>
+      <div class="row">
+        <div class="eight columns">
+          <label>
+            Repeat password:
+          </label>
+          <input class="u-full-width" required type="password" name="repeat-password" placeholder="Repeat password">
+        </div>
+      </div>
+      <div class="row">
+        <div class="eight columns">
+          <input class="u-full-width" type="submit" value="Reset password">
+        </div>
+      </div>
       <input type="hidden" name="token" value=${state.params.token}>
-      <label class="form-label">
-        <input type="submit">
-      </label>
     </form>
   `
 
