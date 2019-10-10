@@ -37,7 +37,3 @@ Run the tests for all subapplicatons using
 ```sh
 $ make test
 ```
-
-### License
-
-MIT © [offen](https://www.offen.dev)
