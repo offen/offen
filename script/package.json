@@ -35,6 +35,9 @@
     ]
   },
   "standard": {
+    "ignore": [
+      "dist/*.*"
+    ],
     "env": [
       "mocha"
     ]
