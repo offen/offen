@@ -48,7 +48,7 @@ function view (state, emit) {
     { display: 'last 12 weeks', query: { range: '12', resolution: 'weeks' } },
     { display: 'last 6 months', query: { range: '6', resolution: 'months' } }
   ].map(function (range) {
-    var url = state.href || '/'
+    var url = (state.href || '') + '/'
     var current = _.pick(state.query, ['range', 'resolution'])
     var active = _.isEqual(current, range.query || {})
     var foreign = _.omit(state.query, ['range', 'resolution'])

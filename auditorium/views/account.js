@@ -11,7 +11,7 @@ function view (state, emit) {
     .map(function (account) {
       return html`
         <li>
-          <a href="./account/${account.accountId}">${account.accountName}</a>
+          <a href="./account/${account.accountId}/">${account.accountName}</a>
         </li>
       `
     })
