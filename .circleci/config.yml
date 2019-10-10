@@ -182,7 +182,7 @@ jobs:
             docker cp builder:/offen .
             docker rm -f builder
             mkdir -p /tmp/artifacts
-            tar -czvf /tmp/artifacts/offen-$DOCKER_IMAGE_TAG.tar.gz ./offen
+            tar -czvf /tmp/artifacts/offen-$DOCKER_IMAGE_TAG.tar.gz offen
       - run:
           name: Save Docker image layer cache
           command: |
