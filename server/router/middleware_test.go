@@ -7,21 +7,24 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/gin-gonic/gin"
 	"github.com/gorilla/securecookie"
 	"github.com/offen/offen/server/persistence"
 )
 
 func TestOptoutMiddleware(t *testing.T) {
-	wrapped := optoutMiddleware("optout")(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("hey there"))
-	}))
-	t.Run("with header", func(t *testing.T) {
+	m := gin.New()
+	m.GET("/", optoutMiddleware("optout"), func(c *gin.Context) {
+		c.String(http.StatusOK, "hey there")
+	})
+	t.Run("with cookie", func(t *testing.T) {
 		w := httptest.NewRecorder()
 		r := httptest.NewRequest(http.MethodGet, "/", nil)
 		r.AddCookie(&http.Cookie{
-			Name: "optout",
+			Name:  "optout",
+			Value: "1",
 		})
-		wrapped.ServeHTTP(w, r)
+		m.ServeHTTP(w, r)
 
 		if w.Code != http.StatusNoContent {
 			t.Errorf("Unexpected status code %d", w.Code)
@@ -31,10 +34,10 @@ func TestOptoutMiddleware(t *testing.T) {
 			t.Errorf("Unexpected response body %s", w.Body.String())
 		}
 	})
-	t.Run("without header", func(t *testing.T) {
+	t.Run("no cookie", func(t *testing.T) {
 		w := httptest.NewRecorder()
 		r := httptest.NewRequest(http.MethodGet, "/", nil)
-		wrapped.ServeHTTP(w, r)
+		m.ServeHTTP(w, r)
 
 		if w.Code != http.StatusOK {
 			t.Errorf("Unexpected status code %d", w.Code)
@@ -47,14 +50,15 @@ func TestOptoutMiddleware(t *testing.T) {
 }
 
 func TestUserCookieMiddleware(t *testing.T) {
-	wrapped := userCookieMiddleware("user", 1)(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		value := r.Context().Value(1)
-		fmt.Fprintf(w, "value is %v", value)
-	}))
+	m := gin.New()
+	m.GET("/", userCookieMiddleware("user", "1"), func(c *gin.Context) {
+		value := c.Value("1")
+		c.String(http.StatusOK, fmt.Sprintf("value is %v", value))
+	})
 	t.Run("no cookie", func(t *testing.T) {
 		w := httptest.NewRecorder()
 		r := httptest.NewRequest(http.MethodGet, "/", nil)
-		wrapped.ServeHTTP(w, r)
+		m.ServeHTTP(w, r)
 		if w.Code != http.StatusBadRequest {
 			t.Errorf("Unexpected status code %v", w.Code)
 		}
@@ -66,7 +70,7 @@ func TestUserCookieMiddleware(t *testing.T) {
 	t.Run("no value", func(t *testing.T) {
 		w := httptest.NewRecorder()
 		r := httptest.NewRequest(http.MethodGet, "/", nil)
-		wrapped.ServeHTTP(w, r)
+		m.ServeHTTP(w, r)
 		r.AddCookie(&http.Cookie{
 			Name:  "user",
 			Value: "",
@@ -86,7 +90,7 @@ func TestUserCookieMiddleware(t *testing.T) {
 			Name:  "user",
 			Value: "token",
 		})
-		wrapped.ServeHTTP(w, r)
+		m.ServeHTTP(w, r)
 		if w.Code != http.StatusOK {
 			t.Errorf("Unexpected status code %v", w.Code)
 		}
@@ -115,15 +119,17 @@ func TestAccountUserMiddleware(t *testing.T) {
 		cookieSigner: cookieSigner,
 		db:           &mockUserLookupDatabase{},
 	}
-	wrapped := rt.accountUserMiddleware("auth", 1)(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		user, _ := r.Context().Value(2).(persistence.LoginResult)
-		fmt.Fprintf(w, "user id is %v", user.UserID)
-	}))
+
+	m := gin.New()
+	m.GET("/", rt.accountUserMiddleware("auth", "1"), func(c *gin.Context) {
+		user, _ := c.Value("2").(persistence.LoginResult)
+		c.String(http.StatusOK, fmt.Sprintf("user id is %v", user.UserID))
+	})
 
 	t.Run("no cookie", func(t *testing.T) {
 		w := httptest.NewRecorder()
 		r := httptest.NewRequest(http.MethodGet, "/", nil)
-		wrapped.ServeHTTP(w, r)
+		m.ServeHTTP(w, r)
 		if w.Code != http.StatusUnauthorized {
 			t.Errorf("Unexpected status code %v", w.Code)
 		}
@@ -136,7 +142,7 @@ func TestAccountUserMiddleware(t *testing.T) {
 			Name:  "auth",
 			Value: "somethingsomething",
 		})
-		wrapped.ServeHTTP(w, r)
+		m.ServeHTTP(w, r)
 		if w.Code != http.StatusUnauthorized {
 			t.Errorf("Unexpected status code %v", w.Code)
 		}
@@ -150,7 +156,7 @@ func TestAccountUserMiddleware(t *testing.T) {
 			Name:  "auth",
 			Value: cookieValue,
 		})
-		wrapped.ServeHTTP(w, r)
+		m.ServeHTTP(w, r)
 		if w.Code != http.StatusNotFound {
 			t.Errorf("Unexpected status code %v", w.Code)
 		}
@@ -164,7 +170,7 @@ func TestAccountUserMiddleware(t *testing.T) {
 			Name:  "auth",
 			Value: cookieValue,
 		})
-		wrapped.ServeHTTP(w, r)
+		m.ServeHTTP(w, r)
 		if w.Code != http.StatusOK {
 			t.Errorf("Unexpected status code %v", w.Code)
 		}

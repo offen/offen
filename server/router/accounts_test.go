@@ -1,13 +1,13 @@
 package router
 
 import (
-	"context"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
 
-	"github.com/gorilla/mux"
+	"github.com/gin-gonic/gin"
 	"github.com/gorilla/securecookie"
 	"github.com/offen/offen/server/persistence"
 )
@@ -46,24 +46,26 @@ func TestRouter_GetAccount(t *testing.T) {
 			auth, _ := cookieSigner.Encode("auth", test.accountID)
 			rt := router{db: test.database, cookieSigner: cookieSigner}
 			w := httptest.NewRecorder()
-			r := httptest.NewRequest(http.MethodGet, "/", nil)
-			r = r.WithContext(
-				context.WithValue(
-					context.Background(),
+			r := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/%s", test.accountID), nil)
+			m := gin.New()
+			m.GET("/:accountID", func(c *gin.Context) {
+				c.Set(
+
 					contextKeyAuth,
 					persistence.LoginResult{
 						Accounts: []persistence.LoginAccountResult{
 							{AccountID: "account-a"},
 						},
 					},
-				),
-			)
-			r = mux.SetURLVars(r, map[string]string{"accountID": test.accountID})
+				)
+				c.Next()
+
+			}, rt.getAccount)
 			r.AddCookie(&http.Cookie{
 				Value: auth,
 				Name:  "auth",
 			})
-			rt.getAccount(w, r)
+			m.ServeHTTP(w, r)
 			if w.Code != test.expectedStatusCode {
 				t.Errorf("Unexpected status code %v", w.Code)
 			}

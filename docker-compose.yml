@@ -8,7 +8,6 @@ services:
     ports:
       - 8080:80
     depends_on:
-      - homepage
       - server
       - auditorium
       - vault
@@ -34,6 +33,8 @@ services:
     command: refresh run
     links:
       - server_database
+    ports:
+      - 8081:8080
 
   server_database:
     image: postgres:11.2
@@ -70,21 +71,8 @@ services:
       - auditoriumdeps:/offen/auditorium/node_modules
     command: npm start -- --port 9955
 
-  homepage:
-    build:
-      context: '.'
-      dockerfile: ./Dockerfile.python
-    working_dir: /offen/homepage
-    volumes:
-      - .:/offen
-      - homepagedeps:/root/.local
-    command: make devserver
-    environment:
-      DEBUG: 1
-
 volumes:
   serverdeps:
   scriptdeps:
   auditoriumdeps:
   vaultdeps:
-  homepagedeps:

@@ -8,10 +8,22 @@ function withLayout () {
       var flash = state.flash
       state.flash = null
       return html`
-        <div class="section-auditorium">
-          <h1><strong>offen</strong> auditorium</h1>
-          ${flash ? html`<p class="flash-message">${flash}</p>` : null}
-          ${originalView(state, emit)}
+        <div class="container">
+          <div class="row">
+            <div class="twelve columns">
+              <h1><strong>offen</strong> auditorium</h1>
+            </div>
+          </div>
+          <div class="row">
+            <div class="twelve columns">
+              ${flash ? html`<p class="flash-message">${flash}</p>` : null}
+            </div>
+          </div>
+          <div class="row">
+            <div class="twelve columns">
+              ${originalView(state, emit)}
+            </div>
+          </div>
         </div>
       `
     }

@@ -24,6 +24,15 @@ type httpConfig struct {
 	retentionPeriod      time.Duration
 }
 
+// Revision will be set by ldflags on build time
+var Revision string
+
+func (h *httpConfig) Revision() string {
+	if Revision == "" {
+		return "not set"
+	}
+	return Revision
+}
 func (h *httpConfig) Port() int                { return h.port }
 func (h *httpConfig) ConnectionString() string { return h.connectionString }
 func (h *httpConfig) LogLevel() logrus.Level   { return logrus.InfoLevel }

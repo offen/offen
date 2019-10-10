@@ -1,31 +1,31 @@
 package router
 
 import (
-	"encoding/json"
+	"fmt"
 	"net/http"
 
+	"github.com/gin-gonic/gin"
 	"github.com/gofrs/uuid"
 	"github.com/offen/offen/server/persistence"
 )
 
-func (rt *router) getPublicKey(w http.ResponseWriter, r *http.Request) {
-	account, err := rt.db.GetAccount(r.URL.Query().Get("accountId"), false, "")
+func (rt *router) getPublicKey(c *gin.Context) {
+	account, err := rt.db.GetAccount(c.Query("accountId"), false, "")
 	if err != nil {
 		if _, ok := err.(persistence.ErrUnknownAccount); ok {
-			respondWithJSONError(w, err, http.StatusBadRequest)
+			newJSONError(
+				fmt.Errorf("router: unknown account: %v", err),
+				http.StatusBadRequest,
+			).Pipe(c)
 			return
 		}
-		rt.logError(err, "error looking up account")
-		respondWithJSONError(w, err, http.StatusInternalServerError)
+		newJSONError(
+			fmt.Errorf("router: error looking up account: %v", err),
+			http.StatusInternalServerError,
+		).Pipe(c)
 		return
 	}
-	b, err := json.Marshal(account)
-	if err != nil {
-		rt.logError(err, "error marshaling account to JSON")
-		respondWithJSONError(w, err, http.StatusInternalServerError)
-		return
-	}
-	w.Write(b)
+	c.JSON(http.StatusOK, account)
 }
 
 type userSecretPayload struct {
@@ -33,33 +33,41 @@ type userSecretPayload struct {
 	AccountID           string `json:"accountId"`
 }
 
-func (rt *router) postUserSecret(w http.ResponseWriter, r *http.Request) {
+func (rt *router) postUserSecret(c *gin.Context) {
 	var userID string
 
-	c, err := r.Cookie(cookieKey)
+	ck, err := c.Request.Cookie(cookieKey)
 	if err == nil {
-		userID = c.Value
+		userID = ck.Value
 	} else {
 		newID, newIDErr := uuid.NewV4()
 		if newIDErr != nil {
-			respondWithJSONError(w, newIDErr, http.StatusInternalServerError)
+			newJSONError(
+				fmt.Errorf("router: error generating new user id: %v", newIDErr),
+				http.StatusInternalServerError,
+			).Pipe(c)
 			return
 		}
 		userID = newID.String()
 	}
 
 	payload := userSecretPayload{}
-	defer r.Body.Close()
-	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
-		respondWithJSONError(w, err, http.StatusBadRequest)
+	if err := c.BindJSON(&payload); err != nil {
+		newJSONError(
+			fmt.Errorf("router: error decoding response body: %v", err),
+			http.StatusBadRequest,
+		).Pipe(c)
 		return
 	}
 
 	if err := rt.db.AssociateUserSecret(payload.AccountID, userID, payload.EncryptedUserSecret); err != nil {
-		respondWithJSONError(w, err, http.StatusBadRequest)
+		newJSONError(
+			fmt.Errorf("router: error associating user secret: %v", err),
+			http.StatusBadRequest,
+		).Pipe(c)
 		return
 	}
 
-	http.SetCookie(w, rt.userCookie(userID))
-	w.WriteHeader(http.StatusNoContent)
+	http.SetCookie(c.Writer, rt.userCookie(userID))
+	c.Status(http.StatusNoContent)
 }

@@ -1,13 +1,13 @@
 package router
 
 import (
-	"errors"
 	"net/http"
+	"strings"
 	"time"
 
-	"github.com/gorilla/mux"
+	"github.com/gin-gonic/gin"
 	"github.com/gorilla/securecookie"
-	"github.com/m90/go-thunk"
+	"github.com/offen/offen/server/assets"
 	"github.com/offen/offen/server/mailer"
 	"github.com/offen/offen/server/persistence"
 	"github.com/sirupsen/logrus"
@@ -19,6 +19,7 @@ type router struct {
 	logger               *logrus.Logger
 	cookieSigner         *securecookie.SecureCookie
 	secureCookie         bool
+	revision             string
 	cookieExchangeSecret []byte
 	retentionPeriod      time.Duration
 }
@@ -29,14 +30,12 @@ func (rt *router) logError(err error, message string) {
 	}
 }
 
-type contextKey int
-
 const (
-	cookieKey                   = "user"
-	optoutKey                   = "optout"
-	authKey                     = "auth"
-	contextKeyCookie contextKey = iota
-	contextKeyAuth
+	cookieKey        = "user"
+	optoutKey        = "optout"
+	authKey          = "auth"
+	contextKeyCookie = "contextKeyCookie"
+	contextKeyAuth   = "contextKeyAuth"
 )
 
 func (rt *router) userCookie(userID string) *http.Cookie {
@@ -98,6 +97,13 @@ func WithDatabase(db persistence.Database) Config {
 	}
 }
 
+// WithRevision sets the current revision
+func WithRevision(rev string) Config {
+	return func(r *router) {
+		r.revision = rev
+	}
+}
+
 // WithLogger sets the logger the router will use
 func WithLogger(l *logrus.Logger) Config {
 	return func(r *router) {
@@ -144,76 +150,63 @@ func New(opts ...Config) http.Handler {
 	for _, opt := range opts {
 		opt(&rt)
 	}
-
 	rt.cookieSigner = securecookie.New(rt.cookieExchangeSecret, nil)
-	m := mux.NewRouter()
+
+	// In development, these routes will be served by a different nginx
+	// upstream. They are only relevant when building the application into
+	// a single binary that inlines the filesystems.
+	static := http.NewServeMux()
+	fileServer := http.FileServer(assets.FS)
+	static.Handle("/auditorium/", singlePageAppMiddleware("/auditorium/")(fileServer))
+	static.Handle("/", fileServer)
 
 	dropOptout := optoutMiddleware(optoutKey)
-	recovery := thunk.HandleSafelyWith(func(err error) {
-		if rt.logger != nil {
-			rt.logger.WithError(err).Error("Internal server error")
-		}
-	})
 	userCookie := userCookieMiddleware(cookieKey, contextKeyCookie)
 	accountAuth := rt.accountUserMiddleware(authKey, contextKeyAuth)
 
-	m.Use(recovery)
+	app := gin.New()
+	app.Use(gin.Recovery())
+	app.GET("/healthz", rt.getHealth)
+	app.GET("/versionz", rt.getVersion)
+	{
+		api := app.Group("/api")
+		api.GET("/opt-out", rt.getOptout)
+		api.POST("/opt-in", rt.postOptin)
+		api.GET("/opt-in", rt.getOptin)
+		api.POST("/opt-out", rt.postOptout)
 
-	optout := m.PathPrefix("/opt-out").Subrouter()
-	optout.HandleFunc("", rt.postOptout).Methods(http.MethodPost)
-	optout.HandleFunc("", rt.getOptout).Methods(http.MethodGet)
+		api.GET("/exchange", rt.getPublicKey)
+		api.POST("/exchange", rt.postUserSecret)
 
-	optin := m.PathPrefix("/opt-in").Subrouter()
-	optin.HandleFunc("", rt.postOptin).Methods(http.MethodPost)
-	optin.HandleFunc("", rt.getOptin).Methods(http.MethodGet)
+		api.GET("/accounts/:accountID", accountAuth, rt.getAccount)
 
-	exchange := m.PathPrefix("/exchange").Subrouter()
-	exchange.HandleFunc("", rt.getPublicKey).Methods(http.MethodGet)
-	exchange.HandleFunc("", rt.postUserSecret).Methods(http.MethodPost)
+		api.POST("/deleted/user", userCookie, rt.getDeletedEvents)
+		api.POST("/deleted", rt.getDeletedEvents)
+		api.POST("/purge", userCookie, rt.purgeEvents)
 
-	accounts := m.PathPrefix("/accounts/{accountID}").Subrouter()
-	accounts.Use(accountAuth)
-	accounts.Handle("", http.HandlerFunc(rt.getAccount)).Methods(http.MethodGet)
+		api.GET("/login", accountAuth, rt.getLogin)
+		api.POST("/login", rt.postLogin)
 
-	deleted := m.PathPrefix("/deleted").Subrouter()
-	deletedEventsForUser := userCookie(http.HandlerFunc(rt.getDeletedEvents))
-	deleted.Handle("", deletedEventsForUser).Methods(http.MethodPost).Queries("user", "1")
-	deleted.HandleFunc("", rt.getDeletedEvents).Methods(http.MethodPost)
+		api.POST("/change-password", accountAuth, rt.postChangePassword)
+		api.POST("/change-email", accountAuth, rt.postChangeEmail)
+		api.POST("/forgot-password", rt.postForgotPassword)
+		api.POST("/reset-password", rt.postResetPassword)
 
-	login := m.PathPrefix("/login").Subrouter()
-	login.Handle("", accountAuth(http.HandlerFunc(rt.getLogin))).Methods(http.MethodGet)
-	login.HandleFunc("", rt.postLogin).Methods(http.MethodPost)
+		api.GET("/events", userCookie, rt.getEvents)
+		api.POST("/events/anonymous", dropOptout, rt.postEvents)
+		api.POST("/events", dropOptout, userCookie, rt.postEvents)
+	}
 
-	changePassword := m.PathPrefix("/change-password").Subrouter()
-	changePassword.Use(accountAuth)
-	changePassword.HandleFunc("", rt.postChangePassword).Methods(http.MethodPost)
-
-	forgotPassword := m.PathPrefix("/forgot-password").Subrouter()
-	forgotPassword.HandleFunc("", rt.postForgotPassword).Methods(http.MethodPost)
-
-	resetPassword := m.PathPrefix("/reset-password").Subrouter()
-	resetPassword.HandleFunc("", rt.postResetPassword).Methods(http.MethodPost)
-
-	changeEmail := m.PathPrefix("/change-email").Subrouter()
-	changeEmail.Use(accountAuth)
-	changeEmail.HandleFunc("", rt.postChangeEmail).Methods(http.MethodPost)
-
-	purge := m.PathPrefix("/purge").Subrouter()
-	purge.Use(userCookie)
-	purge.HandleFunc("", rt.purgeEvents).Methods(http.MethodPost)
-
-	events := m.PathPrefix("/events").Subrouter()
-	events.Handle("", userCookie(http.HandlerFunc(rt.getEvents))).Methods(http.MethodGet)
-	receiveEvents := dropOptout(http.HandlerFunc(rt.postEvents))
-	events.Handle("", receiveEvents).Methods(http.MethodPost).Queries("anonymous", "1")
-	events.Handle("", userCookie(receiveEvents)).Methods(http.MethodPost)
-
-	health := m.PathPrefix("/healthz").Subrouter()
-	health.HandleFunc("", rt.getHealth).Methods(http.MethodGet)
-
-	m.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		respondWithJSONError(w, errors.New("Not found"), http.StatusNotFound)
+	m := http.NewServeMux()
+	m.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		switch uri := r.RequestURI; {
+		case strings.HasPrefix(uri, "/api/"),
+			strings.HasPrefix(uri, "/healthz"),
+			strings.HasPrefix(uri, "/versionz"):
+			app.ServeHTTP(w, r)
+		default:
+			static.ServeHTTP(w, r)
+		}
 	})
-
 	return m
 }

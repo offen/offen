@@ -9,6 +9,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/gin-gonic/gin"
 	"github.com/offen/offen/server/persistence"
 )
 
@@ -60,9 +61,11 @@ func TestRouter_GetPublicKey(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			rt := router{db: test.db}
+			m := gin.New()
+			m.GET("/", rt.getPublicKey)
 			w := httptest.NewRecorder()
 			r := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/?%s", test.queryString), nil)
-			rt.getPublicKey(w, r)
+			m.ServeHTTP(w, r)
 			if w.Code != test.expectedStatusCode {
 				t.Errorf("Expected status code %d, got %d", test.expectedStatusCode, w.Code)
 			}
@@ -144,10 +147,12 @@ func TestRouter_PostUserSecret(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			rt := router{db: test.db}
+			m := gin.New()
+			m.POST("/", rt.postUserSecret)
 			w := httptest.NewRecorder()
 			r := httptest.NewRequest(http.MethodPost, "/", test.body)
 			r.AddCookie(test.cookie)
-			rt.postUserSecret(w, r)
+			m.ServeHTTP(w, r)
 			if w.Code != test.expectedStatus {
 				t.Errorf("Expected status code %d, got %d", test.expectedStatus, w.Code)
 			}

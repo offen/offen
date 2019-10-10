@@ -5,11 +5,21 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/gin-gonic/gin"
 )
 
-func TestRespondWithJSONError(t *testing.T) {
+func TestJSONError(t *testing.T) {
+	m := gin.New()
+	m.GET("/", func(c *gin.Context) {
+		newJSONError(
+			errors.New("does not work"),
+			http.StatusInternalServerError,
+		).Pipe(c)
+	})
 	w := httptest.NewRecorder()
-	respondWithJSONError(w, errors.New("does not work"), http.StatusInternalServerError)
+	r := httptest.NewRequest(http.MethodGet, "/", nil)
+	m.ServeHTTP(w, r)
 	if w.Code != http.StatusInternalServerError {
 		t.Errorf("Unexpected status code %d", w.Code)
 	}

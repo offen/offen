@@ -7,15 +7,20 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/gin-gonic/gin"
 )
 
 func TestRouter_optout(t *testing.T) {
 	rt := router{
 		cookieExchangeSecret: []byte("top-secret"),
 	}
+	m := gin.New()
+	m.POST("/", rt.postOptout)
+	m.GET("/", rt.getOptout)
 	w := httptest.NewRecorder()
 	r := httptest.NewRequest(http.MethodPost, "/", nil)
-	rt.postOptout(w, r)
+	m.ServeHTTP(w, r)
 
 	cookies := w.Result().Cookies()
 	if len(cookies) != 0 {
@@ -32,7 +37,7 @@ func TestRouter_optout(t *testing.T) {
 	w2 := httptest.NewRecorder()
 	r2 := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/?expires=%d&signature=%s&token=%s", a.Expires, a.Signature, a.Token), nil)
 
-	rt.getOptout(w2, r2)
+	m.ServeHTTP(w2, r2)
 
 	if w2.Code != http.StatusNoContent {
 		t.Fatalf("Unexpected status code %v", w2.Code)

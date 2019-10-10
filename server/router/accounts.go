@@ -1,46 +1,50 @@
 package router
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
 
-	"github.com/gorilla/mux"
+	"github.com/gin-gonic/gin"
 	"github.com/offen/offen/server/persistence"
 )
 
-func (rt *router) getAccount(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	accountID := vars["accountID"]
+func (rt *router) getAccount(c *gin.Context) {
+	accountID := c.Param("accountID")
 
-	user, ok := r.Context().Value(contextKeyAuth).(persistence.LoginResult)
+	user, ok := c.Value("contextKeyAuth").(persistence.LoginResult)
 	if !ok {
-		respondWithJSONError(w, errors.New("could not find user object in request context"), http.StatusInternalServerError)
+		newJSONError(
+			errors.New("could not find user object in request context"),
+			http.StatusNotFound,
+		).Pipe(c)
 		return
 	}
 
 	if ok := user.CanAccessAccount(accountID); !ok {
-		respondWithJSONError(w, fmt.Errorf("user does not have permissions to access account %s", accountID), http.StatusNotFound)
+		newJSONError(
+			fmt.Errorf("user does not have permissions to access account %s", accountID),
+			http.StatusForbidden,
+		).Pipe(c)
 		return
 	}
 
-	result, err := rt.db.GetAccount(accountID, true, r.URL.Query().Get("since"))
+	result, err := rt.db.GetAccount(accountID, true, c.Query("since"))
 	if err != nil {
 		if _, ok := err.(persistence.ErrUnknownAccount); ok {
-			respondWithJSONError(w, fmt.Errorf("account %s not found", accountID), http.StatusNotFound)
+			newJSONError(
+				fmt.Errorf("account %s not found", accountID),
+				http.StatusNotFound,
+			).Pipe(c)
 			return
 		}
-		rt.logError(err, "error looking up account")
-		respondWithJSONError(w, err, http.StatusInternalServerError)
+		newJSONError(
+			fmt.Errorf("router: error looking up account: %v", err),
+			http.StatusInternalServerError,
+		).Pipe(c)
 		return
 	}
-	b, err := json.Marshal(&result)
-	if err != nil {
-		respondWithJSONError(w, err, http.StatusInternalServerError)
-		return
-	}
-	w.Write(b)
+	c.JSON(http.StatusOK, result)
 }
 
 type accountPayload struct {

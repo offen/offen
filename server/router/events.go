@@ -1,12 +1,12 @@
 package router
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
 	"net/url"
 
+	"github.com/gin-gonic/gin"
 	"github.com/offen/offen/server/persistence"
 )
 
@@ -21,37 +21,45 @@ type ackResponse struct {
 
 var errBadRequestContext = errors.New("could not use user id in request context")
 
-func (rt *router) postEvents(w http.ResponseWriter, r *http.Request) {
-	userID, _ := r.Context().Value(contextKeyCookie).(string)
+func (rt *router) postEvents(c *gin.Context) {
+	userID, _ := c.Value(contextKeyCookie).(string)
 	evt := inboundEventPayload{}
-	defer r.Body.Close()
-	if err := json.NewDecoder(r.Body).Decode(&evt); err != nil {
-		respondWithJSONError(w, err, http.StatusBadRequest)
+	if err := c.BindJSON(&evt); err != nil {
+		newJSONError(
+			fmt.Errorf("router: error decoding request payload: %v", err),
+			http.StatusBadRequest,
+		).Pipe(c)
 		return
 	}
 
 	if err := rt.db.Insert(userID, evt.AccountID, evt.Payload); err != nil {
 		if unknownAccountErr, ok := err.(persistence.ErrUnknownAccount); ok {
-			respondWithJSONError(w, unknownAccountErr, http.StatusNotFound)
+			newJSONError(
+				unknownAccountErr,
+				http.StatusNotFound,
+			).Pipe(c)
 			return
 		}
 		if unknownUserErr, ok := err.(persistence.ErrUnknownUser); ok {
-			respondWithJSONError(w, unknownUserErr, http.StatusBadRequest)
+			newJSONError(
+				unknownUserErr,
+				http.StatusBadRequest,
+			).Pipe(c)
 			return
 		}
-		rt.logError(err, "error writing event payload")
-		respondWithJSONError(w, err, http.StatusInternalServerError)
+		newJSONError(
+			fmt.Errorf("router: error persisting event: %v", err),
+			http.StatusInternalServerError,
+		).Pipe(c)
 		return
 	}
-
-	b, _ := json.Marshal(ackResponse{true})
 	// this handler might be called without a cookie / i.e. receiving an
 	// anonymous event, in which case it is important **NOT** to re-issue
 	// the user cookie.
 	if userID != "" {
-		http.SetCookie(w, rt.userCookie(userID))
+		http.SetCookie(c.Writer, rt.userCookie(userID))
 	}
-	w.Write(b)
+	c.JSON(http.StatusCreated, ackResponse{true})
 }
 
 type getQuery struct {
@@ -75,24 +83,26 @@ type getResponse struct {
 	Events map[string][]persistence.EventResult `json:"events"`
 }
 
-func (rt *router) getEvents(w http.ResponseWriter, r *http.Request) {
-	userID, ok := r.Context().Value(contextKeyCookie).(string)
+func (rt *router) getEvents(c *gin.Context) {
+	userID, ok := c.Value(contextKeyCookie).(string)
 	if !ok {
-		respondWithJSONError(
-			w,
+		newJSONError(
 			errBadRequestContext,
 			http.StatusInternalServerError,
-		)
+		).Pipe(c)
 		return
 	}
 	query := getQuery{
-		params: r.URL.Query(),
+		params: c.Request.URL.Query(),
 		userID: userID,
 	}
 
 	result, err := rt.db.Query(&query)
 	if err != nil {
-		respondWithJSONError(w, err, http.StatusInternalServerError)
+		newJSONError(
+			fmt.Errorf("router: error performing event query: %v", err),
+			http.StatusInternalServerError,
+		).Pipe(c)
 		return
 	}
 	// the query result gets wrapped in a top level object before marshalling
@@ -100,43 +110,46 @@ func (rt *router) getEvents(w http.ResponseWriter, r *http.Request) {
 	outbound := getResponse{
 		Events: result,
 	}
-	b, err := json.Marshal(outbound)
-	if err != nil {
-		respondWithJSONError(w, err, http.StatusInternalServerError)
-		return
-	}
-	w.Write(b)
+	c.JSON(http.StatusOK, outbound)
 }
 
 type deletedQuery struct {
 	EventIDs []string `json:"eventIds"`
 }
 
-func (rt *router) getDeletedEvents(w http.ResponseWriter, r *http.Request) {
-	userID, _ := r.Context().Value(contextKeyCookie).(string)
+func (rt *router) getDeletedEvents(c *gin.Context) {
+	userID, _ := c.Value(contextKeyCookie).(string)
 
 	query := deletedQuery{}
-	if err := json.NewDecoder(r.Body).Decode(&query); err != nil {
-		respondWithJSONError(w, err, http.StatusBadRequest)
+	if err := c.BindJSON(&query); err != nil {
+		newJSONError(
+			fmt.Errorf("router: error decoding request payload: %v", err),
+			http.StatusBadRequest,
+		).Pipe(c)
 		return
 	}
 	deleted, err := rt.db.GetDeletedEvents(query.EventIDs, userID)
 	if err != nil {
-		respondWithJSONError(w, err, http.StatusInternalServerError)
+		newJSONError(
+			fmt.Errorf("router: error getting deleted events: %v", err),
+			http.StatusInternalServerError,
+		).Pipe(c)
 		return
 	}
 	out := deletedQuery{
 		EventIDs: deleted,
 	}
-	b, _ := json.Marshal(&out)
-	w.Write(b)
+	c.JSON(http.StatusOK, out)
 }
 
-func (rt *router) purgeEvents(w http.ResponseWriter, r *http.Request) {
-	userID, _ := r.Context().Value(contextKeyCookie).(string)
+func (rt *router) purgeEvents(c *gin.Context) {
+	userID, _ := c.Value(contextKeyCookie).(string)
 	if err := rt.db.Purge(userID); err != nil {
-		respondWithJSONError(w, fmt.Errorf("router: error purging user events: %v", err), http.StatusInternalServerError)
+		newJSONError(
+			fmt.Errorf("router: error purging user events: %v", err),
+			http.StatusInternalServerError,
+		).Pipe(c)
 		return
 	}
-	w.WriteHeader(http.StatusNoContent)
+	c.Status(http.StatusNoContent)
 }
