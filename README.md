@@ -4,7 +4,7 @@
 
 > The offen analytics software
 
-This repository contains all source code needed to build and run __offen__, both on the server as well as on the client. See each of the READMEs in the subdirectories for instructions on how to work on that particular area of the application.
+This repository contains all source code needed to build and run __offen__, both on the server as well as on the client. Also see each of the READMEs in the subdirectories for information on how to work on that particular area of the application.
 
 ---
 
@@ -31,6 +31,12 @@ $ docker-compose up
 ```
 
 which should enable you to access <http://localhost:8080/auditorium/> and use the `auditorium`
+
+Run the tests for all subapplicatons using
+
+```sh
+$ make test
+```
 
 ### License
 

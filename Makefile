@@ -47,4 +47,10 @@ build:
 secret:
 	@docker-compose run server make secret
 
-.PHONY: setup build bootstrap build secret
+test:
+	@docker-compose run script npm test
+	@docker-compose run vault npm test
+	@docker-compose run auditorium npm test
+	@docker-compose run server make test
+
+.PHONY: setup build bootstrap build secret test
