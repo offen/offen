@@ -162,7 +162,7 @@ jobs:
             set +o pipefail
             docker load -i /caches/offen.tar | true
       - run:
-          name: Build application Docker image
+          name: Build application Docker image and binary
           command: |
             export OFFEN_GIT_REVISION=$(git rev-parse --short HEAD)
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
@@ -175,6 +175,13 @@ jobs:
               export ROBOTS_FILE="robots.txt.staging"
             fi
             docker build --build-arg rev=$OFFEN_GIT_REVISION -t offen/offen:$DOCKER_IMAGE_TAG -f build/Dockerfile .
+            # next, extract the single binary from the container so it can
+            # be stored as a build artifact (this needs to be formalized into
+            # versioned releases at some point)
+            docker create -ti --name builder offen/offen:$DOCKER_IMAGE_TAG ash
+            docker cp builder:/offen .
+            docker rm -f builder
+            tar -czvf /tmp/artifacts/offen-$DOCKER_IMAGE_TAG.tar.gz ./offen
       - run:
           name: Save Docker image layer cache
           command: |
@@ -194,6 +201,8 @@ jobs:
             fi
             echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
             docker push offen/offen:$DOCKER_IMAGE_TAG
+      - store_artifacts:
+          path: /tmp/artifacts
 
 workflows:
   version: 2
