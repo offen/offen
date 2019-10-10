@@ -61,7 +61,8 @@ func (h *httpConfig) Mailer() mailer.Mailer {
 }
 
 const (
-	defaultPort = 8080
+	defaultPort      = 8080
+	defaultRetention = "4464h"
 )
 
 // New creates a new configuration for use in the context of AWS Lambda
@@ -83,11 +84,15 @@ func New() (config.Config, error) {
 		cfg.port = asInt
 	}
 
-	retention, retentionErr := time.ParseDuration(os.Getenv("EVENT_RETENTION_PERIOD"))
+	retention := os.Getenv("EVENT_RETENTION_PERIOD")
+	if retention == "" {
+		retention = defaultRetention
+	}
+	retentionPeriod, retentionErr := time.ParseDuration(retention)
 	if retentionErr != nil {
 		return nil, fmt.Errorf("config: error reading retention period: %v", retentionErr)
 	}
-	cfg.retentionPeriod = retention
+	cfg.retentionPeriod = retentionPeriod
 
 	return &cfg, nil
 }
