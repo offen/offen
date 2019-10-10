@@ -43,6 +43,12 @@ func main() {
 			}
 			fmt.Println(value)
 		}
+	case "version":
+		cfg, cfgErr := httpconfig.New()
+		if cfgErr != nil {
+			log.Fatalf("Error creating runtime configuration: %v", cfgErr)
+		}
+		fmt.Println(cfg.Revision())
 	case "bootstrap":
 		var (
 			migration  = bootstrapCmd.Bool("migration", true, "run migrations")
