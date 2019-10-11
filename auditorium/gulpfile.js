@@ -29,7 +29,6 @@ gulp.task('bundle:script', function () {
   return b
     .exclude('plotly.js-basic-dist')
     .plugin('tinyify')
-    .transform('nanohtml')
     .bundle()
     .pipe(source('index.js'))
     .pipe(buffer())
