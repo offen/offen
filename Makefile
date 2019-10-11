@@ -8,6 +8,8 @@ help:
 	@echo "        **IMPORTANT**: this wipes any existing data in your local database."
 	@echo "    build"
 	@echo "        Build a local docker image."
+	@echo "    migrate"
+	@echo "        Run database migrations."
 	@echo "    secret"
 	@echo "        Generate a random base64 encoded secret"
 
@@ -37,6 +39,9 @@ update:
 	@docker-compose run vault npm install
 	@docker-compose run auditorium npm install
 	@docker-compose run server go mod download
+
+migrate:
+	@docker-compose run server make migrate
 
 DOCKER_IMAGE_TAG ?= local
 ROBOTS_FILE ?= robots.txt.staging
