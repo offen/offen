@@ -156,7 +156,7 @@ func New(opts ...Config) http.Handler {
 	// upstream. They are only relevant when building the application into
 	// a single binary that inlines the filesystems.
 	static := http.NewServeMux()
-	fileServer := http.FileServer(assets.FS)
+	fileServer := staticHeaderMiddleware(http.FileServer(assets.FS))
 	static.Handle("/auditorium/", singlePageAppMiddleware("/auditorium/")(fileServer))
 	static.Handle("/", fileServer)
 
