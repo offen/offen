@@ -5,6 +5,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/NYTimes/gziphandler"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/securecookie"
 	"github.com/offen/offen/server/assets"
@@ -156,7 +157,7 @@ func New(opts ...Config) http.Handler {
 	// upstream. They are only relevant when building the application into
 	// a single binary that inlines the filesystems.
 	static := http.NewServeMux()
-	fileServer := http.FileServer(assets.FS)
+	fileServer := gziphandler.GzipHandler(staticHeaderMiddleware(http.FileServer(assets.FS)))
 	static.Handle("/auditorium/", singlePageAppMiddleware("/auditorium/")(fileServer))
 	static.Handle("/", fileServer)
 

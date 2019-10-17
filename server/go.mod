@@ -3,6 +3,7 @@ module github.com/offen/offen/server
 go 1.12
 
 require (
+	github.com/NYTimes/gziphandler v1.1.1
 	github.com/denisenkom/go-mssqldb v0.0.0-20190423183735-731ef375ac02 // indirect
 	github.com/gin-gonic/gin v1.4.0
 	github.com/go-gomail/gomail v0.0.0-20160411212932-81ebce5c23df
