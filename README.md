@@ -37,3 +37,9 @@ Run the tests for all subapplicatons using
 ```sh
 $ make test
 ```
+
+---
+
+[![NLnet Foundation](https://github.com/offen/press-kit/blob/master/external-material/nlnet-logo.svg)](https://nlnet.nl/)
+
+We are happy to work with [NLnet Foundation](https://nlnet.nl/) who complement our activities within their [Next Generation Internet](https://nlnet.nl/NGI/) initiative.

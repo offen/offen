@@ -1,0 +1,457 @@
+/* Typo
+------------------------------------------------------------- */
+body {
+padding: 50px;
+background-color: #fff;
+color: #898989;
+font: 18px/1.5 "Noto Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 18px;
+line-height: 1.5;
+font-weight: 400;
+}
+
+h1,
+h2,
+h3,
+h4 {
+color: #404040;
+font-size: 28px;
+line-height: 1.4;
+font-weight: 400;
+margin: 0 0 40px 0;
+}
+
+h3,
+h4 {
+font-size: 18px;
+margin: 30px 0 20px 0;
+}
+
+.section-auditorium h3 {
+margin: 0 0 10px 0;
+}
+
+h4 {
+color: #898989;
+margin: 30px 0 6px 0;
+}
+
+.section-auditorium h4 {
+margin: 30px 0 20px 0;
+}
+
+
+/* Links
+------------------------------------------------------------- */
+a,
+a:hover,
+a:focus {
+color: #898989;
+text-decoration: none;
+font-weight: 700;
+}
+
+button {
+cursor: pointer;
+font: inherit;
+font-size: inherit;
+font-weight: 700;
+}
+
+h1 a,
+h1 a:hover,
+h1 a:focus {
+color: #f7bf08;
+text-decoration: none;
+font-weight: 400;
+}
+
+small a,
+small a:hover,
+small a:focus {
+color: #898989;
+text-decoration: none;
+font-weight: 700;
+}
+
+sup {
+line-height: 1;
+}
+
+sup a,
+sup a:hover,
+sup a:focus {
+color: #cfcfcf;
+}
+
+ol {
+padding-inline-start: 20px;
+}
+
+ol li p a,
+ol li p a:hover,
+ol li p a:focus {
+color: #cfcfcf;
+}
+
+
+
+
+/* Typo Elements
+------------------------------------------------------------- */
+.logo {
+margin: -20px 0 0 0;
+}
+
+blockquote {
+border-left: 1px solid #e5e5e5;
+margin: 0;
+padding: 0 0 0 20px;
+font-style: italic
+}
+
+hr {
+border-top: 1px solid #d5d5d5;
+height: 0;
+margin: 80px 0 0 0;
+}
+
+.footnote hr {
+border: 0;
+height: 0;
+margin: 0;
+}
+
+blockquote {
+border-left: 1px solid #d5d5d5;
+margin: 40px 0 40px 0;
+}
+
+strong {
+font-weight: 700
+}
+
+strong,
+h1 strong,
+h2 strong,
+h3 strong {
+color: #404040;
+text-decoration: none;
+font-weight: 400;
+}
+
+h1 strong,
+h2 strong,
+h3 strong {
+color: #898989;
+}
+
+tbody,
+h4 strong {
+color: #404040;
+text-decoration: none;
+font-weight: 700;
+}
+
+h4 strong {
+font-size: 36px;
+}
+
+
+/* Buttons
+------------------------------------------------------------- */
+.btn {
+-webkit-border-radius: 0;
+-moz-border-radius: 0;
+border-radius: 0px;
+padding: 6px;
+text-align: center;
+text-decoration: none;
+}
+
+.btn-color-grey,
+.btn-color-grey:visited,
+.btn-color-grey:link {
+background: #fff;
+color: #898989;
+border: solid #898989 5px;
+}
+
+.btn-color-orange,
+.btn-color-orange:visited,
+.btn-color-orange:link {
+background: #fff;
+color: #F7BF08;
+border: solid #F7BF08 5px;
+}
+
+.btn-color-grey:hover,
+.btn-color-grey:active {
+background: #898989;
+color: #fff;
+text-decoration: none;
+}
+
+.btn-color-orange:hover,
+.btn-color-orange:active {
+background: #F7BF08;
+color: #fff;
+text-decoration: none;
+}
+
+.btn {
+margin: 0 0 15px 0;
+}
+
+.button-wrapper {
+display: flex;
+flex-flow: column wrap;
+justify-content: space-around;
+}
+
+.navigation-wrapper {
+margin: 60px 0 0 0;
+}
+
+@media (min-width: 480px) {
+.button-wrapper {
+align-items: center;
+flex-flow: row wrap;
+-ms-flex-flow: row wrap;
+-webkit-flex-flow: row wrap;
+}
+.btn {
+flex-grow: 1;
+}
+.btn {
+margin: 0 15px 15px 0;
+}
+.btn:last-of-type {
+margin: 0 0 15px 0;
+}
+}
+
+
+
+
+/* Custom Underline
+------------------------------------------------------------- */
+em {
+color: #898989;
+background: linear-gradient(transparent 66%, #fde28c 66%);
+font-style: normal;
+}
+
+
+
+
+/* Layout
+------------------------------------------------------------- */
+.wrapper {
+width: 860px;
+margin: 0 auto
+}
+
+header {
+width: 270px;
+float: left;
+position: fixed;
+-webkit-font-smoothing: subpixel-antialiased
+}
+
+section,
+section-auditorium {
+float: right;
+width: 600px;
+padding: 0 0 40px 0;
+}
+
+section > p,
+section-auditorium > p {
+margin: 0 0 20px 0;
+}
+
+section > p:last-child,
+section-auditorium > p:last-child {
+margin: 0 0 60px 0;
+}
+
+.row {
+display: flex;
+justify-content: flex-start;
+}
+
+.row h4 {
+margin-right: 30px;
+}
+
+.row h4:last-child {
+margin-right: 0;
+}
+
+
+
+
+/* Tables
+------------------------------------------------------------- */
+.table-full-width {
+box-sizing: border-box
+}
+
+td {
+padding-right: 30px;
+}
+
+
+
+
+/* Footer
+------------------------------------------------------------- */
+footer {
+width: 270px;
+float: left;
+position: fixed;
+bottom: 100px;
+-webkit-font-smoothing: subpixel-antialiased
+}
+
+.footnote {
+color: #d5d5d5;
+font-size: 14px;
+margin: 20px 0 0 0;
+}
+
+.footnote ol {
+margin-bottom: 0;
+}
+
+.footer-list {
+list-style-type: none;
+padding: 0;
+margin: 0;
+}
+
+.footer-list li {
+display: inline-block;
+font-size: 14px;
+margin-right: 0.14em;
+}
+
+
+
+
+/* Media Queries
+------------------------------------------------------------- */
+@media screen and (max-width: 960px) {
+div.wrapper {
+width: auto;
+margin: 0
+}
+header,
+section,
+section-auditorium,
+footer {
+float: none;
+position: static;
+width: auto
+}
+header {
+padding-right: 320px
+}
+section,
+section-auditorium {
+border: none;
+width: auto;
+padding: 0 0 0 0;
+margin: 40px 0 40px 0;
+}
+section > p:first-child,
+section > p:last-child,
+section-auditorium > p:first-child,
+section-auditorium > p:last-child {
+margin: 0 0 40px 0;
+}
+}
+
+
+
+
+@media screen and (max-width: 480px) {
+body {
+font-size: 14px;
+line-height: 1.3;
+padding: 15px;
+word-wrap: break-word;
+}
+h1,
+h2 {
+font-size: 20px;
+line-height: 1.3;
+margin: 0 0 20px 0;
+}
+h3,
+h4 {
+font-size: 14px;
+line-height: 1.3;
+margin: 30px 0 15px 0;
+}
+h4 strong {
+font-size: 28px;
+}
+header {
+padding: 0
+}
+.logo {
+margin: 0;
+}
+hr {
+margin: 60px 0 0 0;
+}
+blockquote {
+margin: 15px 0 15px 0;
+}
+.row {
+justify-content: space-between;
+}
+.row h4:first-child {
+margin-right: 0;
+}
+.table-full-width {
+width: 100%;
+}
+td {
+padding-right: 0;
+}
+}
+
+
+.form-label {
+display: block;
+}
+
+
+/* Range selector
+------------------------------------------------------------- */
+.range-selector {
+list-style-type: none;
+margin: 0 0 0 0em;
+padding: 0;
+display: inline-block;
+}
+
+.range-selector li {
+display: inline-flex;
+margin-right: 0.5em;
+}
+
+.range-selector a {
+font-weight: 400;
+}
+
+.range-selector li.active a {
+color: #404040;
+}
+
+.section-auditorium {
+min-height: 100vh;
+}
