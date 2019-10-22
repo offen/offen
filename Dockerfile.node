@@ -1,4 +1,4 @@
-FROM node:10
+FROM node:12
 
 RUN apt-get update
 # Install these dependencies for using Headless Chrome inside the Container
