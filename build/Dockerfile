@@ -1,4 +1,4 @@
-FROM node:10 as auditorium
+FROM node:12 as auditorium
 
 COPY ./auditorium/package.json ./auditorium/package-lock.json /code/deps/
 COPY ./packages /code/packages
@@ -12,7 +12,7 @@ RUN cp -a /code/deps/node_modules /code/auditorium/
 ENV NODE_ENV production
 RUN npm run build
 
-FROM node:10 as script
+FROM node:12 as script
 
 COPY ./script/package.json ./script/package-lock.json /code/deps/
 COPY ./packages /code/packages
@@ -26,7 +26,7 @@ RUN cp -a /code/deps/node_modules /code/script/
 ENV NODE_ENV production
 RUN npm run build
 
-FROM node:10 as vault
+FROM node:12 as vault
 
 COPY ./vault/package.json ./vault/package-lock.json /code/deps/
 COPY ./packages /code/packages

@@ -57,7 +57,7 @@ jobs:
 
   vault:
     docker:
-      - image: circleci/node:10-browsers
+      - image: circleci/node:12-browsers
     working_directory: ~/offen/vault
     steps:
       - checkout:
@@ -77,7 +77,7 @@ jobs:
 
   script:
     docker:
-      - image: circleci/node:10-browsers
+      - image: circleci/node:12-browsers
     working_directory: ~/offen/script
     steps:
       - checkout:
@@ -100,7 +100,7 @@ jobs:
 
   auditorium:
     docker:
-      - image: circleci/node:10-browsers
+      - image: circleci/node:12-browsers
     working_directory: ~/offen/auditorium
     steps:
       - checkout:
@@ -123,7 +123,7 @@ jobs:
 
   packages:
     docker:
-      - image: circleci/node:10-browsers
+      - image: circleci/node:12-browsers
     working_directory: ~/offen/packages
     steps:
       - checkout:
