@@ -18,11 +18,10 @@ jobs:
     docker:
       - image: circleci/golang:1.13
         environment:
-          DIALECT: postgres
-          CONNECTION_STRING: postgres://circle:test@localhost:5432/circle_test?sslmode=disable
-          PORT: 8080
-          EVENT_RETENTION_PERIOD: 4464h
-          COOKIE_EXCHANGE_SECRET: VswgMshC4mPDfey8o+yScg==
+          OFFEN_APP_EVENTRETENTIONPERIOD: 4464h
+          OFFEN_DATABASE_DIALECT: postgres
+          OFFEN_DATABASE_CONNECTIONSTRING: postgres://circle:test@localhost:5432/circle_test?sslmode=disable
+          OFFEN_SECRETS_COOKIEEXCHANGESECRET: VswgMshC4mPDfey8o+yScg==
       - image: circleci/postgres:11.2-alpine
         environment:
           - POSTGRES_USER=circle

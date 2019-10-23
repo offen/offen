@@ -10,7 +10,7 @@ import (
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
-	httpconfig "github.com/offen/offen/server/config/http"
+	"github.com/offen/offen/server/config"
 	"github.com/offen/offen/server/keys"
 	"github.com/offen/offen/server/persistence/relational"
 	"github.com/offen/offen/server/router"
@@ -25,9 +25,9 @@ func main() {
 		log.Fatal("No subcommand given. Exiting")
 	}
 
-	cfg, cfgErr := httpconfig.New()
+	cfg, cfgErr := config.New()
 	if cfgErr != nil {
-		log.Fatalf("Error reading runtime configuration: %v", cfgErr)
+		log.Fatalf("Error sourcing runtime configuration: %v", cfgErr)
 	}
 
 	switch os.Args[1] {
@@ -45,18 +45,18 @@ func main() {
 			fmt.Println(value)
 		}
 	case "version":
-		fmt.Println(cfg.Revision())
+		fmt.Println(cfg.App.Revision)
 	case "bootstrap":
 		var (
-			migration = bootstrapCmd.Bool("migration", true, "run migrations")
+			migration = bootstrapCmd.Bool("migration", true, "whether to run migrations")
 			source    = bootstrapCmd.String("source", "bootstrap.yml", "the configuration file")
 		)
 		bootstrapCmd.Parse(os.Args[2:])
 		read, readErr := ioutil.ReadFile(*source)
 		if readErr != nil {
-			log.Fatalf("Error reading configuration file %s: %v", *source, readErr)
+			log.Fatalf("Error reading source file %s: %v", *source, readErr)
 		}
-		db, dbErr := gorm.Open(cfg.Dialect(), cfg.ConnectionString())
+		db, dbErr := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString)
 		if dbErr != nil {
 			log.Fatalf("Error establishing database connection: %v", dbErr)
 		}
@@ -67,12 +67,12 @@ func main() {
 			}
 		}
 
-		if err := relational.Bootstrap(db, read, cfg.AccountUserSalt()); err != nil {
+		if err := relational.Bootstrap(db, read, cfg.Secrets.EmailSalt.Bytes()); err != nil {
 			log.Fatalf("Error bootstrapping database: %v\n", err)
 		}
 		fmt.Println("Successfully boostrapped database")
 	case "migrate":
-		db, dbErr := gorm.Open(cfg.Dialect(), cfg.ConnectionString())
+		db, dbErr := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString)
 		if dbErr != nil {
 			log.Fatalf("Error establishing database connection: %v", dbErr)
 		}
@@ -82,44 +82,44 @@ func main() {
 		}
 		fmt.Println("Successfully ran database migrations")
 	case "expire":
-		db, dbErr := gorm.Open(cfg.Dialect(), cfg.ConnectionString())
+		db, dbErr := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString)
 		if dbErr != nil {
 			log.Fatalf("Error establishing database connection: %v", dbErr)
 		}
 
-		affected, err := relational.Expire(db, cfg.RetentionPeriod())
+		affected, err := relational.Expire(db, cfg.App.EventRetentionPeriod)
 		if err != nil {
 			log.Fatalf("Error expiring events: %v\n", err)
 		}
 		fmt.Printf("Successfully expired %d events\n", affected)
 	case "serve":
 		logger := logrus.New()
-		logger.SetLevel(cfg.LogLevel())
+		logger.SetLevel(logrus.InfoLevel)
 
-		gormDB, err := gorm.Open(cfg.Dialect(), cfg.ConnectionString())
+		gormDB, err := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString)
 		if err != nil {
 			logger.WithError(err).Fatal("unable to establish database connection")
 		}
 
 		db, err := relational.New(
 			gormDB,
-			relational.WithLogging(cfg.Development()),
-			relational.WithEmailSalt(cfg.AccountUserSalt()),
+			relational.WithLogging(cfg.App.Development),
+			relational.WithEmailSalt(cfg.Secrets.EmailSalt.Bytes()),
 		)
 		if err != nil {
 			logger.WithError(err).Fatal("unable to create database layer")
 		}
 
 		srv := &http.Server{
-			Addr: fmt.Sprintf("0.0.0.0:%d", cfg.Port()),
+			Addr: fmt.Sprintf("0.0.0.0:%d", cfg.Server.Port),
 			Handler: router.New(
 				router.WithDatabase(db),
 				router.WithLogger(logger),
-				router.WithSecureCookie(cfg.SecureCookie()),
-				router.WithCookieExchangeSecret(cfg.CookieExchangeSecret()),
-				router.WithRetentionPeriod(cfg.RetentionPeriod()),
-				router.WithMailer(cfg.Mailer()),
-				router.WithRevision(cfg.Revision()),
+				router.WithSecureCookie(!cfg.App.DisableSecureCookie),
+				router.WithCookieExchangeSecret(cfg.Secrets.CookieExchange.Bytes()),
+				router.WithRetentionPeriod(cfg.App.EventRetentionPeriod),
+				router.WithMailer(cfg.NewMailer()),
+				router.WithRevision(cfg.App.Revision),
 			),
 		}
 

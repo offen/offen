@@ -27,7 +27,7 @@ $ make bootstrap
 You can test your setup by starting the application:
 
 ```sh
-$ docker-compose up
+$ make up
 ```
 
 which should enable you to access <http://localhost:8080/auditorium/> and use the `auditorium`
