@@ -40,6 +40,13 @@ $ make test
 
 ---
 
-[![NLnet Foundation](https://github.com/offen/press-kit/blob/master/external-material/nlnet-logo.svg)](https://nlnet.nl/)
+[![NLnet Foundation](https://offen.github.io/press-kit/external-material/nlnet-logo.svg)](https://nlnet.nl/)
 
 We are happy to work with [NLnet Foundation](https://nlnet.nl/) who complement our activities within their [Next Generation Internet](https://nlnet.nl/NGI/) initiative.
+
+---
+<a href="https://www.browserstack.com/">
+  <img src="https://offen.github.io/press-kit/external-material/browserstack-logo.svg" width="160">
+</a>
+
+Cross-Browser testing provided by [BrowserStack](https://www.browserstack.com/).
