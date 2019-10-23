@@ -15,6 +15,8 @@ type Config interface {
 	// the connection string including credentials of the PostgreSQL
 	// database to connect to
 	ConnectionString() string
+	// the database dialect to be used
+	Dialect() string
 	// the severity level used for logging
 	LogLevel() logrus.Level
 	// whether to issue secure (HTTPS only) cookies

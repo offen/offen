@@ -21,6 +21,7 @@ type httpConfig struct {
 	connectionString     string
 	cookieExchangeSecret string
 	accountUserSalt      string
+	dialect              string
 	retentionPeriod      time.Duration
 }
 
@@ -35,6 +36,7 @@ func (h *httpConfig) Revision() string {
 }
 func (h *httpConfig) Port() int                { return h.port }
 func (h *httpConfig) ConnectionString() string { return h.connectionString }
+func (h *httpConfig) Dialect() string          { return h.dialect }
 func (h *httpConfig) LogLevel() logrus.Level   { return logrus.InfoLevel }
 func (h *httpConfig) SecureCookie() bool       { return h.secureCookie }
 func (h *httpConfig) Development() bool        { return h.development }
@@ -69,7 +71,8 @@ const (
 func New() (config.Config, error) {
 	cfg := httpConfig{
 		port:                 defaultPort,
-		connectionString:     os.Getenv("POSTGRES_CONNECTION_STRING"),
+		dialect:              os.Getenv("DIALECT"),
+		connectionString:     os.Getenv("CONNECTION_STRING"),
 		secureCookie:         os.Getenv("SECURE_COOKIE") != "off",
 		development:          os.Getenv("DEVELOPMENT") != "",
 		cookieExchangeSecret: os.Getenv("COOKIE_EXCHANGE_SECRET"),

@@ -22,8 +22,10 @@ services:
       - .:/offen
       - ./bootstrap.yml:/offen/server/bootstrap.yml
       - serverdeps:/go/pkg/mod
+      - localdb:/data
     environment:
-      POSTGRES_CONNECTION_STRING: postgres://postgres:develop@server_database:5432/postgres?sslmode=disable
+      DIALECT: sqlite3
+      CONNECTION_STRING: /data/db.sqlite
       PORT: 8080
       DEVELOPMENT: '1'
       COOKIE_EXCHANGE_SECRET: 3P+w6QetKO3Kn8h1YyRlCw==
@@ -31,15 +33,8 @@ services:
       ACCOUNT_USER_EMAIL_SALT: JuhbRA4lCdo8rt5qVdLpk3==
       SECURE_COOKIE: 'off'
     command: refresh run
-    links:
-      - server_database
     ports:
       - 8081:8080
-
-  server_database:
-    image: postgres:11.2
-    environment:
-      POSTGRES_PASSWORD: develop
 
   vault:
     build:
@@ -76,3 +71,4 @@ volumes:
   scriptdeps:
   auditoriumdeps:
   vaultdeps:
+  localdb:
