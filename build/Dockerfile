@@ -58,9 +58,8 @@ COPY --from=auditorium /code/auditorium/dist /code/server/public/auditorium
 COPY --from=vault /code/vault/dist /code/server/public/vault
 RUN statik -dest assets -src public
 
-ENV CGO_ENABLED 0
 ENV GOOS linux
-RUN go build -ldflags "-X github.com/offen/offen/server/config.Revision=$GIT_REVISION" -o bin/offen cmd/offen/main.go
+RUN go build -ldflags "-linkmode external -extldflags '-static' -s -w -X github.com/offen/offen/server/config.Revision=$GIT_REVISION" -o bin/offen cmd/offen/main.go
 
 FROM alpine:3.10
 LABEL maintainer="offen <mail@offen.dev>"
