@@ -68,7 +68,7 @@ RUN apk add -U --no-cache ca-certificates
 COPY --from=server /code/server/bin/offen /
 
 ENV GIN_MODE "release"
-ENV PORT 3000
+ENV OFFEN_SERVER_PORT 3000
 EXPOSE 3000
 
 ENTRYPOINT ["/offen"]
