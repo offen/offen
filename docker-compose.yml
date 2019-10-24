@@ -19,27 +19,20 @@ services:
       dockerfile: Dockerfile.golang
     working_dir: /offen/server
     volumes:
+      - serverdeps:/go/pkg/mod
+      - serverdata:/data
       - .:/offen
       - ./bootstrap.yml:/offen/server/bootstrap.yml
-      - serverdeps:/go/pkg/mod
     environment:
-      POSTGRES_CONNECTION_STRING: postgres://postgres:develop@server_database:5432/postgres?sslmode=disable
-      PORT: 8080
-      DEVELOPMENT: '1'
-      COOKIE_EXCHANGE_SECRET: 3P+w6QetKO3Kn8h1YyRlCw==
-      EVENT_RETENTION_PERIOD: 4464h
-      ACCOUNT_USER_EMAIL_SALT: JuhbRA4lCdo8rt5qVdLpk3==
-      SECURE_COOKIE: 'off'
+      OFFEN_APP_DEVELOPMENT: '1'
+      OFFEN_APP_DISABLESECURECOOKIE: '1'
+      OFFEN_APP_EVENTRETENTIONPERIOD: 4464h
+      OFFEN_DATABASE_CONNECTIONSTRING: /data/db.sqlite
+      OFFEN_SECRETS_COOKIEEXCHANGE: 3P+w6QetKO3Kn8h1YyRlCw==
+      OFFEN_SECRETS_EMAILSALT: JuhbRA4lCdo8rt5qVdLpk3==
     command: refresh run
-    links:
-      - server_database
     ports:
       - 8081:8080
-
-  server_database:
-    image: postgres:11.2
-    environment:
-      POSTGRES_PASSWORD: develop
 
   vault:
     build:
@@ -73,6 +66,7 @@ services:
 
 volumes:
   serverdeps:
+  serverdata:
   scriptdeps:
   auditoriumdeps:
   vaultdeps:

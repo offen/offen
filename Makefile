@@ -52,6 +52,9 @@ build:
 secret:
 	@docker-compose run server make secret
 
+up:
+	@docker-compose up
+
 test:
 	@docker-compose run script npm test
 	@docker-compose run vault npm test
