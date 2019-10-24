@@ -1,15 +1,19 @@
 help:
+	@echo "    up"
+	@echo "        Start the development server"
+	@echo "    down"
+	@echo "        Tear down the development server"
 	@echo "    setup"
-	@echo "        Build the development containers and install dependencies."
-	@echo "    update"
-	@echo "        Install / update dependencies in the containers."
+	@echo "        Build the development containers and install dependencies"
 	@echo "    bootstrap"
-	@echo "        Set up and seed databases."
-	@echo "        **IMPORTANT**: this wipes any existing data in your local database."
-	@echo "    build"
-	@echo "        Build a local docker image."
+	@echo "        Set up and seed databases"
+	@echo "        **IMPORTANT**: this wipes any existing data in your local database"
+	@echo "    update"
+	@echo "        Install / update dependencies in the containers"
 	@echo "    migrate"
-	@echo "        Run database migrations."
+	@echo "        Apply pending database migrations"
+	@echo "    build"
+	@echo "        Build a local docker image, tagged as offen/offen:local"
 	@echo "    secret"
 	@echo "        Generate a random base64 encoded secret"
 
@@ -55,10 +59,13 @@ secret:
 up:
 	@docker-compose up
 
+down:
+	@docker-compose down
+
 test:
 	@docker-compose run script npm test
 	@docker-compose run vault npm test
 	@docker-compose run auditorium npm test
 	@docker-compose run server make test
 
-.PHONY: setup build bootstrap build secret test
+.PHONY: setup build bootstrap build secret test up down
