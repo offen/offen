@@ -166,19 +166,15 @@ jobs:
           command: |
             export OFFEN_GIT_REVISION=$(git rev-parse --short HEAD)
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
-              export SITEURL="https://www.offen.dev"
               export DOCKER_IMAGE_TAG="stable"
-              export ROBOTS_FILE="robots.txt.production"
             else
-              export SITEURL="https://staging.offen.dev"
               export DOCKER_IMAGE_TAG="latest"
-              export ROBOTS_FILE="robots.txt.staging"
             fi
             docker build --build-arg rev=$OFFEN_GIT_REVISION -t offen/offen:$DOCKER_IMAGE_TAG -f build/Dockerfile .
             # next, extract the single binary from the container so it can
             # be stored as a build artifact (this needs to be formalized into
             # versioned releases at some point)
-            docker create -ti --name builder offen/offen:$DOCKER_IMAGE_TAG ash
+            docker create -it --name builder offen/offen:$DOCKER_IMAGE_TAG ash
             docker cp builder:/offen .
             docker rm -f builder
             mkdir -p /tmp/artifacts
