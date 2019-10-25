@@ -12,6 +12,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/jasonlvhit/gocron"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/offen/offen/server/config"
@@ -117,6 +118,14 @@ func main() {
 			logger.WithError(err).Fatal("Unable to create persistence layer")
 		}
 
+		if cfg.App.SingleNode {
+			if err := relational.Migrate(gormDB); err != nil {
+				logger.WithError(err).Fatal("Error applying database migrations")
+			} else {
+				logger.Info("Successfully applied database migrations")
+			}
+		}
+
 		srv := &http.Server{
 			Addr: fmt.Sprintf("0.0.0.0:%d", cfg.Server.Port),
 			Handler: router.New(
@@ -136,8 +145,23 @@ func main() {
 				logger.WithError(err).Fatal("Error binding server to network")
 			}
 		}()
-
 		logger.Infof("Server now listening on port %d", cfg.Server.Port)
+
+		if cfg.App.SingleNode {
+			scheduler := gocron.NewScheduler()
+			scheduler.Every(1).Hours().Do(func() {
+				affected, err := relational.Expire(gormDB, cfg.App.EventRetentionPeriod)
+				if err != nil {
+					logger.WithError(err).Errorf("Error pruning expired events")
+					return
+				}
+				logger.WithField("removed", affected).Info("Cron successfully pruned expired events")
+			})
+			go func() {
+				scheduler.RunAll()
+				scheduler.Start()
+			}()
+		}
 
 		quit := make(chan os.Signal)
 		signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)

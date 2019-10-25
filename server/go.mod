@@ -10,6 +10,7 @@ require (
 	github.com/go-gomail/gomail v0.0.0-20160411212932-81ebce5c23df
 	github.com/gofrs/uuid v3.2.0+incompatible
 	github.com/gorilla/securecookie v1.1.1
+	github.com/jasonlvhit/gocron v0.0.0-20191021204008-47e27a9e0dc7
 	github.com/jinzhu/gorm v1.9.2
 	github.com/jinzhu/now v1.0.0 // indirect
 	github.com/joho/godotenv v1.3.0
