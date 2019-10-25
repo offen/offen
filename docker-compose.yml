@@ -19,11 +19,11 @@ services:
       dockerfile: Dockerfile.golang
     working_dir: /offen/server
     volumes:
-      - serverdeps:/go/pkg/mod
       - serverdata:/data
       - .:/offen
       - ./bootstrap.yml:/offen/server/bootstrap.yml
     environment:
+      GOPATH: /data/go
       OFFEN_APP_DEVELOPMENT: '1'
       OFFEN_APP_DISABLESECURECOOKIE: '1'
       OFFEN_APP_EVENTRETENTIONPERIOD: 4464h
@@ -65,7 +65,6 @@ services:
     command: npm start -- --port 9955
 
 volumes:
-  serverdeps:
   serverdata:
   scriptdeps:
   auditoriumdeps:
