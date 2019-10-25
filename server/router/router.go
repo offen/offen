@@ -1,11 +1,13 @@
 package router
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 	"time"
 
 	"github.com/NYTimes/gziphandler"
+	"github.com/felixge/httpsnoop"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/securecookie"
 	"github.com/offen/offen/server/assets"
@@ -236,5 +238,22 @@ func New(opts ...Config) http.Handler {
 			static.ServeHTTP(w, r)
 		}
 	})
-	return m
+
+	if rt.settings.reverseProxy {
+		return m
+	}
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		metrics := httpsnoop.CaptureMetrics(m, w, r)
+		logLevel := logrus.InfoLevel
+		if metrics.Code >= http.StatusInternalServerError {
+			logLevel = logrus.ErrorLevel
+		}
+		rt.logger.WithFields(logrus.Fields{
+			"status":   metrics.Code,
+			"duration": fmt.Sprintf("%3f", metrics.Duration.Seconds()),
+			"size":     metrics.Written,
+			"method":   r.Method,
+			"uri":      r.RequestURI,
+		}).Logf(logLevel, "%s %s", r.Method, r.URL.Path)
+	})
 }
