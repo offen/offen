@@ -15,14 +15,18 @@ import (
 )
 
 type router struct {
-	db                   persistence.Database
-	mailer               mailer.Mailer
-	logger               *logrus.Logger
-	cookieSigner         *securecookie.SecureCookie
-	secureCookie         bool
-	revision             string
-	cookieExchangeSecret []byte
-	retentionPeriod      time.Duration
+	db           persistence.Database
+	mailer       mailer.Mailer
+	logger       *logrus.Logger
+	cookieSigner *securecookie.SecureCookie
+	settings     struct {
+		cookieExchangeSecret []byte
+		secureCookie         bool
+		revision             string
+		development          bool
+		reverseProxy         bool
+		retentionPeriod      time.Duration
+	}
 }
 
 func (rt *router) logError(err error, message string) {
@@ -43,9 +47,9 @@ func (rt *router) userCookie(userID string) *http.Cookie {
 	return &http.Cookie{
 		Name:     cookieKey,
 		Value:    userID,
-		Expires:  time.Now().Add(rt.retentionPeriod),
+		Expires:  time.Now().Add(rt.settings.retentionPeriod),
 		HttpOnly: true,
-		Secure:   rt.secureCookie,
+		Secure:   rt.settings.secureCookie,
 		Path:     "/",
 	}
 }
@@ -101,7 +105,7 @@ func WithDatabase(db persistence.Database) Config {
 // WithRevision sets the current revision
 func WithRevision(rev string) Config {
 	return func(r *router) {
-		r.revision = rev
+		r.settings.revision = rev
 	}
 }
 
@@ -123,7 +127,7 @@ func WithMailer(m mailer.Mailer) Config {
 // secure (HTTPS-only) cookies
 func WithSecureCookie(sc bool) Config {
 	return func(r *router) {
-		r.secureCookie = sc
+		r.settings.secureCookie = sc
 	}
 }
 
@@ -131,14 +135,29 @@ func WithSecureCookie(sc bool) Config {
 // cookie exchange requests
 func WithCookieExchangeSecret(b []byte) Config {
 	return func(r *router) {
-		r.cookieExchangeSecret = b
+		r.settings.cookieExchangeSecret = b
 	}
 }
 
 // WithRetentionPeriod sets the expected value for retaining event data
 func WithRetentionPeriod(d time.Duration) Config {
 	return func(r *router) {
-		r.retentionPeriod = d
+		r.settings.retentionPeriod = d
+	}
+}
+
+// WithDevelopmentMode specifies whether the router is expected to
+func WithDevelopmentMode(d bool) Config {
+	return func(r *router) {
+		r.settings.development = d
+	}
+}
+
+// WithReverseProxy determines whether the router will assume it is exposed
+// to the internet directly, or if it's behind a reverse proxy.
+func WithReverseProxy(p bool) Config {
+	return func(r *router) {
+		r.settings.reverseProxy = p
 	}
 }
 
@@ -151,13 +170,17 @@ func New(opts ...Config) http.Handler {
 	for _, opt := range opts {
 		opt(&rt)
 	}
-	rt.cookieSigner = securecookie.New(rt.cookieExchangeSecret, nil)
+	rt.cookieSigner = securecookie.New(rt.settings.cookieExchangeSecret, nil)
 
+	fileServer := http.FileServer(assets.FS)
+	if rt.settings.reverseProxy {
+		fileServer = gziphandler.GzipHandler(staticHeaderMiddleware(fileServer))
+	}
+
+	static := http.NewServeMux()
 	// In development, these routes will be served by a different nginx
 	// upstream. They are only relevant when building the application into
 	// a single binary that inlines the filesystems.
-	static := http.NewServeMux()
-	fileServer := gziphandler.GzipHandler(staticHeaderMiddleware(http.FileServer(assets.FS)))
 	static.Handle("/auditorium/", singlePageAppMiddleware("/auditorium/")(fileServer))
 	static.Handle("/", fileServer)
 
@@ -166,6 +189,10 @@ func New(opts ...Config) http.Handler {
 	accountAuth := rt.accountUserMiddleware(authKey, contextKeyAuth)
 
 	app := gin.New()
+	if !rt.settings.development {
+		gin.SetMode(gin.ReleaseMode)
+	}
+
 	app.Use(gin.Recovery())
 	app.GET("/healthz", rt.getHealth)
 	app.GET("/versionz", rt.getVersion)

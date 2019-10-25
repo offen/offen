@@ -120,6 +120,8 @@ func main() {
 				router.WithRetentionPeriod(cfg.App.EventRetentionPeriod),
 				router.WithMailer(cfg.NewMailer()),
 				router.WithRevision(cfg.App.Revision),
+				router.WithReverseProxy(cfg.Server.ReverseProxy),
+				router.WithDevelopmentMode(cfg.App.Development),
 			),
 		}
 

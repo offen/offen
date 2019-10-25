@@ -12,9 +12,8 @@ import (
 )
 
 func TestRouter_optout(t *testing.T) {
-	rt := router{
-		cookieExchangeSecret: []byte("top-secret"),
-	}
+	rt := router{}
+	rt.settings.cookieExchangeSecret = []byte("top-secret")
 	m := gin.New()
 	m.POST("/", rt.postOptout)
 	m.GET("/", rt.getOptout)

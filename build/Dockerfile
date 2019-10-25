@@ -67,7 +67,6 @@ LABEL maintainer="offen <mail@offen.dev>"
 RUN apk add -U --no-cache ca-certificates
 COPY --from=server /code/server/bin/offen /
 
-ENV GIN_MODE "release"
 ENV OFFEN_SERVER_PORT 3000
 EXPOSE 3000
 
