@@ -1,12 +1,16 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
@@ -22,7 +26,7 @@ func main() {
 	bootstrapCmd := flag.NewFlagSet("bootstrap", flag.ExitOnError)
 
 	if len(os.Args) < 2 {
-		log.Fatal("No subcommand given. Exiting")
+		os.Args = append(os.Args, "serve")
 	}
 
 	cfg, cfgErr := config.New()
@@ -124,10 +128,27 @@ func main() {
 				router.WithDevelopmentMode(cfg.App.Development),
 			),
 		}
+		go func() {
+			if err := srv.ListenAndServe(); err != nil {
+				log.Fatal(err)
+			}
+		}()
 
-		if err := srv.ListenAndServe(); err != nil {
-			log.Fatal(err)
+		quit := make(chan os.Signal)
+		signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+		<-quit
+
+		ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+		defer cancel()
+		if err := srv.Shutdown(ctx); err != nil {
+			log.Fatalf("Error shutting down server: %v", err)
 		}
+
+		select {
+		case <-ctx.Done():
+			log.Println("Exceeded context deadline, initiating forceful shutdown.")
+		}
+		log.Println("Shutting down server...")
 	default:
 		log.Fatalf("Unknown subcommand %s\n", os.Args[1])
 	}

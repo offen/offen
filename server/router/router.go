@@ -188,11 +188,11 @@ func New(opts ...Config) http.Handler {
 	userCookie := userCookieMiddleware(cookieKey, contextKeyCookie)
 	accountAuth := rt.accountUserMiddleware(authKey, contextKeyAuth)
 
-	app := gin.New()
 	if !rt.settings.development {
 		gin.SetMode(gin.ReleaseMode)
 	}
 
+	app := gin.New()
 	app.Use(gin.Recovery())
 	app.GET("/healthz", rt.getHealth)
 	app.GET("/versionz", rt.getVersion)
