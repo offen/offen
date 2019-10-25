@@ -173,7 +173,7 @@ func New(opts ...Config) http.Handler {
 	rt.cookieSigner = securecookie.New(rt.settings.cookieExchangeSecret, nil)
 
 	fileServer := http.FileServer(assets.FS)
-	if rt.settings.reverseProxy {
+	if !rt.settings.reverseProxy {
 		fileServer = gziphandler.GzipHandler(staticHeaderMiddleware(fileServer))
 	}
 
