@@ -23,6 +23,5 @@ func Expire(db *gorm.DB, retention time.Duration) (int, error) {
 		return 0, fmt.Errorf("error deleting events: %v", result.Error)
 	}
 
-	fmt.Printf("About to purge %d expired events from before %v\n", result.RowsAffected, limit.Format(time.RFC1123Z))
 	return int(result.RowsAffected), txn.Commit().Error
 }

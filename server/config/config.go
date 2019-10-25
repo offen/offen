@@ -27,6 +27,7 @@ type Config struct {
 		DisableSecureCookie  bool          `default:"false"`
 		Revision             string
 		LogLevel             LogLevel `default:"info"`
+		SingleNode           bool     `default:"true"`
 	}
 	Database struct {
 		Dialect          Dialect `default:"sqlite3"`
