@@ -29,10 +29,14 @@ func main() {
 		os.Args = append(os.Args, "serve")
 	}
 
+	logger := logrus.New()
+
 	cfg, cfgErr := config.New()
 	if cfgErr != nil {
-		log.Fatalf("Error sourcing runtime configuration: %v", cfgErr)
+		logger.WithError(cfgErr).Fatal("Error sourcing runtime configuration")
 	}
+
+	logger.SetLevel(cfg.App.LogLevel.LogLevel())
 
 	switch os.Args[1] {
 	case "secret":
@@ -46,10 +50,10 @@ func main() {
 			if err != nil {
 				log.Fatalf("Error creating secret: %v", err)
 			}
-			fmt.Println(value)
+			logger.WithField("secret", value).Infof("Created %d bytes secret", *length)
 		}
 	case "version":
-		fmt.Println(cfg.App.Revision)
+		logger.WithField("revision", cfg.App.Revision).Info("Current build created using")
 	case "bootstrap":
 		var (
 			migration = bootstrapCmd.Bool("migration", true, "whether to run migrations")
@@ -58,51 +62,50 @@ func main() {
 		bootstrapCmd.Parse(os.Args[2:])
 		read, readErr := ioutil.ReadFile(*source)
 		if readErr != nil {
-			log.Fatalf("Error reading source file %s: %v", *source, readErr)
+			logger.WithError(readErr).Fatalf("Error reading source file %s", *source)
 		}
 		db, dbErr := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString)
 		if dbErr != nil {
-			log.Fatalf("Error establishing database connection: %v", dbErr)
+			logger.WithError(dbErr).Fatal("Error establishing database connection")
 		}
 
 		if *migration {
 			if err := relational.Migrate(db); err != nil {
-				log.Fatalf("Error migrating database: %v\n", err)
+				logger.WithError(err).Fatal("Error applying database migrations")
 			}
 		}
 
 		if err := relational.Bootstrap(db, read, cfg.Secrets.EmailSalt.Bytes()); err != nil {
-			log.Fatalf("Error bootstrapping database: %v\n", err)
+			logger.WithError(err).Fatal("Error bootstrapping database")
 		}
-		fmt.Println("Successfully boostrapped database")
+		logger.Info("Successfully bootstrapped database")
 	case "migrate":
 		db, dbErr := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString)
 		if dbErr != nil {
-			log.Fatalf("Error establishing database connection: %v", dbErr)
+			logger.WithError(dbErr).Fatal("Error establishing database connection")
 		}
-
 		if err := relational.Migrate(db); err != nil {
-			log.Fatalf("Error running database migrations: %v\n", err)
+			logger.WithError(err).Fatal("Error applying database migrations")
 		}
-		fmt.Println("Successfully ran database migrations")
+		logger.Info("Successfully ran database migrations")
 	case "expire":
 		db, dbErr := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString)
 		if dbErr != nil {
-			log.Fatalf("Error establishing database connection: %v", dbErr)
+			logger.WithError(dbErr).Fatal("Error establishing database connection")
 		}
 
 		affected, err := relational.Expire(db, cfg.App.EventRetentionPeriod)
 		if err != nil {
-			log.Fatalf("Error expiring events: %v\n", err)
+			logger.WithError(err).Fatalf("Error pruning expired events")
 		}
-		fmt.Printf("Successfully expired %d events\n", affected)
+		logger.WithField("removed", affected).Info("Successfully expired events")
 	case "serve":
 		logger := logrus.New()
 		logger.SetLevel(logrus.InfoLevel)
 
 		gormDB, err := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString)
 		if err != nil {
-			logger.WithError(err).Fatal("unable to establish database connection")
+			logger.WithError(err).Fatal("Unable to establish database connection")
 		}
 
 		db, err := relational.New(
@@ -111,7 +114,7 @@ func main() {
 			relational.WithEmailSalt(cfg.Secrets.EmailSalt.Bytes()),
 		)
 		if err != nil {
-			logger.WithError(err).Fatal("unable to create database layer")
+			logger.WithError(err).Fatal("Unable to create persistence layer")
 		}
 
 		srv := &http.Server{
@@ -129,10 +132,12 @@ func main() {
 			),
 		}
 		go func() {
-			if err := srv.ListenAndServe(); err != nil {
-				log.Fatal(err)
+			if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+				logger.WithError(err).Fatal("Error binding server to network")
 			}
 		}()
+
+		logger.Infof("Server now listening on port %d", cfg.Server.Port)
 
 		quit := make(chan os.Signal)
 		signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
@@ -141,15 +146,15 @@ func main() {
 		ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 		defer cancel()
 		if err := srv.Shutdown(ctx); err != nil {
-			log.Fatalf("Error shutting down server: %v", err)
+			logger.WithError(err).Fatal("Error shutting down server")
 		}
 
 		select {
 		case <-ctx.Done():
-			log.Println("Exceeded context deadline, initiating forceful shutdown.")
+			logger.Error("Exceeded context deadline, initiating forceful shutdown")
 		}
-		log.Println("Shutting down server...")
+		logger.Info("Shutting down server")
 	default:
-		log.Fatalf("Unknown subcommand %s\n", os.Args[1])
+		logger.Fatalf("Unknown subcommand %s\n", os.Args[1])
 	}
 }
