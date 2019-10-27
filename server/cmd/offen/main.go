@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"flag"
 	"fmt"
 	"io/ioutil"
@@ -23,26 +24,33 @@ import (
 )
 
 func main() {
+	logger := logrus.New()
+
+	var mustConfig = func(populateMissing bool) *config.Config {
+		cfg, cfgErr := config.New(populateMissing)
+		if cfgErr != nil {
+			if errors.Is(cfgErr, config.ErrPopulatedMissing) {
+				logger.Infof("Some configuration values were missing: %v", cfgErr.Error())
+			} else {
+				logger.WithError(cfgErr).Fatal("Error sourcing runtime configuration")
+			}
+		}
+		logger.SetLevel(cfg.App.LogLevel.LogLevel())
+		return cfg
+	}
+
 	secretCmd := flag.NewFlagSet("secret", flag.ExitOnError)
 	bootstrapCmd := flag.NewFlagSet("bootstrap", flag.ExitOnError)
 
 	if len(os.Args) < 2 {
 		os.Args = append(os.Args, "serve")
 	}
+	subcommand := os.Args[1]
 
-	logger := logrus.New()
-
-	cfg, cfgErr := config.New()
-	if cfgErr != nil {
-		logger.WithError(cfgErr).Fatal("Error sourcing runtime configuration")
-	}
-
-	logger.SetLevel(cfg.App.LogLevel.LogLevel())
-
-	switch os.Args[1] {
+	switch subcommand {
 	case "secret":
 		var (
-			length = secretCmd.Int("length", 16, "the length in bytes")
+			length = secretCmd.Int("length", keys.DefaultSecretLength, "the length in bytes")
 			count  = secretCmd.Int("count", 1, "the number of secrets to generate")
 		)
 		secretCmd.Parse(os.Args[2:])
@@ -54,17 +62,24 @@ func main() {
 			logger.WithField("secret", value).Infof("Created %d bytes secret", *length)
 		}
 	case "version":
+		// calling version does not require a valid config, so this does not
+		// check errors.
+		cfg, _ := config.New(false)
 		logger.WithField("revision", cfg.App.Revision).Info("Current build created using")
 	case "bootstrap":
 		var (
-			migration = bootstrapCmd.Bool("migration", true, "whether to run migrations")
-			source    = bootstrapCmd.String("source", "bootstrap.yml", "the configuration file")
+			populateMissing = bootstrapCmd.Bool("populate", true, "in case required secrets are missing from the configuration, create and persist them in ~/.config/offen.env")
+			migration       = bootstrapCmd.Bool("migration", true, "whether to run migrations")
+			source          = bootstrapCmd.String("source", "bootstrap.yml", "the configuration file")
 		)
 		bootstrapCmd.Parse(os.Args[2:])
 		read, readErr := ioutil.ReadFile(*source)
 		if readErr != nil {
 			logger.WithError(readErr).Fatalf("Error reading source file %s", *source)
 		}
+
+		cfg := mustConfig(*populateMissing)
+
 		db, dbErr := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString)
 		if dbErr != nil {
 			logger.WithError(dbErr).Fatal("Error establishing database connection")
@@ -81,6 +96,7 @@ func main() {
 		}
 		logger.Info("Successfully bootstrapped database")
 	case "migrate":
+		cfg := mustConfig(false)
 		db, dbErr := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString)
 		if dbErr != nil {
 			logger.WithError(dbErr).Fatal("Error establishing database connection")
@@ -90,6 +106,7 @@ func main() {
 		}
 		logger.Info("Successfully ran database migrations")
 	case "expire":
+		cfg := mustConfig(false)
 		db, dbErr := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString)
 		if dbErr != nil {
 			logger.WithError(dbErr).Fatal("Error establishing database connection")
@@ -101,8 +118,7 @@ func main() {
 		}
 		logger.WithField("removed", affected).Info("Successfully expired events")
 	case "serve":
-		logger := logrus.New()
-		logger.SetLevel(logrus.InfoLevel)
+		cfg := mustConfig(false)
 
 		gormDB, err := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString)
 		if err != nil {

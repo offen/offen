@@ -107,7 +107,7 @@ func bootstrapAccounts(config *bootstrapConfig, emailSalt []byte) ([]Account, []
 			return nil, nil, nil, encryptedPrivateKeyErr
 		}
 
-		salt, saltErr := keys.GenerateRandomValue(keys.UserSaltLength)
+		salt, saltErr := keys.GenerateRandomValue(keys.DefaultSecretLength)
 		if saltErr != nil {
 			return nil, nil, nil, saltErr
 		}

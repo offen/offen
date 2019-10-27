@@ -1,6 +1,7 @@
 package config
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"runtime"
@@ -8,13 +9,18 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/kelseyhightower/envconfig"
+	"github.com/offen/offen/server/keys"
 	"github.com/offen/offen/server/mailer"
 	"github.com/offen/offen/server/mailer/localmailer"
 	"github.com/offen/offen/server/mailer/smtpmailer"
 )
 
+// ErrPopulatedMissing can be returned by New to signal that missing values
+// have been populated and persisted.
+var ErrPopulatedMissing = errors.New("created missing secrets in ~/.config/offen.env")
+
 // Revision will be set by ldflags on build time
-var Revision = "not set"
+var Revision string
 
 // Config contains all runtime configuration needed for running offen as
 // and also defines the desired defaults. Package envconfig is used to
@@ -24,6 +30,10 @@ type Config struct {
 		Port         int  `default:"8080"`
 		ReverseProxy bool `default:"false"`
 	}
+	Database struct {
+		Dialect          Dialect `default:"sqlite3"`
+		ConnectionString string  `default:"/tmp/offen.db"`
+	}
 	App struct {
 		Development          bool          `default:"false"`
 		EventRetentionPeriod time.Duration `default:"4464h"`
@@ -32,13 +42,9 @@ type Config struct {
 		LogLevel             LogLevel      `default:"info"`
 		SingleNode           bool          `default:"true"`
 	}
-	Database struct {
-		Dialect          Dialect `default:"sqlite3"`
-		ConnectionString string  `default:"/tmp/offen.db"`
-	}
 	Secrets struct {
-		CookieExchange Bytes
-		EmailSalt      Bytes
+		CookieExchange Bytes `required:"true"`
+		EmailSalt      Bytes `required:"true"`
 	}
 	SMTP struct {
 		User     string
@@ -80,18 +86,70 @@ func configurationCascade() []string {
 	return locations
 }
 
+func persistSettings(update map[string]string) error {
+	switch runtime.GOOS {
+	case "linux", "darwin":
+		homedir, err := os.UserHomeDir()
+		if err != nil {
+			return fmt.Errorf("error looking up home directory: %v", err)
+		}
+		configFile := fmt.Sprintf("%s/.config/%s", homedir, envFileName)
+		existing, _ := godotenv.Read(configFile)
+		if existing != nil {
+			for key, value := range existing {
+				update[key] = value
+			}
+		}
+		_ = os.Mkdir(fmt.Sprintf("%s/.config", homedir), os.ModeDir)
+		if err := godotenv.Write(update, configFile); err != nil {
+			return fmt.Errorf("error writing env file: %v", err)
+		}
+		return nil
+	default:
+		return fmt.Errorf("operating system %s not yet supported", runtime.GOOS)
+	}
+}
+
 // New returns a new runtime configuration
-func New() (*Config, error) {
+func New(populateMissing bool) (*Config, error) {
+	var c Config
+
 	// Depending on the system, a certain cascade of configuration options will
 	// be sourced. In case a variable is already set in the environment, it will
 	// not be overridden by any file content.
 	for _, loc := range configurationCascade() {
-		if err := godotenv.Load(loc); err != nil {
-			fmt.Println("error reading file", err)
-		}
+		godotenv.Load(loc)
 	}
-	var c Config
+
 	err := envconfig.Process("offen", &c)
-	c.App.Revision = Revision
-	return &c, err
+	if err != nil && !populateMissing {
+		return &c, fmt.Errorf("error processing environment: %v", err)
+	}
+
+	if Revision != "" {
+		c.App.Revision = Revision
+	}
+
+	if err != nil && populateMissing {
+		update := map[string]string{}
+		for _, key := range []string{"OFFEN_SECRETS_EMAILSALT", "OFFEN_SECRETS_COOKIEEXCHANGE"} {
+			secret, err := keys.GenerateRandomValue(keys.DefaultSecretLength)
+			update[key] = secret
+			if err != nil {
+				return nil, fmt.Errorf("error creating secret for use as %s: %v", key, err)
+			}
+		}
+
+		if err := persistSettings(update); err != nil {
+			return nil, fmt.Errorf("error persisting settings: %v", err)
+		}
+
+		result, err := New(false)
+		if err == nil {
+			err = ErrPopulatedMissing
+		}
+		return result, err
+	}
+
+	return &c, nil
 }
