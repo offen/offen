@@ -1,6 +1,9 @@
 package config
 
 import (
+	"fmt"
+	"os"
+	"runtime"
 	"time"
 
 	"github.com/joho/godotenv"
@@ -25,9 +28,9 @@ type Config struct {
 		Development          bool          `default:"false"`
 		EventRetentionPeriod time.Duration `default:"4464h"`
 		DisableSecureCookie  bool          `default:"false"`
-		Revision             string
-		LogLevel             LogLevel `default:"info"`
-		SingleNode           bool     `default:"true"`
+		Revision             string        `default:"not set"`
+		LogLevel             LogLevel      `default:"info"`
+		SingleNode           bool          `default:"true"`
 	}
 	Database struct {
 		Dialect          Dialect `default:"sqlite3"`
@@ -59,9 +62,34 @@ func (c *Config) NewMailer() mailer.Mailer {
 	return smtpmailer.New(host, user, pass, port)
 }
 
+const envFileName = "offen.env"
+
+func configurationCascade() []string {
+	// in case there is an offen.env file next to the binary, it will be loaded
+	// as the env file with the highest precedence
+	locations := []string{envFileName}
+	if homedir, err := os.UserHomeDir(); err == nil {
+		// user specific configuration is looked up in ~/.config/offen.env
+		locations = append(locations, fmt.Sprintf("%s/.config/%s", homedir, envFileName))
+	}
+	if runtime.GOOS == "linux" {
+		// when running in linux, system wide configuration is sourced from
+		// /etc/offen first
+		locations = append(locations, fmt.Sprintf("/etc/offen/%s", envFileName))
+	}
+	return locations
+}
+
 // New returns a new runtime configuration
 func New() (*Config, error) {
-	godotenv.Load(".offen.env")
+	// Depending on the system, a certain cascade of configuration options will
+	// be sourced. In case a variable is already set in the environment, it will
+	// not be overridden by any file content.
+	for _, loc := range configurationCascade() {
+		if err := godotenv.Load(loc); err != nil {
+			fmt.Println("error reading file", err)
+		}
+	}
 	var c Config
 	err := envconfig.Process("offen", &c)
 	c.App.Revision = Revision
