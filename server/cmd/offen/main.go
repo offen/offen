@@ -173,11 +173,7 @@ func main() {
 			logger.WithError(err).Fatal("Error shutting down server")
 		}
 
-		select {
-		case <-ctx.Done():
-			logger.Error("Exceeded context deadline, initiating forceful shutdown")
-		}
-		logger.Info("Shutting down server")
+		logger.Info("Gracefully shut down server")
 	default:
 		logger.Fatalf("Unknown subcommand %s\n", os.Args[1])
 	}
