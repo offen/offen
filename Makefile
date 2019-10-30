@@ -30,12 +30,6 @@ howto:
 bootstrap:
 	@echo "Bootstrapping Server service ..."
 	@docker-compose run server make bootstrap
-	@echo ""
-	@echo "You can now log into the development backend using the following credentials:"
-	@echo ""
-	@echo "Email: develop@offen.dev"
-	@echo "Password: develop"
-	@echo ""
 
 update:
 	@echo "Installing / updating dependencies ..."

@@ -7,7 +7,6 @@ import (
 	uuid "github.com/gofrs/uuid"
 	"github.com/jinzhu/gorm"
 	"github.com/offen/offen/server/keys"
-	yaml "gopkg.in/yaml.v2"
 )
 
 type bootstrapConfig struct {
@@ -33,10 +32,21 @@ type accountCreation struct {
 
 // Bootstrap seeds a blank database with the given account and user
 // data. This is likely only ever used in development.
-func Bootstrap(db *gorm.DB, data []byte, emailSalt []byte) error {
-	var config bootstrapConfig
-	if err := yaml.Unmarshal(data, &config); err != nil {
-		return err
+func Bootstrap(db *gorm.DB, accountID, accountName, email, password string, emailSalt []byte) error {
+	config := bootstrapConfig{
+		Accounts: []accountConfig{
+			{
+				ID:   accountID,
+				Name: accountName,
+			},
+		},
+		AccountUsers: []accountUser{
+			{
+				Email:    email,
+				Password: password,
+				Accounts: []string{accountID},
+			},
+		},
 	}
 
 	defer db.Close()

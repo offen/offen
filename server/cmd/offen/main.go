@@ -5,7 +5,6 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -48,75 +47,6 @@ func main() {
 	subcommand := os.Args[1]
 
 	switch subcommand {
-	case "secret":
-		var (
-			length = secretCmd.Int("length", keys.DefaultSecretLength, "the length in bytes")
-			count  = secretCmd.Int("count", 1, "the number of secrets to generate")
-		)
-		secretCmd.Parse(os.Args[2:])
-		for i := 0; i < *count; i++ {
-			value, err := keys.GenerateRandomValue(*length)
-			if err != nil {
-				log.Fatalf("Error creating secret: %v", err)
-			}
-			logger.WithField("secret", value).Infof("Created %d bytes secret", *length)
-		}
-	case "version":
-		// calling version does not require a valid config, so this does not
-		// check errors.
-		cfg, _ := config.New(false)
-		logger.WithField("revision", cfg.App.Revision).Info("Current build created using")
-	case "bootstrap":
-		var (
-			populateMissing = bootstrapCmd.Bool("populate", true, "in case required secrets are missing from the configuration, create and persist them in ~/.config/offen.env")
-			migration       = bootstrapCmd.Bool("migration", true, "whether to run migrations")
-			source          = bootstrapCmd.String("source", "bootstrap.yml", "the configuration file")
-		)
-		bootstrapCmd.Parse(os.Args[2:])
-		read, readErr := ioutil.ReadFile(*source)
-		if readErr != nil {
-			logger.WithError(readErr).Fatalf("Error reading source file %s", *source)
-		}
-
-		cfg := mustConfig(*populateMissing)
-
-		db, dbErr := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString)
-		if dbErr != nil {
-			logger.WithError(dbErr).Fatal("Error establishing database connection")
-		}
-
-		if *migration {
-			if err := relational.Migrate(db); err != nil {
-				logger.WithError(err).Fatal("Error applying database migrations")
-			}
-		}
-
-		if err := relational.Bootstrap(db, read, cfg.Secrets.EmailSalt.Bytes()); err != nil {
-			logger.WithError(err).Fatal("Error bootstrapping database")
-		}
-		logger.Info("Successfully bootstrapped database")
-	case "migrate":
-		cfg := mustConfig(false)
-		db, dbErr := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString)
-		if dbErr != nil {
-			logger.WithError(dbErr).Fatal("Error establishing database connection")
-		}
-		if err := relational.Migrate(db); err != nil {
-			logger.WithError(err).Fatal("Error applying database migrations")
-		}
-		logger.Info("Successfully ran database migrations")
-	case "expire":
-		cfg := mustConfig(false)
-		db, dbErr := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString)
-		if dbErr != nil {
-			logger.WithError(dbErr).Fatal("Error establishing database connection")
-		}
-
-		affected, err := relational.Expire(db, cfg.App.EventRetentionPeriod)
-		if err != nil {
-			logger.WithError(err).Fatalf("Error pruning expired events")
-		}
-		logger.WithField("removed", affected).Info("Successfully expired events")
 	case "serve":
 		cfg := mustConfig(false)
 
@@ -190,6 +120,80 @@ func main() {
 		}
 
 		logger.Info("Gracefully shut down server")
+	case "bootstrap":
+		var (
+			accountID       = bootstrapCmd.String("forceid", "", "force usage of given account id")
+			accountName     = bootstrapCmd.String("name", "", "the account name")
+			email           = bootstrapCmd.String("email", "", "the email address used for login")
+			password        = bootstrapCmd.String("password", "", "the password used for login")
+			populateMissing = bootstrapCmd.Bool("populate", true, "in case required secrets are missing from the configuration, create and persist them in ~/.config/offen.env")
+			migration       = bootstrapCmd.Bool("migration", true, "whether to run migrations")
+			// source          = bootstrapCmd.String("source", "bootstrap.yml", "the configuration file")
+		)
+		bootstrapCmd.Parse(os.Args[2:])
+
+		cfg := mustConfig(*populateMissing)
+
+		/* read, readErr := ioutil.ReadFile(*source)
+		if readErr != nil {
+			logger.WithError(readErr).Fatalf("Error reading source file %s", *source)
+		}*/
+
+		db, dbErr := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString)
+		if dbErr != nil {
+			logger.WithError(dbErr).Fatal("Error establishing database connection")
+		}
+
+		if *migration {
+			if err := relational.Migrate(db); err != nil {
+				logger.WithError(err).Fatal("Error applying database migrations")
+			}
+		}
+
+		if err := relational.Bootstrap(db, *accountID, *accountName, *email, *password, cfg.Secrets.EmailSalt.Bytes()); err != nil {
+			logger.WithError(err).Fatal("Error bootstrapping database")
+		}
+		logger.Info("Successfully bootstrapped database")
+	case "migrate":
+		cfg := mustConfig(false)
+		db, dbErr := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString)
+		if dbErr != nil {
+			logger.WithError(dbErr).Fatal("Error establishing database connection")
+		}
+		if err := relational.Migrate(db); err != nil {
+			logger.WithError(err).Fatal("Error applying database migrations")
+		}
+		logger.Info("Successfully ran database migrations")
+	case "expire":
+		cfg := mustConfig(false)
+		db, dbErr := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString)
+		if dbErr != nil {
+			logger.WithError(dbErr).Fatal("Error establishing database connection")
+		}
+
+		affected, err := relational.Expire(db, cfg.App.EventRetentionPeriod)
+		if err != nil {
+			logger.WithError(err).Fatalf("Error pruning expired events")
+		}
+		logger.WithField("removed", affected).Info("Successfully expired events")
+	case "secret":
+		var (
+			length = secretCmd.Int("length", keys.DefaultSecretLength, "the length in bytes")
+			count  = secretCmd.Int("count", 1, "the number of secrets to generate")
+		)
+		secretCmd.Parse(os.Args[2:])
+		for i := 0; i < *count; i++ {
+			value, err := keys.GenerateRandomValue(*length)
+			if err != nil {
+				log.Fatalf("Error creating secret: %v", err)
+			}
+			logger.WithField("secret", value).Infof("Created %d bytes secret", *length)
+		}
+	case "version":
+		// calling version does not require a valid config, so this does not
+		// check errors.
+		cfg, _ := config.New(false)
+		logger.WithField("revision", cfg.App.Revision).Info("Current build created using")
 	default:
 		logger.Fatalf("Unknown subcommand %s\n", os.Args[1])
 	}
