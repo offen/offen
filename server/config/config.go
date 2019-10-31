@@ -42,6 +42,7 @@ type Config struct {
 		Revision             string        `default:"not set"`
 		LogLevel             LogLevel      `default:"info"`
 		SingleNode           bool          `default:"true"`
+		Locale               string        `default:"en"`
 		RootAccount          string
 	}
 	Secrets struct {

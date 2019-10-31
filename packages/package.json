@@ -11,7 +11,11 @@
     "posttest": "standard",
     "fix": "standard --fix"
   },
-  "dependencies": {},
+  "dependencies": {
+    "envify": "^4.1.0",
+    "jscodeshift": "^0.6.4",
+    "through2": "^3.0.1"
+  },
   "devDependencies": {
     "dependency-check": "^3.3.0",
     "fetch-mock": "^7.3.3",
@@ -22,6 +26,11 @@
   "standard": {
     "env": [
       "mocha"
+    ]
+  },
+  "browserify": {
+    "transform": [
+      "envify"
     ]
   }
 }

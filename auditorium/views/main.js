@@ -36,7 +36,7 @@ function view (state, emit) {
       ${state.model.hasOptedOut ? html`<p><strong>You have opted out. Clear your cookies to opt in.</strong></p>` : null}
       ${state.model.allowsCookies ? null : html`<p><strong>Your browser does not allow 3rd party cookies. We respect this setting and collect only very basic data in this case, yet it also means we cannot display any data to you here.</strong></p>`}
     `
-    pageTitle = 'user | ' + state.title
+    pageTitle = __('foo', 'arg', 2) + ' user | ' + state.title
   }
   emit(state.events.DOMTITLECHANGE, pageTitle)
 
@@ -63,7 +63,7 @@ function view (state, emit) {
     `
   })
   var rangeSelector = html`
-    <h4>Show data from the:</h4>
+    <h4>${__('auditorium/main/rangeSelectorHeadline')}:</h4>
     <ul>${ranges}</ul>
   `
 

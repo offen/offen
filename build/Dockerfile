@@ -7,6 +7,7 @@ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 RUN npm ci
 COPY ./auditorium /code/auditorium
 COPY ./banner.txt /code/banner.txt
+COPY ./l10n /code/auditorium/l10n
 WORKDIR /code/auditorium
 RUN cp -a /code/deps/node_modules /code/auditorium/
 ENV NODE_ENV production

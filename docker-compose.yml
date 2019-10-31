@@ -64,6 +64,8 @@ services:
       - .:/offen
       - auditoriumdeps:/offen/auditorium/node_modules
     command: npm start -- --port 9955
+    environment:
+      OFFEN_APP_LOCALE: 'en'
 
 volumes:
   serverdata:
