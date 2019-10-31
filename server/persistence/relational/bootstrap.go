@@ -7,20 +7,19 @@ import (
 	uuid "github.com/gofrs/uuid"
 	"github.com/jinzhu/gorm"
 	"github.com/offen/offen/server/keys"
-	yaml "gopkg.in/yaml.v2"
 )
 
-type bootstrapConfig struct {
-	Accounts     []accountConfig `yaml:"accounts"`
-	AccountUsers []accountUser   `yaml:"account_users"`
+type BootstrapConfig struct {
+	Accounts     []BootstrapAccount     `yaml:"accounts"`
+	AccountUsers []BootstrapAccountUser `yaml:"account_users"`
 }
 
-type accountConfig struct {
+type BootstrapAccount struct {
 	ID   string `yaml:"id"`
 	Name string `yaml:"name"`
 }
 
-type accountUser struct {
+type BootstrapAccountUser struct {
 	Email    string   `yaml:"email"`
 	Password string   `yaml:"password"`
 	Accounts []string `yaml:"accounts"`
@@ -33,12 +32,7 @@ type accountCreation struct {
 
 // Bootstrap seeds a blank database with the given account and user
 // data. This is likely only ever used in development.
-func Bootstrap(db *gorm.DB, data []byte, emailSalt []byte) error {
-	var config bootstrapConfig
-	if err := yaml.Unmarshal(data, &config); err != nil {
-		return err
-	}
-
+func Bootstrap(db *gorm.DB, config BootstrapConfig, emailSalt []byte) error {
 	defer db.Close()
 	tx := db.Debug().Begin()
 
@@ -90,7 +84,7 @@ func Bootstrap(db *gorm.DB, data []byte, emailSalt []byte) error {
 	return nil
 }
 
-func bootstrapAccounts(config *bootstrapConfig, emailSalt []byte) ([]Account, []AccountUser, []AccountUserRelationship, error) {
+func bootstrapAccounts(config *BootstrapConfig, emailSalt []byte) ([]Account, []AccountUser, []AccountUserRelationship, error) {
 	accountCreations := []accountCreation{}
 	for _, account := range config.Accounts {
 		publicKey, privateKey, keyErr := keys.GenerateRSAKeypair(keys.RSAKeyLength)
@@ -107,7 +101,7 @@ func bootstrapAccounts(config *bootstrapConfig, emailSalt []byte) ([]Account, []
 			return nil, nil, nil, encryptedPrivateKeyErr
 		}
 
-		salt, saltErr := keys.GenerateRandomValue(keys.UserSaltLength)
+		salt, saltErr := keys.GenerateRandomValue(keys.DefaultSecretLength)
 		if saltErr != nil {
 			return nil, nil, nil, saltErr
 		}

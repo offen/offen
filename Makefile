@@ -30,12 +30,6 @@ howto:
 bootstrap:
 	@echo "Bootstrapping Server service ..."
 	@docker-compose run server make bootstrap
-	@echo ""
-	@echo "You can now log into the development backend using the following credentials:"
-	@echo ""
-	@echo "Email: develop@offen.dev"
-	@echo "Password: develop"
-	@echo ""
 
 update:
 	@echo "Installing / updating dependencies ..."
@@ -52,6 +46,9 @@ ROBOTS_FILE ?= robots.txt.staging
 
 build:
 	@docker build --build-arg rev=$(shell git rev-parse --short HEAD) -t offen/offen:${DOCKER_IMAGE_TAG} -f build/Dockerfile .
+	@docker create -it --name binary offen/offen:local ash
+	@docker cp binary:/offen .
+	@docker rm binary
 
 secret:
 	@docker-compose run server make secret
