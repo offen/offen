@@ -8,7 +8,7 @@ install:
 	@go mod download
 
 bootstrap: migrate
-	@go run cmd/offen/main.go bootstrap -name develop -email develop@offen.dev -password develop -forceid 9b63c4d8-65c0-438c-9d30-cc4b01173393
+	@go run cmd/offen/main.go bootstrap -source bootstrap.yml
 	@echo ""
 	@echo "You can now log into the development backend using the following credentials:"
 	@echo ""

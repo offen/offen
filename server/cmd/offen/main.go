@@ -5,6 +5,7 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -12,14 +13,15 @@ import (
 	"syscall"
 	"time"
 
+	uuid "github.com/gofrs/uuid"
 	"github.com/jasonlvhit/gocron"
 	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/offen/offen/server/config"
 	"github.com/offen/offen/server/keys"
 	"github.com/offen/offen/server/persistence/relational"
 	"github.com/offen/offen/server/router"
 	"github.com/sirupsen/logrus"
+	yaml "gopkg.in/yaml.v2"
 )
 
 func main() {
@@ -126,31 +128,51 @@ func main() {
 			accountName     = bootstrapCmd.String("name", "", "the account name")
 			email           = bootstrapCmd.String("email", "", "the email address used for login")
 			password        = bootstrapCmd.String("password", "", "the password used for login")
+			source          = bootstrapCmd.String("source", "", "the configuration file")
 			populateMissing = bootstrapCmd.Bool("populate", true, "in case required secrets are missing from the configuration, create and persist them in ~/.config/offen.env")
-			migration       = bootstrapCmd.Bool("migration", true, "whether to run migrations")
-			// source          = bootstrapCmd.String("source", "bootstrap.yml", "the configuration file")
 		)
 		bootstrapCmd.Parse(os.Args[2:])
 
 		cfg := mustConfig(*populateMissing)
-
-		/* read, readErr := ioutil.ReadFile(*source)
-		if readErr != nil {
-			logger.WithError(readErr).Fatalf("Error reading source file %s", *source)
-		}*/
 
 		db, dbErr := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString)
 		if dbErr != nil {
 			logger.WithError(dbErr).Fatal("Error establishing database connection")
 		}
 
-		if *migration {
-			if err := relational.Migrate(db); err != nil {
-				logger.WithError(err).Fatal("Error applying database migrations")
+		conf := relational.BootstrapConfig{}
+		if *source != "" {
+			logger.Infof("Trying to read account seed data from %s", *source)
+			read, readErr := ioutil.ReadFile(*source)
+			if readErr != nil {
+				logger.WithError(readErr).Fatalf("Unable to read given source file %s", *source)
 			}
+			if err := yaml.Unmarshal(read, &conf); err != nil {
+				logger.WithError(err).Fatalf("Error parsing content of given source file %s", *source)
+			}
+		} else {
+			logger.Infof("Using command line arguments to create seed user and account")
+			if *accountID == "" {
+				randomID, err := uuid.NewV4()
+				if err != nil {
+					logger.WithError(err).Fatal("Error creating account id")
+				}
+				*accountID = randomID.String()
+			} else {
+				logger.Warnf("Using -forceid to set the ID of account %s to %s", *accountName, *accountID)
+				logger.Warn("If this is not intentional, please run this command again without forcing an ID")
+			}
+			conf.AccountUsers = append(
+				conf.AccountUsers,
+				relational.BootstrapAccountUser{Email: *email, Password: *password, Accounts: []string{*accountID}},
+			)
+			conf.Accounts = append(
+				conf.Accounts,
+				relational.BootstrapAccount{Name: *accountName, ID: *accountID},
+			)
 		}
 
-		if err := relational.Bootstrap(db, *accountID, *accountName, *email, *password, cfg.Secrets.EmailSalt.Bytes()); err != nil {
+		if err := relational.Bootstrap(db, conf, cfg.Secrets.EmailSalt.Bytes()); err != nil {
 			logger.WithError(err).Fatal("Error bootstrapping database")
 		}
 		logger.Info("Successfully bootstrapped database")
