@@ -2,6 +2,7 @@ package router
 
 import (
 	"fmt"
+	"html/template"
 	"net/http"
 	"strings"
 	"time"
@@ -21,6 +22,7 @@ type router struct {
 	mailer       mailer.Mailer
 	logger       *logrus.Logger
 	cookieSigner *securecookie.SecureCookie
+	template     *template.Template
 	settings     struct {
 		cookieExchangeSecret []byte
 		secureCookie         bool
@@ -28,6 +30,7 @@ type router struct {
 		development          bool
 		reverseProxy         bool
 		retentionPeriod      time.Duration
+		rootAccount          string
 	}
 }
 
@@ -141,6 +144,13 @@ func WithCookieExchangeSecret(b []byte) Config {
 	}
 }
 
+// WithRootAccount sets the ID of the root account to be used
+func WithRootAccount(id string) Config {
+	return func(r *router) {
+		r.settings.rootAccount = id
+	}
+}
+
 // WithRetentionPeriod sets the expected value for retaining event data
 func WithRetentionPeriod(d time.Duration) Config {
 	return func(r *router) {
@@ -160,6 +170,12 @@ func WithDevelopmentMode(d bool) Config {
 func WithReverseProxy(p bool) Config {
 	return func(r *router) {
 		r.settings.reverseProxy = p
+	}
+}
+
+func WithTemplate(t *template.Template) Config {
+	return func(r *router) {
+		r.template = t
 	}
 }
 
@@ -196,6 +212,10 @@ func New(opts ...Config) http.Handler {
 
 	app := gin.New()
 	app.Use(gin.Recovery())
+	if rt.template != nil {
+		app.SetHTMLTemplate(rt.template)
+	}
+	app.GET("/", rt.getRoot)
 	app.GET("/healthz", rt.getHealth)
 	app.GET("/versionz", rt.getVersion)
 	{
@@ -229,10 +249,11 @@ func New(opts ...Config) http.Handler {
 
 	m := http.NewServeMux()
 	m.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		switch uri := r.RequestURI; {
+		switch uri := r.URL.Path; {
 		case strings.HasPrefix(uri, "/api/"),
 			strings.HasPrefix(uri, "/healthz"),
-			strings.HasPrefix(uri, "/versionz"):
+			strings.HasPrefix(uri, "/versionz"),
+			uri == "/":
 			app.ServeHTTP(w, r)
 		default:
 			static.ServeHTTP(w, r)

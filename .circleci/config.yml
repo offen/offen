@@ -51,6 +51,11 @@ jobs:
             done
             echo Failed waiting for Postgres && exit 1
       - run:
+          name: Prepare static assets
+          command: |
+            go get github.com/rakyll/statik
+            statik -dest assets -src public
+      - run:
           name: Run tests
           command: |
             cp ~/offen/bootstrap.yml .

@@ -42,6 +42,7 @@ type Config struct {
 		Revision             string        `default:"not set"`
 		LogLevel             LogLevel      `default:"info"`
 		SingleNode           bool          `default:"true"`
+		RootAccount          string
 	}
 	Secrets struct {
 		CookieExchange Bytes `required:"true"`
@@ -92,7 +93,7 @@ func configurationCascade() []string {
 	return locations
 }
 
-func persistSettings(update map[string]string) error {
+func PersistSettings(update map[string]string) error {
 	switch runtime.GOOS {
 	case "linux", "darwin":
 		homedir, err := os.UserHomeDir()
@@ -146,7 +147,7 @@ func New(populateMissing bool) (*Config, error) {
 			}
 		}
 
-		if err := persistSettings(update); err != nil {
+		if err := PersistSettings(update); err != nil {
 			return nil, fmt.Errorf("error persisting settings: %v", err)
 		}
 

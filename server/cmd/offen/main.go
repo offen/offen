@@ -16,6 +16,7 @@ import (
 	uuid "github.com/gofrs/uuid"
 	"github.com/jasonlvhit/gocron"
 	"github.com/jinzhu/gorm"
+	"github.com/offen/offen/server/assets"
 	"github.com/offen/offen/server/config"
 	"github.com/offen/offen/server/keys"
 	"github.com/offen/offen/server/persistence/relational"
@@ -78,6 +79,11 @@ func main() {
 			}
 		}
 
+		tpl, tplErr := assets.HTMLTemplate()
+		if tplErr != nil {
+			logger.WithError(tplErr).Fatal("Failed parsing template files, cannot continue")
+		}
+
 		srv := &http.Server{
 			Addr: fmt.Sprintf("0.0.0.0:%d", cfg.Server.Port),
 			Handler: router.New(
@@ -90,6 +96,8 @@ func main() {
 				router.WithRevision(cfg.App.Revision),
 				router.WithReverseProxy(cfg.Server.ReverseProxy),
 				router.WithDevelopmentMode(cfg.App.Development),
+				router.WithRootAccount(cfg.App.RootAccount),
+				router.WithTemplate(tpl),
 			),
 		}
 		go func() {
@@ -160,18 +168,30 @@ func main() {
 			}
 			logger.Infof("Using command line arguments to create seed user and account")
 			if *accountID == "" {
-				randomID, err := uuid.NewV4()
-				if err != nil {
-					logger.WithError(err).Fatal("Error creating account id")
+				if cfg.App.RootAccount != "" {
+					// in case configuration knows about a root id, bootstrap
+					// will use this ID for creating the new account
+					*accountID = cfg.App.RootAccount
+				} else {
+					randomID, err := uuid.NewV4()
+					if err != nil {
+						logger.WithError(err).Fatal("Error creating account id")
+					}
+					*accountID = randomID.String()
 				}
-				*accountID = randomID.String()
 			} else {
-				if _, err := uuid.FromString(*accountID); err != nil {
-					logger.Fatalf("Given account ID %s is not of expected UUID format xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx", *accountID)
-				}
 				logger.Warnf("Using -forceid to set the ID of account %s to %s", *accountName, *accountID)
 				logger.Warn("If this is not intentional, please run this command again without forcing an ID")
 			}
+
+			if _, err := uuid.FromString(*accountID); err != nil {
+				logger.Fatalf("Given account ID %s is not of expected UUID format xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx", *accountID)
+			}
+
+			if err := config.PersistSettings(map[string]string{"OFFEN_APP_ROOTACCOUNT": *accountID}); err != nil {
+				logger.WithError(err).Fatal("Error persisting created account ID in local env file")
+			}
+
 			conf.AccountUsers = append(
 				conf.AccountUsers,
 				relational.BootstrapAccountUser{Email: *email, Password: *password, Accounts: []string{*accountID}},
