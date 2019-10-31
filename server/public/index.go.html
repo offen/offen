@@ -7,7 +7,9 @@
   <title>offen</title>
   <link rel="stylesheet" type="text/css" href="/normalize.css">
   <link rel="stylesheet" type="text/css" href="/skeleton.css">
-  <script src="/script.js" data-account-id="9b63c4d8-65c0-438c-9d30-cc4b01173393"></script>
+  {{ with .rootAccount }}
+    <script src="/script.js" data-account-id="{{ . }}"></script>
+  {{ end }}
 </head>
 <body>
   <div class="container">
