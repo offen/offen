@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"reflect"
 	"runtime"
 	"time"
 
@@ -52,6 +53,11 @@ type Config struct {
 		Host     string
 		Port     int `default:"587"`
 	}
+}
+
+func (c *Config) IsDefaultDatabase() bool {
+	field, _ := reflect.TypeOf(c.Database).FieldByName("ConnectionString")
+	return c.Database.ConnectionString == field.Tag.Get("default")
 }
 
 // SMTPConfigured returns true if all required SMTP credentials are set

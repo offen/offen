@@ -68,7 +68,7 @@ func (rt *router) accountUserMiddleware(cookieKey, contextKey string) gin.Handle
 			http.SetCookie(c.Writer, authCookie)
 			newJSONError(
 				fmt.Errorf("user with id %s does not exist: %v", userID, userErr),
-				http.StatusNotFound,
+				http.StatusUnauthorized,
 			).Pipe(c)
 			return
 		}

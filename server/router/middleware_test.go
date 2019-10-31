@@ -157,7 +157,7 @@ func TestAccountUserMiddleware(t *testing.T) {
 			Value: cookieValue,
 		})
 		m.ServeHTTP(w, r)
-		if w.Code != http.StatusNotFound {
+		if w.Code != http.StatusUnauthorized {
 			t.Errorf("Unexpected status code %v", w.Code)
 		}
 	})

@@ -37,6 +37,10 @@ func main() {
 			}
 		}
 		logger.SetLevel(cfg.App.LogLevel.LogLevel())
+		if cfg.IsDefaultDatabase() {
+			logger.Warn("The configuration is currently using a temporary local database, data will not persist")
+			logger.Warn("Refer to the documentation to find out how to connect to a persistent database")
+		}
 		return cfg
 	}
 
@@ -151,6 +155,9 @@ func main() {
 				logger.WithError(err).Fatalf("Error parsing content of given source file %s", *source)
 			}
 		} else {
+			if *email == "" || *password == "" || *accountName == "" {
+				logger.Fatal("Missing required parameters to create initial account, use the -help flag for reference on parameters")
+			}
 			logger.Infof("Using command line arguments to create seed user and account")
 			if *accountID == "" {
 				randomID, err := uuid.NewV4()
@@ -159,6 +166,9 @@ func main() {
 				}
 				*accountID = randomID.String()
 			} else {
+				if _, err := uuid.FromString(*accountID); err != nil {
+					logger.Fatalf("Given account ID %s is not of expected UUID format xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx", *accountID)
+				}
 				logger.Warnf("Using -forceid to set the ID of account %s to %s", *accountName, *accountID)
 				logger.Warn("If this is not intentional, please run this command again without forcing an ID")
 			}
@@ -175,7 +185,11 @@ func main() {
 		if err := relational.Bootstrap(db, conf, cfg.Secrets.EmailSalt.Bytes()); err != nil {
 			logger.WithError(err).Fatal("Error bootstrapping database")
 		}
-		logger.Info("Successfully bootstrapped database")
+		if *source == "" {
+			logger.Infof("Successfully created account %s with ID %s, you can use the given credentials to access it", *accountName, *accountID)
+		} else {
+			logger.Infof("Successfully bootstrapped database from data in %s", *source)
+		}
 	case "migrate":
 		cfg := mustConfig(false)
 		db, dbErr := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString)
