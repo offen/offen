@@ -1,11 +1,10 @@
+var fs = require('fs')
 var path = require('path')
 var through = require('through2')
 var jscodeshift = require('jscodeshift')
-var util = require('util')
 
 var locale = process.env.OFFEN_APP_LOCALE || 'en'
-var sourceFile = path.join(process.cwd(), './../l10n/', locale)
-var source = require(sourceFile)
+var sourceFile = path.join(process.cwd(), './../l10n/', locale + '.json')
 
 module.exports = transform
 
@@ -27,31 +26,47 @@ function transform (file) {
 }
 
 function inlineStrings (sourceString, callback) {
-  var j = jscodeshift(sourceString)
-  var calls = j.find(jscodeshift.CallExpression, {
-    callee: {
-      type: 'Identifier',
-      name: '__'
+  fs.readFile(sourceFile, 'utf-8', function (err, data) {
+    if (err) {
+      return callback(err)
     }
-  })
-  calls.replaceWith(function (node) {
-    if (node.value.arguments.length === 0) {
-      return node
-    }
-    if (node.value.arguments.length === 1) {
-      return jscodeshift.stringLiteral(
-        source[node.value.arguments[0].value]
-      )
-    }
-    // more than one argument means we want to do string interpolation
-    var args = node.value.arguments.slice(1)
-    var formatStr = source[node.value.arguments[0].value]
-    var argValues = args.map(function (arg) {
-      return arg.value
+    var stringMap = JSON.parse(data)
+    var j = jscodeshift(sourceString)
+    var calls = j.find(jscodeshift.CallExpression, {
+      callee: {
+        type: 'Identifier',
+        name: '__'
+      }
     })
-    return jscodeshift.stringLiteral(
-      util.format.apply(util, [formatStr].concat(argValues))
-    )
+
+    calls.replaceWith(function (node) {
+      if (node.value.arguments.length === 0) {
+        return node
+      }
+
+      var formatStr = stringMap[node.value.arguments[0].value] || node.value.arguments[0].value
+      // one arguments means the call can just be replaced by its
+      // string counterpart
+      if (node.value.arguments.length === 1) {
+        return jscodeshift.stringLiteral(formatStr)
+      }
+
+      // more than one argument means we want to do string interpolation
+      var args = node.value.arguments.slice(1)
+
+      return jscodeshift.callExpression(
+        jscodeshift.memberExpression(
+          jscodeshift.callExpression(
+            jscodeshift.identifier('require'),
+            [
+              jscodeshift.stringLiteral('util')
+            ]
+          ),
+          jscodeshift.identifier('format')
+        ),
+        [jscodeshift.stringLiteral(formatStr)].concat(args)
+      )
+    })
+    callback(null, j.toSource())
   })
-  callback(null, j.toSource())
 }

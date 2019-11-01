@@ -36,7 +36,7 @@ function view (state, emit) {
       ${state.model.hasOptedOut ? html`<p><strong>You have opted out. Clear your cookies to opt in.</strong></p>` : null}
       ${state.model.allowsCookies ? null : html`<p><strong>Your browser does not allow 3rd party cookies. We respect this setting and collect only very basic data in this case, yet it also means we cannot display any data to you here.</strong></p>`}
     `
-    pageTitle = __('foo', 'arg', 2) + ' user | ' + state.title
+    pageTitle = 'user | ' + state.title
   }
   emit(state.events.DOMTITLECHANGE, pageTitle)
 
