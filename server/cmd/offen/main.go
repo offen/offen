@@ -16,10 +16,11 @@ import (
 	uuid "github.com/gofrs/uuid"
 	"github.com/jasonlvhit/gocron"
 	"github.com/jinzhu/gorm"
-	"github.com/offen/offen/server/assets"
 	"github.com/offen/offen/server/config"
 	"github.com/offen/offen/server/keys"
+	"github.com/offen/offen/server/l10n"
 	"github.com/offen/offen/server/persistence/relational"
+	"github.com/offen/offen/server/public"
 	"github.com/offen/offen/server/router"
 	"github.com/sirupsen/logrus"
 	yaml "gopkg.in/yaml.v2"
@@ -79,7 +80,11 @@ func main() {
 			}
 		}
 
-		tpl, tplErr := assets.HTMLTemplate()
+		locale, localeErr := l10n.GetLocale(cfg.App.Locale)
+		if localeErr != nil {
+			logger.WithError(localeErr).Fatal("Failed reading locale data")
+		}
+		tpl, tplErr := public.HTMLTemplate(locale)
 		if tplErr != nil {
 			logger.WithError(tplErr).Fatal("Failed parsing template files, cannot continue")
 		}
@@ -98,6 +103,7 @@ func main() {
 				router.WithDevelopmentMode(cfg.App.Development),
 				router.WithRootAccount(cfg.App.RootAccount),
 				router.WithTemplate(tpl),
+				router.WithLocale(cfg.App.Locale),
 			),
 		}
 		go func() {

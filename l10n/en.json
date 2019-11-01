@@ -5,5 +5,7 @@
 	"script/support/webCrypto": "Browser does not support WebCrypto which is required",
 	"script/support/indexedDb": "Browser does not support IndexedDB which is required",
 	"script/support/fetch": "Browser does not support window.fetch which is required",
-	"script/support/URL": "Browser does not support window.URL which is required"
+	"script/support/URL": "Browser does not support window.URL which is required",
+	"server/homepage/headline": "Welcome to offen",
+	"server/homepage/subline": "Access your data in the <a href=\"%s\">auditorium</a>"
 }

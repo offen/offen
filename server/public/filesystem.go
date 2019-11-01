@@ -1,4 +1,4 @@
-package assets
+package public
 
 import (
 	"fmt"
@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	_ "github.com/offen/offen/server/assets/statik"
+	_ "github.com/offen/offen/server/public/statik"
 	"github.com/rakyll/statik/fs"
 )
 
@@ -27,21 +27,30 @@ func init() {
 
 // HTMLTemplate creates a template object containing all of the templates in the
 // public file system
-func HTMLTemplate() (*template.Template, error) {
+func HTMLTemplate(strings map[string]string) (*template.Template, error) {
 	t := template.New("index.go.html")
+	t.Funcs(template.FuncMap{
+		"__": func(key string, args ...interface{}) template.HTML {
+			format, ok := strings[key]
+			if !ok {
+				format = key
+			}
+			return template.HTML(fmt.Sprintf(format, args...))
+		},
+	})
 	templates := []string{"/index.go.html"}
 	for _, file := range templates {
 		f, err := FS.Open(file)
 		if err != nil {
-			return nil, fmt.Errorf("assets: error finding template file %s: %w", file, err)
+			return nil, fmt.Errorf("public: error finding template file %s: %w", file, err)
 		}
 		b, err := ioutil.ReadAll(f)
 		if err != nil {
-			return nil, fmt.Errorf("assets: error reading template file %s: %w", file, err)
+			return nil, fmt.Errorf("public: error reading template file %s: %w", file, err)
 		}
 		t, err = t.Parse(string(b))
 		if err != nil {
-			return nil, fmt.Errorf("assets: error parsing template file %s: %w", file, err)
+			return nil, fmt.Errorf("public: error parsing template file %s: %w", file, err)
 		}
 	}
 	return t, nil

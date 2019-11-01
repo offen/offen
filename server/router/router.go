@@ -11,9 +11,9 @@ import (
 	"github.com/felixge/httpsnoop"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/securecookie"
-	"github.com/offen/offen/server/assets"
 	"github.com/offen/offen/server/mailer"
 	"github.com/offen/offen/server/persistence"
+	"github.com/offen/offen/server/public"
 	"github.com/sirupsen/logrus"
 )
 
@@ -31,6 +31,7 @@ type router struct {
 		reverseProxy         bool
 		retentionPeriod      time.Duration
 		rootAccount          string
+		locale               string
 	}
 }
 
@@ -179,6 +180,12 @@ func WithTemplate(t *template.Template) Config {
 	}
 }
 
+func WithLocale(l string) Config {
+	return func(r *router) {
+		r.settings.locale = l
+	}
+}
+
 // New creates a new application router that reads and writes data
 // to the given database implementation. In the context of the application
 // this expects to be the only top level router in charge of handling all
@@ -190,7 +197,7 @@ func New(opts ...Config) http.Handler {
 	}
 	rt.cookieSigner = securecookie.New(rt.settings.cookieExchangeSecret, nil)
 
-	fileServer := http.FileServer(assets.FS)
+	fileServer := http.FileServer(public.FS)
 	if !rt.settings.reverseProxy {
 		fileServer = gziphandler.GzipHandler(staticHeaderMiddleware(fileServer))
 	}

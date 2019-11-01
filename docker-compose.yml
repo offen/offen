@@ -22,6 +22,7 @@ services:
       - serverdata:/data
       - .:/offen
       - ./bootstrap.yml:/offen/server/bootstrap.yml
+      - ./l10n:/offen/server/l10n
     environment:
       GOPATH: /data/go
       OFFEN_APP_DEVELOPMENT: '1'

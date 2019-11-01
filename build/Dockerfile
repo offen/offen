@@ -54,6 +54,7 @@ WORKDIR /code/server
 RUN go mod download
 
 COPY ./server /code/server
+COPY ./l10n /code/server/l10n
 
 ARG rev
 ENV GIT_REVISION=$rev
@@ -62,7 +63,9 @@ RUN go get github.com/rakyll/statik
 COPY --from=script /code/script/dist /code/server/public
 COPY --from=auditorium /code/auditorium/dist /code/server/public/auditorium
 COPY --from=vault /code/vault/dist /code/server/public/vault
-RUN statik -dest assets -src public
+
+RUN statik -dest public -src public
+RUN statik -dest l10n -src l10n
 
 ENV GOOS linux
 RUN CC=musl-gcc go build -ldflags "-linkmode external -extldflags '-static' -s -w -X github.com/offen/offen/server/config.Revision=$GIT_REVISION" -o bin/offen cmd/offen/main.go
