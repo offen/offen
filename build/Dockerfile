@@ -6,8 +6,8 @@ WORKDIR /code/deps
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 RUN npm ci
 COPY ./auditorium /code/auditorium
+COPY ./l10n /code/l10n
 COPY ./banner.txt /code/banner.txt
-COPY ./l10n /code/auditorium/l10n
 WORKDIR /code/auditorium
 RUN cp -a /code/deps/node_modules /code/auditorium/
 ENV NODE_ENV production
@@ -21,6 +21,7 @@ WORKDIR /code/deps
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 RUN npm ci
 COPY ./script /code/script
+COPY ./l10n /code/l10n
 COPY ./banner.txt /code/banner.txt
 WORKDIR /code/script
 RUN cp -a /code/deps/node_modules /code/script/
@@ -35,6 +36,7 @@ WORKDIR /code/deps
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 RUN npm ci
 COPY ./vault /code/vault
+COPY ./l10n /code/l10n
 COPY ./banner.txt /code/banner.txt
 WORKDIR /code/vault
 RUN cp -a /code/deps/node_modules /code/vault/
@@ -55,7 +57,6 @@ COPY ./server /code/server
 
 ARG rev
 ENV GIT_REVISION=$rev
-RUN echo $GIT_REVISION
 
 RUN go get github.com/rakyll/statik
 COPY --from=script /code/script/dist /code/server/public

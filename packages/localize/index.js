@@ -3,7 +3,7 @@ var path = require('path')
 var through = require('through2')
 var jscodeshift = require('jscodeshift')
 
-var locale = process.env.OFFEN_APP_LOCALE || 'en'
+var locale = process.env.OFFEN_BUILD_LOCALE || 'en'
 var sourceFile = path.join(process.cwd(), './../l10n/', locale + '.json')
 
 module.exports = transform

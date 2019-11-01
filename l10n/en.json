@@ -1,3 +1,9 @@
 {
-	"auditorium/main/rangeSelectorHeadline": "Show data from the"
+	"script/main/unsupportedError_1": "\"offen\" does not support this site: %s",
+	"script/main/unsupportedError_2": "No data will be collected. Find out more at \"https: //www.offen.dev\".",
+	"script/support/secureContext": "The host page is required to run in a secure context",
+	"script/support/webCrypto": "Browser does not support WebCrypto which is required",
+	"script/support/indexedDb": "Browser does not support IndexedDB which is required",
+	"script/support/fetch": "Browser does not support window.fetch which is required",
+	"script/support/URL": "Browser does not support window.URL which is required"
 }

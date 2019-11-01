@@ -63,7 +63,7 @@ function view (state, emit) {
     `
   })
   var rangeSelector = html`
-    <h4>${__('auditorium/main/rangeSelectorHeadline')}:</h4>
+    <h4>Show data from the:</h4>
     <ul>${ranges}</ul>
   `
 

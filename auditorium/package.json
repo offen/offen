@@ -22,7 +22,6 @@
     "underscore": "^1.9.1"
   },
   "devDependencies": {
-    "brfs": "^2.0.2",
     "browserify": "^16.2.3",
     "budo": "^11.6.3",
     "dependency-check": "^3.3.0",

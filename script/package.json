@@ -31,7 +31,8 @@
   },
   "browserify": {
     "transform": [
-      "envify"
+      "envify",
+      "offen/localize"
     ]
   },
   "standard": {
@@ -40,6 +41,9 @@
     ],
     "env": [
       "mocha"
+    ],
+    "globals": [
+      "__"
     ]
   }
 }

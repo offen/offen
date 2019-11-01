@@ -37,8 +37,8 @@ module.exports = app
 function supportMiddleware (context, send, next) {
   checkSupport(function (err) {
     if (err) {
-      console.log('"offen" does not support this site: ' + err.message)
-      console.log('No data will be collected. Find out more at "https://www.offen.dev".')
+      console.log(__('script/main/unsupportedError_1', err.message))
+      console.log(__('script/main/unsupportedError_2'))
       return
     }
     next()
