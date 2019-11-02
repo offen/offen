@@ -8,6 +8,6 @@ import (
 
 func (rt *router) getRoot(c *gin.Context) {
 	c.HTML(http.StatusOK, "index.go.html", map[string]interface{}{
-		"rootAccount": rt.settings.rootAccount,
+		"rootAccount": rt.config.App.RootAccount,
 	})
 }

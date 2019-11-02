@@ -25,18 +25,19 @@ func init() {
 	}
 }
 
-func GetLocale(locale string) (map[string]string, error) {
+// GetLocaleStrings returns the map of strings for the given locale if available.
+func GetLocaleStrings(locale string) (map[string]string, error) {
 	file, err := FS.Open(fmt.Sprintf("/%s.json", locale))
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("l10n: error trying to open file for locale %s: %w", locale, err)
 	}
 	b, err := ioutil.ReadAll(file)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("l10n: error reading file contents for locale %s: %w", locale, err)
 	}
 	var strings map[string]string
 	if err := json.Unmarshal(b, &strings); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("l10n: error parsing JSON for locale %s: %w", locale, err)
 	}
 	return strings, nil
 }

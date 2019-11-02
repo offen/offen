@@ -28,8 +28,9 @@ var Revision string
 // source values from the application environment at runtime.
 type Config struct {
 	Server struct {
-		Port         int  `default:"8080"`
-		ReverseProxy bool `default:"false"`
+		Port                int  `default:"8080"`
+		ReverseProxy        bool `default:"false"`
+		DisableSecureCookie bool `default:"false"`
 	}
 	Database struct {
 		Dialect          Dialect `default:"sqlite3"`
@@ -38,7 +39,6 @@ type Config struct {
 	App struct {
 		Development          bool          `default:"false"`
 		EventRetentionPeriod time.Duration `default:"4464h"`
-		DisableSecureCookie  bool          `default:"false"`
 		Revision             string        `default:"not set"`
 		LogLevel             LogLevel      `default:"info"`
 		SingleNode           bool          `default:"true"`

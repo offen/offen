@@ -10,6 +10,7 @@ import (
 	"testing"
 
 	"github.com/gin-gonic/gin"
+	"github.com/offen/offen/server/config"
 	"github.com/offen/offen/server/persistence"
 )
 
@@ -60,7 +61,7 @@ func TestRouter_GetPublicKey(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			rt := router{db: test.db}
+			rt := router{db: test.db, config: &config.Config{}}
 			m := gin.New()
 			m.GET("/", rt.getPublicKey)
 			w := httptest.NewRecorder()
@@ -146,7 +147,7 @@ func TestRouter_PostUserSecret(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			rt := router{db: test.db}
+			rt := router{db: test.db, config: &config.Config{}}
 			m := gin.New()
 			m.POST("/", rt.postUserSecret)
 			w := httptest.NewRecorder()

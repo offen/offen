@@ -80,7 +80,7 @@ func main() {
 			}
 		}
 
-		locale, localeErr := l10n.GetLocale(cfg.App.Locale)
+		locale, localeErr := l10n.GetLocaleStrings(cfg.App.Locale)
 		if localeErr != nil {
 			logger.WithError(localeErr).Fatal("Failed reading locale data")
 		}
@@ -94,16 +94,8 @@ func main() {
 			Handler: router.New(
 				router.WithDatabase(db),
 				router.WithLogger(logger),
-				router.WithSecureCookie(!cfg.App.DisableSecureCookie),
-				router.WithCookieExchangeSecret(cfg.Secrets.CookieExchange.Bytes()),
-				router.WithRetentionPeriod(cfg.App.EventRetentionPeriod),
-				router.WithMailer(cfg.NewMailer()),
-				router.WithRevision(cfg.App.Revision),
-				router.WithReverseProxy(cfg.Server.ReverseProxy),
-				router.WithDevelopmentMode(cfg.App.Development),
-				router.WithRootAccount(cfg.App.RootAccount),
 				router.WithTemplate(tpl),
-				router.WithLocale(cfg.App.Locale),
+				router.WithConfig(cfg),
 			),
 		}
 		go func() {

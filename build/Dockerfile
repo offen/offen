@@ -71,7 +71,7 @@ ENV GOOS linux
 RUN CC=musl-gcc go build -ldflags "-linkmode external -extldflags '-static' -s -w -X github.com/offen/offen/server/config.Revision=$GIT_REVISION" -o bin/offen cmd/offen/main.go
 
 FROM alpine:3.10
-LABEL maintainer="offen <mail@offen.dev>"
+LABEL maintainer="offen <hioffen@posteo.de>"
 
 RUN apk add -U --no-cache ca-certificates
 COPY --from=server /code/server/bin/offen /
