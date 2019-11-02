@@ -17,7 +17,7 @@ function view (state, emit) {
     })
   var loggedInMessage = html`
     <p>
-      You can access the following accounts:
+      ${__('You can access the following accounts:')}
     </p>
     <ul>
       ${availableAccounts}
@@ -28,7 +28,7 @@ function view (state, emit) {
     e.preventDefault()
     var formData = new window.FormData(e.currentTarget)
     if (formData.get('changed') !== formData.get('repeat')) {
-      return emit('offen:flash', 'Passwords did not match. Please try again.')
+      return emit('offen:flash', __('Passwords did not match. Please try again.'))
     }
     emit('offen:change-credentials', {
       currentPassword: formData.get('current'),
@@ -42,7 +42,7 @@ function view (state, emit) {
       <div class="row">
         <div class="eight columns">
           <label>
-            Current password:
+            ${__('Current password:')}
           </label>
           <input class="u-full-width" type="password" name="current">
         </div>
@@ -50,7 +50,7 @@ function view (state, emit) {
       <div class="row">
         <div class="eight columns">
           <label>
-            New password:
+            ${__('New password:')}
           </label>
           <input class="u-full-width" type="password" name="changed">
         </div>
@@ -58,14 +58,14 @@ function view (state, emit) {
       <div class="row">
         <div class="eight columns">
           <label>
-            Repeat new password:
+            ${__('Repeat new password:')}
           </label>
           <input class="u-full-width" type="password" name="repeat">
         </div>
       </div>
       <div class="row">
         <div class="eight columns">
-          <input class="u-full-width" type="submit" value="Change password">
+          <input class="u-full-width" type="submit" value="${__('Change password')}">
         </div>
       </div>
     </form>
@@ -86,7 +86,7 @@ function view (state, emit) {
       <div class="row">
         <div class="eight columns">
           <label>
-            New email address:
+            ${__('New email address:')}
           </label>
           <input class="u-full-width" type="text" name="email-address">
         </div>
@@ -94,14 +94,14 @@ function view (state, emit) {
       <div class="row">
         <div class="eight columns">
           <label>
-            Your Password:
+            ${__('Your Password:')}
           </label>
           <input class="u-full-width" type="password" name="password">
         </div>
       </div>
       <div class="row">
         <div class="eight columns">
-          <input class="u-full-width" type="submit" value="Change Email address">
+          <input class="u-full-width" type="submit" value="${__('Change Email address')}">
         </div>
       </div>
     </form>

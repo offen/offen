@@ -44,8 +44,8 @@
   "browserify": {
     "transform": [
       "envify",
-      "offen/localize",
-      "nanohtml"
+      "nanohtml",
+      "offen/localize"
     ]
   },
   "standard": {
@@ -54,9 +54,6 @@
     ],
     "env": [
       "mocha"
-    ],
-    "globals": [
-      "__"
     ]
   }
 }

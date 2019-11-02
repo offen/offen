@@ -16,25 +16,25 @@ function view (state, emit) {
       <div class="row">
         <div class="eight columns">
           <label>
-            Email Address:
+            ${__('Email Address:')}
           </label>
-          <input class="u-full-width" required type="email" name="username" placeholder="E-Mail-Address">
+          <input class="u-full-width" required type="email" name="username" placeholder="${__('Email Address')}">
         </div>
       </div>
       <div class="row">
         <div class="eight columns">
           <label>
-            Password:
+            ${__('Password:')}
           </label>
-          <input class="u-full-width" required type="password" name="password" placeholder="Password">
+          <input class="u-full-width" required type="password" name="password" placeholder="${__('Password')}">
         </div>
       </div>
       <div class="row">
         <div class="eight columns">
-          <input type="submit" class="u-full-width" value="Log In">
+          <input type="submit" class="u-full-width" value="${__('Log in')}">
         </div>
       </div>
-      <a href="./reset-password/">Forgot password?</a>
+      <a href="./reset-password/">${__('Forgot password?')}</a>
     </form>
   `
 

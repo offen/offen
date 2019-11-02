@@ -3,8 +3,9 @@ var path = require('path')
 var through = require('through2')
 var jscodeshift = require('jscodeshift')
 
-var locale = process.env.OFFEN_BUILD_LOCALE || 'en'
-var sourceFile = path.join(process.cwd(), './../l10n/', locale + '.json')
+var defaultLocale = 'en'
+var locale = process.env.OFFEN_BUILD_LOCALE || defaultLocale
+var sourceFile = path.join(process.cwd(), './locales.json')
 
 module.exports = transform
 
@@ -44,7 +45,9 @@ function inlineStrings (sourceString, callback) {
         return node
       }
 
-      var formatStr = stringMap[node.value.arguments[0].value] || node.value.arguments[0].value
+      var formatStr = locale === defaultLocale
+        ? node.value.arguments[0].value
+        : stringMap[node.value.arguments[0].value] || node.value.arguments[0].value
       // one arguments means the call can just be replaced by its
       // string counterpart
       if (node.value.arguments.length === 1) {

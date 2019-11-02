@@ -7,9 +7,9 @@ var getSessionId = require('./src/session-id')
 var register = router()
 
 register('EVENT', optOutMiddleware, eventDuplexerMiddleware, anonymousMiddleware, function (event, respond, next) {
-  console.log('This page is using offen to collect usage statistics.')
-  console.log('You can access and manage all of your personal data or opt-out at "' + window.location.origin + '/auditorium/".')
-  console.log('Find out more about offen at "https://www.offen.dev".')
+  console.log(__('This page is using offen to collect usage statistics.'))
+  console.log(__('You can access and manage all of your personal data or opt-out at "%s/auditorium/".', window.location.origin))
+  console.log(__('Find out more about offen at "https://www.offen.dev".'))
   handler.handleAnalyticsEvent(event.data)
     .catch(next)
 })
@@ -56,19 +56,19 @@ function optOutMiddleware (event, respond, next) {
   if (!hasOptedOut()) {
     return next()
   }
-  console.log('This page is using offen to collect usage statistics.')
-  console.log('You have opted out of data collection, no data is being collected.')
-  console.log('Find out more about offen at "https://www.offen.dev".')
+  console.log(__('This page is using offen to collect usage statistics.'))
+  console.log(__('You have opted out of data collection, no data is being collected.'))
+  console.log(__('Find out more about offen at "https://www.offen.dev".'))
 }
 
 function anonymousMiddleware (event, respond, next) {
   if (!event.data.anoynmous) {
     return next()
   }
-  console.log('This page is using offen to collect usage statistics.')
-  console.log('Your setup prevents or you have disabled third party cookies in your browser\'s settings.')
-  console.log('Basic usage data will be collected anonymously.')
-  console.log('Find out more at "https://www.offen.dev".')
+  console.log(__('This page is using offen to collect usage statistics.'))
+  console.log(__('Your setup prevents or you have disabled third party cookies in your browser\'s settings.'))
+  console.log(__('Basic usage data will be collected anonymously.'))
+  console.log(__('Find out more at "https://www.offen.dev".'))
   handler.handleAnonymousEvent(event.data)
     .catch(next)
 }

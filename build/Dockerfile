@@ -6,7 +6,6 @@ WORKDIR /code/deps
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 RUN npm ci
 COPY ./auditorium /code/auditorium
-COPY ./l10n /code/l10n
 COPY ./banner.txt /code/banner.txt
 WORKDIR /code/auditorium
 RUN cp -a /code/deps/node_modules /code/auditorium/
@@ -21,7 +20,6 @@ WORKDIR /code/deps
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 RUN npm ci
 COPY ./script /code/script
-COPY ./l10n /code/l10n
 COPY ./banner.txt /code/banner.txt
 WORKDIR /code/script
 RUN cp -a /code/deps/node_modules /code/script/
@@ -36,7 +34,6 @@ WORKDIR /code/deps
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 RUN npm ci
 COPY ./vault /code/vault
-COPY ./l10n /code/l10n
 COPY ./banner.txt /code/banner.txt
 WORKDIR /code/vault
 RUN cp -a /code/deps/node_modules /code/vault/
@@ -54,7 +51,6 @@ WORKDIR /code/server
 RUN go mod download
 
 COPY ./server /code/server
-COPY ./l10n /code/server/l10n
 
 ARG rev
 ENV GIT_REVISION=$rev
@@ -65,7 +61,6 @@ COPY --from=auditorium /code/auditorium/dist /code/server/public/auditorium
 COPY --from=vault /code/vault/dist /code/server/public/vault
 
 RUN statik -dest public -src public
-RUN statik -dest l10n -src l10n
 
 ENV GOOS linux
 RUN CC=musl-gcc go build -ldflags "-linkmode external -extldflags '-static' -s -w -X github.com/offen/offen/server/config.Revision=$GIT_REVISION" -o bin/offen cmd/offen/main.go

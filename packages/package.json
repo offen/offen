@@ -11,6 +11,9 @@
     "posttest": "standard",
     "fix": "standard --fix"
   },
+  "bin": {
+    "collect-strings": "./localize/collect.js"
+  },
   "dependencies": {
     "envify": "^4.1.0",
     "jscodeshift": "^0.6.4",
