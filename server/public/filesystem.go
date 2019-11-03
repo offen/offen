@@ -27,16 +27,10 @@ func init() {
 
 // HTMLTemplate creates a template object containing all of the templates in the
 // public file system
-func HTMLTemplate(strings map[string]string) (*template.Template, error) {
+func HTMLTemplate(gettext func(string, ...interface{}) template.HTML) (*template.Template, error) {
 	t := template.New("index.go.html")
 	t.Funcs(template.FuncMap{
-		"__": func(key string, args ...interface{}) template.HTML {
-			format, ok := strings[key]
-			if !ok {
-				format = key
-			}
-			return template.HTML(fmt.Sprintf(format, args...))
-		},
+		"__": gettext,
 	})
 	templates := []string{"/index.go.html"}
 	for _, file := range templates {

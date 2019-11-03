@@ -14,6 +14,8 @@ help:
 	@echo "        Apply pending database migrations"
 	@echo "    build"
 	@echo "        Build a local docker image, tagged as offen/offen:local"
+	@echo "    extract-strings"
+	@echo "        Extract strings for localization"
 	@echo "    secret"
 	@echo "        Generate a random base64 encoded secret"
 
@@ -40,6 +42,12 @@ update:
 
 migrate:
 	@docker-compose run server make migrate
+
+extract-strings:
+	@docker-compose run server ./extract-strings.sh
+	@docker-compose run auditorium npm run extract-strings
+	@docker-compose run script npm run extract-strings
+	@docker-compose run vault npm run extract-strings
 
 DOCKER_IMAGE_TAG ?= local
 ROBOTS_FILE ?= robots.txt.staging

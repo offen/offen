@@ -18,6 +18,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/offen/offen/server/config"
 	"github.com/offen/offen/server/keys"
+	"github.com/offen/offen/server/locales"
 	"github.com/offen/offen/server/persistence/relational"
 	"github.com/offen/offen/server/public"
 	"github.com/offen/offen/server/router"
@@ -79,7 +80,11 @@ func main() {
 			}
 		}
 
-		tpl, tplErr := public.HTMLTemplate(map[string]string{})
+		gettext, gettextErr := locales.GettextFor(cfg.App.Locale)
+		if gettextErr != nil {
+			logger.WithError(gettextErr).Fatal("Failed reading locale files, cannot continue")
+		}
+		tpl, tplErr := public.HTMLTemplate(gettext)
 		if tplErr != nil {
 			logger.WithError(tplErr).Fatal("Failed parsing template files, cannot continue")
 		}

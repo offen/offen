@@ -61,6 +61,7 @@ COPY --from=auditorium /code/auditorium/dist /code/server/public/auditorium
 COPY --from=vault /code/vault/dist /code/server/public/vault
 
 RUN statik -dest public -src public
+RUN statik -dest locales -src locales
 
 ENV GOOS linux
 RUN CC=musl-gcc go build -ldflags "-linkmode external -extldflags '-static' -s -w -X github.com/offen/offen/server/config.Revision=$GIT_REVISION" -o bin/offen cmd/offen/main.go
