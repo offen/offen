@@ -11,7 +11,8 @@
     "pretest": "dependency-check package.json",
     "posttest": "standard",
     "fix": "standard --fix",
-    "build": "gulp"
+    "build": "gulp",
+    "extract-strings": "extract-strings -f locales/de.po '**/*.js'"
   },
   "dependencies": {
     "choo": "^7.0.0",
@@ -49,6 +50,9 @@
     ]
   },
   "standard": {
+    "globals": [
+      "__"
+    ],
     "ignore": [
       "dist/*.*"
     ],

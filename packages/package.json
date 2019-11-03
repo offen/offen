@@ -12,12 +12,16 @@
     "fix": "standard --fix"
   },
   "bin": {
-    "collect-strings": "./localize/collect.js"
+    "extract-strings": "./localize/extract.js"
   },
   "dependencies": {
     "envify": "^4.1.0",
+    "glob": "^7.1.5",
     "jscodeshift": "^0.6.4",
-    "through2": "^3.0.1"
+    "minimist": "^1.2.0",
+    "pofile": "^1.1.0",
+    "through2": "^3.0.1",
+    "touch": "^3.1.0"
   },
   "devDependencies": {
     "dependency-check": "^3.3.0",

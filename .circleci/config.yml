@@ -54,9 +54,7 @@ jobs:
           name: Prepare static assets
           command: |
             go get github.com/rakyll/statik
-            cp -R ./../l10n ./l10n
             statik -dest public -src public
-            statik -dest l10n -src l10n
       - run:
           name: Run tests
           command: |

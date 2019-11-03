@@ -9,7 +9,8 @@
     "test": "mochify --chrome $(which google-chrome) --allow-chrome-as-root ./**/*.test.js",
     "posttest": "standard",
     "fix": "standard --fix",
-    "build": "gulp"
+    "build": "gulp",
+    "extract-strings": "extract-strings -f locales/de.po '**/*.js'"
   },
   "dependencies": {
     "date-fns": "^1.30.1",
@@ -46,6 +47,9 @@
     ]
   },
   "standard": {
+    "globals": [
+      "__"
+    ],
     "ignore": [
       "dist/*.*"
     ],

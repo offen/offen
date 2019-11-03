@@ -1,11 +1,10 @@
-var fs = require('fs')
 var path = require('path')
 var through = require('through2')
 var jscodeshift = require('jscodeshift')
+var PO = require('pofile')
 
 var defaultLocale = 'en'
 var locale = process.env.OFFEN_BUILD_LOCALE || defaultLocale
-var sourceFile = path.join(process.cwd(), './locales.json')
 
 module.exports = transform
 
@@ -27,11 +26,11 @@ function transform (file) {
 }
 
 function inlineStrings (sourceString, callback) {
-  fs.readFile(sourceFile, 'utf-8', function (err, data) {
+  getStringMap(locale, function (err, stringMap) {
     if (err) {
       return callback(err)
     }
-    var stringMap = JSON.parse(data)
+
     var j = jscodeshift(sourceString)
     var calls = j.find(jscodeshift.CallExpression, {
       callee: {
@@ -71,5 +70,22 @@ function inlineStrings (sourceString, callback) {
       )
     })
     callback(null, j.toSource())
+  })
+}
+
+function getStringMap (locale, callback) {
+  if (locale === defaultLocale) {
+    return callback(null, {})
+  }
+  var sourceFile = path.join(process.cwd(), './locales/' + locale + '.po')
+  PO.load(sourceFile, function (err, data) {
+    if (err) {
+      return callback(err)
+    }
+    var stringMap = data.items.reduce(function (acc, next) {
+      acc[next.msgid] = next.msgstr[0]
+      return acc
+    }, {})
+    callback(null, stringMap)
   })
 }
