@@ -35,11 +35,13 @@ func init() {
 		// files. In development live-reloading static assets will be routed through
 		// nginx instead.
 		FS = http.Dir("./public")
-	} else {
-		FS = &localizedFS{
-			locale: "en",
-			root:   FS,
-		}
+	}
+}
+
+func NewLocalizedFS(locale string) http.FileSystem {
+	return &localizedFS{
+		locale: locale,
+		root:   FS,
 	}
 }
 

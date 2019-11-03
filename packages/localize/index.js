@@ -4,11 +4,13 @@ var jscodeshift = require('jscodeshift')
 var PO = require('pofile')
 
 var defaultLocale = 'en'
-var locale = process.env.OFFEN_BUILD_LOCALE || defaultLocale
+var locale = defaultLocale
 
 module.exports = transform
 
-function transform (file) {
+function transform (file, options) {
+  locale = options.locale || locale
+
   var buf = ''
   return through(function (chunk, enc, next) {
     buf += chunk.toString('utf-8')

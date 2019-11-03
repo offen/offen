@@ -135,7 +135,7 @@ func New(opts ...Config) http.Handler {
 	rt.cookieSigner = securecookie.New(rt.config.Secrets.CookieExchange.Bytes(), nil)
 	rt.mailer = rt.config.NewMailer()
 
-	fileServer := http.FileServer(public.FS)
+	fileServer := http.FileServer(public.NewLocalizedFS(rt.config.App.Locale))
 	if !rt.config.Server.ReverseProxy {
 		fileServer = gziphandler.GzipHandler(staticHeaderMiddleware(fileServer))
 	}
