@@ -10,6 +10,19 @@ import (
 	"github.com/rakyll/statik/fs"
 )
 
+type localizedFS struct {
+	locale string
+	root   http.FileSystem
+}
+
+func (l *localizedFS) Open(file string) (http.File, error) {
+	localized, err := l.root.Open(fmt.Sprintf("/%s%s", l.locale, file))
+	if err == nil {
+		return localized, nil
+	}
+	return l.root.Open(file)
+}
+
 // FS is a file system containing the static assets for serving the application
 var FS http.FileSystem
 
@@ -22,6 +35,11 @@ func init() {
 		// files. In development live-reloading static assets will be routed through
 		// nginx instead.
 		FS = http.Dir("./public")
+	} else {
+		FS = &localizedFS{
+			locale: "en",
+			root:   FS,
+		}
 	}
 }
 

@@ -55,11 +55,12 @@ COPY ./server /code/server
 ARG rev
 ENV GIT_REVISION=$rev
 
-RUN go get github.com/rakyll/statik
-COPY --from=script /code/script/dist /code/server/public
-COPY --from=auditorium /code/auditorium/dist /code/server/public/auditorium
-COPY --from=vault /code/vault/dist /code/server/public/vault
+RUN mkdir -p /code/server/public/en
+COPY --from=script /code/script/dist /code/server/public/en
+COPY --from=auditorium /code/auditorium/dist /code/server/public/auditorium/en
+COPY --from=vault /code/vault/dist /code/server/public/vault/en
 
+RUN go get github.com/rakyll/statik
 RUN statik -dest public -src public
 RUN statik -dest locales -src locales
 
