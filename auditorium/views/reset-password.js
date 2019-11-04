@@ -7,7 +7,7 @@ function view (state, emit) {
     e.preventDefault()
     var formData = new window.FormData(e.currentTarget)
     if (formData.get('password') !== formData.get('repeat-password')) {
-      return emit('offen:flash', 'Passwords did not match. Please try again.')
+      return emit('offen:flash', __('Passwords did not match. Please try again.'))
     }
     emit('offen:reset-password', {
       emailAddress: formData.get('email-address'),
@@ -20,30 +20,30 @@ function view (state, emit) {
       <div class="row">
         <div class="eight columns">
           <label>
-            Email address:
+            ${__('Email address:')}
           </label>
-          <input class="u-full-width" required type="email" name="email-address" placeholder="Your email address">
+          <input class="u-full-width" required type="email" name="email-address" placeholder="${__('Your email address')}">
         </div>
       </div>
       <div class="row">
         <div class="eight columns">
           <label>
-            New password:
+            ${__('New password:')}
           </label>
-          <input class="u-full-width" required type="password" name="password" placeholder="Your new password">
+          <input class="u-full-width" required type="password" name="password" placeholder="${__('Your new password')}">
         </div>
       </div>
       <div class="row">
         <div class="eight columns">
           <label>
-            Repeat password:
+            ${__('Repeat password:')}
           </label>
-          <input class="u-full-width" required type="password" name="repeat-password" placeholder="Repeat password">
+          <input class="u-full-width" required type="password" name="repeat-password" placeholder="${__('Repeat password')}">
         </div>
       </div>
       <div class="row">
         <div class="eight columns">
-          <input class="u-full-width" type="submit" value="Reset password">
+          <input class="u-full-width" type="submit" value="${__('Reset password')}">
         </div>
       </div>
       <input type="hidden" name="token" value=${state.params.token}>

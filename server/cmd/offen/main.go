@@ -16,10 +16,11 @@ import (
 	uuid "github.com/gofrs/uuid"
 	"github.com/jasonlvhit/gocron"
 	"github.com/jinzhu/gorm"
-	"github.com/offen/offen/server/assets"
 	"github.com/offen/offen/server/config"
 	"github.com/offen/offen/server/keys"
+	"github.com/offen/offen/server/locales"
 	"github.com/offen/offen/server/persistence/relational"
+	"github.com/offen/offen/server/public"
 	"github.com/offen/offen/server/router"
 	"github.com/sirupsen/logrus"
 	yaml "gopkg.in/yaml.v2"
@@ -79,25 +80,24 @@ func main() {
 			}
 		}
 
-		tpl, tplErr := assets.HTMLTemplate()
+		gettext, gettextErr := locales.GettextFor(cfg.App.Locale.String())
+		if gettextErr != nil {
+			logger.WithError(gettextErr).Fatal("Failed reading locale files, cannot continue")
+		}
+		tpl, tplErr := public.HTMLTemplate(gettext)
 		if tplErr != nil {
 			logger.WithError(tplErr).Fatal("Failed parsing template files, cannot continue")
 		}
+		fs := public.NewLocalizedFS(cfg.App.Locale.String())
 
 		srv := &http.Server{
 			Addr: fmt.Sprintf("0.0.0.0:%d", cfg.Server.Port),
 			Handler: router.New(
 				router.WithDatabase(db),
 				router.WithLogger(logger),
-				router.WithSecureCookie(!cfg.App.DisableSecureCookie),
-				router.WithCookieExchangeSecret(cfg.Secrets.CookieExchange.Bytes()),
-				router.WithRetentionPeriod(cfg.App.EventRetentionPeriod),
-				router.WithMailer(cfg.NewMailer()),
-				router.WithRevision(cfg.App.Revision),
-				router.WithReverseProxy(cfg.Server.ReverseProxy),
-				router.WithDevelopmentMode(cfg.App.Development),
-				router.WithRootAccount(cfg.App.RootAccount),
 				router.WithTemplate(tpl),
+				router.WithConfig(cfg),
+				router.WithFS(fs),
 			),
 		}
 		go func() {

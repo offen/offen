@@ -9,7 +9,8 @@
     "test": "mochify --chrome $(which google-chrome) --allow-chrome-as-root ./**/*.test.js",
     "posttest": "standard",
     "fix": "standard --fix",
-    "build": "gulp"
+    "build": "gulp",
+    "extract-strings": "gulp extract-strings"
   },
   "dependencies": {
     "date-fns": "^1.30.1",
@@ -41,15 +42,24 @@
   },
   "browserify": {
     "transform": [
-      "envify"
+      "envify",
+      "offen/localize"
     ]
   },
   "standard": {
+    "globals": [
+      "__"
+    ],
     "ignore": [
       "dist/*.*"
     ],
     "env": [
       "mocha"
+    ]
+  },
+  "offen": {
+    "locales": [
+      "en"
     ]
   }
 }

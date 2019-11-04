@@ -11,7 +11,7 @@ import (
 	"github.com/felixge/httpsnoop"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/securecookie"
-	"github.com/offen/offen/server/assets"
+	"github.com/offen/offen/server/config"
 	"github.com/offen/offen/server/mailer"
 	"github.com/offen/offen/server/persistence"
 	"github.com/sirupsen/logrus"
@@ -20,18 +20,11 @@ import (
 type router struct {
 	db           persistence.Database
 	mailer       mailer.Mailer
+	fs           http.FileSystem
 	logger       *logrus.Logger
 	cookieSigner *securecookie.SecureCookie
 	template     *template.Template
-	settings     struct {
-		cookieExchangeSecret []byte
-		secureCookie         bool
-		revision             string
-		development          bool
-		reverseProxy         bool
-		retentionPeriod      time.Duration
-		rootAccount          string
-	}
+	config       *config.Config
 }
 
 func (rt *router) logError(err error, message string) {
@@ -52,9 +45,9 @@ func (rt *router) userCookie(userID string) *http.Cookie {
 	return &http.Cookie{
 		Name:     cookieKey,
 		Value:    userID,
-		Expires:  time.Now().Add(rt.settings.retentionPeriod),
+		Expires:  time.Now().Add(rt.config.App.EventRetentionPeriod),
 		HttpOnly: true,
-		Secure:   rt.settings.secureCookie,
+		Secure:   !rt.config.Server.DisableSecureCookie,
 		Path:     "/",
 	}
 }
@@ -107,13 +100,6 @@ func WithDatabase(db persistence.Database) Config {
 	}
 }
 
-// WithRevision sets the current revision
-func WithRevision(rev string) Config {
-	return func(r *router) {
-		r.settings.revision = rev
-	}
-}
-
 // WithLogger sets the logger the router will use
 func WithLogger(l *logrus.Logger) Config {
 	return func(r *router) {
@@ -121,61 +107,25 @@ func WithLogger(l *logrus.Logger) Config {
 	}
 }
 
-// WithMailer sets the mailer the router will use
-func WithMailer(m mailer.Mailer) Config {
-	return func(r *router) {
-		r.mailer = m
-	}
-}
-
-// WithSecureCookie determines whether the application will issue
-// secure (HTTPS-only) cookies
-func WithSecureCookie(sc bool) Config {
-	return func(r *router) {
-		r.settings.secureCookie = sc
-	}
-}
-
-// WithCookieExchangeSecret sets the secret to be used for signing secured
-// cookie exchange requests
-func WithCookieExchangeSecret(b []byte) Config {
-	return func(r *router) {
-		r.settings.cookieExchangeSecret = b
-	}
-}
-
-// WithRootAccount sets the ID of the root account to be used
-func WithRootAccount(id string) Config {
-	return func(r *router) {
-		r.settings.rootAccount = id
-	}
-}
-
-// WithRetentionPeriod sets the expected value for retaining event data
-func WithRetentionPeriod(d time.Duration) Config {
-	return func(r *router) {
-		r.settings.retentionPeriod = d
-	}
-}
-
-// WithDevelopmentMode specifies whether the router is expected to
-func WithDevelopmentMode(d bool) Config {
-	return func(r *router) {
-		r.settings.development = d
-	}
-}
-
-// WithReverseProxy determines whether the router will assume it is exposed
-// to the internet directly, or if it's behind a reverse proxy.
-func WithReverseProxy(p bool) Config {
-	return func(r *router) {
-		r.settings.reverseProxy = p
-	}
-}
-
+// WithTemplate ensures the router is using the given template object
+// for rendering dynamic HTML output.
 func WithTemplate(t *template.Template) Config {
 	return func(r *router) {
 		r.template = t
+	}
+}
+
+// WithConfig attaches the given runtime config to the router.
+func WithConfig(c *config.Config) Config {
+	return func(r *router) {
+		r.config = c
+	}
+}
+
+// WithFS attaches a filesystem for serving static assets
+func WithFS(fs http.FileSystem) Config {
+	return func(r *router) {
+		r.fs = fs
 	}
 }
 
@@ -188,10 +138,12 @@ func New(opts ...Config) http.Handler {
 	for _, opt := range opts {
 		opt(&rt)
 	}
-	rt.cookieSigner = securecookie.New(rt.settings.cookieExchangeSecret, nil)
 
-	fileServer := http.FileServer(assets.FS)
-	if !rt.settings.reverseProxy {
+	rt.cookieSigner = securecookie.New(rt.config.Secrets.CookieExchange.Bytes(), nil)
+	rt.mailer = rt.config.NewMailer()
+
+	fileServer := http.FileServer(rt.fs)
+	if !rt.config.Server.ReverseProxy {
 		fileServer = gziphandler.GzipHandler(staticHeaderMiddleware(fileServer))
 	}
 
@@ -206,7 +158,7 @@ func New(opts ...Config) http.Handler {
 	userCookie := userCookieMiddleware(cookieKey, contextKeyCookie)
 	accountAuth := rt.accountUserMiddleware(authKey, contextKeyAuth)
 
-	if !rt.settings.development {
+	if !rt.config.App.Development {
 		gin.SetMode(gin.ReleaseMode)
 	}
 
@@ -260,7 +212,7 @@ func New(opts ...Config) http.Handler {
 		}
 	})
 
-	if rt.settings.reverseProxy {
+	if rt.config.Server.ReverseProxy {
 		return m
 	}
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

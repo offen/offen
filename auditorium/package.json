@@ -11,7 +11,8 @@
     "pretest": "dependency-check package.json",
     "posttest": "standard",
     "fix": "standard --fix",
-    "build": "gulp"
+    "build": "gulp",
+    "extract-strings": "gulp extract-strings"
   },
   "dependencies": {
     "choo": "^7.0.0",
@@ -44,15 +45,24 @@
   "browserify": {
     "transform": [
       "envify",
-      "nanohtml"
+      "nanohtml",
+      "offen/localize"
     ]
   },
   "standard": {
+    "globals": [
+      "__"
+    ],
     "ignore": [
       "dist/*.*"
     ],
     "env": [
       "mocha"
+    ]
+  },
+  "offen": {
+    "locales": [
+      "en"
     ]
   }
 }

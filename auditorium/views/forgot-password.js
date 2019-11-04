@@ -16,14 +16,14 @@ function view (state, emit) {
       <div class="row">
         <div class="eight columns">
           <label>
-            <span>Email Address:</span>
+            <span>${__('Email Address:')}</span>
           </label>
-          <input class="u-full-width" required type="email" name="email-address" placeholder="Your email address">
+          <input class="u-full-width" required type="email" name="email-address" placeholder="${__('Your email address')}">
         </div>
       </div>
       <div class="row">
         <div class="eight columns">
-          <input type="submit" value="Send Email">
+          <input type="submit" value="${__('Send Email')}">
         </div>
       </div>
     </form>

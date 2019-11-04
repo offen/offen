@@ -8,19 +8,19 @@ function checkSupport (callback) {
   var err = null
 
   if (!isSecureContext()) {
-    err = new Error('The host page is required to run in a secure context')
+    err = new Error(__('The host page is required to run in a secure context'))
   }
   if (!err && !supportsWebCrypto()) {
-    err = new Error('Browser does not support WebCrypto which is required')
+    err = new Error(__('Browser does not support WebCrypto which is required'))
   }
   if (!err && !supportsIndexedDb()) {
-    err = new Error('Browser does not support IndexedDB which is required')
+    err = new Error(__('Browser does not support IndexedDB which is required'))
   }
   if (!err && !supportsFetch()) {
-    err = new Error('Browser does not support window.fetch which is required')
+    err = new Error(__('Browser does not support window.fetch which is required'))
   }
   if (!err && !supportsURL()) {
-    err = new Error('Browser does not support window.URL which is required')
+    err = new Error(__('Browser does not support window.URL which is required'))
   }
   setTimeout(function () {
     callback(err)

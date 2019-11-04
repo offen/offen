@@ -11,3 +11,5 @@ dist/
 bin/
 statik.go
 offen
+
+*.po

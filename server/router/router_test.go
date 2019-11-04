@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/gin-gonic/gin"
+	"github.com/offen/offen/server/config"
 	"github.com/offen/offen/server/persistence"
 )
 
@@ -20,6 +21,6 @@ func TestMain(m *testing.M) {
 func TestNew(t *testing.T) {
 	New(
 		WithDatabase(&mockDatabase{}),
-		WithSecureCookie(true),
+		WithConfig(&config.Config{}),
 	)
 }

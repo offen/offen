@@ -25,7 +25,11 @@ const (
 
 func (rt *router) generateOneTimeAuth(scope string) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		authentication, err := keys.NewAuthentication(scope, rt.settings.cookieExchangeSecret, time.Second*30)
+		authentication, err := keys.NewAuthentication(
+			scope,
+			rt.config.Secrets.CookieExchange.Bytes(),
+			time.Second*30,
+		)
 		if err != nil {
 			newJSONError(
 				fmt.Errorf("router: error initiating authentication exchange: %v", err),
@@ -55,7 +59,10 @@ func (rt *router) validateOnetimeAuth(scope string, v url.Values) error {
 		Token:     v.Get("token"),
 		Signature: v.Get("signature"),
 	}
-	return requestAuth.Validate(scope, rt.settings.cookieExchangeSecret)
+	return requestAuth.Validate(
+		scope,
+		rt.config.Secrets.CookieExchange.Bytes(),
+	)
 }
 
 func (rt *router) getOptout(c *gin.Context) {

@@ -54,7 +54,7 @@ jobs:
           name: Prepare static assets
           command: |
             go get github.com/rakyll/statik
-            statik -dest assets -src public
+            statik -dest public -src public
       - run:
           name: Run tests
           command: |

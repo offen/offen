@@ -1,4 +1,5 @@
 var html = require('choo/html')
+var raw = require('choo/html/raw')
 
 module.exports = withLayout
 
@@ -11,7 +12,7 @@ function withLayout () {
         <div class="container">
           <div class="row">
             <div class="twelve columns">
-              <h1><strong>offen</strong> auditorium</h1>
+              <h1>${raw(__('<strong>offen</strong> auditorium'))}</h1>
             </div>
           </div>
           <div class="row">

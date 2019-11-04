@@ -1,4 +1,5 @@
 var html = require('choo/html')
+var raw = require('choo/html/raw')
 var _ = require('underscore')
 
 var BarChart = require('./../components/bar-chart')
@@ -27,26 +28,30 @@ function view (state, emit) {
   var pageTitle
   if (isOperator) {
     accountHeader = html`
-      <h5>You are viewing data as <strong>operator</strong> with account <strong>${state.model.account.name}</strong>.</h5>
+      <h5>
+        ${raw(__('You are viewing data as <strong>operator</strong> with account <strong>%s</strong>.', state.model.account.name))}
+      </h5>
     `
     pageTitle = state.model.account.name + ' | ' + state.title
   } else {
     accountHeader = html`
-      <h5>You are viewing data as <strong>user</strong>.</h5>
-      ${state.model.hasOptedOut ? html`<p><strong>You have opted out. Clear your cookies to opt in.</strong></p>` : null}
-      ${state.model.allowsCookies ? null : html`<p><strong>Your browser does not allow 3rd party cookies. We respect this setting and collect only very basic data in this case, yet it also means we cannot display any data to you here.</strong></p>`}
+      <h5>
+        ${raw(__('You are viewing data as <strong>user</strong>.'))}
+      </h5>
+      ${state.model.hasOptedOut ? html`<p><strong>${__('You have opted out. Clear your cookies to opt in.')}</strong></p>` : null}
+      ${state.model.allowsCookies ? null : html`<p><strong>${__('Your browser does not allow 3rd party cookies. We respect this setting and collect only very basic data in this case, yet it also means we cannot display any data to you here.')}</strong></p>`}
     `
-    pageTitle = 'user | ' + state.title
+    pageTitle = __('user') + ' | ' + state.title
   }
   emit(state.events.DOMTITLECHANGE, pageTitle)
 
   var ranges = [
-    { display: 'last 24 hours', query: { range: '24', resolution: 'hours' } },
-    { display: 'last 7 days', query: null },
-    { display: 'last 28 days', query: { range: '28', resolution: 'days' } },
-    { display: 'last 6 weeks', query: { range: '6', resolution: 'weeks' } },
-    { display: 'last 12 weeks', query: { range: '12', resolution: 'weeks' } },
-    { display: 'last 6 months', query: { range: '6', resolution: 'months' } }
+    { display: __('last 24 hours'), query: { range: '24', resolution: 'hours' } },
+    { display: __('last 7 days'), query: null },
+    { display: __('last 28 days'), query: { range: '28', resolution: 'days' } },
+    { display: __('last 6 weeks'), query: { range: '6', resolution: 'weeks' } },
+    { display: __('last 12 weeks'), query: { range: '12', resolution: 'weeks' } },
+    { display: __('last 6 months'), query: { range: '6', resolution: 'months' } }
   ].map(function (range) {
     var url = (state.href || '') + '/'
     var current = _.pick(state.query, ['range', 'resolution'])
@@ -63,7 +68,7 @@ function view (state, emit) {
     `
   })
   var rangeSelector = html`
-    <h4>Show data from the:</h4>
+    <h4>${__('Show data from the:')}</h4>
     <ul>${ranges}</ul>
   `
 
@@ -71,24 +76,24 @@ function view (state, emit) {
     ? state.model.uniqueUsers
     : state.model.uniqueAccounts
   var entityName = isOperator
-    ? 'users'
-    : 'accounts'
+    ? __('users')
+    : __('accounts')
   var uniqueSessions = state.model.uniqueSessions
   var usersAndSessions = html`
     <div class="row">
       <div class="six columns">
-        <h4><strong>${uniqueEntities}</strong> unique ${entityName} </h4>
+        <h4><strong>${uniqueEntities}</strong> ${__('unique %s', entityName)}</h4>
       </div>
       <div class="six columns">
-        <h4><strong>${uniqueSessions}</strong> unique sessions</h4>
+        <h4><strong>${uniqueSessions}</strong> ${__('unique sessions')}</h4>
       </div>
     </div>
     <div class="row">
       <div class="six columns">
-        <h4><strong>${formatPercentage(state.model.bounceRate)}%</strong> bounce rate</h4>
+        <h4><strong>${formatPercentage(state.model.bounceRate)}%</strong> ${__('bounce rate')}</h4>
       </div>
       <div class="six columns">
-        ${isOperator ? html`<h4><strong>${formatPercentage(state.model.loss)}%</strong> plus</h4>` : null}
+        ${isOperator ? html`<h4><strong>${formatPercentage(state.model.loss)}%</strong> ${__('plus')}</h4>` : null}
       </div>
     </div>
   `
@@ -99,7 +104,7 @@ function view (state, emit) {
     resolution: state.model.resolution
   }
   var chart = html`
-    <h4>Pageviews and ${isOperator ? 'Visitors' : 'Accounts'}</h4>
+    <h4>${__('Pageviews and %s', isOperator ? __('Visitors') : __('Accounts'))}</h4>
     ${state.cache(BarChart, 'bar-chart').render(chartData)}
   `
   var pagesData = state.model.pages
@@ -113,12 +118,12 @@ function view (state, emit) {
     })
 
   var pages = html`
-    <h4>Top pages</h4>
+    <h4>${__('Top pages')}</h4>
     <table class="u-full-width">
       <thead>
         <tr>
-          <td>URL</td>
-          <td>Pageviews</td>
+          <td>${__('URL')}</td>
+          <td>${__('Pageviews')}</td>
         </tr>
       </thead>
       <tbody>
@@ -138,12 +143,12 @@ function view (state, emit) {
 
   var referrers = referrerData.length
     ? html`
-      <h4>Top referrers</h4>
+      <h4>${__('Top referrers')}</h4>
       <table class="u-full-width">
         <thead>
           <tr>
-            <td>Host</td>
-            <td>Pageviews</td>
+            <td>${__('Host')}</td>
+            <td>${__('Pageviews')}</td>
           </tr>
         </thead>
         <tbody>
@@ -155,16 +160,16 @@ function view (state, emit) {
 
   var manage = !isOperator && state.model.allowsCookies
     ? html`
-      <h4>Manage your data</h4>
+      <h4>${__('Manage your data')}</h4>
       <div class="row">
         <div class="six columns">
           <button class="btn u-full-width" data-role="optout" onclick="${handleOptout}">
-            ${state.model.hasOptedOut ? 'Opt in' : 'Opt out'}
+            ${state.model.hasOptedOut ? __('Opt in') : __('Opt out')}
           </button>
         </div>
         <div class="six columns">
           <button class="btn u-full-width" data-role="purge" onclick="${handlePurge}">
-            Delete my data
+            ${__('Delete my data')}
           </button>
         </div>
       </div>

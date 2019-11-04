@@ -9,11 +9,14 @@ import (
 	"testing"
 
 	"github.com/gin-gonic/gin"
+	"github.com/offen/offen/server/config"
 )
 
 func TestRouter_optout(t *testing.T) {
-	rt := router{}
-	rt.settings.cookieExchangeSecret = []byte("top-secret")
+	rt := router{
+		config: &config.Config{},
+	}
+	rt.config.Secrets.CookieExchange = config.Bytes([]byte("top-secret"))
 	m := gin.New()
 	m.POST("/", rt.postOptout)
 	m.GET("/", rt.getOptout)

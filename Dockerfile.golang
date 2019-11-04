@@ -1,7 +1,10 @@
 FROM golang:1.13
 
-ENV GOPATH=/go
+RUN apt-get update \
+  && apt-get install -y gettext \
+  && rm -rf /var/lib/apt/lists/*
 
+ENV GOPATH=/go
 WORKDIR /offen
 # this is used for hot-reloading applications on change
 # configuration is found in the application directories

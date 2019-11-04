@@ -25,4 +25,7 @@ secret:
 test-ci: bootstrap
 	@go test ./... -cover -tags="integration"
 
+extract-strings:
+	@./extract-strings.sh
+
 .PHONY: bootstrap migrate secret
