@@ -56,10 +56,8 @@ ARG rev
 ENV GIT_REVISION=$rev
 
 COPY --from=script /code/script/dist /code/server/public
-COPY --from=vault /code/vault/dist /code/server/public/vault
-
-COPY --from=auditorium /code/auditorium/dist/en /code/server/public/en/auditorium
-COPY --from=auditorium /code/auditorium/dist/de /code/server/public/de/auditorium
+COPY --from=vault /code/vault/dist /code/server/public
+COPY --from=auditorium /code/auditorium/dist /code/server/public
 
 RUN go get github.com/rakyll/statik
 RUN statik -dest public -src public

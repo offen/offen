@@ -59,5 +59,10 @@
     "env": [
       "mocha"
     ]
+  },
+  "offen": {
+    "locales": [
+      "en"
+    ]
   }
 }

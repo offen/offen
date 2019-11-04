@@ -23,8 +23,33 @@ gulp.task('clean:post', function () {
     .pipe(clean())
 })
 
-function makeScript (locale) {
-  var task = function () {
+gulp.task('default', gulp.series(
+  'clean:pre',
+  // it is important to run the localized bundles in series so that
+  // browserify is always sure which locale to use in the transform
+  // configuration
+  gulp.series.apply(gulp, pkg.offen.locales.map(function (locale) {
+    return createLocalizedBundle(locale)
+  })),
+  'clean:post'
+))
+
+function createLocalizedBundle (locale) {
+  var dest = './dist/' + locale + '/auditorium/'
+  var scriptTask = makeScriptTask(dest, locale)
+  scriptTask.displayName = 'script:' + locale
+  var vendorTask = makeVendorTask(dest)
+  vendorTask.displayName = 'vendor:' + locale
+  var revReplaceTask = makeRevReplaceTask(dest)
+  revReplaceTask.displayName = 'revreplace:' + locale
+  return gulp.series(
+    gulp.parallel(scriptTask, vendorTask),
+    revReplaceTask
+  )
+}
+
+function makeScriptTask (dest, locale) {
+  return function () {
     var b = browserify({
       entries: './index.js',
       transform: pkg.browserify.transform.map(function (transform) {
@@ -45,18 +70,15 @@ function makeScript (locale) {
       .pipe(gap.prependFile('./../banner.txt'))
       .pipe(gap.prependText('/**'))
       .pipe(rev())
-      .pipe(gulp.dest('./dist/' + locale + '/'))
-      .pipe(rev.manifest('./dist/' + locale + '/rev-manifest.json', { base: './dist/' + locale, merge: true }))
-      .pipe(gulp.dest('./dist/' + locale))
+      .pipe(gulp.dest(dest))
+      .pipe(rev.manifest(dest + 'rev-manifest.json', { base: dest, merge: true }))
+      .pipe(gulp.dest(dest))
   }
-  task.displayName = 'script:' + locale
-  return task
 }
 
-function makeVendor (locale) {
-  var task = function () {
+function makeVendorTask (dest) {
+  return function () {
     var b = browserify()
-
     return b
       .require('plotly.js-basic-dist')
       .bundle()
@@ -69,40 +91,21 @@ function makeVendor (locale) {
       .pipe(gap.prependFile('./../banner.txt'))
       .pipe(gap.prependText('/**'))
       .pipe(rev())
-      .pipe(gulp.dest('./dist/' + locale + '/'))
-      .pipe(rev.manifest('./dist/' + locale + '/rev-manifest.json', { base: './dist/' + locale, merge: true }))
-      .pipe(gulp.dest('./dist/' + locale))
+      .pipe(gulp.dest(dest))
+      .pipe(rev.manifest(dest + '/rev-manifest.json', { base: dest, merge: true }))
+      .pipe(gulp.dest(dest))
   }
-  task.displayName = 'vendor:' + locale
-  return task
 }
 
-function makeRevReplace (locale) {
-  var task = function () {
+function makeRevReplaceTask (dest) {
+  return function () {
     return gulp.src('./index.html')
       .pipe(gap.prependText('-->'))
       .pipe(gap.prependFile('./../banner.txt'))
       .pipe(gap.prependText('<!--'))
-      .pipe(revReplace({ manifest: gulp.src('./dist/' + locale + '/rev-manifest.json') }))
-      .pipe(gulp.dest('./dist/' + locale + '/'))
+      .pipe(revReplace({ manifest: gulp.src(dest + 'rev-manifest.json') }))
+      .pipe(gulp.dest(dest))
       .pipe(sriHash({ relative: true, selector: 'script[src]' }))
-      .pipe(gulp.dest('./dist/' + locale + '/'))
+      .pipe(gulp.dest(dest))
   }
-  task.displayName = 'revreplace:' + locale
-  return task
 }
-
-function createLocalizedBundle (locale) {
-  return gulp.series(
-    gulp.parallel(makeScript(locale), makeVendor(locale)),
-    makeRevReplace(locale)
-  )
-}
-
-gulp.task('default', gulp.series(
-  'clean:pre',
-  gulp.series.apply(gulp, ['en', 'de'].map(function (locale) {
-    return createLocalizedBundle(locale)
-  })),
-  'clean:post'
-))

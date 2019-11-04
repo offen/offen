@@ -80,7 +80,7 @@ func main() {
 			}
 		}
 
-		gettext, gettextErr := locales.GettextFor(cfg.App.Locale)
+		gettext, gettextErr := locales.GettextFor(cfg.App.Locale.String())
 		if gettextErr != nil {
 			logger.WithError(gettextErr).Fatal("Failed reading locale files, cannot continue")
 		}
@@ -88,6 +88,7 @@ func main() {
 		if tplErr != nil {
 			logger.WithError(tplErr).Fatal("Failed parsing template files, cannot continue")
 		}
+		fs := public.NewLocalizedFS(cfg.App.Locale.String())
 
 		srv := &http.Server{
 			Addr: fmt.Sprintf("0.0.0.0:%d", cfg.Server.Port),
@@ -96,6 +97,7 @@ func main() {
 				router.WithLogger(logger),
 				router.WithTemplate(tpl),
 				router.WithConfig(cfg),
+				router.WithFS(fs),
 			),
 		}
 		go func() {

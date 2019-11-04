@@ -10,6 +10,8 @@ import (
 	"github.com/rakyll/statik/fs"
 )
 
+const defaultLocale = "en"
+
 type localizedFS struct {
 	locale string
 	root   http.FileSystem
@@ -19,6 +21,10 @@ func (l *localizedFS) Open(file string) (http.File, error) {
 	localized, err := l.root.Open(fmt.Sprintf("/%s%s", l.locale, file))
 	if err == nil {
 		return localized, nil
+	}
+	defaultAsset, err := l.root.Open(fmt.Sprintf("/%s%s", defaultLocale, file))
+	if err == nil {
+		return defaultAsset, nil
 	}
 	return l.root.Open(file)
 }
@@ -38,6 +44,10 @@ func init() {
 	}
 }
 
+// NewLocalizedFS returns a http.FileSystem that is locale aware. It will first
+// try to return the file in the given locale. In case this is not found, it tries
+// returning the asset in the default language, falling back to the root fs if
+// this isn't found either.
 func NewLocalizedFS(locale string) http.FileSystem {
 	return &localizedFS{
 		locale: locale,

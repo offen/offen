@@ -8,6 +8,8 @@ var revReplace = require('gulp-rev-replace')
 var sriHash = require('gulp-sri-hash')
 var gap = require('gulp-append-prepend')
 
+var pkg = require('./package.json')
+
 gulp.task('clean:pre', function () {
   return gulp
     .src('./dist', { read: false, allowEmpty: true })
@@ -16,62 +18,90 @@ gulp.task('clean:pre', function () {
 
 gulp.task('clean:post', function () {
   return gulp
-    .src('./dist/*.json', { read: false, allowEmpty: true })
+    .src('./dist/**/*.json', { read: false, allowEmpty: true })
     .pipe(clean())
-})
-
-gulp.task('bundle:script', function () {
-  var b = browserify({
-    entries: './index.js'
-  })
-
-  return b
-    .exclude('dexie')
-    .plugin('tinyify')
-    .bundle()
-    .pipe(source('index.js'))
-    .pipe(buffer())
-    .pipe(gap.prependText('*/'))
-    .pipe(gap.prependFile('./../banner.txt'))
-    .pipe(gap.prependText('/**'))
-    .pipe(rev())
-    .pipe(gulp.dest('./dist/'))
-    .pipe(rev.manifest('./dist/rev-manifest.json', { base: './dist', merge: true }))
-    .pipe(gulp.dest('./dist'))
-})
-
-gulp.task('bundle:vendor', function () {
-  var b = browserify()
-
-  return b
-    .require('dexie')
-    .plugin('tinyify')
-    .bundle()
-    .pipe(source('vendor.js'))
-    .pipe(buffer())
-    .pipe(gap.prependText('*/'))
-    .pipe(gap.prependFile('./../banner.txt'))
-    .pipe(gap.prependText('/**'))
-    .pipe(rev())
-    .pipe(gulp.dest('./dist/'))
-    .pipe(rev.manifest('./dist/rev-manifest.json', { base: './dist', merge: true }))
-    .pipe(gulp.dest('./dist'))
-})
-
-gulp.task('revreplace', function () {
-  return gulp.src('./index.html')
-    .pipe(gap.prependText('-->'))
-    .pipe(gap.prependFile('./../banner.txt'))
-    .pipe(gap.prependText('<!--'))
-    .pipe(revReplace({ manifest: gulp.src('./dist/rev-manifest.json') }))
-    .pipe(gulp.dest('./dist/'))
-    .pipe(sriHash({ relative: true }))
-    .pipe(gulp.dest('./dist/'))
 })
 
 gulp.task('default', gulp.series(
   'clean:pre',
-  gulp.parallel('bundle:script', 'bundle:vendor'),
-  'revreplace',
+  gulp.series(pkg.offen.locales.map(function (locale) {
+    return createLocalizedBundle(locale)
+  })),
   'clean:post'
 ))
+
+function createLocalizedBundle (locale) {
+  var dest = './dist/' + locale + '/vault/'
+  var scriptTask = makeScriptTask(dest, locale)
+  scriptTask.displayName = 'script:' + locale
+  var vendorTask = makeVendorTask(dest)
+  vendorTask.displayName = 'vendor:' + locale
+  var revReplaceTask = makeRevReplaceTask(dest)
+  revReplaceTask.displayName = 'revreplace:' + locale
+
+  return gulp.series(
+    gulp.parallel(scriptTask, vendorTask),
+    revReplaceTask
+  )
+}
+
+function makeScriptTask (dest, locale) {
+  return function () {
+    var b = browserify({
+      entries: './index.js',
+      transform: pkg.browserify.transform.map(function (transform) {
+        if (transform === 'offen/localize') {
+          return ['offen/localize', { locale: locale }]
+        }
+        return transform
+      })
+    })
+
+    return b
+      .exclude('dexie')
+      .plugin('tinyify')
+      .bundle()
+      .pipe(source('index.js'))
+      .pipe(buffer())
+      .pipe(gap.prependText('*/'))
+      .pipe(gap.prependFile('./../banner.txt'))
+      .pipe(gap.prependText('/**'))
+      .pipe(rev())
+      .pipe(gulp.dest(dest))
+      .pipe(rev.manifest(dest + 'rev-manifest.json', { base: dest, merge: true }))
+      .pipe(gulp.dest(dest))
+  }
+}
+
+function makeVendorTask (dest) {
+  return function () {
+    var b = browserify()
+
+    return b
+      .require('dexie')
+      .plugin('tinyify')
+      .bundle()
+      .pipe(source('vendor.js'))
+      .pipe(buffer())
+      .pipe(gap.prependText('*/'))
+      .pipe(gap.prependFile('./../banner.txt'))
+      .pipe(gap.prependText('/**'))
+      .pipe(rev())
+      .pipe(gulp.dest(dest))
+      .pipe(rev.manifest(dest + 'rev-manifest.json', { base: dest, merge: true }))
+      .pipe(gulp.dest(dest))
+  }
+}
+
+function makeRevReplaceTask (dest) {
+  return function () {
+    return gulp.src('./index.html')
+      .pipe(gap.prependText('-->'))
+      .pipe(gap.prependFile('./../banner.txt'))
+      .pipe(gap.prependText('<!--'))
+      .pipe(revReplace({ manifest: gulp.src(dest + 'rev-manifest.json') }))
+      .pipe(gulp.dest(dest))
+      .pipe(sriHash({ relative: true }))
+      .pipe(gulp.dest(dest))
+  }
+}

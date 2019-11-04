@@ -14,13 +14,13 @@ import (
 	"github.com/offen/offen/server/config"
 	"github.com/offen/offen/server/mailer"
 	"github.com/offen/offen/server/persistence"
-	"github.com/offen/offen/server/public"
 	"github.com/sirupsen/logrus"
 )
 
 type router struct {
 	db           persistence.Database
 	mailer       mailer.Mailer
+	fs           http.FileSystem
 	logger       *logrus.Logger
 	cookieSigner *securecookie.SecureCookie
 	template     *template.Template
@@ -122,6 +122,13 @@ func WithConfig(c *config.Config) Config {
 	}
 }
 
+// WithFS attaches a filesystem for serving static assets
+func WithFS(fs http.FileSystem) Config {
+	return func(r *router) {
+		r.fs = fs
+	}
+}
+
 // New creates a new application router that reads and writes data
 // to the given database implementation. In the context of the application
 // this expects to be the only top level router in charge of handling all
@@ -135,7 +142,7 @@ func New(opts ...Config) http.Handler {
 	rt.cookieSigner = securecookie.New(rt.config.Secrets.CookieExchange.Bytes(), nil)
 	rt.mailer = rt.config.NewMailer()
 
-	fileServer := http.FileServer(public.NewLocalizedFS(rt.config.App.Locale))
+	fileServer := http.FileServer(rt.fs)
 	if !rt.config.Server.ReverseProxy {
 		fileServer = gziphandler.GzipHandler(staticHeaderMiddleware(fileServer))
 	}

@@ -42,7 +42,7 @@ type Config struct {
 		Revision             string        `default:"not set"`
 		LogLevel             LogLevel      `default:"info"`
 		SingleNode           bool          `default:"true"`
-		Locale               string        `default:"en"`
+		Locale               Locale        `default:"en"`
 		RootAccount          string
 	}
 	Secrets struct {
@@ -94,6 +94,7 @@ func configurationCascade() []string {
 	return locations
 }
 
+// PersistSettings persists the given update on disk.
 func PersistSettings(update map[string]string) error {
 	switch runtime.GOOS {
 	case "linux", "darwin":
