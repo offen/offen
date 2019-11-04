@@ -13,3 +13,5 @@ statik.go
 offen
 
 *.po
+package-lock.json
+!*/package-lock.json
