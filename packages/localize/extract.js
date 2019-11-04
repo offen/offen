@@ -1,25 +1,61 @@
-#! /usr/bin/env node
 var fs = require('fs')
+var util = require('util')
 var jscodeshift = require('jscodeshift')
 var glob = require('glob')
 var touch = require('touch')
 var PO = require('pofile')
-var argv = require('minimist')(process.argv.slice(2))
 
-var globPattern = argv._[0]
-var outfiles = Array.isArray(argv.f) ? argv.f : [argv.f]
+module.exports = extractStrings
 
-glob(globPattern, function (err, files) {
-  if (err) {
-    console.error(err)
-    process.exit(1)
-  }
-  if (!files) {
-    console.log('No files found using given pattern %s, exiting', globPattern)
-    process.exit(0)
-  }
+function extractStrings (destination, globPattern) {
+  return util.promisify(glob)(globPattern)
+    .then(function (files) {
+      if (!files || !files.length) {
+        console.log('No files found using given pattern %s, exiting', globPattern)
+        return null
+      }
+      return parse(files)
+    })
+    .then(function (allStrings) {
+      return merge(destination, allStrings)
+    })
+    .then(function () {
+      console.log('Successfully saved strings to %j', destination)
+    })
+}
 
-  var allStrings = files
+function merge (file, allStrings) {
+  var currentPo = new PO()
+  currentPo.items = allStrings
+
+  return util.promisify(PO.load)(file)
+    .catch(function (err) {
+      if (err.code === 'ENOENT') {
+        return null
+      }
+      throw err
+    })
+    .then(function (existingPo) {
+      if (existingPo) {
+        currentPo.items = currentPo.items.map(function (item) {
+          var exists = existingPo.items.filter(function (existingItem) {
+            return existingItem.msgid === item.msgid
+          })
+          if (exists.length && exists[0].msgstr.length) {
+            item.msgstr = exists[0].msgstr
+          }
+          return item
+        })
+      }
+      return util.promisify(touch)(file)
+    })
+    .then(function () {
+      return util.promisify(currentPo.save).bind(currentPo)(file)
+    })
+}
+
+function parse (files) {
+  var all = files
     .filter(function (fileName) {
       return !(/node_modules/.test(fileName))
     })
@@ -56,52 +92,8 @@ glob(globPattern, function (err, files) {
         })
       })
     })
-  Promise.all(allStrings)
-    .then(function (strings) {
-      return Promise.all(outfiles.map(function (outfile) {
-        return merge(outfile, strings)
-      }))
+  return Promise.all(all)
+    .then(function (results) {
+      return [].concat.apply([], results)
     })
-    .then(function () {
-      console.log('Successfully saved strings to %j', outfiles)
-    })
-    .catch(function (err) {
-      console.error(err)
-      process.exit(1)
-    })
-})
-
-function merge (file, strings) {
-  var currentPo = new PO()
-  currentPo.items = [].concat.apply([], strings)
-  return new Promise(function (resolve, reject) {
-    PO.load(file, function (err, existingPo) {
-      if (err) {
-        if (err.code !== 'ENOENT') {
-          return reject(err)
-        }
-      } else {
-        currentPo.items = currentPo.items.map(function (item) {
-          var exists = existingPo.items.filter(function (existingItem) {
-            return existingItem.msgid === item.msgid
-          })
-          if (exists.length && exists[0].msgstr.length) {
-            item.msgstr = exists[0].msgstr
-          }
-          return item
-        })
-      }
-      touch(file, function (err) {
-        if (err) {
-          return reject(err)
-        }
-        currentPo.save(file, function (err) {
-          if (err) {
-            return reject(err)
-          }
-          resolve()
-        })
-      })
-    })
-  })
 }

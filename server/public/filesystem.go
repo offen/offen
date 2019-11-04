@@ -18,15 +18,20 @@ type localizedFS struct {
 }
 
 func (l *localizedFS) Open(file string) (http.File, error) {
-	localized, err := l.root.Open(fmt.Sprintf("/%s%s", l.locale, file))
-	if err == nil {
-		return localized, nil
+	cascade := []string{
+		fmt.Sprintf("/%s%s", l.locale, file),
+		fmt.Sprintf("/%s%s", defaultLocale, file),
+		file,
 	}
-	defaultAsset, err := l.root.Open(fmt.Sprintf("/%s%s", defaultLocale, file))
-	if err == nil {
-		return defaultAsset, nil
+	var err error
+	var f http.File
+	for _, location := range cascade {
+		f, err = l.root.Open(location)
+		if err == nil {
+			return f, nil
+		}
 	}
-	return l.root.Open(file)
+	return nil, err
 }
 
 // FS is a file system containing the static assets for serving the application

@@ -10,7 +10,7 @@
     "posttest": "standard",
     "fix": "standard --fix",
     "build": "gulp",
-    "extract-strings": "extract-strings -f locales/de.po '**/*.js'"
+    "extract-strings": "gulp extract-strings"
   },
   "dependencies": {
     "date-fns": "^1.30.1",

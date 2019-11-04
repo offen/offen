@@ -9,7 +9,11 @@ var revReplace = require('gulp-rev-replace')
 var sriHash = require('gulp-sri-hash')
 var gap = require('gulp-append-prepend')
 
+var extractStrings = require('offen/localize/task.js')
+
 var pkg = require('./package.json')
+
+gulp.task('extract-strings', extractStrings(pkg.offen.locales))
 
 gulp.task('clean:pre', function () {
   return gulp

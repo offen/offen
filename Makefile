@@ -31,23 +31,23 @@ howto:
 
 bootstrap:
 	@echo "Bootstrapping Server service ..."
-	@docker-compose run server make bootstrap
+	@docker-compose run --rm server make bootstrap
 
 update:
 	@echo "Installing / updating dependencies ..."
-	@docker-compose run script npm install
-	@docker-compose run vault npm install
-	@docker-compose run auditorium npm install
-	@docker-compose run server go mod download
+	@docker-compose run --rm script npm install
+	@docker-compose run --rm vault npm install
+	@docker-compose run --rm auditorium npm install
+	@docker-compose run --rm server go mod download
 
 migrate:
-	@docker-compose run server make migrate
+	@docker-compose run --rm server make migrate
 
 extract-strings:
-	@docker-compose run server ./extract-strings.sh
-	@docker-compose run auditorium npm run extract-strings
-	@docker-compose run script npm run extract-strings
-	@docker-compose run vault npm run extract-strings
+	@docker-compose run --rm server make extract-strings
+	@docker-compose run --rm auditorium npm run extract-strings
+	@docker-compose run --rm script npm run extract-strings
+	@docker-compose run --rm vault npm run extract-strings
 
 DOCKER_IMAGE_TAG ?= local
 ROBOTS_FILE ?= robots.txt.staging
@@ -68,9 +68,9 @@ down:
 	@docker-compose down
 
 test:
-	@docker-compose run script npm test
-	@docker-compose run vault npm test
-	@docker-compose run auditorium npm test
-	@docker-compose run server make test
+	@docker-compose run --rm script npm test
+	@docker-compose run --rm vault npm test
+	@docker-compose run --rm auditorium npm test
+	@docker-compose run --rm server make test
 
 .PHONY: setup build bootstrap build secret test up down
