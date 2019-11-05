@@ -34,9 +34,9 @@ type FindEventsQueryExclusion struct {
 }
 
 func (r *relationalDatabase) findEvents(q interface{}) ([]Event, error) {
+	var events []Event
 	switch query := q.(type) {
 	case FindEventsQueryForHashedIDs:
-		var events []Event
 		var eventConditions []interface{}
 
 		if query.Since != "" {
@@ -56,13 +56,11 @@ func (r *relationalDatabase) findEvents(q interface{}) ([]Event, error) {
 		}
 		return events, nil
 	case FindEventsQueryByEventIDs:
-		var events []Event
 		if err := r.db.Where("event_id IN (?)", []string(query)).Find(&events).Error; err != nil {
 			return nil, fmt.Errorf("dal: error looking up events: %w", err)
 		}
 		return events, nil
 	case FindEventsQueryExclusion:
-		var events []Event
 		if err := r.db.Where(
 			"event_id IN (?) AND hashed_user_id NOT IN (?)",
 			query.EventIDs,
@@ -72,7 +70,7 @@ func (r *relationalDatabase) findEvents(q interface{}) ([]Event, error) {
 		}
 		return events, nil
 	default:
-		return nil, ErrBadQuery
+		return events, ErrBadQuery
 	}
 }
 
@@ -123,6 +121,8 @@ func (r *relationalDatabase) createUser(u *User) error {
 	return nil
 }
 
+// DeleteUserQueryByHashedID requests deletion of the user record with the given
+// hashed id.
 type DeleteUserQueryByHashedID string
 
 func (r *relationalDatabase) deleteUser(q interface{}) error {
@@ -141,9 +141,9 @@ func (r *relationalDatabase) deleteUser(q interface{}) error {
 type FindUserQueryByHashedUserID string
 
 func (r *relationalDatabase) findUser(q interface{}) (User, error) {
+	var user User
 	switch query := q.(type) {
 	case FindUserQueryByHashedUserID:
-		var user User
 		if err := r.db.Where(
 			"hashed_user_id = ?",
 			string(query),
@@ -155,7 +155,7 @@ func (r *relationalDatabase) findUser(q interface{}) (User, error) {
 		}
 		return user, nil
 	default:
-		return User{}, ErrBadQuery
+		return user, ErrBadQuery
 	}
 }
 
@@ -174,9 +174,9 @@ type FindAccountQueryIncludeEvents struct {
 }
 
 func (r *relationalDatabase) findAccount(q interface{}) (Account, error) {
+	var account Account
 	switch query := q.(type) {
 	case FindAccountQueryIncludeEvents:
-		var account Account
 		queryDB := r.db
 		if query.Since != "" {
 			queryDB = queryDB.Preload("Events", "event_id > ?", query.Since).Preload("Events.User")
@@ -186,13 +186,12 @@ func (r *relationalDatabase) findAccount(q interface{}) (Account, error) {
 
 		if err := queryDB.Find(&account, "account_id = ?", query.AccountID).Error; err != nil {
 			if gorm.IsRecordNotFoundError(err) {
-				return Account{}, persistence.ErrUnknownAccount(fmt.Sprintf(`dal: account id "%s" unknown`, query.AccountID))
+				return account, persistence.ErrUnknownAccount(fmt.Sprintf(`dal: account id "%s" unknown`, query.AccountID))
 			}
-			return Account{}, fmt.Errorf(`relational: error looking up account with id %s: %w`, query.AccountID, err)
+			return account, fmt.Errorf(`relational: error looking up account with id %s: %w`, query.AccountID, err)
 		}
 		return account, nil
 	case FindAccountQueryByID:
-		var account Account
 		if err := r.db.Where("account_id = ?", string(query)).First(&account).Error; err != nil {
 			if gorm.IsRecordNotFoundError(err) {
 				return account, persistence.ErrUnknownAccount("dal: no matching account found")
@@ -201,7 +200,6 @@ func (r *relationalDatabase) findAccount(q interface{}) (Account, error) {
 		}
 		return account, nil
 	case FindAccountQueryActiveByID:
-		var account Account
 		if err := r.db.Where(
 			"account_id = ? AND retired = ?",
 			string(query),
@@ -214,7 +212,7 @@ func (r *relationalDatabase) findAccount(q interface{}) (Account, error) {
 		}
 		return account, nil
 	default:
-		return Account{}, ErrBadQuery
+		return account, ErrBadQuery
 	}
 }
 
@@ -222,15 +220,49 @@ func (r *relationalDatabase) findAccount(q interface{}) (Account, error) {
 type FindAccountsQueryAllAccounts struct{}
 
 func (r *relationalDatabase) findAccounts(q interface{}) ([]Account, error) {
+	var accounts []Account
 	switch q.(type) {
 	case FindAccountsQueryAllAccounts:
-		var accounts []Account
 		if err := r.db.Find(&accounts).Error; err != nil {
-			return nil, fmt.Errorf("dal: error looking up all accounts: %w", err)
+			return accounts, fmt.Errorf("dal: error looking up all accounts: %w", err)
 		}
 		return accounts, nil
 	default:
-		return nil, ErrBadQuery
+		return accounts, ErrBadQuery
+	}
+}
+
+// FindAccountUserQueryByHashedEmail requests the account user with the given
+// hashed email.
+type FindAccountUserQueryByHashedEmail string
+
+func (r *relationalDatabase) findAccountUser(q interface{}) (AccountUser, error) {
+	var accountUser AccountUser
+	switch query := q.(type) {
+	case FindAccountUserQueryByHashedEmail:
+		if err := r.db.Where("hashed_email = ?", string(query)).First(&accountUser).Error; err != nil {
+			return accountUser, fmt.Errorf("dal: error looking up account user: %w", err)
+		}
+		return accountUser, nil
+	default:
+		return accountUser, ErrBadQuery
+	}
+}
+
+// FindAccountUserRelationShipsQueryByUserID requests all relationships for the user
+// with the given user ID.
+type FindAccountUserRelationShipsQueryByUserID string
+
+func (r *relationalDatabase) findAccountUserRelationships(q interface{}) ([]AccountUserRelationship, error) {
+	var relationships []AccountUserRelationship
+	switch query := q.(type) {
+	case FindAccountUserRelationShipsQueryByUserID:
+		if err := r.db.Where("user_id = ?", string(query)).Find(&relationships).Error; err != nil {
+			return relationships, fmt.Errorf("dal: error looking up account to account user relationships: %w", err)
+		}
+		return relationships, nil
+	default:
+		return relationships, ErrBadQuery
 	}
 }
 

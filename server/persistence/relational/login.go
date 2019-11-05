@@ -11,36 +11,44 @@ import (
 )
 
 func (r *relationalDatabase) Login(email, password string) (persistence.LoginResult, error) {
-	var accountUser AccountUser
 	hashedEmail, hashedEmailErr := keys.HashEmail(email, r.emailSalt)
 	if hashedEmailErr != nil {
 		return persistence.LoginResult{}, hashedEmailErr
 	}
 
-	if err := r.db.Where("hashed_email = ?", base64.StdEncoding.EncodeToString(hashedEmail)).First(&accountUser).Error; err != nil {
-		return persistence.LoginResult{}, err
+	accountUser, err := r.findAccountUser(
+		FindAccountUserQueryByHashedEmail(
+			base64.StdEncoding.EncodeToString(hashedEmail),
+		),
+	)
+	if err != nil {
+		return persistence.LoginResult{}, fmt.Errorf("persistence: error looking up account user: %w", err)
 	}
 
 	saltBytes, saltErr := base64.StdEncoding.DecodeString(accountUser.Salt)
 	if saltErr != nil {
-		return persistence.LoginResult{}, fmt.Errorf("relational: error decoding salt: %v", saltErr)
+		return persistence.LoginResult{}, fmt.Errorf("persistence: error decoding salt: %w", saltErr)
 	}
 
 	pwBytes, pwErr := base64.StdEncoding.DecodeString(accountUser.HashedPassword)
 	if pwErr != nil {
-		return persistence.LoginResult{}, fmt.Errorf("relational: error decoding stored password: %v", pwErr)
+		return persistence.LoginResult{}, fmt.Errorf("persistence: error decoding stored password: %w", pwErr)
 	}
 	if err := keys.ComparePassword(password, pwBytes); err != nil {
-		return persistence.LoginResult{}, err
+		return persistence.LoginResult{}, fmt.Errorf("persistence: error comparing passwords: %w", err)
 	}
 
 	pwDerivedKey, pwDerivedKeyErr := keys.DeriveKey(password, saltBytes)
 	if pwDerivedKeyErr != nil {
-		return persistence.LoginResult{}, pwDerivedKeyErr
+		return persistence.LoginResult{}, fmt.Errorf("persistence: error deriving key from password: %w", pwDerivedKeyErr)
 	}
 
-	var relationships []AccountUserRelationship
-	r.db.Where("user_id = ?", accountUser.UserID).Find(&relationships)
+	relationships, err := r.findAccountUserRelationships(
+		FindAccountUserRelationShipsQueryByUserID(accountUser.UserID),
+	)
+	if err != nil {
+		return persistence.LoginResult{}, fmt.Errorf("persistence: error retrieving account to user relationships: %w", err)
+	}
 
 	var results []persistence.LoginAccountResult
 	for _, relationship := range relationships {
@@ -50,16 +58,16 @@ func (r *relationalDatabase) Login(email, password string) (persistence.LoginRes
 
 		decryptedKey, decryptedKeyErr := keys.DecryptWith(pwDerivedKey, key, nonce)
 		if decryptedKeyErr != nil {
-			return persistence.LoginResult{}, fmt.Errorf("relational: failed decrypting key encryption key for account %s: %v", relationship.AccountID, decryptedKeyErr)
+			return persistence.LoginResult{}, fmt.Errorf("persistence: failed decrypting key encryption key for account %s: %v", relationship.AccountID, decryptedKeyErr)
 		}
 		k, kErr := jwk.New(decryptedKey)
 		if kErr != nil {
 			return persistence.LoginResult{}, kErr
 		}
 
-		var account Account
-		if err := r.db.Where("account_id = ?", relationship.AccountID).First(&account).Error; err != nil {
-			return persistence.LoginResult{}, err
+		account, err := r.findAccount(FindAccountQueryByID(relationship.AccountID))
+		if err  != nil {
+			return persistence.LoginResult{}, fmt.Errorf(`persistence: error looking up account with id "%s": %w`, relationship.AccountID, err)
 		}
 
 		result := persistence.LoginAccountResult{
@@ -96,20 +104,20 @@ func (r *relationalDatabase) LookupUser(userID string) (persistence.LoginResult,
 func (r *relationalDatabase) ChangePassword(userID, currentPassword, changedPassword string) error {
 	var accountUser AccountUser
 	if err := r.db.Preload("Relationships").Where("user_id = ?", userID).First(&accountUser).Error; err != nil {
-		return fmt.Errorf("relational: error looking up user: %v", err)
+		return fmt.Errorf("persistence: error looking up user: %v", err)
 	}
 
 	pwBytes, pwErr := base64.StdEncoding.DecodeString(accountUser.HashedPassword)
 	if pwErr != nil {
-		return fmt.Errorf("relational: error decoding password: %v", pwErr)
+		return fmt.Errorf("persistence: error decoding password: %v", pwErr)
 	}
 	if err := keys.ComparePassword(currentPassword, pwBytes); err != nil {
-		return fmt.Errorf("relational: current password did not match: %v", err)
+		return fmt.Errorf("persistence: current password did not match: %v", err)
 	}
 
 	saltBytes, saltErr := base64.StdEncoding.DecodeString(accountUser.Salt)
 	if saltErr != nil {
-		return fmt.Errorf("relational: error decoding salt: %v", saltErr)
+		return fmt.Errorf("persistence: error decoding salt: %v", saltErr)
 	}
 
 	keyFromCurrentPassword, keyErr := keys.DeriveKey(currentPassword, saltBytes)
@@ -124,7 +132,7 @@ func (r *relationalDatabase) ChangePassword(userID, currentPassword, changedPass
 
 	newPasswordHash, hashErr := keys.HashPassword(changedPassword)
 	if hashErr != nil {
-		return fmt.Errorf("relational: error hashing new password: %v", hashErr)
+		return fmt.Errorf("persistence: error hashing new password: %v", hashErr)
 	}
 
 	accountUser.HashedPassword = base64.StdEncoding.EncodeToString(newPasswordHash)
@@ -158,26 +166,34 @@ func (r *relationalDatabase) ChangePassword(userID, currentPassword, changedPass
 func (r *relationalDatabase) ResetPassword(emailAddress, password string, oneTimeKey []byte) error {
 	hashedEmail, hashErr := keys.HashEmail(emailAddress, r.emailSalt)
 	if hashErr != nil {
-		return fmt.Errorf("error hashing given email address: %v", hashErr)
+		return fmt.Errorf("error hashing given email address: %w", hashErr)
 	}
 
-	var accountUser AccountUser
-	if err := r.db.Where("hashed_email = ?", base64.StdEncoding.EncodeToString(hashedEmail)).First(&accountUser).Error; err != nil {
-		return fmt.Errorf("error looking up user: %v", err)
+	accountUser, err := r.findAccountUser(
+		FindAccountUserQueryByHashedEmail(
+			base64.StdEncoding.EncodeToString(hashedEmail),
+		),
+	)
+	if err != nil {
+		return fmt.Errorf("persistence: error looking up account user: %w", err)
 	}
 
 	saltBytes, saltErr := base64.StdEncoding.DecodeString(accountUser.Salt)
 	if saltErr != nil {
-		return fmt.Errorf("error decoding salt for account user: %v", saltErr)
+		return fmt.Errorf("persistence: error decoding salt for account user: %w", saltErr)
 	}
 
 	passwordDerivedKey, deriveErr := keys.DeriveKey(password, saltBytes)
 	if deriveErr != nil {
-		return fmt.Errorf("error deriving key from password: %v", deriveErr)
+		return fmt.Errorf("persistence: error deriving key from password: %w", deriveErr)
 	}
 
-	var relationships []AccountUserRelationship
-	r.db.Where("user_id = ?", accountUser.UserID).Find(&relationships)
+	relationships, err := r.findAccountUserRelationships(
+		FindAccountUserRelationShipsQueryByUserID(accountUser.UserID),
+	)
+	if err != nil {
+		return fmt.Errorf("persistence: error looking up relationships: %w", err)
+	}
 
 	txn := r.db.Begin()
 	for _, relationship := range relationships {
@@ -214,35 +230,35 @@ func (r *relationalDatabase) ResetPassword(emailAddress, password string, oneTim
 func (r *relationalDatabase) ChangeEmail(userID, emailAddress, password string) error {
 	var accountUser AccountUser
 	if err := r.db.Preload("Relationships").Where("user_id = ?", userID).First(&accountUser).Error; err != nil {
-		return fmt.Errorf("relational: error looking up user: %v", err)
+		return fmt.Errorf("persistence: error looking up user: %v", err)
 	}
 
 	pwBytes, pwErr := base64.StdEncoding.DecodeString(accountUser.HashedPassword)
 	if pwErr != nil {
-		return fmt.Errorf("relational: error decoding password: %v", pwErr)
+		return fmt.Errorf("persistence: error decoding password: %v", pwErr)
 	}
 	if err := keys.ComparePassword(password, pwBytes); err != nil {
-		return fmt.Errorf("relational: current password did not match: %v", err)
+		return fmt.Errorf("persistence: current password did not match: %v", err)
 	}
 
 	saltBytes, saltErr := base64.StdEncoding.DecodeString(accountUser.Salt)
 	if saltErr != nil {
-		return fmt.Errorf("relational: error decoding salt: %v", saltErr)
+		return fmt.Errorf("persistence: error decoding salt: %v", saltErr)
 	}
 
 	keyFromCurrentPassword, keyErr := keys.DeriveKey(password, saltBytes)
 	if keyErr != nil {
-		return fmt.Errorf("relational: error deriving key from password: %v", keyErr)
+		return fmt.Errorf("persistence: error deriving key from password: %v", keyErr)
 	}
 
 	emailDerivedKey, deriveKeyErr := keys.DeriveKey(emailAddress, saltBytes)
 	if deriveKeyErr != nil {
-		return fmt.Errorf("relational: error deriving key from email address: %v", deriveKeyErr)
+		return fmt.Errorf("persistence: error deriving key from email address: %v", deriveKeyErr)
 	}
 
 	hashedEmail, hashErr := keys.HashEmail(emailAddress, r.emailSalt)
 	if hashErr != nil {
-		return fmt.Errorf("relational: error hashing updated email address: %v", hashErr)
+		return fmt.Errorf("persistence: error hashing updated email address: %v", hashErr)
 	}
 
 	txn := r.db.Begin()
@@ -277,10 +293,10 @@ func (r *relationalDatabase) GenerateOneTimeKey(emailAddress string) ([]byte, er
 	if hashErr != nil {
 		return nil, fmt.Errorf("error hashing given email address: %v", hashErr)
 	}
-	
+
 	var accountUser AccountUser
 	if err := r.db.Preload("Relationships").Where("hashed_email = ?", base64.StdEncoding.EncodeToString(hashedEmail)).First(&accountUser).Error; err != nil {
-		return nil, fmt.Errorf("error looking up user: %v", err) 
+		return nil, fmt.Errorf("error looking up user: %v", err)
 	}
 
 	saltBytes, saltErr := base64.StdEncoding.DecodeString(accountUser.Salt)
