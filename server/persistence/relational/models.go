@@ -28,6 +28,8 @@ type User struct {
 	EncryptedUserSecret string
 }
 
+func (u *User) Query() {}
+
 // AccountUser is a person that can log in and access data related to all
 // associated accounts.
 type AccountUser struct {

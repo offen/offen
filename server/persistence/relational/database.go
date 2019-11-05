@@ -1,6 +1,8 @@
 package relational
 
 import (
+	"errors"
+
 	"github.com/jinzhu/gorm"
 	// GORM imports the dialects for side effects only
 	_ "github.com/jinzhu/gorm/dialects/mysql"
@@ -8,6 +10,8 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	"github.com/offen/offen/server/persistence"
 )
+
+var ErrBadQuery = errors.New("dal: could not match query")
 
 type relationalDatabase struct {
 	db        *gorm.DB

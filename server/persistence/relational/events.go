@@ -3,25 +3,18 @@ package relational
 import (
 	"fmt"
 
-	"github.com/jinzhu/gorm"
 	"github.com/offen/offen/server/persistence"
 )
 
 func (r *relationalDatabase) Insert(userID, accountID, payload string) error {
 	eventID, err := newEventID()
 	if err != nil {
-		return fmt.Errorf("relational: error creating event identifier: %v", err)
+		return fmt.Errorf("relational: error creating new event identifier: %w", err)
 	}
 
-	var account Account
-	err = r.db.Where(`account_id = ? AND retired = ?`, accountID, false).First(&account).Error
+	account, err := r.findAccount(FindAccountQueryActiveByID(accountID))
 	if err != nil {
-		if gorm.IsRecordNotFoundError(err) {
-			return persistence.ErrUnknownAccount(
-				fmt.Sprintf("unknown or retired account with id %s", accountID),
-			)
-		}
-		return fmt.Errorf("relational: error looking up account with id %s: %v", accountID, err)
+		return fmt.Errorf("relational: error looking up matching account for given event: %w", err)
 	}
 
 	var hashedUserID *string
@@ -33,20 +26,20 @@ func (r *relationalDatabase) Insert(userID, accountID, payload string) error {
 	// in case the event is not anonymous, we need to check that the user
 	// already exists for the account so events can be decrypted lateron
 	if hashedUserID != nil {
-		var user User
-		if err := r.db.Where("hashed_user_id = ?", hashedUserID).First(&user).Error; gorm.IsRecordNotFoundError(err) {
-			return persistence.ErrUnknownUser(
-				fmt.Sprintf("relational: unknown user with id %s", userID),
-			)
+		if _, err := r.findUser(FindUserQueryByHashedUserID(*hashedUserID)); err != nil {
+			return fmt.Errorf("relational: error finding user for given event: %w", err)
 		}
 	}
 
-	r.db.Create(&Event{
+	insertErr := r.createEvent(&Event{
 		AccountID:    accountID,
 		HashedUserID: hashedUserID,
 		Payload:      payload,
 		EventID:      eventID,
 	})
+	if insertErr != nil {
+		return fmt.Errorf("relational: error inserting event: %w", insertErr)
+	}
 	return nil
 }
 

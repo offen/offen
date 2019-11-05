@@ -76,3 +76,7 @@ type LoginAccountResult struct {
 	AccountID        string      `json:"accountId"`
 	KeyEncryptionKey interface{} `json:"keyEncryptionKey"`
 }
+
+type DatabaseQuery interface {
+	Query()
+}

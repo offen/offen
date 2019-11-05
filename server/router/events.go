@@ -33,20 +33,24 @@ func (rt *router) postEvents(c *gin.Context) {
 	}
 
 	if err := rt.db.Insert(userID, evt.AccountID, evt.Payload); err != nil {
-		if unknownAccountErr, ok := err.(persistence.ErrUnknownAccount); ok {
+		var unknownAccountErr persistence.ErrUnknownAccount
+		if errors.As(err, &unknownAccountErr) {
 			newJSONError(
 				unknownAccountErr,
 				http.StatusNotFound,
 			).Pipe(c)
 			return
 		}
-		if unknownUserErr, ok := err.(persistence.ErrUnknownUser); ok {
+
+		var unknownUserErr persistence.ErrUnknownUser
+		if errors.As(err, &unknownUserErr) {
 			newJSONError(
 				unknownUserErr,
 				http.StatusBadRequest,
 			).Pipe(c)
 			return
 		}
+
 		newJSONError(
 			fmt.Errorf("router: error persisting event: %v", err),
 			http.StatusInternalServerError,
