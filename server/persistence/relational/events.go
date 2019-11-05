@@ -9,12 +9,12 @@ import (
 func (r *relationalDatabase) Insert(userID, accountID, payload string) error {
 	eventID, err := newEventID()
 	if err != nil {
-		return fmt.Errorf("relational: error creating new event identifier: %w", err)
+		return fmt.Errorf("persistence: error creating new event identifier: %w", err)
 	}
 
 	account, err := r.findAccount(FindAccountQueryActiveByID(accountID))
 	if err != nil {
-		return fmt.Errorf("relational: error looking up matching account for given event: %w", err)
+		return fmt.Errorf("persistence: error looking up matching account for given event: %w", err)
 	}
 
 	var hashedUserID *string
@@ -27,7 +27,7 @@ func (r *relationalDatabase) Insert(userID, accountID, payload string) error {
 	// already exists for the account so events can be decrypted lateron
 	if hashedUserID != nil {
 		if _, err := r.findUser(FindUserQueryByHashedUserID(*hashedUserID)); err != nil {
-			return fmt.Errorf("relational: error finding user for given event: %w", err)
+			return fmt.Errorf("persistence: error finding user for given event: %w", err)
 		}
 	}
 
@@ -38,39 +38,29 @@ func (r *relationalDatabase) Insert(userID, accountID, payload string) error {
 		EventID:      eventID,
 	})
 	if insertErr != nil {
-		return fmt.Errorf("relational: error inserting event: %w", insertErr)
+		return fmt.Errorf("persistence: error inserting event: %w", insertErr)
 	}
 	return nil
 }
 
 func (r *relationalDatabase) Query(query persistence.Query) (map[string][]persistence.EventResult, error) {
-	var result []Event
-	out := map[string][]persistence.EventResult{}
-
 	var accounts []Account
-	if err := r.db.Find(&accounts).Error; err != nil {
-		return nil, fmt.Errorf("relational: error looking up all accounts: %v", err)
+	accounts, err := r.findAccounts(FindAccountsQueryAllAccounts{})
+	if err != nil {
+		return nil, fmt.Errorf("persistence: error looking up all accounts: %v", err)
 	}
 
-	userID := query.UserID()
-	hashedUserIDs := hashUserIDForAccounts(userID, accounts)
-
-	var eventConditions []interface{}
-	if query.Since() != "" {
-		eventConditions = []interface{}{
-			"event_id > ? AND hashed_user_id in (?)",
-			query.Since(),
-			hashedUserIDs,
-		}
-	} else {
-		eventConditions = []interface{}{"hashed_user_id in (?)", hashedUserIDs}
+	results, err := r.findEvents(FindEventsQueryForHashedIDs{
+		HashedUserIDs: hashUserIDForAccounts(query.UserID(), accounts),
+		Since:         query.Since(),
+	})
+	if err != nil {
+		return nil, fmt.Errorf("persistence: error looking up events: %w", err)
 	}
 
-	if err := r.db.Find(&result, eventConditions...).Error; err != nil {
-		return nil, fmt.Errorf("relational: error looking up events: %v", err)
-	}
-
-	for _, match := range result {
+	// results will be keyed on account ids
+	out := map[string][]persistence.EventResult{}
+	for _, match := range results {
 		out[match.AccountID] = append(out[match.AccountID], persistence.EventResult{
 			AccountID: match.AccountID,
 			Payload:   match.Payload,
@@ -81,23 +71,23 @@ func (r *relationalDatabase) Query(query persistence.Query) (map[string][]persis
 }
 
 func (r *relationalDatabase) Purge(userID string) error {
-	var accounts []Account
-	if err := r.db.Find(&accounts).Error; err != nil {
-		return fmt.Errorf("relational: error looking up all accounts: %v", err)
+	accounts, err := r.findAccounts(FindAccountsQueryAllAccounts{})
+	if err != nil {
+		return fmt.Errorf("relational: error retrieving available accounts: %w", err)
 	}
-	hashedUserIDs := hashUserIDForAccounts(userID, accounts)
 
-	if err := r.db.Where("hashed_user_id IN (?)", hashedUserIDs).Delete(Event{}).Error; err != nil {
-		return fmt.Errorf("relational: error purging events: %v", err)
+	hashedUserIDs := hashUserIDForAccounts(userID, accounts)
+	if err := r.deleteEvents(DeleteEventsQueryByHashedIDs(hashedUserIDs)); err != nil {
+		return fmt.Errorf("persistence: error purging events: %w", err)
 	}
 	return nil
 }
 
 func (r *relationalDatabase) GetDeletedEvents(ids []string, userID string) ([]string, error) {
 	// First, perform a check which one of the events have been deleted
-	var existing []Event
-	if err := r.db.Where("event_id IN (?)", ids).Find(&existing).Error; err != nil {
-		return nil, fmt.Errorf("relational: error looking up events: %v", err)
+	existing, err := r.findEvents(FindEventsQueryByEventIDs(ids))
+	if err != nil {
+		return nil, fmt.Errorf("persistence: error looking up events: %w", err)
 	}
 
 	deletedIds := []string{}
@@ -115,15 +105,17 @@ outer:
 	// associated to previous values, so the next check looks up events that
 	// are still present but considered "foreign"
 	if userID != "" {
-		var accounts []Account
-		if err := r.db.Find(&accounts).Error; err != nil {
-			return nil, fmt.Errorf("relational: error looking up all accounts: %v", err)
+		accounts, err := r.findAccounts(FindAccountsQueryAllAccounts{})
+		if err != nil {
+			return nil, fmt.Errorf("persistence: error looking up all accounts: %v", err)
 		}
 
-		hashedUserIDs := hashUserIDForAccounts(userID, accounts)
-		var foreign []Event
-		if err := r.db.Where("event_id IN (?) AND hashed_user_id NOT IN (?)", ids, hashedUserIDs).Find(&foreign).Error; err != nil {
-			return nil, fmt.Errorf("relational: error looking up foreign events: %v", err)
+		foreign, err := r.findEvents(FindEventsQueryExclusion{
+			EventIDs:      ids,
+			HashedUserIDs: hashUserIDForAccounts(userID, accounts),
+		})
+		if err != nil {
+			return nil, fmt.Errorf("persistence: error looking up foreign events: %v", err)
 		}
 
 		for _, evt := range foreign {
