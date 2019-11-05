@@ -77,7 +77,7 @@ func (r *relationalDatabase) Purge(userID string) error {
 	}
 
 	hashedUserIDs := hashUserIDForAccounts(userID, accounts)
-	if err := r.deleteEvents(DeleteEventsQueryByHashedIDs(hashedUserIDs)); err != nil {
+	if _, err := r.deleteEvents(DeleteEventsQueryByHashedIDs(hashedUserIDs)); err != nil {
 		return fmt.Errorf("persistence: error purging events: %w", err)
 	}
 	return nil

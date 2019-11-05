@@ -1,5 +1,7 @@
 package persistence
 
+import "time"
+
 // Database is anything that can be used to store and query event data
 type Database interface {
 	Insert(userID, accountID, payload string) error
@@ -15,6 +17,7 @@ type Database interface {
 	CheckHealth() error
 	GenerateOneTimeKey(emailAddress string) ([]byte, error)
 	ResetPassword(emailAddress, password string, oneTimeKey []byte) error
+	Expire(time.Duration) (int, error)
 }
 
 // Query defines a set of filters to limit the set of results to be returned

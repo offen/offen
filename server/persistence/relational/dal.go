@@ -72,7 +72,11 @@ func (r *relationalDatabase) findEvents(q persistence.DatabaseQuery) ([]Event, e
 		return events, nil
 	case FindEventsQueryExclusion:
 		var events []Event
-		if err := r.db.Where("event_id IN (?) AND hashed_user_id NOT IN (?)", query.EventIDs, query.HashedUserIDs).Find(&events).Error; err != nil {
+		if err := r.db.Where(
+			"event_id IN (?) AND hashed_user_id NOT IN (?)",
+			query.EventIDs,
+			query.HashedUserIDs,
+		).Find(&events).Error; err != nil {
 			return nil, fmt.Errorf("dal: error looking up events: %w", err)
 		}
 		return events, nil
@@ -88,15 +92,32 @@ type DeleteEventsQueryByHashedIDs []string
 // Query implements DatabaseQuery
 func (d DeleteEventsQueryByHashedIDs) Query() {}
 
-func (r *relationalDatabase) deleteEvents(q persistence.DatabaseQuery) error {
+// DeleteEventsQueryOlderThan requests deletion of all events that are older than
+// the given ULID event identifier.
+type DeleteEventsQueryOlderThan string
+
+// Query implements DatabaseQuery
+func (d DeleteEventsQueryOlderThan) Query() {}
+
+func (r *relationalDatabase) deleteEvents(q persistence.DatabaseQuery) (int64, error) {
 	switch query := q.(type) {
 	case DeleteEventsQueryByHashedIDs:
-		if err := r.db.Where("hashed_user_id IN (?)", []string(query)).Delete(Event{}).Error; err != nil {
-			return fmt.Errorf("dal: error deleting events: %w", err)
+		deletion := r.db.Where(
+			"hashed_user_id IN (?)",
+			[]string(query),
+		).Delete(Event{})
+		if err := deletion.Error; err != nil {
+			return 0, fmt.Errorf("dal: error deleting events: %w", err)
 		}
-		return nil
+		return deletion.RowsAffected, nil
+	case DeleteEventsQueryOlderThan:
+		deletion := r.db.Where("event_id < ?", string(query)).Delete(&Event{})
+		if err := deletion.Error; err != nil {
+			return 0, fmt.Errorf("dal: error deleting events: %w", err)
+		}
+		return deletion.RowsAffected, nil
 	default:
-		return ErrBadQuery
+		return 0, ErrBadQuery
 	}
 }
 
@@ -110,7 +131,10 @@ func (r *relationalDatabase) findUser(query persistence.DatabaseQuery) (User, er
 	switch q := query.(type) {
 	case FindUserQueryByHashedUserID:
 		var user User
-		if err := r.db.Where("hashed_user_id = ?", string(q)).First(&user).Error; err != nil {
+		if err := r.db.Where(
+			"hashed_user_id = ?",
+			string(q),
+		).First(&user).Error; err != nil {
 			if gorm.IsRecordNotFoundError(err) {
 				return user, persistence.ErrUnknownUser("dal: no matching user found")
 			}
@@ -132,7 +156,11 @@ func (r *relationalDatabase) findAccount(q persistence.DatabaseQuery) (Account, 
 	switch query := q.(type) {
 	case FindAccountQueryActiveByID:
 		var account Account
-		if err := r.db.Where("account_id = ? AND retired = ?", string(query), false).First(&account).Error; err != nil {
+		if err := r.db.Where(
+			"account_id = ? AND retired = ?",
+			string(query),
+			false,
+		).First(&account).Error; err != nil {
 			if gorm.IsRecordNotFoundError(err) {
 				return account, persistence.ErrUnknownAccount("dal: no matching account found")
 			}

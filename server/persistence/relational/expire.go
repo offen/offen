@@ -3,25 +3,21 @@ package relational
 import (
 	"fmt"
 	"time"
-
-	"github.com/jinzhu/gorm"
 )
 
 // Expire deletes all events in the give database that are older than the given
 // retention threshold.
-func Expire(db *gorm.DB, retention time.Duration) (int, error) {
+func (r *relationalDatabase) Expire(retention time.Duration) (int, error) {
 	limit := time.Now().Add(-retention)
 	deadline, deadlineErr := EventIDAt(limit)
 	if deadlineErr != nil {
-		return 0, fmt.Errorf("error determing deadline for purging events: %v", deadlineErr)
+		return 0, fmt.Errorf("persistence: error determing deadline for expiring events: %w", deadlineErr)
 	}
 
-	txn := db.Begin()
-	result := txn.Table("events").Where("event_id < ?", deadline).Delete(&Event{})
-	if result.Error != nil {
-		txn.Rollback()
-		return 0, fmt.Errorf("error deleting events: %v", result.Error)
+	eventsAffected, err := r.deleteEvents(DeleteEventsQueryOlderThan(deadline))
+	if err != nil {
+		return 0, fmt.Errorf("persistence: error expiring events: %w", err)
 	}
 
-	return int(result.RowsAffected), txn.Commit().Error
+	return int(eventsAffected), nil
 }

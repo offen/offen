@@ -110,7 +110,7 @@ func main() {
 		if cfg.App.SingleNode {
 			scheduler := gocron.NewScheduler()
 			scheduler.Every(1).Hours().Do(func() {
-				affected, err := relational.Expire(gormDB, cfg.App.EventRetentionPeriod)
+				affected, err := db.Expire(cfg.App.EventRetentionPeriod)
 				if err != nil {
 					logger.WithError(err).Errorf("Error pruning expired events")
 					return
@@ -222,12 +222,18 @@ func main() {
 		logger.Info("Successfully ran database migrations")
 	case "expire":
 		cfg := mustConfig(false)
-		db, dbErr := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString)
+		gormDB, dbErr := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString)
 		if dbErr != nil {
 			logger.WithError(dbErr).Fatal("Error establishing database connection")
 		}
 
-		affected, err := relational.Expire(db, cfg.App.EventRetentionPeriod)
+		db, err := relational.New(
+			gormDB,
+			relational.WithLogging(cfg.App.Development),
+			relational.WithEmailSalt(cfg.Secrets.EmailSalt.Bytes()),
+		)
+
+		affected, err := db.Expire(cfg.App.EventRetentionPeriod)
 		if err != nil {
 			logger.WithError(err).Fatalf("Error pruning expired events")
 		}
