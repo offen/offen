@@ -2,14 +2,13 @@ package relational
 
 import (
 	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/postgres"
 	gormigrate "gopkg.in/gormigrate.v1"
 )
 
 // Migrate runs the defined database migrations in the given db or initializes it
 // from the latest definition if it is still blank.
-func Migrate(db *gorm.DB) error {
-	m := gormigrate.New(db, gormigrate.DefaultOptions, []*gormigrate.Migration{
+func (r *relationalDatabase) Migrate() error {
+	m := gormigrate.New(r.db, gormigrate.DefaultOptions, []*gormigrate.Migration{
 		{
 			ID: "001_add_one_time_keys",
 			Migrate: func(db *gorm.DB) error {

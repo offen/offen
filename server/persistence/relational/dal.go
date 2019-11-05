@@ -22,15 +22,9 @@ type FindEventsQueryForHashedIDs struct {
 	Since         string
 }
 
-// Query implements DatabaseQuery.
-func (f FindEventsQueryForHashedIDs) Query() {}
-
 // FindEventsQueryByEventIDs requests all events that match the given list of
 // identifiers.
 type FindEventsQueryByEventIDs []string
-
-// Query implements DatabaseQuery.
-func (f FindEventsQueryByEventIDs) Query() {}
 
 // FindEventsQueryExclusion requests all events of the given identifiers
 // that do not have a hashed user id contained in the given set.
@@ -39,10 +33,7 @@ type FindEventsQueryExclusion struct {
 	HashedUserIDs []string
 }
 
-// Query implements DatabaseQuery.
-func (f FindEventsQueryExclusion) Query() {}
-
-func (r *relationalDatabase) findEvents(q persistence.DatabaseQuery) ([]Event, error) {
+func (r *relationalDatabase) findEvents(q interface{}) ([]Event, error) {
 	switch query := q.(type) {
 	case FindEventsQueryForHashedIDs:
 		var events []Event
@@ -89,18 +80,22 @@ func (r *relationalDatabase) findEvents(q persistence.DatabaseQuery) ([]Event, e
 // the given identifiers.
 type DeleteEventsQueryByHashedIDs []string
 
-// Query implements DatabaseQuery
-func (d DeleteEventsQueryByHashedIDs) Query() {}
-
 // DeleteEventsQueryOlderThan requests deletion of all events that are older than
 // the given ULID event identifier.
 type DeleteEventsQueryOlderThan string
 
-// Query implements DatabaseQuery
-func (d DeleteEventsQueryOlderThan) Query() {}
+// DeleteEventsQueryByEventIDs requests deletion of all events contained in the
+// given set.
+type DeleteEventsQueryByEventIDs []string
 
-func (r *relationalDatabase) deleteEvents(q persistence.DatabaseQuery) (int64, error) {
+func (r *relationalDatabase) deleteEvents(q interface{}) (int64, error) {
 	switch query := q.(type) {
+	case DeleteEventsQueryByEventIDs:
+		deletion := r.db.Where("event_id in (?)", []string(query)).Delete(Event{})
+		if err := deletion.Error; err != nil {
+			return 0, fmt.Errorf("relational: error deleting orphaned events: %v", err)
+		}
+		return deletion.RowsAffected, nil
 	case DeleteEventsQueryByHashedIDs:
 		deletion := r.db.Where(
 			"hashed_user_id IN (?)",
@@ -121,19 +116,37 @@ func (r *relationalDatabase) deleteEvents(q persistence.DatabaseQuery) (int64, e
 	}
 }
 
+func (r *relationalDatabase) createUser(u *User) error {
+	if err := r.db.Create(u).Error; err != nil {
+		return fmt.Errorf("dal: error creating user: %w", err)
+	}
+	return nil
+}
+
+type DeleteUserQueryByHashedID string
+
+func (r *relationalDatabase) deleteUser(q interface{}) error {
+	switch query := q.(type) {
+	case DeleteUserQueryByHashedID:
+		if err := r.db.Where("hashed_user_id = ?", string(query)).Delete(&User{}).Error; err != nil {
+			return fmt.Errorf("dal: error deleting user: %w", err)
+		}
+		return nil
+	default:
+		return ErrBadQuery
+	}
+}
+
 // FindUserQueryByHashedUserID requests the user of the given ID
 type FindUserQueryByHashedUserID string
 
-// Query implements DatabaseQuery
-func (f FindUserQueryByHashedUserID) Query() {}
-
-func (r *relationalDatabase) findUser(query persistence.DatabaseQuery) (User, error) {
-	switch q := query.(type) {
+func (r *relationalDatabase) findUser(q interface{}) (User, error) {
+	switch query := q.(type) {
 	case FindUserQueryByHashedUserID:
 		var user User
 		if err := r.db.Where(
 			"hashed_user_id = ?",
-			string(q),
+			string(query),
 		).First(&user).Error; err != nil {
 			if gorm.IsRecordNotFoundError(err) {
 				return user, persistence.ErrUnknownUser("dal: no matching user found")
@@ -149,11 +162,44 @@ func (r *relationalDatabase) findUser(query persistence.DatabaseQuery) (User, er
 // FindAccountQueryActiveByID requests a non-retired account of the given ID
 type FindAccountQueryActiveByID string
 
-// Query implements DatabaseQuery
-func (f FindAccountQueryActiveByID) Query() {}
+// FindAccountQueryByID requests the account of the given id.
+type FindAccountQueryByID string
 
-func (r *relationalDatabase) findAccount(q persistence.DatabaseQuery) (Account, error) {
+// FindAccountQueryIncludeEvents requests the account of the given id including
+// all of the associated events. In case the value for Since is non-zero, only
+// events newer than the given value should be considered.
+type FindAccountQueryIncludeEvents struct {
+	AccountID string
+	Since     string
+}
+
+func (r *relationalDatabase) findAccount(q interface{}) (Account, error) {
 	switch query := q.(type) {
+	case FindAccountQueryIncludeEvents:
+		var account Account
+		queryDB := r.db
+		if query.Since != "" {
+			queryDB = queryDB.Preload("Events", "event_id > ?", query.Since).Preload("Events.User")
+		} else {
+			queryDB = queryDB.Preload("Events").Preload("Events.User")
+		}
+
+		if err := queryDB.Find(&account, "account_id = ?", query.AccountID).Error; err != nil {
+			if gorm.IsRecordNotFoundError(err) {
+				return Account{}, persistence.ErrUnknownAccount(fmt.Sprintf(`dal: account id "%s" unknown`, query.AccountID))
+			}
+			return Account{}, fmt.Errorf(`relational: error looking up account with id %s: %w`, query.AccountID, err)
+		}
+		return account, nil
+	case FindAccountQueryByID:
+		var account Account
+		if err := r.db.Where("account_id = ?", string(query)).First(&account).Error; err != nil {
+			if gorm.IsRecordNotFoundError(err) {
+				return account, persistence.ErrUnknownAccount("dal: no matching account found")
+			}
+			return account, fmt.Errorf("dal: error looking up account: %w", err)
+		}
+		return account, nil
 	case FindAccountQueryActiveByID:
 		var account Account
 		if err := r.db.Where(
@@ -162,7 +208,7 @@ func (r *relationalDatabase) findAccount(q persistence.DatabaseQuery) (Account, 
 			false,
 		).First(&account).Error; err != nil {
 			if gorm.IsRecordNotFoundError(err) {
-				return account, persistence.ErrUnknownAccount("dal: no matching account found")
+				return account, persistence.ErrUnknownAccount("dal: no matching active account found")
 			}
 			return account, fmt.Errorf("dal: error looking up account: %w", err)
 		}
@@ -172,11 +218,10 @@ func (r *relationalDatabase) findAccount(q persistence.DatabaseQuery) (Account, 
 	}
 }
 
+// FindAccountsQueryAllAccounts requests all known accounts to be returned.
 type FindAccountsQueryAllAccounts struct{}
 
-func (f FindAccountsQueryAllAccounts) Query() {}
-
-func (r *relationalDatabase) findAccounts(q persistence.DatabaseQuery) ([]Account, error) {
+func (r *relationalDatabase) findAccounts(q interface{}) ([]Account, error) {
 	switch q.(type) {
 	case FindAccountsQueryAllAccounts:
 		var accounts []Account
@@ -187,4 +232,8 @@ func (r *relationalDatabase) findAccounts(q persistence.DatabaseQuery) ([]Accoun
 	default:
 		return nil, ErrBadQuery
 	}
+}
+
+func (r *relationalDatabase) ping() error {
+	return r.db.DB().Ping()
 }

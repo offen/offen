@@ -17,7 +17,8 @@ type Database interface {
 	CheckHealth() error
 	GenerateOneTimeKey(emailAddress string) ([]byte, error)
 	ResetPassword(emailAddress, password string, oneTimeKey []byte) error
-	Expire(time.Duration) (int, error)
+	Expire(retention time.Duration) (int, error)
+	Migrate() error
 }
 
 // Query defines a set of filters to limit the set of results to be returned
@@ -78,8 +79,4 @@ type LoginAccountResult struct {
 	AccountName      string      `json:"accountName"`
 	AccountID        string      `json:"accountId"`
 	KeyEncryptionKey interface{} `json:"keyEncryptionKey"`
-}
-
-type DatabaseQuery interface {
-	Query()
 }

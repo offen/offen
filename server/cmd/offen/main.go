@@ -73,7 +73,7 @@ func main() {
 		}
 
 		if cfg.App.SingleNode {
-			if err := relational.Migrate(gormDB); err != nil {
+			if err := db.Migrate(); err != nil {
 				logger.WithError(err).Fatal("Error applying database migrations")
 			} else {
 				logger.Info("Successfully applied database migrations")
@@ -147,11 +147,6 @@ func main() {
 
 		cfg := mustConfig(*populateMissing)
 
-		db, dbErr := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString)
-		if dbErr != nil {
-			logger.WithError(dbErr).Fatal("Error establishing database connection")
-		}
-
 		conf := relational.BootstrapConfig{}
 		if *source != "" {
 			logger.Infof("Trying to read account seed data from %s", *source)
@@ -201,6 +196,10 @@ func main() {
 				relational.BootstrapAccount{Name: *accountName, ID: *accountID},
 			)
 		}
+		db, dbErr := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString)
+		if dbErr != nil {
+			logger.WithError(dbErr).Fatal("Error establishing database connection")
+		}
 
 		if err := relational.Bootstrap(db, conf, cfg.Secrets.EmailSalt.Bytes()); err != nil {
 			logger.WithError(err).Fatal("Error bootstrapping database")
@@ -212,11 +211,19 @@ func main() {
 		}
 	case "migrate":
 		cfg := mustConfig(false)
-		db, dbErr := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString)
+		gormDB, dbErr := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString)
 		if dbErr != nil {
 			logger.WithError(dbErr).Fatal("Error establishing database connection")
 		}
-		if err := relational.Migrate(db); err != nil {
+		db, err := relational.New(
+			gormDB,
+			relational.WithLogging(cfg.App.Development),
+		)
+		if err != nil {
+			logger.WithError(err).Fatal("Error creating persistence layer")
+		}
+
+		if err := db.Migrate(); err != nil {
 			logger.WithError(err).Fatal("Error applying database migrations")
 		}
 		logger.Info("Successfully ran database migrations")
@@ -230,7 +237,6 @@ func main() {
 		db, err := relational.New(
 			gormDB,
 			relational.WithLogging(cfg.App.Development),
-			relational.WithEmailSalt(cfg.Secrets.EmailSalt.Bytes()),
 		)
 
 		affected, err := db.Expire(cfg.App.EventRetentionPeriod)

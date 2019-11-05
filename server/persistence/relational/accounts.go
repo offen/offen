@@ -1,32 +1,21 @@
 package relational
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/gofrs/uuid"
-	"github.com/jinzhu/gorm"
 	"github.com/offen/offen/server/persistence"
 )
 
 func (r *relationalDatabase) GetAccount(accountID string, includeEvents bool, eventsSince string) (persistence.AccountResult, error) {
-	var account Account
-
-	queryDB := r.db
-	if includeEvents {
-		if eventsSince != "" {
-			queryDB = queryDB.Preload("Events", "event_id > ?", eventsSince).Preload("Events.User")
-		} else {
-			queryDB = queryDB.Preload("Events").Preload("Events.User")
-		}
+	account, err := r.findAccount(FindAccountQueryIncludeEvents{
+		AccountID: accountID,
+		Since:     eventsSince,
+	})
+	if err != nil {
+		return persistence.AccountResult{}, fmt.Errorf("persistence: error looking up account data: %w", err)
 	}
-
-	if err := queryDB.Find(&account, "account_id = ?", accountID).Error; err != nil {
-		if gorm.IsRecordNotFoundError(err) {
-			return persistence.AccountResult{}, persistence.ErrUnknownAccount(fmt.Sprintf(`relational: account id "%s" unknown`, accountID))
-		}
-		return persistence.AccountResult{}, fmt.Errorf("relational: error looking up account with id %s: %v", accountID, err)
-	}
-
 	result := persistence.AccountResult{
 		AccountID: account.AccountID,
 		Name:      account.Name,
@@ -37,7 +26,7 @@ func (r *relationalDatabase) GetAccount(accountID string, includeEvents bool, ev
 	} else {
 		key, err := account.WrapPublicKey()
 		if err != nil {
-			return persistence.AccountResult{}, fmt.Errorf("relational: error wrapping account public key: %v", err)
+			return persistence.AccountResult{}, fmt.Errorf("persistence: error wrapping account public key: %v", err)
 		}
 		result.PublicKey = key
 	}
@@ -68,22 +57,22 @@ func (r *relationalDatabase) GetAccount(accountID string, includeEvents bool, ev
 }
 
 func (r *relationalDatabase) AssociateUserSecret(accountID, userID, encryptedUserSecret string) error {
-	var account Account
-	if err := r.db.Find(&account, "account_id = ?", accountID).Error; err != nil {
-		return fmt.Errorf("relational: error looking up account with id %s: %v", accountID, err)
+	account, err := r.findAccount(FindAccountQueryByID(accountID))
+	if err != nil {
+		return fmt.Errorf(`persistence: error looking up account with id "%s": %w`, accountID, err)
 	}
-	hashedUserID := account.HashUserID(userID)
 
-	var user User
+	hashedUserID := account.HashUserID(userID)
+	user, err := r.findUser(FindUserQueryByHashedUserID(hashedUserID))
 	// there is an issue with the Postgres backend of GORM that disallows inserting
 	// primary keys when using `FirstOrCreate`, so we need to do a manual check
 	// for existence beforehand.
-	if err := r.db.First(&user, "hashed_user_id = ?", hashedUserID).Error; err != nil {
-		if err != gorm.ErrRecordNotFound {
-			return fmt.Errorf("relational: error looking up user: %v", err)
+	if err != nil {
+		var notFound persistence.ErrUnknownUser
+		if !errors.As(err, &notFound) {
+			return fmt.Errorf("persistence: error looking up user: %v", err)
 		}
 	} else {
-		txn := r.db.Begin()
 		// In this branch the following case is covered: a user whose hashed
 		// identifier is known, has sent a new user secret to be saved. This means
 		// all events previously saved using their identifier cannot be accessed
@@ -95,57 +84,57 @@ func (r *relationalDatabase) AssociateUserSecret(accountID, userID, encryptedUse
 		// "deleted" by clients.
 		parkedID, parkedIDErr := uuid.NewV4()
 		if parkedIDErr != nil {
-			txn.Rollback()
-			return fmt.Errorf("relational: error creating identifier for parking events: %v", parkedIDErr)
+			return fmt.Errorf("persistence: error creating identifier for parking events: %v", parkedIDErr)
 		}
-
 		parkedHash := account.HashUserID(parkedID.String())
-		if err := txn.Create(&User{
+
+		if err := r.createUser(&User{
 			HashedUserID:        parkedHash,
 			EncryptedUserSecret: user.EncryptedUserSecret,
-		}).Error; err != nil {
-			txn.Rollback()
-			return fmt.Errorf("relational: error creating user for parking events: %v", err)
+		}); err != nil {
+			return fmt.Errorf("persistence: error creating user for use as migration target: %w", err)
 		}
-		if err := txn.Delete(&user).Error; err != nil {
-			txn.Rollback()
-			return fmt.Errorf("relational: error deleting existing user: %v", err)
+
+		if err := r.deleteUser(DeleteUserQueryByHashedID(user.HashedUserID)); err != nil {
+			return fmt.Errorf("persistence: error deleting existing user: %v", err)
 		}
 
 		// The previous user is now deleted so all orphaned events need to be
 		// copied over to the one used for parking the events.
 		var orphanedEvents []Event
 		var idsToDelete []string
-		txn.Find(&orphanedEvents, "hashed_user_id = ?", hashedUserID)
+		orphanedEvents, err := r.findEvents(FindEventsQueryForHashedIDs{
+			HashedUserIDs: []string{hashedUserID},
+		})
+		if err != nil {
+			return fmt.Errorf("persistence: error looking up orphaned events: %w", err)
+		}
 		for _, orphan := range orphanedEvents {
 			newID, err := newEventID()
 			if err != nil {
-				txn.Rollback()
-				return fmt.Errorf("relational: error creating new event id: %v", err)
+				return fmt.Errorf("persistence: error creating new event id: %w", err)
 			}
 
-			if err := txn.Create(&Event{
+			if err := r.createEvent(&Event{
 				EventID:      newID,
 				AccountID:    orphan.AccountID,
 				HashedUserID: &parkedHash,
 				Payload:      orphan.Payload,
-			}).Error; err != nil {
-				txn.Rollback()
-				return fmt.Errorf("relational: error migrating an existing event: %v", err)
+			}); err != nil {
+				return fmt.Errorf("persistence: error migrating an existing event: %w", err)
 			}
 			idsToDelete = append(idsToDelete, orphan.EventID)
 		}
-		if err := txn.Where("event_id in (?)", idsToDelete).Delete(Event{}).Error; err != nil {
-			txn.Rollback()
-			return fmt.Errorf("relational: error deleting orphaned events: %v", err)
-		}
-		if err := txn.Commit().Error; err != nil {
-			return fmt.Errorf("relational: error committing migration transaction: %v", err)
+		if _, err := r.deleteEvents(DeleteEventsQueryByEventIDs(idsToDelete)); err != nil {
+			return fmt.Errorf("relational: error deleting orphaned events: %w", err)
 		}
 	}
 
-	return r.db.Create(&User{
+	if err := r.createUser(&User{
 		EncryptedUserSecret: encryptedUserSecret,
 		HashedUserID:        hashedUserID,
-	}).Error
+	}); err != nil {
+		return fmt.Errorf("persistence: error creating user: %w", err)
+	}
+	return nil
 }

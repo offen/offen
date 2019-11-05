@@ -11,6 +11,7 @@ import (
 	"github.com/offen/offen/server/persistence"
 )
 
+// ErrBadQuery is returned when a DAL method cannot handle the given query
 var ErrBadQuery = errors.New("dal: could not match query")
 
 type relationalDatabase struct {
