@@ -120,7 +120,7 @@ func TestRelationalDatabase_Insert(t *testing.T) {
 			if err := test.setup(db); err != nil {
 				t.Fatalf("Unexpected error setting up test: %v", err)
 			}
-			relational := &relationalDatabase{db: db}
+			relational := &relationalDatabase{db: NewRelationalDAL(db)}
 			err := relational.Insert(test.userID, "account-id", "payload")
 			if (err != nil) != test.expectError {
 				t.Errorf("Unexpected error value %v", err)
@@ -214,7 +214,7 @@ func TestRelationalDatabase_Purge(t *testing.T) {
 			db, closeDB := createTestDatabase()
 			defer closeDB()
 
-			relational := relationalDatabase{db: db}
+			relational := relationalDatabase{db: NewRelationalDAL(db)}
 
 			if err := test.setup(db); err != nil {
 				t.Fatalf("Error setting up database %v", err)
@@ -315,7 +315,7 @@ func TestRelationalDatabase_GetDeletedEvents(t *testing.T) {
 			db, closeDB := createTestDatabase()
 			defer closeDB()
 
-			relational := relationalDatabase{db: db}
+			relational := relationalDatabase{db: NewRelationalDAL(db)}
 			if err := test.setup(db); err != nil {
 				t.Fatalf("Error setting up test: %v", err)
 			}
@@ -514,7 +514,7 @@ func TestRelationalDatabase_Query(t *testing.T) {
 				t.Fatalf("Error setting up test: %v", err)
 			}
 
-			relational := relationalDatabase{db: db}
+			relational := relationalDatabase{db: NewRelationalDAL(db)}
 			result, err := relational.Query(&test.query)
 
 			if (err != nil) != test.expectError {

@@ -20,18 +20,48 @@ type DataAccessLayer interface {
 	UpdateAccountUser(*AccountUser) error
 	FindAccountUserRelationships(interface{}) ([]AccountUserRelationship, error)
 	UpdateAccountUserRelationship(*AccountUserRelationship) error
+	Transaction() Transaction
 	ApplyMigrations() error
 	Ping() error
+}
+
+type Transaction interface {
+	DataAccessLayer
+	Rollback() error
+	Commit() error
 }
 
 type relationalDAL struct {
 	db *gorm.DB
 }
 
+type transactionDAL struct {
+	*relationalDAL
+}
+
+func (t *transactionDAL) Rollback() error {
+	if err := t.db.Rollback().Error; err != nil {
+		return fmt.Errorf("dal: error rolling back transaction: %w", err)
+	}
+	return nil
+}
+
+func (t *transactionDAL) Commit() error {
+	if err := t.db.Commit().Error; err != nil {
+		return fmt.Errorf("dal: error comitting transaction: %w", err)
+	}
+	return nil
+}
+
 func NewRelationalDAL(db *gorm.DB) DataAccessLayer {
 	return &relationalDAL{
 		db: db,
 	}
+}
+
+func (r *relationalDAL) Transaction() Transaction {
+	dal := relationalDAL{r.db.Begin()}
+	return &transactionDAL{&dal}
 }
 
 func (r *relationalDAL) CreateEvent(e *Event) error {

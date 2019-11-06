@@ -169,7 +169,7 @@ func TestRelationalDatabase_GetAccount(t *testing.T) {
 				t.Fatalf("Unexpected error setting up test %v", err)
 			}
 			relational := &relationalDatabase{
-				db: db,
+				db: NewRelationalDAL(db),
 			}
 			result, err := relational.GetAccount("account-id", test.includeEvents, test.eventsSince)
 			if (err != nil) != test.expectError {
@@ -282,7 +282,7 @@ func TestRelationalDatabase_AssociateUserSecret(t *testing.T) {
 			if err := test.setup(db); err != nil {
 				t.Fatalf("Error setting up test: %v", err)
 			}
-			relational := relationalDatabase{db: db}
+			relational := relationalDatabase{db: NewRelationalDAL(db)}
 
 			err := relational.AssociateUserSecret("account-id", "user-id", "encrypted-user-secret")
 			if (err != nil) != test.expectError {

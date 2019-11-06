@@ -87,15 +87,17 @@ func (r *relationalDatabase) AssociateUserSecret(accountID, userID, encryptedUse
 		}
 		parkedHash := account.HashUserID(parkedID.String())
 
-		// TODO: run the following logic in a transaction
-		if err := r.db.CreateUser(&User{
+		txn := r.db.Transaction()
+		if err := txn.CreateUser(&User{
 			HashedUserID:        parkedHash,
 			EncryptedUserSecret: user.EncryptedUserSecret,
 		}); err != nil {
+			txn.Rollback()
 			return fmt.Errorf("persistence: error creating user for use as migration target: %w", err)
 		}
 
-		if err := r.db.DeleteUser(DeleteUserQueryByHashedID(user.HashedUserID)); err != nil {
+		if err := txn.DeleteUser(DeleteUserQueryByHashedID(user.HashedUserID)); err != nil {
+			txn.Rollback()
 			return fmt.Errorf("persistence: error deleting existing user: %v", err)
 		}
 
@@ -103,7 +105,7 @@ func (r *relationalDatabase) AssociateUserSecret(accountID, userID, encryptedUse
 		// copied over to the one used for parking the events.
 		var orphanedEvents []Event
 		var idsToDelete []string
-		orphanedEvents, err := r.db.FindEvents(FindEventsQueryForHashedIDs{
+		orphanedEvents, err := txn.FindEvents(FindEventsQueryForHashedIDs{
 			HashedUserIDs: []string{hashedUserID},
 		})
 		if err != nil {
@@ -112,10 +114,11 @@ func (r *relationalDatabase) AssociateUserSecret(accountID, userID, encryptedUse
 		for _, orphan := range orphanedEvents {
 			newID, err := newEventID()
 			if err != nil {
+				txn.Rollback()
 				return fmt.Errorf("persistence: error creating new event id: %w", err)
 			}
 
-			if err := r.db.CreateEvent(&Event{
+			if err := txn.CreateEvent(&Event{
 				EventID:      newID,
 				AccountID:    orphan.AccountID,
 				HashedUserID: &parkedHash,
@@ -125,8 +128,12 @@ func (r *relationalDatabase) AssociateUserSecret(accountID, userID, encryptedUse
 			}
 			idsToDelete = append(idsToDelete, orphan.EventID)
 		}
-		if _, err := r.db.DeleteEvents(DeleteEventsQueryByEventIDs(idsToDelete)); err != nil {
+		if _, err := txn.DeleteEvents(DeleteEventsQueryByEventIDs(idsToDelete)); err != nil {
+			txn.Rollback()
 			return fmt.Errorf("relational: error deleting orphaned events: %w", err)
+		}
+		if err := txn.Commit(); err != nil {
+			return fmt.Errorf("relational: error committing transaction: %w", err)
 		}
 	}
 
