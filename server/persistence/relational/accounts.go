@@ -88,6 +88,7 @@ func (r *relationalDatabase) AssociateUserSecret(accountID, userID, encryptedUse
 		}
 		parkedHash := account.HashUserID(parkedID.String())
 
+		// TODO: run the following logic in a transaction
 		if err := r.createUser(&User{
 			HashedUserID:        parkedHash,
 			EncryptedUserSecret: user.EncryptedUserSecret,

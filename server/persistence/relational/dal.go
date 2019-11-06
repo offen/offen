@@ -236,17 +236,44 @@ func (r *relationalDatabase) findAccounts(q interface{}) ([]Account, error) {
 // hashed email.
 type FindAccountUserQueryByHashedEmail string
 
+// FindAccountUserQueryByHashedEmailIncludeRelationships requests the account user with the given
+// hashed email and all of its relationships.
+type FindAccountUserQueryByHashedEmailIncludeRelationships string
+
+// FindAccountUserQueryByUserIDIncludeRelationships requests the account user of
+// the given id and all of its relationships.
+type FindAccountUserQueryByUserIDIncludeRelationships string
+
 func (r *relationalDatabase) findAccountUser(q interface{}) (AccountUser, error) {
 	var accountUser AccountUser
 	switch query := q.(type) {
 	case FindAccountUserQueryByHashedEmail:
 		if err := r.db.Where("hashed_email = ?", string(query)).First(&accountUser).Error; err != nil {
-			return accountUser, fmt.Errorf("dal: error looking up account user: %w", err)
+			return accountUser, fmt.Errorf("dal: error looking up account user by hashed email: %w", err)
+		}
+		return accountUser, nil
+	case FindAccountUserQueryByHashedEmailIncludeRelationships:
+		var accountUser AccountUser
+		if err := r.db.Preload("Relationships").Where("hashed_email = ?", string(query)).First(&accountUser).Error; err != nil {
+			return accountUser, fmt.Errorf("dal: error looking up account user by hashed email: %w", err)
+		}
+		return accountUser, nil
+	case FindAccountUserQueryByUserIDIncludeRelationships:
+		var accountUser AccountUser
+		if err := r.db.Preload("Relationships").Where("user_id = ?", string(query)).First(&accountUser).Error; err != nil {
+			return accountUser, fmt.Errorf("dal: error looking up account user by user id: %w", err)
 		}
 		return accountUser, nil
 	default:
 		return accountUser, ErrBadQuery
 	}
+}
+
+func (r *relationalDatabase) updateAccountUser(u *AccountUser) error {
+	if err := r.db.Save(u).Error; err != nil {
+		return fmt.Errorf("dal: error updating account user: %w", err)
+	}
+	return nil
 }
 
 // FindAccountUserRelationShipsQueryByUserID requests all relationships for the user
@@ -268,4 +295,11 @@ func (r *relationalDatabase) findAccountUserRelationships(q interface{}) ([]Acco
 
 func (r *relationalDatabase) ping() error {
 	return r.db.DB().Ping()
+}
+
+func (r *relationalDatabase) updateAccountUserRelationship(a *AccountUserRelationship) error {
+	if err := r.db.Save(a).Error; err != nil {
+		return fmt.Errorf("dal: error updating account user relationship: %w", err)
+	}
+	return nil
 }
