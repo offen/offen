@@ -87,7 +87,10 @@ func (r *relationalDatabase) AssociateUserSecret(accountID, userID, encryptedUse
 		}
 		parkedHash := account.HashUserID(parkedID.String())
 
-		txn := r.db.Transaction()
+		txn, err := r.db.Transaction()
+		if err != nil {
+			return fmt.Errorf("persistence: error creating transaction: %w", err)
+		}
 		if err := txn.CreateUser(&User{
 			HashedUserID:        parkedHash,
 			EncryptedUserSecret: user.EncryptedUserSecret,
@@ -103,7 +106,6 @@ func (r *relationalDatabase) AssociateUserSecret(accountID, userID, encryptedUse
 
 		// The previous user is now deleted so all orphaned events need to be
 		// copied over to the one used for parking the events.
-		var orphanedEvents []Event
 		var idsToDelete []string
 		orphanedEvents, err := txn.FindEvents(FindEventsQueryForHashedIDs{
 			HashedUserIDs: []string{hashedUserID},

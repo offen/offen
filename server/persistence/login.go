@@ -139,7 +139,10 @@ func (r *relationalDatabase) ChangePassword(userID, currentPassword, changedPass
 	}
 
 	accountUser.HashedPassword = base64.StdEncoding.EncodeToString(newPasswordHash)
-	txn := r.db.Transaction()
+	txn, err:= r.db.Transaction()
+	if err != nil {
+		return fmt.Errorf("persistence: error creating transaction: %w", err)
+	}
 	if err := txn.UpdateAccountUser(&accountUser); err != nil {
 		txn.Rollback()
 		return fmt.Errorf("persistence: error updating password for user: %w", err)
@@ -203,7 +206,10 @@ func (r *relationalDatabase) ResetPassword(emailAddress, password string, oneTim
 		return fmt.Errorf("persistence: error looking up relationships: %w", err)
 	}
 
-	txn := r.db.Transaction()
+	txn, err := r.db.Transaction()
+	if err != nil {
+		return fmt.Errorf("persistence: error creating transaction: %w", err)
+	}
 	for _, relationship := range relationships {
 		chunks := strings.Split(relationship.OneTimeEncryptedKeyEncryptionKey, " ")
 		nonce, _ := base64.StdEncoding.DecodeString(chunks[0])
@@ -282,7 +288,10 @@ func (r *relationalDatabase) ChangeEmail(userID, emailAddress, password string) 
 	}
 
 	accountUser.HashedEmail = base64.StdEncoding.EncodeToString(hashedEmail)
-	txn := r.db.Transaction()
+	txn, err := r.db.Transaction()
+	if err != nil {
+		return fmt.Errorf("persistence: error creating transaction: %w", err)
+	}
 	if err := txn.UpdateAccountUser(&accountUser); err != nil {
 		txn.Rollback()
 		return fmt.Errorf("persistence: error updating hashed email on account user: %w", err)
@@ -340,7 +349,10 @@ func (r *relationalDatabase) GenerateOneTimeKey(emailAddress string) ([]byte, er
 	oneTimeKey, _ := keys.GenerateRandomValue(keys.DefaultEncryptionKeySize)
 	oneTimeKeyBytes, _ := base64.StdEncoding.DecodeString(oneTimeKey)
 
-	txn := r.db.Transaction()
+	txn, err := r.db.Transaction()
+	if err !=  nil {
+		return nil, fmt.Errorf("persistence: error creating transaction: %w", err)
+	}
 	for _, relationship := range accountUser.Relationships {
 		chunks := strings.Split(relationship.EmailEncryptedKeyEncryptionKey, " ")
 		nonce, _ := base64.StdEncoding.DecodeString(chunks[0])
