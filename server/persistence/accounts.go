@@ -8,7 +8,7 @@ import (
 )
 
 func (r *relationalDatabase) GetAccount(accountID string, includeEvents bool, eventsSince string) (AccountResult, error) {
-	account, err := r.findAccount(FindAccountQueryIncludeEvents{
+	account, err := r.db.FindAccount(FindAccountQueryIncludeEvents{
 		AccountID: accountID,
 		Since:     eventsSince,
 	})
@@ -56,13 +56,13 @@ func (r *relationalDatabase) GetAccount(accountID string, includeEvents bool, ev
 }
 
 func (r *relationalDatabase) AssociateUserSecret(accountID, userID, encryptedUserSecret string) error {
-	account, err := r.findAccount(FindAccountQueryByID(accountID))
+	account, err := r.db.FindAccount(FindAccountQueryByID(accountID))
 	if err != nil {
 		return fmt.Errorf(`persistence: error looking up account with id "%s": %w`, accountID, err)
 	}
 
 	hashedUserID := account.HashUserID(userID)
-	user, err := r.findUser(FindUserQueryByHashedUserID(hashedUserID))
+	user, err := r.db.FindUser(FindUserQueryByHashedUserID(hashedUserID))
 	// there is an issue with the Postgres backend of GORM that disallows inserting
 	// primary keys when using `FirstOrCreate`, so we need to do a manual check
 	// for existence beforehand.
@@ -88,14 +88,14 @@ func (r *relationalDatabase) AssociateUserSecret(accountID, userID, encryptedUse
 		parkedHash := account.HashUserID(parkedID.String())
 
 		// TODO: run the following logic in a transaction
-		if err := r.createUser(&User{
+		if err := r.db.CreateUser(&User{
 			HashedUserID:        parkedHash,
 			EncryptedUserSecret: user.EncryptedUserSecret,
 		}); err != nil {
 			return fmt.Errorf("persistence: error creating user for use as migration target: %w", err)
 		}
 
-		if err := r.deleteUser(DeleteUserQueryByHashedID(user.HashedUserID)); err != nil {
+		if err := r.db.DeleteUser(DeleteUserQueryByHashedID(user.HashedUserID)); err != nil {
 			return fmt.Errorf("persistence: error deleting existing user: %v", err)
 		}
 
@@ -103,7 +103,7 @@ func (r *relationalDatabase) AssociateUserSecret(accountID, userID, encryptedUse
 		// copied over to the one used for parking the events.
 		var orphanedEvents []Event
 		var idsToDelete []string
-		orphanedEvents, err := r.findEvents(FindEventsQueryForHashedIDs{
+		orphanedEvents, err := r.db.FindEvents(FindEventsQueryForHashedIDs{
 			HashedUserIDs: []string{hashedUserID},
 		})
 		if err != nil {
@@ -115,7 +115,7 @@ func (r *relationalDatabase) AssociateUserSecret(accountID, userID, encryptedUse
 				return fmt.Errorf("persistence: error creating new event id: %w", err)
 			}
 
-			if err := r.createEvent(&Event{
+			if err := r.db.CreateEvent(&Event{
 				EventID:      newID,
 				AccountID:    orphan.AccountID,
 				HashedUserID: &parkedHash,
@@ -125,12 +125,12 @@ func (r *relationalDatabase) AssociateUserSecret(accountID, userID, encryptedUse
 			}
 			idsToDelete = append(idsToDelete, orphan.EventID)
 		}
-		if _, err := r.deleteEvents(DeleteEventsQueryByEventIDs(idsToDelete)); err != nil {
+		if _, err := r.db.DeleteEvents(DeleteEventsQueryByEventIDs(idsToDelete)); err != nil {
 			return fmt.Errorf("relational: error deleting orphaned events: %w", err)
 		}
 	}
 
-	if err := r.createUser(&User{
+	if err := r.db.CreateUser(&User{
 		EncryptedUserSecret: encryptedUserSecret,
 		HashedUserID:        hashedUserID,
 	}); err != nil {

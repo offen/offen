@@ -14,7 +14,7 @@ func (r *relationalDatabase) Expire(retention time.Duration) (int, error) {
 		return 0, fmt.Errorf("persistence: error determing deadline for expiring events: %w", deadlineErr)
 	}
 
-	eventsAffected, err := r.deleteEvents(DeleteEventsQueryOlderThan(deadline))
+	eventsAffected, err := r.db.DeleteEvents(DeleteEventsQueryOlderThan(deadline))
 	if err != nil {
 		return 0, fmt.Errorf("persistence: error expiring events: %w", err)
 	}

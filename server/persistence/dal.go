@@ -7,7 +7,34 @@ import (
 	gormigrate "gopkg.in/gormigrate.v1"
 )
 
-func (r *relationalDatabase) createEvent(e *Event) error {
+type DataAccessLayer interface {
+	CreateEvent(*Event) error
+	FindEvents(interface{}) ([]Event, error)
+	DeleteEvents(interface{}) (int64, error)
+	CreateUser(*User) error
+	FindUser(interface{}) (User, error)
+	DeleteUser(interface{}) error
+	FindAccount(interface{}) (Account, error)
+	FindAccounts(interface{}) ([]Account, error)
+	FindAccountUser(interface{}) (AccountUser, error)
+	UpdateAccountUser(*AccountUser) error
+	FindAccountUserRelationships(interface{}) ([]AccountUserRelationship, error)
+	UpdateAccountUserRelationship(*AccountUserRelationship) error
+	ApplyMigrations() error
+	Ping() error
+}
+
+type relationalDAL struct {
+	db *gorm.DB
+}
+
+func NewRelationalDAL(db *gorm.DB) DataAccessLayer {
+	return &relationalDAL{
+		db: db,
+	}
+}
+
+func (r *relationalDAL) CreateEvent(e *Event) error {
 	if err := r.db.Create(e).Error; err != nil {
 		return fmt.Errorf("dal: error creating event: %w", err)
 	}
@@ -33,12 +60,11 @@ type FindEventsQueryExclusion struct {
 	HashedUserIDs []string
 }
 
-func (r *relationalDatabase) findEvents(q interface{}) ([]Event, error) {
+func (r *relationalDAL) FindEvents(q interface{}) ([]Event, error) {
 	var events []Event
 	switch query := q.(type) {
 	case FindEventsQueryForHashedIDs:
 		var eventConditions []interface{}
-
 		if query.Since != "" {
 			eventConditions = []interface{}{
 				"event_id > ? AND hashed_user_id in (?)",
@@ -86,7 +112,7 @@ type DeleteEventsQueryOlderThan string
 // given set.
 type DeleteEventsQueryByEventIDs []string
 
-func (r *relationalDatabase) deleteEvents(q interface{}) (int64, error) {
+func (r *relationalDAL) DeleteEvents(q interface{}) (int64, error) {
 	switch query := q.(type) {
 	case DeleteEventsQueryByEventIDs:
 		deletion := r.db.Where("event_id in (?)", []string(query)).Delete(Event{})
@@ -114,7 +140,7 @@ func (r *relationalDatabase) deleteEvents(q interface{}) (int64, error) {
 	}
 }
 
-func (r *relationalDatabase) createUser(u *User) error {
+func (r *relationalDAL) CreateUser(u *User) error {
 	if err := r.db.Create(u).Error; err != nil {
 		return fmt.Errorf("dal: error creating user: %w", err)
 	}
@@ -125,7 +151,7 @@ func (r *relationalDatabase) createUser(u *User) error {
 // hashed id.
 type DeleteUserQueryByHashedID string
 
-func (r *relationalDatabase) deleteUser(q interface{}) error {
+func (r *relationalDAL) DeleteUser(q interface{}) error {
 	switch query := q.(type) {
 	case DeleteUserQueryByHashedID:
 		if err := r.db.Where("hashed_user_id = ?", string(query)).Delete(&User{}).Error; err != nil {
@@ -140,7 +166,7 @@ func (r *relationalDatabase) deleteUser(q interface{}) error {
 // FindUserQueryByHashedUserID requests the user of the given ID
 type FindUserQueryByHashedUserID string
 
-func (r *relationalDatabase) findUser(q interface{}) (User, error) {
+func (r *relationalDAL) FindUser(q interface{}) (User, error) {
 	var user User
 	switch query := q.(type) {
 	case FindUserQueryByHashedUserID:
@@ -173,7 +199,7 @@ type FindAccountQueryIncludeEvents struct {
 	Since     string
 }
 
-func (r *relationalDatabase) findAccount(q interface{}) (Account, error) {
+func (r *relationalDAL) FindAccount(q interface{}) (Account, error) {
 	var account Account
 	switch query := q.(type) {
 	case FindAccountQueryIncludeEvents:
@@ -219,7 +245,7 @@ func (r *relationalDatabase) findAccount(q interface{}) (Account, error) {
 // FindAccountsQueryAllAccounts requests all known accounts to be returned.
 type FindAccountsQueryAllAccounts struct{}
 
-func (r *relationalDatabase) findAccounts(q interface{}) ([]Account, error) {
+func (r *relationalDAL) FindAccounts(q interface{}) ([]Account, error) {
 	var accounts []Account
 	switch q.(type) {
 	case FindAccountsQueryAllAccounts:
@@ -244,7 +270,7 @@ type FindAccountUserQueryByHashedEmailIncludeRelationships string
 // the given id and all of its relationships.
 type FindAccountUserQueryByUserIDIncludeRelationships string
 
-func (r *relationalDatabase) findAccountUser(q interface{}) (AccountUser, error) {
+func (r *relationalDAL) FindAccountUser(q interface{}) (AccountUser, error) {
 	var accountUser AccountUser
 	switch query := q.(type) {
 	case FindAccountUserQueryByHashedEmail:
@@ -269,7 +295,7 @@ func (r *relationalDatabase) findAccountUser(q interface{}) (AccountUser, error)
 	}
 }
 
-func (r *relationalDatabase) updateAccountUser(u *AccountUser) error {
+func (r *relationalDAL) UpdateAccountUser(u *AccountUser) error {
 	if err := r.db.Save(u).Error; err != nil {
 		return fmt.Errorf("dal: error updating account user: %w", err)
 	}
@@ -280,7 +306,7 @@ func (r *relationalDatabase) updateAccountUser(u *AccountUser) error {
 // with the given user ID.
 type FindAccountUserRelationShipsQueryByUserID string
 
-func (r *relationalDatabase) findAccountUserRelationships(q interface{}) ([]AccountUserRelationship, error) {
+func (r *relationalDAL) FindAccountUserRelationships(q interface{}) ([]AccountUserRelationship, error) {
 	var relationships []AccountUserRelationship
 	switch query := q.(type) {
 	case FindAccountUserRelationShipsQueryByUserID:
@@ -293,18 +319,14 @@ func (r *relationalDatabase) findAccountUserRelationships(q interface{}) ([]Acco
 	}
 }
 
-func (r *relationalDatabase) ping() error {
-	return r.db.DB().Ping()
-}
-
-func (r *relationalDatabase) updateAccountUserRelationship(a *AccountUserRelationship) error {
+func (r *relationalDAL) UpdateAccountUserRelationship(a *AccountUserRelationship) error {
 	if err := r.db.Save(a).Error; err != nil {
 		return fmt.Errorf("dal: error updating account user relationship: %w", err)
 	}
 	return nil
 }
 
-func (r *relationalDatabase) applyMigrations() error {
+func (r *relationalDAL) ApplyMigrations() error {
 	m := gormigrate.New(r.db, gormigrate.DefaultOptions, []*gormigrate.Migration{
 		{
 			ID: "001_add_one_time_keys",
@@ -337,4 +359,8 @@ func (r *relationalDatabase) applyMigrations() error {
 	})
 
 	return m.Migrate()
+}
+
+func (r *relationalDAL) Ping() error {
+	return r.db.DB().Ping()
 }

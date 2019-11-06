@@ -62,10 +62,10 @@ func main() {
 		if err != nil {
 			logger.WithError(err).Fatal("Unable to establish database connection")
 		}
+		gormDB.LogMode(cfg.App.Development)
 
 		db, err := persistence.New(
-			gormDB,
-			persistence.WithLogging(cfg.App.Development),
+			persistence.NewRelationalDAL(gormDB),
 			persistence.WithEmailSalt(cfg.Secrets.EmailSalt.Bytes()),
 		)
 		if err != nil {
@@ -215,9 +215,9 @@ func main() {
 		if dbErr != nil {
 			logger.WithError(dbErr).Fatal("Error establishing database connection")
 		}
+		gormDB.LogMode(cfg.App.Development)
 		db, err := persistence.New(
-			gormDB,
-			persistence.WithLogging(cfg.App.Development),
+			persistence.NewRelationalDAL(gormDB),
 		)
 		if err != nil {
 			logger.WithError(err).Fatal("Error creating persistence layer")
@@ -233,10 +233,10 @@ func main() {
 		if dbErr != nil {
 			logger.WithError(dbErr).Fatal("Error establishing database connection")
 		}
+		gormDB.LogMode(cfg.App.Development)
 
 		db, err := persistence.New(
-			gormDB,
-			persistence.WithLogging(cfg.App.Development),
+			persistence.NewRelationalDAL(gormDB),
 		)
 
 		affected, err := db.Expire(cfg.App.EventRetentionPeriod)
