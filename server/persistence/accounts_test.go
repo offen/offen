@@ -1,4 +1,4 @@
-package relational
+package persistence
 
 import (
 	"errors"
@@ -8,7 +8,6 @@ import (
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
-	"github.com/offen/offen/server/persistence"
 )
 
 var publicKey = `
@@ -50,7 +49,7 @@ func TestRelationalDatabase_GetAccount(t *testing.T) {
 		setup         func(*gorm.DB) error
 		includeEvents bool
 		eventsSince   string
-		assertion     func(persistence.AccountResult) error
+		assertion     func(AccountResult) error
 		expectError   bool
 	}{
 		{
@@ -60,8 +59,8 @@ func TestRelationalDatabase_GetAccount(t *testing.T) {
 			},
 			false,
 			"",
-			func(r persistence.AccountResult) error {
-				if !reflect.DeepEqual(r, persistence.AccountResult{}) {
+			func(r AccountResult) error {
+				if !reflect.DeepEqual(r, AccountResult{}) {
 					return fmt.Errorf("unexpected result %#v", r)
 				}
 				return nil
@@ -80,7 +79,7 @@ func TestRelationalDatabase_GetAccount(t *testing.T) {
 			},
 			false,
 			"",
-			func(r persistence.AccountResult) error {
+			func(r AccountResult) error {
 				if r.AccountID != "account-id" {
 					return fmt.Errorf("unexpected account id %v", r.AccountID)
 				}
@@ -132,7 +131,7 @@ func TestRelationalDatabase_GetAccount(t *testing.T) {
 			},
 			true,
 			"event-id-0",
-			func(r persistence.AccountResult) error {
+			func(r AccountResult) error {
 				if r.AccountID != "account-id" {
 					return fmt.Errorf("unexpected account id %v", r.AccountID)
 				}
@@ -140,8 +139,8 @@ func TestRelationalDatabase_GetAccount(t *testing.T) {
 					return fmt.Errorf("unexpected secret key %v", r.EncryptedPrivateKey)
 				}
 				userID := "hashed-user-id"
-				if !reflect.DeepEqual(r.Events, &persistence.EventsByAccountID{
-					"account-id": []persistence.EventResult{
+				if !reflect.DeepEqual(r.Events, &EventsByAccountID{
+					"account-id": []EventResult{
 						{
 							AccountID: "account-id",
 							UserID:    &userID,
@@ -152,7 +151,7 @@ func TestRelationalDatabase_GetAccount(t *testing.T) {
 				}) {
 					return fmt.Errorf("unexpected events %v", r.Events)
 				}
-				if !reflect.DeepEqual(r.UserSecrets, &persistence.SecretsByUserID{
+				if !reflect.DeepEqual(r.UserSecrets, &SecretsByUserID{
 					"hashed-user-id": "encrypted-user-secret",
 				}) {
 					return fmt.Errorf("unexpected user secrets %v", r.UserSecrets)

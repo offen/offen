@@ -1,22 +1,21 @@
-package relational
+package persistence
 
 import (
 	"errors"
 	"fmt"
 
 	"github.com/gofrs/uuid"
-	"github.com/offen/offen/server/persistence"
 )
 
-func (r *relationalDatabase) GetAccount(accountID string, includeEvents bool, eventsSince string) (persistence.AccountResult, error) {
+func (r *relationalDatabase) GetAccount(accountID string, includeEvents bool, eventsSince string) (AccountResult, error) {
 	account, err := r.findAccount(FindAccountQueryIncludeEvents{
 		AccountID: accountID,
 		Since:     eventsSince,
 	})
 	if err != nil {
-		return persistence.AccountResult{}, fmt.Errorf("persistence: error looking up account data: %w", err)
+		return AccountResult{}, fmt.Errorf("persistence: error looking up account data: %w", err)
 	}
-	result := persistence.AccountResult{
+	result := AccountResult{
 		AccountID: account.AccountID,
 		Name:      account.Name,
 	}
@@ -26,16 +25,16 @@ func (r *relationalDatabase) GetAccount(accountID string, includeEvents bool, ev
 	} else {
 		key, err := account.WrapPublicKey()
 		if err != nil {
-			return persistence.AccountResult{}, fmt.Errorf("persistence: error wrapping account public key: %v", err)
+			return AccountResult{}, fmt.Errorf("persistence: error wrapping account public key: %v", err)
 		}
 		result.PublicKey = key
 	}
 
-	eventResults := persistence.EventsByAccountID{}
-	userSecrets := persistence.SecretsByUserID{}
+	eventResults := EventsByAccountID{}
+	userSecrets := SecretsByUserID{}
 
 	for _, evt := range account.Events {
-		eventResults[evt.AccountID] = append(eventResults[evt.AccountID], persistence.EventResult{
+		eventResults[evt.AccountID] = append(eventResults[evt.AccountID], EventResult{
 			UserID:    evt.HashedUserID,
 			EventID:   evt.EventID,
 			Payload:   evt.Payload,
@@ -68,7 +67,7 @@ func (r *relationalDatabase) AssociateUserSecret(accountID, userID, encryptedUse
 	// primary keys when using `FirstOrCreate`, so we need to do a manual check
 	// for existence beforehand.
 	if err != nil {
-		var notFound persistence.ErrUnknownUser
+		var notFound ErrUnknownUser
 		if !errors.As(err, &notFound) {
 			return fmt.Errorf("persistence: error looking up user: %v", err)
 		}

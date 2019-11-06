@@ -1,9 +1,7 @@
-package relational
+package persistence
 
 import (
 	"fmt"
-
-	"github.com/offen/offen/server/persistence"
 )
 
 func (r *relationalDatabase) Insert(userID, accountID, payload string) error {
@@ -43,7 +41,7 @@ func (r *relationalDatabase) Insert(userID, accountID, payload string) error {
 	return nil
 }
 
-func (r *relationalDatabase) Query(query persistence.Query) (map[string][]persistence.EventResult, error) {
+func (r *relationalDatabase) Query(query Query) (map[string][]EventResult, error) {
 	var accounts []Account
 	accounts, err := r.findAccounts(FindAccountsQueryAllAccounts{})
 	if err != nil {
@@ -59,9 +57,9 @@ func (r *relationalDatabase) Query(query persistence.Query) (map[string][]persis
 	}
 
 	// results will be keyed on account ids
-	out := map[string][]persistence.EventResult{}
+	out := map[string][]EventResult{}
 	for _, match := range results {
-		out[match.AccountID] = append(out[match.AccountID], persistence.EventResult{
+		out[match.AccountID] = append(out[match.AccountID], EventResult{
 			AccountID: match.AccountID,
 			Payload:   match.Payload,
 			EventID:   match.EventID,

@@ -1,10 +1,9 @@
-package relational
+package persistence
 
 import (
 	"fmt"
 
 	"github.com/jinzhu/gorm"
-	"github.com/offen/offen/server/persistence"
 	gormigrate "gopkg.in/gormigrate.v1"
 )
 
@@ -150,7 +149,7 @@ func (r *relationalDatabase) findUser(q interface{}) (User, error) {
 			string(query),
 		).First(&user).Error; err != nil {
 			if gorm.IsRecordNotFoundError(err) {
-				return user, persistence.ErrUnknownUser("dal: no matching user found")
+				return user, ErrUnknownUser("dal: no matching user found")
 			}
 			return user, fmt.Errorf("dal: error looking up user: %w", err)
 		}
@@ -187,7 +186,7 @@ func (r *relationalDatabase) findAccount(q interface{}) (Account, error) {
 
 		if err := queryDB.Find(&account, "account_id = ?", query.AccountID).Error; err != nil {
 			if gorm.IsRecordNotFoundError(err) {
-				return account, persistence.ErrUnknownAccount(fmt.Sprintf(`dal: account id "%s" unknown`, query.AccountID))
+				return account, ErrUnknownAccount(fmt.Sprintf(`dal: account id "%s" unknown`, query.AccountID))
 			}
 			return account, fmt.Errorf(`relational: error looking up account with id %s: %w`, query.AccountID, err)
 		}
@@ -195,7 +194,7 @@ func (r *relationalDatabase) findAccount(q interface{}) (Account, error) {
 	case FindAccountQueryByID:
 		if err := r.db.Where("account_id = ?", string(query)).First(&account).Error; err != nil {
 			if gorm.IsRecordNotFoundError(err) {
-				return account, persistence.ErrUnknownAccount("dal: no matching account found")
+				return account, ErrUnknownAccount("dal: no matching account found")
 			}
 			return account, fmt.Errorf("dal: error looking up account: %w", err)
 		}
@@ -207,7 +206,7 @@ func (r *relationalDatabase) findAccount(q interface{}) (Account, error) {
 			false,
 		).First(&account).Error; err != nil {
 			if gorm.IsRecordNotFoundError(err) {
-				return account, persistence.ErrUnknownAccount("dal: no matching active account found")
+				return account, ErrUnknownAccount("dal: no matching active account found")
 			}
 			return account, fmt.Errorf("dal: error looking up account: %w", err)
 		}

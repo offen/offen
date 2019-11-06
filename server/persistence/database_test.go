@@ -1,6 +1,6 @@
 //+build integration
 
-package relational
+package persistence
 
 import (
 	"os"

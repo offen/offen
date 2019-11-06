@@ -1,4 +1,4 @@
-package relational
+package persistence
 
 import (
 	"errors"
@@ -8,7 +8,6 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
-	"github.com/offen/offen/server/persistence"
 )
 
 // ErrBadQuery is returned when a DAL method cannot handle the given query
@@ -20,7 +19,7 @@ type relationalDatabase struct {
 }
 
 // New creates a persistence layer that connects to a PostgreSQL database
-func New(db *gorm.DB, configs ...Config) (persistence.Database, error) {
+func New(db *gorm.DB, configs ...Config) (Database, error) {
 	opts := dbOptions{}
 	for _, config := range configs {
 		config(&opts)

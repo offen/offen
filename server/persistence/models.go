@@ -1,4 +1,4 @@
-package relational
+package persistence
 
 import (
 	"crypto/sha256"

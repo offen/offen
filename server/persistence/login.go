@@ -1,4 +1,4 @@
-package relational
+package persistence
 
 import (
 	"encoding/base64"
@@ -7,13 +7,12 @@ import (
 
 	"github.com/lestrrat-go/jwx/jwk"
 	"github.com/offen/offen/server/keys"
-	"github.com/offen/offen/server/persistence"
 )
 
-func (r *relationalDatabase) Login(email, password string) (persistence.LoginResult, error) {
+func (r *relationalDatabase) Login(email, password string) (LoginResult, error) {
 	hashedEmail, hashedEmailErr := keys.HashEmail(email, r.emailSalt)
 	if hashedEmailErr != nil {
-		return persistence.LoginResult{}, hashedEmailErr
+		return LoginResult{}, hashedEmailErr
 	}
 
 	accountUser, err := r.findAccountUser(
@@ -22,35 +21,35 @@ func (r *relationalDatabase) Login(email, password string) (persistence.LoginRes
 		),
 	)
 	if err != nil {
-		return persistence.LoginResult{}, fmt.Errorf("persistence: error looking up account user: %w", err)
+		return LoginResult{}, fmt.Errorf("persistence: error looking up account user: %w", err)
 	}
 
 	saltBytes, saltErr := base64.StdEncoding.DecodeString(accountUser.Salt)
 	if saltErr != nil {
-		return persistence.LoginResult{}, fmt.Errorf("persistence: error decoding salt: %w", saltErr)
+		return LoginResult{}, fmt.Errorf("persistence: error decoding salt: %w", saltErr)
 	}
 
 	pwBytes, pwErr := base64.StdEncoding.DecodeString(accountUser.HashedPassword)
 	if pwErr != nil {
-		return persistence.LoginResult{}, fmt.Errorf("persistence: error decoding stored password: %w", pwErr)
+		return LoginResult{}, fmt.Errorf("persistence: error decoding stored password: %w", pwErr)
 	}
 	if err := keys.ComparePassword(password, pwBytes); err != nil {
-		return persistence.LoginResult{}, fmt.Errorf("persistence: error comparing passwords: %w", err)
+		return LoginResult{}, fmt.Errorf("persistence: error comparing passwords: %w", err)
 	}
 
 	pwDerivedKey, pwDerivedKeyErr := keys.DeriveKey(password, saltBytes)
 	if pwDerivedKeyErr != nil {
-		return persistence.LoginResult{}, fmt.Errorf("persistence: error deriving key from password: %w", pwDerivedKeyErr)
+		return LoginResult{}, fmt.Errorf("persistence: error deriving key from password: %w", pwDerivedKeyErr)
 	}
 
 	relationships, err := r.findAccountUserRelationships(
 		FindAccountUserRelationShipsQueryByUserID(accountUser.UserID),
 	)
 	if err != nil {
-		return persistence.LoginResult{}, fmt.Errorf("persistence: error retrieving account to user relationships: %w", err)
+		return LoginResult{}, fmt.Errorf("persistence: error retrieving account to user relationships: %w", err)
 	}
 
-	var results []persistence.LoginAccountResult
+	var results []LoginAccountResult
 	for _, relationship := range relationships {
 		chunks := strings.Split(relationship.PasswordEncryptedKeyEncryptionKey, " ")
 		nonce, _ := base64.StdEncoding.DecodeString(chunks[0])
@@ -58,19 +57,19 @@ func (r *relationalDatabase) Login(email, password string) (persistence.LoginRes
 
 		decryptedKey, decryptedKeyErr := keys.DecryptWith(pwDerivedKey, key, nonce)
 		if decryptedKeyErr != nil {
-			return persistence.LoginResult{}, fmt.Errorf("persistence: failed decrypting key encryption key for account %s: %v", relationship.AccountID, decryptedKeyErr)
+			return LoginResult{}, fmt.Errorf("persistence: failed decrypting key encryption key for account %s: %v", relationship.AccountID, decryptedKeyErr)
 		}
 		k, kErr := jwk.New(decryptedKey)
 		if kErr != nil {
-			return persistence.LoginResult{}, kErr
+			return LoginResult{}, kErr
 		}
 
 		account, err := r.findAccount(FindAccountQueryByID(relationship.AccountID))
 		if err != nil {
-			return persistence.LoginResult{}, fmt.Errorf(`persistence: error looking up account with id "%s": %w`, relationship.AccountID, err)
+			return LoginResult{}, fmt.Errorf(`persistence: error looking up account with id "%s": %w`, relationship.AccountID, err)
 		}
 
-		result := persistence.LoginAccountResult{
+		result := LoginAccountResult{
 			AccountName:      account.Name,
 			AccountID:        relationship.AccountID,
 			KeyEncryptionKey: k,
@@ -78,25 +77,25 @@ func (r *relationalDatabase) Login(email, password string) (persistence.LoginRes
 		results = append(results, result)
 	}
 
-	return persistence.LoginResult{
+	return LoginResult{
 		UserID:   accountUser.UserID,
 		Accounts: results,
 	}, nil
 }
 
-func (r *relationalDatabase) LookupUser(userID string) (persistence.LoginResult, error) {
+func (r *relationalDatabase) LookupUser(userID string) (LoginResult, error) {
 	accountUser, err := r.findAccountUser(
 		FindAccountUserQueryByUserIDIncludeRelationships(userID),
 	)
 	if err != nil {
-		return persistence.LoginResult{}, fmt.Errorf("persistence: error looking up account user: %w", err)
+		return LoginResult{}, fmt.Errorf("persistence: error looking up account user: %w", err)
 	}
-	result := persistence.LoginResult{
+	result := LoginResult{
 		UserID:   accountUser.UserID,
-		Accounts: []persistence.LoginAccountResult{},
+		Accounts: []LoginAccountResult{},
 	}
 	for _, relationship := range accountUser.Relationships {
-		result.Accounts = append(result.Accounts, persistence.LoginAccountResult{
+		result.Accounts = append(result.Accounts, LoginAccountResult{
 			AccountID: relationship.AccountID,
 		})
 	}

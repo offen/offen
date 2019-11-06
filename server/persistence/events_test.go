@@ -1,12 +1,10 @@
-package relational
+package persistence
 
 import (
 	"errors"
 	"fmt"
 	"reflect"
 	"testing"
-
-	"github.com/offen/offen/server/persistence"
 
 	"github.com/jinzhu/gorm"
 )
@@ -365,7 +363,7 @@ func TestRelationalDatabase_Query(t *testing.T) {
 		name           string
 		setup          func(*gorm.DB) error
 		query          mockQuery
-		expectedResult map[string][]persistence.EventResult
+		expectedResult map[string][]EventResult
 		expectError    bool
 	}{
 		{
@@ -374,7 +372,7 @@ func TestRelationalDatabase_Query(t *testing.T) {
 				return nil
 			},
 			mockQuery{userID: "user-id"},
-			map[string][]persistence.EventResult{},
+			map[string][]EventResult{},
 			false,
 		},
 		{
@@ -421,8 +419,8 @@ func TestRelationalDatabase_Query(t *testing.T) {
 				return nil
 			},
 			mockQuery{userID: "user-id"},
-			map[string][]persistence.EventResult{
-				"account-id": []persistence.EventResult{
+			map[string][]EventResult{
+				"account-id": []EventResult{
 					{
 						AccountID: "account-id",
 						Payload:   "payload-1",
@@ -434,7 +432,7 @@ func TestRelationalDatabase_Query(t *testing.T) {
 						EventID:   "event-id-2",
 					},
 				},
-				"other-account": []persistence.EventResult{
+				"other-account": []EventResult{
 					{
 						AccountID: "other-account",
 						Payload:   "payload-3",
@@ -488,15 +486,15 @@ func TestRelationalDatabase_Query(t *testing.T) {
 				return nil
 			},
 			mockQuery{userID: "user-id", since: "event-id-1"},
-			map[string][]persistence.EventResult{
-				"account-id": []persistence.EventResult{
+			map[string][]EventResult{
+				"account-id": []EventResult{
 					{
 						AccountID: "account-id",
 						Payload:   "payload-2",
 						EventID:   "event-id-2",
 					},
 				},
-				"other-account": []persistence.EventResult{
+				"other-account": []EventResult{
 					{
 						AccountID: "other-account",
 						Payload:   "payload-3",
