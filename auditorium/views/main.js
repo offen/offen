@@ -28,18 +28,18 @@ function view (state, emit) {
   var pageTitle
   if (isOperator) {
     accountHeader = html`
-        <h5>
-          ${raw(__('You are viewing data as <strong>operator</strong> with account <strong>%s</strong>.', state.model.account.name))}
-        </h5>
+      <div class="row">
+        ${raw(__('You are viewing data as <strong>operator</strong> with account <strong>%s</strong>.', state.model.account.name))}
+      </div>
     `
     pageTitle = state.model.account.name + ' | ' + state.title
   } else {
     accountHeader = html`
-      <h5>
+      <div class="row">
         ${raw(__('You are viewing data as <strong>user</strong>.'))}
-      </h5>
-      ${state.model.hasOptedOut ? html`<p><strong>${__('You have opted out. Clear your cookies to opt in.')}</strong></p>` : null}
-      ${state.model.allowsCookies ? null : html`<p><strong>${__('Your browser does not allow 3rd party cookies. We respect this setting and collect only very basic data in this case, yet it also means we cannot display any data to you here.')}</strong></p>`}
+        ${state.model.hasOptedOut ? html`<p><strong>${__('You have opted out. Clear your cookies to opt in.')}</strong></p>` : null}
+        ${state.model.allowsCookies ? null : html`<p><strong>${__('Your browser does not allow 3rd party cookies. We respect this setting and collect only very basic data in this case, yet it also means we cannot display any data to you here.')}</strong></p>`}
+      </div>
     `
     pageTitle = __('user') + ' | ' + state.title
   }
@@ -69,7 +69,7 @@ function view (state, emit) {
   })
   var rangeSelector = html`
     <div class="card col">
-      <h4>${__('Show data from the:')}</h4>
+      <h4>${__('Show data from the')}</h4>
       <ul>${ranges}</ul>
     </div>
   `
@@ -133,7 +133,7 @@ function view (state, emit) {
   var pages = html`
     <div class="card col">
       <h4>${__('Top pages')}</h4>
-      <table class="u-full-width">
+      <table class="w-100">
         <thead>
           <tr>
             <td>${__('URL')}</td>
@@ -159,7 +159,7 @@ function view (state, emit) {
   var referrers = referrerData.length
     ? html`
       <h4>${__('Top referrers')}</h4>
-      <table class="u-full-width">
+      <table class="w-100">
         <thead>
           <tr>
             <td>${__('Host')}</td>
@@ -177,15 +177,13 @@ function view (state, emit) {
     ? html`
       <div class="card col">
         <h4>${__('Manage your data')}</h4>
-        <div class="row">
-            <button class="btn u-full-width" data-role="optout" onclick="${handleOptout}">
-              ${state.model.hasOptedOut ? __('Opt in') : __('Opt out')}
-            </button>
-            <button class="btn u-full-width" data-role="purge" onclick="${handlePurge}">
-              ${__('Delete my data')}
-            </button>
+          <a class="btn" data-role="optout" onclick="${handleOptout}">
+            ${state.model.hasOptedOut ? __('Opt in') : __('Opt out')}
+          </a>
+          <a class="btn" data-role="purge" onclick="${handlePurge}">
+            ${__('Delete my data')}
+          </a>
         </div>
-      </div>
     `
 
     : null
@@ -195,21 +193,6 @@ function view (state, emit) {
         ${pages} ${referrers} ${manage}
       </div>
       `
-
-/*
-  var withSeparators = [accountHeader, rangeSelector, usersAndSessions, chart, pages, referrers, manage]
-    .filter(function (el) {
-      return el
-    })
-    .map(function (el) {
-      return html`${el}<hr>`
-    })
-  return html`
-    <div>
-      ${withSeparators}
-    </div>
-  `
-  */
 
     var withoutSeparators = [accountHeader, rowRangeUsersSessions, chart, rowPagesReferrersManage]
     return html`

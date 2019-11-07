@@ -6,18 +6,17 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>{{ __ "offen" }}</title>
   <link rel="stylesheet" type="text/css" href="/normalize.css">
-  <link rel="stylesheet" type="text/css" href="/skeleton.css">
+  <link rel="stylesheet" type="text/css" href="/lit.css">
+  <link rel="stylesheet" type="text/css" href="/fix.css">
   {{ with .rootAccount }}
     <script src="/script.js" data-account-id="{{ . }}"></script>
   {{ end }}
 </head>
 <body>
-  <div class="container">
+  <div class="c">
     <div class="row">
-      <div class="twelve columns">
-        <h1>{{ __ "Welcome to offen" }}</h1>
-        <p>{{ __ "Access your data in the <a href=\"auditorium\">auditorium</a>" }}</p>
-      </div>
+      <h1>{{ __ "Welcome to offen" }}</h1>
+      <p>{{ __ "Access your data in the <a href=\"auditorium\">auditorium</a>" }}</p>
     </div>
   </div>
 </body>

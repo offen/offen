@@ -11,20 +11,10 @@ function withLayout () {
       return html`
         <div class="c">
           <div class="row">
-            <div class="12 col">
-              <h1>${raw(__('<strong>offen</strong> auditorium'))}</h1>
-            </div>
+            <h1>${raw(__('<strong>offen</strong> auditorium'))}</h1>
+            ${flash ? html`<p class="flash-message">${flash}</p>` : null}
           </div>
-          <div class="row">
-            <div class="12 col">
-              ${flash ? html`<p class="flash-message">${flash}</p>` : null}
-            </div>
-          </div>
-          <div class="row">
-            <div class="12 col">
-              ${originalView(state, emit)}
-            </div>
-          </div>
+          ${originalView(state, emit)}
         </div>
       `
     }

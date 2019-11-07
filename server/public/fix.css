@@ -1,0 +1,20 @@
+body,
+.c,
+h6,
+h5,
+h4,
+h3,
+h2,
+h1,
+.btn {
+  font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+h6,
+h5,
+h4,
+h3,
+h2,
+h1 {
+  margin-block-start: 0;
+}
