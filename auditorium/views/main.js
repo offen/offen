@@ -28,9 +28,9 @@ function view (state, emit) {
   var pageTitle
   if (isOperator) {
     accountHeader = html`
-      <h5>
-        ${raw(__('You are viewing data as <strong>operator</strong> with account <strong>%s</strong>.', state.model.account.name))}
-      </h5>
+        <h5>
+          ${raw(__('You are viewing data as <strong>operator</strong> with account <strong>%s</strong>.', state.model.account.name))}
+        </h5>
     `
     pageTitle = state.model.account.name + ' | ' + state.title
   } else {
@@ -68,8 +68,10 @@ function view (state, emit) {
     `
   })
   var rangeSelector = html`
-    <h4>${__('Show data from the:')}</h4>
-    <ul>${ranges}</ul>
+    <div class="card col">
+      <h4>${__('Show data from the:')}</h4>
+      <ul>${ranges}</ul>
+    </div>
   `
 
   var uniqueEntities = isOperator
@@ -80,23 +82,30 @@ function view (state, emit) {
     : __('accounts')
   var uniqueSessions = state.model.uniqueSessions
   var usersAndSessions = html`
-    <div class="row">
-      <div class="six columns">
-        <h4><strong>${uniqueEntities}</strong> ${__('unique %s', entityName)}</h4>
+    <div class="card col">
+      <div class="row">
+        <div class="6 col">
+          <h4><strong>${uniqueEntities}</strong> ${__('unique %s', entityName)}</h4>
+        </div>
+        <div class="6 col">
+          <h4><strong>${uniqueSessions}</strong> ${__('unique sessions')}</h4>
+        </div>
       </div>
-      <div class="six columns">
-        <h4><strong>${uniqueSessions}</strong> ${__('unique sessions')}</h4>
-      </div>
-    </div>
-    <div class="row">
-      <div class="six columns">
-        <h4><strong>${formatPercentage(state.model.bounceRate)}%</strong> ${__('bounce rate')}</h4>
-      </div>
-      <div class="six columns">
-        ${isOperator ? html`<h4><strong>${formatPercentage(state.model.loss)}%</strong> ${__('plus')}</h4>` : null}
+      <div class="row">
+        <div class="6 col">
+          <h4><strong>${formatPercentage(state.model.bounceRate)}%</strong> ${__('bounce rate')}</h4>
+        </div>
+        <div class="6 col">
+          ${isOperator ? html`<h4><strong>${formatPercentage(state.model.loss)}%</strong> ${__('plus')}</h4>` : null}
+        </div>
       </div>
     </div>
   `
+  var rowRangeUsersSessions = html`
+    <div class="row">
+      ${rangeSelector} ${usersAndSessions}
+    </div>
+    `
 
   var chartData = {
     data: state.model.pageviews,
@@ -104,8 +113,12 @@ function view (state, emit) {
     resolution: state.model.resolution
   }
   var chart = html`
-    <h4>${__('Pageviews and %s', isOperator ? __('Visitors') : __('Accounts'))}</h4>
-    ${state.cache(BarChart, 'bar-chart').render(chartData)}
+    <div class="row">
+      <div class="card col">
+      <h4>${__('Pageviews and %s', isOperator ? __('Visitors') : __('Accounts'))}</h4>
+      ${state.cache(BarChart, 'bar-chart').render(chartData)}
+      </div>
+    </div>
   `
   var pagesData = state.model.pages
     .map(function (row) {
@@ -118,18 +131,20 @@ function view (state, emit) {
     })
 
   var pages = html`
-    <h4>${__('Top pages')}</h4>
-    <table class="u-full-width">
-      <thead>
-        <tr>
-          <td>${__('URL')}</td>
-          <td>${__('Pageviews')}</td>
-        </tr>
-      </thead>
-      <tbody>
-        ${pagesData}
-      </tbody>
-    </table>
+    <div class="card col">
+      <h4>${__('Top pages')}</h4>
+      <table class="u-full-width">
+        <thead>
+          <tr>
+            <td>${__('URL')}</td>
+            <td>${__('Pageviews')}</td>
+          </tr>
+        </thead>
+        <tbody>
+          ${pagesData}
+        </tbody>
+      </table>
+    </div>
   `
   var referrerData = state.model.referrers
     .map(function (row) {
@@ -160,22 +175,28 @@ function view (state, emit) {
 
   var manage = !isOperator && state.model.allowsCookies
     ? html`
-      <h4>${__('Manage your data')}</h4>
-      <div class="row">
-        <div class="six columns">
-          <button class="btn u-full-width" data-role="optout" onclick="${handleOptout}">
-            ${state.model.hasOptedOut ? __('Opt in') : __('Opt out')}
-          </button>
-        </div>
-        <div class="six columns">
-          <button class="btn u-full-width" data-role="purge" onclick="${handlePurge}">
-            ${__('Delete my data')}
-          </button>
+      <div class="card col">
+        <h4>${__('Manage your data')}</h4>
+        <div class="row">
+            <button class="btn u-full-width" data-role="optout" onclick="${handleOptout}">
+              ${state.model.hasOptedOut ? __('Opt in') : __('Opt out')}
+            </button>
+            <button class="btn u-full-width" data-role="purge" onclick="${handlePurge}">
+              ${__('Delete my data')}
+            </button>
         </div>
       </div>
     `
+
     : null
 
+    var rowPagesReferrersManage = html`
+      <div class="row">
+        ${pages} ${referrers} ${manage}
+      </div>
+      `
+
+/*
   var withSeparators = [accountHeader, rangeSelector, usersAndSessions, chart, pages, referrers, manage]
     .filter(function (el) {
       return el
@@ -188,4 +209,12 @@ function view (state, emit) {
       ${withSeparators}
     </div>
   `
+  */
+
+    var withoutSeparators = [accountHeader, rowRangeUsersSessions, chart, rowPagesReferrersManage]
+    return html`
+      <div>
+        ${withoutSeparators}
+      </div>
+    `
 }
