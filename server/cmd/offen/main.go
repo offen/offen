@@ -20,6 +20,7 @@ import (
 	"github.com/offen/offen/server/keys"
 	"github.com/offen/offen/server/locales"
 	"github.com/offen/offen/server/persistence"
+	"github.com/offen/offen/server/persistence/relational"
 	"github.com/offen/offen/server/public"
 	"github.com/offen/offen/server/router"
 	"github.com/sirupsen/logrus"
@@ -65,7 +66,7 @@ func main() {
 		gormDB.LogMode(cfg.App.Development)
 
 		db, err := persistence.New(
-			persistence.NewRelationalDAL(gormDB),
+			relational.NewRelationalDAL(gormDB),
 			persistence.WithEmailSalt(cfg.Secrets.EmailSalt.Bytes()),
 		)
 		if err != nil {
@@ -204,9 +205,13 @@ func main() {
 			logger.WithError(dbErr).Fatal("Error establishing database connection")
 		}
 
-		db, dbErr := persistence.New(persistence.NewRelationalDAL(gormDB))
+		db, dbErr := persistence.New(relational.NewRelationalDAL(gormDB))
 		if dbErr != nil {
 			logger.WithError(dbErr).Fatal("Error creating persistence layer")
+		}
+
+		if err := db.Migrate(); err != nil {
+			logger.WithError(err).Fatal("Error applying database migrations")
 		}
 
 		if err := db.Bootstrap(conf, cfg.Secrets.EmailSalt.Bytes()); err != nil {
@@ -225,7 +230,7 @@ func main() {
 		}
 		gormDB.LogMode(cfg.App.Development)
 		db, err := persistence.New(
-			persistence.NewRelationalDAL(gormDB),
+			relational.NewRelationalDAL(gormDB),
 		)
 		if err != nil {
 			logger.WithError(err).Fatal("Error creating persistence layer")
@@ -244,7 +249,7 @@ func main() {
 		gormDB.LogMode(cfg.App.Development)
 
 		db, err := persistence.New(
-			persistence.NewRelationalDAL(gormDB),
+			relational.NewRelationalDAL(gormDB),
 		)
 
 		affected, err := db.Expire(cfg.App.EventRetentionPeriod)

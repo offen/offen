@@ -132,10 +132,10 @@ func (r *relationalDatabase) AssociateUserSecret(accountID, userID, encryptedUse
 		}
 		if _, err := txn.DeleteEvents(DeleteEventsQueryByEventIDs(idsToDelete)); err != nil {
 			txn.Rollback()
-			return fmt.Errorf("relational: error deleting orphaned events: %w", err)
+			return fmt.Errorf("persistence: error deleting orphaned events: %w", err)
 		}
 		if err := txn.Commit(); err != nil {
-			return fmt.Errorf("relational: error committing transaction: %w", err)
+			return fmt.Errorf("persistence: error committing transaction: %w", err)
 		}
 	}
 

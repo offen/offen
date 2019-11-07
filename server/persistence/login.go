@@ -316,7 +316,7 @@ func (r *relationalDatabase) ChangeEmail(userID, emailAddress, password string) 
 			return fmt.Errorf("persistence: error updating keys on relationship: %w", err)
 		}
 		if err := txn.Commit(); err != nil {
-			return fmt.Errorf("relational: error comitting transaction: %w", err)
+			return fmt.Errorf("persistence: error comitting transaction: %w", err)
 		}
 	}
 	return nil

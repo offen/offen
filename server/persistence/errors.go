@@ -19,4 +19,4 @@ func (e ErrUnknownUser) Error() string {
 }
 
 // ErrBadQuery is returned when a DAL method cannot handle the given query
-var ErrBadQuery = errors.New("dal: could not match query")
+var ErrBadQuery = errors.New("persistence: could not match query")

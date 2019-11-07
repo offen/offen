@@ -1,4 +1,4 @@
-//+build integration
+//+build skip
 
 package persistence
 

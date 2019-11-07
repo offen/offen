@@ -71,7 +71,7 @@ func (r *relationalDatabase) Query(query Query) (map[string][]EventResult, error
 func (r *relationalDatabase) Purge(userID string) error {
 	accounts, err := r.db.FindAccounts(FindAccountsQueryAllAccounts{})
 	if err != nil {
-		return fmt.Errorf("relational: error retrieving available accounts: %w", err)
+		return fmt.Errorf("persistence: error retrieving available accounts: %w", err)
 	}
 
 	hashedUserIDs := hashUserIDForAccounts(userID, accounts)
