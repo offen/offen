@@ -85,7 +85,7 @@ func (r *relationalDAL) DeleteEvents(q interface{}) (int64, error) {
 	case DeleteEventsQueryByEventIDs:
 		deletion := r.db.Where("event_id in (?)", []string(query)).Delete(Event{})
 		if err := deletion.Error; err != nil {
-			return 0, fmt.Errorf("relational: error deleting orphaned events: %v", err)
+			return 0, fmt.Errorf("relational: error deleting orphaned events: %w", err)
 		}
 		return deletion.RowsAffected, nil
 	case DeleteEventsQueryByHashedIDs:
@@ -146,6 +146,13 @@ func (r *relationalDAL) FindUser(q interface{}) (User, error) {
 	}
 }
 
+func (r *relationalDAL) CreateAccount(a *Account) error {
+	if err := r.db.Create(a).Error; err != nil {
+		return fmt.Errorf("dal: error creating account")
+	}
+	return nil
+}
+
 func (r *relationalDAL) FindAccount(q interface{}) (Account, error) {
 	var account Account
 	switch query := q.(type) {
@@ -202,6 +209,13 @@ func (r *relationalDAL) FindAccounts(q interface{}) ([]Account, error) {
 	}
 }
 
+func (r *relationalDAL) CreateAccountUser(u *AccountUser) error {
+	if err := r.db.Create(u).Error; err != nil {
+		return fmt.Errorf("dal: error creating account user: %w", err)
+	}
+	return nil
+}
+
 func (r *relationalDAL) FindAccountUser(q interface{}) (AccountUser, error) {
 	var accountUser AccountUser
 	switch query := q.(type) {
@@ -230,6 +244,13 @@ func (r *relationalDAL) FindAccountUser(q interface{}) (AccountUser, error) {
 func (r *relationalDAL) UpdateAccountUser(u *AccountUser) error {
 	if err := r.db.Save(u).Error; err != nil {
 		return fmt.Errorf("dal: error updating account user: %w", err)
+	}
+	return nil
+}
+
+func (r *relationalDAL) CreateAccountUserRelationship(a *AccountUserRelationship) error {
+	if err := r.db.Create(a).Error; err != nil {
+		return fmt.Errorf("dal: error creating account user relationship: %w", err)
 	}
 	return nil
 }
@@ -291,6 +312,25 @@ func (r *relationalDAL) ApplyMigrations() error {
 
 func (r *relationalDAL) Ping() error {
 	return r.db.DB().Ping()
+}
+
+func (r *relationalDAL) DropAll() error {
+	if err := r.db.Delete(&Event{}).Error; err != nil {
+		return fmt.Errorf("dal: error dropping events table: %w,", err)
+	}
+	if err := r.db.Delete(&Account{}).Error; err != nil {
+		return fmt.Errorf("dal: error dropping accounts table: %w,", err)
+	}
+	if err := r.db.Delete(&User{}).Error; err != nil {
+		return fmt.Errorf("dal: error dropping user table: %w,", err)
+	}
+	if err := r.db.Delete(&AccountUser{}).Error; err != nil {
+		return fmt.Errorf("dal: error dropping account user table: %w,", err)
+	}
+	if err := r.db.Delete(&AccountUserRelationship{}).Error; err != nil {
+		return fmt.Errorf("dal: error dropping account user relationship table: %w,", err)
+	}
+	return nil
 }
 
 type transaction struct {

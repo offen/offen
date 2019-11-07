@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	uuid "github.com/gofrs/uuid"
-	"github.com/jinzhu/gorm"
 	"github.com/offen/offen/server/keys"
 )
 
@@ -32,55 +31,42 @@ type accountCreation struct {
 
 // Bootstrap seeds a blank database with the given account and user
 // data. This is likely only ever used in development.
-func Bootstrap(db *gorm.DB, config BootstrapConfig, emailSalt []byte) error {
-	defer db.Close()
-	tx := db.Debug().Begin()
-
-	if err := tx.Delete(&Event{}).Error; err != nil {
-		tx.Rollback()
-		return err
+func (r *relationalDatabase) Bootstrap(config BootstrapConfig, emailSalt []byte) error {
+	txn, err := r.db.Transaction()
+	if err != nil {
+		return fmt.Errorf("persistence: error creating transaction: %w", err)
 	}
-	if err := tx.Delete(&Account{}).Error; err != nil {
-		tx.Rollback()
-		return err
-	}
-	if err := tx.Delete(&User{}).Error; err != nil {
-		tx.Rollback()
-		return err
-	}
-	if err := tx.Delete(&AccountUser{}).Error; err != nil {
-		tx.Rollback()
-		return err
-	}
-	if err := tx.Delete(&AccountUserRelationship{}).Error; err != nil {
-		tx.Rollback()
-		return err
+	if err := txn.DropAll(); err != nil {
+		txn.Rollback()
+		return fmt.Errorf("persistence: error dropping tables before inserting seed data: %w", err)
 	}
 
 	accounts, accountUsers, relationships, err := bootstrapAccounts(&config, emailSalt)
 	if err != nil {
-		tx.Rollback()
-		return err
+		txn.Rollback()
+		return fmt.Errorf("persistence: error creating seed data: %w", err)
 	}
 	for _, account := range accounts {
-		if err := tx.Create(&account).Error; err != nil {
-			tx.Rollback()
-			return err
+		if err := txn.CreateAccount(&account); err != nil {
+			txn.Rollback()
+			return fmt.Errorf("persistence: error creating account: %w", err)
 		}
 	}
 	for _, accountUser := range accountUsers {
-		if err := tx.Create(&accountUser).Error; err != nil {
-			tx.Rollback()
-			return err
+		if err := txn.CreateAccountUser(&accountUser); err != nil {
+			txn.Rollback()
+			return fmt.Errorf("persistence: error creating account user: %w", err)
 		}
 	}
 	for _, relationship := range relationships {
-		if err := tx.Create(&relationship).Error; err != nil {
-			tx.Rollback()
-			return err
+		if err := txn.CreateAccountUserRelationship(&relationship); err != nil {
+			txn.Rollback()
+			return fmt.Errorf("persistence: error creating account user relationship: %w", err)
 		}
 	}
-	tx.Commit()
+	if err := txn.Commit(); err != nil {
+		return fmt.Errorf("persistence: error committing seed data: %w", err)
+	}
 	return nil
 }
 

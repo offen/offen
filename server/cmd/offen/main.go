@@ -196,12 +196,20 @@ func main() {
 				persistence.BootstrapAccount{Name: *accountName, ID: *accountID},
 			)
 		}
-		db, dbErr := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString)
+
+		gormDB, dbErr := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString)
+		gormDB.LogMode(cfg.App.Development)
+
 		if dbErr != nil {
 			logger.WithError(dbErr).Fatal("Error establishing database connection")
 		}
 
-		if err := persistence.Bootstrap(db, conf, cfg.Secrets.EmailSalt.Bytes()); err != nil {
+		db, dbErr := persistence.New(persistence.NewRelationalDAL(gormDB))
+		if dbErr != nil {
+			logger.WithError(dbErr).Fatal("Error creating persistence layer")
+		}
+
+		if err := db.Bootstrap(conf, cfg.Secrets.EmailSalt.Bytes()); err != nil {
 			logger.WithError(err).Fatal("Error bootstrapping database")
 		}
 		if *source == "" {

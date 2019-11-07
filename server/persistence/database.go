@@ -21,6 +21,7 @@ type Database interface {
 	GenerateOneTimeKey(emailAddress string) ([]byte, error)
 	ResetPassword(emailAddress, password string, oneTimeKey []byte) error
 	Expire(retention time.Duration) (int, error)
+	Bootstrap(data BootstrapConfig, salt []byte) error
 	CheckHealth() error
 	Migrate() error
 }

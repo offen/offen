@@ -10,14 +10,18 @@ type DataAccessLayer interface {
 	CreateUser(*User) error
 	FindUser(interface{}) (User, error)
 	DeleteUser(interface{}) error
+	CreateAccount(*Account) error
 	FindAccount(interface{}) (Account, error)
 	FindAccounts(interface{}) ([]Account, error)
+	CreateAccountUser(*AccountUser) error
 	FindAccountUser(interface{}) (AccountUser, error)
 	UpdateAccountUser(*AccountUser) error
-	FindAccountUserRelationships(interface{}) ([]AccountUserRelationship, error)
+	CreateAccountUserRelationship(*AccountUserRelationship) error
 	UpdateAccountUserRelationship(*AccountUserRelationship) error
+	FindAccountUserRelationships(interface{}) ([]AccountUserRelationship, error)
 	Transaction() (Transaction, error)
 	ApplyMigrations() error
+	DropAll() error
 	Ping() error
 }
 
