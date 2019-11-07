@@ -115,8 +115,8 @@ function view (state, emit) {
   var chart = html`
     <div class="row">
       <div class="card col">
-      <h4>${__('Pageviews and %s', isOperator ? __('Visitors') : __('Accounts'))}</h4>
-      ${state.cache(BarChart, 'bar-chart').render(chartData)}
+        <h4>${__('Pageviews and %s', isOperator ? __('Visitors') : __('Accounts'))}</h4>
+        ${state.cache(BarChart, 'bar-chart').render(chartData)}
       </div>
     </div>
   `
