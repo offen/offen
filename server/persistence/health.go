@@ -1,5 +1,5 @@
-package relational
+package persistence
 
 func (r *relationalDatabase) CheckHealth() error {
-	return r.db.DB().Ping()
+	return r.db.Ping()
 }

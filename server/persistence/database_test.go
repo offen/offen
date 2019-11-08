@@ -1,6 +1,6 @@
-//+build integration
+//+build skip
 
-package relational
+package persistence
 
 import (
 	"os"

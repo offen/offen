@@ -11,7 +11,7 @@ import (
 )
 
 type mockHealthChecker struct {
-	persistence.Database
+	persistence.Service
 	err error
 }
 

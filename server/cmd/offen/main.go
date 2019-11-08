@@ -19,6 +19,7 @@ import (
 	"github.com/offen/offen/server/config"
 	"github.com/offen/offen/server/keys"
 	"github.com/offen/offen/server/locales"
+	"github.com/offen/offen/server/persistence"
 	"github.com/offen/offen/server/persistence/relational"
 	"github.com/offen/offen/server/public"
 	"github.com/offen/offen/server/router"
@@ -62,18 +63,18 @@ func main() {
 		if err != nil {
 			logger.WithError(err).Fatal("Unable to establish database connection")
 		}
+		gormDB.LogMode(cfg.App.Development)
 
-		db, err := relational.New(
-			gormDB,
-			relational.WithLogging(cfg.App.Development),
-			relational.WithEmailSalt(cfg.Secrets.EmailSalt.Bytes()),
+		db, err := persistence.New(
+			relational.NewRelationalDAL(gormDB),
+			persistence.WithEmailSalt(cfg.Secrets.EmailSalt.Bytes()),
 		)
 		if err != nil {
 			logger.WithError(err).Fatal("Unable to create persistence layer")
 		}
 
 		if cfg.App.SingleNode {
-			if err := relational.Migrate(gormDB); err != nil {
+			if err := db.Migrate(); err != nil {
 				logger.WithError(err).Fatal("Error applying database migrations")
 			} else {
 				logger.Info("Successfully applied database migrations")
@@ -110,7 +111,7 @@ func main() {
 		if cfg.App.SingleNode {
 			scheduler := gocron.NewScheduler()
 			scheduler.Every(1).Hours().Do(func() {
-				affected, err := relational.Expire(gormDB, cfg.App.EventRetentionPeriod)
+				affected, err := db.Expire(cfg.App.EventRetentionPeriod)
 				if err != nil {
 					logger.WithError(err).Errorf("Error pruning expired events")
 					return
@@ -147,12 +148,7 @@ func main() {
 
 		cfg := mustConfig(*populateMissing)
 
-		db, dbErr := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString)
-		if dbErr != nil {
-			logger.WithError(dbErr).Fatal("Error establishing database connection")
-		}
-
-		conf := relational.BootstrapConfig{}
+		conf := persistence.BootstrapConfig{}
 		if *source != "" {
 			logger.Infof("Trying to read account seed data from %s", *source)
 			read, readErr := ioutil.ReadFile(*source)
@@ -194,15 +190,31 @@ func main() {
 
 			conf.AccountUsers = append(
 				conf.AccountUsers,
-				relational.BootstrapAccountUser{Email: *email, Password: *password, Accounts: []string{*accountID}},
+				persistence.BootstrapAccountUser{Email: *email, Password: *password, Accounts: []string{*accountID}},
 			)
 			conf.Accounts = append(
 				conf.Accounts,
-				relational.BootstrapAccount{Name: *accountName, ID: *accountID},
+				persistence.BootstrapAccount{Name: *accountName, ID: *accountID},
 			)
 		}
 
-		if err := relational.Bootstrap(db, conf, cfg.Secrets.EmailSalt.Bytes()); err != nil {
+		gormDB, dbErr := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString)
+		gormDB.LogMode(cfg.App.Development)
+
+		if dbErr != nil {
+			logger.WithError(dbErr).Fatal("Error establishing database connection")
+		}
+
+		db, dbErr := persistence.New(relational.NewRelationalDAL(gormDB))
+		if dbErr != nil {
+			logger.WithError(dbErr).Fatal("Error creating persistence layer")
+		}
+
+		if err := db.Migrate(); err != nil {
+			logger.WithError(err).Fatal("Error applying database migrations")
+		}
+
+		if err := db.Bootstrap(conf, cfg.Secrets.EmailSalt.Bytes()); err != nil {
 			logger.WithError(err).Fatal("Error bootstrapping database")
 		}
 		if *source == "" {
@@ -212,22 +224,35 @@ func main() {
 		}
 	case "migrate":
 		cfg := mustConfig(false)
-		db, dbErr := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString)
+		gormDB, dbErr := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString)
 		if dbErr != nil {
 			logger.WithError(dbErr).Fatal("Error establishing database connection")
 		}
-		if err := relational.Migrate(db); err != nil {
+		gormDB.LogMode(cfg.App.Development)
+		db, err := persistence.New(
+			relational.NewRelationalDAL(gormDB),
+		)
+		if err != nil {
+			logger.WithError(err).Fatal("Error creating persistence layer")
+		}
+
+		if err := db.Migrate(); err != nil {
 			logger.WithError(err).Fatal("Error applying database migrations")
 		}
 		logger.Info("Successfully ran database migrations")
 	case "expire":
 		cfg := mustConfig(false)
-		db, dbErr := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString)
+		gormDB, dbErr := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString)
 		if dbErr != nil {
 			logger.WithError(dbErr).Fatal("Error establishing database connection")
 		}
+		gormDB.LogMode(cfg.App.Development)
 
-		affected, err := relational.Expire(db, cfg.App.EventRetentionPeriod)
+		db, err := persistence.New(
+			relational.NewRelationalDAL(gormDB),
+		)
+
+		affected, err := db.Expire(cfg.App.EventRetentionPeriod)
 		if err != nil {
 			logger.WithError(err).Fatalf("Error pruning expired events")
 		}

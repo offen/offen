@@ -18,7 +18,7 @@ import (
 )
 
 type router struct {
-	db           persistence.Database
+	db           persistence.Service
 	mailer       mailer.Mailer
 	fs           http.FileSystem
 	logger       *logrus.Logger
@@ -94,7 +94,7 @@ func (rt *router) authCookie(userID string) (*http.Cookie, error) {
 type Config func(*router)
 
 // WithDatabase sets the database the router will use
-func WithDatabase(db persistence.Database) Config {
+func WithDatabase(db persistence.Service) Config {
 	return func(r *router) {
 		r.db = db
 	}

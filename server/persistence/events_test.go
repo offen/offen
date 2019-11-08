@@ -1,4 +1,6 @@
-package relational
+// +build skip
+
+package persistence
 
 import (
 	"errors"
@@ -6,9 +8,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/offen/offen/server/persistence"
-
 	"github.com/jinzhu/gorm"
+	"github.com/offen/offen/server/persistence/relational"
 )
 
 func TestRelationalDatabase_Insert(t *testing.T) {
@@ -122,7 +123,7 @@ func TestRelationalDatabase_Insert(t *testing.T) {
 			if err := test.setup(db); err != nil {
 				t.Fatalf("Unexpected error setting up test: %v", err)
 			}
-			relational := &relationalDatabase{db: db}
+			relational := &relationalDatabase{db: relational.NewRelationalDAL(db)}
 			err := relational.Insert(test.userID, "account-id", "payload")
 			if (err != nil) != test.expectError {
 				t.Errorf("Unexpected error value %v", err)
@@ -216,7 +217,7 @@ func TestRelationalDatabase_Purge(t *testing.T) {
 			db, closeDB := createTestDatabase()
 			defer closeDB()
 
-			relational := relationalDatabase{db: db}
+			relational := relationalDatabase{db: relational.NewRelationalDAL(db)}
 
 			if err := test.setup(db); err != nil {
 				t.Fatalf("Error setting up database %v", err)
@@ -317,7 +318,7 @@ func TestRelationalDatabase_GetDeletedEvents(t *testing.T) {
 			db, closeDB := createTestDatabase()
 			defer closeDB()
 
-			relational := relationalDatabase{db: db}
+			relational := relationalDatabase{db: relational.NewRelationalDAL(db)}
 			if err := test.setup(db); err != nil {
 				t.Fatalf("Error setting up test: %v", err)
 			}
@@ -365,7 +366,7 @@ func TestRelationalDatabase_Query(t *testing.T) {
 		name           string
 		setup          func(*gorm.DB) error
 		query          mockQuery
-		expectedResult map[string][]persistence.EventResult
+		expectedResult map[string][]EventResult
 		expectError    bool
 	}{
 		{
@@ -374,7 +375,7 @@ func TestRelationalDatabase_Query(t *testing.T) {
 				return nil
 			},
 			mockQuery{userID: "user-id"},
-			map[string][]persistence.EventResult{},
+			map[string][]EventResult{},
 			false,
 		},
 		{
@@ -421,8 +422,8 @@ func TestRelationalDatabase_Query(t *testing.T) {
 				return nil
 			},
 			mockQuery{userID: "user-id"},
-			map[string][]persistence.EventResult{
-				"account-id": []persistence.EventResult{
+			map[string][]EventResult{
+				"account-id": []EventResult{
 					{
 						AccountID: "account-id",
 						Payload:   "payload-1",
@@ -434,7 +435,7 @@ func TestRelationalDatabase_Query(t *testing.T) {
 						EventID:   "event-id-2",
 					},
 				},
-				"other-account": []persistence.EventResult{
+				"other-account": []EventResult{
 					{
 						AccountID: "other-account",
 						Payload:   "payload-3",
@@ -488,15 +489,15 @@ func TestRelationalDatabase_Query(t *testing.T) {
 				return nil
 			},
 			mockQuery{userID: "user-id", since: "event-id-1"},
-			map[string][]persistence.EventResult{
-				"account-id": []persistence.EventResult{
+			map[string][]EventResult{
+				"account-id": []EventResult{
 					{
 						AccountID: "account-id",
 						Payload:   "payload-2",
 						EventID:   "event-id-2",
 					},
 				},
-				"other-account": []persistence.EventResult{
+				"other-account": []EventResult{
 					{
 						AccountID: "other-account",
 						Payload:   "payload-3",
@@ -516,7 +517,7 @@ func TestRelationalDatabase_Query(t *testing.T) {
 				t.Fatalf("Error setting up test: %v", err)
 			}
 
-			relational := relationalDatabase{db: db}
+			relational := relationalDatabase{db: relational.NewRelationalDAL(db)}
 			result, err := relational.Query(&test.query)
 
 			if (err != nil) != test.expectError {

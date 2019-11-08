@@ -1,22 +1,5 @@
 package persistence
 
-// Database is anything that can be used to store and query event data
-type Database interface {
-	Insert(userID, accountID, payload string) error
-	Query(Query) (map[string][]EventResult, error)
-	GetAccount(accountID string, events bool, eventsSince string) (AccountResult, error)
-	GetDeletedEvents(ids []string, userID string) ([]string, error)
-	AssociateUserSecret(accountID, userID, encryptedUserSecret string) error
-	Purge(userID string) error
-	Login(email, password string) (LoginResult, error)
-	LookupUser(userID string) (LoginResult, error)
-	ChangePassword(userID, currentPassword, changedPassword string) error
-	ChangeEmail(userID, emailAddress, password string) error
-	CheckHealth() error
-	GenerateOneTimeKey(emailAddress string) ([]byte, error)
-	ResetPassword(emailAddress, password string, oneTimeKey []byte) error
-}
-
 // Query defines a set of filters to limit the set of results to be returned
 // In case a field has the zero value, its filter will not be applied.
 type Query interface {
