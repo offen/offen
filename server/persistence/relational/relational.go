@@ -27,7 +27,7 @@ func NewRelationalDAL(db *gorm.DB) persistence.DataAccessLayer {
 func (r *relationalDAL) Transaction() (persistence.Transaction, error) {
 	txn := r.db.Begin()
 	if err := txn.Error; err != nil {
-		return nil, fmt.Errorf("persistence: begun transaction in error state: %w", err)
+		return nil, fmt.Errorf("relational: begun transaction in error state: %w", err)
 	}
 	dal := relationalDAL{txn}
 	return &transaction{&dal}, nil

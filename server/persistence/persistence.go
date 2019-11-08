@@ -40,11 +40,14 @@ type AccountResult struct {
 	UserSecrets         *SecretsByUserID   `json:"userSecrets,omitempty"`
 }
 
+// LoginResult is a successful account user authentication response.
 type LoginResult struct {
 	UserID   string               `json:"userId"`
 	Accounts []LoginAccountResult `json:"accounts"`
 }
 
+// CanAccessAccount checks whether the login result is allowed to access the
+// account of the given identifier.
 func (l *LoginResult) CanAccessAccount(accountID string) bool {
 	for _, account := range l.Accounts {
 		if accountID == account.AccountID {
@@ -54,6 +57,8 @@ func (l *LoginResult) CanAccessAccount(accountID string) bool {
 	return false
 }
 
+// LoginAccountResult contains information for the client to handle an account
+// in the client at runtime.
 type LoginAccountResult struct {
 	AccountName      string      `json:"accountName"`
 	AccountID        string      `json:"accountId"`

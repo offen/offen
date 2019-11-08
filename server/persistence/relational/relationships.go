@@ -9,7 +9,7 @@ import (
 func (r *relationalDAL) CreateAccountUserRelationship(a *persistence.AccountUserRelationship) error {
 	local := importAccountUserRelationship(a)
 	if err := r.db.Create(&local).Error; err != nil {
-		return fmt.Errorf("persistence: error creating account user relationship: %w", err)
+		return fmt.Errorf("relational: error creating account user relationship: %w", err)
 	}
 	return nil
 }
@@ -19,7 +19,7 @@ func (r *relationalDAL) FindAccountUserRelationships(q interface{}) ([]persisten
 	switch query := q.(type) {
 	case persistence.FindAccountUserRelationShipsQueryByUserID:
 		if err := r.db.Where("user_id = ?", string(query)).Find(&relationships).Error; err != nil {
-			return nil, fmt.Errorf("persistence: error looking up account to account user relationships: %w", err)
+			return nil, fmt.Errorf("relational: error looking up account to account user relationships: %w", err)
 		}
 		result := []persistence.AccountUserRelationship{}
 		for _, r := range relationships {
@@ -34,7 +34,7 @@ func (r *relationalDAL) FindAccountUserRelationships(q interface{}) ([]persisten
 func (r *relationalDAL) UpdateAccountUserRelationship(a *persistence.AccountUserRelationship) error {
 	local := importAccountUserRelationship(a)
 	if err := r.db.Save(&local).Error; err != nil {
-		return fmt.Errorf("persistence: error updating account user relationship: %w", err)
+		return fmt.Errorf("relational: error updating account user relationship: %w", err)
 	}
 	return nil
 }

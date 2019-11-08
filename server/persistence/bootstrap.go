@@ -8,16 +8,22 @@ import (
 	"github.com/offen/offen/server/keys"
 )
 
+// BootstrapConfig contains data about accounts and account users that is used
+// to seed an application database from scratch.
 type BootstrapConfig struct {
 	Accounts     []BootstrapAccount     `yaml:"accounts"`
 	AccountUsers []BootstrapAccountUser `yaml:"account_users"`
 }
 
+// BootstrapAccount contains the information needed for creating an account at
+// bootstrap time.
 type BootstrapAccount struct {
 	ID   string `yaml:"id"`
 	Name string `yaml:"name"`
 }
 
+// BootstrapAccountUser contains the information needed for creating an account
+// user at bootstrap time.
 type BootstrapAccountUser struct {
 	Email    string   `yaml:"email"`
 	Password string   `yaml:"password"`
