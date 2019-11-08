@@ -15,15 +15,69 @@ function view (state, emit) {
         </li>
       `
     })
-  var loggedInMessage = html`
-    <p>
-      ${__('You can access the following accounts:')}
-    </p>
-    <ul>
-      ${availableAccounts}
-    </ul>
+  var accountHeader = html`
+    <div class="row">
+      ${__('You are logged in.')}
+    </div>
   `
 
+  var loggedInMessage = html`
+    <div class="row">
+      <div class="card col">
+        <h4>${__('Accessible accounts')}</h4>
+        <ul>
+          ${availableAccounts}
+        </ul>
+      </div>
+    </div>
+  `
+
+  function handleChangeEmail (e) {
+    e.preventDefault()
+    var formData = new window.FormData(e.currentTarget)
+    emit('offen:change-credentials', {
+      password: formData.get('password'),
+      emailAddress: formData.get('email-address')
+    })
+  }
+
+  var changeEmailForm = html`
+    <div class="row">
+      <div class="card col">
+        <h4>Change email address</h4>
+        <form onsubmit="${handleChangeEmail}">
+          <div class="row">
+            <div class="2 col"></div>
+            <div class="8 col">
+              <label>
+                ${__('New email address')}
+              </label>
+              <input class="card w-100" type="text" name="email-address">
+            </div>
+            <div class="2 col"></div>
+          </div>
+          <div class="row">
+            <div class="2 col"></div>
+            <div class="8 col">
+              <label>
+                ${__('Password')}
+              </label>
+              <input class="card w-100" type="password" name="password">
+            </div>
+            <div class="2 col"></div>
+          </div>
+          <div class="row">
+            <div class="2 col"></div>
+            <div class="8 col">
+              <input class="btn primary w-100" type="submit" value="${__('Change Email address')}">
+            </div>
+            <div class="2 col"></div>
+          </div>
+        </form>
+      </div>
+    </div>
+  `
+  
   function handleChangePassword (e) {
     e.preventDefault()
     var formData = new window.FormData(e.currentTarget)
@@ -37,80 +91,56 @@ function view (state, emit) {
   }
 
   var changePasswordForm = html`
-    <h5>Change password:</h5>
-    <form onsubmit="${handleChangePassword}">
-      <div class="row">
-        <div class="eight columns">
-          <label>
-            ${__('Current password:')}
-          </label>
-          <input class="u-full-width" type="password" name="current">
-        </div>
+    <div class="row">
+      <div class="card col">
+        <h4>Change password</h4>
+        <form onsubmit="${handleChangePassword}">
+          <div class="row">
+            <div class="2 col"></div>
+            <div class="8 col">
+              <label>
+                ${__('Current password')}
+              </label>
+              <input class="card w-100" type="password" name="current">
+            </div>
+            <div class="2 col"></div>
+          </div>
+          <div class="row">
+            <div class="2 col"></div>
+            <div class="8 col">
+              <label>
+                ${__('New password')}
+              </label>
+              <input class="card w-100" type="password" name="changed">
+            </div>
+            <div class="2 col"></div>
+          </div>
+          <div class="row">
+            <div class="2 col"></div>
+            <div class="8 col">
+              <label>
+                ${__('Repeat new password')}
+              </label>
+              <input class="card w-100" type="password" name="repeat">
+            </div>
+            <div class="2 col"></div>
+          </div>
+          <div class="row">
+            <div class="2 col"></div>
+            <div class="8 col">
+              <input class="btn primary w-100" type="submit" value="${__('Change password')}">
+            </div>
+            <div class="2 col"></div>
+          </div>
+        </form>
       </div>
-      <div class="row">
-        <div class="eight columns">
-          <label>
-            ${__('New password:')}
-          </label>
-          <input class="u-full-width" type="password" name="changed">
-        </div>
-      </div>
-      <div class="row">
-        <div class="eight columns">
-          <label>
-            ${__('Repeat new password:')}
-          </label>
-          <input class="u-full-width" type="password" name="repeat">
-        </div>
-      </div>
-      <div class="row">
-        <div class="eight columns">
-          <input class="u-full-width" type="submit" value="${__('Change password')}">
-        </div>
-      </div>
-    </form>
-  `
-
-  function handleChangeEmail (e) {
-    e.preventDefault()
-    var formData = new window.FormData(e.currentTarget)
-    emit('offen:change-credentials', {
-      password: formData.get('password'),
-      emailAddress: formData.get('email-address')
-    })
-  }
-
-  var changeEmailForm = html`
-    <h5>Change email address:</h5>
-    <form onsubmit="${handleChangeEmail}">
-      <div class="row">
-        <div class="eight columns">
-          <label>
-            ${__('New email address:')}
-          </label>
-          <input class="u-full-width" type="text" name="email-address">
-        </div>
-      </div>
-      <div class="row">
-        <div class="eight columns">
-          <label>
-            ${__('Your Password:')}
-          </label>
-          <input class="u-full-width" type="password" name="password">
-        </div>
-      </div>
-      <div class="row">
-        <div class="eight columns">
-          <input class="u-full-width" type="submit" value="${__('Change Email address')}">
-        </div>
-      </div>
-    </form>
+    </div>
   `
 
   return html`
+    ${accountHeader}
     ${loggedInMessage}
-    <hr>
-    ${changePasswordForm}
     ${changeEmailForm}
+    ${changePasswordForm}
   `
 }

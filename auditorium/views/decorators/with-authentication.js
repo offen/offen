@@ -8,9 +8,11 @@ function withAuthentication () {
       if (!state.authenticatedUser) {
         emit('offen:login', null)
         var authenticating = html`
-          <p class="loading">
-            ${__('Checking authentication...')}
-          </p>
+          <div class="row">
+            <p class="loading">
+              ${__('Checking authentication...')}
+            </p>
+          </div>
         `
         return authenticating
       }

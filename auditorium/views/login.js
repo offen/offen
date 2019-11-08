@@ -14,27 +14,41 @@ function view (state, emit) {
   var form = html`
     <form onsubmit=${handleSubmit}>
       <div class="row">
-        <div class="eight columns">
+        <div class="2 col"></div>
+        <div class="8 col">
           <label>
-            ${__('Email Address:')}
+            ${__('Email address')}
           </label>
-          <input class="u-full-width" required type="email" name="username" placeholder="${__('Email Address')}">
+          <input class="card w-100" required type="email" name="username">
         </div>
+        <div class="2 col"></div>
       </div>
       <div class="row">
-        <div class="eight columns">
+        <div class="2 col"></div>
+        <div class="8 col">
           <label>
-            ${__('Password:')}
+            ${__('Password')}
           </label>
-          <input class="u-full-width" required type="password" name="password" placeholder="${__('Password')}">
+          <input class="card w-100" required type="password" name="password">
         </div>
+        <div class="2 col"></div>
       </div>
+      <div class="row"></div>
       <div class="row">
-        <div class="eight columns">
-          <input type="submit" class="u-full-width" value="${__('Log in')}">
+        <div class="2 col"></div>
+        <div class="8 col">
+          <input type="submit" class="btn primary w-100" value="${__('Log in')}">
         </div>
+        <div class="2 col"></div>
       </div>
-      <a href="./reset-password/">${__('Forgot password?')}</a>
+      <div class="row"></div>
+      <div class="row">
+        <div class="2 col"></div>
+        <div class="8 col">
+          <a href="./reset-password/">${__('Forgot password?')}</a>
+        </div>
+        <div class="2 col"></div>
+      </div>
     </form>
   `
 

@@ -185,14 +185,13 @@ function view (state, emit) {
           </a>
         </div>
     `
-
     : null
 
   var rowPagesReferrersManage = html`
       <div class="row">
         ${pages} ${referrers} ${manage}
       </div>
-      `
+    `
 
   var withoutSeparators = [accountHeader, rowRangeUsersSessions, chart, rowPagesReferrersManage]
   return html`
