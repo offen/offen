@@ -77,7 +77,7 @@ function view (state, emit) {
       </div>
     </div>
   `
-  
+
   function handleChangePassword (e) {
     e.preventDefault()
     var formData = new window.FormData(e.currentTarget)
