@@ -8,14 +8,15 @@ import (
 )
 
 func (r *relationalDAL) CreateAccount(a *persistence.Account) error {
-	if err := r.db.Create(a).Error; err != nil {
-		return fmt.Errorf("persistence: error creating account")
+	local := importAccount(a)
+	if err := r.db.Create(&local).Error; err != nil {
+		return fmt.Errorf("relational: error creating account")
 	}
 	return nil
 }
 
 func (r *relationalDAL) FindAccount(q interface{}) (persistence.Account, error) {
-	var account persistence.Account
+	var account Account
 	switch query := q.(type) {
 	case persistence.FindAccountQueryIncludeEvents:
 		queryDB := r.db
@@ -27,19 +28,19 @@ func (r *relationalDAL) FindAccount(q interface{}) (persistence.Account, error) 
 
 		if err := queryDB.Find(&account, "account_id = ?", query.AccountID).Error; err != nil {
 			if gorm.IsRecordNotFoundError(err) {
-				return account, persistence.ErrUnknownAccount(fmt.Sprintf(`persistence: account id "%s" unknown`, query.AccountID))
+				return account.export(), persistence.ErrUnknownAccount(fmt.Sprintf(`persistence: account id "%s" unknown`, query.AccountID))
 			}
-			return account, fmt.Errorf(`persistence: error looking up account with id %s: %w`, query.AccountID, err)
+			return account.export(), fmt.Errorf(`relational: error looking up account with id %s: %w`, query.AccountID, err)
 		}
-		return account, nil
+		return account.export(), nil
 	case persistence.FindAccountQueryByID:
 		if err := r.db.Where("account_id = ?", string(query)).First(&account).Error; err != nil {
 			if gorm.IsRecordNotFoundError(err) {
-				return account, persistence.ErrUnknownAccount("persistence: no matching account found")
+				return account.export(), persistence.ErrUnknownAccount("relational: no matching account found")
 			}
-			return account, fmt.Errorf("persistence: error looking up account: %w", err)
+			return account.export(), fmt.Errorf("relational: error looking up account: %w", err)
 		}
-		return account, nil
+		return account.export(), nil
 	case persistence.FindAccountQueryActiveByID:
 		if err := r.db.Where(
 			"account_id = ? AND retired = ?",
@@ -47,25 +48,29 @@ func (r *relationalDAL) FindAccount(q interface{}) (persistence.Account, error) 
 			false,
 		).First(&account).Error; err != nil {
 			if gorm.IsRecordNotFoundError(err) {
-				return account, persistence.ErrUnknownAccount("persistence: no matching active account found")
+				return account.export(), persistence.ErrUnknownAccount("relational: no matching active account found")
 			}
-			return account, fmt.Errorf("persistence: error looking up account: %w", err)
+			return account.export(), fmt.Errorf("relational: error looking up account: %w", err)
 		}
-		return account, nil
+		return account.export(), nil
 	default:
-		return account, persistence.ErrBadQuery
+		return account.export(), persistence.ErrBadQuery
 	}
 }
 
 func (r *relationalDAL) FindAccounts(q interface{}) ([]persistence.Account, error) {
-	var accounts []persistence.Account
+	var accounts []Account
 	switch q.(type) {
 	case persistence.FindAccountsQueryAllAccounts:
 		if err := r.db.Find(&accounts).Error; err != nil {
-			return accounts, fmt.Errorf("persistence: error looking up all accounts: %w", err)
+			return nil, fmt.Errorf("relational: error looking up all accounts: %w", err)
 		}
-		return accounts, nil
+		result := []persistence.Account{}
+		for _, a := range accounts {
+			result = append(result, a.export())
+		}
+		return result, nil
 	default:
-		return accounts, persistence.ErrBadQuery
+		return nil, persistence.ErrBadQuery
 	}
 }

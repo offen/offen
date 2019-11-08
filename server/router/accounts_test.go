@@ -13,7 +13,7 @@ import (
 )
 
 type mockAccountDatabase struct {
-	persistence.Database
+	persistence.Service
 	result persistence.AccountResult
 	err    error
 }
@@ -26,7 +26,7 @@ func TestRouter_GetAccount(t *testing.T) {
 	tests := []struct {
 		name               string
 		accountID          string
-		database           persistence.Database
+		database           persistence.Service
 		expectedStatusCode int
 		expectedBody       string
 	}{

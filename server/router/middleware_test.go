@@ -101,7 +101,7 @@ func TestUserCookieMiddleware(t *testing.T) {
 }
 
 type mockUserLookupDatabase struct {
-	persistence.Database
+	persistence.Service
 }
 
 func (*mockUserLookupDatabase) LookupUser(userID string) (persistence.LoginResult, error) {

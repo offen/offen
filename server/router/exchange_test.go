@@ -15,7 +15,7 @@ import (
 )
 
 type mockAccountsDatabase struct {
-	persistence.Database
+	persistence.Service
 	result persistence.AccountResult
 	err    error
 }
@@ -27,7 +27,7 @@ func (m *mockAccountsDatabase) GetAccount(accountID string, events bool, eventsS
 func TestRouter_GetPublicKey(t *testing.T) {
 	tests := []struct {
 		name               string
-		db                 persistence.Database
+		db                 persistence.Service
 		queryString        string
 		expectedStatusCode int
 	}{
@@ -75,7 +75,7 @@ func TestRouter_GetPublicKey(t *testing.T) {
 }
 
 type mockUserSecretDatabase struct {
-	persistence.Database
+	persistence.Service
 	err error
 }
 
@@ -86,7 +86,7 @@ func (m *mockUserSecretDatabase) AssociateUserSecret(string, string, string) err
 func TestRouter_PostUserSecret(t *testing.T) {
 	tests := []struct {
 		name           string
-		db             persistence.Database
+		db             persistence.Service
 		body           io.Reader
 		cookie         *http.Cookie
 		expectedStatus int

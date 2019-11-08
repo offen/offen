@@ -12,36 +12,36 @@ import (
 // Event is any analytics event that will be stored in the database. It is
 // uniquely tied to an Account and a User model.
 type Event struct {
-	EventID   string `gorm:"primary_key"`
+	EventID   string
 	AccountID string
 	// the user id is nullable for anonymous events
 	HashedUserID *string
 	Payload      string
-	User         User `gorm:"foreignkey:HashedUserID;association_foreignkey:HashedUserID"`
+	User         User
 }
 
 // User associates a hashed user id - which ties a user and account together
 // uniquely - with the encrypted user secret the account owner can use
 // to decrypt events stored for that user.
 type User struct {
-	HashedUserID        string `gorm:"primary_key"`
+	HashedUserID        string
 	EncryptedUserSecret string
 }
 
 // AccountUser is a person that can log in and access data related to all
 // associated accounts.
 type AccountUser struct {
-	UserID         string `gorm:"primary_key"`
+	UserID         string
 	HashedEmail    string
 	HashedPassword string
 	Salt           string
-	Relationships  []AccountUserRelationship `gorm:"foreignkey:UserID;association_foreignkey:UserID"`
+	Relationships  []AccountUserRelationship
 }
 
 // AccountUserRelationship contains the encrypted KeyEncryptionKeys needed for
 // an AccountUser to access the data of the account it links to.
 type AccountUserRelationship struct {
-	RelationshipID                    string `gorm:"primary_key"`
+	RelationshipID                    string
 	UserID                            string
 	AccountID                         string
 	PasswordEncryptedKeyEncryptionKey string
@@ -51,13 +51,13 @@ type AccountUserRelationship struct {
 
 // Account stores information about an account.
 type Account struct {
-	AccountID           string `gorm:"primary_key"`
+	AccountID           string
 	Name                string
 	PublicKey           string
 	EncryptedPrivateKey string
 	UserSalt            string
 	Retired             bool
-	Events              []Event `gorm:"foreignkey:AccountID;association_foreignkey:AccountID"`
+	Events              []Event
 }
 
 // HashUserID uses the account's `UserSalt` to create a hashed version of a
@@ -74,7 +74,7 @@ func (a *Account) HashUserID(userID string) string {
 func (a *Account) WrapPublicKey() (jwk.Key, error) {
 	s, err := jwk.ParseString(a.PublicKey)
 	if err != nil {
-		return nil, errors.New("failed decoding stored key value")
+		return nil, errors.New("persistence: failed decoding stored key value")
 	}
 	return s.Keys[0], nil
 }

@@ -57,11 +57,11 @@ func (r *relationalDAL) ApplyMigrations() error {
 
 	m.InitSchema(func(tx *gorm.DB) error {
 		return tx.AutoMigrate(
-			&persistence.Event{},
-			&persistence.Account{},
-			&persistence.User{},
-			&persistence.AccountUser{},
-			&persistence.AccountUserRelationship{},
+			&Event{},
+			&Account{},
+			&User{},
+			&AccountUser{},
+			&AccountUserRelationship{},
 		).Error
 	})
 
@@ -73,20 +73,20 @@ func (r *relationalDAL) Ping() error {
 }
 
 func (r *relationalDAL) DropAll() error {
-	if err := r.db.Delete(&persistence.Event{}).Error; err != nil {
-		return fmt.Errorf("persistence: error dropping events table: %w,", err)
+	if err := r.db.Delete(&Event{}).Error; err != nil {
+		return fmt.Errorf("relational: error dropping events table: %w,", err)
 	}
-	if err := r.db.Delete(&persistence.Account{}).Error; err != nil {
-		return fmt.Errorf("persistence: error dropping accounts table: %w,", err)
+	if err := r.db.Delete(&Account{}).Error; err != nil {
+		return fmt.Errorf("relational: error dropping accounts table: %w,", err)
 	}
-	if err := r.db.Delete(&persistence.User{}).Error; err != nil {
-		return fmt.Errorf("persistence: error dropping user table: %w,", err)
+	if err := r.db.Delete(&User{}).Error; err != nil {
+		return fmt.Errorf("relational: error dropping user table: %w,", err)
 	}
-	if err := r.db.Delete(&persistence.AccountUser{}).Error; err != nil {
-		return fmt.Errorf("persistence: error dropping account user table: %w,", err)
+	if err := r.db.Delete(&AccountUser{}).Error; err != nil {
+		return fmt.Errorf("relational: error dropping account user table: %w,", err)
 	}
-	if err := r.db.Delete(&persistence.AccountUserRelationship{}).Error; err != nil {
-		return fmt.Errorf("persistence: error dropping account user relationship table: %w,", err)
+	if err := r.db.Delete(&AccountUserRelationship{}).Error; err != nil {
+		return fmt.Errorf("relational: error dropping account user relationship table: %w,", err)
 	}
 	return nil
 }

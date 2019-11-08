@@ -4,10 +4,10 @@ import (
 	"time"
 )
 
-// Database is a backend-agnostic wrapper for interacting with a persistence
+// Service is a backend-agnostic wrapper for interacting with a persistence
 // layer. It does not make any assumptions about how data is being modelled
 // and stored.
-type Database interface {
+type Service interface {
 	Insert(userID, accountID, payload string) error
 	Query(Query) (map[string][]EventResult, error)
 	GetAccount(accountID string, events bool, eventsSince string) (AccountResult, error)
@@ -31,8 +31,9 @@ type relationalDatabase struct {
 	emailSalt []byte
 }
 
-// New creates a persistence layer that connects to a PostgreSQL database
-func New(dal DataAccessLayer, configs ...Config) (Database, error) {
+// New creates a persistence service that connects to any database using
+// the given access layer.
+func New(dal DataAccessLayer, configs ...Config) (Service, error) {
 	db := relationalDatabase{db: dal}
 	for _, config := range configs {
 		config(&db)
