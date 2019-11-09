@@ -10,7 +10,7 @@ function withError () {
         // once things have settled
         var errorMessage = html`
           <div class="row">
-            <p class="error">${__('An error occured: %s', state.error.message)}</p>
+            <div class="error">${__('An error occured: %s', state.error.message)}</div>
             <pre>${state.error.stack}</pre>
           </div>
         `

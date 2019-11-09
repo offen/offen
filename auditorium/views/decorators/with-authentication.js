@@ -9,9 +9,9 @@ function withAuthentication () {
         emit('offen:login', null)
         var authenticating = html`
           <div class="row">
-            <p class="loading">
+            <div class="loading">
               ${__('Checking authentication...')}
-            </p>
+            </div>
           </div>
         `
         return authenticating

@@ -9,7 +9,7 @@ function withModel () {
         emit('offen:query', Object.assign({}, state.params, state.query), state.authenticatedUser)
         var loading = html`
           <div class="row">
-            <p class="loading">${__('Fetching the latest data...')}</p>
+            <div class="loading">${__('Fetching the latest data...')}</div>
           </div>
         `
         return loading
