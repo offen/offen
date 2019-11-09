@@ -18,7 +18,9 @@ function store (state, emitter) {
         if (response.type === 'LOGIN_SUCCESS') {
           state.authenticatedUser = response.payload
           if (credentials) {
+            /*
             state.flash = __('You are logged in.')
+            */
             emitter.emit(state.events.PUSHSTATE, '/auditorium/account/')
           }
           return

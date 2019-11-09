@@ -17,14 +17,16 @@ function view (state, emit) {
     })
   var accountHeader = html`
     <div class="row">
-      ${__('You are logged in as operator.')}
+      ${__('You are logged in as')}
+      <strong>${__(' operator.')}</strong>
     </div>
+
   `
 
   var loggedInMessage = html`
     <div class="row">
       <div class="card col">
-        <h4>${__('Accessible accounts')}</h4>
+        <h4>${__('Choose account')}</h4>
         <ul>
           ${availableAccounts}
         </ul>
@@ -43,33 +45,28 @@ function view (state, emit) {
 
   var changeEmailForm = html`
     <div class="row">
-      <div class="card col">
+      <div class="card">
         <h4>Change email address</h4>
         <form onsubmit="${handleChangeEmail}">
           <div class="row">
             <div class="2 col"></div>
             <div class="8 col">
-              <label>
-                ${__('New email address')}
-              </label>
-              <input class="card w-100" type="text" name="email-address">
-            </div>
-            <div class="2 col"></div>
-          </div>
-          <div class="row">
-            <div class="2 col"></div>
-            <div class="8 col">
-              <label>
-                ${__('Password')}
-              </label>
-              <input class="card w-100" type="password" name="password">
-            </div>
-            <div class="2 col"></div>
-          </div>
-          <div class="row">
-            <div class="2 col"></div>
-            <div class="8 col">
-              <input class="btn primary w-100" type="submit" value="${__('Change Email address')}">
+              <div class="row">
+                <label>
+                  ${__('New email address')}
+                </label>
+                <input class="card w-100" type="text" name="email-address">
+              </div>
+              <div class="row">
+                <label>
+                  ${__('Password')}
+                </label>
+                <input class="card w-100" type="password" name="password">
+              </div>
+              <div class="row"></div>
+              <div class="row">
+                <input class="btn primary w-100" type="submit" value="${__('Change Email address')}">
+              </div>
             </div>
             <div class="2 col"></div>
           </div>
@@ -92,43 +89,34 @@ function view (state, emit) {
 
   var changePasswordForm = html`
     <div class="row">
-      <div class="card col">
+      <div class="card">
         <h4>Change password</h4>
         <form onsubmit="${handleChangePassword}">
           <div class="row">
             <div class="2 col"></div>
             <div class="8 col">
-              <label>
-                ${__('Current password')}
-              </label>
-              <input class="card w-100" type="password" name="current">
-            </div>
-            <div class="2 col"></div>
-          </div>
-          <div class="row">
-            <div class="2 col"></div>
-            <div class="8 col">
-              <label>
-                ${__('New password')}
-              </label>
-              <input class="card w-100" type="password" name="changed">
-            </div>
-            <div class="2 col"></div>
-          </div>
-          <div class="row">
-            <div class="2 col"></div>
-            <div class="8 col">
-              <label>
-                ${__('Repeat new password')}
-              </label>
-              <input class="card w-100" type="password" name="repeat">
-            </div>
-            <div class="2 col"></div>
-          </div>
-          <div class="row">
-            <div class="2 col"></div>
-            <div class="8 col">
-              <input class="btn primary w-100" type="submit" value="${__('Change password')}">
+              <div class="row">
+                <label>
+                  ${__('Current password')}
+                </label>
+                <input class="card w-100" type="password" name="current">
+              </div>
+              <div class="row">
+                <label>
+                  ${__('New password')}
+                </label>
+                <input class="card w-100" type="password" name="changed">
+              </div>
+              <div class="row">
+                <label>
+                  ${__('Repeat new password')}
+                </label>
+                <input class="card w-100" type="password" name="repeat">
+              </div>
+              <div class="row"></div>
+              <div class="row">
+                <input class="btn primary w-100" type="submit" value="${__('Change password')}">
+              </div>
             </div>
             <div class="2 col"></div>
           </div>

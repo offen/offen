@@ -19,7 +19,33 @@
     </div>
     <div class="row"></div>
     <div class="row">
-      <div>{{ __ "Access your data in the <a href=\"auditorium\">auditorium</a>. Have an Account? <a href=\"auditorium/login\">Log in.</a>" }}</div>
+      <div class="card">
+          <div class="row">
+            <div class="2 col"></div>
+            <div class="8 col">
+              <div class="row"></div>
+              <div class="row">
+                <form action="auditorium" method="get">
+                  <label>
+                    View your <strong>user</strong> data in the auditorium.
+                  </label>
+                  <input type="submit" class="btn primary w-100" value="Open auditorium"/>
+                </form>
+              </div>
+              <div class="row"></div>
+              <div class="row">
+                <form action="auditorium/login" method="get">
+                  <label>
+                    Have an account? Log in as <strong>operator.</strong>
+                  </label>
+                  <input type="submit" class="btn primary w-100" value="Log in"/>
+                </form>
+              </div>
+              <div class="row"></div>
+          </div>
+          <div class="2 col"></div>
+        </div>
+      </div>
     </div>
   </div>
 </body>

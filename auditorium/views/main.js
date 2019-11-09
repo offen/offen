@@ -36,7 +36,7 @@ function view (state, emit) {
   } else {
     accountHeader = html`
       <div class="row">
-        ${raw(__('You are viewing data as <strong>user</strong>.'))}
+        ${raw(__('You are viewing your <strong>user</strong> data.'))}
         ${state.model.hasOptedOut ? html`<p><strong>${__('You have opted out. Clear your cookies to opt in.')}</strong></p>` : null}
         ${state.model.allowsCookies ? null : html`<p><strong>${__('Your browser does not allow 3rd party cookies. We respect this setting and collect only very basic data in this case, yet it also means we cannot display any data to you here.')}</strong></p>`}
       </div>
@@ -177,10 +177,10 @@ function view (state, emit) {
     ? html`
       <div class="card col">
         <h4>${__('Manage your data')}</h4>
-          <a class="btn" data-role="optout" onclick="${handleOptout}">
+          <a class="btn primary" data-role="optout" onclick="${handleOptout}">
             ${state.model.hasOptedOut ? __('Opt in') : __('Opt out')}
           </a>
-          <a class="btn" data-role="purge" onclick="${handlePurge}">
+          <a class="btn primary" data-role="purge" onclick="${handlePurge}">
             ${__('Delete my data')}
           </a>
         </div>
