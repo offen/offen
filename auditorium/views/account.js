@@ -17,7 +17,7 @@ function view (state, emit) {
     })
   var accountHeader = html`
     <div class="row">
-      ${__('You are logged in.')}
+      ${__('You are logged in as')} <strong>${__('operator.')}</strong>
     </div>
   `
 

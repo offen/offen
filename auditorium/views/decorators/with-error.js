@@ -9,8 +9,10 @@ function withError () {
         // TODO: do not leak stack trace to users when NODE_ENV equals `production`
         // once things have settled
         var errorMessage = html`
-          <p class="error">${__('An error occured: %s', state.error.message)}</p>
-          <pre>${state.error.stack}</pre>
+          <div class="row">
+            <p class="error">${__('An error occured: %s', state.error.message)}</p>
+            <pre>${state.error.stack}</pre>
+          </div>
         `
         return errorMessage
       }
