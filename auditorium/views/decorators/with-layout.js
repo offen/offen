@@ -9,16 +9,11 @@ function withLayout () {
       var flash = state.flash
       state.flash = null
       return html`
-        <div class="c">
-          <div class="row">
-            <h1>${raw(__('<strong>offen</strong> auditorium'))}</h1>
-          </div>
-          <div class="row"></div>
-            ${flash ? html`
-              <div class="row">
-                <div class="flash-message">${flash}</div>
-              </div>
-            ` : null}
+        <div class="mw7 center pa3 sans-serif">
+          <h1 class="f2 mt0 mb4">${raw(__('<strong>offen</strong> auditorium'))}</h1>
+          ${flash ? html`
+            <p class="flash-message mt0 mb4">${flash}</p>
+          ` : null}
           ${originalView(state, emit)}
         </div>
       `
