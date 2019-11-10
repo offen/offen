@@ -177,12 +177,14 @@ function view (state, emit) {
     ? html`
       <div class="card col">
         <h4>${__('Manage your data')}</h4>
-          <a class="btn primary" data-role="optout" onclick="${handleOptout}">
-            ${state.model.hasOptedOut ? __('Opt in') : __('Opt out')}
-          </a>
-          <a class="btn primary" data-role="purge" onclick="${handlePurge}">
-            ${__('Delete my data')}
-          </a>
+         <div class="col">
+            <button class="btn primary" data-role="optout" onclick="${handleOptout}">
+              ${state.model.hasOptedOut ? __('Opt in') : __('Opt out')}
+            </button>
+            <button class="btn primary" data-role="purge" onclick="${handlePurge}">
+              ${__('Delete my data')}
+            </button>
+          </div>
         </div>
     `
     : null
@@ -193,10 +195,10 @@ function view (state, emit) {
       </div>
     `
 
-  var withoutSeparators = [accountHeader, rowRangeUsersSessions, chart, rowPagesReferrersManage]
+  var orderedSections = [accountHeader, rowRangeUsersSessions, chart, rowPagesReferrersManage]
   return html`
       <div>
-        ${withoutSeparators}
+        ${orderedSections}
       </div>
     `
 }

@@ -14,7 +14,7 @@ function withLayout () {
             <h1>${raw(__('<strong>offen</strong> auditorium'))}</h1>
           </div>
           <div class="row"></div>
-            ${flash ? html`>
+            ${flash ? html`
               <div class="row">
                 <div class="flash-message">${flash}</div>
               </div>

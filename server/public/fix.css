@@ -29,6 +29,6 @@ h1 {
 
 @media(min-width:35em) {
   .row {
-      border-spacing: 10px 0;
+      border-spacing: 0.5em 0;
   }
 }
