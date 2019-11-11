@@ -16,38 +16,25 @@ function view (state, emit) {
     })
   }
   var form = html`
-    <form onsubmit=${handleSubmit}>
-      <div class="row">
-        <div class="eight columns">
-          <label>
-            ${__('Email address:')}
-          </label>
-          <input class="u-full-width" required type="email" name="email-address" placeholder="${__('Your email address')}">
-        </div>
-      </div>
-      <div class="row">
-        <div class="eight columns">
-          <label>
-            ${__('New password:')}
-          </label>
-          <input class="u-full-width" required type="password" name="password" placeholder="${__('Your new password')}">
-        </div>
-      </div>
-      <div class="row">
-        <div class="eight columns">
-          <label>
-            ${__('Repeat password:')}
-          </label>
-          <input class="u-full-width" required type="password" name="repeat-password" placeholder="${__('Repeat password')}">
-        </div>
-      </div>
-      <div class="row">
-        <div class="eight columns">
-          <input class="u-full-width" type="submit" value="${__('Reset password')}">
-        </div>
-      </div>
-      <input type="hidden" name="token" value=${state.params.token}>
-    </form>
+    <div class="w-100 pa3 mb2 ba b--black-10 br2 bg-white">
+      <h4 class="f5 normal mt0 mb3 gray">Reset password</h4>
+      <form class="mw5 center" onsubmit=${handleSubmit}>
+        <label class="b lh-copy">
+          ${__('Email address')}
+        </label>
+        <input class="w-100 pa2 mb3 input-reset ba b--black-50" required type="email" name="email-address">
+        <label class="b lh-copy">
+          ${__('New password')}
+        </label>
+        <input class="w-100 pa2 mb3 input-reset ba b--black-50" required type="password" name="password"">
+        <label class="b lh-copy">
+          ${__('Repeat new password')}
+        </label>
+        <input class="w-100 pa2 mb3 input-reset ba b--black-50" required type="password" name="repeat-password">
+        <input class="w-100 f5 link dim bn ph3 pv2 mb3 dib white bg-gold" type="submit" value="${__('Reset password')}">
+        <input type="hidden" name="token" value=${state.params.token}>
+      </form>
+    </div>
   `
 
   return form

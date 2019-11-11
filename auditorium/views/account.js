@@ -16,12 +16,12 @@ function view (state, emit) {
       `
     })
   var accountHeader = html`
-    <p class="dib pa2 black br2 bg-black-05 mt0 mb4">${__('You are logged in as ')}<strong>${__('operator.')}</strong></p>
+    <p class="dib pa2 black br2 bg-black-05 mt0 mb2">You are logged in as <strong>operator.</strong></p>
 
   `
 
   var loggedInMessage = html`
-    <div class="w-100 pa3 mb2 ba b--black-10 br2 bg-white">
+    <div class="w-100 pa3 mt4 mb2 ba b--black-10 br2 bg-white">
       <h4 class ="f5 normal mt0 mb3 gray">${__('Choose account')}</h4>
       <ul class="list pl0 mt0 mb3">
         ${availableAccounts}

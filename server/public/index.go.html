@@ -10,39 +10,19 @@
     <script src="/script.js" data-account-id="{{ . }}"></script>
   {{ end }}
 </head>
-<body>
-  <div class="c">
-    <div class="row">
-      <h1>{{ __ "Welcome to <strong>offen</strong>" }}</h1>
-    </div>
-    <div class="row"></div>
-    <div class="row">
-      <div class="card">
-          <div class="row">
-            <div class="2 col"></div>
-            <div class="8 col">
-              <div class="row"></div>
-              <div class="row">
-                <form action="auditorium" method="get">
-                  <label>
-                    View your <strong>user</strong> data in the auditorium.
-                  </label>
-                  <input type="submit" class="btn primary w-100" value="Open auditorium"/>
-                </form>
-              </div>
-              <div class="row"></div>
-              <div class="row">
-                <form action="auditorium/login" method="get">
-                  <label>
-                    Have an account? Log in as <strong>operator.</strong>
-                  </label>
-                  <input type="submit" class="btn primary w-100" value="Log in"/>
-                </form>
-              </div>
-              <div class="row"></div>
-          </div>
-          <div class="2 col"></div>
-        </div>
+<body style="background-color: #fdfdfd;">
+  <div class="mw7 center pa3 pb5 f5 sans-serif dark-gray">
+    <h1 class="f2 normal mt0 mb4">Welcome to <strong>offen</strong></h1>
+    <div class="w-100 pa3 mt4 mb2 ba b--black-10 br2 bg-white">
+      <div class="mw5 center mt4">
+        <p class="mt0 mb1">View your <strong>user</strong> data.</p>
+        <button class="w-100 f5 link dim bn ph3 pv2 mr1 mb4 dib white bg-gold" data-role="purge" onclick="location.href='auditorium'">
+          Open auditorium
+        </button>
+        <p class="mt0 mb1">Log in as <strong>operator.</strong></p>
+        <button class="w-100 f5 link dim bn ph3 pv2 mr1 mb4 dib white bg-gold" data-role="purge" onclick="location.href='auditorium/login'">
+          Log in
+        </button>
       </div>
     </div>
   </div>

@@ -28,14 +28,14 @@ function view (state, emit) {
   var pageTitle
   if (isOperator) {
     accountHeader = html`
-      <p class="mt0 mb4">${raw(__('You are viewing data as <strong>operator</strong> with account <strong>%s</strong>.', state.model.account.name))}</p>
+      <p class="dib pa2 black br2 bg-black-05 mt0 mb2">${raw(__('You are viewing data as <strong>operator</strong> with account <strong>%s</strong>.', state.model.account.name))}</p>
     `
     pageTitle = state.model.account.name + ' | ' + state.title
   } else {
     accountHeader = html`
-      <p class="dib pa2 black br2 bg-black-05 mt0 mb4">${raw(__('You are viewing your <strong>user</strong> data.'))}</p>
-      ${state.model.hasOptedOut ? html`<p class="mt0 mb4 b">${__('You have opted out. Clear your cookies to opt in.')}</p>` : null}
-      ${state.model.allowsCookies ? null : html`<p class="mt0 mb4 b"><strong>${__('Your browser does not allow 3rd party cookies. We respect this setting and collect only very basic data in this case, yet it also means we cannot display any data to you here.')}</p>`}
+      <p class="dib pa2 black br2 bg-black-05 mt0 mb2">${raw(__('You are viewing your <strong>user</strong> data.'))}</p>
+      ${state.model.hasOptedOut ? html`<p class="dib pa2 black br2 bg-black-05 mt0 mb2">${__('However, this view is empty because you are opted out. Clear your cookies to opt back in.')}</p>` : null}
+      ${state.model.allowsCookies ? null : html`<p class="dib pa2 black br2 bg-black-05 mt0 mb2"><strong>${__('However, your browser does not allow 3rd party cookies. We respect this setting and collect only very basic data in this case, yet it also means we cannot display any data to you here.')}</p>`}
     `
     pageTitle = __('user') + ' | ' + state.title
   }
@@ -101,7 +101,7 @@ function view (state, emit) {
   `
 
   var rowRangeUsersSessions = html`
-      <div class="flex flex-column flex-row-ns">
+      <div class="flex flex-column flex-row-ns mt4">
         ${rangeSelector}
         ${usersAndSessions}
       </div>
@@ -174,25 +174,35 @@ function view (state, emit) {
   var manage = !isOperator && state.model.allowsCookies
     ? html`
         <div class="w-100 w-30-ns pa3 mb2 ml1-ns ba b--black-10 br2 bg-white">
-          <h4 class ="f5 normal mt0 mb3 gray">${__('Manage your data')}</h4>
+          <h4 class ="f5 normal mt0 mb3 gray">${__('Manage data')}</h4>
           <button class="w-100-ns f5 link dim bn ph3 pv2 mr1 mb2 dib white bg-gold" data-role="purge" onclick="${handlePurge}">
-            ${__('Delete my user data')}
+            ${raw(__('Delete my <strong>user</strong> data'))}
           </button>
           <button class="w-100-ns f5 link dim bn ph3 pv2 mb3 dib white bg-gold" data-role="optout" onclick="${handleOptout}">
-            ${state.model.hasOptedOut ? __('Opt in') : __('Opt out')}
+            ${state.model.hasOptedOut ? __('Opt me in') : __('Opt me out')}
           </button>
         </div>
     `
     : null
 
-  var rowPagesReferrersManage = html`
-      <div class="flex flex-column flex-row-ns">
-        <div class="w-100 w-70-ns pa3 mb2 mr1-ns ba b--black-10 br2 bg-white">
-          ${pages} ${referrers}
+  if (isOperator) {
+    var rowPagesReferrersManage = html`
+        <div class="flex flex-column flex-row-ns">
+          <div class="w-100 pa3 mb2 mr1-ns ba b--black-10 br2 bg-white">
+            ${pages} ${referrers}
+          </div>
         </div>
-        ${manage}
-      </div>
-    `
+      `
+  } else {
+    var rowPagesReferrersManage = html`
+        <div class="flex flex-column flex-row-ns">
+          <div class="w-100 w-70-ns pa3 mb2 mr1-ns ba b--black-10 br2 bg-white">
+            ${pages} ${referrers}
+          </div>
+          ${manage}
+        </div>
+      `
+  }
 
   var orderedSections = [accountHeader, rowRangeUsersSessions, chart, rowPagesReferrersManage]
   return html`

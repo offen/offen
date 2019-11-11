@@ -12,20 +12,14 @@ function view (state, emit) {
     })
   }
   var form = html`
-    <form onsubmit=${handleSubmit}>
-      <div class="row">
-        <div class="eight columns">
-          <label>
-            <span>${__('Email Address:')}</span>
-          </label>
-          <input class="u-full-width" required type="email" name="email-address" placeholder="${__('Your email address')}">
-        </div>
-      </div>
-      <div class="row">
-        <div class="eight columns">
-          <input type="submit" value="${__('Send Email')}">
-        </div>
-      </div>
+    <div class="w-100 pa3 mb2 ba b--black-10 br2 bg-white">
+      <h4 class="f5 normal mt0 mb3 gray">Request link to reset password</h4>
+      <form class="mw5 center" onsubmit=${handleSubmit}>
+        <label class="b lh-copy">
+          ${__('Email address')}
+        </label>
+        <input class="w-100 pa2 mb3 input-reset ba b--black-50" required type="email" name="email-address">
+        <input class="w-100 f5 link dim bn ph3 pv2 mb3 dib white bg-gold" type="submit" value="${__('Send Email')}">
     </form>
   `
 
