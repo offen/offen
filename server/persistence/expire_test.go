@@ -21,10 +21,10 @@ func (m *mockExpireDatabase) DeleteEvents(q interface{}) (int64, error) {
 	}
 }
 
-func TestRelationalDatabase_Expire(t *testing.T) {
+func TestPersistenceLayer_Expire(t *testing.T) {
 	t.Run("ok", func(t *testing.T) {
-		r := &relationalDatabase{
-			db: &mockExpireDatabase{
+		r := &persistenceLayer{
+			dal: &mockExpireDatabase{
 				err:      nil,
 				affected: 9876,
 			},
@@ -38,8 +38,8 @@ func TestRelationalDatabase_Expire(t *testing.T) {
 		}
 	})
 	t.Run("error", func(t *testing.T) {
-		r := &relationalDatabase{
-			db: &mockExpireDatabase{
+		r := &persistenceLayer{
+			dal: &mockExpireDatabase{
 				err: errors.New("did not work"),
 			},
 		}

@@ -2,8 +2,11 @@ package persistence
 
 import (
 	"errors"
+	"fmt"
 	"testing"
 )
+
+type assertion func(interface{}) error
 
 type mockInsertEventDatabase struct {
 	DataAccessLayer
@@ -30,13 +33,13 @@ func (m *mockInsertEventDatabase) CreateEvent(e *Event) error {
 	return m.createEventErr
 }
 
-func TestRelationalDatabase_Insert(t *testing.T) {
+func TestPersistenceLayer_Insert(t *testing.T) {
 	tests := []struct {
 		name           string
 		callArgs       []string
 		db             *mockInsertEventDatabase
 		expectError    bool
-		argsAssertions []func(interface{}) bool
+		argsAssertions []assertion
 	}{
 		{
 			"account lookup error",
@@ -45,12 +48,14 @@ func TestRelationalDatabase_Insert(t *testing.T) {
 				findAccountErr: errors.New("did not work"),
 			},
 			true,
-			[]func(interface{}) bool{
-				func(accountID interface{}) bool {
+			[]assertion{
+				func(accountID interface{}) error {
 					if cast, ok := accountID.(FindAccountQueryActiveByID); ok {
-						return cast == "account-id"
+						if cast != "account-id" {
+							return fmt.Errorf("unexpected account identifier %v", cast)
+						}
 					}
-					return false
+					return nil
 				},
 			},
 		},
@@ -65,18 +70,22 @@ func TestRelationalDatabase_Insert(t *testing.T) {
 				findUserErr: errors.New("did not work"),
 			},
 			true,
-			[]func(interface{}) bool{
-				func(accountID interface{}) bool {
+			[]assertion{
+				func(accountID interface{}) error {
 					if cast, ok := accountID.(FindAccountQueryActiveByID); ok {
-						return cast == "account-id"
+						if cast != "account-id" {
+							return fmt.Errorf("unexpected account identifier %v", cast)
+						}
 					}
-					return false
+					return nil
 				},
-				func(userID interface{}) bool {
+				func(userID interface{}) error {
 					if cast, ok := userID.(FindUserQueryByHashedUserID); ok {
-						return cast != "user-id" && cast != ""
+						if cast == "user-id" || cast == "" {
+							return fmt.Errorf("unexpected user identifier %v", cast)
+						}
 					}
-					return false
+					return nil
 				},
 			},
 		},
@@ -91,27 +100,34 @@ func TestRelationalDatabase_Insert(t *testing.T) {
 				createEventErr: errors.New("did not work"),
 			},
 			true,
-			[]func(interface{}) bool{
-				func(accountID interface{}) bool {
+			[]assertion{
+				func(accountID interface{}) error {
 					if cast, ok := accountID.(FindAccountQueryActiveByID); ok {
-						return cast == "account-id"
+						if cast != "account-id" {
+							return fmt.Errorf("unexpected account identifier %v", cast)
+						}
 					}
-					return false
+					return nil
 				},
-				func(userID interface{}) bool {
+				func(userID interface{}) error {
 					if cast, ok := userID.(FindUserQueryByHashedUserID); ok {
-						return cast != "user-id" && cast != ""
+						if cast == "user-id" || cast == "" {
+							return fmt.Errorf("unexpected user identifier %v", cast)
+						}
 					}
-					return false
+					return nil
 				},
-				func(evt interface{}) bool {
+				func(evt interface{}) error {
 					if cast, ok := evt.(*Event); ok {
-						return cast.Payload == "payload" &&
+						wellformed := cast.Payload == "payload" &&
 							cast.AccountID == "account-id" &&
 							cast.EventID != "" &&
 							*cast.HashedUserID != "user-id"
+						if !wellformed {
+							return fmt.Errorf("unexpected event shape %v", cast)
+						}
 					}
-					return false
+					return nil
 				},
 			},
 		},
@@ -125,27 +141,34 @@ func TestRelationalDatabase_Insert(t *testing.T) {
 				},
 			},
 			false,
-			[]func(interface{}) bool{
-				func(accountID interface{}) bool {
+			[]assertion{
+				func(accountID interface{}) error {
 					if cast, ok := accountID.(FindAccountQueryActiveByID); ok {
-						return cast == "account-id"
+						if cast != "account-id" {
+							return fmt.Errorf("unexpected account identifier %v", cast)
+						}
 					}
-					return false
+					return nil
 				},
-				func(userID interface{}) bool {
+				func(userID interface{}) error {
 					if cast, ok := userID.(FindUserQueryByHashedUserID); ok {
-						return cast != "user-id" && cast != ""
+						if cast == "user-id" || cast == "" {
+							return fmt.Errorf("unexpected user identifier %v", cast)
+						}
 					}
-					return false
+					return nil
 				},
-				func(evt interface{}) bool {
+				func(evt interface{}) error {
 					if cast, ok := evt.(*Event); ok {
-						return cast.Payload == "payload" &&
+						wellformed := cast.Payload == "payload" &&
 							cast.AccountID == "account-id" &&
 							cast.EventID != "" &&
 							*cast.HashedUserID != "user-id"
+						if !wellformed {
+							return fmt.Errorf("unexpected event shape %v", cast)
+						}
 					}
-					return false
+					return nil
 				},
 			},
 		},
@@ -160,37 +183,45 @@ func TestRelationalDatabase_Insert(t *testing.T) {
 				findUserErr: errors.New("did not work"),
 			},
 			false,
-			[]func(interface{}) bool{
-				func(accountID interface{}) bool {
+			[]assertion{
+				func(accountID interface{}) error {
 					if cast, ok := accountID.(FindAccountQueryActiveByID); ok {
-						return cast == "account-id"
+						if cast != "account-id" {
+							return fmt.Errorf("unexpected account identifier %v", cast)
+						}
 					}
-					return false
+					return nil
 				},
-				func(evt interface{}) bool {
+				func(evt interface{}) error {
 					if cast, ok := evt.(*Event); ok {
-						return cast.Payload == "payload" &&
+						wellformed := cast.Payload == "payload" &&
 							cast.AccountID == "account-id" &&
 							cast.EventID != "" &&
 							cast.HashedUserID == nil
+						if !wellformed {
+							return fmt.Errorf("unexpected event shape %v", cast)
+						}
 					}
-					return false
+					return nil
 				},
 			},
 		},
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			r := &relationalDatabase{
-				db: test.db,
+			r := &persistenceLayer{
+				dal: test.db,
 			}
 			err := r.Insert(test.callArgs[0], test.callArgs[1], test.callArgs[2])
 			if (err != nil) != test.expectError {
 				t.Errorf("Unexpected error value %v", err)
 			}
-			for i, assertion := range test.argsAssertions {
-				if !assertion(test.db.methodArgs[i]) {
-					t.Errorf("Argument %v at index %d did not pass assertion", test.db.methodArgs[i], i)
+			if expected, found := len(test.argsAssertions), len(test.db.methodArgs); expected != found {
+				t.Fatalf("Number of assertions did not match number of calls, got %d and expected %d", found, expected)
+			}
+			for i, a := range test.argsAssertions {
+				if err := a(test.db.methodArgs[i]); err != nil {
+					t.Errorf("Unexpected assertion error checking arguments: %v", err)
 				}
 			}
 		})
@@ -203,21 +234,25 @@ type mockPurgeEventsDatabase struct {
 	findAccountsErr    error
 	deleteEventsResult int64
 	deleteEventsErr    error
+	methodArgs         []interface{}
 }
 
 func (m *mockPurgeEventsDatabase) FindAccounts(q interface{}) ([]Account, error) {
+	m.methodArgs = append(m.methodArgs, q)
 	return m.findAccountsResult, m.findAccountsErr
 }
 
 func (m *mockPurgeEventsDatabase) DeleteEvents(q interface{}) (int64, error) {
+	m.methodArgs = append(m.methodArgs, q)
 	return m.deleteEventsResult, m.deleteEventsErr
 }
 
-func TestRelationalDatabase_Purge(t *testing.T) {
+func TestPersistenceLayer_Purge(t *testing.T) {
 	tests := []struct {
-		name        string
-		db          *mockPurgeEventsDatabase
-		expectError bool
+		name          string
+		db            *mockPurgeEventsDatabase
+		expectError   bool
+		argAssertions []assertion
 	}{
 		{
 			"account lookup error",
@@ -225,6 +260,14 @@ func TestRelationalDatabase_Purge(t *testing.T) {
 				findAccountsErr: errors.New("did not work"),
 			},
 			true,
+			[]assertion{
+				func(q interface{}) error {
+					if _, ok := q.(FindAccountsQueryAllAccounts); ok {
+						return nil
+					}
+					return fmt.Errorf("unexpected argument %v", q)
+				},
+			},
 		},
 		{
 			"delete events error",
@@ -236,6 +279,25 @@ func TestRelationalDatabase_Purge(t *testing.T) {
 				deleteEventsErr: errors.New("did not work"),
 			},
 			true,
+			[]assertion{
+				func(q interface{}) error {
+					if _, ok := q.(FindAccountsQueryAllAccounts); ok {
+						return nil
+					}
+					return fmt.Errorf("unexpected argument %v", q)
+				},
+				func(q interface{}) error {
+					if hashes, ok := q.(DeleteEventsQueryByHashedIDs); ok {
+						for _, hash := range hashes {
+							if hash == "user-id" {
+								return errors.New("encountered plain user id when hash was expected")
+							}
+						}
+						return nil
+					}
+					return fmt.Errorf("unexpected argument %v", q)
+				},
+			},
 		},
 		{
 			"ok",
@@ -246,16 +308,43 @@ func TestRelationalDatabase_Purge(t *testing.T) {
 				},
 			},
 			false,
+			[]assertion{
+				func(q interface{}) error {
+					if _, ok := q.(FindAccountsQueryAllAccounts); ok {
+						return nil
+					}
+					return fmt.Errorf("unexpected argument %v", q)
+				},
+				func(q interface{}) error {
+					if hashes, ok := q.(DeleteEventsQueryByHashedIDs); ok {
+						for _, hash := range hashes {
+							if hash == "user-id" {
+								return errors.New("encountered plain user id when hash was expected")
+							}
+						}
+						return nil
+					}
+					return fmt.Errorf("unexpected argument %v", q)
+				},
+			},
 		},
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			r := &relationalDatabase{
-				db: test.db,
+			r := &persistenceLayer{
+				dal: test.db,
 			}
 			err := r.Purge("user-id")
 			if (err != nil) != test.expectError {
 				t.Errorf("Unexpected error value %v", err)
+			}
+			if expected, found := len(test.argAssertions), len(test.db.methodArgs); expected != found {
+				t.Fatalf("Number of assertions did not match number of calls, got %d and expected %d", found, expected)
+			}
+			for i, a := range test.argAssertions {
+				if err := a(test.db.methodArgs[i]); err != nil {
+					t.Errorf("Assertion error when checking arguments: %v", err)
+				}
 			}
 		})
 	}
