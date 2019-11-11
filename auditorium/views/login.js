@@ -12,38 +12,20 @@ function view (state, emit) {
     })
   }
   var form = html`
-    <form onsubmit=${handleSubmit}>
-      <div class="row">
-        <div class="card">
-          <div class="row">
-            <div class="2 col"></div>
-            <div class="8 col">
-              <div class="row">
-                  <label>
-                    ${__('Email address')}
-                  </label>
-                  <input class="card w-100" required type="email" name="username">
-              </div>
-              <div class="row">
-                <label>
-                  ${__('Password')}
-                </label>
-                <input class="card w-100" required type="password" name="password">
-              </div>
-              <div class="row"></div>
-              <div class="row">
-                <input type="submit" class="btn primary w-100" value="${__('Log in')}">
-              </div>
-              <div class="row"></div>
-              <div class="row">
-                <a href="./reset-password/">${__('Forgot password?')}</a>
-              </div>
-            </div>
-            <div class="2 col"></div>
-          </div>
-        </div>
-      </div>
-    </form>
+    <div class="w-100 pa3 mb2 ba b--black-10 br2 bg-white">
+      <form class="mw5 center" onsubmit=${handleSubmit}>
+        <label class="b lh-copy">
+          ${__('Email address')}
+        </label>
+        <input class="w-100 pa2 mb3 input-reset ba b--black-50" required type="email" name="username">
+        <label class="b lh-copy">
+          ${__('Password')}
+        </label>
+        <input class="w-100 pa2 mb3 input-reset ba b--black-50" required type="password" name="password">
+        <input class="w-100 f5 link dim bn ph3 pv2 mb3 dib white bg-gold" type="submit" value="${__('Log in')}">
+        <a class="link dim gold" href="./reset-password/">${__('Forgot password?')}</a>
+      </form>
+    </div>
   `
 
   return form

@@ -33,7 +33,7 @@ function view (state, emit) {
     pageTitle = state.model.account.name + ' | ' + state.title
   } else {
     accountHeader = html`
-      <p class="mt0 mb4">${raw(__('You are viewing your <strong>user</strong> data.'))}</p>
+      <p class="dib pa2 black br2 bg-black-05 mt0 mb4">${raw(__('You are viewing your <strong>user</strong> data.'))}</p>
       ${state.model.hasOptedOut ? html`<p class="mt0 mb4 b">${__('You have opted out. Clear your cookies to opt in.')}</p>` : null}
       ${state.model.allowsCookies ? null : html`<p class="mt0 mb4 b"><strong>${__('Your browser does not allow 3rd party cookies. We respect this setting and collect only very basic data in this case, yet it also means we cannot display any data to you here.')}</p>`}
     `
@@ -64,9 +64,9 @@ function view (state, emit) {
     `
   })
   var rangeSelector = html`
-    <div class="w-100 w-40-ns pa3 mb2 mr1-ns ba b--black-20 br2 bg-white">
+    <div class="w-100 w-40-ns pa3 mb2 mr1-ns ba b--black-10 br2 bg-white">
       <h4 class ="f5 normal mt0 mb3 gray">${__('Show data from the')}</h4>
-      <ul class="list pl0 mt0 mb0">${ranges}</ul>
+      <ul class="list pl0 mt0 mb3">${ranges}</ul>
     </div>
   `
 
@@ -78,28 +78,25 @@ function view (state, emit) {
     : __('accounts')
   var uniqueSessions = state.model.uniqueSessions
   var usersAndSessions = html`
-    <div class="flex flex-wrap w-100 w-60-ns pa3 mb2 ml1-ns ba b--black-20 br2 bg-white">
-      <div class="w-50 mb4">
+    <div class="flex flex-wrap w-100 w-60-ns pa3 mb2 ml1-ns ba b--black-10 br2 bg-white">
+      <div class="w-50 mb3">
         <p class="mt0 mb0 f3 b">${uniqueEntities}</p>
         <p class="mt0 mb0 normal">${__('unique %s', entityName)}</p>
       </div>
-      <div class="w-50 mb4s">
+      <div class="w-50 mb3">
         <p class="mt0 mb0 f3 b">${uniqueSessions}</p>
         <p class="mt0 mb0 normal">${__('unique sessions')}</p>
       </div>
-      <div class="w-50 mb4">
+      <div class="w-50 mb3">
         <p class="mt0 mb0 f3 b">${formatPercentage(state.model.bounceRate)}%</p>
         <p class="mt0 mb0 normal">${__('bounce rate')}</p>
       </div>
-      <div class="w-50 mb4">
+      <div class="w-50 mb3">
         ${isOperator ? html`
           <p class="mt0 mb0 f3 b">${formatPercentage(state.model.loss)}%</p>
           <p class="mt0 mb0 normal">${__('plus')}</p>
         ` : null}
       </div>
-
-
-
     </div>
   `
 
@@ -116,28 +113,30 @@ function view (state, emit) {
     resolution: state.model.resolution
   }
   var chart = html`
-    <div class="w-100 pa3 mb2 ba b--black-20 br2 bg-white">
-      <h4 class ="f5 normal mt0 mb3 gray">${__('Pageviews and %s', isOperator ? __('Visitors') : __('Accounts'))}</h4>
-      ${state.cache(BarChart, 'bar-chart').render(chartData)}
+    <div class="w-100 pa3 mb2 ba b--black-10 br2 bg-white">
+      <h4 class="f5 normal mt0 mb3 gray">${__('Pageviews and %s', isOperator ? __('Visitors') : __('Accounts'))}</h4>
+      <div class="mb4">
+        ${state.cache(BarChart, 'bar-chart').render(chartData)}
+      </div>
     </div>
   `
   var pagesData = state.model.pages
     .map(function (row) {
       return html`
-        <tr class="striped--light-gray">
-          <td class="pa1">${row.url}</td>
-          <td class="pa1">${row.pageviews}</td>
+        <tr>
+          <td class="pv2 bt b--black-10">${row.url}</td>
+          <td class="pv2 bt b--black-10">${row.pageviews}</td>
         </tr>
       `
     })
 
   var pages = html`
     <h4 class ="f5 normal mt0 mb3 gray">${__('Top pages')}</h4>
-    <table class="w-100 collapse">
+    <table class="w-100 collapse mb3">
       <thead>
         <tr>
-          <td class="pa1 b">${__('URL')}</td>
-          <td class="pa1 b">${__('Pageviews')}</td>
+          <td class="pv2 b">${__('URL')}</td>
+          <td class="pv2 b">${__('Pageviews')}</td>
         </tr>
       </thead>
       <tbody>
@@ -149,8 +148,8 @@ function view (state, emit) {
     .map(function (row) {
       return html`
         <tr>
-          <td class="pa1">${row.host}</td>
-          <td class="pa1">${row.pageviews}</td>
+          <td class="pv2 bt b--black-10">${row.host}</td>
+          <td class="pv2 bt b--black-10">${row.pageviews}</td>
         </tr>
       `
     })
@@ -158,11 +157,11 @@ function view (state, emit) {
   var referrers = referrerData.length
     ? html`
       <h4 class ="f5 normal mt0 mb3 gray">${__('Top referrers')}</h4>
-      <table class="w-100 collapse">
+      <table class="w-100 collapse mb3">
         <thead>
           <tr>
-            <td class="pa1 b">${__('Host')}</td>
-            <td class="pa1 b">${__('Pageviews')}</td>
+            <td class="pv2 b">${__('Host')}</td>
+            <td class="pv2 b">${__('Pageviews')}</td>
           </tr>
         </thead>
         <tbody>
@@ -174,12 +173,12 @@ function view (state, emit) {
 
   var manage = !isOperator && state.model.allowsCookies
     ? html`
-        <div class="w-100 w-30-ns pa3 mb2 ml1-ns ba b--black-20 br2 bg-white">
+        <div class="w-100 w-30-ns pa3 mb2 ml1-ns ba b--black-10 br2 bg-white">
           <h4 class ="f5 normal mt0 mb3 gray">${__('Manage your data')}</h4>
           <button class="w-100-ns f5 link dim bn ph3 pv2 mr1 mb2 dib white bg-gold" data-role="purge" onclick="${handlePurge}">
             ${__('Delete my user data')}
           </button>
-          <button class="w-100-ns f5 link dim bn ph3 pv2 dib white bg-gold" data-role="optout" onclick="${handleOptout}">
+          <button class="w-100-ns f5 link dim bn ph3 pv2 mb3 dib white bg-gold" data-role="optout" onclick="${handleOptout}">
             ${state.model.hasOptedOut ? __('Opt in') : __('Opt out')}
           </button>
         </div>
@@ -188,7 +187,7 @@ function view (state, emit) {
 
   var rowPagesReferrersManage = html`
       <div class="flex flex-column flex-row-ns">
-        <div class="w-100 w-70-ns pa3 mb2 mr1-ns ba b--black-20 br2 bg-white">
+        <div class="w-100 w-70-ns pa3 mb2 mr1-ns ba b--black-10 br2 bg-white">
           ${pages} ${referrers}
         </div>
         ${manage}
