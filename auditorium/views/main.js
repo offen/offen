@@ -58,15 +58,15 @@ function view (state, emit) {
     }
     var anchor = html`<a href="${url}" class="link dim gold">${range.display}</a>`
     return html`
-      <li>
+      <li class="mb1">
         ${active ? html`<strong>${anchor}</strong>` : anchor}
       </li>
     `
   })
   var rangeSelector = html`
-    <div class="w-100 w-50-ns pa3 mb2 mr1-ns ba b--black-30 bg-white">
-      <h3 class ="f4 normal mt0 mb0">${__('Show data from the')}</h3>
-      <ul class="list pl0">${ranges}</ul>
+    <div class="w-100 w-40-ns pa3 mb2 mr1-ns ba b--black-20 br2 bg-white">
+      <h4 class ="f5 normal mt0 mb3 gray">${__('Show data from the')}</h4>
+      <ul class="list pl0 mt0 mb0">${ranges}</ul>
     </div>
   `
 
@@ -78,23 +78,23 @@ function view (state, emit) {
     : __('accounts')
   var uniqueSessions = state.model.uniqueSessions
   var usersAndSessions = html`
-    <div class="flex flex-wrap w-100 w-50-ns pa3 mb2 ml1-ns ba b--black-30 bg-white">
-      <div class="w-50 mb4 mb0-ns">
+    <div class="flex flex-wrap w-100 w-60-ns pa3 mb2 ml1-ns ba b--black-20 br2 bg-white">
+      <div class="w-50 mb4">
         <p class="mt0 mb0 f3 b">${uniqueEntities}</p>
-        <p class="mt0 mb0 f5 normal">${__('unique %s', entityName)}</p>
+        <p class="mt0 mb0 normal">${__('unique %s', entityName)}</p>
       </div>
-      <div class="w-50 mb4 mb0-ns">
+      <div class="w-50 mb4s">
         <p class="mt0 mb0 f3 b">${uniqueSessions}</p>
-        <p class="mt0 mb0 f5 normal">${__('unique sessions')}</p>
+        <p class="mt0 mb0 normal">${__('unique sessions')}</p>
       </div>
-      <div class="w-50 mb4 mb0-ns">
+      <div class="w-50 mb4">
         <p class="mt0 mb0 f3 b">${formatPercentage(state.model.bounceRate)}%</p>
-        <p class="mt0 mb0 f5 normal">${__('bounce rate')}</p>
+        <p class="mt0 mb0 normal">${__('bounce rate')}</p>
       </div>
-      <div class="w-50 mb4 mb0-ns">
+      <div class="w-50 mb4">
         ${isOperator ? html`
           <p class="mt0 mb0 f3 b">${formatPercentage(state.model.loss)}%</p>
-          <p class="mt0 mb0 f5 normal">${__('plus')}</p>
+          <p class="mt0 mb0 normal">${__('plus')}</p>
         ` : null}
       </div>
 
@@ -109,25 +109,6 @@ function view (state, emit) {
         ${usersAndSessions}
       </div>
     `
-/*
-var rowRangeUsersSessions = html`
-  <div class="mw7 center ph3-ns">
-    <div class="cf ph2-ns">
-      <div class="fl w-100 w-50-ns pa2">
-        ${rangeSelector}
-      </div>
-      <div class="fl w-100 w-50-ns pa2">
-        ${usersAndSessions}
-      </div>
-    </div>
-  </div>
-  `
-*/
-
-
-
-
-
 
   var chartData = {
     data: state.model.pageviews,
@@ -135,57 +116,53 @@ var rowRangeUsersSessions = html`
     resolution: state.model.resolution
   }
   var chart = html`
-    <div class="row">
-      <div class="card col">
-        <h4>${__('Pageviews and %s', isOperator ? __('Visitors') : __('Accounts'))}</h4>
-        ${state.cache(BarChart, 'bar-chart').render(chartData)}
-      </div>
+    <div class="w-100 pa3 mb2 ba b--black-20 br2 bg-white">
+      <h4 class ="f5 normal mt0 mb3 gray">${__('Pageviews and %s', isOperator ? __('Visitors') : __('Accounts'))}</h4>
+      ${state.cache(BarChart, 'bar-chart').render(chartData)}
     </div>
   `
   var pagesData = state.model.pages
     .map(function (row) {
       return html`
-        <tr>
-          <td>${row.url}</td>
-          <td>${row.pageviews}</td>
+        <tr class="striped--light-gray">
+          <td class="pa1">${row.url}</td>
+          <td class="pa1">${row.pageviews}</td>
         </tr>
       `
     })
 
   var pages = html`
-    <div class="card col">
-      <h4>${__('Top pages')}</h4>
-      <table class="w-100">
-        <thead>
-          <tr>
-            <td>${__('URL')}</td>
-            <td>${__('Pageviews')}</td>
-          </tr>
-        </thead>
-        <tbody>
-          ${pagesData}
-        </tbody>
-      </table>
-    </div>
+    <h4 class ="f5 normal mt0 mb3 gray">${__('Top pages')}</h4>
+    <table class="w-100 collapse">
+      <thead>
+        <tr>
+          <td class="pa1 b">${__('URL')}</td>
+          <td class="pa1 b">${__('Pageviews')}</td>
+        </tr>
+      </thead>
+      <tbody>
+        ${pagesData}
+      </tbody>
+    </table>
   `
   var referrerData = state.model.referrers
     .map(function (row) {
       return html`
         <tr>
-          <td>${row.host}</td>
-          <td>${row.pageviews}</td>
+          <td class="pa1">${row.host}</td>
+          <td class="pa1">${row.pageviews}</td>
         </tr>
       `
     })
 
   var referrers = referrerData.length
     ? html`
-      <h4>${__('Top referrers')}</h4>
-      <table class="w-100">
+      <h4 class ="f5 normal mt0 mb3 gray">${__('Top referrers')}</h4>
+      <table class="w-100 collapse">
         <thead>
           <tr>
-            <td>${__('Host')}</td>
-            <td>${__('Pageviews')}</td>
+            <td class="pa1 b">${__('Host')}</td>
+            <td class="pa1 b">${__('Pageviews')}</td>
           </tr>
         </thead>
         <tbody>
@@ -197,23 +174,24 @@ var rowRangeUsersSessions = html`
 
   var manage = !isOperator && state.model.allowsCookies
     ? html`
-      <div class="card col">
-        <h4>${__('Manage your data')}</h4>
-         <div class="col">
-            <button class="btn primary" data-role="optout" onclick="${handleOptout}">
-              ${state.model.hasOptedOut ? __('Opt in') : __('Opt out')}
-            </button>
-            <button class="btn primary" data-role="purge" onclick="${handlePurge}">
-              ${__('Delete my data')}
-            </button>
-          </div>
+        <div class="w-100 w-30-ns pa3 mb2 ml1-ns ba b--black-20 br2 bg-white">
+          <h4 class ="f5 normal mt0 mb3 gray">${__('Manage your data')}</h4>
+          <button class="w-100-ns f5 link dim bn ph3 pv2 mr1 mb2 dib white bg-gold" data-role="purge" onclick="${handlePurge}">
+            ${__('Delete my user data')}
+          </button>
+          <button class="w-100-ns f5 link dim bn ph3 pv2 dib white bg-gold" data-role="optout" onclick="${handleOptout}">
+            ${state.model.hasOptedOut ? __('Opt in') : __('Opt out')}
+          </button>
         </div>
     `
     : null
 
   var rowPagesReferrersManage = html`
-      <div class="row">
-        ${pages} ${referrers} ${manage}
+      <div class="flex flex-column flex-row-ns">
+        <div class="w-100 w-70-ns pa3 mb2 mr1-ns ba b--black-20 br2 bg-white">
+          ${pages} ${referrers}
+        </div>
+        ${manage}
       </div>
     `
 

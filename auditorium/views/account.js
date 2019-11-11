@@ -16,7 +16,7 @@ function view (state, emit) {
       `
     })
   var accountHeader = html`
-    ${raw(__('You are logged in as <strong>operator</strong>'))}
+    ${raw(__('You are logged in as operator'))}
 
   `
 
