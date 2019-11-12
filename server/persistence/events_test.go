@@ -3,6 +3,7 @@ package persistence
 import (
 	"errors"
 	"fmt"
+	"reflect"
 	"testing"
 )
 
@@ -341,6 +342,155 @@ func TestPersistenceLayer_Purge(t *testing.T) {
 			if expected, found := len(test.argAssertions), len(test.db.methodArgs); expected != found {
 				t.Fatalf("Number of assertions did not match number of calls, got %d and expected %d", found, expected)
 			}
+			for i, a := range test.argAssertions {
+				if err := a(test.db.methodArgs[i]); err != nil {
+					t.Errorf("Assertion error when checking arguments: %v", err)
+				}
+			}
+		})
+	}
+}
+
+type mockQueryEventDatabase struct {
+	DataAccessLayer
+	findAccountsResult []Account
+	findAccountsErr    error
+	findEventsResult   []Event
+	findEventsErr      error
+	methodArgs         []interface{}
+}
+
+func (m *mockQueryEventDatabase) FindAccounts(q interface{}) ([]Account, error) {
+	m.methodArgs = append(m.methodArgs, q)
+	return m.findAccountsResult, m.findAccountsErr
+}
+
+func (m *mockQueryEventDatabase) FindEvents(q interface{}) ([]Event, error) {
+	m.methodArgs = append(m.methodArgs, q)
+	return m.findEventsResult, m.findEventsErr
+}
+
+func TestPersistenceLayer_Query(t *testing.T) {
+	tests := []struct {
+		name           string
+		db             *mockQueryEventDatabase
+		expectedResult map[string][]EventResult
+		expectError    bool
+		argAssertions  []assertion
+	}{
+		{
+			"find accounts error",
+			&mockQueryEventDatabase{
+				findAccountsErr: errors.New("did not work"),
+			},
+			nil,
+			true,
+			[]assertion{
+				func(q interface{}) error {
+					if _, ok := q.(FindAccountsQueryAllAccounts); ok {
+						return nil
+					}
+					return fmt.Errorf("unexpected argument %v", q)
+				},
+			},
+		},
+		{
+			"find events error",
+			&mockQueryEventDatabase{
+				findAccountsResult: []Account{
+					{UserSalt: "LEWtq55DKObqPK+XEQbnZA=="},
+					{UserSalt: "kxwkHp6yPBd0tQ85XlayDg=="},
+				},
+				findEventsErr: errors.New("did not work"),
+			},
+			nil,
+			true,
+			[]assertion{
+				func(q interface{}) error {
+					if _, ok := q.(FindAccountsQueryAllAccounts); ok {
+						return nil
+					}
+					return fmt.Errorf("unexpected argument %v", q)
+				},
+				func(q interface{}) error {
+					if query, ok := q.(FindEventsQueryForHashedIDs); ok {
+						if query.Since != "yesterday" {
+							return fmt.Errorf("unexpected since value: %v", query.Since)
+						}
+						if len(query.HashedUserIDs) != 2 {
+							return fmt.Errorf("unexpected number of user ids: %d", len(query.HashedUserIDs))
+						}
+						return nil
+					}
+					return fmt.Errorf("unexpected argument %v", q)
+				},
+			},
+		},
+		{
+			"ok",
+			&mockQueryEventDatabase{
+				findAccountsResult: []Account{
+					{AccountID: "account-a", UserSalt: "LEWtq55DKObqPK+XEQbnZA=="},
+					{AccountID: "account-b", UserSalt: "kxwkHp6yPBd0tQ85XlayDg=="},
+				},
+				findEventsResult: []Event{
+					{AccountID: "account-a", EventID: "event-a", Payload: "payload-a"},
+					{AccountID: "account-b", EventID: "event-b", Payload: "payload-b"},
+				},
+			},
+			map[string][]EventResult{
+				"account-a": []EventResult{
+					{AccountID: "account-a", Payload: "payload-a", EventID: "event-a"},
+				},
+				"account-b": []EventResult{
+					{AccountID: "account-b", Payload: "payload-b", EventID: "event-b"},
+				},
+			},
+			false,
+			[]assertion{
+				func(q interface{}) error {
+					if _, ok := q.(FindAccountsQueryAllAccounts); ok {
+						return nil
+					}
+					return fmt.Errorf("unexpected argument %v", q)
+				},
+				func(q interface{}) error {
+					if query, ok := q.(FindEventsQueryForHashedIDs); ok {
+						if query.Since != "yesterday" {
+							return fmt.Errorf("unexpected since value: %v", query.Since)
+						}
+						if len(query.HashedUserIDs) != 2 {
+							return fmt.Errorf("unexpected number of user ids: %d", len(query.HashedUserIDs))
+						}
+						return nil
+					}
+					return fmt.Errorf("unexpected argument %v", q)
+				},
+			},
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			p := &persistenceLayer{
+				dal: test.db,
+			}
+			result, err := p.Query(Query{
+				UserID: "user-id",
+				Since:  "yesterday",
+			})
+
+			if (err != nil) != test.expectError {
+				t.Errorf("Unexpected error value %v", err)
+			}
+
+			if !reflect.DeepEqual(test.expectedResult, result) {
+				t.Errorf("Expected %v, got %v", test.expectedResult, result)
+			}
+
+			if expected, found := len(test.argAssertions), len(test.db.methodArgs); expected != found {
+				t.Fatalf("Number of assertions did not match number of calls, expected %d and found %d", expected, found)
+			}
+
 			for i, a := range test.argAssertions {
 				if err := a(test.db.methodArgs[i]); err != nil {
 					t.Errorf("Assertion error when checking arguments: %v", err)

@@ -1,13 +1,5 @@
 package persistence
 
-// Query defines a set of filters to limit the set of results to be returned
-// In case a field has the zero value, its filter will not be applied.
-type Query interface {
-	AccountIDs() []string
-	UserID() string
-	Since() string
-}
-
 // UserResult contains information about a single user entry
 type UserResult struct {
 	HashedUserID        string `json:"hashedUserId"`

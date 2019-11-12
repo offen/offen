@@ -41,6 +41,13 @@ func (p *persistenceLayer) Insert(userID, accountID, payload string) error {
 	return nil
 }
 
+// Query defines a set of filters to limit the set of results to be returned
+// In case a field has the zero value, its filter will not be applied.
+type Query struct {
+	UserID string
+	Since  string
+}
+
 func (p *persistenceLayer) Query(query Query) (map[string][]EventResult, error) {
 	var accounts []Account
 	accounts, err := p.dal.FindAccounts(FindAccountsQueryAllAccounts{})
@@ -49,8 +56,8 @@ func (p *persistenceLayer) Query(query Query) (map[string][]EventResult, error) 
 	}
 
 	results, err := p.dal.FindEvents(FindEventsQueryForHashedIDs{
-		HashedUserIDs: hashUserIDForAccounts(query.UserID(), accounts),
-		Since:         query.Since(),
+		HashedUserIDs: hashUserIDForAccounts(query.UserID, accounts),
+		Since:         query.Since,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("persistence: error looking up events: %w", err)
