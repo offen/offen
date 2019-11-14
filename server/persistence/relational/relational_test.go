@@ -22,6 +22,8 @@ type dbAccess func(*gorm.DB) error
 
 var noop dbAccess = func(*gorm.DB) error { return nil }
 
+func strptr(s string) *string { return &s }
+
 func TestRelationalDAL_Ping(t *testing.T) {
 	db, closeDB := createTestDatabase()
 	defer closeDB()
