@@ -12,9 +12,9 @@ import (
 func TestRelationalDAL_CreateUser(t *testing.T) {
 	tests := []struct {
 		name      string
-		setup     dbaccess
+		setup     dbAccess
 		user      *persistence.User
-		assertion dbaccess
+		assertion dbAccess
 	}{
 		{
 			"ok",
@@ -57,10 +57,10 @@ func TestRelationalDAL_CreateUser(t *testing.T) {
 func TestRelationalDAL_DeleteUser(t *testing.T) {
 	tests := []struct {
 		name        string
-		setup       dbaccess
+		setup       dbAccess
 		arg         interface{}
 		expectError bool
-		assertion   dbaccess
+		assertion   dbAccess
 	}{
 		{
 			"bad arg",
@@ -131,7 +131,7 @@ func TestRelationalDAL_DeleteUser(t *testing.T) {
 func TestRelationalDAL_FindUser(t *testing.T) {
 	tests := []struct {
 		name           string
-		setup          dbaccess
+		setup          dbAccess
 		arg            interface{}
 		expectedResult persistence.User
 		expectError    bool

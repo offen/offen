@@ -10,12 +10,12 @@ func createTestDatabase() (*gorm.DB, func() error) {
 	if err != nil {
 		panic(err)
 	}
-	if err := db.AutoMigrate(&Event{}, &Account{}, &User{}).Error; err != nil {
+	if err := db.AutoMigrate(&Event{}, &Account{}, &User{}, &AccountUser{}, &AccountUserRelationship{}).Error; err != nil {
 		panic(err)
 	}
 	return db, db.Close
 }
 
-type dbaccess func(*gorm.DB) error
+type dbAccess func(*gorm.DB) error
 
-var noop dbaccess = func(*gorm.DB) error { return nil }
+var noop dbAccess = func(*gorm.DB) error { return nil }
