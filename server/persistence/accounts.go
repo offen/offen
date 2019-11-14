@@ -63,9 +63,6 @@ func (p *persistenceLayer) AssociateUserSecret(accountID, userID, encryptedUserS
 
 	hashedUserID := account.HashUserID(userID)
 	user, err := p.dal.FindUser(FindUserQueryByHashedUserID(hashedUserID))
-	// there is an issue with the Postgres backend of GORM that disallows inserting
-	// primary keys when using `FirstOrCreate`, so we need to do a manual check
-	// for existence beforehand.
 	if err != nil {
 		var notFound ErrUnknownUser
 		if !errors.As(err, &notFound) {
