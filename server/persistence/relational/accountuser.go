@@ -39,6 +39,10 @@ func (r *relationalDAL) FindAccountUser(q interface{}) (persistence.AccountUser,
 
 func (r *relationalDAL) UpdateAccountUser(u *persistence.AccountUser) error {
 	local := importAccountUser(u)
+	exists := r.db.Where("user_id = ?", local.UserID).First(&AccountUser{}).Error
+	if exists != nil {
+		return fmt.Errorf("relational: error looking up account user for update: %w", exists)
+	}
 	if err := r.db.Save(&local).Error; err != nil {
 		return fmt.Errorf("relational: error updating account user: %w", err)
 	}
