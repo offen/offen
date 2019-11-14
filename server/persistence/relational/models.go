@@ -140,7 +140,7 @@ type Account struct {
 }
 
 func (a *Account) export() persistence.Account {
-	events := []persistence.Event{}
+	var events []persistence.Event
 	for _, e := range a.Events {
 		events = append(events, e.export())
 	}
