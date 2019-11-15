@@ -10,8 +10,8 @@ function view (state, emit) {
     })
     .map(function (account) {
       return html`
-        <li class="mb1">
-          <a href="./account/${account.accountId}/" class="link dim gold">${account.accountName}</a>
+        <li>
+          <a href="./account/${account.accountId}/" class="f5 link dim bn ph3 pv2 mr2 mb1 dib white bg-dark-green">${account.accountName}</a>
         </li>
       `
     })
@@ -22,8 +22,8 @@ function view (state, emit) {
 
   var loggedInMessage = html`
     <div class="w-100 pa3 mt4 mb2 ba b--black-10 br2 bg-white">
-      <h4 class ="f5 normal mt0 mb3 gray">${__('Choose account')}</h4>
-      <ul class="list pl0 mt0 mb3">
+      <h4 class ="f5 normal mt0 mb3">${__('Choose account')}</h4>
+      <ul class="flex flex-wrap list pl0 mt0 mb3">
         ${availableAccounts}
       </ul>
   `
@@ -39,7 +39,7 @@ function view (state, emit) {
 
   var changeEmailForm = html`
     <div class="w-100 pa3 mb2 ba b--black-10 br2 bg-white">
-      <h4 class="f5 normal mt0 mb3 gray">Change email address</h4>
+      <h4 class="f5 normal mt0 mb3">Change email address</h4>
       <form class="mw5 center" onsubmit="${handleChangeEmail}">
         <label class="b lh-copy">
           ${__('New email address')}
@@ -49,7 +49,7 @@ function view (state, emit) {
           ${__('Password')}
         </label>
         <input class="w-100 pa2 mb3 input-reset ba b--black-50" type="password" name="password">
-        <input class="w-100 f5 link dim bn ph3 pv2 mb3 dib white bg-gold" type="submit" value="${__('Change Email address')}">
+        <input class="w-100 f5 link dim bn ph3 pv2 mb3 dib white bg-dark-green" type="submit" value="${__('Change Email address')}">
       </form>
     </div>
   `
@@ -68,7 +68,7 @@ function view (state, emit) {
 
   var changePasswordForm = html`
     <div class="w-100 pa3 mb2 ba b--black-10 br2 bg-white">
-      <h4 class="f5 normal mt0 mb3 gray">Change password</h4>
+      <h4 class="f5 normal mt0 mb3">Change password</h4>
       <form class="mw5 center" onsubmit="${handleChangePassword}">
         <label class="b lh-copy">
           ${__('Current password')}
@@ -82,7 +82,7 @@ function view (state, emit) {
           ${__('Repeat new password')}
         </label>
         <input class="w-100 pa2 mb3 input-reset ba b--black-50" type="password" name="repeat">
-        <input class="w-100 f5 link dim bn ph3 pv2 mb3 dib white bg-gold" type="submit" value="${__('Change password')}">
+        <input class="w-100 f5 link dim bn ph3 pv2 mb3 dib white bg-dark-green" type="submit" value="${__('Change password')}">
       </form>
     </div>
   `

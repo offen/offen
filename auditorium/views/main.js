@@ -42,12 +42,12 @@ function view (state, emit) {
   emit(state.events.DOMTITLECHANGE, pageTitle)
 
   var ranges = [
-    { display: __('last 24 hours'), query: { range: '24', resolution: 'hours' } },
-    { display: __('last 7 days'), query: null },
-    { display: __('last 28 days'), query: { range: '28', resolution: 'days' } },
-    { display: __('last 6 weeks'), query: { range: '6', resolution: 'weeks' } },
-    { display: __('last 12 weeks'), query: { range: '12', resolution: 'weeks' } },
-    { display: __('last 6 months'), query: { range: '6', resolution: 'months' } }
+    { display: __('24 hours'), query: { range: '24', resolution: 'hours' } },
+    { display: __('7 days'), query: null },
+    { display: __('28 days'), query: { range: '28', resolution: 'days' } },
+    { display: __('6 weeks'), query: { range: '6', resolution: 'weeks' } },
+    { display: __('12 weeks'), query: { range: '12', resolution: 'weeks' } },
+    { display: __('6 months'), query: { range: '6', resolution: 'months' } }
   ].map(function (range) {
     var url = (state.href || '') + '/'
     var current = _.pick(state.query, ['range', 'resolution'])
@@ -56,7 +56,7 @@ function view (state, emit) {
     if (range.query || Object.keys(foreign).length) {
       url += '?' + new window.URLSearchParams(Object.assign(foreign, range.query))
     }
-    var anchor = html`<a href="${url}" class="link dim gold">${range.display}</a>`
+    var anchor = html`<a href="${url}" class="f5 link dim bn ph3 pv2 mr2 mb1 dib white bg-dark-green">${range.display}</a>`
     return html`
       <li class="mb1">
         ${active ? html`<strong>${anchor}</strong>` : anchor}
@@ -65,8 +65,8 @@ function view (state, emit) {
   })
   var rangeSelector = html`
     <div class="w-100 w-40-ns pa3 mb2 mr1-ns ba b--black-10 br2 bg-white">
-      <h4 class ="f5 normal mt0 mb3 gray">${__('Show data from the')}</h4>
-      <ul class="list pl0 mt0 mb3">${ranges}</ul>
+      <h4 class ="f5 normal mt0 mb3">${__('Show data from the last')}</h4>
+      <ul class="flex flex-wrap list pl0 mt0 mb3">${ranges}</ul>
     </div>
   `
 
@@ -114,7 +114,7 @@ function view (state, emit) {
   }
   var chart = html`
     <div class="w-100 pa3 mb2 ba b--black-10 br2 bg-white">
-      <h4 class="f5 normal mt0 mb3 gray">${__('Pageviews and %s', isOperator ? __('Visitors') : __('Accounts'))}</h4>
+      <h4 class="f5 normal mt0 mb3">${__('Pageviews and %s', isOperator ? __('Visitors') : __('Accounts'))}</h4>
       <div class="mb4">
         ${state.cache(BarChart, 'bar-chart').render(chartData)}
       </div>
@@ -131,7 +131,7 @@ function view (state, emit) {
     })
 
   var pages = html`
-    <h4 class ="f5 normal mt0 mb3 gray">${__('Top pages')}</h4>
+    <h4 class ="f5 normal mt0 mb3">${__('Top pages')}</h4>
     <table class="w-100 collapse mb3">
       <thead>
         <tr>
@@ -156,7 +156,7 @@ function view (state, emit) {
 
   var referrers = referrerData.length
     ? html`
-      <h4 class ="f5 normal mt0 mb3 gray">${__('Top referrers')}</h4>
+      <h4 class ="f5 normal mt0 mb3">${__('Top referrers')}</h4>
       <table class="w-100 collapse mb3">
         <thead>
           <tr>
@@ -174,11 +174,11 @@ function view (state, emit) {
   var manage = !isOperator && state.model.allowsCookies
     ? html`
         <div class="w-100 w-30-ns pa3 mb2 ml1-ns ba b--black-10 br2 bg-white">
-          <h4 class ="f5 normal mt0 mb3 gray">${__('Manage data')}</h4>
-          <button class="w-100-ns f5 link dim bn ph3 pv2 mr1 mb2 dib white bg-gold" data-role="purge" onclick="${handlePurge}">
+          <h4 class ="f5 normal mt0 mb3">${__('Manage data')}</h4>
+          <button class="w-100-ns f5 link dim bn ph3 pv2 mr1 mb2 dib white bg-dark-green" data-role="purge" onclick="${handlePurge}">
             ${raw(__('Delete my <strong>user</strong> data'))}
           </button>
-          <button class="w-100-ns f5 link dim bn ph3 pv2 mb3 dib white bg-gold" data-role="optout" onclick="${handleOptout}">
+          <button class="w-100-ns f5 link dim bn ph3 pv2 mb3 dib white bg-dark-green" data-role="optout" onclick="${handleOptout}">
             ${state.model.hasOptedOut ? __('Opt me in') : __('Opt me out')}
           </button>
         </div>

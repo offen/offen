@@ -76,9 +76,9 @@ BarChart.prototype.getChartData = function () {
       marker: {
         color: x.map(function (date) {
           if (self.local.resolution !== 'days') {
-            return '#f9d152'
+            return '#137752'
           }
-          return isWeekend(date) ? '#ffeeb9' : '#f9d152'
+          return isWeekend(date) ? '#19A974' : '#137752'
         })
       },
       name: self.local.isOperator ? 'Visitors' : 'Accounts'
@@ -96,9 +96,9 @@ BarChart.prototype.getChartData = function () {
       marker: {
         color: x.map(function (date) {
           if (self.local.resolution !== 'days') {
-            return '#fde18a'
+            return '#19A974'
           }
-          return isWeekend(date) ? '#fff7df' : '#fde18a'
+          return isWeekend(date) ? '#fff7df' : '#19A974'
         })
       },
       name: 'Pageviews'

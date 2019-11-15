@@ -13,7 +13,7 @@ function view (state, emit) {
   }
   var form = html`
     <div class="w-100 pa3 mt4 mb2 ba b--black-10 br2 bg-white">
-      <h4 class="f5 normal mt0 mb3 gray">Log in as operator</h4>
+      <h4 class="f5 normal mt0 mb3">Log in as operator</h4>
       <form class="mw5 center" onsubmit=${handleSubmit}>
         <label class="b lh-copy">
           ${__('Email address')}
@@ -23,9 +23,9 @@ function view (state, emit) {
           ${__('Password')}
         </label>
         <input class="w-100 pa2 mb3 input-reset ba b--black-50" required type="password" name="password">
-        <input class="w-100 f5 link dim bn ph3 pv2 mb3 dib white bg-gold" type="submit" value="${__('Log in')}">
+        <input class="w-100 f5 link dim bn ph3 pv2 mb3 dib white bg-dark-green" type="submit" value="${__('Log in')}">
         <div class="mb3">
-          <a class="link dim gold" href="./reset-password/">${__('Forgot password?')}</a>
+          <a class="link dim dark-green" href="./reset-password/">${__('Forgot password?')}</a>
         </div>
       </form>
     </div>
