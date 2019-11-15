@@ -1,5 +1,6 @@
 package persistence
 
-func (r *relationalDatabase) CheckHealth() error {
-	return r.db.Ping()
+// CheckHealth returns an error when the database connection is not working.
+func (p *persistenceLayer) CheckHealth() error {
+	return p.dal.Ping()
 }

@@ -7,8 +7,8 @@ import (
 	"github.com/gofrs/uuid"
 )
 
-func (r *relationalDatabase) GetAccount(accountID string, includeEvents bool, eventsSince string) (AccountResult, error) {
-	account, err := r.db.FindAccount(FindAccountQueryIncludeEvents{
+func (p *persistenceLayer) GetAccount(accountID string, includeEvents bool, eventsSince string) (AccountResult, error) {
+	account, err := p.dal.FindAccount(FindAccountQueryIncludeEvents{
 		AccountID: accountID,
 		Since:     eventsSince,
 	})
@@ -55,17 +55,14 @@ func (r *relationalDatabase) GetAccount(accountID string, includeEvents bool, ev
 	return result, nil
 }
 
-func (r *relationalDatabase) AssociateUserSecret(accountID, userID, encryptedUserSecret string) error {
-	account, err := r.db.FindAccount(FindAccountQueryByID(accountID))
+func (p *persistenceLayer) AssociateUserSecret(accountID, userID, encryptedUserSecret string) error {
+	account, err := p.dal.FindAccount(FindAccountQueryByID(accountID))
 	if err != nil {
 		return fmt.Errorf(`persistence: error looking up account with id "%s": %w`, accountID, err)
 	}
 
 	hashedUserID := account.HashUserID(userID)
-	user, err := r.db.FindUser(FindUserQueryByHashedUserID(hashedUserID))
-	// there is an issue with the Postgres backend of GORM that disallows inserting
-	// primary keys when using `FirstOrCreate`, so we need to do a manual check
-	// for existence beforehand.
+	user, err := p.dal.FindUser(FindUserQueryByHashedUserID(hashedUserID))
 	if err != nil {
 		var notFound ErrUnknownUser
 		if !errors.As(err, &notFound) {
@@ -87,7 +84,7 @@ func (r *relationalDatabase) AssociateUserSecret(accountID, userID, encryptedUse
 		}
 		parkedHash := account.HashUserID(parkedID.String())
 
-		txn, err := r.db.Transaction()
+		txn, err := p.dal.Transaction()
 		if err != nil {
 			return fmt.Errorf("persistence: error creating transaction: %w", err)
 		}
@@ -139,7 +136,7 @@ func (r *relationalDatabase) AssociateUserSecret(accountID, userID, encryptedUse
 		}
 	}
 
-	if err := r.db.CreateUser(&User{
+	if err := p.dal.CreateUser(&User{
 		EncryptedUserSecret: encryptedUserSecret,
 		HashedUserID:        hashedUserID,
 	}); err != nil {

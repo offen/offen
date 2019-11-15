@@ -68,7 +68,7 @@ type AccountUser struct {
 }
 
 func (a *AccountUser) export() persistence.AccountUser {
-	relationships := []persistence.AccountUserRelationship{}
+	var relationships []persistence.AccountUserRelationship
 	for _, r := range a.Relationships {
 		relationships = append(relationships, r.export())
 	}
@@ -82,7 +82,7 @@ func (a *AccountUser) export() persistence.AccountUser {
 }
 
 func importAccountUser(a *persistence.AccountUser) AccountUser {
-	relationships := []AccountUserRelationship{}
+	var relationships []AccountUserRelationship
 	for _, r := range a.Relationships {
 		relationships = append(relationships, importAccountUserRelationship(&r))
 	}
@@ -140,7 +140,7 @@ type Account struct {
 }
 
 func (a *Account) export() persistence.Account {
-	events := []persistence.Event{}
+	var events []persistence.Event
 	for _, e := range a.Events {
 		events = append(events, e.export())
 	}

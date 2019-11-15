@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"net/url"
 
 	"github.com/gin-gonic/gin"
 	"github.com/offen/offen/server/persistence"
@@ -66,23 +65,6 @@ func (rt *router) postEvents(c *gin.Context) {
 	c.JSON(http.StatusCreated, ackResponse{true})
 }
 
-type getQuery struct {
-	params url.Values
-	userID string
-}
-
-func (q *getQuery) AccountIDs() []string {
-	return q.params["accountId"]
-}
-
-func (q *getQuery) UserID() string {
-	return q.userID
-}
-
-func (q *getQuery) Since() string {
-	return q.params.Get("since")
-}
-
 type getResponse struct {
 	Events map[string][]persistence.EventResult `json:"events"`
 }
@@ -96,12 +78,10 @@ func (rt *router) getEvents(c *gin.Context) {
 		).Pipe(c)
 		return
 	}
-	query := getQuery{
-		params: c.Request.URL.Query(),
-		userID: userID,
-	}
-
-	result, err := rt.db.Query(&query)
+	result, err := rt.db.Query(persistence.Query{
+		UserID: userID,
+		Since:  c.Query("since"),
+	})
 	if err != nil {
 		newJSONError(
 			fmt.Errorf("router: error performing event query: %v", err),

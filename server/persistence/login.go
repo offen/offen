@@ -9,13 +9,13 @@ import (
 	"github.com/offen/offen/server/keys"
 )
 
-func (r *relationalDatabase) Login(email, password string) (LoginResult, error) {
-	hashedEmail, hashedEmailErr := keys.HashEmail(email, r.emailSalt)
+func (p *persistenceLayer) Login(email, password string) (LoginResult, error) {
+	hashedEmail, hashedEmailErr := keys.HashEmail(email, p.emailSalt)
 	if hashedEmailErr != nil {
 		return LoginResult{}, hashedEmailErr
 	}
 
-	accountUser, err := r.db.FindAccountUser(
+	accountUser, err := p.dal.FindAccountUser(
 		FindAccountUserQueryByHashedEmail(
 			base64.StdEncoding.EncodeToString(hashedEmail),
 		),
@@ -42,7 +42,7 @@ func (r *relationalDatabase) Login(email, password string) (LoginResult, error) 
 		return LoginResult{}, fmt.Errorf("persistence: error deriving key from password: %w", pwDerivedKeyErr)
 	}
 
-	relationships, err := r.db.FindAccountUserRelationships(
+	relationships, err := p.dal.FindAccountUserRelationships(
 		FindAccountUserRelationShipsQueryByUserID(accountUser.UserID),
 	)
 	if err != nil {
@@ -64,7 +64,7 @@ func (r *relationalDatabase) Login(email, password string) (LoginResult, error) 
 			return LoginResult{}, kErr
 		}
 
-		account, err := r.db.FindAccount(FindAccountQueryByID(relationship.AccountID))
+		account, err := p.dal.FindAccount(FindAccountQueryByID(relationship.AccountID))
 		if err != nil {
 			return LoginResult{}, fmt.Errorf(`persistence: error looking up account with id "%s": %w`, relationship.AccountID, err)
 		}
@@ -83,8 +83,8 @@ func (r *relationalDatabase) Login(email, password string) (LoginResult, error) 
 	}, nil
 }
 
-func (r *relationalDatabase) LookupUser(userID string) (LoginResult, error) {
-	accountUser, err := r.db.FindAccountUser(
+func (p *persistenceLayer) LookupUser(userID string) (LoginResult, error) {
+	accountUser, err := p.dal.FindAccountUser(
 		FindAccountUserQueryByUserIDIncludeRelationships(userID),
 	)
 	if err != nil {
@@ -102,8 +102,8 @@ func (r *relationalDatabase) LookupUser(userID string) (LoginResult, error) {
 	return result, nil
 }
 
-func (r *relationalDatabase) ChangePassword(userID, currentPassword, changedPassword string) error {
-	accountUser, err := r.db.FindAccountUser(
+func (p *persistenceLayer) ChangePassword(userID, currentPassword, changedPassword string) error {
+	accountUser, err := p.dal.FindAccountUser(
 		FindAccountUserQueryByUserIDIncludeRelationships(userID),
 	)
 	if err != nil {
@@ -139,7 +139,7 @@ func (r *relationalDatabase) ChangePassword(userID, currentPassword, changedPass
 	}
 
 	accountUser.HashedPassword = base64.StdEncoding.EncodeToString(newPasswordHash)
-	txn, err:= r.db.Transaction()
+	txn, err:= p.dal.Transaction()
 	if err != nil {
 		return fmt.Errorf("persistence: error creating transaction: %w", err)
 	}
@@ -174,13 +174,13 @@ func (r *relationalDatabase) ChangePassword(userID, currentPassword, changedPass
 	return nil
 }
 
-func (r *relationalDatabase) ResetPassword(emailAddress, password string, oneTimeKey []byte) error {
-	hashedEmail, hashErr := keys.HashEmail(emailAddress, r.emailSalt)
+func (p *persistenceLayer) ResetPassword(emailAddress, password string, oneTimeKey []byte) error {
+	hashedEmail, hashErr := keys.HashEmail(emailAddress, p.emailSalt)
 	if hashErr != nil {
 		return fmt.Errorf("error hashing given email address: %w", hashErr)
 	}
 
-	accountUser, err := r.db.FindAccountUser(
+	accountUser, err := p.dal.FindAccountUser(
 		FindAccountUserQueryByHashedEmail(
 			base64.StdEncoding.EncodeToString(hashedEmail),
 		),
@@ -199,14 +199,14 @@ func (r *relationalDatabase) ResetPassword(emailAddress, password string, oneTim
 		return fmt.Errorf("persistence: error deriving key from password: %w", deriveErr)
 	}
 
-	relationships, err := r.db.FindAccountUserRelationships(
+	relationships, err := p.dal.FindAccountUserRelationships(
 		FindAccountUserRelationShipsQueryByUserID(accountUser.UserID),
 	)
 	if err != nil {
 		return fmt.Errorf("persistence: error looking up relationships: %w", err)
 	}
 
-	txn, err := r.db.Transaction()
+	txn, err := p.dal.Transaction()
 	if err != nil {
 		return fmt.Errorf("persistence: error creating transaction: %w", err)
 	}
@@ -251,8 +251,8 @@ func (r *relationalDatabase) ResetPassword(emailAddress, password string, oneTim
 	return nil
 }
 
-func (r *relationalDatabase) ChangeEmail(userID, emailAddress, password string) error {
-	accountUser, err := r.db.FindAccountUser(
+func (p *persistenceLayer) ChangeEmail(userID, emailAddress, password string) error {
+	accountUser, err := p.dal.FindAccountUser(
 		FindAccountUserQueryByUserIDIncludeRelationships(userID),
 	)
 	if err != nil {
@@ -282,13 +282,13 @@ func (r *relationalDatabase) ChangeEmail(userID, emailAddress, password string) 
 		return fmt.Errorf("persistence: error deriving key from email address: %v", deriveKeyErr)
 	}
 
-	hashedEmail, hashErr := keys.HashEmail(emailAddress, r.emailSalt)
+	hashedEmail, hashErr := keys.HashEmail(emailAddress, p.emailSalt)
 	if hashErr != nil {
 		return fmt.Errorf("persistence: error hashing updated email address: %v", hashErr)
 	}
 
 	accountUser.HashedEmail = base64.StdEncoding.EncodeToString(hashedEmail)
-	txn, err := r.db.Transaction()
+	txn, err := p.dal.Transaction()
 	if err != nil {
 		return fmt.Errorf("persistence: error creating transaction: %w", err)
 	}
@@ -322,13 +322,13 @@ func (r *relationalDatabase) ChangeEmail(userID, emailAddress, password string) 
 	return nil
 }
 
-func (r *relationalDatabase) GenerateOneTimeKey(emailAddress string) ([]byte, error) {
-	hashedEmail, hashErr := keys.HashEmail(emailAddress, r.emailSalt)
+func (p *persistenceLayer) GenerateOneTimeKey(emailAddress string) ([]byte, error) {
+	hashedEmail, hashErr := keys.HashEmail(emailAddress, p.emailSalt)
 	if hashErr != nil {
 		return nil, fmt.Errorf("error hashing given email address: %v", hashErr)
 	}
 
-	accountUser, err := r.db.FindAccountUser(
+	accountUser, err := p.dal.FindAccountUser(
 		FindAccountUserQueryByHashedEmailIncludeRelationships(
 			base64.StdEncoding.EncodeToString(hashedEmail),
 		),
@@ -349,7 +349,7 @@ func (r *relationalDatabase) GenerateOneTimeKey(emailAddress string) ([]byte, er
 	oneTimeKey, _ := keys.GenerateRandomValue(keys.DefaultEncryptionKeySize)
 	oneTimeKeyBytes, _ := base64.StdEncoding.DecodeString(oneTimeKey)
 
-	txn, err := r.db.Transaction()
+	txn, err := p.dal.Transaction()
 	if err !=  nil {
 		return nil, fmt.Errorf("persistence: error creating transaction: %w", err)
 	}
