@@ -26,7 +26,7 @@ function view (state, emit) {
         <label class="b lh-copy">
           ${__('New password')}
         </label>
-        <input class="w-100 pa2 mb3 input-reset ba b--black-50" required type="password" name="password"">
+        <input class="w-100 pa2 mb3 input-reset ba b--black-50" required type="password" name="password">
         <label class="b lh-copy">
           ${__('Repeat new password')}
         </label>
