@@ -8,19 +8,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// optoutMiddleware drops all requests to the given handler that are sent with
-// a cookie of the given name,
-func optoutMiddleware(cookieName string) gin.HandlerFunc {
-	return func(c *gin.Context) {
-		if _, err := c.Request.Cookie(cookieName); err == nil {
-			c.Status(http.StatusNoContent)
-			c.Abort()
-			return
-		}
-		c.Next()
-	}
-}
-
 // userCookieMiddleware ensures a cookie of the given name is present and
 // attaches its value to the request's context using the given key, before
 // passing it on to the wrapped handler.

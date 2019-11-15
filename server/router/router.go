@@ -154,7 +154,6 @@ func New(opts ...Config) http.Handler {
 	static.Handle("/auditorium/", singlePageAppMiddleware("/auditorium/")(fileServer))
 	static.Handle("/", fileServer)
 
-	dropOptout := optoutMiddleware(optoutKey)
 	userCookie := userCookieMiddleware(cookieKey, contextKeyCookie)
 	accountAuth := rt.accountUserMiddleware(authKey, contextKeyAuth)
 
@@ -172,10 +171,6 @@ func New(opts ...Config) http.Handler {
 	app.GET("/versionz", rt.getVersion)
 	{
 		api := app.Group("/api")
-		api.GET("/opt-out", rt.getOptout)
-		api.POST("/opt-in", rt.postOptin)
-		api.GET("/opt-in", rt.getOptin)
-		api.POST("/opt-out", rt.postOptout)
 
 		api.GET("/exchange", rt.getPublicKey)
 		api.POST("/exchange", rt.postUserSecret)
@@ -195,8 +190,8 @@ func New(opts ...Config) http.Handler {
 		api.POST("/reset-password", rt.postResetPassword)
 
 		api.GET("/events", userCookie, rt.getEvents)
-		api.POST("/events/anonymous", dropOptout, rt.postEvents)
-		api.POST("/events", dropOptout, userCookie, rt.postEvents)
+		api.POST("/events/anonymous", rt.postEvents)
+		api.POST("/events", userCookie, rt.postEvents)
 	}
 
 	m := http.NewServeMux()
