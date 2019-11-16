@@ -41,6 +41,18 @@ function view (state, emit) {
   }
   emit(state.events.DOMTITLECHANGE, pageTitle)
 
+  var manage = !isOperator && state.model.allowsCookies
+    ? html`
+      <h4 class ="f5 normal mt0 mb3">${__('Manage data')}</h4>
+      <button class="w-100-ns f5 link dim bn ph3 pv2 mr1 mb2 dib br1 white bg-dark-green" data-role="purge" onclick="${handlePurge}">
+        ${raw(__('Delete my <strong>user</strong> data'))}
+      </button>
+      <button class="w-100-ns f5 link bn ph3 pv2 mb3 dib br1 white bg-black-05" data-role="optout" onclick="${handleOptout}" disabled>
+        ${state.model.hasOptedOut ? __('Opt me in') : __('Opt me out')}
+      </button>
+    `
+    : null
+
   var ranges = [
     { display: __('24 hours'), query: { range: '24', resolution: 'hours' } },
     { display: __('7 days'), query: null },
@@ -56,25 +68,13 @@ function view (state, emit) {
     if (range.query || Object.keys(foreign).length) {
       url += '?' + new window.URLSearchParams(Object.assign(foreign, range.query))
     }
-    var anchor = html`<a href="${url}" class="f5 link dim bn ph3 pv2 mr2 mb1 dib white bg-dark-green">${range.display}</a>`
+    var anchor = html`<a href="${url}" class="f5 b link dim ph3 pv2 mr2 mb1 dib br1 dark-green bg-black-05">${range.display}</a>`
     return html`
       <li class="mb1">
-        ${active ? html`<strong>${anchor}</strong>` : anchor}
+        ${active ? html`<a href="${url}" class="f5 b link bb bw2 ph3 pv2 mr2 mb1 dib br1  dark-green bg-black-05">${range.display}</a>` : anchor}
       </li>
     `
   })
-
-  var manage = !isOperator && state.model.allowsCookies
-    ? html`
-      <h4 class ="f5 normal mt0 mb3">${__('Manage data')}</h4>
-      <button class="w-100-ns f5 link dim bn ph3 pv2 mr1 mb2 dib white bg-dark-green" data-role="purge" onclick="${handlePurge}">
-        ${raw(__('Delete my <strong>user</strong> data'))}
-      </button>
-      <button class="w-100-ns f5 link bn ph3 pv2 mb3 dib white bg-light-green" data-role="optout" onclick="${handleOptout}" disabled>
-        ${state.model.hasOptedOut ? __('Opt me in') : __('Opt me out')}
-      </button>
-    `
-    : null
 
   var rangeSelector = html`
       <h4 class ="f5 normal mt0 mb3">${__('Show data from the last')}</h4>
@@ -83,7 +83,7 @@ function view (state, emit) {
 
   var goBackend = html`
       <h4 class ="f5 normal mt0 mb3">Manage accounts</h4>
-      <a href="/auditorium/account/" class="w-100-ns f5 tc link dim bn ph3 pv2 mr1 mb2 dib white bg-dark-green">
+      <a href="/auditorium/account/" class="w-100-ns f5 tc link dim bn ph3 pv2 mr1 mb2 dib br1 white bg-dark-green">
         Overview
       </a>
     `
@@ -91,10 +91,10 @@ function view (state, emit) {
   if (isOperator) {
     var rowRangeManage = html`
         <div class="flex flex-column flex-row-ns mt4">
-          <div class="w-100 w-20-ns pa3 mb2 mr2-ns ba b--black-10 br2 bg-white">
+          <div class="w-100 w-20-ns pa3 mb2 mr2-ns ba b--black-10 br2 bg-white-40">
             ${goBackend}
           </div>
-          <div class="w-100 w-80-ns pa3 mb2 ba b--black-10 br2 bg-white">
+          <div class="w-100 w-80-ns pa3 mb2 ba b--black-10 br2 bg-white-40">
             ${rangeSelector}
           </div>
         </div>
@@ -102,10 +102,10 @@ function view (state, emit) {
   } else {
     var rowRangeManage = html`
         <div class="flex flex-column flex-row-ns mt4">
-          <div class="w-100 w-30-ns pa3 mb2 mr2-ns ba b--black-10 br2 bg-white">
+          <div class="w-100 w-30-ns pa3 mb2 mr2-ns ba b--black-10 br2 bg-white-40">
             ${manage}
           </div>
-          <div class="w-100 w-70-ns pa3 mb2 ba b--black-10 br2 bg-white">
+          <div class="w-100 w-70-ns pa3 mb2 ba b--black-10 br2 bg-white-40">
             ${rangeSelector}
           </div>
         </div>
@@ -137,20 +137,20 @@ function view (state, emit) {
     <div class="flex flex-wrap w-100 w-20-ns pa3 mb2 ba b--black-10 br2 bg-white">
       <div class="w-50 w-100-ns mb3">
         <p class="mt0 mb0 f2">${uniqueEntities}</p>
-        <p class="mt0 mb0 normal">${__('unique %s', entityName)}</p>
+        <p class="b mt0 mb0 normal">${__('Unique %s', entityName)}</p>
       </div>
       <div class="w-50 w-100-ns mb3">
         <p class="mt0 mb0 f2">${uniqueSessions}</p>
-        <p class="mt0 mb0 normal">${__('unique sessions')}</p>
+        <p class="b mt0 mb0 normal">${__('Unique sessions')}</p>
       </div>
       <div class="w-50 w-100-ns mb3">
         <p class="mt0 mb0 f2">${formatPercentage(state.model.bounceRate)}%</p>
-        <p class="mt0 mb0 normal">${__('bounce rate')}</p>
+        <p class="b mt0 mb0 normal">${__('Bounce rate')}</p>
       </div>
       <div class="w-50 w-100-ns mb3">
         ${isOperator ? html`
           <p class="mt0 mb0 f2">${formatPercentage(state.model.loss)}%</p>
-          <p class="mt0 mb0 normal">${__('plus')}</p>
+          <p class="b mt0 mb0 normal">${__('Plus')}</p>
         ` : null}
       </div>
     </div>
