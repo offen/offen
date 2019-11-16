@@ -63,10 +63,66 @@ function view (state, emit) {
       </li>
     `
   })
+
+  var manage = !isOperator && state.model.allowsCookies
+    ? html`
+      <h4 class ="f5 normal mt0 mb3">${__('Manage data')}</h4>
+      <button class="w-100-ns f5 link dim bn ph3 pv2 mr1 mb2 dib white bg-dark-green" data-role="purge" onclick="${handlePurge}">
+        ${raw(__('Delete my <strong>user</strong> data'))}
+      </button>
+      <button class="w-100-ns f5 link bn ph3 pv2 mb3 dib white bg-light-green" data-role="optout" onclick="${handleOptout}" disabled>
+        ${state.model.hasOptedOut ? __('Opt me in') : __('Opt me out')}
+      </button>
+    `
+    : null
+
   var rangeSelector = html`
-    <div class="w-100 w-40-ns pa3 mb2 mr1-ns ba b--black-10 br2 bg-white">
       <h4 class ="f5 normal mt0 mb3">${__('Show data from the last')}</h4>
       <ul class="flex flex-wrap list pl0 mt0 mb3">${ranges}</ul>
+    `
+
+  var goBackend = html`
+      <h4 class ="f5 normal mt0 mb3">Manage accounts</h4>
+      <a href="/auditorium/account/" class="w-100-ns f5 tc link dim bn ph3 pv2 mr1 mb2 dib white bg-dark-green">
+        Overview
+      </a>
+    `
+
+  if (isOperator) {
+    var rowRangeManage = html`
+        <div class="flex flex-column flex-row-ns mt4">
+          <div class="w-100 w-20-ns pa3 mb2 mr2-ns ba b--black-10 br2 bg-white">
+            ${goBackend}
+          </div>
+          <div class="w-100 w-80-ns pa3 mb2 ba b--black-10 br2 bg-white">
+            ${rangeSelector}
+          </div>
+        </div>
+      `
+  } else {
+    var rowRangeManage = html`
+        <div class="flex flex-column flex-row-ns mt4">
+          <div class="w-100 w-30-ns pa3 mb2 mr2-ns ba b--black-10 br2 bg-white">
+            ${manage}
+          </div>
+          <div class="w-100 w-70-ns pa3 mb2 ba b--black-10 br2 bg-white">
+            ${rangeSelector}
+          </div>
+        </div>
+      `
+  }
+
+  var chartData = {
+    data: state.model.pageviews,
+    isOperator: isOperator,
+    resolution: state.model.resolution
+  }
+  var chart = html`
+    <div class="w-100 w-80-ns pa3 mb2 mr2-ns ba b--black-10 br2 bg-white">
+      <h4 class="f5 normal mt0 mb3">${__('Pageviews and %s', isOperator ? __('Visitors') : __('Accounts'))}</h4>
+      <div class="mb4">
+        ${state.cache(BarChart, 'bar-chart').render(chartData)}
+      </div>
     </div>
   `
 
@@ -78,48 +134,35 @@ function view (state, emit) {
     : __('accounts')
   var uniqueSessions = state.model.uniqueSessions
   var usersAndSessions = html`
-    <div class="flex flex-wrap w-100 w-60-ns pa3 mb2 ml1-ns ba b--black-10 br2 bg-white">
-      <div class="w-50 mb3">
-        <p class="mt0 mb0 f3 b">${uniqueEntities}</p>
+    <div class="flex flex-wrap w-100 w-20-ns pa3 mb2 ba b--black-10 br2 bg-white">
+      <div class="w-50 w-100-ns mb3">
+        <p class="mt0 mb0 f2">${uniqueEntities}</p>
         <p class="mt0 mb0 normal">${__('unique %s', entityName)}</p>
       </div>
-      <div class="w-50 mb3">
-        <p class="mt0 mb0 f3 b">${uniqueSessions}</p>
+      <div class="w-50 w-100-ns mb3">
+        <p class="mt0 mb0 f2">${uniqueSessions}</p>
         <p class="mt0 mb0 normal">${__('unique sessions')}</p>
       </div>
-      <div class="w-50 mb3">
-        <p class="mt0 mb0 f3 b">${formatPercentage(state.model.bounceRate)}%</p>
+      <div class="w-50 w-100-ns mb3">
+        <p class="mt0 mb0 f2">${formatPercentage(state.model.bounceRate)}%</p>
         <p class="mt0 mb0 normal">${__('bounce rate')}</p>
       </div>
-      <div class="w-50 mb3">
+      <div class="w-50 w-100-ns mb3">
         ${isOperator ? html`
-          <p class="mt0 mb0 f3 b">${formatPercentage(state.model.loss)}%</p>
+          <p class="mt0 mb0 f2">${formatPercentage(state.model.loss)}%</p>
           <p class="mt0 mb0 normal">${__('plus')}</p>
         ` : null}
       </div>
     </div>
   `
 
-  var rowRangeUsersSessions = html`
-      <div class="flex flex-column flex-row-ns mt4">
-        ${rangeSelector}
-        ${usersAndSessions}
-      </div>
-    `
-
-  var chartData = {
-    data: state.model.pageviews,
-    isOperator: isOperator,
-    resolution: state.model.resolution
-  }
-  var chart = html`
-    <div class="w-100 pa3 mb2 ba b--black-10 br2 bg-white">
-      <h4 class="f5 normal mt0 mb3">${__('Pageviews and %s', isOperator ? __('Visitors') : __('Accounts'))}</h4>
-      <div class="mb4">
-        ${state.cache(BarChart, 'bar-chart').render(chartData)}
-      </div>
+  var rowUsersSessionsChart = html`
+    <div class="flex flex-column flex-row-ns">
+      ${chart}
+      ${usersAndSessions}
     </div>
   `
+
   var pagesData = state.model.pages
     .map(function (row) {
       return html`
@@ -144,6 +187,7 @@ function view (state, emit) {
       </tbody>
     </table>
   `
+
   var referrerData = state.model.referrers
     .map(function (row) {
       return html`
@@ -171,40 +215,15 @@ function view (state, emit) {
     `
     : null
 
-  var manage = !isOperator && state.model.allowsCookies
-    ? html`
-        <div class="w-100 w-30-ns pa3 mb2 ml1-ns ba b--black-10 br2 bg-white">
-          <h4 class ="f5 normal mt0 mb3">${__('Manage data')}</h4>
-          <button class="w-100-ns f5 link dim bn ph3 pv2 mr1 mb2 dib white bg-dark-green" data-role="purge" onclick="${handlePurge}">
-            ${raw(__('Delete my <strong>user</strong> data'))}
-          </button>
-          <button class="w-100-ns f5 link dim bn ph3 pv2 mb3 dib white bg-dark-green" data-role="optout" onclick="${handleOptout}">
-            ${state.model.hasOptedOut ? __('Opt me in') : __('Opt me out')}
-          </button>
-        </div>
+
+  var pagesReferrers = html`
+      <div class="w-100 pa3 mb2 ba b--black-10 br2 bg-white">
+        ${pages}
+        ${referrers}
+      </div>
     `
-    : null
 
-  if (isOperator) {
-    var rowPagesReferrersManage = html`
-        <div class="flex flex-column flex-row-ns">
-          <div class="w-100 pa3 mb2 mr1-ns ba b--black-10 br2 bg-white">
-            ${pages} ${referrers}
-          </div>
-        </div>
-      `
-  } else {
-    var rowPagesReferrersManage = html`
-        <div class="flex flex-column flex-row-ns">
-          <div class="w-100 w-70-ns pa3 mb2 mr1-ns ba b--black-10 br2 bg-white">
-            ${pages} ${referrers}
-          </div>
-          ${manage}
-        </div>
-      `
-  }
-
-  var orderedSections = [accountHeader, rowRangeUsersSessions, chart, rowPagesReferrersManage]
+  var orderedSections = [accountHeader, rowRangeManage, rowUsersSessionsChart, pagesReferrers]
   return html`
       <div>
         ${orderedSections}

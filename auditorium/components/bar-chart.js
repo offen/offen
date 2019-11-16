@@ -98,7 +98,7 @@ BarChart.prototype.getChartData = function () {
           if (self.local.resolution !== 'days') {
             return '#19A974'
           }
-          return isWeekend(date) ? '#fff7df' : '#19A974'
+          return isWeekend(date) ? '#9eebcf' : '#19A974'
         })
       },
       name: 'Pageviews'
