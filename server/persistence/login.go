@@ -29,11 +29,7 @@ func (p *persistenceLayer) Login(email, password string) (LoginResult, error) {
 		return LoginResult{}, fmt.Errorf("persistence: error decoding salt: %w", saltErr)
 	}
 
-	pwBytes, pwErr := base64.StdEncoding.DecodeString(accountUser.HashedPassword)
-	if pwErr != nil {
-		return LoginResult{}, fmt.Errorf("persistence: error decoding stored password: %w", pwErr)
-	}
-	if err := keys.ComparePassword(password, pwBytes); err != nil {
+	if err := keys.ComparePassword(password, accountUser.HashedPassword); err != nil {
 		return LoginResult{}, fmt.Errorf("persistence: error comparing passwords: %w", err)
 	}
 
@@ -110,11 +106,7 @@ func (p *persistenceLayer) ChangePassword(userID, currentPassword, changedPasswo
 		return fmt.Errorf("persistence: error looking up account user: %w", err)
 	}
 
-	pwBytes, pwErr := base64.StdEncoding.DecodeString(accountUser.HashedPassword)
-	if pwErr != nil {
-		return fmt.Errorf("persistence: error decoding password: %v", pwErr)
-	}
-	if err := keys.ComparePassword(currentPassword, pwBytes); err != nil {
+	if err := keys.ComparePassword(currentPassword, accountUser.HashedPassword); err != nil {
 		return fmt.Errorf("persistence: current password did not match: %v", err)
 	}
 
@@ -138,8 +130,8 @@ func (p *persistenceLayer) ChangePassword(userID, currentPassword, changedPasswo
 		return fmt.Errorf("persistence: error hashing new password: %v", hashErr)
 	}
 
-	accountUser.HashedPassword = base64.StdEncoding.EncodeToString(newPasswordHash)
-	txn, err:= p.dal.Transaction()
+	accountUser.HashedPassword = newPasswordHash.Marshal()
+	txn, err := p.dal.Transaction()
 	if err != nil {
 		return fmt.Errorf("persistence: error creating transaction: %w", err)
 	}
@@ -240,7 +232,7 @@ func (p *persistenceLayer) ResetPassword(emailAddress, password string, oneTimeK
 		txn.Rollback()
 		return fmt.Errorf("persistence: error hashing password: %v", hashErr)
 	}
-	accountUser.HashedPassword = base64.StdEncoding.EncodeToString(passwordHash)
+	accountUser.HashedPassword = passwordHash.Marshal()
 	if err := txn.UpdateAccountUser(&accountUser); err != nil {
 		txn.Rollback()
 		return fmt.Errorf("persistence: error updating password on account user: %w", err)
@@ -259,11 +251,7 @@ func (p *persistenceLayer) ChangeEmail(userID, emailAddress, password string) er
 		return fmt.Errorf("persistence: error looking up account user: %w", err)
 	}
 
-	pwBytes, pwErr := base64.StdEncoding.DecodeString(accountUser.HashedPassword)
-	if pwErr != nil {
-		return fmt.Errorf("persistence: error decoding password: %v", pwErr)
-	}
-	if err := keys.ComparePassword(password, pwBytes); err != nil {
+	if err := keys.ComparePassword(password, accountUser.HashedPassword); err != nil {
 		return fmt.Errorf("persistence: current password did not match: %v", err)
 	}
 
@@ -302,7 +290,7 @@ func (p *persistenceLayer) ChangeEmail(userID, emailAddress, password string) er
 		value, _ := base64.StdEncoding.DecodeString(chunks[1])
 		decryptedKey, decryptionErr := keys.DecryptWith(keyFromCurrentPassword, value, nonce)
 		if decryptionErr != nil {
-		txn.Rollback()
+			txn.Rollback()
 			return decryptionErr
 		}
 		reencryptedKey, nonce, reencryptionErr := keys.EncryptWith(emailDerivedKey, decryptedKey)
@@ -350,7 +338,7 @@ func (p *persistenceLayer) GenerateOneTimeKey(emailAddress string) ([]byte, erro
 	oneTimeKeyBytes, _ := base64.StdEncoding.DecodeString(oneTimeKey)
 
 	txn, err := p.dal.Transaction()
-	if err !=  nil {
+	if err != nil {
 		return nil, fmt.Errorf("persistence: error creating transaction: %w", err)
 	}
 	for _, relationship := range accountUser.Relationships {
@@ -376,7 +364,7 @@ func (p *persistenceLayer) GenerateOneTimeKey(emailAddress string) ([]byte, erro
 			txn.Rollback()
 			return nil, fmt.Errorf("persistence: error updating relationship record: %v", err)
 		}
-		if err := txn.Commit(); err != nil{
+		if err := txn.Commit(); err != nil {
 			return nil, fmt.Errorf("persistence: error committing transaction: %w", err)
 		}
 	}

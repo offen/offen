@@ -68,18 +68,31 @@ func DeriveKey(value string, salt []byte) ([]byte, error) {
 	return dk, nil
 }
 
+const (
+	passwordAlgoBcrypt = 0
+)
+
 // HashPassword hashed the given password using bcrypt at default cost
-func HashPassword(pw string) ([]byte, error) {
+func HashPassword(pw string) (*VersionedCipher, error) {
 	b, err := bcrypt.GenerateFromPassword([]byte(pw), bcrypt.DefaultCost)
 	if err != nil {
 		return nil, fmt.Errorf("keys: error hashing password: %v", err)
 	}
-	return b, nil
+	return NewVersionedCipher(b, passwordAlgoBcrypt, -1), nil
 }
 
 // ComparePassword compares a password with a stored hash
-func ComparePassword(password string, hash []byte) error {
-	return bcrypt.CompareHashAndPassword(hash, []byte(password))
+func ComparePassword(password, cipher string) error {
+	v, err := unmarshalVersionedCipher(cipher)
+	if err != nil {
+		return fmt.Errorf("keys: error parsing versioned cipher: %w", err)
+	}
+	switch v.algoVersion {
+	case passwordAlgoBcrypt:
+		return bcrypt.CompareHashAndPassword(v.cipher, []byte(password))
+	default:
+		return fmt.Errorf("keys: received unknown algo version %d for comparing passwords", v.algoVersion)
+	}
 }
 
 // HashEmail hashed the given string value using the given salt. It is not

@@ -50,10 +50,10 @@ func TestHashPassword(t *testing.T) {
 	if hashErr != nil {
 		t.Fatalf("Unexpected error %v", hashErr)
 	}
-	if err := ComparePassword("s3cr3t", hash); err != nil {
+	if err := ComparePassword("s3cr3t", hash.Marshal()); err != nil {
 		t.Errorf("Unexpected error %v", err)
 	}
-	if err := ComparePassword("other", hash); err == nil {
+	if err := ComparePassword("other", hash.Marshal()); err == nil {
 		t.Errorf("Comparison unexpectedly passed for wrong password")
 	}
 }
