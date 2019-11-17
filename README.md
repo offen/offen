@@ -4,6 +4,8 @@
 
 > The offen analytics software
 
+**IMPORTANT NOTE**: This software is not yet in a usable state. It is still missing a mechanism for opting in and out of data collection and should therefore **not be used in any kind of production scenario**.
+
 This repository contains all source code needed to build and run __offen__, both on the server as well as on the client. Also see each of the READMEs in the subdirectories for information on how to work on that particular area of the application.
 
 ---

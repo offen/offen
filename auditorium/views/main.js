@@ -14,10 +14,6 @@ function formatPercentage (value) {
 }
 
 function view (state, emit) {
-  function handleOptout () {
-    emit('offen:optout', !state.model.hasOptedOut)
-  }
-
   function handlePurge () {
     emit('offen:purge')
   }
@@ -38,7 +34,6 @@ function view (state, emit) {
       <h5>
         ${raw(__('You are viewing data as <strong>user</strong>.'))}
       </h5>
-      ${state.model.hasOptedOut ? html`<p><strong>${__('You have opted out. Clear your cookies to opt in.')}</strong></p>` : null}
       ${state.model.allowsCookies ? null : html`<p><strong>${__('Your browser does not allow 3rd party cookies. We respect this setting and collect only very basic data in this case, yet it also means we cannot display any data to you here.')}</strong></p>`}
     `
     pageTitle = __('user') + ' | ' + state.title
@@ -163,8 +158,8 @@ function view (state, emit) {
       <h4>${__('Manage your data')}</h4>
       <div class="row">
         <div class="six columns">
-          <button class="btn u-full-width" data-role="optout" onclick="${handleOptout}">
-            ${state.model.hasOptedOut ? __('Opt in') : __('Opt out')}
+          <button class="btn u-full-width" data-role="optin" disabled>
+            ${__('Opt in')}
           </button>
         </div>
         <div class="six columns">

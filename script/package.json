@@ -45,7 +45,7 @@
       "__"
     ],
     "ignore": [
-      "dist/*.*"
+      "dist/**/*.*"
     ],
     "env": [
       "mocha"
