@@ -70,7 +70,7 @@ function view (state, emit) {
     var anchor = html`<a href="${url}" class="f5 b link dim ph3 pv2 mr2 mb1 dib br1 dark-green bg-black-05">${range.display}</a>`
     return html`
       <li class="mb1">
-        ${active ? html`<a href="${url}" class="f5 b link bb bw2 ph3 pv2 mr2 mb1 dib br1  dark-green bg-black-05">${range.display}</a>` : anchor}
+        ${active ? html`<a href="${url}" class="f5 b link bb bw2 ph3 pv2 mr2 mb1 dib br1 dark-green bg-black-05">${range.display}</a>` : anchor}
       </li>
     `
   })
@@ -86,29 +86,18 @@ function view (state, emit) {
       </a>
     `
 
-  if (isOperator) {
+    var width = isOperator ? 'w-20-ns' : 'w-30-ns'
+    var firstCardContent = isOperator ? goAccounts : manage
     var rowRangeManage = html`
         <div class="flex flex-column flex-row-ns mt4">
-          <div class="w-100 w-20-ns pa3 mb2 mr2-ns ba b--black-10 br2 bg-white-40">
-            ${goAccounts}
+          <div class="w-100 ${width} pa3 mb2 mr2-ns br2 bg-black-05">
+            ${firstCardContent}
           </div>
-          <div class="w-100 w-80-ns pa3 mb2 ba b--black-10 br2 bg-white-40">
+          <div class="w-100 w-80-ns pa3 mb2 ba b--black-10 br2 bg-white">
             ${rangeSelector}
           </div>
         </div>
       `
-  } else {
-    var rowRangeManage = html`
-        <div class="flex flex-column flex-row-ns mt4">
-          <div class="w-100 w-30-ns pa3 mb2 mr2-ns ba b--black-10 br2 bg-white-40">
-            ${manage}
-          </div>
-          <div class="w-100 w-70-ns pa3 mb2 ba b--black-10 br2 bg-white-40">
-            ${rangeSelector}
-          </div>
-        </div>
-      `
-  }
 
   var chartData = {
     data: state.model.pageviews,
@@ -132,24 +121,27 @@ function view (state, emit) {
     : __('accounts')
   var uniqueSessions = state.model.uniqueSessions
   var usersAndSessions = html`
-    <div class="flex flex-wrap w-100 w-25-m w-20-ns pa3 mb2 ba b--black-10 br2 bg-white">
-      <div class="w-50 w-100-ns mb3">
-        <p class="mt0 mb0 f2">${uniqueEntities}</p>
-        <p class="b mt0 mb0 normal">${__('Unique %s', entityName)}</p>
-      </div>
-      <div class="w-50 w-100-ns mb3">
-        <p class="mt0 mb0 f2">${uniqueSessions}</p>
-        <p class="b mt0 mb0 normal">${__('Unique sessions')}</p>
-      </div>
-      <div class="w-50 w-100-ns mb3">
-        <p class="mt0 mb0 f2">${formatPercentage(state.model.bounceRate)} %</p>
-        <p class="b mt0 mb0 normal">${__('Bounce rate')}</p>
-      </div>
-      <div class="w-50 w-100-ns mb3">
-        ${isOperator ? html`
-          <p class="mt0 mb0 f2">${formatPercentage(state.model.loss)} %</p>
-          <p class="b mt0 mb0 normal">${__('Plus')}</p>
-        ` : null}
+    <div class="w-100 w-25-m w-20-ns pa3 mb2 ba b--black-10 br2 bg-white">
+      <h4 class ="f5 normal mt0 mb3 mb5-ns">Key metrics</h4>
+      <div class="flex flex-wrap">
+        <div class="w-50 w-100-ns mb3 mb4-ns">
+          <p class="mt0 mb0 f2">${uniqueEntities}</p>
+          <p class="mt0 mb0 normal">${__('Unique %s', entityName)}</p>
+        </div>
+        <div class="w-50 w-100-ns mb3 mb4-ns">
+          <p class="mt0 mb0 f2">${uniqueSessions}</p>
+          <p class="mt0 mb0 normal">${__('Unique sessions')}</p>
+        </div>
+        <div class="w-50 w-100-ns mb3 mb4-ns">
+          <p class="mt0 mb0 f2">${formatPercentage(state.model.bounceRate)} %</p>
+          <p class="mt0 mb0 normal">${__('Bounce rate')}</p>
+        </div>
+        <div class="w-50 w-100-ns mb3 mb4-ns">
+          ${isOperator ? html`
+            <p class="mt0 mb0 f2">${formatPercentage(state.model.loss)} %</p>
+            <p class="mt0 mb0 normal">${__('Plus')}</p>
+          ` : null}
+        </div>
       </div>
     </div>
   `

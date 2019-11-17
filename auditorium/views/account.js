@@ -38,9 +38,9 @@ function view (state, emit) {
   }
 
   var changeEmailForm = html`
-    <div class="w-100 pa3 mb2 ba b--black-10 br2 bg-white-40">
+    <div class="w-100 pa3 mb2 br2 bg-black-05">
       <h4 class="f5 normal mt0 mb3">Change email address</h4>
-      <form class="mw5 center" onsubmit="${handleChangeEmail}">
+      <form class="mw6 center" onsubmit="${handleChangeEmail}">
         <label class="b lh-copy">
           ${__('New email address')}
         </label>
@@ -49,7 +49,7 @@ function view (state, emit) {
           ${__('Password')}
         </label>
         <input class="w-100 pa2 mb3 input-reset ba b--black-50 bg-white" type="password" name="password">
-        <input class="w-100 f5 link dim bn ph3 pv2 mb3 dib br1 white bg-dark-green" type="submit" value="${__('Change Email address')}">
+        <input class="w-100 w-auto-ns f5 link dim bn ph3 pv2 mb3 dib br1 white bg-dark-green" type="submit" value="${__('Change Email address')}">
       </form>
     </div>
   `
@@ -67,9 +67,9 @@ function view (state, emit) {
   }
 
   var changePasswordForm = html`
-    <div class="w-100 pa3 mb2 ba b--black-10 br2 bg-white-40">
+    <div class="w-100 pa3 mb2 br2 bg-black-05">
       <h4 class="f5 normal mt0 mb3">Change password</h4>
-      <form class="mw5 center" onsubmit="${handleChangePassword}">
+      <form class="mw6 center" onsubmit="${handleChangePassword}">
         <label class="b lh-copy">
           ${__('Current password')}
         </label>
@@ -82,7 +82,7 @@ function view (state, emit) {
           ${__('Repeat new password')}
         </label>
         <input class="w-100 pa2 mb3 input-reset ba b--black-50 bg-white" type="password" name="repeat">
-        <input class="w-100 f5 link dim bn ph3 pv2 mb3 dib br1 white bg-dark-green" type="submit" value="${__('Change password')}">
+        <input class="w-100 w-auto-ns f5 link dim bn ph3 pv2 mb3 dib br1 white bg-dark-green" type="submit" value="${__('Change password')}">
       </form>
     </div>
   `
