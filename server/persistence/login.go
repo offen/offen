@@ -3,7 +3,6 @@ package persistence
 import (
 	"encoding/base64"
 	"fmt"
-	"strings"
 
 	"github.com/lestrrat-go/jwx/jwk"
 	"github.com/offen/offen/server/keys"
@@ -47,11 +46,7 @@ func (p *persistenceLayer) Login(email, password string) (LoginResult, error) {
 
 	var results []LoginAccountResult
 	for _, relationship := range relationships {
-		chunks := strings.Split(relationship.PasswordEncryptedKeyEncryptionKey, " ")
-		nonce, _ := base64.StdEncoding.DecodeString(chunks[0])
-		key, _ := base64.StdEncoding.DecodeString(chunks[1])
-
-		decryptedKey, decryptedKeyErr := keys.DecryptWith(pwDerivedKey, key, nonce)
+		decryptedKey, decryptedKeyErr := keys.DecryptWith(pwDerivedKey, relationship.PasswordEncryptedKeyEncryptionKey)
 		if decryptedKeyErr != nil {
 			return LoginResult{}, fmt.Errorf("persistence: failed decrypting key encryption key for account %s: %v", relationship.AccountID, decryptedKeyErr)
 		}
@@ -141,20 +136,17 @@ func (p *persistenceLayer) ChangePassword(userID, currentPassword, changedPasswo
 	}
 
 	for _, relationship := range accountUser.Relationships {
-		chunks := strings.Split(relationship.PasswordEncryptedKeyEncryptionKey, " ")
-		nonce, _ := base64.StdEncoding.DecodeString(chunks[0])
-		value, _ := base64.StdEncoding.DecodeString(chunks[1])
-		decryptedKey, decryptionErr := keys.DecryptWith(keyFromCurrentPassword, value, nonce)
+		decryptedKey, decryptionErr := keys.DecryptWith(keyFromCurrentPassword, relationship.PasswordEncryptedKeyEncryptionKey)
 		if decryptionErr != nil {
 			txn.Rollback()
 			return decryptionErr
 		}
-		reencryptedKey, nonce, reencryptionErr := keys.EncryptWith(keyFromChangedPassword, decryptedKey)
+		reencryptedKey, reencryptionErr := keys.EncryptWith(keyFromChangedPassword, decryptedKey)
 		if reencryptionErr != nil {
 			txn.Rollback()
 			return reencryptionErr
 		}
-		relationship.PasswordEncryptedKeyEncryptionKey = base64.StdEncoding.EncodeToString(nonce) + " " + base64.StdEncoding.EncodeToString(reencryptedKey)
+		relationship.PasswordEncryptedKeyEncryptionKey = reencryptedKey.Marshal()
 		if err := txn.UpdateAccountUserRelationship(&relationship); err != nil {
 			txn.Rollback()
 			return fmt.Errorf("persistence: error updating keys on relationship: %w", err)
@@ -203,24 +195,17 @@ func (p *persistenceLayer) ResetPassword(emailAddress, password string, oneTimeK
 		return fmt.Errorf("persistence: error creating transaction: %w", err)
 	}
 	for _, relationship := range relationships {
-		chunks := strings.Split(relationship.OneTimeEncryptedKeyEncryptionKey, " ")
-		nonce, _ := base64.StdEncoding.DecodeString(chunks[0])
-		cipher, _ := base64.StdEncoding.DecodeString(chunks[1])
-		keyEncryptionKey, decryptionErr := keys.DecryptWith(oneTimeKey, cipher, nonce)
+		keyEncryptionKey, decryptionErr := keys.DecryptWith(oneTimeKey, relationship.OneTimeEncryptedKeyEncryptionKey)
 		if decryptionErr != nil {
 			txn.Rollback()
 			return fmt.Errorf("persistence: error decrypting key encryption key: %v", decryptionErr)
 		}
-		passwordEncryptedKey, passwordNonce, encryptionErr := keys.EncryptWith(passwordDerivedKey, keyEncryptionKey)
+		passwordEncryptedKey, encryptionErr := keys.EncryptWith(passwordDerivedKey, keyEncryptionKey)
 		if encryptionErr != nil {
 			txn.Rollback()
 			return fmt.Errorf("persistence: error re-encrypting key encryption key: %v", encryptionErr)
 		}
-		relationship.PasswordEncryptedKeyEncryptionKey = fmt.Sprintf(
-			"%s %s",
-			base64.StdEncoding.EncodeToString(passwordNonce),
-			base64.StdEncoding.EncodeToString(passwordEncryptedKey),
-		)
+		relationship.PasswordEncryptedKeyEncryptionKey = passwordEncryptedKey.Marshal()
 		relationship.OneTimeEncryptedKeyEncryptionKey = ""
 		if err := txn.UpdateAccountUserRelationship(&relationship); err != nil {
 			txn.Rollback()
@@ -285,20 +270,17 @@ func (p *persistenceLayer) ChangeEmail(userID, emailAddress, password string) er
 		return fmt.Errorf("persistence: error updating hashed email on account user: %w", err)
 	}
 	for _, relationship := range accountUser.Relationships {
-		chunks := strings.Split(relationship.PasswordEncryptedKeyEncryptionKey, " ")
-		nonce, _ := base64.StdEncoding.DecodeString(chunks[0])
-		value, _ := base64.StdEncoding.DecodeString(chunks[1])
-		decryptedKey, decryptionErr := keys.DecryptWith(keyFromCurrentPassword, value, nonce)
+		decryptedKey, decryptionErr := keys.DecryptWith(keyFromCurrentPassword, relationship.PasswordEncryptedKeyEncryptionKey)
 		if decryptionErr != nil {
 			txn.Rollback()
 			return decryptionErr
 		}
-		reencryptedKey, nonce, reencryptionErr := keys.EncryptWith(emailDerivedKey, decryptedKey)
+		reencryptedKey, reencryptionErr := keys.EncryptWith(emailDerivedKey, decryptedKey)
 		if reencryptionErr != nil {
 			txn.Rollback()
 			return reencryptionErr
 		}
-		relationship.EmailEncryptedKeyEncryptionKey = base64.StdEncoding.EncodeToString(nonce) + " " + base64.StdEncoding.EncodeToString(reencryptedKey)
+		relationship.EmailEncryptedKeyEncryptionKey = reencryptedKey.Marshal()
 		if err := txn.UpdateAccountUserRelationship(&relationship); err != nil {
 			txn.Rollback()
 			return fmt.Errorf("persistence: error updating keys on relationship: %w", err)
@@ -342,24 +324,17 @@ func (p *persistenceLayer) GenerateOneTimeKey(emailAddress string) ([]byte, erro
 		return nil, fmt.Errorf("persistence: error creating transaction: %w", err)
 	}
 	for _, relationship := range accountUser.Relationships {
-		chunks := strings.Split(relationship.EmailEncryptedKeyEncryptionKey, " ")
-		nonce, _ := base64.StdEncoding.DecodeString(chunks[0])
-		cipher, _ := base64.StdEncoding.DecodeString(chunks[1])
-		decryptedKey, decryptErr := keys.DecryptWith(emailDerivedKey, cipher, nonce)
+		decryptedKey, decryptErr := keys.DecryptWith(emailDerivedKey, relationship.EmailEncryptedKeyEncryptionKey)
 		if decryptErr != nil {
 			txn.Rollback()
 			return nil, fmt.Errorf("persistence: error decrypting email encrypted key: %v", decryptErr)
 		}
-		oneTimeEncryptedKey, nonce, encryptErr := keys.EncryptWith(oneTimeKeyBytes, decryptedKey)
+		oneTimeEncryptedKey, encryptErr := keys.EncryptWith(oneTimeKeyBytes, decryptedKey)
 		if encryptErr != nil {
 			txn.Rollback()
 			return nil, fmt.Errorf("persistence: error encrypting key with one time key: %v", encryptErr)
 		}
-		relationship.OneTimeEncryptedKeyEncryptionKey = fmt.Sprintf(
-			"%s %s",
-			base64.StdEncoding.EncodeToString(nonce),
-			base64.StdEncoding.EncodeToString(oneTimeEncryptedKey),
-		)
+		relationship.OneTimeEncryptedKeyEncryptionKey = oneTimeEncryptedKey.Marshal()
 		if err := txn.UpdateAccountUserRelationship(&relationship); err != nil {
 			txn.Rollback()
 			return nil, fmt.Errorf("persistence: error updating relationship record: %v", err)

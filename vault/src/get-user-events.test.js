@@ -32,7 +32,7 @@ describe('src/get-user-events', function () {
             Unibabel.utf8ToBuffer(JSON.stringify({ type: 'TEST', timestamp: 'timestamp-fixture' }))
           )
             .then(function (_encryptedPayload) {
-              encryptedPayload = Unibabel.arrToBase64(nonce) + ' ' + Unibabel.arrToBase64(new Uint8Array(_encryptedPayload))
+              encryptedPayload = '{1,} ' + Unibabel.arrToBase64(new Uint8Array(_encryptedPayload)) + ' ' + Unibabel.arrToBase64(nonce)
             })
         })
     })

@@ -5,32 +5,52 @@ import (
 	"testing"
 )
 
+func intptr(i int) *int { return &i }
+
 func TestNewVersionedCipher(t *testing.T) {
 	tests := []struct {
 		name           string
 		cipher         []byte
+		nonce          []byte
 		algoVersion    int
-		keyVersion     int
+		keyVersion     *int
 		expectedResult string
 	}{
 		{
 			"no key version",
 			[]byte("abc"),
+			nil,
 			1,
-			-1,
+			nil,
 			"{1,} YWJj",
 		},
 		{
 			"with key version",
 			[]byte("abc"),
+			nil,
 			2,
-			3,
+			intptr(3),
 			"{2,3} YWJj",
+		},
+		{
+			"with nonce",
+			[]byte("abc"),
+			[]byte("xyz"),
+			2,
+			nil,
+			"{2,} YWJj eHl6",
 		},
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			result := NewVersionedCipher(test.cipher, test.algoVersion, test.keyVersion).Marshal()
+			v := NewVersionedCipher(test.cipher, test.algoVersion)
+			if test.keyVersion != nil {
+				v.AddKeyVersion(*test.keyVersion)
+			}
+			if test.nonce != nil {
+				v.AddNonce(test.nonce)
+			}
+			result := v.Marshal()
 			if test.expectedResult != result {
 				t.Errorf("Expected %v, got %v", test.expectedResult, result)
 			}
@@ -62,6 +82,7 @@ func TestParseVersionedCipher(t *testing.T) {
 			"{1,} YWJj",
 			&VersionedCipher{
 				[]byte("abc"),
+				nil,
 				1,
 				-1,
 			},
@@ -72,6 +93,18 @@ func TestParseVersionedCipher(t *testing.T) {
 			"{4,1} YWJj",
 			&VersionedCipher{
 				[]byte("abc"),
+				nil,
+				4,
+				1,
+			},
+			false,
+		},
+		{
+			"with nonce",
+			"{4,1} YWJj eHl6",
+			&VersionedCipher{
+				[]byte("abc"),
+				[]byte("xyz"),
 				4,
 				1,
 			},

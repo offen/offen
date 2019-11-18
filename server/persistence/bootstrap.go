@@ -88,7 +88,7 @@ func bootstrapAccounts(config *BootstrapConfig, emailSalt []byte) ([]Account, []
 		if encryptionKeyErr != nil {
 			return nil, nil, nil, encryptionKeyErr
 		}
-		encryptedPrivateKey, privateKeyNonce, encryptedPrivateKeyErr := keys.EncryptWith(encryptionKey, privateKey)
+		encryptedPrivateKey, encryptedPrivateKeyErr := keys.EncryptWith(encryptionKey, privateKey)
 		if encryptedPrivateKeyErr != nil {
 			return nil, nil, nil, encryptedPrivateKeyErr
 		}
@@ -99,16 +99,12 @@ func bootstrapAccounts(config *BootstrapConfig, emailSalt []byte) ([]Account, []
 		}
 
 		record := Account{
-			AccountID: account.ID,
-			Name:      account.Name,
-			PublicKey: string(publicKey),
-			EncryptedPrivateKey: fmt.Sprintf(
-				"%s %s",
-				base64.StdEncoding.EncodeToString(privateKeyNonce),
-				base64.StdEncoding.EncodeToString(encryptedPrivateKey),
-			),
-			UserSalt: salt,
-			Retired:  false,
+			AccountID:           account.ID,
+			Name:                account.Name,
+			PublicKey:           string(publicKey),
+			EncryptedPrivateKey: encryptedPrivateKey.Marshal(),
+			UserSalt:            salt,
+			Retired:             false,
 		}
 		accountCreations = append(accountCreations, accountCreation{
 			account:       record,
@@ -161,7 +157,7 @@ func bootstrapAccounts(config *BootstrapConfig, emailSalt []byte) ([]Account, []
 			if passwordDerivedKeyErr != nil {
 				return nil, nil, nil, passwordDerivedKeyErr
 			}
-			encryptedPasswordDerivedKey, passwordEncryptionNonce, encryptionErr := keys.EncryptWith(passwordDerivedKey, encryptionKey)
+			encryptedPasswordDerivedKey, encryptionErr := keys.EncryptWith(passwordDerivedKey, encryptionKey)
 			if encryptionErr != nil {
 				return nil, nil, nil, encryptionErr
 			}
@@ -170,7 +166,7 @@ func bootstrapAccounts(config *BootstrapConfig, emailSalt []byte) ([]Account, []
 			if emailDerivedKeyErr != nil {
 				return nil, nil, nil, emailDerivedKeyErr
 			}
-			encryptedEmailDerivedKey, emailEncryptionNonce, encryptionErr := keys.EncryptWith(emailDerivedKey, encryptionKey)
+			encryptedEmailDerivedKey, encryptionErr := keys.EncryptWith(emailDerivedKey, encryptionKey)
 			if encryptionErr != nil {
 				return nil, nil, nil, encryptionErr
 			}
@@ -180,19 +176,11 @@ func bootstrapAccounts(config *BootstrapConfig, emailSalt []byte) ([]Account, []
 				return nil, nil, nil, idErr
 			}
 			r := AccountUserRelationship{
-				RelationshipID: relationshipID.String(),
-				UserID:         userID.String(),
-				AccountID:      accountID,
-				PasswordEncryptedKeyEncryptionKey: fmt.Sprintf(
-					"%s %s",
-					base64.StdEncoding.EncodeToString(passwordEncryptionNonce),
-					base64.StdEncoding.EncodeToString(encryptedPasswordDerivedKey),
-				),
-				EmailEncryptedKeyEncryptionKey: fmt.Sprintf(
-					"%s %s",
-					base64.StdEncoding.EncodeToString(emailEncryptionNonce),
-					base64.StdEncoding.EncodeToString(encryptedEmailDerivedKey),
-				),
+				RelationshipID:                    relationshipID.String(),
+				UserID:                            userID.String(),
+				AccountID:                         accountID,
+				PasswordEncryptedKeyEncryptionKey: encryptedPasswordDerivedKey.Marshal(),
+				EmailEncryptedKeyEncryptionKey:    encryptedEmailDerivedKey.Marshal(),
 			}
 			relationshipCreations = append(relationshipCreations, r)
 		}

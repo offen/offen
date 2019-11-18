@@ -6,22 +6,34 @@ import (
 	"fmt"
 	"regexp"
 	"strconv"
+	"strings"
 )
 
 var parseCipherRE = regexp.MustCompile(`^{(\d+?),(\d*?)}\s(.+)`)
 
 type VersionedCipher struct {
 	cipher      []byte
+	nonce       []byte
 	algoVersion int
 	keyVersion  int
 }
 
-func NewVersionedCipher(cipher []byte, algoVersion, keyVersion int) *VersionedCipher {
+func NewVersionedCipher(cipher []byte, algoVersion int) *VersionedCipher {
 	return &VersionedCipher{
 		cipher:      cipher,
 		algoVersion: algoVersion,
-		keyVersion:  keyVersion,
+		keyVersion:  -1,
 	}
+}
+
+func (v *VersionedCipher) AddNonce(n []byte) *VersionedCipher {
+	v.nonce = n
+	return v
+}
+
+func (v *VersionedCipher) AddKeyVersion(k int) *VersionedCipher {
+	v.keyVersion = k
+	return v
 }
 
 func (v *VersionedCipher) Marshal() string {
@@ -29,12 +41,16 @@ func (v *VersionedCipher) Marshal() string {
 	if v.keyVersion >= 0 {
 		keyRepr = fmt.Sprintf("%d", v.keyVersion)
 	}
-	return fmt.Sprintf(
+	base := fmt.Sprintf(
 		"{%d,%s} %s",
 		v.algoVersion,
 		keyRepr,
 		base64.StdEncoding.EncodeToString(v.cipher),
 	)
+	if v.nonce != nil {
+		base = fmt.Sprintf("%s %s", base, base64.StdEncoding.EncodeToString(v.nonce))
+	}
+	return base
 }
 
 func unmarshalVersionedCipher(s string) (*VersionedCipher, error) {
@@ -57,11 +73,24 @@ func unmarshalVersionedCipher(s string) (*VersionedCipher, error) {
 		}
 	}
 
-	b, decodeErr := base64.StdEncoding.DecodeString(parseResult[3])
+	chunks := strings.Split(parseResult[3], " ")
+
+	b, decodeErr := base64.StdEncoding.DecodeString(chunks[0])
 	if decodeErr != nil {
 		return nil, fmt.Errorf("keys: error decoding ciphertext: %w", decodeErr)
 	}
-	return &VersionedCipher{
+
+	v := &VersionedCipher{
 		cipher: b, algoVersion: algoVersion, keyVersion: keyVersion,
-	}, nil
+	}
+
+	if len(chunks) > 1 {
+		n, decodeErr := base64.StdEncoding.DecodeString(chunks[1])
+		if decodeErr != nil {
+			return nil, fmt.Errorf("keys: error decoding ciphertext: %w", decodeErr)
+		}
+		v.AddNonce(n)
+	}
+
+	return v, nil
 }
