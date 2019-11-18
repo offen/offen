@@ -43,12 +43,12 @@ func TestNewVersionedCipher(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			v := NewVersionedCipher(test.cipher, test.algoVersion)
+			v := newVersionedCipher(test.cipher, test.algoVersion)
 			if test.keyVersion != nil {
-				v.AddKeyVersion(*test.keyVersion)
+				v.addKeyVersion(*test.keyVersion)
 			}
 			if test.nonce != nil {
-				v.AddNonce(test.nonce)
+				v.addNonce(test.nonce)
 			}
 			result := v.Marshal()
 			if test.expectedResult != result {

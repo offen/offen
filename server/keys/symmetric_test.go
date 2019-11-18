@@ -19,7 +19,7 @@ func TestSymmetricEncryption(t *testing.T) {
 		{
 			"derived",
 			func() ([]byte, error) {
-				return DeriveKey("mypassword", []byte("abc123"))
+				return DeriveKey("mypassword", "XqiWf9CdPpmT3bu0aHkzjQ==")
 			},
 		},
 	}
@@ -27,7 +27,7 @@ func TestSymmetricEncryption(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			key, err := test.generateKey()
 			if err != nil {
-				t.Fatalf("Unexpected error genrating key")
+				t.Fatalf("Unexpected error genrating key: %v", err)
 			}
 			value := []byte("much encryption, so wow")
 			versionedCipher, err := EncryptWith(key, value)

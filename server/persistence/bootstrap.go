@@ -1,7 +1,6 @@
 package persistence
 
 import (
-	"encoding/base64"
 	"fmt"
 
 	uuid "github.com/gofrs/uuid"
@@ -132,12 +131,12 @@ func bootstrapAccounts(config *BootstrapConfig, emailSalt []byte) ([]Account, []
 		if saltErr != nil {
 			return nil, nil, nil, saltErr
 		}
-		saltBytes, _ := base64.StdEncoding.DecodeString(salt)
+
 		user := AccountUser{
 			UserID:         userID.String(),
 			Salt:           salt,
 			HashedPassword: hashedPw.Marshal(),
-			HashedEmail:    base64.StdEncoding.EncodeToString(hashedEmail),
+			HashedEmail:    hashedEmail,
 		}
 		accountUserCreations = append(accountUserCreations, user)
 
@@ -153,7 +152,7 @@ func bootstrapAccounts(config *BootstrapConfig, emailSalt []byte) ([]Account, []
 				return nil, nil, nil, fmt.Errorf("account with id %s not found", accountID)
 			}
 
-			passwordDerivedKey, passwordDerivedKeyErr := keys.DeriveKey(accountUser.Password, saltBytes)
+			passwordDerivedKey, passwordDerivedKeyErr := keys.DeriveKey(accountUser.Password, salt)
 			if passwordDerivedKeyErr != nil {
 				return nil, nil, nil, passwordDerivedKeyErr
 			}
@@ -162,7 +161,7 @@ func bootstrapAccounts(config *BootstrapConfig, emailSalt []byte) ([]Account, []
 				return nil, nil, nil, encryptionErr
 			}
 
-			emailDerivedKey, emailDerivedKeyErr := keys.DeriveKey(accountUser.Email, saltBytes)
+			emailDerivedKey, emailDerivedKeyErr := keys.DeriveKey(accountUser.Email, salt)
 			if emailDerivedKeyErr != nil {
 				return nil, nil, nil, emailDerivedKeyErr
 			}

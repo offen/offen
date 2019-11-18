@@ -11,6 +11,7 @@ import (
 
 var parseCipherRE = regexp.MustCompile(`^{(\d+?),(\d*?)}\s(.+)`)
 
+// VersionedCipher adds meta information to a ciphertext string.
 type VersionedCipher struct {
 	cipher      []byte
 	nonce       []byte
@@ -18,7 +19,7 @@ type VersionedCipher struct {
 	keyVersion  int
 }
 
-func NewVersionedCipher(cipher []byte, algoVersion int) *VersionedCipher {
+func newVersionedCipher(cipher []byte, algoVersion int) *VersionedCipher {
 	return &VersionedCipher{
 		cipher:      cipher,
 		algoVersion: algoVersion,
@@ -26,16 +27,18 @@ func NewVersionedCipher(cipher []byte, algoVersion int) *VersionedCipher {
 	}
 }
 
-func (v *VersionedCipher) AddNonce(n []byte) *VersionedCipher {
+func (v *VersionedCipher) addNonce(n []byte) *VersionedCipher {
 	v.nonce = n
 	return v
 }
 
-func (v *VersionedCipher) AddKeyVersion(k int) *VersionedCipher {
+func (v *VersionedCipher) addKeyVersion(k int) *VersionedCipher {
 	v.keyVersion = k
 	return v
 }
 
+// Marshal returns the string representation of v. It can be deserialized again
+// using unmarshalVersionedCipher.
 func (v *VersionedCipher) Marshal() string {
 	keyRepr := ""
 	if v.keyVersion >= 0 {
@@ -89,7 +92,7 @@ func unmarshalVersionedCipher(s string) (*VersionedCipher, error) {
 		if decodeErr != nil {
 			return nil, fmt.Errorf("keys: error decoding ciphertext: %w", decodeErr)
 		}
-		v.AddNonce(n)
+		v.addNonce(n)
 	}
 
 	return v, nil

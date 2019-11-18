@@ -4,6 +4,7 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/sha256"
+	"encoding/base64"
 	"fmt"
 
 	"golang.org/x/crypto/bcrypt"
@@ -46,7 +47,7 @@ func EncryptWith(key, value []byte) (*VersionedCipher, error) {
 		return nil, fmt.Errorf("keys: error generating nonce for encryption: %v", nonceErr)
 	}
 	ciphertext := aesgcm.Seal(nil, nonce, value, nil)
-	return NewVersionedCipher(ciphertext, aesGCMAlgo).AddNonce(nonce), nil
+	return newVersionedCipher(ciphertext, aesGCMAlgo).addNonce(nonce), nil
 }
 
 // DecryptWith decrypts the given value using the given key and nonce value.
@@ -68,8 +69,13 @@ func DecryptWith(key []byte, s string) ([]byte, error) {
 
 // DeriveKey wraps package scrypt in order to derive a symmetric key from the
 // given value (most likely a password) and the given salt.
-func DeriveKey(value string, salt []byte) ([]byte, error) {
-	dk, err := scrypt.Key([]byte(value), salt, 1<<15, 8, 1, DefaultEncryptionKeySize)
+func DeriveKey(value, salt string) ([]byte, error) {
+	saltBytes, saltErr := base64.StdEncoding.DecodeString(salt)
+	if saltErr != nil {
+		return nil, fmt.Errorf("keys: error decoding salt into bytes: %w", saltErr)
+	}
+
+	dk, err := scrypt.Key([]byte(value), saltBytes, 1<<15, 8, 1, DefaultEncryptionKeySize)
 	if err != nil {
 		return nil, fmt.Errorf("keys: error creating derived key: %v", err)
 	}
@@ -86,7 +92,7 @@ func HashPassword(pw string) (*VersionedCipher, error) {
 	if err != nil {
 		return nil, fmt.Errorf("keys: error hashing password: %v", err)
 	}
-	return NewVersionedCipher(b, passwordAlgoBcrypt), nil
+	return newVersionedCipher(b, passwordAlgoBcrypt), nil
 }
 
 // ComparePassword compares a password with a stored hash
@@ -105,7 +111,7 @@ func ComparePassword(password, cipher string) error {
 
 // HashEmail hashed the given string value using the given salt. It is not
 // intended to be used with passwords as it is supposed to be a cheap operation.
-func HashEmail(email string, salt []byte) ([]byte, error) {
+func HashEmail(email string, salt []byte) (string, error) {
 	result := sha256.Sum256(append([]byte(email), salt...))
-	return result[:], nil
+	return base64.StdEncoding.EncodeToString(result[:]), nil
 }
