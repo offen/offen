@@ -121,7 +121,7 @@ describe('src/queries.js', function () {
                     Unibabel.utf8ToBuffer(JSON.stringify(jwk))
                   )
                   .then(function (encrypted) {
-                    return Unibabel.arrToBase64(new Uint8Array(encrypted))
+                    return '{1,} ' + Unibabel.arrToBase64(new Uint8Array(encrypted))
                   })
               })
           })
@@ -260,7 +260,7 @@ describe('src/queries.js', function () {
                     Unibabel.utf8ToBuffer(JSON.stringify(event.payload))
                   )
                   .then(function (encryptedEventPayload) {
-                    event.payload = Unibabel.arrToBase64(new Uint8Array(encryptedEventPayload))
+                    event.payload = '{1,} ' + Unibabel.arrToBase64(new Uint8Array(encryptedEventPayload))
                     return event
                   })
               }
@@ -276,7 +276,7 @@ describe('src/queries.js', function () {
                   Unibabel.utf8ToBuffer(JSON.stringify(event.payload))
                 )
                 .then(function (encryptedEventPayload) {
-                  event.payload = Unibabel.arrToBase64(nonce) + ' ' + Unibabel.arrToBase64(new Uint8Array(encryptedEventPayload))
+                  event.payload = '{1,} ' + Unibabel.arrToBase64(new Uint8Array(encryptedEventPayload)) + ' ' + Unibabel.arrToBase64(nonce)
                   return event
                 })
             })
