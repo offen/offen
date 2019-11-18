@@ -1,14 +1,15 @@
 package keys
 
 import (
+	"bytes"
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/sha256"
 	"encoding/base64"
+	"errors"
 	"fmt"
 
-	"golang.org/x/crypto/bcrypt"
-	"golang.org/x/crypto/scrypt"
+	"golang.org/x/crypto/argon2"
 )
 
 // GenerateEncryptionKey generates a slice of bytes of the given size that is
@@ -67,32 +68,31 @@ func DecryptWith(key []byte, s string) ([]byte, error) {
 	return aesgcm.Open(nil, v.nonce, v.cipher, nil)
 }
 
-// DeriveKey wraps package scrypt in order to derive a symmetric key from the
+// DeriveKey wraps package argon2 in order to derive a symmetric key from the
 // given value (most likely a password) and the given salt.
-func DeriveKey(value, salt string) ([]byte, error) {
-	saltBytes, saltErr := base64.StdEncoding.DecodeString(salt)
+func DeriveKey(value, encodedSalt string) ([]byte, error) {
+	salt, saltErr := base64.StdEncoding.DecodeString(encodedSalt)
 	if saltErr != nil {
 		return nil, fmt.Errorf("keys: error decoding salt into bytes: %w", saltErr)
 	}
 
-	dk, err := scrypt.Key([]byte(value), saltBytes, 1<<15, 8, 1, DefaultEncryptionKeySize)
-	if err != nil {
-		return nil, fmt.Errorf("keys: error creating derived key: %v", err)
-	}
-	return dk, nil
+	key := argon2.Key([]byte(value), salt, 1, 64*1024, 4, DefaultEncryptionKeySize)
+	return key, nil
 }
 
 const (
-	passwordAlgoBcrypt = 1
+	passwordAlgoArgon2 = 1
 )
 
-// HashPassword hashed the given password using bcrypt at default cost
+// HashPassword hashed the given password using argon2
 func HashPassword(pw string) (*VersionedCipher, error) {
-	b, err := bcrypt.GenerateFromPassword([]byte(pw), bcrypt.DefaultCost)
-	if err != nil {
-		return nil, fmt.Errorf("keys: error hashing password: %v", err)
+	salt, saltErr := randomBytes(DefaultSecretLength)
+	if saltErr != nil {
+		return nil, fmt.Errorf("keys: error generating random salt for password hash: %w", saltErr)
 	}
-	return newVersionedCipher(b, passwordAlgoBcrypt), nil
+
+	hash := argon2.Key([]byte(pw), salt, 1, 64*1024, 4, DefaultPasswordHashSize)
+	return newVersionedCipher(hash, passwordAlgoArgon2).addNonce(salt), nil
 }
 
 // ComparePassword compares a password with a stored hash
@@ -102,8 +102,12 @@ func ComparePassword(password, cipher string) error {
 		return fmt.Errorf("keys: error parsing versioned cipher: %w", err)
 	}
 	switch v.algoVersion {
-	case passwordAlgoBcrypt:
-		return bcrypt.CompareHashAndPassword(v.cipher, []byte(password))
+	case passwordAlgoArgon2:
+		hash := argon2.Key([]byte(password), v.nonce, 1, 64*1024, 4, DefaultPasswordHashSize)
+		if bytes.Compare(hash, v.cipher) != 0 {
+			return errors.New("keys: could not match passwords")
+		}
+		return nil
 	default:
 		return fmt.Errorf("keys: received unknown algo version %d for comparing passwords", v.algoVersion)
 	}
