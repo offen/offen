@@ -261,9 +261,9 @@ func (p *persistenceLayer) ChangeEmail(userID, emailAddress, password string) er
 			txn.Rollback()
 			return fmt.Errorf("persistence: error updating keys on relationship: %w", err)
 		}
-		if err := txn.Commit(); err != nil {
-			return fmt.Errorf("persistence: error comitting transaction: %w", err)
-		}
+	}
+	if err := txn.Commit(); err != nil {
+		return fmt.Errorf("persistence: error comitting transaction: %w", err)
 	}
 	return nil
 }
@@ -308,9 +308,9 @@ func (p *persistenceLayer) GenerateOneTimeKey(emailAddress string) ([]byte, erro
 			txn.Rollback()
 			return nil, fmt.Errorf("persistence: error updating relationship record: %v", err)
 		}
-		if err := txn.Commit(); err != nil {
-			return nil, fmt.Errorf("persistence: error committing transaction: %w", err)
-		}
+	}
+	if err := txn.Commit(); err != nil {
+		return nil, fmt.Errorf("persistence: error committing transaction: %w", err)
 	}
 	return oneTimeKeyBytes, nil
 }
