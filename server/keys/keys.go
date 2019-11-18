@@ -5,4 +5,5 @@ const (
 	RSAKeyLength             = 4096
 	DefaultSecretLength      = 16
 	DefaultEncryptionKeySize = 32
+	DefaultPasswordHashSize  = 32
 )
