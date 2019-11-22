@@ -39,30 +39,36 @@ services:
       context: '.'
       dockerfile: Dockerfile.node
     working_dir: /offen/vault
+    environment:
+      PORT: 9977
     volumes:
       - .:/offen
       - vaultdeps:/offen/vault/node_modules
-    command: npm start -- --port 9977
+    command: npm start
 
   script:
     build:
       context: '.'
       dockerfile: Dockerfile.node
     working_dir: /offen/script
+    environment:
+      PORT: 9966
     volumes:
       - .:/offen
       - scriptdeps:/offen/script/node_modules
-    command: npm start -- --port 9966
+    command: npm start
 
   auditorium:
     build:
       context: '.'
       dockerfile: Dockerfile.node
     working_dir: /offen/auditorium
+    environment:
+      PORT: 9955
     volumes:
       - .:/offen
       - auditoriumdeps:/offen/auditorium/node_modules
-    command: npm start -- --port 9955
+    command: npm start
 
 volumes:
   serverdata:

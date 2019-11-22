@@ -1,18 +1,29 @@
-var forgeCrypto = require('./forge-crypto')
 var webCrypto = require('./web-crypto')
+var splitRequire = require('split-require')
 
 module.exports = bindCrypto
 
-var runtimeCrypto = window.crypto && window.crypto.subtle
-  ? webCrypto
-  : forgeCrypto
+var cryptoProvider = window.crypto && window.crypto.subtle
+  ? Promise.resolve(webCrypto)
+  : getForgeCrypto()
 
 function bindCrypto (consumerFn) {
   return function () {
     var args = [].slice.call(arguments)
-    return Promise.resolve(runtimeCrypto)
+    return cryptoProvider
       .then(function (cryptoImplementation) {
         return consumerFn.apply(cryptoImplementation, args)
       })
   }
+}
+
+function getForgeCrypto () {
+  return new Promise(function (resolve, reject) {
+    splitRequire('./forge-crypto', function (err, forgeCrypto) {
+      if (err) {
+        return reject(err)
+      }
+      resolve(forgeCrypto)
+    })
+  })
 }

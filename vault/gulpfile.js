@@ -1,3 +1,5 @@
+var fs = require('fs')
+var crypto = require('crypto')
 var gulp = require('gulp')
 var clean = require('gulp-clean')
 var browserify = require('browserify')
@@ -7,6 +9,7 @@ var buffer = require('vinyl-buffer')
 var revReplace = require('gulp-rev-replace')
 var sriHash = require('gulp-sri-hash')
 var gap = require('gulp-append-prepend')
+var to = require('flush-write-stream')
 
 var extractStrings = require('offen/localize/task.js')
 
@@ -63,6 +66,29 @@ function makeScriptTask (dest, locale) {
 
     return b
       .exclude('dexie')
+      .plugin('split-require', {
+        dir: dest,
+        sri: 'sha384',
+        filename: function (entry) {
+          return 'chunk' + entry.index + '.js'
+        },
+        output: function (bundleName) {
+          var stream = fs.createWriteStream(dest + bundleName)
+          var hash = crypto.createHash('sha1')
+          return to(onwrite, onend)
+
+          function onwrite (chunk, enc, cb) {
+            hash.update(chunk)
+            stream.write(chunk, cb)
+          }
+          function onend (cb) {
+            stream.end()
+            var name = bundleName.replace(/\.js$/, '') + '-' + hash.digest('hex').slice(0, 10) + '.js'
+            this.emit('name', name)
+            fs.rename(dest + bundleName, dest + name, cb)
+          }
+        }
+      })
       .plugin('tinyify')
       .bundle()
       .pipe(source('index.js'))
