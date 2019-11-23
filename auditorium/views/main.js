@@ -69,7 +69,6 @@ function view (state, emit) {
     `
 
   if (isOperator) {
-
     var availableAccounts = state.authenticatedUser.accounts
       .slice()
       .sort(function (a, b) {
@@ -92,7 +91,6 @@ function view (state, emit) {
           </li>
         `
       })
-
   }
 
   var chooseAccounts = html`
