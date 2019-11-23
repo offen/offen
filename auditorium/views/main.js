@@ -40,18 +40,6 @@ function view (state, emit) {
   }
   emit(state.events.DOMTITLECHANGE, pageTitle)
 
-  var manage = !isOperator && state.model.allowsCookies
-    ? html`
-      <h4 class ="f5 normal mt0 mb3">${__('Manage data')}</h4>
-      <button class="w-100-ns f5 link dim bn ph3 pv2 mr1 mb2 dib br1 white bg-dark-green" data-role="purge" onclick="${handlePurge}">
-        ${raw(__('Delete my <strong>user</strong> data'))}
-      </button>
-      <button class="w-100-ns f5 link bn ph3 pv2 mb3 dib br1 white bg-black-05" data-role="optout" onclick="${handleOptout}" disabled>
-        ${state.model.hasOptedOut ? __('Opt me in') : __('Opt me out')}
-      </button>
-    `
-    : null
-
   var ranges = [
     { display: __('24 hours'), query: { range: '24', resolution: 'hours' } },
     { display: __('7 days'), query: null },
@@ -74,30 +62,63 @@ function view (state, emit) {
       </li>
     `
   })
+
   var rangeSelector = html`
-      <h4 class ="f5 normal mt0 mb3">${__('Show data from the last')}</h4>
+      <h4 class ="f5 normal mt0 mb3">Show data from the last</h4>
       <ul class="flex flex-wrap list pl0 mt0 mb3">${ranges}</ul>
     `
 
-  var goAccounts = html`
-      <h4 class ="f5 normal mt0 mb3">Manage accounts</h4>
-      <a href="/auditorium/account/" class="w-100-ns f5 tc link dim bn ph3 pv2 mr1 mb2 dib br1 white bg-dark-green">
-        Overview
-      </a>
+  if (isOperator) {
+    var availableAccounts = state.authenticatedUser.accounts
+      .slice()
+      .sort(function (a, b) {
+        return a.accountName.localeCompare(b.accountName)
+      })
+      .map(function (account) {
+        return html`
+          <li>
+            <a href="./account/${account.accountId}/" class="f5 link dim bn ph3 pv2 mr2 mb1 dib br1 white bg-dark-green">${account.accountName}</a>
+          </li>
+        `
+      })
+  }
+
+  var chooseAccounts = html`
+      <h4 class ="f5 normal mt0 mb3">Choose account</h4>
+      <ul class="flex flex-wrap list pl0 mt0 mb3">
+        ${availableAccounts}
+      </ul>
     `
 
-    var width = isOperator ? 'w-20-ns' : 'w-30-ns'
-    var firstCardContent = isOperator ? goAccounts : manage
-    var rowRangeManage = html`
-        <div class="flex flex-column flex-row-ns mt4">
-          <div class="w-100 ${width} pa3 mb2 mr2-ns br2 bg-black-05">
-            ${firstCardContent}
-          </div>
-          <div class="w-100 w-80-ns pa3 mb2 ba b--black-10 br2 bg-white">
-            ${rangeSelector}
-          </div>
+  var manageOperator = html`
+    <div class="w-100 w-30-ns pa3 mb2 mr2-ns ba b--black-10 br2 bg-white">
+      ${chooseAccounts}
+    </div>
+    `
+
+  var manageUser = !isOperator && state.model.allowsCookies
+    ? html`
+      <div class="w-100 w-30-ns pa3 mb2 mr2-ns br2 bg-black-05">
+        <h4 class ="f5 normal mt0 mb3">${__('Manage data')}</h4>
+        <button class="w-100-ns f5 link dim bn ph3 pv2 mr1 mb2 dib br1 white bg-mid-gray" data-role="purge" onclick="${handlePurge}">
+          ${raw(__('Delete my <strong>user</strong> data'))}
+        </button>
+        <button class="w-100-ns f5 link bn ph3 pv2 mb3 dib br1 white bg-black-05" data-role="optout" onclick="${handleOptout}" disabled>
+          ${state.model.hasOptedOut ? __('Opt me in') : __('Opt me out')}
+        </button>
+      </div>
+    `
+    : null
+
+  var firstCardContent = isOperator ? manageOperator : manageUser
+  var rowRangeManage = html`
+      <div class="flex flex-column flex-row-ns mt4">
+        ${firstCardContent}
+        <div class="w-100 w-70-ns pa3 mb2 ba b--black-10 br2 bg-white">
+          ${rangeSelector}
         </div>
-      `
+      </div>
+    `
 
   var chartData = {
     data: state.model.pageviews,
@@ -209,7 +230,22 @@ function view (state, emit) {
       </div>
     `
 
-  var orderedSections = [accountHeader, rowRangeManage, rowUsersSessionsChart, pagesReferrers]
+    var goSettings = isOperator
+      ? html`
+        <div class="flex flex-column flex-row-ns mt4">
+          <div class="w-100 w-20-ns pa3 mb2 mr2-ns br2 bg-black-05">
+            <h4 class ="f5 normal mt0 mb3">Admin console</h4>
+            <a href="/auditorium/account/" class="w-100-ns f5 tc link dim bn ph3 pv2 mr1 mb2 dib br1 white bg-mid-gray">
+              Settings
+            </a>
+          </div>
+          <div class="dn db-ns w-100 w-80-ns pa3 mb2 br2 bg-black-05">
+          </div>
+        </div>
+      `
+      : null
+
+  var orderedSections = [accountHeader, rowRangeManage, rowUsersSessionsChart, pagesReferrers, goSettings]
   return html`
       <div>
         ${orderedSections}

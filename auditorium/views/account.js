@@ -17,7 +17,6 @@ function view (state, emit) {
     })
   var accountHeader = html`
     <p class="dib pa2 br2 bg-black-05 mt0 mb2">You are logged in as <strong>operator.</strong></p>
-
   `
 
   var loggedInMessage = html`
@@ -49,7 +48,7 @@ function view (state, emit) {
           ${__('Password')}
         </label>
         <input class="w-100 pa2 mb3 input-reset ba b--black-10 bg-white" type="password" name="password">
-        <input class="w-100 w-auto-ns f5 link dim bn ph3 pv2 mb3 dib br1 white bg-dark-green" type="submit" value="${__('Change Email address')}">
+        <input class="w-100 w-auto-ns f5 link dim bn ph3 pv2 mb3 dib br1 white bg-mid-gray" type="submit" value="${__('Change Email address')}">
       </form>
     </div>
   `
@@ -82,7 +81,7 @@ function view (state, emit) {
           ${__('Repeat new password')}
         </label>
         <input class="w-100 pa2 mb3 input-reset ba b--black-10 bg-white" type="password" name="repeat">
-        <input class="w-100 w-auto-ns f5 link dim bn ph3 pv2 mb3 dib br1 white bg-dark-green" type="submit" value="${__('Change password')}">
+        <input class="w-100 w-auto-ns f5 link dim bn ph3 pv2 mb3 dib br1 white bg-mid-gray" type="submit" value="${__('Change password')}">
       </form>
     </div>
   `
