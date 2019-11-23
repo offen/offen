@@ -18,11 +18,11 @@ function view (state, emit) {
         <label class="b lh-copy">
           ${__('Email address')}
         </label>
-        <input class="w-100 pa2 mb3 input-reset ba b--black-50 bg-white" required type="email" name="username">
+        <input class="w-100 pa2 mb3 input-reset ba b--black-10 bg-white" required type="email" name="username">
         <label class="b lh-copy">
           ${__('Password')}
         </label>
-        <input class="w-100 pa2 mb3 input-reset ba b--black-50 bg-white" required type="password" name="password">
+        <input class="w-100 pa2 mb3 input-reset ba b--black-10 bg-white" required type="password" name="password">
         <input class="w-100 w4-ns f5 link dim bn ph3 pv2 mb3 dib br1 white bg-dark-green" type="submit" value="${__('Log in')}">
         <div class="mb3">
           <a class="link dim dark-green" href="./reset-password/">${__('Forgot password?')}</a>

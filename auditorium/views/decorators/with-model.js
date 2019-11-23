@@ -8,7 +8,7 @@ function withModel () {
       if (!state.model) {
         emit('offen:query', Object.assign({}, state.params, state.query), state.authenticatedUser)
         var loading = html`
-          <p class="loading dib pa2 black br2 bg-black-05 mt0 mb2">${__('Fetching the latest data...')}</p>
+          <p class="loading dib pa2 br2 bg-black-05 mt0 mb2">${__('Fetching the latest data...')}</p>
 
         `
         return loading

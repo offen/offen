@@ -18,7 +18,7 @@ function view (state, emit) {
         <label class="b lh-copy">
           ${__('Email address')}
         </label>
-        <input class="w-100 pa2 mb3 input-reset ba b--black-50 bg-white" required type="email" name="email-address">
+        <input class="w-100 pa2 mb3 input-reset ba b--black-10 bg-white" required type="email" name="email-address">
         <input class="w-100 w-auto-ns f5 link dim bn ph3 pv2 mb3 dib br1 white bg-dark-green" type="submit" value="${__('Send Email')}">
     </form>
   `

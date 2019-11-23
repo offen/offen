@@ -16,7 +16,7 @@ function view (state, emit) {
       `
     })
   var accountHeader = html`
-    <p class="dib pa2 black br2 bg-black-05 mt0 mb2">You are logged in as <strong>operator.</strong></p>
+    <p class="dib pa2 br2 bg-black-05 mt0 mb2">You are logged in as <strong>operator.</strong></p>
 
   `
 
@@ -44,11 +44,11 @@ function view (state, emit) {
         <label class="b lh-copy">
           ${__('New email address')}
         </label>
-        <input class="w-100 pa2 mb3 input-reset ba b--black-50 bg-white" type="text" name="email-address">
+        <input class="w-100 pa2 mb3 input-reset ba b--black-10 bg-white" type="text" name="email-address">
         <label class="b lh-copy">
           ${__('Password')}
         </label>
-        <input class="w-100 pa2 mb3 input-reset ba b--black-50 bg-white" type="password" name="password">
+        <input class="w-100 pa2 mb3 input-reset ba b--black-10 bg-white" type="password" name="password">
         <input class="w-100 w-auto-ns f5 link dim bn ph3 pv2 mb3 dib br1 white bg-dark-green" type="submit" value="${__('Change Email address')}">
       </form>
     </div>
@@ -73,15 +73,15 @@ function view (state, emit) {
         <label class="b lh-copy">
           ${__('Current password')}
         </label>
-        <input class="w-100 pa2 mb3 input-reset ba b--black-50 bg-white" type="password" name="current">
+        <input class="w-100 pa2 mb3 input-reset ba b--black-10 bg-white" type="password" name="current">
         <label class="b lh-copy">
           ${__('New password')}
         </label>
-        <input class="w-100 pa2 mb3 input-reset ba b--black-50 bg-white" type="password" name="changed">
+        <input class="w-100 pa2 mb3 input-reset ba b--black-10 bg-white" type="password" name="changed">
         <label class="b lh-copy">
           ${__('Repeat new password')}
         </label>
-        <input class="w-100 pa2 mb3 input-reset ba b--black-50 bg-white" type="password" name="repeat">
+        <input class="w-100 pa2 mb3 input-reset ba b--black-10 bg-white" type="password" name="repeat">
         <input class="w-100 w-auto-ns f5 link dim bn ph3 pv2 mb3 dib br1 white bg-dark-green" type="submit" value="${__('Change password')}">
       </form>
     </div>

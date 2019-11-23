@@ -27,12 +27,12 @@ function view (state, emit) {
   var pageTitle
   if (isOperator) {
     accountHeader = html`
-      <p class="dib pa2 black br2 bg-black-05 mt0 mb2">${raw(__('You are viewing data as <strong>operator</strong> with account <strong>%s</strong>.', state.model.account.name))}</p>
+      <p class="dib pa2 br2 bg-black-05 mt0 mb2">${raw(__('You are viewing data as <strong>operator</strong> with account <strong>%s</strong>.', state.model.account.name))}</p>
     `
     pageTitle = state.model.account.name + ' | ' + state.title
   } else {
     accountHeader = html`
-      <p class="dib pa2 black br2 bg-black-05 mt0 mb2">${raw(__('You are viewing your <strong>user</strong> data.'))}</p>
+      <p class="dib pa2 br2 bg-black-05 mt0 mb2">${raw(__('You are viewing your <strong>user</strong> data.'))}</p>
       ${state.model.hasOptedOut ? html`<p class="dib pa2 black br2 bg-black-05 mt0 mb2">${__('However, this view is empty because you are opted out. Clear your cookies to opt back in.')}</p>` : null}
       ${state.model.allowsCookies ? null : html`<p class="dib pa2 black br2 bg-black-05 mt0 mb2"><strong>${__('However, your browser does not allow 3rd party cookies. We respect this setting and collect only very basic data in this case, yet it also means we cannot display any data to you here.')}</p>`}
     `
@@ -106,7 +106,7 @@ function view (state, emit) {
   }
   var chart = html`
     <div class="w-100 w-75-m w-80-ns pa3 mb2 mr2-ns ba b--black-10 br2 bg-white">
-      <h4 class="f5 normal mt0 mb3">${__('Pageviews and %s', isOperator ? __('Visitors') : __('Accounts'))}</h4>
+      <h4 class="f5 normal mt0 mb3">${__('Page views and %s', isOperator ? __('visitors') : __('accounts'))}</h4>
       <div class="mb4">
         ${state.cache(BarChart, 'bar-chart').render(chartData)}
       </div>
