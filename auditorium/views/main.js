@@ -50,15 +50,15 @@ function view (state, emit) {
   ].map(function (range) {
     var url = (state.href || '') + '/'
     var current = _.pick(state.query, ['range', 'resolution'])
-    var active = _.isEqual(current, range.query || {})
+    var activeRange = _.isEqual(current, range.query || {})
     var foreign = _.omit(state.query, ['range', 'resolution'])
     if (range.query || Object.keys(foreign).length) {
       url += '?' + new window.URLSearchParams(Object.assign(foreign, range.query))
     }
-    var anchor = html`<a href="${url}" class="f5 b link dim ph3 pv2 mr2 mb1 dib br1 dark-green bg-black-05">${range.display}</a>`
+    var anchorRange = html`<a href="${url}" class="f5 b link dim ph3 pv2 mr2 mb1 dib br1 dark-green bg-black-05">${range.display}</a>`
     return html`
       <li class="mb1">
-        ${active ? html`<a href="${url}" class="f5 b link bb bw2 ph3 pv2 mr2 mb1 dib br1 dark-green bg-black-05">${range.display}</a>` : anchor}
+        ${activeRange ? html`<a href="${url}" class="f5 b link bb bw2 ph3 pv2 mr2 mb1 dib br1 dark-green bg-black-05">${range.display}</a>` : anchorRange}
       </li>
     `
   })
@@ -69,18 +69,30 @@ function view (state, emit) {
     `
 
   if (isOperator) {
+
     var availableAccounts = state.authenticatedUser.accounts
       .slice()
       .sort(function (a, b) {
         return a.accountName.localeCompare(b.accountName)
       })
       .map(function (account) {
+        /*
+        var current = _.pick(?????)
+        var activeAccount = _.isEqual(current, account.query || {})
+        var anchorAccount = html`<a href="./account/${account.accountId}/" class="f5 link dim bn ph3 pv2 mr2 mb1 dib br1 white bg-dark-green">${account.accountName}</a>`
+        return html`
+          <li class="">
+            ${activeAccount ? html`<a href="./account/${account.accountId}/" class="f5 link dim bn ph3 pv2 mr2 mb1 dib br1 white bg-dark-green">${account.accountName}</a>` : anchorAccount}
+          </li>
+        `
+        */
         return html`
           <li>
             <a href="./account/${account.accountId}/" class="f5 link dim bn ph3 pv2 mr2 mb1 dib br1 white bg-dark-green">${account.accountName}</a>
           </li>
         `
       })
+
   }
 
   var chooseAccounts = html`
