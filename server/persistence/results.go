@@ -1,5 +1,7 @@
 package persistence
 
+import "time"
+
 // UserResult contains information about a single user entry
 type UserResult struct {
 	HashedUserID        string `json:"hashedUserId"`
@@ -30,6 +32,7 @@ type AccountResult struct {
 	EncryptedPrivateKey string             `json:"encryptedPrivateKey,omitempty"`
 	Events              *EventsByAccountID `json:"events,omitempty"`
 	UserSecrets         *SecretsByUserID   `json:"userSecrets,omitempty"`
+	Created             time.Time          `json:"created,omitempty"`
 }
 
 // LoginResult is a successful account user authentication response.
@@ -55,4 +58,5 @@ type LoginAccountResult struct {
 	AccountName      string      `json:"accountName"`
 	AccountID        string      `json:"accountId"`
 	KeyEncryptionKey interface{} `json:"keyEncryptionKey"`
+	Created          time.Time   `json:"created"`
 }

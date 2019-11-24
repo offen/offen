@@ -1,6 +1,8 @@
 package relational
 
 import (
+	"time"
+
 	"github.com/offen/offen/server/persistence"
 )
 
@@ -136,6 +138,7 @@ type Account struct {
 	EncryptedPrivateKey string
 	UserSalt            string
 	Retired             bool
+	Created             time.Time
 	Events              []Event `gorm:"foreignkey:AccountID;association_foreignkey:AccountID"`
 }
 
@@ -151,6 +154,7 @@ func (a *Account) export() persistence.Account {
 		EncryptedPrivateKey: a.EncryptedPrivateKey,
 		UserSalt:            a.UserSalt,
 		Retired:             a.Retired,
+		Created:             a.Created,
 		Events:              events,
 	}
 }
@@ -167,6 +171,7 @@ func importAccount(a *persistence.Account) Account {
 		EncryptedPrivateKey: a.EncryptedPrivateKey,
 		UserSalt:            a.UserSalt,
 		Retired:             a.Retired,
+		Created:             a.Created,
 		Events:              events,
 	}
 }

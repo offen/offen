@@ -54,8 +54,9 @@ func (p *persistenceLayer) Login(email, password string) (LoginResult, error) {
 		}
 
 		result := LoginAccountResult{
-			AccountName:      account.Name,
-			AccountID:        relationship.AccountID,
+			AccountName: account.Name,
+			AccountID:   relationship.AccountID,
+			Created:     account.Created,
 			KeyEncryptionKey: k,
 		}
 		results = append(results, result)
