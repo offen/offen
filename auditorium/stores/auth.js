@@ -17,6 +17,9 @@ function store (state, emitter) {
       .then(function (response) {
         if (response.type === 'LOGIN_SUCCESS') {
           state.authenticatedUser = response.payload
+          
+          console.log(state.authenticatedUser);
+
           if (credentials) {
             emitter.emit(state.events.PUSHSTATE, '/auditorium/account/')
           }
