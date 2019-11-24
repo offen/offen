@@ -17,11 +17,9 @@ function store (state, emitter) {
       .then(function (response) {
         if (response.type === 'LOGIN_SUCCESS') {
           state.authenticatedUser = response.payload
-          
-          console.log(state.authenticatedUser);
-
+          var firstAccount = state.authenticatedUser.accounts[0].accountId
           if (credentials) {
-            emitter.emit(state.events.PUSHSTATE, '/auditorium/account/')
+            emitter.emit(state.events.PUSHSTATE, '/auditorium/account/' + firstAccount)
           }
           return
         } else if (response.type === 'LOGIN_FAILURE') {
