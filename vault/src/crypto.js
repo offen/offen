@@ -8,31 +8,25 @@ exports.decryptSymmetricWith = decryptSymmetricWith
 function decryptSymmetricWith (cryptoKey) {
   return function (encryptedValue) {
     var chunks = deserializeCipher(encryptedValue)
-    if (!chunks) {
-      return Promise.reject(new Error('Could not deserialize given cipher: "' + encryptedValue + '"'))
-    }
-    var bytes
-    var nonce
-    try {
-      bytes = Unibabel.base64ToArr(chunks.cipher)
-      nonce = Unibabel.base64ToArr(chunks.nonce)
-    } catch (err) {
-      return Promise.reject(err)
+    if (chunks.error) {
+      return Promise.reject(chunks.error)
     }
     switch (chunks.algoVersion) {
       case SYMMETRIC_ALGO_AESGCM: {
         return window.crypto.subtle.decrypt(
           {
             name: 'AES-GCM',
-            iv: nonce
+            iv: chunks.nonce
           },
           cryptoKey,
-          bytes
+          chunks.cipher
         )
           .then(parseDecrypted)
       }
       default:
-        return Promise.reject(new Error('Unknown algo version ' + chunks.algoVersion))
+        return Promise.reject(
+          new Error('Unknown symmetric algo version "' + chunks.algoVersion + '"')
+        )
     }
   }
 }
@@ -73,14 +67,8 @@ exports.decryptAsymmetricWith = decryptAsymmetricWith
 function decryptAsymmetricWith (privateCryptoKey) {
   return function (encryptedValue) {
     var chunks = deserializeCipher(encryptedValue)
-    if (!chunks) {
-      return Promise.reject(new Error('Could not deserialize given cipher "' + encryptedValue + '"'))
-    }
-    var bytes
-    try {
-      bytes = Unibabel.base64ToArr(chunks.cipher)
-    } catch (err) {
-      return Promise.reject(err)
+    if (chunks.error) {
+      return Promise.reject(chunks.error)
     }
     switch (chunks.algoVersion) {
       case ASSYMMETRIC_ALGO_RSA_OAEP: {
@@ -89,12 +77,14 @@ function decryptAsymmetricWith (privateCryptoKey) {
             name: 'RSA-OAEP'
           },
           privateCryptoKey,
-          bytes
+          chunks.cipher
         )
           .then(parseDecrypted)
       }
       default:
-        return Promise.reject(new Error('Unknown algo version ' + chunks.algoVersion))
+        return Promise.reject(
+          new Error('Unknown asymmetric algo version "' + chunks.algoVersion + '"')
+        )
     }
   }
 }
@@ -200,14 +190,32 @@ var cipherRE = /{(\d+?),(\d*?)}\s(.+)/
 function deserializeCipher (cipher) {
   var match = cipher.match(cipherRE)
   if (!match) {
-    return null
+    return { error: new Error('Could not match given cipher "' + cipher + '"') }
   }
+
   var chunks = match[3].split(' ')
+  var cipherBytes = null
+  var nonceBytes = null
+
+  try {
+    cipherBytes = Unibabel.base64ToArr(chunks[0])
+  } catch (err) {
+    return { error: err }
+  }
+
+  if (chunks[1]) {
+    try {
+      nonceBytes = Unibabel.base64ToArr(chunks[1])
+    } catch (err) {
+      return { error: err }
+    }
+  }
+
   return {
     algoVersion: parseInt(match[1], 10),
     keyVersion: match[2] ? parseInt(match[2], 10) : null,
-    cipher: chunks[0],
-    nonce: chunks[1] || null
+    cipher: cipherBytes,
+    nonce: nonceBytes
   }
 }
 
