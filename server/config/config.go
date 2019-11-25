@@ -31,6 +31,8 @@ type Config struct {
 		Port                int  `default:"8080"`
 		ReverseProxy        bool `default:"false"`
 		DisableSecureCookie bool `default:"false"`
+		SSLCertificate      string
+		SSLKey              string
 	}
 	Database struct {
 		Dialect          Dialect `default:"sqlite3"`
