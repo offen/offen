@@ -1,4 +1,5 @@
 var html = require('choo/html')
+var raw = require('choo/html/raw')
 
 module.exports = view
 
@@ -11,16 +12,16 @@ function view (state, emit) {
     .map(function (account) {
       return html`
         <li>
-          <a href="./account/${account.accountId}/" class="f5 link dim bn ph3 pv2 mr2 mb1 dib br1 white bg-dark-green">${account.accountName}</a>
+          <a href="./account/${account.accountId}/" class="f5 link dim bn ph3 pv2 mr2 mb1 dib br1 white bg-mid-gray">${account.accountName}</a>
         </li>
       `
     })
   var accountHeader = html`
-    <p class="dib pa2 br2 bg-black-05 mt0 mb2">You are logged in as <strong>operator.</strong></p>
+    <p class="dib pa2 br2 bg-black-05 mt0 mb2">${raw(__('You are logged in as <strong>operator.</strong>'))}</p>
   `
 
   var loggedInMessage = html`
-    <div class="w-100 pa3 mt4 mb2 ba b--black-10 br2 bg-white">
+    <div class="w-100 pa3 mt4 mb2 br2 bg-black-05">
       <h4 class ="f5 normal mt0 mb3">${__('Choose account')}</h4>
       <ul class="flex flex-wrap list pl0 mt0 mb3">
         ${availableAccounts}

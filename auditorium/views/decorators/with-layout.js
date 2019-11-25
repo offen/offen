@@ -9,7 +9,7 @@ function withLayout () {
       var flash = state.flash
       state.flash = null
       return html`
-        <div class="mw8 center pa3 pb5 f5 sans-serif dark-gray">
+        <div class="mw8 center pa3 pb5 f5 roboto dark-gray">
           <h1 class="f2 normal mt0 mb4">${raw(__('<strong>offen</strong> auditorium'))}</h1>
           ${flash ? html`
             <p class="flash-message dib pa2 br2 bg-black-05 mt0 mb2">${flash}</p>

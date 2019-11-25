@@ -22,7 +22,7 @@ describe('src/decorators/with-layout.js', function () {
     it('wraps the given content in the application layout', function () {
       var wrappedView = withLayout()(testView)
       var result = wrappedView(app.state, app.emit)
-      assert(result.matches('.mw7.center.pa3.sans-serif'))
+      assert(result.matches('mw8 center pa3 pb5 f5 roboto dark-gray'))
       assert(result.querySelector('h1'))
       assert(result.querySelector('h2#test'))
       assert(result.querySelector('h3#other'))

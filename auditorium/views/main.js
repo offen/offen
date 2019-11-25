@@ -64,7 +64,7 @@ function view (state, emit) {
   })
 
   var rangeSelector = html`
-      <h4 class ="f5 normal mt0 mb3">Show data from the last</h4>
+      <h4 class ="f5 normal mt0 mb3">${__('Show data from the last')}</h4>
       <ul class="flex flex-wrap list pl0 mt0 mb3">${ranges}</ul>
     `
 
@@ -77,9 +77,9 @@ function view (state, emit) {
       .map(function (account) {
         var activeAccount = state.params.accountId
         if (account.accountId == activeAccount) {
-          var buttonBG = 'b link bb bw2 ph3 pv2 mr2 mb1 dib br1 dark-green bg-black-05'
+          var buttonBG = 'b link bb bw2 ph3 pv2 mr2 mb1 dib br1 mid-gray bg-white-50'
         } else {
-          var buttonBG = 'link dim bn ph3 pv2 mr2 mb1 dib br1 white bg-dark-green'
+          var buttonBG = 'link dim bn ph3 pv2 mr2 mb1 dib br1 white bg-mid-gray'
         }
         return html`
           <li>
@@ -97,7 +97,7 @@ function view (state, emit) {
     `
 
   var manageOperator = html`
-    <div class="w-100 w-30-ns pa3 mb2 mr2-ns ba b--black-10 br2 bg-white">
+    <div class="w-100 w-30-ns pa3 mb2 mr2-ns br2 bg-black-05">
       ${chooseAccounts}
     </div>
     `
