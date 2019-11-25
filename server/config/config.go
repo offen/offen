@@ -33,6 +33,7 @@ type Config struct {
 		DisableSecureCookie bool `default:"false"`
 		SSLCertificate      string
 		SSLKey              string
+		AutoTLS             string
 	}
 	Database struct {
 		Dialect          Dialect `default:"sqlite3"`

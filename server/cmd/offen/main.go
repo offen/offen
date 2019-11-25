@@ -24,6 +24,7 @@ import (
 	"github.com/offen/offen/server/public"
 	"github.com/offen/offen/server/router"
 	"github.com/sirupsen/logrus"
+	"golang.org/x/crypto/acme/autocert"
 	yaml "gopkg.in/yaml.v2"
 )
 
@@ -104,6 +105,10 @@ func main() {
 		go func() {
 			if cfg.Server.SSLCertificate != "" && cfg.Server.SSLKey != "" {
 				if err := srv.ListenAndServeTLS(cfg.Server.SSLCertificate, cfg.Server.SSLKey); err != nil && err != http.ErrServerClosed {
+					logger.WithError(err).Fatal("Error binding server to network")
+				}
+			} else if cfg.Server.AutoTLS != "" {
+				if err := http.Serve(autocert.NewListener(cfg.Server.AutoTLS), srv.Handler); err != nil && err != http.ErrServerClosed {
 					logger.WithError(err).Fatal("Error binding server to network")
 				}
 			} else {
