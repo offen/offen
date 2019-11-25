@@ -3,7 +3,6 @@ var _ = require('underscore')
 
 var dataStore = require('./stores/data')
 var authStore = require('./stores/auth')
-var optOutStore = require('./stores/opt-out')
 var bailOutStore = require('./stores/bail-out')
 var mainView = require('./views/main')
 var loginView = require('./views/login')
@@ -29,7 +28,6 @@ document.querySelector('#app-host').appendChild(host)
 app.use(dataStore)
 app.use(authStore)
 app.use(bailOutStore)
-app.use(optOutStore)
 
 function decorateWithDefaults (view, title) {
   var wrapper = _.compose(withLayout(), withError(), withTitle(title))

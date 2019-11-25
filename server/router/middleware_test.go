@@ -12,43 +12,6 @@ import (
 	"github.com/offen/offen/server/persistence"
 )
 
-func TestOptoutMiddleware(t *testing.T) {
-	m := gin.New()
-	m.GET("/", optoutMiddleware("optout"), func(c *gin.Context) {
-		c.String(http.StatusOK, "hey there")
-	})
-	t.Run("with cookie", func(t *testing.T) {
-		w := httptest.NewRecorder()
-		r := httptest.NewRequest(http.MethodGet, "/", nil)
-		r.AddCookie(&http.Cookie{
-			Name:  "optout",
-			Value: "1",
-		})
-		m.ServeHTTP(w, r)
-
-		if w.Code != http.StatusNoContent {
-			t.Errorf("Unexpected status code %d", w.Code)
-		}
-
-		if w.Body.String() != "" {
-			t.Errorf("Unexpected response body %s", w.Body.String())
-		}
-	})
-	t.Run("no cookie", func(t *testing.T) {
-		w := httptest.NewRecorder()
-		r := httptest.NewRequest(http.MethodGet, "/", nil)
-		m.ServeHTTP(w, r)
-
-		if w.Code != http.StatusOK {
-			t.Errorf("Unexpected status code %d", w.Code)
-		}
-
-		if w.Body.String() != "hey there" {
-			t.Errorf("Unexpected response body %s", w.Body.String())
-		}
-	})
-}
-
 func TestUserCookieMiddleware(t *testing.T) {
 	m := gin.New()
 	m.GET("/", userCookieMiddleware("user", "1"), func(c *gin.Context) {
@@ -101,7 +64,7 @@ func TestUserCookieMiddleware(t *testing.T) {
 }
 
 type mockUserLookupDatabase struct {
-	persistence.Database
+	persistence.Service
 }
 
 func (*mockUserLookupDatabase) LookupUser(userID string) (persistence.LoginResult, error) {

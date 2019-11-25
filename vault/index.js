@@ -1,12 +1,11 @@
 var router = require('./src/router')
 var handler = require('./src/handler')
 var allowsCookies = require('./src/allows-cookies')
-var hasOptedOut = require('./src/user-optout')
 var getSessionId = require('./src/session-id')
 
 var register = router()
 
-register('EVENT', optOutMiddleware, eventDuplexerMiddleware, anonymousMiddleware, function (event, respond, next) {
+register('EVENT', eventDuplexerMiddleware, anonymousMiddleware, function (event, respond, next) {
   console.log(__('This page is using offen to collect usage statistics.'))
   console.log(__('You can access and manage all of your personal data or opt-out at "%s/auditorium/".', window.location.origin))
   console.log(__('Find out more about offen at "https://www.offen.dev".'))
@@ -14,7 +13,6 @@ register('EVENT', optOutMiddleware, eventDuplexerMiddleware, anonymousMiddleware
     .catch(next)
 })
 
-register('OPTOUT', sameOriginMiddleware, callHandler(handler.handleOptout))
 register('OPTOUT_STATUS', sameOriginMiddleware, callHandler(handler.handleOptoutStatus))
 register('QUERY', sameOriginMiddleware, callHandler(handler.handleQuery))
 register('PURGE', sameOriginMiddleware, callHandler(handler.handlePurge))
@@ -50,15 +48,6 @@ function sameOriginMiddleware (event, respond, next) {
     return next(new Error('Incoming message had untrusted origin "' + event.origin + '", will not process.'))
   }
   next()
-}
-
-function optOutMiddleware (event, respond, next) {
-  if (!hasOptedOut()) {
-    return next()
-  }
-  console.log(__('This page is using offen to collect usage statistics.'))
-  console.log(__('You have opted out of data collection, no data is being collected.'))
-  console.log(__('Find out more about offen at "https://www.offen.dev".'))
 }
 
 function anonymousMiddleware (event, respond, next) {

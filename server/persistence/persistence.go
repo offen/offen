@@ -1,7 +1,13 @@
 package persistence
 
-// Database is anything that can be used to store and query event data
-type Database interface {
+import (
+	"time"
+)
+
+// Service is a backend-agnostic wrapper for interacting with a persistence
+// layer. It does not make any assumptions about how data is being modelled
+// and stored.
+type Service interface {
 	Insert(userID, accountID, payload string) error
 	Query(Query) (map[string][]EventResult, error)
 	GetAccount(accountID string, events bool, eventsSince string) (AccountResult, error)
@@ -12,67 +18,35 @@ type Database interface {
 	LookupUser(userID string) (LoginResult, error)
 	ChangePassword(userID, currentPassword, changedPassword string) error
 	ChangeEmail(userID, emailAddress, password string) error
-	CheckHealth() error
 	GenerateOneTimeKey(emailAddress string) ([]byte, error)
 	ResetPassword(emailAddress, password string, oneTimeKey []byte) error
+	Expire(retention time.Duration) (int, error)
+	Bootstrap(data BootstrapConfig, salt []byte) error
+	CheckHealth() error
+	Migrate() error
 }
 
-// Query defines a set of filters to limit the set of results to be returned
-// In case a field has the zero value, its filter will not be applied.
-type Query interface {
-	AccountIDs() []string
-	UserID() string
-	Since() string
+type persistenceLayer struct {
+	dal       DataAccessLayer
+	emailSalt []byte
 }
 
-// UserResult contains information about a single user entry
-type UserResult struct {
-	HashedUserID        string `json:"hashedUserId"`
-	EncryptedUserSecret string `json:"encryptedUserSecret"`
-}
-
-// EventResult is an element returned from a query. It contains all data that
-// is stored about an atomic event.
-type EventResult struct {
-	AccountID string  `json:"accountId"`
-	UserID    *string `json:"userId"`
-	EventID   string  `json:"eventId"`
-	Payload   string  `json:"payload"`
-}
-
-// EventsByAccountID groups a list of events by AccountID in a response
-type EventsByAccountID map[string][]EventResult
-
-// SecretsByUserID is a map of hashed user IDs and their respective
-// encrypted user secrets
-type SecretsByUserID map[string]string
-
-// AccountResult is the data returned from looking up an account by id
-type AccountResult struct {
-	AccountID           string             `json:"accountId"`
-	Name                string             `json:"name"`
-	PublicKey           interface{}        `json:"publicKey,omitempty"`
-	EncryptedPrivateKey string             `json:"encryptedPrivateKey,omitempty"`
-	Events              *EventsByAccountID `json:"events,omitempty"`
-	UserSecrets         *SecretsByUserID   `json:"userSecrets,omitempty"`
-}
-
-type LoginResult struct {
-	UserID   string               `json:"userId"`
-	Accounts []LoginAccountResult `json:"accounts"`
-}
-
-func (l *LoginResult) CanAccessAccount(accountID string) bool {
-	for _, account := range l.Accounts {
-		if accountID == account.AccountID {
-			return true
-		}
+// New creates a persistence service that connects to any database using
+// the given access layer.
+func New(dal DataAccessLayer, configs ...Config) (Service, error) {
+	db := persistenceLayer{dal: dal}
+	for _, config := range configs {
+		config(&db)
 	}
-	return false
+	return &db, nil
 }
 
-type LoginAccountResult struct {
-	AccountName      string      `json:"accountName"`
-	AccountID        string      `json:"accountId"`
-	KeyEncryptionKey interface{} `json:"keyEncryptionKey"`
+// Config is a function that adds a configuration option to the constructor
+type Config func(*persistenceLayer)
+
+// WithEmailSalt sets the salt value that is used for hashing email addresses
+func WithEmailSalt(b []byte) Config {
+	return func(r *persistenceLayer) {
+		r.emailSalt = b
+	}
 }

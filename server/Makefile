@@ -7,7 +7,7 @@ up:
 install:
 	@go mod download
 
-bootstrap: migrate
+bootstrap:
 	@go run cmd/offen/main.go bootstrap -source bootstrap.yml
 	@echo ""
 	@echo "You can now log into the development backend using the following credentials:"

@@ -1,27 +1,33 @@
 var Unibabel = require('unibabel').Unibabel
 
+var SYMMETRIC_ALGO_AESGCM = 1
+var ASSYMMETRIC_ALGO_RSA_OAEP = 1
+
 exports.decryptSymmetricWith = decryptSymmetricWith
 
 function decryptSymmetricWith (cryptoKey) {
   return function (encryptedValue) {
-    var chunks = encryptedValue.split(' ')
-    var bytes
-    var nonce
-    try {
-      nonce = Unibabel.base64ToArr(chunks[0])
-      bytes = Unibabel.base64ToArr(chunks[1])
-    } catch (err) {
-      return Promise.reject(err)
+    var chunks = deserializeCipher(encryptedValue)
+    if (chunks.error) {
+      return Promise.reject(chunks.error)
     }
-    return window.crypto.subtle.decrypt(
-      {
-        name: 'AES-GCM',
-        iv: nonce
-      },
-      cryptoKey,
-      bytes
-    )
-      .then(parseDecrypted)
+    switch (chunks.algoVersion) {
+      case SYMMETRIC_ALGO_AESGCM: {
+        return window.crypto.subtle.decrypt(
+          {
+            name: 'AES-GCM',
+            iv: chunks.nonce
+          },
+          cryptoKey,
+          chunks.cipher
+        )
+          .then(parseDecrypted)
+      }
+      default:
+        return Promise.reject(
+          new Error('Unknown symmetric algo version "' + chunks.algoVersion + '"')
+        )
+    }
   }
 }
 
@@ -47,7 +53,11 @@ function encryptSymmetricWith (cryptoKey) {
     )
       .then(encodeEncrypted)
       .then(function (encrypted) {
-        return [encodeEncrypted(nonce), encrypted].join(' ')
+        return serializeCipher(
+          encrypted,
+          encodeEncrypted(nonce),
+          SYMMETRIC_ALGO_AESGCM
+        )
       })
   }
 }
@@ -56,20 +66,26 @@ exports.decryptAsymmetricWith = decryptAsymmetricWith
 
 function decryptAsymmetricWith (privateCryptoKey) {
   return function (encryptedValue) {
-    var bytes
-    try {
-      bytes = Unibabel.base64ToArr(encryptedValue)
-    } catch (err) {
-      return Promise.reject(err)
+    var chunks = deserializeCipher(encryptedValue)
+    if (chunks.error) {
+      return Promise.reject(chunks.error)
     }
-    return window.crypto.subtle.decrypt(
-      {
-        name: 'RSA-OAEP'
-      },
-      privateCryptoKey,
-      bytes
-    )
-      .then(parseDecrypted)
+    switch (chunks.algoVersion) {
+      case ASSYMMETRIC_ALGO_RSA_OAEP: {
+        return window.crypto.subtle.decrypt(
+          {
+            name: 'RSA-OAEP'
+          },
+          privateCryptoKey,
+          chunks.cipher
+        )
+          .then(parseDecrypted)
+      }
+      default:
+        return Promise.reject(
+          new Error('Unknown asymmetric algo version "' + chunks.algoVersion + '"')
+        )
+    }
   }
 }
 
@@ -91,6 +107,9 @@ function encryptAsymmetricWith (publicCryptoKey) {
       bytes
     )
       .then(encodeEncrypted)
+      .then(function (cipher) {
+        return serializeCipher(cipher, null, ASSYMMETRIC_ALGO_RSA_OAEP)
+      })
   }
 }
 
@@ -164,4 +183,47 @@ function parseDecrypted (decrypted) {
 
 function encodeEncrypted (encrypted) {
   return Unibabel.arrToBase64(new Uint8Array(encrypted))
+}
+
+var cipherRE = /{(\d+?),(\d*?)}\s(.+)/
+
+function deserializeCipher (cipher) {
+  var match = cipher.match(cipherRE)
+  if (!match) {
+    return { error: new Error('Could not match given cipher "' + cipher + '"') }
+  }
+
+  var chunks = match[3].split(' ')
+  var cipherBytes = null
+  var nonceBytes = null
+
+  try {
+    cipherBytes = Unibabel.base64ToArr(chunks[0])
+  } catch (err) {
+    return { error: err }
+  }
+
+  if (chunks[1]) {
+    try {
+      nonceBytes = Unibabel.base64ToArr(chunks[1])
+    } catch (err) {
+      return { error: err }
+    }
+  }
+
+  return {
+    algoVersion: parseInt(match[1], 10),
+    keyVersion: match[2] ? parseInt(match[2], 10) : null,
+    cipher: cipherBytes,
+    nonce: nonceBytes
+  }
+}
+
+function serializeCipher (cipher, nonce, algoVersion, keyVersion) {
+  var keyRepr = keyVersion || ''
+  var chunks = ['{' + algoVersion + ',' + keyRepr + '}', cipher]
+  if (nonce) {
+    chunks.push(nonce)
+  }
+  return chunks.join(' ')
 }

@@ -10,7 +10,7 @@ import (
 )
 
 type mockDatabase struct {
-	persistence.Database
+	persistence.Service
 }
 
 func TestMain(m *testing.M) {

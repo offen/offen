@@ -15,7 +15,7 @@ func randomBytes(length int) ([]byte, error) {
 	b := make([]byte, length)
 	_, err := rand.Read(b)
 	if err != nil {
-		return nil, fmt.Errorf("keys: error reading random bytes: %v", err)
+		return nil, fmt.Errorf("keys: error reading random bytes: %w", err)
 	}
 	return b, nil
 }

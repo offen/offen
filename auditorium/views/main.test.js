@@ -83,8 +83,8 @@ describe('views/main.js', function () {
       var chart = result.querySelector('.chart')
       assert(chart)
 
-      var optoutButton = result.querySelector('[data-role="optout"]')
-      assert(optoutButton)
+      var optinButton = result.querySelector('[data-role="optin"]')
+      assert(optinButton)
     })
   })
 })

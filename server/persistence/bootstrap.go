@@ -1,24 +1,29 @@
-package relational
+package persistence
 
 import (
-	"encoding/base64"
 	"fmt"
+	"time"
 
 	uuid "github.com/gofrs/uuid"
-	"github.com/jinzhu/gorm"
 	"github.com/offen/offen/server/keys"
 )
 
+// BootstrapConfig contains data about accounts and account users that is used
+// to seed an application database from scratch.
 type BootstrapConfig struct {
 	Accounts     []BootstrapAccount     `yaml:"accounts"`
 	AccountUsers []BootstrapAccountUser `yaml:"account_users"`
 }
 
+// BootstrapAccount contains the information needed for creating an account at
+// bootstrap time.
 type BootstrapAccount struct {
 	ID   string `yaml:"id"`
 	Name string `yaml:"name"`
 }
 
+// BootstrapAccountUser contains the information needed for creating an account
+// user at bootstrap time.
 type BootstrapAccountUser struct {
 	Email    string   `yaml:"email"`
 	Password string   `yaml:"password"`
@@ -32,55 +37,42 @@ type accountCreation struct {
 
 // Bootstrap seeds a blank database with the given account and user
 // data. This is likely only ever used in development.
-func Bootstrap(db *gorm.DB, config BootstrapConfig, emailSalt []byte) error {
-	defer db.Close()
-	tx := db.Debug().Begin()
-
-	if err := tx.Delete(&Event{}).Error; err != nil {
-		tx.Rollback()
-		return err
+func (p *persistenceLayer) Bootstrap(config BootstrapConfig, emailSalt []byte) error {
+	txn, err := p.dal.Transaction()
+	if err != nil {
+		return fmt.Errorf("persistence: error creating transaction: %w", err)
 	}
-	if err := tx.Delete(&Account{}).Error; err != nil {
-		tx.Rollback()
-		return err
-	}
-	if err := tx.Delete(&User{}).Error; err != nil {
-		tx.Rollback()
-		return err
-	}
-	if err := tx.Delete(&AccountUser{}).Error; err != nil {
-		tx.Rollback()
-		return err
-	}
-	if err := tx.Delete(&AccountUserRelationship{}).Error; err != nil {
-		tx.Rollback()
-		return err
+	if err := txn.DropAll(); err != nil {
+		txn.Rollback()
+		return fmt.Errorf("persistence: error dropping tables before inserting seed data: %w", err)
 	}
 
 	accounts, accountUsers, relationships, err := bootstrapAccounts(&config, emailSalt)
 	if err != nil {
-		tx.Rollback()
-		return err
+		txn.Rollback()
+		return fmt.Errorf("persistence: error creating seed data: %w", err)
 	}
 	for _, account := range accounts {
-		if err := tx.Create(&account).Error; err != nil {
-			tx.Rollback()
-			return err
+		if err := txn.CreateAccount(&account); err != nil {
+			txn.Rollback()
+			return fmt.Errorf("persistence: error creating account: %w", err)
 		}
 	}
 	for _, accountUser := range accountUsers {
-		if err := tx.Create(&accountUser).Error; err != nil {
-			tx.Rollback()
-			return err
+		if err := txn.CreateAccountUser(&accountUser); err != nil {
+			txn.Rollback()
+			return fmt.Errorf("persistence: error creating account user: %w", err)
 		}
 	}
 	for _, relationship := range relationships {
-		if err := tx.Create(&relationship).Error; err != nil {
-			tx.Rollback()
-			return err
+		if err := txn.CreateAccountUserRelationship(&relationship); err != nil {
+			txn.Rollback()
+			return fmt.Errorf("persistence: error creating account user relationship: %w", err)
 		}
 	}
-	tx.Commit()
+	if err := txn.Commit(); err != nil {
+		return fmt.Errorf("persistence: error committing seed data: %w", err)
+	}
 	return nil
 }
 
@@ -96,7 +88,7 @@ func bootstrapAccounts(config *BootstrapConfig, emailSalt []byte) ([]Account, []
 		if encryptionKeyErr != nil {
 			return nil, nil, nil, encryptionKeyErr
 		}
-		encryptedPrivateKey, privateKeyNonce, encryptedPrivateKeyErr := keys.EncryptWith(encryptionKey, privateKey)
+		encryptedPrivateKey, encryptedPrivateKeyErr := keys.EncryptWith(encryptionKey, privateKey)
 		if encryptedPrivateKeyErr != nil {
 			return nil, nil, nil, encryptedPrivateKeyErr
 		}
@@ -107,16 +99,13 @@ func bootstrapAccounts(config *BootstrapConfig, emailSalt []byte) ([]Account, []
 		}
 
 		record := Account{
-			AccountID: account.ID,
-			Name:      account.Name,
-			PublicKey: string(publicKey),
-			EncryptedPrivateKey: fmt.Sprintf(
-				"%s %s",
-				base64.StdEncoding.EncodeToString(privateKeyNonce),
-				base64.StdEncoding.EncodeToString(encryptedPrivateKey),
-			),
-			UserSalt: salt,
-			Retired:  false,
+			AccountID:           account.ID,
+			Name:                account.Name,
+			PublicKey:           string(publicKey),
+			EncryptedPrivateKey: encryptedPrivateKey.Marshal(),
+			UserSalt:            salt,
+			Retired:             false,
+			Created:             time.Now(),
 		}
 		accountCreations = append(accountCreations, accountCreation{
 			account:       record,
@@ -144,12 +133,12 @@ func bootstrapAccounts(config *BootstrapConfig, emailSalt []byte) ([]Account, []
 		if saltErr != nil {
 			return nil, nil, nil, saltErr
 		}
-		saltBytes, _ := base64.StdEncoding.DecodeString(salt)
+
 		user := AccountUser{
 			UserID:         userID.String(),
 			Salt:           salt,
-			HashedPassword: base64.StdEncoding.EncodeToString(hashedPw),
-			HashedEmail:    base64.StdEncoding.EncodeToString(hashedEmail),
+			HashedPassword: hashedPw.Marshal(),
+			HashedEmail:    hashedEmail,
 		}
 		accountUserCreations = append(accountUserCreations, user)
 
@@ -165,20 +154,20 @@ func bootstrapAccounts(config *BootstrapConfig, emailSalt []byte) ([]Account, []
 				return nil, nil, nil, fmt.Errorf("account with id %s not found", accountID)
 			}
 
-			passwordDerivedKey, passwordDerivedKeyErr := keys.DeriveKey(accountUser.Password, saltBytes)
+			passwordDerivedKey, passwordDerivedKeyErr := keys.DeriveKey(accountUser.Password, salt)
 			if passwordDerivedKeyErr != nil {
 				return nil, nil, nil, passwordDerivedKeyErr
 			}
-			encryptedPasswordDerivedKey, passwordEncryptionNonce, encryptionErr := keys.EncryptWith(passwordDerivedKey, encryptionKey)
+			encryptedPasswordDerivedKey, encryptionErr := keys.EncryptWith(passwordDerivedKey, encryptionKey)
 			if encryptionErr != nil {
 				return nil, nil, nil, encryptionErr
 			}
 
-			emailDerivedKey, emailDerivedKeyErr := keys.DeriveKey(accountUser.Email, saltBytes)
+			emailDerivedKey, emailDerivedKeyErr := keys.DeriveKey(accountUser.Email, salt)
 			if emailDerivedKeyErr != nil {
 				return nil, nil, nil, emailDerivedKeyErr
 			}
-			encryptedEmailDerivedKey, emailEncryptionNonce, encryptionErr := keys.EncryptWith(emailDerivedKey, encryptionKey)
+			encryptedEmailDerivedKey, encryptionErr := keys.EncryptWith(emailDerivedKey, encryptionKey)
 			if encryptionErr != nil {
 				return nil, nil, nil, encryptionErr
 			}
@@ -188,19 +177,11 @@ func bootstrapAccounts(config *BootstrapConfig, emailSalt []byte) ([]Account, []
 				return nil, nil, nil, idErr
 			}
 			r := AccountUserRelationship{
-				RelationshipID: relationshipID.String(),
-				UserID:         userID.String(),
-				AccountID:      accountID,
-				PasswordEncryptedKeyEncryptionKey: fmt.Sprintf(
-					"%s %s",
-					base64.StdEncoding.EncodeToString(passwordEncryptionNonce),
-					base64.StdEncoding.EncodeToString(encryptedPasswordDerivedKey),
-				),
-				EmailEncryptedKeyEncryptionKey: fmt.Sprintf(
-					"%s %s",
-					base64.StdEncoding.EncodeToString(emailEncryptionNonce),
-					base64.StdEncoding.EncodeToString(encryptedEmailDerivedKey),
-				),
+				RelationshipID:                    relationshipID.String(),
+				UserID:                            userID.String(),
+				AccountID:                         accountID,
+				PasswordEncryptedKeyEncryptionKey: encryptedPasswordDerivedKey.Marshal(),
+				EmailEncryptedKeyEncryptionKey:    encryptedEmailDerivedKey.Marshal(),
 			}
 			relationshipCreations = append(relationshipCreations, r)
 		}
