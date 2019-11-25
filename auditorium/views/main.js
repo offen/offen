@@ -75,19 +75,21 @@ function view (state, emit) {
         return a.accountName.localeCompare(b.accountName)
       })
       .map(function (account) {
-        var activeAccount = state.params.accountId
-        if (account.accountId == activeAccount) {
-          var buttonBG = 'b link bb bw2 ph3 pv2 mr2 mb1 dib br1 mid-gray bg-white-50'
+        var buttonClass = null
+        if (account.accountId === state.params.accountId) {
+          buttonClass = 'b link bb bw2 ph3 pv2 mr2 mb1 dib br1 mid-gray bg-white-50'
         } else {
-          var buttonBG = 'link dim bn ph3 pv2 mr2 mb1 dib br1 white bg-mid-gray'
+          buttonClass = 'link dim bn ph3 pv2 mr2 mb1 dib br1 white bg-mid-gray'
         }
         return html`
           <li>
-            <a href="./account/${account.accountId}/" class="${buttonBG}">${account.accountName}</a>
+            <a href="./account/${account.accountId}/" class="${buttonClass}">
+              ${account.accountName}
+            </a>
           </li>
         `
       })
-    }
+  }
 
   var chooseAccounts = html`
       <h4 class ="f5 normal mt0 mb3">Choose account</h4>
@@ -236,8 +238,8 @@ function view (state, emit) {
       </div>
     `
 
-    var goSettings = isOperator
-      ? html`
+  var goSettings = isOperator
+    ? html`
         <div class="flex flex-column flex-row-ns mt4">
           <div class="w-100 w-20-ns pa3 mb2 mr2-ns br2 bg-black-05">
             <h4 class ="f5 normal mt0 mb3">Admin console</h4>
@@ -249,7 +251,7 @@ function view (state, emit) {
           </div>
         </div>
       `
-      : null
+    : null
 
   var orderedSections = [accountHeader, rowRangeManage, rowUsersSessionsChart, pagesReferrers, goSettings]
   return html`
