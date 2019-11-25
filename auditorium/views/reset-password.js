@@ -31,7 +31,7 @@ function view (state, emit) {
           ${__('Repeat new password')}
         </label>
         <input class="w-100 pa2 mb3 input-reset ba b--black-10 bg-white" required type="password" name="repeat-password">
-        <input class="w-100 w-auto-ns f5 link dim bn ph3 pv2 mb3 dib br1 white bg-mid-gray" type="submit" value="${__('Reset password')}">
+        <input class="pointer w-100 w-auto-ns f5 link dim bn ph3 pv2 mb3 dib br1 white bg-mid-gray" type="submit" value="${__('Reset password')}">
         <input type="hidden" name="token" value=${state.params.token}>
       </form>
     </div>

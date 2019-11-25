@@ -108,10 +108,10 @@ function view (state, emit) {
     ? html`
       <div class="w-100 w-30-ns pa3 mb2 mr2-ns br2 bg-black-05">
         <h4 class ="f5 normal mt0 mb3">${__('Manage data')}</h4>
-        <button class="w-100-ns f5 link dim bn ph3 pv2 mr1 mb2 dib br1 white bg-mid-gray" data-role="purge" onclick="${handlePurge}">
+        <button class="pointer w-100-ns f5 link dim bn ph3 pv2 mr1 mb2 dib br1 white bg-mid-gray" data-role="purge" onclick="${handlePurge}">
           ${raw(__('Delete my <strong>user</strong> data'))}
         </button>
-        <button class="w-100-ns f5 link bn ph3 pv2 mb3 dib br1 white bg-black-05" data-role="optout" onclick="${handleOptout}" disabled>
+        <button class="pointer w-100-ns f5 link bn ph3 pv2 mb3 dib br1 white bg-black-05" data-role="optout" onclick="${handleOptout}" disabled>
           ${state.model.hasOptedOut ? __('Opt me in') : __('Opt me out')}
         </button>
       </div>
