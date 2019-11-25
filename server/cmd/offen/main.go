@@ -102,8 +102,14 @@ func main() {
 			),
 		}
 		go func() {
-			if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-				logger.WithError(err).Fatal("Error binding server to network")
+			if cfg.Server.SSLCertificate != "" && cfg.Server.SSLKey != "" {
+				if err := srv.ListenAndServeTLS(cfg.Server.SSLCertificate, cfg.Server.SSLKey); err != nil && err != http.ErrServerClosed {
+					logger.WithError(err).Fatal("Error binding server to network")
+				}
+			} else {
+				if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+					logger.WithError(err).Fatal("Error binding server to network")
+				}
 			}
 		}()
 		logger.Infof("Server now listening on port %d", cfg.Server.Port)
