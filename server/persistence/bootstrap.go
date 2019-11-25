@@ -2,6 +2,7 @@ package persistence
 
 import (
 	"fmt"
+	"time"
 
 	uuid "github.com/gofrs/uuid"
 	"github.com/offen/offen/server/keys"
@@ -104,6 +105,7 @@ func bootstrapAccounts(config *BootstrapConfig, emailSalt []byte) ([]Account, []
 			EncryptedPrivateKey: encryptedPrivateKey.Marshal(),
 			UserSalt:            salt,
 			Retired:             false,
+			Created:             time.Now(),
 		}
 		accountCreations = append(accountCreations, accountCreation{
 			account:       record,

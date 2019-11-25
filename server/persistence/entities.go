@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
+	"time"
 
 	jwk "github.com/lestrrat-go/jwx/jwk"
 )
@@ -57,6 +58,7 @@ type Account struct {
 	EncryptedPrivateKey string
 	UserSalt            string
 	Retired             bool
+	Created             time.Time
 	Events              []Event
 }
 

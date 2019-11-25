@@ -37,7 +37,7 @@ func TestRouter_GetAccount(t *testing.T) {
 				result: persistence.AccountResult{},
 			},
 			http.StatusOK,
-			`{"accountId":"","name":""}`,
+			`{"accountId":"","name":"","created":"0001-01-01T00:00:00Z"}`,
 		},
 	}
 	for _, test := range tests {
