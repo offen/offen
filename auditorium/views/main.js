@@ -22,18 +22,36 @@ function view (state, emit) {
   var accountHeader = null
   var pageTitle
   if (isOperator) {
+    var copy = __(
+      'You are viewing data as <strong>operator</strong> with account <strong>%s</strong>.',
+      state.model.account.name
+    )
     accountHeader = html`
-      <p class="dib pa2 br2 bg-black-05 mt0 mb2">${raw(__('You are viewing data as <strong>operator</strong> with account <strong>%s</strong>.', state.model.account.name))}</p>
+      <p class="dib pa2 br2 bg-black-05 mt0 mb2">
+        ${raw(copy)}
+      </p>
     `
     pageTitle = state.model.account.name + ' | ' + state.title
   } else {
+    pageTitle = __('user') + ' | ' + state.title
     accountHeader = html`
       <p class="dib pa2 br2 bg-black-05 mt0 mb2">
         ${raw(__('You are viewing your <strong>user</strong> data.'))}
       </p>
-      ${state.model.allowsCookies ? null : html`<p class="dib pa2 black br2 bg-black-05 mt0 mb2"><strong>${__('However, your browser does not allow 3rd party cookies. We respect this setting and collect only very basic data in this case, yet it also means we cannot display any data to you here.')}</p>`}
     `
-    pageTitle = __('user') + ' | ' + state.title
+    if (!state.model.allowsCookies) {
+      var noCookiesCopy = __('Your browser does not allow 3rd party cookies. We respect this setting and collect only very basic data in this case, yet it also means we cannot display any data to you here.')
+      accountHeader = [
+        accountHeader,
+        html`
+          <p class="dib pa2 black br2 bg-black-05 mt0 mb2">
+            <strong>
+              ${noCookiesCopy}
+            </strong>
+          </p>
+        `
+      ]
+    }
   }
   emit(state.events.DOMTITLECHANGE, pageTitle)
 
@@ -52,10 +70,21 @@ function view (state, emit) {
     if (range.query || Object.keys(foreign).length) {
       url += '?' + new window.URLSearchParams(Object.assign(foreign, range.query))
     }
-    var anchorRange = html`<a href="${url}" class="link dim bn ph3 pv2 mr2 mb1 dib br1 white bg-dark-green">${range.display}</a>`
+    var anchorRange = html`
+      <a href="${url}" class="link dim bn ph3 pv2 mr2 mb1 dib br1 white bg-dark-green">
+        ${range.display}
+      </a>
+    `
     return html`
       <li class="mb1">
-        ${activeRange ? html`<a href="${url}" class="f5 b link bb bw2 ph3 pv2 mr2 mb1 dib br1 dark-green bg-black-05">${range.display}</a>` : anchorRange}
+        ${activeRange
+    ? html`
+      <a href="${url}" class="f5 b link bb bw2 ph3 pv2 mr2 mb1 dib br1 dark-green bg-black-05">
+        ${range.display}
+      </a>
+    `
+    : anchorRange
+}
       </li>
     `
   })
@@ -130,9 +159,12 @@ function view (state, emit) {
     isOperator: isOperator,
     resolution: state.model.resolution
   }
+
   var chart = html`
     <div class="w-100 w-75-m w-80-ns pa3 mb2 mr2-ns ba b--black-10 br2 bg-white">
-      <h4 class="f5 normal mt0 mb3">${__('Page views and %s', isOperator ? __('visitors') : __('accounts'))}</h4>
+      <h4 class="f5 normal mt0 mb3">
+        ${__('Page views and %s', isOperator ? __('visitors') : __('accounts'))}
+      </h4>
       <div class="mb4">
         ${state.cache(BarChart, 'bar-chart').render(chartData)}
       </div>
@@ -188,6 +220,7 @@ function view (state, emit) {
         </tr>
       `
     })
+
   var pages = html`
     <h4 class ="f5 normal mt0 mb3">${__('Top pages')}</h4>
     <table class="w-100 collapse mb3">
@@ -212,6 +245,7 @@ function view (state, emit) {
         </tr>
       `
     })
+
   var referrers = referrerData.length
     ? html`
       <h4 class ="f5 normal mt0 mb3">${__('Top referrers')}</h4>
@@ -228,6 +262,7 @@ function view (state, emit) {
       </table>
     `
     : null
+
   var pagesReferrers = html`
       <div class="w-100 pa3 mb2 ba b--black-10 br2 bg-white">
         ${pages}
@@ -252,10 +287,13 @@ function view (state, emit) {
       `
     : null
 
-  var orderedSections = [accountHeader, rowRangeManage, rowUsersSessionsChart, pagesReferrers, goSettings]
   return html`
       <div>
-        ${orderedSections}
+        ${accountHeader}
+        ${rowRangeManage}
+        ${rowUsersSessionsChart}
+        ${pagesReferrers}
+        ${goSettings}
       </div>
     `
 }
