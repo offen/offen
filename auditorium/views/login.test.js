@@ -13,7 +13,8 @@ describe('views/login.js', function () {
 
   describe('loginView', function () {
     it('renders a form and emits a login event on its submission', function (done) {
-      var form = loginView(app.state, app.emit)
+      var form = loginView(app.state, app.emit).querySelector('form')
+      assert(form)
 
       form.querySelector('[name="username"]').value = 'name'
       form.querySelector('[name="password"]').value = 'secret'

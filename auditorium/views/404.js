@@ -4,7 +4,7 @@ module.exports = view
 
 function view (state, emit) {
   var notFoundMessage = html`
-    <h2>${__('Not found...')}</h2>
+    <p data-role="message" class="error dib pa2 br2 bg-black-05 mt0 mb2">${__('Not found...')}</p>
   `
   return notFoundMessage
 }

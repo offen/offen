@@ -19,52 +19,156 @@ function view (state, emit) {
   }
 
   var isOperator = !!(state.params && state.params.accountId)
-
   var accountHeader = null
   var pageTitle
   if (isOperator) {
+    var copy = __(
+      'You are viewing data as <strong>operator</strong> with account <strong>%s</strong>.',
+      state.model.account.name
+    )
     accountHeader = html`
-      <h5>
-        ${raw(__('You are viewing data as <strong>operator</strong> with account <strong>%s</strong>.', state.model.account.name))}
-      </h5>
+      <p class="dib pa2 br2 bg-black-05 mt0 mb2">
+        ${raw(copy)}
+      </p>
     `
     pageTitle = state.model.account.name + ' | ' + state.title
   } else {
-    accountHeader = html`
-      <h5>
-        ${raw(__('You are viewing data as <strong>user</strong>.'))}
-      </h5>
-      ${state.model.allowsCookies ? null : html`<p><strong>${__('Your browser does not allow 3rd party cookies. We respect this setting and collect only very basic data in this case, yet it also means we cannot display any data to you here.')}</strong></p>`}
-    `
     pageTitle = __('user') + ' | ' + state.title
+    accountHeader = html`
+      <p class="dib pa2 br2 bg-black-05 mt0 mb2">
+        ${raw(__('You are viewing your <strong>user</strong> data.'))}
+      </p>
+    `
+    if (!state.model.allowsCookies) {
+      var noCookiesCopy = __('Your browser does not allow 3rd party cookies. We respect this setting and collect only very basic data in this case, yet it also means we cannot display any data to you here.')
+      accountHeader = [
+        accountHeader,
+        html`
+          <p class="dib pa2 black br2 bg-black-05 mt0 mb2">
+            <strong>
+              ${noCookiesCopy}
+            </strong>
+          </p>
+        `
+      ]
+    }
   }
   emit(state.events.DOMTITLECHANGE, pageTitle)
 
   var ranges = [
-    { display: __('last 24 hours'), query: { range: '24', resolution: 'hours' } },
-    { display: __('last 7 days'), query: null },
-    { display: __('last 28 days'), query: { range: '28', resolution: 'days' } },
-    { display: __('last 6 weeks'), query: { range: '6', resolution: 'weeks' } },
-    { display: __('last 12 weeks'), query: { range: '12', resolution: 'weeks' } },
-    { display: __('last 6 months'), query: { range: '6', resolution: 'months' } }
+    { display: __('24 hours'), query: { range: '24', resolution: 'hours' } },
+    { display: __('7 days'), query: null },
+    { display: __('28 days'), query: { range: '28', resolution: 'days' } },
+    { display: __('6 weeks'), query: { range: '6', resolution: 'weeks' } },
+    { display: __('12 weeks'), query: { range: '12', resolution: 'weeks' } },
+    { display: __('6 months'), query: { range: '6', resolution: 'months' } }
   ].map(function (range) {
     var url = (state.href || '') + '/'
     var current = _.pick(state.query, ['range', 'resolution'])
-    var active = _.isEqual(current, range.query || {})
+    var activeRange = _.isEqual(current, range.query || {})
     var foreign = _.omit(state.query, ['range', 'resolution'])
     if (range.query || Object.keys(foreign).length) {
       url += '?' + new window.URLSearchParams(Object.assign(foreign, range.query))
     }
-    var anchor = html`<a href="${url}">${range.display}</a>`
+    var anchorRange = html`
+      <a href="${url}" class="link dim bn ph3 pv2 mr2 mb1 dib br1 white bg-dark-green">
+        ${range.display}
+      </a>
+    `
     return html`
-      <li>
-        ${active ? html`<strong>${anchor}</strong>` : anchor}
+      <li class="mb1">
+        ${activeRange
+    ? html`
+      <a href="${url}" class="f5 b link bb bw2 ph3 pv2 mr2 mb1 dib br1 dark-green bg-black-05">
+        ${range.display}
+      </a>
+    `
+    : anchorRange
+}
       </li>
     `
   })
+
   var rangeSelector = html`
-    <h4>${__('Show data from the:')}</h4>
-    <ul>${ranges}</ul>
+      <h4 class ="f5 normal mt0 mb3">${__('Show data from the last')}</h4>
+      <ul class="flex flex-wrap list pl0 mt0 mb3">${ranges}</ul>
+    `
+
+  if (isOperator) {
+    var availableAccounts = state.authenticatedUser.accounts
+      .slice()
+      .sort(function (a, b) {
+        return a.accountName.localeCompare(b.accountName)
+      })
+      .map(function (account) {
+        var buttonClass = null
+        if (account.accountId === state.params.accountId) {
+          buttonClass = 'b link bb bw2 ph3 pv2 mr2 mb1 dib br1 mid-gray bg-white-50'
+        } else {
+          buttonClass = 'link dim bn ph3 pv2 mr2 mb1 dib br1 white bg-mid-gray'
+        }
+        return html`
+          <li>
+            <a href="./account/${account.accountId}/" class="${buttonClass}">
+              ${account.accountName}
+            </a>
+          </li>
+        `
+      })
+  }
+
+  var chooseAccounts = html`
+      <h4 class ="f5 normal mt0 mb3">Choose account</h4>
+      <ul class="flex flex-wrap list pl0 mt0 mb3">
+        ${availableAccounts}
+      </ul>
+    `
+
+  var manageOperator = html`
+    <div class="w-100 w-30-ns pa3 mb2 mr2-ns br2 bg-black-05">
+      ${chooseAccounts}
+    </div>
+    `
+
+  var manageUser = !isOperator && state.model.allowsCookies
+    ? html`
+      <div class="w-100 w-30-ns pa3 mb2 mr2-ns br2 bg-black-05">
+        <h4 class ="f5 normal mt0 mb3">${__('Manage data')}</h4>
+        <button class="pointer w-100-ns f5 link dim bn ph3 pv2 mr1 mb2 dib br1 white bg-mid-gray" data-role="purge" onclick="${handlePurge}">
+          ${raw(__('Delete my <strong>user</strong> data'))}
+        </button>
+        <button class="pointer w-100-ns f5 link bn ph3 pv2 mb3 dib br1 white bg-black-05" data-role="optin" disabled>
+          ${__('Opt me in')}
+        </button>
+      </div>
+    `
+    : null
+
+  var firstCardContent = isOperator ? manageOperator : manageUser
+  var rowRangeManage = html`
+      <div class="flex flex-column flex-row-ns mt4">
+        ${firstCardContent}
+        <div class="w-100 w-70-ns pa3 mb2 ba b--black-10 br2 bg-white">
+          ${rangeSelector}
+        </div>
+      </div>
+    `
+
+  var chartData = {
+    data: state.model.pageviews,
+    isOperator: isOperator,
+    resolution: state.model.resolution
+  }
+
+  var chart = html`
+    <div class="w-100 w-75-m w-80-ns pa3 mb2 mr2-ns ba b--black-10 br2 bg-white">
+      <h4 class="f5 normal mt0 mb3">
+        ${__('Page views and %s', isOperator ? __('visitors') : __('accounts'))}
+      </h4>
+      <div class="mb4">
+        ${state.cache(BarChart, 'bar-chart').render(chartData)}
+      </div>
+    </div>
   `
 
   var uniqueEntities = isOperator
@@ -75,50 +179,55 @@ function view (state, emit) {
     : __('accounts')
   var uniqueSessions = state.model.uniqueSessions
   var usersAndSessions = html`
-    <div class="row">
-      <div class="six columns">
-        <h4><strong>${uniqueEntities}</strong> ${__('unique %s', entityName)}</h4>
-      </div>
-      <div class="six columns">
-        <h4><strong>${uniqueSessions}</strong> ${__('unique sessions')}</h4>
-      </div>
-    </div>
-    <div class="row">
-      <div class="six columns">
-        <h4><strong>${formatPercentage(state.model.bounceRate)}%</strong> ${__('bounce rate')}</h4>
-      </div>
-      <div class="six columns">
-        ${isOperator ? html`<h4><strong>${formatPercentage(state.model.loss)}%</strong> ${__('plus')}</h4>` : null}
+    <div class="w-100 w-25-m w-20-ns pa3 mb2 ba b--black-10 br2 bg-white">
+      <h4 class ="f5 normal mt0 mb3 mb5-ns">Key metrics</h4>
+      <div class="flex flex-wrap">
+        <div class="w-50 w-100-ns mb3 mb4-ns">
+          <p class="mt0 mb0 f2">${uniqueEntities}</p>
+          <p class="mt0 mb0 normal">${__('Unique %s', entityName)}</p>
+        </div>
+        <div class="w-50 w-100-ns mb3 mb4-ns">
+          <p class="mt0 mb0 f2">${uniqueSessions}</p>
+          <p class="mt0 mb0 normal">${__('Unique sessions')}</p>
+        </div>
+        <div class="w-50 w-100-ns mb3 mb4-ns">
+          <p class="mt0 mb0 f2">${formatPercentage(state.model.bounceRate)} %</p>
+          <p class="mt0 mb0 normal">${__('Bounce rate')}</p>
+        </div>
+        <div class="w-50 w-100-ns mb3 mb4-ns">
+          ${isOperator ? html`
+            <p class="mt0 mb0 f2">${formatPercentage(state.model.loss)} %</p>
+            <p class="mt0 mb0 normal">${__('Plus')}</p>
+          ` : null}
+        </div>
       </div>
     </div>
   `
 
-  var chartData = {
-    data: state.model.pageviews,
-    isOperator: isOperator,
-    resolution: state.model.resolution
-  }
-  var chart = html`
-    <h4>${__('Pageviews and %s', isOperator ? __('Visitors') : __('Accounts'))}</h4>
-    ${state.cache(BarChart, 'bar-chart').render(chartData)}
+  var rowUsersSessionsChart = html`
+    <div class="flex flex-column flex-row-ns">
+      ${chart}
+      ${usersAndSessions}
+    </div>
   `
+
   var pagesData = state.model.pages
     .map(function (row) {
       return html`
         <tr>
-          <td>${row.url}</td>
-          <td>${row.pageviews}</td>
+          <td class="pv2 bt b--black-10">${row.url}</td>
+          <td class="pv2 bt b--black-10">${row.pageviews}</td>
         </tr>
       `
     })
 
   var pages = html`
-    <h4>${__('Top pages')}</h4>
-    <table class="u-full-width">
+    <h4 class ="f5 normal mt0 mb3">${__('Top pages')}</h4>
+    <table class="w-100 collapse mb3">
       <thead>
         <tr>
-          <td>${__('URL')}</td>
-          <td>${__('Pageviews')}</td>
+          <td class="pv2 b">${__('URL')}</td>
+          <td class="pv2 b">${__('Pageviews')}</td>
         </tr>
       </thead>
       <tbody>
@@ -126,24 +235,25 @@ function view (state, emit) {
       </tbody>
     </table>
   `
+
   var referrerData = state.model.referrers
     .map(function (row) {
       return html`
         <tr>
-          <td>${row.host}</td>
-          <td>${row.pageviews}</td>
+          <td class="pv2 bt b--black-10">${row.host}</td>
+          <td class="pv2 bt b--black-10">${row.pageviews}</td>
         </tr>
       `
     })
 
   var referrers = referrerData.length
     ? html`
-      <h4>${__('Top referrers')}</h4>
-      <table class="u-full-width">
+      <h4 class ="f5 normal mt0 mb3">${__('Top referrers')}</h4>
+      <table class="w-100 collapse mb3">
         <thead>
           <tr>
-            <td>${__('Host')}</td>
-            <td>${__('Pageviews')}</td>
+            <td class="pv2 b">${__('Host')}</td>
+            <td class="pv2 b">${__('Pageviews')}</td>
           </tr>
         </thead>
         <tbody>
@@ -153,34 +263,37 @@ function view (state, emit) {
     `
     : null
 
-  var manage = !isOperator && state.model.allowsCookies
-    ? html`
-      <h4>${__('Manage your data')}</h4>
-      <div class="row">
-        <div class="six columns">
-          <button class="btn u-full-width" data-role="optin" disabled>
-            ${__('Opt in')}
-          </button>
-        </div>
-        <div class="six columns">
-          <button class="btn u-full-width" data-role="purge" onclick="${handlePurge}">
-            ${__('Delete my data')}
-          </button>
-        </div>
+  var pagesReferrers = html`
+      <div class="w-100 pa3 mb2 ba b--black-10 br2 bg-white">
+        ${pages}
+        ${referrers}
       </div>
     `
+
+  var goSettings = isOperator
+    ? html`
+        <div class="flex flex-column flex-row-ns mt4">
+          <div class="w-100 w-20-ns pa3 mb2 mr2-ns br2 bg-black-05">
+            <h4 class ="f5 normal mt0 mb3">
+              ${__('Admin console')}
+            </h4>
+            <a href="/auditorium/account/" class="w-100-ns f5 tc link dim bn ph3 pv2 mr1 mb2 dib br1 white bg-mid-gray">
+              ${__('Settings')}
+            </a>
+          </div>
+          <div class="dn db-ns w-100 w-80-ns pa3 mb2 br2 bg-black-05">
+          </div>
+        </div>
+      `
     : null
 
-  var withSeparators = [accountHeader, rangeSelector, usersAndSessions, chart, pages, referrers, manage]
-    .filter(function (el) {
-      return el
-    })
-    .map(function (el) {
-      return html`${el}<hr>`
-    })
   return html`
-    <div>
-      ${withSeparators}
-    </div>
-  `
+      <div>
+        ${accountHeader}
+        ${rowRangeManage}
+        ${rowUsersSessionsChart}
+        ${pagesReferrers}
+        ${goSettings}
+      </div>
+    `
 }
