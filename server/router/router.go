@@ -156,6 +156,10 @@ func New(opts ...Config) http.Handler {
 
 	userCookie := userCookieMiddleware(cookieKey, contextKeyCookie)
 	accountAuth := rt.accountUserMiddleware(authKey, contextKeyAuth)
+	noStore := cacheControlMiddleware(func() string {
+		return "no-store"
+	})
+	etag := etagMiddleware()
 
 	if !rt.config.App.Development {
 		gin.SetMode(gin.ReleaseMode)
@@ -166,12 +170,12 @@ func New(opts ...Config) http.Handler {
 	if rt.template != nil {
 		app.SetHTMLTemplate(rt.template)
 	}
-	app.GET("/", rt.getRoot)
-	app.GET("/healthz", rt.getHealth)
-	app.GET("/versionz", rt.getVersion)
+	app.GET("/", etag, rt.getRoot)
+	app.GET("/healthz", noStore, rt.getHealth)
+	app.GET("/versionz", noStore, rt.getVersion)
 	{
 		api := app.Group("/api")
-
+		api.Use(noStore)
 		api.GET("/exchange", rt.getPublicKey)
 		api.POST("/exchange", rt.postUserSecret)
 
