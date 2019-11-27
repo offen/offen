@@ -56,11 +56,15 @@ func (rt *router) postEvents(c *gin.Context) {
 		).Pipe(c)
 		return
 	}
+
 	// this handler might be called without a cookie / i.e. receiving an
 	// anonymous event, in which case it is important **NOT** to re-issue
 	// the user cookie.
 	if userID != "" {
-		http.SetCookie(c.Writer, rt.userCookie(userID))
+		http.SetCookie(
+			c.Writer,
+			rt.userCookie(userID, c.GetBool(contextKeySecureContext)),
+		)
 	}
 	c.JSON(http.StatusCreated, ackResponse{true})
 }

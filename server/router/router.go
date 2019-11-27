@@ -9,6 +9,7 @@ import (
 
 	"github.com/NYTimes/gziphandler"
 	"github.com/felixge/httpsnoop"
+	"github.com/gin-contrib/location"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/securecookie"
 	"github.com/offen/offen/server/config"
@@ -34,25 +35,26 @@ func (rt *router) logError(err error, message string) {
 }
 
 const (
-	cookieKey        = "user"
-	optoutKey        = "optout"
-	authKey          = "auth"
-	contextKeyCookie = "contextKeyCookie"
-	contextKeyAuth   = "contextKeyAuth"
+	cookieKey               = "user"
+	optoutKey               = "optout"
+	authKey                 = "auth"
+	contextKeyCookie        = "contextKeyCookie"
+	contextKeyAuth          = "contextKeyAuth"
+	contextKeySecureContext = "contextKeySecure"
 )
 
-func (rt *router) userCookie(userID string) *http.Cookie {
+func (rt *router) userCookie(userID string, secure bool) *http.Cookie {
 	return &http.Cookie{
 		Name:     cookieKey,
 		Value:    userID,
 		Expires:  time.Now().Add(rt.config.App.EventRetentionPeriod),
 		HttpOnly: true,
-		Secure:   !rt.config.Server.DisableSecureCookie,
+		Secure:   secure,
 		Path:     "/",
 	}
 }
 
-func (rt *router) optoutCookie(optout bool) *http.Cookie {
+func (rt *router) optoutCookie(optout, secure bool) *http.Cookie {
 	c := &http.Cookie{
 		Name:  optoutKey,
 		Value: "1",
@@ -64,6 +66,7 @@ func (rt *router) optoutCookie(optout bool) *http.Cookie {
 		// stop operating before even sending requests
 		HttpOnly: false,
 		SameSite: http.SameSiteDefaultMode,
+		Secure:   secure,
 	}
 	if !optout {
 		c.Expires = time.Unix(0, 0)
@@ -71,11 +74,12 @@ func (rt *router) optoutCookie(optout bool) *http.Cookie {
 	return c
 }
 
-func (rt *router) authCookie(userID string) (*http.Cookie, error) {
+func (rt *router) authCookie(userID string, secure bool) (*http.Cookie, error) {
 	c := http.Cookie{
 		Name:     authKey,
 		HttpOnly: true,
 		SameSite: http.SameSiteDefaultMode,
+		Secure:   secure,
 	}
 	if userID == "" {
 		c.Expires = time.Unix(0, 0)
@@ -162,7 +166,11 @@ func New(opts ...Config) http.Handler {
 	}
 
 	app := gin.New()
-	app.Use(gin.Recovery())
+	app.Use(
+		gin.Recovery(),
+		location.Default(),
+		secureContextMiddleware(contextKeySecureContext, rt.config.App.Development),
+	)
 	if rt.template != nil {
 		app.SetHTMLTemplate(rt.template)
 	}

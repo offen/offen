@@ -28,12 +28,11 @@ var Revision string
 // source values from the application environment at runtime.
 type Config struct {
 	Server struct {
-		Port                int  `default:"8080"`
-		ReverseProxy        bool `default:"false"`
-		DisableSecureCookie bool `default:"false"`
-		SSLCertificate      string
-		SSLKey              string
-		AutoTLS             string
+		Port           int  `default:"8080"`
+		ReverseProxy   bool `default:"false"`
+		SSLCertificate string
+		SSLKey         string
+		AutoTLS        string
 	}
 	Database struct {
 		Dialect          Dialect `default:"sqlite3"`

@@ -5,8 +5,18 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/gin-contrib/location"
 	"github.com/gin-gonic/gin"
 )
+
+func secureContextMiddleware(contextKey string, isDevelopment bool) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		u := location.Get(c)
+		isLocalhost := u.Hostname() == "localhost"
+		c.Set(contextKey, !isLocalhost && !isDevelopment)
+		c.Next()
+	}
+}
 
 // userCookieMiddleware ensures a cookie of the given name is present and
 // attaches its value to the request's context using the given key, before
@@ -40,7 +50,7 @@ func (rt *router) accountUserMiddleware(cookieKey, contextKey string) gin.Handle
 
 		var userID string
 		if err := rt.cookieSigner.Decode(authKey, authCookie.Value, &userID); err != nil {
-			authCookie, _ = rt.authCookie("")
+			authCookie, _ = rt.authCookie("", c.GetBool(contextKeySecureContext))
 			http.SetCookie(c.Writer, authCookie)
 			newJSONError(
 				fmt.Errorf("error decoding cookie value: %v", err),
@@ -51,7 +61,7 @@ func (rt *router) accountUserMiddleware(cookieKey, contextKey string) gin.Handle
 
 		user, userErr := rt.db.LookupUser(userID)
 		if userErr != nil {
-			authCookie, _ = rt.authCookie("")
+			authCookie, _ = rt.authCookie("", c.GetBool(contextKeySecureContext))
 			http.SetCookie(c.Writer, authCookie)
 			newJSONError(
 				fmt.Errorf("user with id %s does not exist: %v", userID, userErr),
