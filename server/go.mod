@@ -6,6 +6,7 @@ require (
 	github.com/NYTimes/gziphandler v1.1.1
 	github.com/denisenkom/go-mssqldb v0.0.0-20190423183735-731ef375ac02 // indirect
 	github.com/felixge/httpsnoop v1.0.1
+	github.com/gin-contrib/location v0.0.1
 	github.com/gin-gonic/gin v1.4.0
 	github.com/go-gomail/gomail v0.0.0-20160411212932-81ebce5c23df
 	github.com/gofrs/uuid v3.2.0+incompatible

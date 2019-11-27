@@ -37,7 +37,7 @@ func (rt *router) postLogin(c *gin.Context) {
 		return
 	}
 
-	authCookie, authCookieErr := rt.authCookie(result.UserID)
+	authCookie, authCookieErr := rt.authCookie(result.UserID, c.GetBool(contextKeySecureContext))
 	if authCookieErr != nil {
 		jsonErr := newJSONError(
 			fmt.Errorf("router: error creating auth cookie: %v", authCookieErr),
@@ -54,7 +54,7 @@ func (rt *router) postLogin(c *gin.Context) {
 func (rt *router) getLogin(c *gin.Context) {
 	user, ok := c.Value(contextKeyAuth).(persistence.LoginResult)
 	if !ok {
-		authCookie, _ := rt.authCookie("")
+		authCookie, _ := rt.authCookie("", c.GetBool(contextKeySecureContext))
 		http.SetCookie(c.Writer, authCookie)
 		newJSONError(
 			errors.New("could not authorize request"),
@@ -94,7 +94,7 @@ func (rt *router) postChangePassword(c *gin.Context) {
 		).Pipe(c)
 		return
 	}
-	cookie, _ := rt.authCookie("")
+	cookie, _ := rt.authCookie("", c.GetBool(contextKeySecureContext))
 	http.SetCookie(c.Writer, cookie)
 	c.Status(http.StatusNoContent)
 }
@@ -128,7 +128,7 @@ func (rt *router) postChangeEmail(c *gin.Context) {
 		).Pipe(c)
 		return
 	}
-	cookie, _ := rt.authCookie("")
+	cookie, _ := rt.authCookie("", c.GetBool(contextKeySecureContext))
 	http.SetCookie(c.Writer, cookie)
 	c.Status(http.StatusNoContent)
 }
