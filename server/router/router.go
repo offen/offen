@@ -156,8 +156,10 @@ func New(opts ...Config) http.Handler {
 
 	userCookie := userCookieMiddleware(cookieKey, contextKeyCookie)
 	accountAuth := rt.accountUserMiddleware(authKey, contextKeyAuth)
-	noStore := cacheControlMiddleware(func() string {
-		return "no-store"
+	noStore := headerMiddleware(map[string]func() string{
+		"Cache-Control": func() string {
+			return "no-store"
+		},
 	})
 	etag := etagMiddleware()
 

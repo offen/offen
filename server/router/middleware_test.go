@@ -6,6 +6,7 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/securecookie"
@@ -138,4 +139,81 @@ func TestAccountUserMiddleware(t *testing.T) {
 			t.Errorf("Unexpected status code %v", w.Code)
 		}
 	})
+}
+
+func TestHeaderMiddleware(t *testing.T) {
+	m := gin.New()
+	m.GET("/", headerMiddleware(map[string]func() string{
+		"Cache-Control": func() string {
+			return "no-store"
+		},
+		"X-Test": func() string {
+			return time.Now().String()
+		},
+	}), func(c *gin.Context) {
+		c.String(http.StatusOK, "OK!")
+	})
+
+	r := httptest.NewRequest(http.MethodGet, "/", nil)
+	w1, w2 := httptest.NewRecorder(), httptest.NewRecorder()
+
+	m.ServeHTTP(w1, r)
+
+	if w1.Code != http.StatusOK {
+		t.Errorf("Unexpected status code %v", w1.Code)
+	}
+
+	if v := w1.HeaderMap["Cache-Control"]; v[0] != "no-store" {
+		t.Errorf("Unexpected cache control header %v", v[0])
+	}
+
+	m.ServeHTTP(w2, r)
+
+	if w2.Code != http.StatusOK {
+		t.Errorf("Unexpected status code %v", w2.Code)
+	}
+
+	if v := w2.HeaderMap["Cache-Control"]; v[0] != "no-store" {
+		t.Errorf("Unexpected cache control header %v", v[0])
+	}
+
+	test1, test2 := w1.HeaderMap["X-Test"], w2.HeaderMap["X-Test"]
+	if test1[0] == test2[0] {
+		t.Errorf("Unexpectedly received %v twice", test1[0])
+	}
+}
+
+func TestEtagMiddleware(t *testing.T) {
+	m := gin.New()
+	m.GET("/", etagMiddleware(), func(c *gin.Context) {
+		c.String(http.StatusOK, "OK this is the content!")
+	})
+
+	w1 := httptest.NewRecorder()
+	r1 := httptest.NewRequest(http.MethodGet, "/", nil)
+
+	m.ServeHTTP(w1, r1)
+
+	if w1.Code != http.StatusOK {
+		t.Errorf("Unexpected status code %v", w1.Code)
+	}
+
+	if cacheControl := w1.Header().Get("Cache-Control"); cacheControl != "no-cache" {
+		t.Errorf("Unexpected cache control header %v", cacheControl)
+	}
+
+	etag := w1.Header().Get("Etag")
+	if etag == "" {
+		t.Fatal("No Etag header sent in response")
+	}
+
+	w2 := httptest.NewRecorder()
+	r2 := httptest.NewRequest(http.MethodGet, "/", nil)
+	r2.Header["If-None-Match"] = []string{etag}
+
+	m.ServeHTTP(w2, r2)
+
+	if w2.Code != http.StatusOK {
+		t.Errorf("Unexpected status code %v", w2.Code)
+	}
 }
