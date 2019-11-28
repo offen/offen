@@ -208,8 +208,8 @@ function view (state, emit) {
         <button class="pointer w-100-ns f5 link dim bn ph3 pv2 mr1 mb2 dib br1 white bg-mid-gray" data-role="purge" onclick="${handlePurge}">
           ${raw(__('Delete my <strong>user</strong> data'))}
         </button>
-        <button class="pointer w-100-ns f5 link bn ph3 pv2 mb3 dib br1 white bg-black-05" data-role="optin" disabled onclick="${handleOptin}">
-          ${__('Opt me in')}
+        <button class="pointer w-100-ns f5 link bn ph3 pv2 mb3 dib br1 white bg-mid-gray" data-role="optin" onclick=${handleOptin}>
+          ${state.model.hasOptedIn ? __('Opt me out') : __('Opt me in')}
         </button>
       </div>
     `
