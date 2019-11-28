@@ -1,7 +1,6 @@
 var api = require('./api')
 var queries = require('./queries')
 var relayEvent = require('./relay-event')
-var hasOptedOut = require('./user-optout')
 var allowsCookies = require('./allows-cookies')
 var getUserEvents = require('./get-user-events')
 var getOperatorEvents = require('./get-operator-events')
@@ -28,30 +27,14 @@ function handleAnonymousEventWith (relayEvent) {
   }
 }
 
-exports.handleOptout = handleOptoutWith(api)
-exports.handleOptoutWith = handleOptoutWith
-
-function handleOptoutWith (api) {
-  return function (message) {
-    var status = (message.payload && message.payload.status) || false
-    return (status ? api.optout() : api.optin())
-      .then(function () {
-        return {
-          type: 'OPTOUT_SUCCESS'
-        }
-      })
-  }
-}
-
-exports.handleOptoutStatus = handleOptoutStatusWith(hasOptedOut, allowsCookies)
+exports.handleOptoutStatus = handleOptoutStatusWith(allowsCookies)
 exports.handleOptoutStatusWith = handleOptoutStatusWith
 
-function handleOptoutStatusWith (hasOptedOut, allowsCookies) {
+function handleOptoutStatusWith (allowsCookies) {
   return function (message) {
     return {
       type: 'OPTOUT_STATUS_SUCCESS',
       payload: {
-        hasOptedOut: hasOptedOut(),
         allowsCookies: allowsCookies()
       }
     }

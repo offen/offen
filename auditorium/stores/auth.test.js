@@ -41,7 +41,7 @@ describe('stores/auth.js', function () {
         try {
           assert.ok(!app.state.authenticated)
           assert.ok(!app.state.error)
-          assert.strictEqual(pushedState, '/auditorium/login')
+          assert.strictEqual(pushedState, '/auditorium/login/')
           done()
         } catch (err) {
           done(err)

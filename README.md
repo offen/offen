@@ -4,7 +4,13 @@
 
 > The offen analytics software
 
-This repository contains all source code needed to build and run __offen__, both on the server as well as on the client. See each of the READMEs in the subdirectories for instructions on how to work on that particular area of the application.
+---
+
+**IMPORTANT NOTE BEFORE YOU START**: This software is not yet in a usable state. It is still missing a mechanism for opting in and out of data collection and should therefore **not be used in any kind of production scenario**. Once you can start using offen, we will add instructions on how to do so here. In the meantime, feel free to open an issue if you have any questions.
+
+---
+
+This repository contains all source code needed to build and run __offen__, both on the server as well as on the client. Also see each of the READMEs in the subdirectories for information on how to work on that particular area of the application.
 
 ---
 
@@ -27,11 +33,26 @@ $ make bootstrap
 You can test your setup by starting the application:
 
 ```sh
-$ docker-compose up
+$ make up
 ```
 
 which should enable you to access <http://localhost:8080/auditorium/> and use the `auditorium`
 
-### License
+Run the tests for all subapplicatons using
 
-MIT © [offen](https://www.offen.dev)
+```sh
+$ make test
+```
+
+---
+
+[![NLnet Foundation](https://offen.github.io/press-kit/external-material/nlnet-logo.svg)](https://nlnet.nl/)
+
+We are happy to work with [NLnet Foundation](https://nlnet.nl/) who complement our activities within their [Next Generation Internet](https://nlnet.nl/NGI/) initiative.
+
+---
+<a href="https://www.browserstack.com/">
+  <img src="https://offen.github.io/press-kit/external-material/browserstack-logo.svg" width="160">
+</a>
+
+Cross-Browser testing provided by [BrowserStack](https://www.browserstack.com/).

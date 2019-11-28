@@ -12,30 +12,23 @@ function view (state, emit) {
     })
   }
   var form = html`
-    <form onsubmit=${handleSubmit}>
-      <div class="row">
-        <div class="eight columns">
-          <label>
-            Email Address:
-          </label>
-          <input class="u-full-width" required type="email" name="username" placeholder="E-Mail-Address">
+    <div class="w-100 pa3 mt4 mb2 br2 bg-black-05">
+      <h4 class="f5 normal mt0 mb3">Log in as operator</h4>
+      <form class="mw6 center" onsubmit=${handleSubmit}>
+        <label class="b lh-copy">
+          ${__('Email address')}
+        </label>
+        <input class="w-100 pa2 mb3 input-reset ba b--black-10 bg-white" required type="email" name="username">
+        <label class="b lh-copy">
+          ${__('Password')}
+        </label>
+        <input class="w-100 pa2 mb3 input-reset ba b--black-10 bg-white" required type="password" name="password">
+        <input class="pointer w-100 w4-ns f5 link dim bn ph3 pv2 mb3 dib br1 white bg-mid-gray" type="submit" value="${__('Log in')}">
+        <div class="mb3">
+          <a class="link dim dark-green" href="./reset-password/">${__('Forgot password?')}</a>
         </div>
-      </div>
-      <div class="row">
-        <div class="eight columns">
-          <label>
-            Password:
-          </label>
-          <input class="u-full-width" required type="password" name="password" placeholder="Password">
-        </div>
-      </div>
-      <div class="row">
-        <div class="eight columns">
-          <input type="submit" class="u-full-width" value="Log In">
-        </div>
-      </div>
-      <a href="./reset-password">Forgot password?</a>
-    </form>
+      </form>
+    </div>
   `
 
   return form

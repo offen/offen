@@ -10,3 +10,11 @@ dist/
 
 bin/
 statik.go
+offen
+
+*.po
+package-lock.json
+!*/package-lock.json
+
+server.crt
+server.key

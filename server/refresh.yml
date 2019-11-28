@@ -1,7 +1,7 @@
 app_root: .
 included_extensions:
   - .go
-build_path: /tmp
+build_path: /data/build
 build_delay: 200ms
 build_target_path : ./cmd/offen
 command_flags:

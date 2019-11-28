@@ -3,7 +3,6 @@ var _ = require('underscore')
 
 var dataStore = require('./stores/data')
 var authStore = require('./stores/auth')
-var optOutStore = require('./stores/opt-out')
 var bailOutStore = require('./stores/bail-out')
 var mainView = require('./views/main')
 var loginView = require('./views/login')
@@ -29,7 +28,6 @@ document.querySelector('#app-host').appendChild(host)
 app.use(dataStore)
 app.use(authStore)
 app.use(bailOutStore)
-app.use(optOutStore)
 
 function decorateWithDefaults (view, title) {
   var wrapper = _.compose(withLayout(), withError(), withTitle(title))
@@ -40,31 +38,31 @@ var base = (document.querySelector('base') && document.querySelector('base').get
 
 app.route(
   base + 'account/:accountId',
-  decorateWithDefaults(withAuthentication()(withModel()(mainView)), 'offen auditorium')
+  decorateWithDefaults(withAuthentication()(withModel()(mainView)), __('offen auditorium'))
 )
 app.route(
   base + 'account',
-  decorateWithDefaults(withAuthentication()(accountView), 'offen accounts')
+  decorateWithDefaults(withAuthentication()(accountView), __('offen accounts'))
 )
 app.route(
   base + 'login',
-  decorateWithDefaults(loginView, 'offen login')
+  decorateWithDefaults(loginView, __('offen login'))
 )
 app.route(
   base + 'reset-password/:token',
-  decorateWithDefaults(resetPasswordView, 'offen reset password')
+  decorateWithDefaults(resetPasswordView, __('offen reset password'))
 )
 app.route(
   base + 'reset-password',
-  decorateWithDefaults(forgotPasswordView, 'offen forgot password')
+  decorateWithDefaults(forgotPasswordView, __('offen forgot password'))
 )
 app.route(
   base.replace(/\/$/, ''),
-  decorateWithDefaults(withModel()(mainView), 'offen auditorium')
+  decorateWithDefaults(withModel()(mainView), __('offen auditorium'))
 )
 app.route(
   base + '*',
-  decorateWithDefaults(notFoundView, 'Not found')
+  decorateWithDefaults(notFoundView, __('Not found'))
 )
 
 module.exports = app.mount(host)

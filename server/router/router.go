@@ -1,27 +1,31 @@
 package router
 
 import (
+	"fmt"
+	"html/template"
 	"net/http"
 	"strings"
 	"time"
 
+	"github.com/NYTimes/gziphandler"
+	"github.com/felixge/httpsnoop"
+	"github.com/gin-contrib/location"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/securecookie"
-	"github.com/offen/offen/server/assets"
+	"github.com/offen/offen/server/config"
 	"github.com/offen/offen/server/mailer"
 	"github.com/offen/offen/server/persistence"
 	"github.com/sirupsen/logrus"
 )
 
 type router struct {
-	db                   persistence.Database
-	mailer               mailer.Mailer
-	logger               *logrus.Logger
-	cookieSigner         *securecookie.SecureCookie
-	secureCookie         bool
-	revision             string
-	cookieExchangeSecret []byte
-	retentionPeriod      time.Duration
+	db           persistence.Service
+	mailer       mailer.Mailer
+	fs           http.FileSystem
+	logger       *logrus.Logger
+	cookieSigner *securecookie.SecureCookie
+	template     *template.Template
+	config       *config.Config
 }
 
 func (rt *router) logError(err error, message string) {
@@ -31,25 +35,26 @@ func (rt *router) logError(err error, message string) {
 }
 
 const (
-	cookieKey        = "user"
-	optoutKey        = "optout"
-	authKey          = "auth"
-	contextKeyCookie = "contextKeyCookie"
-	contextKeyAuth   = "contextKeyAuth"
+	cookieKey               = "user"
+	optoutKey               = "optout"
+	authKey                 = "auth"
+	contextKeyCookie        = "contextKeyCookie"
+	contextKeyAuth          = "contextKeyAuth"
+	contextKeySecureContext = "contextKeySecure"
 )
 
-func (rt *router) userCookie(userID string) *http.Cookie {
+func (rt *router) userCookie(userID string, secure bool) *http.Cookie {
 	return &http.Cookie{
 		Name:     cookieKey,
 		Value:    userID,
-		Expires:  time.Now().Add(rt.retentionPeriod),
+		Expires:  time.Now().Add(rt.config.App.EventRetentionPeriod),
 		HttpOnly: true,
-		Secure:   rt.secureCookie,
+		Secure:   secure,
 		Path:     "/",
 	}
 }
 
-func (rt *router) optoutCookie(optout bool) *http.Cookie {
+func (rt *router) optoutCookie(optout, secure bool) *http.Cookie {
 	c := &http.Cookie{
 		Name:  optoutKey,
 		Value: "1",
@@ -61,6 +66,7 @@ func (rt *router) optoutCookie(optout bool) *http.Cookie {
 		// stop operating before even sending requests
 		HttpOnly: false,
 		SameSite: http.SameSiteDefaultMode,
+		Secure:   secure,
 	}
 	if !optout {
 		c.Expires = time.Unix(0, 0)
@@ -68,11 +74,12 @@ func (rt *router) optoutCookie(optout bool) *http.Cookie {
 	return c
 }
 
-func (rt *router) authCookie(userID string) (*http.Cookie, error) {
+func (rt *router) authCookie(userID string, secure bool) (*http.Cookie, error) {
 	c := http.Cookie{
 		Name:     authKey,
 		HttpOnly: true,
 		SameSite: http.SameSiteDefaultMode,
+		Secure:   secure,
 	}
 	if userID == "" {
 		c.Expires = time.Unix(0, 0)
@@ -91,16 +98,9 @@ func (rt *router) authCookie(userID string) (*http.Cookie, error) {
 type Config func(*router)
 
 // WithDatabase sets the database the router will use
-func WithDatabase(db persistence.Database) Config {
+func WithDatabase(db persistence.Service) Config {
 	return func(r *router) {
 		r.db = db
-	}
-}
-
-// WithRevision sets the current revision
-func WithRevision(rev string) Config {
-	return func(r *router) {
-		r.revision = rev
 	}
 }
 
@@ -111,33 +111,25 @@ func WithLogger(l *logrus.Logger) Config {
 	}
 }
 
-// WithMailer sets the mailer the router will use
-func WithMailer(m mailer.Mailer) Config {
+// WithTemplate ensures the router is using the given template object
+// for rendering dynamic HTML output.
+func WithTemplate(t *template.Template) Config {
 	return func(r *router) {
-		r.mailer = m
+		r.template = t
 	}
 }
 
-// WithSecureCookie determines whether the application will issue
-// secure (HTTPS-only) cookies
-func WithSecureCookie(sc bool) Config {
+// WithConfig attaches the given runtime config to the router.
+func WithConfig(c *config.Config) Config {
 	return func(r *router) {
-		r.secureCookie = sc
+		r.config = c
 	}
 }
 
-// WithCookieExchangeSecret sets the secret to be used for signing secured
-// cookie exchange requests
-func WithCookieExchangeSecret(b []byte) Config {
+// WithFS attaches a filesystem for serving static assets
+func WithFS(fs http.FileSystem) Config {
 	return func(r *router) {
-		r.cookieExchangeSecret = b
-	}
-}
-
-// WithRetentionPeriod sets the expected value for retaining event data
-func WithRetentionPeriod(d time.Duration) Config {
-	return func(r *router) {
-		r.retentionPeriod = d
+		r.fs = fs
 	}
 }
 
@@ -150,31 +142,50 @@ func New(opts ...Config) http.Handler {
 	for _, opt := range opts {
 		opt(&rt)
 	}
-	rt.cookieSigner = securecookie.New(rt.cookieExchangeSecret, nil)
 
+	rt.cookieSigner = securecookie.New(rt.config.Secrets.CookieExchange.Bytes(), nil)
+	rt.mailer = rt.config.NewMailer()
+
+	fileServer := http.FileServer(rt.fs)
+	if !rt.config.Server.ReverseProxy {
+		fileServer = gziphandler.GzipHandler(staticHeaderMiddleware(fileServer))
+	}
+
+	static := http.NewServeMux()
 	// In development, these routes will be served by a different nginx
 	// upstream. They are only relevant when building the application into
 	// a single binary that inlines the filesystems.
-	static := http.NewServeMux()
-	fileServer := http.FileServer(assets.FS)
 	static.Handle("/auditorium/", singlePageAppMiddleware("/auditorium/")(fileServer))
 	static.Handle("/", fileServer)
 
-	dropOptout := optoutMiddleware(optoutKey)
 	userCookie := userCookieMiddleware(cookieKey, contextKeyCookie)
 	accountAuth := rt.accountUserMiddleware(authKey, contextKeyAuth)
+	noStore := headerMiddleware(map[string]func() string{
+		"Cache-Control": func() string {
+			return "no-store"
+		},
+	})
+	etag := etagMiddleware()
+
+	if !rt.config.App.Development {
+		gin.SetMode(gin.ReleaseMode)
+	}
 
 	app := gin.New()
-	app.Use(gin.Recovery())
-	app.GET("/healthz", rt.getHealth)
-	app.GET("/versionz", rt.getVersion)
+	app.Use(
+		gin.Recovery(),
+		location.Default(),
+		secureContextMiddleware(contextKeySecureContext, rt.config.App.Development),
+	)
+	if rt.template != nil {
+		app.SetHTMLTemplate(rt.template)
+	}
+	app.GET("/", etag, rt.getRoot)
+	app.GET("/healthz", noStore, rt.getHealth)
+	app.GET("/versionz", noStore, rt.getVersion)
 	{
 		api := app.Group("/api")
-		api.GET("/opt-out", rt.getOptout)
-		api.POST("/opt-in", rt.postOptin)
-		api.GET("/opt-in", rt.getOptin)
-		api.POST("/opt-out", rt.postOptout)
-
+		api.Use(noStore)
 		api.GET("/exchange", rt.getPublicKey)
 		api.POST("/exchange", rt.postUserSecret)
 
@@ -193,20 +204,38 @@ func New(opts ...Config) http.Handler {
 		api.POST("/reset-password", rt.postResetPassword)
 
 		api.GET("/events", userCookie, rt.getEvents)
-		api.POST("/events/anonymous", dropOptout, rt.postEvents)
-		api.POST("/events", dropOptout, userCookie, rt.postEvents)
+		api.POST("/events/anonymous", rt.postEvents)
+		api.POST("/events", userCookie, rt.postEvents)
 	}
 
 	m := http.NewServeMux()
 	m.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		switch uri := r.RequestURI; {
+		switch uri := r.URL.Path; {
 		case strings.HasPrefix(uri, "/api/"),
 			strings.HasPrefix(uri, "/healthz"),
-			strings.HasPrefix(uri, "/versionz"):
+			strings.HasPrefix(uri, "/versionz"),
+			uri == "/":
 			app.ServeHTTP(w, r)
 		default:
 			static.ServeHTTP(w, r)
 		}
 	})
-	return m
+
+	if rt.config.Server.ReverseProxy {
+		return m
+	}
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		metrics := httpsnoop.CaptureMetrics(m, w, r)
+		logLevel := logrus.InfoLevel
+		if metrics.Code >= http.StatusInternalServerError {
+			logLevel = logrus.ErrorLevel
+		}
+		rt.logger.WithFields(logrus.Fields{
+			"status":   metrics.Code,
+			"duration": fmt.Sprintf("%3f", metrics.Duration.Seconds()),
+			"size":     metrics.Written,
+			"method":   r.Method,
+			"uri":      r.RequestURI,
+		}).Logf(logLevel, "%s %s", r.Method, r.URL.Path)
+	})
 }

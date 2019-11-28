@@ -7,7 +7,7 @@ function view (state, emit) {
     e.preventDefault()
     var formData = new window.FormData(e.currentTarget)
     if (formData.get('password') !== formData.get('repeat-password')) {
-      return emit('offen:flash', 'Passwords did not match. Please try again.')
+      return emit('offen:flash', __('Passwords did not match. Please try again.'))
     }
     emit('offen:reset-password', {
       emailAddress: formData.get('email-address'),
@@ -16,38 +16,25 @@ function view (state, emit) {
     })
   }
   var form = html`
-    <form onsubmit=${handleSubmit}>
-      <div class="row">
-        <div class="eight columns">
-          <label>
-            Email address:
-          </label>
-          <input class="u-full-width" required type="email" name="email-address" placeholder="Your email address">
-        </div>
-      </div>
-      <div class="row">
-        <div class="eight columns">
-          <label>
-            New password:
-          </label>
-          <input class="u-full-width" required type="password" name="password" placeholder="Your new password">
-        </div>
-      </div>
-      <div class="row">
-        <div class="eight columns">
-          <label>
-            Repeat password:
-          </label>
-          <input class="u-full-width" required type="password" name="repeat-password" placeholder="Repeat password">
-        </div>
-      </div>
-      <div class="row">
-        <div class="eight columns">
-          <input class="u-full-width" type="submit" value="Reset password">
-        </div>
-      </div>
-      <input type="hidden" name="token" value=${state.params.token}>
-    </form>
+    <div class="w-100 pa3 mb2 br2 bg-black-05">
+      <h4 class="f5 normal mt0 mb3">Reset password</h4>
+      <form class="mw6 center" onsubmit=${handleSubmit}>
+        <label class="b lh-copy">
+          ${__('Email address')}
+        </label>
+        <input class="w-100 pa2 mb3 input-reset ba b--black-10 bg-white" required type="email" name="email-address">
+        <label class="b lh-copy">
+          ${__('New password')}
+        </label>
+        <input class="w-100 pa2 mb3 input-reset ba b--black-10 bg-white" required type="password" name="password">
+        <label class="b lh-copy">
+          ${__('Repeat new password')}
+        </label>
+        <input class="w-100 pa2 mb3 input-reset ba b--black-10 bg-white" required type="password" name="repeat-password">
+        <input class="pointer w-100 w-auto-ns f5 link dim bn ph3 pv2 mb3 dib br1 white bg-mid-gray" type="submit" value="${__('Reset password')}">
+        <input type="hidden" name="token" value=${state.params.token}>
+      </form>
+    </div>
   `
 
   return form

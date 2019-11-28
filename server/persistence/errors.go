@@ -1,5 +1,7 @@
 package persistence
 
+import "errors"
+
 // ErrUnknownAccount will be returned when an insert call tries to create an
 // event for an account ID that does not exist in the database
 type ErrUnknownAccount string
@@ -15,3 +17,6 @@ type ErrUnknownUser string
 func (e ErrUnknownUser) Error() string {
 	return string(e)
 }
+
+// ErrBadQuery is returned when a DAL method cannot handle the given query
+var ErrBadQuery = errors.New("persistence: could not match query")

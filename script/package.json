@@ -11,8 +11,8 @@
     "pretest": "dependency-check package.json",
     "posttest": "standard",
     "fix": "standard --fix",
-    "prebuild": "mkdir -p dist && echo '/**' > dist/script.js && cat ./../banner.txt >> dist/script.js && echo '*/' >> dist/script.js",
-    "build": "browserify index.js -p tinyify >> dist/script.js"
+    "build": "gulp",
+    "extract-strings": "gulp extract-strings"
   },
   "dependencies": {
     "history-events": "^1.0.4",
@@ -24,19 +24,36 @@
     "budo": "^11.6.3",
     "dependency-check": "^3.3.0",
     "envify": "^4.1.0",
+    "gulp": "^4.0.2",
+    "gulp-append-prepend": "^1.0.8",
+    "gulp-clean": "^0.4.0",
     "http-server": "^0.11.1",
     "mochify": "^6.3.0",
     "standard": "^12.0.1",
-    "tinyify": "^2.5.0"
+    "tinyify": "^2.5.0",
+    "vinyl-buffer": "^1.0.1",
+    "vinyl-source-stream": "^2.0.0"
   },
   "browserify": {
     "transform": [
-      "envify"
+      "envify",
+      "offen/localize"
     ]
   },
   "standard": {
+    "globals": [
+      "__"
+    ],
+    "ignore": [
+      "dist/**/*.*"
+    ],
     "env": [
       "mocha"
+    ]
+  },
+  "offen": {
+    "locales": [
+      "en"
     ]
   }
 }

@@ -17,14 +17,14 @@ function store (state, emitter) {
       .then(function (response) {
         if (response.type === 'LOGIN_SUCCESS') {
           state.authenticatedUser = response.payload
+          var firstAccount = state.authenticatedUser.accounts[0].accountId
           if (credentials) {
-            state.flash = 'You are now logged in.'
-            emitter.emit(state.events.PUSHSTATE, '/auditorium/account')
+            emitter.emit(state.events.PUSHSTATE, '/auditorium/account/' + firstAccount)
           }
           return
         } else if (response.type === 'LOGIN_FAILURE') {
-          state.flash = 'Could not log in. Try again.'
-          emitter.emit(state.events.PUSHSTATE, '/auditorium/login')
+          state.flash = __('Could not log in. Try again.')
+          emitter.emit(state.events.PUSHSTATE, '/auditorium/login/')
           return
         }
         throw new Error('Received unknown response type: ' + response.type)
@@ -53,12 +53,12 @@ function store (state, emitter) {
         if (response.type === 'CHANGE_CREDENTIALS_SUCCESS') {
           Object.assign(state, {
             authenticatedUser: null,
-            flash: 'Please log in again, using your new credentials.'
+            flash: __('Please log in again, using your new credentials.')
           })
-          emitter.emit(state.events.PUSHSTATE, '/auditorium/login')
+          emitter.emit(state.events.PUSHSTATE, '/auditorium/login/')
           return
         } else if (response.type === 'CHANGE_CREDENTIALS_FAILURE') {
-          state.flash = 'Could not change credentials. Try again.'
+          state.flash = __('Could not change credentials. Try again.')
           return
         }
         throw new Error('Received unknown response type: ' + response.type)
@@ -87,11 +87,11 @@ function store (state, emitter) {
         if (response.type === 'FORGOT_PASSWORD_SUCCESS') {
           Object.assign(state, {
             authenticatedUser: null,
-            flash: 'Check your inbox and follow the instructions in the email.'
+            flash: __('Check your inbox and follow the instructions in the email.')
           })
           return
         } else if (response.type === 'FORGOT_PASSWORD_FAILURE') {
-          state.flash = 'Could not handle your request, please try again.'
+          state.flash = __('Could not handle your request, please try again.')
           return
         }
         throw new Error('Received unknown response type: ' + response.type)
@@ -120,12 +120,12 @@ function store (state, emitter) {
         if (response.type === 'RESET_PASSWORD_SUCCESS') {
           Object.assign(state, {
             authenticatedUser: null,
-            flash: 'Please log in again, using your new credentials.'
+            flash: __('Please log in again, using your new credentials.')
           })
-          emitter.emit(state.events.PUSHSTATE, '/auditorium/login')
+          emitter.emit(state.events.PUSHSTATE, '/auditorium/login/')
           return
         } else if (response.type === 'RESET_PASSWORD_FAILURE') {
-          state.flash = 'Could not handle your request, please try again.'
+          state.flash = __('Could not handle your request, please try again.')
           return
         }
         throw new Error('Received unknown response type: ' + response.type)

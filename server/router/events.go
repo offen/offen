@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"net/url"
 
 	"github.com/gin-gonic/gin"
 	"github.com/offen/offen/server/persistence"
@@ -33,50 +32,41 @@ func (rt *router) postEvents(c *gin.Context) {
 	}
 
 	if err := rt.db.Insert(userID, evt.AccountID, evt.Payload); err != nil {
-		if unknownAccountErr, ok := err.(persistence.ErrUnknownAccount); ok {
+		var unknownAccountErr persistence.ErrUnknownAccount
+		if errors.As(err, &unknownAccountErr) {
 			newJSONError(
 				unknownAccountErr,
 				http.StatusNotFound,
 			).Pipe(c)
 			return
 		}
-		if unknownUserErr, ok := err.(persistence.ErrUnknownUser); ok {
+
+		var unknownUserErr persistence.ErrUnknownUser
+		if errors.As(err, &unknownUserErr) {
 			newJSONError(
 				unknownUserErr,
 				http.StatusBadRequest,
 			).Pipe(c)
 			return
 		}
+
 		newJSONError(
 			fmt.Errorf("router: error persisting event: %v", err),
 			http.StatusInternalServerError,
 		).Pipe(c)
 		return
 	}
+
 	// this handler might be called without a cookie / i.e. receiving an
 	// anonymous event, in which case it is important **NOT** to re-issue
 	// the user cookie.
 	if userID != "" {
-		http.SetCookie(c.Writer, rt.userCookie(userID))
+		http.SetCookie(
+			c.Writer,
+			rt.userCookie(userID, c.GetBool(contextKeySecureContext)),
+		)
 	}
 	c.JSON(http.StatusCreated, ackResponse{true})
-}
-
-type getQuery struct {
-	params url.Values
-	userID string
-}
-
-func (q *getQuery) AccountIDs() []string {
-	return q.params["accountId"]
-}
-
-func (q *getQuery) UserID() string {
-	return q.userID
-}
-
-func (q *getQuery) Since() string {
-	return q.params.Get("since")
 }
 
 type getResponse struct {
@@ -92,12 +82,10 @@ func (rt *router) getEvents(c *gin.Context) {
 		).Pipe(c)
 		return
 	}
-	query := getQuery{
-		params: c.Request.URL.Query(),
-		userID: userID,
-	}
-
-	result, err := rt.db.Query(&query)
+	result, err := rt.db.Query(persistence.Query{
+		UserID: userID,
+		Since:  c.Query("since"),
+	})
 	if err != nil {
 		newJSONError(
 			fmt.Errorf("router: error performing event query: %v", err),

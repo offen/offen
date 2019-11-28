@@ -1,22 +1,22 @@
 package router
 
 import (
+	"bytes"
+	"crypto/md5"
 	"errors"
 	"fmt"
 	"net/http"
+	"strings"
 
+	"github.com/gin-contrib/location"
 	"github.com/gin-gonic/gin"
 )
 
-// optoutMiddleware drops all requests to the given handler that are sent with
-// a cookie of the given name,
-func optoutMiddleware(cookieName string) gin.HandlerFunc {
+func secureContextMiddleware(contextKey string, isDevelopment bool) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		if _, err := c.Request.Cookie(cookieName); err == nil {
-			c.Status(http.StatusNoContent)
-			c.Abort()
-			return
-		}
+		u := location.Get(c)
+		isLocalhost := u.Hostname() == "localhost"
+		c.Set(contextKey, !isLocalhost && !isDevelopment)
 		c.Next()
 	}
 }
@@ -53,7 +53,7 @@ func (rt *router) accountUserMiddleware(cookieKey, contextKey string) gin.Handle
 
 		var userID string
 		if err := rt.cookieSigner.Decode(authKey, authCookie.Value, &userID); err != nil {
-			authCookie, _ = rt.authCookie("")
+			authCookie, _ = rt.authCookie("", c.GetBool(contextKeySecureContext))
 			http.SetCookie(c.Writer, authCookie)
 			newJSONError(
 				fmt.Errorf("error decoding cookie value: %v", err),
@@ -64,15 +64,54 @@ func (rt *router) accountUserMiddleware(cookieKey, contextKey string) gin.Handle
 
 		user, userErr := rt.db.LookupUser(userID)
 		if userErr != nil {
-			authCookie, _ = rt.authCookie("")
+			authCookie, _ = rt.authCookie("", c.GetBool(contextKeySecureContext))
 			http.SetCookie(c.Writer, authCookie)
 			newJSONError(
 				fmt.Errorf("user with id %s does not exist: %v", userID, userErr),
-				http.StatusNotFound,
+				http.StatusUnauthorized,
 			).Pipe(c)
 			return
 		}
 		c.Set(contextKey, user)
 		c.Next()
+	}
+}
+
+func headerMiddleware(valueProvider map[string]func() string) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		for key, provider := range valueProvider {
+			c.Header(key, provider())
+		}
+		c.Next()
+	}
+}
+
+type bufferingGinWriter struct {
+	gin.ResponseWriter
+	buf bytes.Buffer
+}
+
+func (g *bufferingGinWriter) Write(data []byte) (int, error) {
+	return g.buf.Write(data)
+}
+
+func etagMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		bw := &bufferingGinWriter{c.Writer, bytes.Buffer{}}
+		defer bw.ResponseWriter.Flush()
+		c.Writer = bw
+		c.Next()
+
+		data := bw.buf.Bytes()
+		etag := fmt.Sprintf("%x", md5.Sum(data))
+		c.Header("Etag", etag)
+		c.Header("Cache-Control", "no-cache")
+		if match := c.GetHeader("If-None-Match"); match != "" {
+			if strings.Contains(match, etag) {
+				c.Status(http.StatusNotModified)
+				return
+			}
+		}
+		bw.ResponseWriter.Write(data)
 	}
 }

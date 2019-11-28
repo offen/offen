@@ -19,7 +19,7 @@ func TestSymmetricEncryption(t *testing.T) {
 		{
 			"derived",
 			func() ([]byte, error) {
-				return DeriveKey("mypassword", []byte("abc123"))
+				return DeriveKey("mypassword", "XqiWf9CdPpmT3bu0aHkzjQ==")
 			},
 		},
 	}
@@ -27,16 +27,16 @@ func TestSymmetricEncryption(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			key, err := test.generateKey()
 			if err != nil {
-				t.Fatalf("Unexpected error genrating key")
+				t.Fatalf("Unexpected error genrating key: %v", err)
 			}
 			value := []byte("much encryption, so wow")
-			cipher, nonce, err := EncryptWith(key, value)
+			versionedCipher, err := EncryptWith(key, value)
 			if err != nil {
 				t.Fatalf("Unexpected error encrypting value")
 			}
-			plaintext, err := DecryptWith(key, cipher, nonce)
+			plaintext, err := DecryptWith(key, versionedCipher.Marshal())
 			if err != nil {
-				t.Fatalf("Unexpected error decrypting value %v", err)
+				t.Fatalf("Unexpected error decrypting value: %v", versionedCipher.Marshal())
 			}
 			if !reflect.DeepEqual(value, plaintext) {
 				t.Errorf("Expected decrypted value to match original, got %s", string(plaintext))
@@ -50,10 +50,10 @@ func TestHashPassword(t *testing.T) {
 	if hashErr != nil {
 		t.Fatalf("Unexpected error %v", hashErr)
 	}
-	if err := ComparePassword("s3cr3t", hash); err != nil {
+	if err := ComparePassword("s3cr3t", hash.Marshal()); err != nil {
 		t.Errorf("Unexpected error %v", err)
 	}
-	if err := ComparePassword("other", hash); err == nil {
+	if err := ComparePassword("other", hash.Marshal()); err == nil {
 		t.Errorf("Comparison unexpectedly passed for wrong password")
 	}
 }

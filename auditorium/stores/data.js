@@ -3,7 +3,7 @@ var vault = require('offen/vault')
 module.exports = store
 
 function store (state, emitter) {
-  function handleRequest (request) {
+  function handleRequest (request, onSuccessMessage) {
     var fetchQuery = vault(process.env.VAULT_HOST || '/vault/')
       .then(function (postMessage) {
         return postMessage(request, true)
@@ -23,11 +23,13 @@ function store (state, emitter) {
         var optoutMessage = results[1]
         state.model = queryMessage.payload.result
         Object.assign(state.model, optoutMessage.payload)
+        state.flash = onSuccessMessage
       })
       .catch(function (err) {
         if (process.env.NODE_ENV !== 'production') {
           console.error(err)
         }
+        state.flash = null
         state.error = {
           message: err.message,
           stack: err.originalStack || err.stack
@@ -42,7 +44,7 @@ function store (state, emitter) {
     handleRequest({
       type: 'PURGE',
       payload: null
-    })
+    }, __('Your user data has been deleted.'))
   })
 
   emitter.on('offen:query', function (data, authenticatedUser) {

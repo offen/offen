@@ -18,10 +18,11 @@ jobs:
     docker:
       - image: circleci/golang:1.13
         environment:
-          POSTGRES_CONNECTION_STRING: postgres://circle:test@localhost:5432/circle_test?sslmode=disable
-          PORT: 8080
-          EVENT_RETENTION_PERIOD: 4464h
-          COOKIE_EXCHANGE_SECRET: VswgMshC4mPDfey8o+yScg==
+          OFFEN_APP_EVENTRETENTIONPERIOD: 4464h
+          OFFEN_DATABASE_DIALECT: postgres
+          OFFEN_DATABASE_CONNECTIONSTRING: postgres://circle:test@localhost:5432/circle_test?sslmode=disable
+          OFFEN_SECRETS_COOKIEEXCHANGE: VswgMshC4mPDfey8o+yScg==
+          OFFEN_SECRETS_EMAILSALT: IDOARoANjJYE6vbLo4L57w==
       - image: circleci/postgres:11.2-alpine
         environment:
           - POSTGRES_USER=circle
@@ -50,6 +51,11 @@ jobs:
             done
             echo Failed waiting for Postgres && exit 1
       - run:
+          name: Prepare static assets
+          command: |
+            go get github.com/rakyll/statik
+            statik -dest public -src public
+      - run:
           name: Run tests
           command: |
             cp ~/offen/bootstrap.yml .
@@ -57,7 +63,7 @@ jobs:
 
   vault:
     docker:
-      - image: circleci/node:10-browsers
+      - image: circleci/node:12-browsers
     working_directory: ~/offen/vault
     steps:
       - checkout:
@@ -77,7 +83,7 @@ jobs:
 
   script:
     docker:
-      - image: circleci/node:10-browsers
+      - image: circleci/node:12-browsers
     working_directory: ~/offen/script
     steps:
       - checkout:
@@ -100,7 +106,7 @@ jobs:
 
   auditorium:
     docker:
-      - image: circleci/node:10-browsers
+      - image: circleci/node:12-browsers
     working_directory: ~/offen/auditorium
     steps:
       - checkout:
@@ -123,7 +129,7 @@ jobs:
 
   packages:
     docker:
-      - image: circleci/node:10-browsers
+      - image: circleci/node:12-browsers
     working_directory: ~/offen/packages
     steps:
       - checkout:
@@ -162,19 +168,23 @@ jobs:
             set +o pipefail
             docker load -i /caches/offen.tar | true
       - run:
-          name: Build application Docker image
+          name: Build application Docker image and binary
           command: |
             export OFFEN_GIT_REVISION=$(git rev-parse --short HEAD)
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
-              export SITEURL="https://www.offen.dev"
               export DOCKER_IMAGE_TAG="stable"
-              export ROBOTS_FILE="robots.txt.production"
             else
-              export SITEURL="https://staging.offen.dev"
               export DOCKER_IMAGE_TAG="latest"
-              export ROBOTS_FILE="robots.txt.staging"
             fi
             docker build --build-arg rev=$OFFEN_GIT_REVISION -t offen/offen:$DOCKER_IMAGE_TAG -f build/Dockerfile .
+            # next, extract the single binary from the container so it can
+            # be stored as a build artifact (this needs to be formalized into
+            # versioned releases at some point)
+            docker create -it --name builder offen/offen:$DOCKER_IMAGE_TAG ash
+            docker cp builder:/offen .
+            docker rm -f builder
+            mkdir -p /tmp/artifacts
+            tar -czvf /tmp/artifacts/offen-$DOCKER_IMAGE_TAG.tar.gz offen
       - run:
           name: Save Docker image layer cache
           command: |
@@ -194,6 +204,8 @@ jobs:
             fi
             echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
             docker push offen/offen:$DOCKER_IMAGE_TAG
+      - store_artifacts:
+          path: /tmp/artifacts
 
 workflows:
   version: 2
