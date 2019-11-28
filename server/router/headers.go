@@ -24,7 +24,7 @@ func (w *bufferingRw) Write(p []byte) (int, error) {
 
 var (
 	revisionedJSRe         = regexp.MustCompile("-[0-9a-z]{10}\\.js$")
-	webfontRe              = regexp.MustCompile("\\.(woff|woff2|ttf|eot)$")
+	webfontRe              = regexp.MustCompile("\\.(woff|woff2|ttf)$")
 	defaultResponseHeaders = map[string]string{
 		"Referrer-Policy":        "origin-when-cross-origin",
 		"X-Content-Type-Options": "no-sniff",

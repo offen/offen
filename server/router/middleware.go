@@ -1,9 +1,12 @@
 package router
 
 import (
+	"bytes"
+	"crypto/md5"
 	"errors"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/gin-contrib/location"
 	"github.com/gin-gonic/gin"
@@ -71,5 +74,44 @@ func (rt *router) accountUserMiddleware(cookieKey, contextKey string) gin.Handle
 		}
 		c.Set(contextKey, user)
 		c.Next()
+	}
+}
+
+func headerMiddleware(valueProvider map[string]func() string) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		for key, provider := range valueProvider {
+			c.Header(key, provider())
+		}
+		c.Next()
+	}
+}
+
+type bufferingGinWriter struct {
+	gin.ResponseWriter
+	buf bytes.Buffer
+}
+
+func (g *bufferingGinWriter) Write(data []byte) (int, error) {
+	return g.buf.Write(data)
+}
+
+func etagMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		bw := &bufferingGinWriter{c.Writer, bytes.Buffer{}}
+		defer bw.ResponseWriter.Flush()
+		c.Writer = bw
+		c.Next()
+
+		data := bw.buf.Bytes()
+		etag := fmt.Sprintf("%x", md5.Sum(data))
+		c.Header("Etag", etag)
+		c.Header("Cache-Control", "no-cache")
+		if match := c.GetHeader("If-None-Match"); match != "" {
+			if strings.Contains(match, etag) {
+				c.Status(http.StatusNotModified)
+				return
+			}
+		}
+		bw.ResponseWriter.Write(data)
 	}
 }
