@@ -21,16 +21,16 @@ function view (state, emit) {
       <form class="mw6 center" onsubmit=${handleSubmit}>
         <label class="b lh-copy">
           ${__('Email address')}
+          <input class="w-100 pa2 mb3 input-reset ba b--black-10 bg-white" required type="email" name="email-address">
         </label>
-        <input class="w-100 pa2 mb3 input-reset ba b--black-10 bg-white" required type="email" name="email-address">
         <label class="b lh-copy">
           ${__('New password')}
+          <input class="w-100 pa2 mb3 input-reset ba b--black-10 bg-white" required type="password" name="password">
         </label>
-        <input class="w-100 pa2 mb3 input-reset ba b--black-10 bg-white" required type="password" name="password">
         <label class="b lh-copy">
           ${__('Repeat new password')}
+          <input class="w-100 pa2 mb3 input-reset ba b--black-10 bg-white" required type="password" name="repeat-password">
         </label>
-        <input class="w-100 pa2 mb3 input-reset ba b--black-10 bg-white" required type="password" name="repeat-password">
         <input class="pointer w-100 w-auto-ns f5 link dim bn ph3 pv2 mb3 dib br1 white bg-mid-gray" type="submit" value="${__('Reset password')}">
         <input type="hidden" name="token" value=${state.params.token}>
       </form>

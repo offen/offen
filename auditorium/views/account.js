@@ -43,12 +43,12 @@ function view (state, emit) {
       <form class="mw6 center" onsubmit="${handleChangeEmail}">
         <label class="b lh-copy">
           ${__('New email address')}
+          <input class="w-100 pa2 mb3 input-reset ba b--black-10 bg-white" type="text" name="email-address">
         </label>
-        <input class="w-100 pa2 mb3 input-reset ba b--black-10 bg-white" type="text" name="email-address">
         <label class="b lh-copy">
           ${__('Password')}
+          <input class="w-100 pa2 mb3 input-reset ba b--black-10 bg-white" type="password" name="password">
         </label>
-        <input class="w-100 pa2 mb3 input-reset ba b--black-10 bg-white" type="password" name="password">
         <input class="pointer w-100 w-auto-ns f5 link dim bn ph3 pv2 mb3 dib br1 white bg-mid-gray" type="submit" value="${__('Change Email address')}">
       </form>
     </div>
@@ -72,16 +72,16 @@ function view (state, emit) {
       <form class="mw6 center" onsubmit="${handleChangePassword}">
         <label class="b lh-copy">
           ${__('Current password')}
+          <input class="w-100 pa2 mb3 input-reset ba b--black-10 bg-white" type="password" name="current">
         </label>
-        <input class="w-100 pa2 mb3 input-reset ba b--black-10 bg-white" type="password" name="current">
         <label class="b lh-copy">
           ${__('New password')}
+          <input class="w-100 pa2 mb3 input-reset ba b--black-10 bg-white" type="password" name="changed">
         </label>
-        <input class="w-100 pa2 mb3 input-reset ba b--black-10 bg-white" type="password" name="changed">
         <label class="b lh-copy">
           ${__('Repeat new password')}
+          <input class="w-100 pa2 mb3 input-reset ba b--black-10 bg-white" type="password" name="repeat">
         </label>
-        <input class="w-100 pa2 mb3 input-reset ba b--black-10 bg-white" type="password" name="repeat">
         <input class="pointer w-100 w-auto-ns f5 link dim bn ph3 pv2 mb3 dib br1 white bg-mid-gray" type="submit" value="${__('Change password')}">
       </form>
     </div>
