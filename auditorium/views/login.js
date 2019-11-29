@@ -17,12 +17,12 @@ function view (state, emit) {
       <form class="mw6 center" onsubmit=${handleSubmit}>
         <label class="b lh-copy">
           ${__('Email address')}
+          <input class="w-100 pa2 mb3 input-reset ba b--black-10 bg-white" required type="email" name="username">
         </label>
-        <input class="w-100 pa2 mb3 input-reset ba b--black-10 bg-white" required type="email" name="username">
         <label class="b lh-copy">
           ${__('Password')}
+          <input class="w-100 pa2 mb3 input-reset ba b--black-10 bg-white" required type="password" name="password">
         </label>
-        <input class="w-100 pa2 mb3 input-reset ba b--black-10 bg-white" required type="password" name="password">
         <input class="pointer w-100 w4-ns f5 link dim bn ph3 pv2 mb3 dib br1 white bg-mid-gray" type="submit" value="${__('Log in')}">
         <div class="mb3">
           <a class="link dim dark-green" href="./reset-password/">${__('Forgot password?')}</a>
