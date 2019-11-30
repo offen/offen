@@ -1,6 +1,7 @@
 package router
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -12,9 +13,10 @@ import (
 func (rt *router) getPublicKey(c *gin.Context) {
 	account, err := rt.db.GetAccount(c.Query("accountId"), false, "")
 	if err != nil {
-		if _, ok := err.(persistence.ErrUnknownAccount); ok {
+		var unknownAccountErr persistence.ErrUnknownAccount
+		if errors.As(err, &unknownAccountErr) {
 			newJSONError(
-				fmt.Errorf("router: unknown account: %v", err),
+				fmt.Errorf("router: unknown account: %w", unknownAccountErr),
 				http.StatusBadRequest,
 			).Pipe(c)
 			return
