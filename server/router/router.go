@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
-	"strings"
 	"time"
 
 	"github.com/NYTimes/gziphandler"
@@ -146,23 +145,16 @@ func New(opts ...Config) http.Handler {
 	rt.cookieSigner = securecookie.New(rt.config.Secrets.CookieExchange.Bytes(), nil)
 	rt.mailer = rt.config.NewMailer()
 
-	fileServer := http.FileServer(rt.fs)
-	if !rt.config.Server.ReverseProxy {
-		fileServer = gziphandler.GzipHandler(staticHeaderMiddleware(fileServer))
-	}
-
-	static := http.NewServeMux()
-	// In development, these routes will be served by a different nginx
-	// upstream. They are only relevant when building the application into
-	// a single binary that inlines the filesystems.
-	static.Handle("/auditorium/", singlePageAppMiddleware("/auditorium/")(fileServer))
-	static.Handle("/", fileServer)
-
 	userCookie := userCookieMiddleware(cookieKey, contextKeyCookie)
 	accountAuth := rt.accountUserMiddleware(authKey, contextKeyAuth)
 	noStore := headerMiddleware(map[string]func() string{
 		"Cache-Control": func() string {
 			return "no-store"
+		},
+	})
+	csp := headerMiddleware(map[string]func() string{
+		"Content-Security-Policy": func() string {
+			return defaultCSP
 		},
 	})
 	etag := etagMiddleware()
@@ -180,7 +172,9 @@ func New(opts ...Config) http.Handler {
 	if rt.template != nil {
 		app.SetHTMLTemplate(rt.template)
 	}
-	app.GET("/", etag, rt.getRoot)
+
+	app.GET("/", etag, csp, rt.getRoot)
+
 	app.GET("/healthz", noStore, rt.getHealth)
 	app.GET("/versionz", noStore, rt.getVersion)
 	{
@@ -208,24 +202,21 @@ func New(opts ...Config) http.Handler {
 		api.POST("/events", userCookie, rt.postEvents)
 	}
 
-	m := http.NewServeMux()
-	m.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		switch uri := r.URL.Path; {
-		case strings.HasPrefix(uri, "/api/"),
-			strings.HasPrefix(uri, "/healthz"),
-			strings.HasPrefix(uri, "/versionz"),
-			uri == "/":
-			app.ServeHTTP(w, r)
-		default:
-			static.ServeHTTP(w, r)
-		}
-	})
+	fileServer := http.FileServer(rt.fs)
+	if !rt.config.Server.ReverseProxy {
+		fileServer = gziphandler.GzipHandler(fileServer)
+	}
+
+	app.Use(staticMiddleware(fileServer, "/auditorium/"))
 
 	if rt.config.Server.ReverseProxy {
-		return m
+		return app
 	}
+
+	// HTTP logging is only added when the reverse proxy setting is not
+	// enabled
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		metrics := httpsnoop.CaptureMetrics(m, w, r)
+		metrics := httpsnoop.CaptureMetrics(app, w, r)
 		logLevel := logrus.InfoLevel
 		if metrics.Code >= http.StatusInternalServerError {
 			logLevel = logrus.ErrorLevel
