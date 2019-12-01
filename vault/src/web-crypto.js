@@ -101,7 +101,8 @@ function encryptAsymmetricWith (publicCryptoKey) {
     }
     return window.crypto.subtle.encrypt(
       {
-        name: 'RSA-OAEP'
+        name: 'RSA-OAEP',
+        hash: { name: 'SHA-256' }
       },
       publicCryptoKey,
       bytes
