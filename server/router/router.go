@@ -53,26 +53,6 @@ func (rt *router) userCookie(userID string, secure bool) *http.Cookie {
 	}
 }
 
-func (rt *router) optoutCookie(optout, secure bool) *http.Cookie {
-	c := &http.Cookie{
-		Name:  optoutKey,
-		Value: "1",
-		// the optout cookie is supposed to outlive the software, so
-		// it expires in ~100 years
-		Expires: time.Now().Add(time.Hour * 24 * 365 * 100),
-		Path:    "/",
-		// this cookie is supposed to be read by the client so it can
-		// stop operating before even sending requests
-		HttpOnly: false,
-		SameSite: http.SameSiteDefaultMode,
-		Secure:   secure,
-	}
-	if !optout {
-		c.Expires = time.Unix(0, 0)
-	}
-	return c
-}
-
 func (rt *router) authCookie(userID string, secure bool) (*http.Cookie, error) {
 	c := http.Cookie{
 		Name:     authKey,
