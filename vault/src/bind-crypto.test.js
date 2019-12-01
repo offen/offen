@@ -1,34 +1,40 @@
 var assert = require('assert')
 
-var crypto = require('./crypto')
+var bindCrypto = require('./bind-crypto')
 
-describe('src/crypto.js', function () {
+describe('src/bind-crypto.js', function () {
   describe('symmetric encryption', function () {
     it('creates, exports and imports keys', function () {
-      return crypto
-        .createSymmetricKey()
-        .then(function (cryptoKey) {
-          return crypto.exportKey(cryptoKey)
-        })
-        .then(function (jwtKey) {
-          return crypto.importSymmetricKey(jwtKey)
-        })
+      return bindCrypto(function () {
+        var crypto = this
+        return crypto
+          .createSymmetricKey()
+          .then(function (cryptoKey) {
+            return crypto.exportKey(cryptoKey)
+          })
+          .then(function (jwtKey) {
+            return crypto.importSymmetricKey(jwtKey)
+          })
+      })
     })
 
     it('encrypts and decrypts string values', function () {
-      var cryptoKey
-      return crypto
-        .createSymmetricKey()
-        .then(function (_cryptoKey) {
-          cryptoKey = _cryptoKey
-          return crypto.encryptSymmetricWith(cryptoKey)('alice and bob')
-        })
-        .then(function (cipher) {
-          return crypto.decryptSymmetricWith(cryptoKey)(cipher)
-        })
-        .then(function (result) {
-          assert.strictEqual(result, 'alice and bob')
-        })
+      return bindCrypto(function () {
+        var crypto = this
+        var cryptoKey
+        return crypto
+          .createSymmetricKey()
+          .then(function (_cryptoKey) {
+            cryptoKey = _cryptoKey
+            return crypto.encryptSymmetricWith(cryptoKey)('alice and bob')
+          })
+          .then(function (cipher) {
+            return crypto.decryptSymmetricWith(cryptoKey)(cipher)
+          })
+          .then(function (result) {
+            assert.strictEqual(result, 'alice and bob')
+          })
+      })
     })
   })
 
@@ -52,38 +58,47 @@ describe('src/crypto.js', function () {
     }
 
     it('imports public keys', function () {
-      return crypto
-        .importPublicKey(publicJWK)
-        .then(function (key) {
-          assert(key)
-        })
+      return bindCrypto(function () {
+        var crypto = this
+        return crypto
+          .importPublicKey(publicJWK)
+          .then(function (key) {
+            assert(key)
+          })
+      })
     })
 
     it('imports private keys', function () {
-      return crypto
-        .importPrivateKey(privateJWK)
-        .then(function (key) {
-          assert(key)
-        })
+      return bindCrypto(function () {
+        var crypto = this
+        return crypto
+          .importPrivateKey(privateJWK)
+          .then(function (key) {
+            assert(key)
+          })
+      })
     })
 
     it('encrypts and decrypts string values', function () {
-      return Promise
-        .all([
-          crypto.importPublicKey(publicJWK),
-          crypto.importPrivateKey(privateJWK)
-        ])
-        .then(function (keys) {
-          var publicKey = keys[0]
-          var privateKey = keys[1]
-          return crypto.encryptAsymmetricWith(publicKey)('alice and bob')
-            .then(function (cipher) {
-              return crypto.decryptAsymmetricWith(privateKey)(cipher)
-            })
-            .then(function (result) {
-              assert.strictEqual(result, 'alice and bob')
-            })
-        })
+      return bindCrypto(function () {
+        var crypto = this
+        return Promise
+          .all([
+            crypto.importPublicKey(publicJWK),
+            crypto.importPrivateKey(privateJWK)
+          ])
+          .then(function (keys) {
+            var publicKey = keys[0]
+            var privateKey = keys[1]
+            return crypto.encryptAsymmetricWith(publicKey)('alice and bob')
+              .then(function (cipher) {
+                return crypto.decryptAsymmetricWith(privateKey)(cipher)
+              })
+              .then(function (result) {
+                assert.strictEqual(result, 'alice and bob')
+              })
+          })
+      })
     })
   })
 })

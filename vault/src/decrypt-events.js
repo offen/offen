@@ -1,12 +1,13 @@
 var _ = require('underscore')
 
-var crypto = require('./crypto')
+var bindCrypto = require('./bind-crypto')
 
 module.exports = decryptEventsWith({})
 module.exports.decryptEventsWith = decryptEventsWith
 
 function decryptEventsWith (cache) {
-  return function (encryptedEvents, userSecrets, privateKey) {
+  return bindCrypto(function (encryptedEvents, userSecrets, privateKey) {
+    var crypto = this
     var decryptWithAccountKey = crypto.decryptAsymmetricWith(privateKey)
 
     function getMatchingUserSecret (userId) {
@@ -71,5 +72,5 @@ function decryptEventsWith (cache) {
           })
       })
     return Promise.all(decryptedEvents).then(_.compact)
-  }
+  })
 }
