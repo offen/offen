@@ -2,7 +2,7 @@ var _ = require('underscore')
 
 var api = require('./api')
 var queries = require('./queries')
-var crypto = require('./crypto')
+var bindCrypto = require('./bind-crypto')
 var decryptEvents = require('./decrypt-events')
 
 module.exports = getOperatorEventsWith(queries, api, {})
@@ -46,7 +46,8 @@ function fetchOperatorEventsWith (api, queries) {
 }
 
 function ensureSyncWith (queries, api, cache) {
-  return function (accountId, keyEncryptionJWK) {
+  return bindCrypto(function (accountId, keyEncryptionJWK) {
+    var crypto = this
     if (cache && cache[accountId]) {
       return Promise.resolve(cache[accountId])
     }
@@ -123,5 +124,5 @@ function ensureSyncWith (queries, api, cache) {
               })
           })
       })
-  }
+  })
 }

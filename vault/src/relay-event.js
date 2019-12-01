@@ -1,4 +1,4 @@
-var crypto = require('./crypto')
+var bindCrypto = require('./bind-crypto')
 var ensureUserSecret = require('./user-secret')
 var api = require('./api')
 
@@ -9,9 +9,10 @@ module.exports.relayEventWith = relayEventWith
 // the given accountId. It ensures a local user secret exists for the given
 // accountId and uses it to encrypt the event payload before performing the request.
 function relayEventWith (api, ensureUserSecret) {
-  function relayEvent (accountId, payload, anonymous) {
-  // `flush` is not supposed to be part of the public signature, but will only
-  // be used when the function recursively calls itself
+  var relayEvent = bindCrypto(function (accountId, payload, anonymous) {
+    var crypto = this
+    // `flush` is not supposed to be part of the public signature, but will only
+    // be used when the function recursively calls itself
     var flush = arguments[3] || false
     // if data is collected anonymously, the account's public key is used
     // for encrypting the payload instead
@@ -36,6 +37,6 @@ function relayEventWith (api, ensureUserSecret) {
             throw err
           })
       })
-  }
+  })
   return relayEvent
 }

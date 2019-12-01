@@ -1,4 +1,4 @@
-var crypto = require('./crypto')
+var bindCrypto = require('./bind-crypto')
 var api = require('./api')
 var queries = require('./queries')
 
@@ -35,22 +35,8 @@ function ensureUserSecretWith (api, queries) {
   }
 }
 
-function exchangeUserSecret (api, accountId) {
-  return api.getPublicKey(accountId)
-    .then(generateNewUserSecret)
-    .then(function (result) {
-      var body = {
-        accountId: accountId,
-        encryptedUserSecret: result.encryptedUserSecret
-      }
-      return api.postUserSecret(body)
-        .then(function () {
-          return result.userSecret
-        })
-    })
-}
-
-function generateNewUserSecret (publicJWK) {
+var generateNewUserSecret = bindCrypto(function (publicJWK) {
+  var crypto = this
   return Promise
     .all([
       crypto.importPublicKey(publicJWK),
@@ -67,6 +53,21 @@ function generateNewUserSecret (publicJWK) {
             encryptedUserSecret: encryptedUserSecret,
             userSecret: userSecret
           }
+        })
+    })
+})
+
+function exchangeUserSecret (api, accountId) {
+  return api.getPublicKey(accountId)
+    .then(generateNewUserSecret)
+    .then(function (result) {
+      var body = {
+        accountId: accountId,
+        encryptedUserSecret: result.encryptedUserSecret
+      }
+      return api.postUserSecret(body)
+        .then(function () {
+          return result.userSecret
         })
     })
 }

@@ -1,5 +1,5 @@
 var api = require('./api')
-var crypto = require('./crypto')
+var bindCrypto = require('./bind-crypto')
 var queries = require('./queries')
 
 module.exports = getUserEventsWith(queries, api)
@@ -72,7 +72,8 @@ function ensureSyncWith (queries, api) {
 }
 
 function decryptUserEventsWith (queries) {
-  return function (eventsByAccountId) {
+  return bindCrypto(function (eventsByAccountId) {
+    var crypto = this
     var decrypted = Object.keys(eventsByAccountId)
       .map(function (accountId) {
         var withSecret = queries.getUserSecret(accountId)
@@ -109,5 +110,5 @@ function decryptUserEventsWith (queries) {
           return v
         })
       })
-  }
+  })
 }
