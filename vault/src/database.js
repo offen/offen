@@ -16,7 +16,7 @@ function createDatabase (name) {
 
   db.version(1).stores({
     keys: '++,type',
-    events: 'eventId,timestamp,[timestamp+accountId],[timestamp+userId]'
+    events: 'eventId,timestamp'
   })
 
   return db

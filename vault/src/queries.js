@@ -1,5 +1,4 @@
 var _ = require('underscore')
-var Dexie = require('dexie')
 var startOfHour = require('date-fns/start_of_hour')
 var startOfDay = require('date-fns/start_of_day')
 var startOfWeek = require('date-fns/start_of_week')
@@ -71,6 +70,9 @@ function getDefaultStatsWith (getDatabase) {
     var now = (query && query.now) || new Date()
     var lowerBound = startOf[resolution](subtract[resolution](now, range - 1)).toJSON()
     var upperBound = endOf[resolution](now).toJSON()
+    var eventsInBounds = table
+      .where('timestamp')
+      .between(lowerBound, upperBound)
 
     // There are two types of queries happening here: those that rely solely
     // on the IndexedDB indices, and those that require the event payload
@@ -78,9 +80,7 @@ function getDefaultStatsWith (getDatabase) {
     // Theoretically *all* queries could be done on the set of events after
     // encryption, yet it seems using the IndexedDB API where possible makes
     // more sense and performs better.
-    var decryptedEvents = table
-      .where('timestamp')
-      .between(lowerBound, upperBound)
+    var decryptedEvents = eventsInBounds
       .toArray(function (events) {
         // User events are already decrypted, so there is no need to proceed
         // further. This may seem counterintuitive at first, but it'd be
@@ -104,21 +104,18 @@ function getDefaultStatsWith (getDatabase) {
 
         var lowerBound = startOf[resolution](date).toJSON()
         var upperBound = endOf[resolution](date).toJSON()
+        var eventsInBounds = table
+          .where('timestamp')
+          .between(lowerBound, upperBound)
 
-        var pageviews = table
-          .where('[timestamp+userId]')
-          .between([lowerBound, Dexie.minKey], [upperBound, Dexie.maxKey])
-          .count()
+        var pageviews = eventsInBounds
+          .toArray(countKeys('userId', false))
 
-        var visitors = table
-          .where('[timestamp+userId]')
-          .between([lowerBound, Dexie.minKey], [upperBound, Dexie.maxKey])
-          .keys(uniqueKeysAt(1))
+        var visitors = eventsInBounds
+          .toArray(countKeys('userId', true))
 
-        var accounts = table
-          .where('[timestamp+accountId]')
-          .between([lowerBound, Dexie.minKey], [upperBound, Dexie.maxKey])
-          .keys(uniqueKeysAt(1))
+        var accounts = eventsInBounds
+          .toArray(countKeys('accountId', true))
 
         return Promise.all([pageviews, visitors, accounts])
           .then(function (values) {
@@ -136,38 +133,28 @@ function getDefaultStatsWith (getDatabase) {
 
     // `uniqueUsers` is the number of unique user ids for the given
     //  timerange.
-    var uniqueUsers = table
-      .where('[timestamp+userId]')
-      .between([lowerBound, Dexie.minKey], [upperBound, Dexie.maxKey])
-      .keys(uniqueKeysAt(1))
+    var uniqueUsers = eventsInBounds
+      .toArray(countKeys('userId', true))
 
     // `loss` is the percentage of anonymous events (i.e. events without a
     // user identifier) in the given timeframe.
     // indexed DB does not index on `null` (which maps to an anonymous event)
     // so the loss rate can simply be calculated by comparing the count
     // in an index with and one without userId
-    var loss = table
-      .where('timestamp')
-      .between(lowerBound, upperBound)
-      .count()
-      .then(function (allEvents) {
-        if (allEvents === 0) {
+    var loss = eventsInBounds
+      .toArray(function (allEvents) {
+        if (allEvents.length === 0) {
           return 0
         }
-        return table
-          .where('[timestamp+userId]')
-          .between([lowerBound, Dexie.minKey], [upperBound, Dexie.maxKey])
-          .count()
-          .then(function (userEvents) {
-            return 1 - (userEvents / allEvents)
-          })
+        var notNull = allEvents.filter(function (event) {
+          return event.userId !== null
+        })
+        return 1 - (notNull.length / allEvents.length)
       })
 
     // This is the number of unique accounts for the given timeframe
-    var uniqueAccounts = table
-      .where('[timestamp+accountId]')
-      .between([lowerBound, Dexie.minKey], [upperBound, Dexie.maxKey])
-      .keys(uniqueKeysAt(1))
+    var uniqueAccounts = eventsInBounds
+      .toArray(countKeys('accountId', true))
 
     // This is the number of unique sessions for the given timeframe
     var uniqueSessions = decryptedEvents
@@ -432,14 +419,6 @@ function purgeWith (getDatabase) {
   }
 }
 
-function uniqueKeysAt (index) {
-  return function (keys) {
-    return _.unique(keys.map(function (pair) {
-      return pair[index]
-    })).length
-  }
-}
-
 function getEncryptedUserSecretsWith (getDatabase) {
   return function (accountId) {
     var db = getDatabase(accountId)
@@ -447,5 +426,22 @@ function getEncryptedUserSecretsWith (getDatabase) {
       .where('type')
       .equals(TYPE_ENCRYPTED_USER_SECRET)
       .toArray()
+  }
+}
+
+function countKeys (keys, unique) {
+  return function (elements) {
+    var list = _.chain(elements)
+    if (!Array.isArray(keys)) {
+      keys = [keys]
+    }
+    keys.forEach(function (key) {
+      list = list.pluck(key)
+    })
+    list = list.compact()
+    if (unique) {
+      list = list.uniq()
+    }
+    return list.size().value()
   }
 }
