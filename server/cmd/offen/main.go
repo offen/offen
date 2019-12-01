@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"context"
 	"errors"
 	"flag"
@@ -148,17 +149,37 @@ func main() {
 		logger.Info("Gracefully shut down server")
 	case "bootstrap":
 		var (
-			accountID       = bootstrapCmd.String("forceid", "", "force usage of given account id")
-			accountName     = bootstrapCmd.String("name", "", "the account name")
-			email           = bootstrapCmd.String("email", "", "the email address used for login")
-			password        = bootstrapCmd.String("password", "", "the password used for login")
-			source          = bootstrapCmd.String("source", "", "the configuration file")
-			populateMissing = bootstrapCmd.Bool("populate", true, "in case required secrets are missing from the configuration, create and persist them in ~/.config/offen.env")
+			accountID         = bootstrapCmd.String("forceid", "", "force usage of given account id")
+			accountName       = bootstrapCmd.String("name", "", "the account name")
+			email             = bootstrapCmd.String("email", "", "the email address used for login")
+			password          = bootstrapCmd.String("password", "", "the password used for login")
+			passwordFromStdin = bootstrapCmd.Bool("stdin-password", false, "read password from stdin")
+			source            = bootstrapCmd.String("source", "", "the configuration file")
+			populateMissing   = bootstrapCmd.Bool("populate", true, "in case required secrets are missing from the configuration, create and persist them in ~/.config/offen.env")
 		)
 		bootstrapCmd.Parse(os.Args[2:])
 
-		cfg := mustConfig(*populateMissing)
+		pw := *password
+		if *passwordFromStdin {
+			sc := bufio.NewScanner(os.Stdin)
+			received := make(chan bool, 2)
+			go func() {
+				select {
+				case <-received:
+					return
+				case <-time.Tick(time.Second / 10):
+					logger.Info("You can now enter your password (this will be displayed in clear text):")
+				}
+			}()
+			for sc.Scan() {
+				received <- true
+				close(received)
+				pw = sc.Text()
+				break
+			}
+		}
 
+		cfg := mustConfig(*populateMissing)
 		conf := persistence.BootstrapConfig{}
 		if *source != "" {
 			logger.Infof("Trying to read account seed data from %s", *source)
@@ -170,7 +191,7 @@ func main() {
 				logger.WithError(err).Fatalf("Error parsing content of given source file %s", *source)
 			}
 		} else {
-			if *email == "" || *password == "" || *accountName == "" {
+			if *email == "" || pw == "" || *accountName == "" {
 				logger.Fatal("Missing required parameters to create initial account, use the -help flag for reference on parameters")
 			}
 			logger.Infof("Using command line arguments to create seed user and account")
@@ -201,7 +222,7 @@ func main() {
 
 			conf.AccountUsers = append(
 				conf.AccountUsers,
-				persistence.BootstrapAccountUser{Email: *email, Password: *password, Accounts: []string{*accountID}},
+				persistence.BootstrapAccountUser{Email: *email, Password: pw, Accounts: []string{*accountID}},
 			)
 			conf.Accounts = append(
 				conf.Accounts,
