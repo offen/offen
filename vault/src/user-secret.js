@@ -9,7 +9,8 @@ module.exports.ensureUserSecretWith = ensureUserSecretWith
 // is not present in the local database or `flush` is passed, it initiates a
 // new exchange of secrets and stores the result in the local database.
 function ensureUserSecretWith (api, queries) {
-  return function (accountId, flush) {
+  return bindCrypto(function (accountId, flush) {
+    var crypto = this
     var before = Promise.resolve()
     if (flush) {
       before = queries.deleteUserSecret(accountId)
@@ -19,20 +20,24 @@ function ensureUserSecretWith (api, queries) {
       .then(function () {
         return queries.getUserSecret(accountId)
       })
-      .then(function (userSecret) {
-        if (userSecret) {
-          return userSecret
+      .then(function (jwk) {
+        if (jwk) {
+          return crypto.importSymmetricKey(jwk)
         }
+        var userSecret
         return exchangeUserSecret(api, accountId)
           .then(function (createdUserSecret) {
             userSecret = createdUserSecret
-            return queries.putUserSecret(accountId, userSecret)
+            return crypto.exportKey(userSecret)
+          })
+          .then(function (jwk) {
+            return queries.putUserSecret(accountId, jwk)
           })
           .then(function () {
             return userSecret
           })
       })
-  }
+  })
 }
 
 var generateNewUserSecret = bindCrypto(function (publicJWK) {

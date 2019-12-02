@@ -77,13 +77,16 @@ function decryptUserEventsWith (queries) {
     var decrypted = Object.keys(eventsByAccountId)
       .map(function (accountId) {
         var withSecret = queries.getUserSecret(accountId)
-          .then(function (userSecret) {
-            if (!userSecret) {
+          .then(function (jwk) {
+            if (!jwk) {
               return function () {
                 return null
               }
             }
-            return crypto.decryptSymmetricWith(userSecret)
+            return crypto.importSymmetricKey(jwk)
+              .then(function (userSecret) {
+                return crypto.decryptSymmetricWith(userSecret)
+              })
           })
 
         var events = eventsByAccountId[accountId]
