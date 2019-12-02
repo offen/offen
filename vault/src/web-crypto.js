@@ -16,7 +16,8 @@ function decryptSymmetricWith (cryptoKey) {
         return window.crypto.subtle.decrypt(
           {
             name: 'AES-GCM',
-            iv: chunks.nonce
+            iv: chunks.nonce,
+            tagLength: 128
           },
           cryptoKey,
           chunks.cipher
@@ -46,7 +47,7 @@ function encryptSymmetricWith (cryptoKey) {
       {
         name: 'AES-GCM',
         iv: nonce,
-        length: 128
+        tagLength: 128
       },
       cryptoKey,
       bytes
