@@ -10,6 +10,7 @@ describe('src/get-operator-events', function () {
       var accountKey
       var keyEncryptionJWK
       var encryptedPrivateKey
+      var accountPrivateJWK
       before(function () {
         var keyEncryptionKey
         return window.crypto.subtle.generateKey(
@@ -43,7 +44,8 @@ describe('src/get-operator-events', function () {
             keyEncryptionJWK = _keyEncryptionJWK
             return window.crypto.subtle.exportKey('jwk', accountKey.privateKey)
           })
-          .then(function (accountPrivateJWK) {
+          .then(function (_accountPrivateJWK) {
+            accountPrivateJWK = _accountPrivateJWK
             var nonce = window.crypto.getRandomValues(new Uint8Array(12))
             return window.crypto.subtle.encrypt(
               {
@@ -86,7 +88,7 @@ describe('src/get-operator-events', function () {
               mock: 'result',
               account: {
                 accountId: 'account-a',
-                privateKey: accountKey.privateKey,
+                privateJwk: accountPrivateJWK,
                 encryptedPrivateKey: encryptedPrivateKey
               }
             })

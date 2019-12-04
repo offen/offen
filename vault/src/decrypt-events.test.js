@@ -10,6 +10,7 @@ describe('src/decrypt-event.js', function () {
     var encryptedEventPayload
     var encryptedUserSecret
     var accountKey
+    var privateJwk
     var userSecret
     var userJWK
     var nonce
@@ -43,7 +44,8 @@ describe('src/decrypt-event.js', function () {
           accountKey = _accountKey
           return window.crypto.subtle.exportKey('jwk', accountKey.privateKey)
         })
-        .then(function (_accountJWK) {
+        .then(function (_privateJwk) {
+          privateJwk = _privateJwk
           return window.crypto.subtle.encrypt(
             {
               name: 'RSA-OAEP'
@@ -94,7 +96,7 @@ describe('src/decrypt-event.js', function () {
             value: encryptedUserSecret
           }
         ],
-        accountKey.privateKey
+        privateJwk
       )
         .then(function (result) {
           assert.deepStrictEqual(

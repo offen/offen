@@ -44,14 +44,14 @@ var subtract = {
 exports.getDefaultStats = getDefaultStatsWith(getDatabase)
 exports.getDefaultStatsWith = getDefaultStatsWith
 function getDefaultStatsWith (getDatabase) {
-  return function (accountId, query, privateKey) {
+  return function (accountId, query, privateJwk) {
     if (!accountId && accountId !== null) {
       return Promise.reject(
         new Error('Expected either an account id or null to be given, got: ' + accountId)
       )
     }
 
-    if (accountId && !privateKey) {
+    if (accountId && !privateJwk) {
       return Promise.reject(
         new Error('Got account id but no private key, cannot continue.')
       )
@@ -90,7 +90,7 @@ function getDefaultStatsWith (getDatabase) {
           ? decryptEvents(
             events,
             getEncryptedUserSecretsWith(getDatabase)(accountId),
-            privateKey
+            privateJwk
           )
           : events
       })

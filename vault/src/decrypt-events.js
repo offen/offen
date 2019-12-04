@@ -6,9 +6,9 @@ module.exports = decryptEventsWith({})
 module.exports.decryptEventsWith = decryptEventsWith
 
 function decryptEventsWith (cache) {
-  return bindCrypto(function (encryptedEvents, userSecrets, privateKey) {
+  return bindCrypto(function (encryptedEvents, userSecrets, privateJWK) {
     var crypto = this
-    var decryptWithAccountKey = crypto.decryptAsymmetricWith(privateKey)
+    var decryptWithAccountKey = crypto.decryptAsymmetricWith(privateJWK)
 
     function getMatchingUserSecret (userId) {
       function doDecrypt () {
@@ -22,10 +22,9 @@ function decryptEventsWith (cache) {
             }
 
             return decryptWithAccountKey(userSecret.value)
-              .then(crypto.importSymmetricKey)
-              .then(function (cryptoKey) {
+              .then(function (jwk) {
                 var withKey = Object.assign(
-                  {}, userSecret, { cryptoKey: cryptoKey }
+                  {}, userSecret, { jwk: jwk }
                 )
                 return withKey
               })
@@ -53,7 +52,7 @@ function decryptEventsWith (cache) {
                 if (!userSecret) {
                   return null
                 }
-                return crypto.decryptSymmetricWith(userSecret.cryptoKey)(payload)
+                return crypto.decryptSymmetricWith(userSecret.jwk)(payload)
               })
           }
         }

@@ -83,10 +83,7 @@ function decryptUserEventsWith (queries) {
                 return null
               }
             }
-            return crypto.importSymmetricKey(jwk)
-              .then(function (userSecret) {
-                return crypto.decryptSymmetricWith(userSecret)
-              })
+            return crypto.decryptSymmetricWith(jwk)
           })
 
         var events = eventsByAccountId[accountId]

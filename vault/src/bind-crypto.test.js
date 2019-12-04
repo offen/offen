@@ -4,16 +4,17 @@ var bindCrypto = require('./bind-crypto')
 
 describe('src/bind-crypto.js', function () {
   describe('symmetric encryption', function () {
-    it('creates, exports and imports keys', function () {
+    it('creates usable keys', function () {
       return bindCrypto(function () {
         var crypto = this
         return crypto
           .createSymmetricKey()
-          .then(function (cryptoKey) {
-            return crypto.exportKey(cryptoKey)
+          .then(function (key) {
+            return crypto.encryptSymmetricWith(key)('foo-bar-baz')
           })
-          .then(function (jwtKey) {
-            return crypto.importSymmetricKey(jwtKey)
+          .then(function (encryptedValue) {
+            assert(encryptedValue)
+            assert(encryptedValue !== 'foo-bar-baz')
           })
       })
     })
@@ -21,15 +22,15 @@ describe('src/bind-crypto.js', function () {
     it('encrypts and decrypts string values', function () {
       return bindCrypto(function () {
         var crypto = this
-        var cryptoKey
+        var jwk
         return crypto
           .createSymmetricKey()
-          .then(function (_cryptoKey) {
-            cryptoKey = _cryptoKey
-            return crypto.encryptSymmetricWith(cryptoKey)('alice and bob')
+          .then(function (_jwk) {
+            jwk = _jwk
+            return crypto.encryptSymmetricWith(jwk)('alice and bob')
           })
           .then(function (cipher) {
-            return crypto.decryptSymmetricWith(cryptoKey)(cipher)
+            return crypto.decryptSymmetricWith(jwk)(cipher)
           })
           .then(function (result) {
             assert.strictEqual(result, 'alice and bob')
@@ -57,46 +58,15 @@ describe('src/bind-crypto.js', function () {
       'qi': 'wJ_Ckikd-MzcdQ2W9b___jOMiiVr8GD_XfQDRXue0k1K1lBdZ6d8lOXghqPp80yzxAleNuzaVhorQmL1Su6VAiwxEpGXpWsfuLUYTmUwecT9aensWNTQR6erTg27xeQscR7qwrBmn5uourhbdCHWvIKadS-kw3HaVDS8KV9etLQsj0rS8QwKeh__x6rJ9drXOZwW15rioCBx1mOVVYeHr_8hqP3lNlBdhQVBv-jaJ593N6--Ijx0XWVwpCA0QWW9YJ_6x3nzIheVW0z8LolPBDx7Vxt3bJ_8otUkRVpc9IyvWPn8YLU1-EbnLsbF6mmS3hL_PKTBBmYt3uG3LihC0A'
     }
 
-    it('imports public keys', function () {
-      return bindCrypto(function () {
-        var crypto = this
-        return crypto
-          .importPublicKey(publicJWK)
-          .then(function (key) {
-            assert(key)
-          })
-      })
-    })
-
-    it('imports private keys', function () {
-      return bindCrypto(function () {
-        var crypto = this
-        return crypto
-          .importPrivateKey(privateJWK)
-          .then(function (key) {
-            assert(key)
-          })
-      })
-    })
-
     it('encrypts and decrypts string values', function () {
       return bindCrypto(function () {
         var crypto = this
-        return Promise
-          .all([
-            crypto.importPublicKey(publicJWK),
-            crypto.importPrivateKey(privateJWK)
-          ])
-          .then(function (keys) {
-            var publicKey = keys[0]
-            var privateKey = keys[1]
-            return crypto.encryptAsymmetricWith(publicKey)('alice and bob')
-              .then(function (cipher) {
-                return crypto.decryptAsymmetricWith(privateKey)(cipher)
-              })
-              .then(function (result) {
-                assert.strictEqual(result, 'alice and bob')
-              })
+        return crypto.encryptAsymmetricWith(publicJWK)('alice and bob')
+          .then(function (cipher) {
+            return crypto.decryptAsymmetricWith(privateJWK)(cipher)
+          })
+          .then(function (result) {
+            assert.strictEqual(result, 'alice and bob')
           })
       })
     })
