@@ -17,7 +17,7 @@ function relayEventWith (api, ensureUserSecret) {
     // if data is collected anonymously, the account's public key is used
     // for encrypting the payload instead
     var getSecret = anonymous
-      ? api.getPublicKey(accountId).then(crypto.importPublicKey).then(crypto.encryptAsymmetricWith)
+      ? api.getPublicKey(accountId).then(crypto.encryptAsymmetricWith)
       : ensureUserSecret(accountId, flush).then(crypto.encryptSymmetricWith)
 
     return getSecret

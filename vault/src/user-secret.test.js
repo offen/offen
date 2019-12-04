@@ -36,7 +36,7 @@ describe('src/user-secret.js', function () {
           return ensure('7435d1b9-c0ca-4883-a869-42e943589917')
         })
         .then(function (nextKey) {
-          assert.deepStrictEqual(initialKey, nextKey)
+          assert.notDeepStrictEqual(initialKey, nextKey)
         })
     })
 

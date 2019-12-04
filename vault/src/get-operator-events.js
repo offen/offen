@@ -16,7 +16,7 @@ function getOperatorEventsWith (queries, api, cache) {
     }
     return ensureSyncWith(queries, api, cache)(query.accountId, matchingAccount.keyEncryptionKey)
       .then(function (account) {
-        return queries.getDefaultStats(query.accountId, query, account.privateKey)
+        return queries.getDefaultStats(query.accountId, query, account.privateJwk)
           .then(function (stats) {
             return Object.assign(stats, { account: account })
           })
@@ -72,14 +72,8 @@ function ensureSyncWith (queries, api, cache) {
         return Promise.all([fetchNewEvents, pruneEvents])
           .then(function (results) {
             var payload = results[0]
-            return crypto.importSymmetricKey(keyEncryptionJWK)
-              .then(function (cryptoKey) {
-                return crypto.decryptSymmetricWith(cryptoKey)(payload.account.encryptedPrivateKey)
-              })
-              .then(function (privateJWK) {
-                return crypto.importPrivateKey(privateJWK)
-              })
-              .then(function (privateCryptoKey) {
+            return crypto.decryptSymmetricWith(keyEncryptionJWK)(payload.account.encryptedPrivateKey)
+              .then(function (privateJwk) {
                 var userSecrets = payload.encryptedUserSecrets
                   .map(function (pair) {
                     return {
@@ -88,7 +82,7 @@ function ensureSyncWith (queries, api, cache) {
                     }
                   })
                 return decryptEvents(
-                  payload.events, userSecrets, privateCryptoKey
+                  payload.events, userSecrets, privateJwk
                 )
                   .then(function (decryptedEvents) {
                     return decryptedEvents.map(function (decryptedEvent) {
@@ -114,7 +108,7 @@ function ensureSyncWith (queries, api, cache) {
                   })
                   .then(function (results) {
                     var result = Object.assign(payload.account, {
-                      privateKey: privateCryptoKey
+                      privateJwk: privateJwk
                     })
                     if (cache) {
                       cache[accountId] = result

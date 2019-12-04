@@ -9,8 +9,7 @@ module.exports.ensureUserSecretWith = ensureUserSecretWith
 // is not present in the local database or `flush` is passed, it initiates a
 // new exchange of secrets and stores the result in the local database.
 function ensureUserSecretWith (api, queries) {
-  return bindCrypto(function (accountId, flush) {
-    var crypto = this
+  return function (accountId, flush) {
     var before = Promise.resolve()
     if (flush) {
       before = queries.deleteUserSecret(accountId)
@@ -22,43 +21,32 @@ function ensureUserSecretWith (api, queries) {
       })
       .then(function (jwk) {
         if (jwk) {
-          return crypto.importSymmetricKey(jwk)
+          return jwk
         }
-        var userSecret
         return exchangeUserSecret(api, accountId)
-          .then(function (createdUserSecret) {
-            userSecret = createdUserSecret
-            return crypto.exportKey(userSecret)
-          })
-          .then(function (jwk) {
-            return queries.putUserSecret(accountId, jwk)
-          })
+      })
+      .then(function (jwk) {
+        return queries.putUserSecret(accountId, jwk)
           .then(function () {
-            return userSecret
+            return jwk
           })
       })
-  })
+  }
 }
 
-var generateNewUserSecret = bindCrypto(function (publicJWK) {
+var generateNewUserSecret = bindCrypto(function (publicJwk) {
   var crypto = this
-  return Promise
-    .all([
-      crypto.importPublicKey(publicJWK),
-      crypto.createSymmetricKey()
-    ])
-    .then(function (keys) {
-      var publicKey = keys[0]
-      var userSecret = keys[1]
-
-      return crypto.exportKey(userSecret)
-        .then(crypto.encryptAsymmetricWith(publicKey))
-        .then(function (encryptedUserSecret) {
-          return {
-            encryptedUserSecret: encryptedUserSecret,
-            userSecret: userSecret
-          }
-        })
+  var userSecretJwk
+  return crypto.createSymmetricKey()
+    .then(function (_userSecretJwk) {
+      userSecretJwk = _userSecretJwk
+      return crypto.encryptAsymmetricWith(publicJwk)
+    })
+    .then(function (encryptedUserSecret) {
+      return {
+        encryptedUserSecret: encryptedUserSecret,
+        userSecret: userSecretJwk
+      }
     })
 })
 

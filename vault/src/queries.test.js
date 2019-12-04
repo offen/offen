@@ -9,6 +9,7 @@ var getDatabase = require('./database')
 
 describe('src/queries.js', function () {
   describe('getDefaultStats(accountId, query, privateKey)', function () {
+    var accountJwk
     var accountKey
     before(function () {
       return window.crypto.subtle.generateKey(
@@ -23,6 +24,10 @@ describe('src/queries.js', function () {
       )
         .then(function (_accountKey) {
           accountKey = _accountKey
+          return window.crypto.subtle.exportKey('jwk', accountKey.privateKey)
+        })
+        .then(function (_accountJwk) {
+          accountJwk = _accountJwk
         })
     })
     context('with no data present', function () {
@@ -41,7 +46,7 @@ describe('src/queries.js', function () {
       })
 
       it('returns an object of the correct shape without failing', function () {
-        return getDefaultStats('test-account', {}, accountKey.privateKey)
+        return getDefaultStats('test-account', {}, accountJwk)
           .then(function (data) {
             assert.deepStrictEqual(
               Object.keys(data),
@@ -71,7 +76,7 @@ describe('src/queries.js', function () {
       it('handles queries correctly', function () {
         return getDefaultStats(
           'test-account', { range: 12, resolution: 'weeks' },
-          accountKey.privateKey
+          accountJwk
         )
           .then(function (data) {
             assert.strictEqual(data.pageviews.length, 12)
@@ -292,7 +297,7 @@ describe('src/queries.js', function () {
       })
 
       it('calculates stats correctly using defaults', function () {
-        return getDefaultStats('test-account', { now: now }, accountKey.privateKey)
+        return getDefaultStats('test-account', { now: now }, accountJwk)
           .then(function (data) {
             assert.deepStrictEqual(
               Object.keys(data),
@@ -334,7 +339,7 @@ describe('src/queries.js', function () {
         return getDefaultStats(
           'test-account',
           { range: 2, resolution: 'weeks', now: now },
-          accountKey.privateKey
+          accountJwk
         )
           .then(function (data) {
             assert.deepStrictEqual(
@@ -370,7 +375,7 @@ describe('src/queries.js', function () {
         return getDefaultStats(
           'test-account',
           { range: 12, resolution: 'hours', now: now },
-          accountKey.privateKey
+          accountJwk
         )
           .then(function (data) {
             assert.deepStrictEqual(

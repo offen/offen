@@ -5,8 +5,8 @@ var relayEventWith = require('./relay-event').relayEventWith
 describe('src/relay-event.js', function () {
   describe('relayEvent(accountId, event)', function () {
     let userSecret
-    beforeEach(function (done) {
-      window.crypto.subtle.generateKey(
+    beforeEach(function () {
+      return window.crypto.subtle.generateKey(
         {
           name: 'AES-GCM',
           length: 256
@@ -14,9 +14,10 @@ describe('src/relay-event.js', function () {
         true,
         ['encrypt', 'decrypt']
       )
-        .then(function (_userSecret) {
+        .then(function (key) {
+          return window.crypto.subtle.exportKey('jwk', key)
+        }).then(function (_userSecret) {
           userSecret = _userSecret
-          done()
         })
     })
 
