@@ -49,7 +49,7 @@ function encryptSymmetricWith (jwk) {
         } catch (err) {
           return Promise.reject(err)
         }
-        var nonce = window.crypto.getRandomValues(new Uint8Array(12))
+        var nonce = window.crypto.getRandomValues(new Uint8Array(12)).buffer
         return window.crypto.subtle.encrypt(
           {
             name: 'AES-GCM',
@@ -121,8 +121,8 @@ function encryptAsymmetricWith (publicJwk) {
           bytes
         )
       })
-      .then(function (cipher) {
-        return cipher.serialize(cipher, null, ASSYMMETRIC_ALGO_RSA_OAEP)
+      .then(function (encrypted) {
+        return cipher.serialize(encrypted, null, ASSYMMETRIC_ALGO_RSA_OAEP)
       })
   }
 }
