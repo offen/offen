@@ -1,5 +1,7 @@
 var Unibabel = require('unibabel').Unibabel
 
+var cipher = require('./versioned-cipher')
+
 var SYMMETRIC_ALGO_AESGCM = 1
 var ASSYMMETRIC_ALGO_RSA_OAEP = 1
 
@@ -9,7 +11,7 @@ function decryptSymmetricWith (jwk) {
   return function (encryptedValue) {
     return importSymmetricKey(jwk)
       .then(function (cryptoKey) {
-        var chunks = deserializeCipher(encryptedValue)
+        var chunks = cipher.deserialize(encryptedValue)
         if (chunks.error) {
           return Promise.reject(chunks.error)
         }
@@ -57,11 +59,10 @@ function encryptSymmetricWith (jwk) {
           cryptoKey,
           bytes
         )
-          .then(encodeEncrypted)
           .then(function (encrypted) {
-            return serializeCipher(
+            return cipher.serialize(
               encrypted,
-              encodeEncrypted(nonce),
+              nonce,
               SYMMETRIC_ALGO_AESGCM
             )
           })
@@ -75,7 +76,7 @@ function decryptAsymmetricWith (privateJwk) {
   return function (encryptedValue) {
     return importPrivateKey(privateJwk)
       .then(function (privateCryptoKey) {
-        var chunks = deserializeCipher(encryptedValue)
+        var chunks = cipher.deserialize(encryptedValue)
         if (chunks.error) {
           return Promise.reject(chunks.error)
         }
@@ -120,9 +121,8 @@ function encryptAsymmetricWith (publicJwk) {
           bytes
         )
       })
-      .then(encodeEncrypted)
       .then(function (cipher) {
-        return serializeCipher(cipher, null, ASSYMMETRIC_ALGO_RSA_OAEP)
+        return cipher.serialize(cipher, null, ASSYMMETRIC_ALGO_RSA_OAEP)
       })
   }
 }
@@ -187,51 +187,4 @@ function importSymmetricKey (jwk) {
 function parseDecrypted (decrypted) {
   var payloadAsString = Unibabel.utf8ArrToStr(new Uint8Array(decrypted))
   return JSON.parse(payloadAsString)
-}
-
-function encodeEncrypted (encrypted) {
-  return Unibabel.arrToBase64(new Uint8Array(encrypted))
-}
-
-var cipherRE = /{(\d+?),(\d*?)}\s(.+)/
-
-function deserializeCipher (cipher) {
-  var match = cipher.match(cipherRE)
-  if (!match) {
-    return { error: new Error('Could not match given cipher "' + cipher + '"') }
-  }
-
-  var chunks = match[3].split(' ')
-  var cipherBytes = null
-  var nonceBytes = null
-
-  try {
-    cipherBytes = Unibabel.base64ToArr(chunks[0])
-  } catch (err) {
-    return { error: err }
-  }
-
-  if (chunks[1]) {
-    try {
-      nonceBytes = Unibabel.base64ToArr(chunks[1])
-    } catch (err) {
-      return { error: err }
-    }
-  }
-
-  return {
-    algoVersion: parseInt(match[1], 10),
-    keyVersion: match[2] ? parseInt(match[2], 10) : null,
-    cipher: cipherBytes,
-    nonce: nonceBytes
-  }
-}
-
-function serializeCipher (cipher, nonce, algoVersion, keyVersion) {
-  var keyRepr = keyVersion || ''
-  var chunks = ['{' + algoVersion + ',' + keyRepr + '}', cipher]
-  if (nonce) {
-    chunks.push(nonce)
-  }
-  return chunks.join(' ')
 }
