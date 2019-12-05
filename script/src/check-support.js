@@ -6,13 +6,6 @@ module.exports = checkSupport
 // as it native Promises might not necessarily be supported.
 function checkSupport (callback) {
   var err = null
-
-  if (!isSecureContext()) {
-    err = new Error(__('The host page is required to run in a secure context'))
-  }
-  if (!err && !supportsWebCrypto()) {
-    err = new Error(__('Browser does not support WebCrypto which is required'))
-  }
   if (!err && !supportsIndexedDb()) {
     err = new Error(__('Browser does not support IndexedDB which is required'))
   }
@@ -25,14 +18,6 @@ function checkSupport (callback) {
   setTimeout(function () {
     callback(err)
   }, 0)
-}
-
-function isSecureContext () {
-  return window.location.hostname === 'localhost' || window.location.protocol === 'https:' || window.location.protocol === 'file:'
-}
-
-function supportsWebCrypto () {
-  return window.crypto && window.crypto.subtle
 }
 
 function supportsIndexedDb () {

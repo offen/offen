@@ -8,73 +8,65 @@ var cipher = require('./versioned-cipher')
 var SYMMETRIC_ALGO_AESGCM = 1
 var ASSYMMETRIC_ALGO_RSA_OAEP = 1
 
+exports._impl = 'forge'
+
 exports.decryptSymmetricWith = decryptSymmetricWith
 
 function decryptSymmetricWith (jwk) {
-  return function (encryptedValue) {
-    return importSymmetricKey(jwk)
-      .then(function (keyBytes) {
-        var chunks = cipher.deserialize(encryptedValue)
-        if (chunks.error) {
-          return Promise.reject(chunks.error)
+  return asyncify(function (encryptedValue) {
+    var keyBytes = importSymmetricKey(jwk)
+    var chunks = cipher.deserialize(encryptedValue)
+    if (chunks.error) {
+      return Promise.reject(chunks.error)
+    }
+    switch (chunks.algoVersion) {
+      case SYMMETRIC_ALGO_AESGCM: {
+        // web crypto simply appends the authentication tag to the ciphertext
+        // so this is what we are doing here as well
+        var tag = chunks.cipher.slice(chunks.cipher.length - 16)
+        var body = chunks.cipher.slice(0, chunks.cipher.length - 16)
+        var op = forge.cipher.createDecipher('AES-GCM', keyBytes)
+        op.start({
+          iv: chunks.nonce,
+          tagLength: 128,
+          tag: forge.util.createBuffer(tag)
+        })
+        op.update(forge.util.createBuffer(body))
+        if (op.finish()) {
+          return JSON.parse(op.output.data)
         }
-        switch (chunks.algoVersion) {
-          case SYMMETRIC_ALGO_AESGCM: {
-            var tag = chunks.cipher.slice(chunks.cipher.length - 16)
-            var body = chunks.cipher.slice(0, chunks.cipher.length - 16)
-            var op = forge.cipher.createDecipher('AES-GCM', keyBytes)
-            op.start({
-              iv: chunks.nonce,
-              tagLength: 128,
-              tag: forge.util.createBuffer(tag)
-            })
-            op.update(forge.util.createBuffer(body))
-            if (op.finish()) {
-              return JSON.parse(op.output.data)
-            }
-            return Promise.reject(new Error('Unable to finish decipher.'))
-          }
-          default:
-            return Promise.reject(
-              new Error('Unknown symmetric algo version "' + chunks.algoVersion + '"')
-            )
-        }
-      })
-  }
+        throw new Error('Unable to finish decipher.')
+      }
+      default:
+        throw new Error('Unknown symmetric algo version "' + chunks.algoVersion + '"')
+    }
+  })
 }
 
 exports.encryptSymmetricWith = encryptSymmetricWith
 
 function encryptSymmetricWith (jwk) {
   return function (unencryptedValue) {
-    return importSymmetricKey(jwk)
-      .then(function (keyBytes) {
-        return new Promise(function (resolve, reject) {
-          forge.random.getBytes(12, function (err, nonce) {
-            if (err) {
-              return reject(err)
-            }
-
-            var op = forge.cipher.createCipher('AES-GCM', keyBytes)
-            op.start({
-              iv: nonce,
-              tagLength: 128
-            })
-            op.update(forge.util.createBuffer(JSON.stringify(unencryptedValue)))
-            if (op.finish()) {
-              var result = cipher.serialize(
-                // web crypto simply appends the authentication tag to the ciphertext
-                // so this is what we are doing here as well
-                Unibabel.binaryStringToBuffer(op.output.data + op.mode.tag.data),
-                Unibabel.binaryStringToBuffer(nonce),
-                SYMMETRIC_ALGO_AESGCM
-              )
-              resolve(result)
-              return
-            }
-            reject(new Error('Unable to finish encrpytion'))
-          })
+    var keyBytes = importSymmetricKey(jwk)
+    return randomBytes(12)
+      .then(function (nonce) {
+        var op = forge.cipher.createCipher('AES-GCM', keyBytes)
+        op.start({
+          iv: nonce,
+          tagLength: 128
         })
+        op.update(forge.util.createBuffer(JSON.stringify(unencryptedValue)))
+        if (op.finish()) {
+          var result = cipher.serialize(
+            // web crypto simply appends the authentication tag to the ciphertext
+            // so this is what we are doing here as well
+            Unibabel.binaryStringToBuffer(op.output.data + op.mode.tag.data),
+            Unibabel.binaryStringToBuffer(nonce),
+            SYMMETRIC_ALGO_AESGCM
+          )
+          return result
+        }
+        throw new Error('Unable to finish encryption.')
       })
   }
 }
@@ -82,79 +74,80 @@ function encryptSymmetricWith (jwk) {
 exports.decryptAsymmetricWith = decryptAsymmetricWith
 
 function decryptAsymmetricWith (privateJwk) {
-  return function (encryptedValue) {
-    return importPrivateKey(privateJwk)
-      .then(function (privatePEM) {
-        var privateKey = forge.pki.privateKeyFromPem(privatePEM)
-        var chunks = cipher.deserialize(encryptedValue)
-        if (chunks.error) {
-          return Promise.reject(chunks.error)
-        }
-        switch (chunks.algoVersion) {
-          case ASSYMMETRIC_ALGO_RSA_OAEP: {
-            var result = privateKey.decrypt(chunks.cipher, 'RSA-OAEP', {
-              md: forge.md.sha256.create()
-            })
-            return JSON.parse(result)
-          }
-          default:
-            return Promise.reject(
-              new Error('Unknown asymmetric algo version "' + chunks.algoVersion + '"')
-            )
-        }
-      })
-  }
+  return asyncify(function (encryptedValue) {
+    var privatePEM = importPrivateKey(privateJwk)
+    var privateKey = forge.pki.privateKeyFromPem(privatePEM)
+    var chunks = cipher.deserialize(encryptedValue)
+    if (chunks.error) {
+      throw chunks.error
+    }
+    switch (chunks.algoVersion) {
+      case ASSYMMETRIC_ALGO_RSA_OAEP: {
+        var data = privateKey.decrypt(chunks.cipher, 'RSA-OAEP', {
+          md: forge.md.sha256.create()
+        })
+        return JSON.parse(data)
+      }
+      default:
+        throw new Error('Unknown asymmetric algo version "' + chunks.algoVersion + '"')
+    }
+  })
 }
 
 exports.encryptAsymmetricWith = encryptAsymmetricWith
 
 function encryptAsymmetricWith (publicJwk) {
-  return function (unencryptedValue) {
-    return importPublicKey(publicJwk)
-      .then(function (publicPEM) {
-        var publicKey = forge.pki.publicKeyFromPem(publicPEM)
-        var enc = publicKey.encrypt(JSON.stringify(unencryptedValue), 'RSA-OAEP', {
-          md: forge.md.sha256.create()
-        })
-        return Unibabel.binaryStringToBuffer(enc)
-      })
-      .then(function (encryptedValue) {
-        return cipher.serialize(encryptedValue, null, ASSYMMETRIC_ALGO_RSA_OAEP)
-      })
-  }
+  return asyncify(function (unencryptedValue) {
+    var publicPEM = importPublicKey(publicJwk)
+    var publicKey = forge.pki.publicKeyFromPem(publicPEM)
+    var enc = publicKey.encrypt(JSON.stringify(unencryptedValue), 'RSA-OAEP', {
+      md: forge.md.sha256.create()
+    })
+    var result = cipher.serialize(
+      Unibabel.binaryStringToBuffer(enc), null, ASSYMMETRIC_ALGO_RSA_OAEP
+    )
+    return result
+  })
 }
 
 exports.createSymmetricKey = createSymmetricKey
 
 function createSymmetricKey () {
+  return randomBytes(16)
+    .then(function (bytes) {
+      return {
+        kty: 'oct',
+        k: base64encodeKey(bytes)
+      }
+    })
+}
+
+function randomBytes (num) {
   return new Promise(function (resolve, reject) {
     forge.random.getBytes(16, function (err, bytes) {
       if (err) {
         return reject(err)
       }
-      resolve({
-        kty: 'oct',
-        k: base64encodeKey(bytes)
-      })
+      resolve(bytes)
     })
   })
 }
 
 function importPrivateKey (jwk) {
-  return Promise.resolve(jwkToPem(jwk, { private: true }))
+  return jwkToPem(jwk, { private: true })
 }
 
 function importPublicKey (jwk) {
-  return Promise.resolve(jwkToPem(jwk))
+  return jwkToPem(jwk)
 }
 
 function importSymmetricKey (jwk) {
-  return new Promise(function (resolve, reject) {
-    if (jwk.kty !== 'oct' || !jwk.k) {
-      return reject(new Error('Received malformed key'))
-    }
-    resolve(base64decodeKey(jwk.k))
-  })
+  if (jwk.kty !== 'oct' || !jwk.k) {
+    throw new Error(
+      'Received malformed JWK, expected `k` and `kty` values to be present.'
+    )
+  }
+  return base64decodeKey(jwk.k)
 }
 
 function base64encodeKey (a) {
@@ -171,4 +164,13 @@ function base64decodeKey (a) {
     a += '='
   }
   return window.atob(a)
+}
+
+function asyncify (fn) {
+  return function () {
+    var args = [].slice.call(arguments)
+    return Promise.resolve().then(function () {
+      return fn.apply(null, args)
+    })
+  }
 }

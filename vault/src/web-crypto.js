@@ -5,6 +5,8 @@ var cipher = require('./versioned-cipher')
 var SYMMETRIC_ALGO_AESGCM = 1
 var ASSYMMETRIC_ALGO_RSA_OAEP = 1
 
+exports._impl = 'native'
+
 exports.decryptSymmetricWith = decryptSymmetricWith
 
 function decryptSymmetricWith (jwk) {
