@@ -40,7 +40,7 @@ var generateNewUserSecret = bindCrypto(function (publicJwk) {
   return crypto.createSymmetricKey()
     .then(function (_userSecretJwk) {
       userSecretJwk = _userSecretJwk
-      return crypto.encryptAsymmetricWith(publicJwk)
+      return crypto.encryptAsymmetricWith(publicJwk)(userSecretJwk)
     })
     .then(function (encryptedUserSecret) {
       return {
