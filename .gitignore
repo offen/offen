@@ -18,3 +18,4 @@ package-lock.json
 
 server.crt
 server.key
+bundle.*

@@ -4,7 +4,7 @@
   "private": true,
   "main": "index.js",
   "scripts": {
-    "start": "budo index.js --pushstate",
+    "start": "budo index.js --pushstate --port $PORT",
     "test": "npm run server & (VAULT_HOST=http://localhost:9876 npm run mochify; status=$?; kill $(lsof -t -i:9876); exit $status)",
     "mochify": "mochify --chrome $(which google-chrome) --allow-chrome-as-root {,**}/*.test.js",
     "server": "http-server __fixtures__ -p 9876 -s",
