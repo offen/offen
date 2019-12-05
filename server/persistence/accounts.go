@@ -21,15 +21,15 @@ func (p *persistenceLayer) GetAccount(accountID string, includeEvents bool, even
 		Created:   account.Created,
 	}
 
-	if includeEvents {
-		result.EncryptedPrivateKey = account.EncryptedPrivateKey
-	} else {
+	if !includeEvents {
 		key, err := account.WrapPublicKey()
 		if err != nil {
 			return AccountResult{}, fmt.Errorf("persistence: error wrapping account public key: %v", err)
 		}
 		result.PublicKey = key
+		return result, nil
 	}
+	result.EncryptedPrivateKey = account.EncryptedPrivateKey
 
 	eventResults := EventsByAccountID{}
 	userSecrets := SecretsByUserID{}
