@@ -6,7 +6,7 @@ forge.options.usePureJavaScript = true
 var cipher = require('./versioned-cipher')
 
 var SYMMETRIC_ALGO_AESGCM = 1
-var ASSYMMETRIC_ALGO_RSA_OAEP = 1
+var ASYMMETRIC_ALGO_RSA_OAEP = 1
 
 exports._impl = 'forge'
 
@@ -82,7 +82,7 @@ function decryptAsymmetricWith (privateJwk) {
       throw chunks.error
     }
     switch (chunks.algoVersion) {
-      case ASSYMMETRIC_ALGO_RSA_OAEP: {
+      case ASYMMETRIC_ALGO_RSA_OAEP: {
         var data = privateKey.decrypt(chunks.cipher, 'RSA-OAEP', {
           md: forge.md.sha256.create()
         })
@@ -104,7 +104,7 @@ function encryptAsymmetricWith (publicJwk) {
       md: forge.md.sha256.create()
     })
     var result = cipher.serialize(
-      Unibabel.binaryStringToBuffer(enc), null, ASSYMMETRIC_ALGO_RSA_OAEP
+      Unibabel.binaryStringToBuffer(enc), null, ASYMMETRIC_ALGO_RSA_OAEP
     )
     return result
   })

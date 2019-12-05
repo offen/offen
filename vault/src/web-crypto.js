@@ -3,7 +3,7 @@ var Unibabel = require('unibabel').Unibabel
 var cipher = require('./versioned-cipher')
 
 var SYMMETRIC_ALGO_AESGCM = 1
-var ASSYMMETRIC_ALGO_RSA_OAEP = 1
+var ASYMMETRIC_ALGO_RSA_OAEP = 1
 
 exports._impl = 'native'
 
@@ -83,7 +83,7 @@ function decryptAsymmetricWith (privateJwk) {
           return Promise.reject(chunks.error)
         }
         switch (chunks.algoVersion) {
-          case ASSYMMETRIC_ALGO_RSA_OAEP: {
+          case ASYMMETRIC_ALGO_RSA_OAEP: {
             return window.crypto.subtle.decrypt(
               {
                 name: 'RSA-OAEP'
@@ -124,7 +124,7 @@ function encryptAsymmetricWith (publicJwk) {
         )
       })
       .then(function (encrypted) {
-        return cipher.serialize(encrypted, null, ASSYMMETRIC_ALGO_RSA_OAEP)
+        return cipher.serialize(encrypted, null, ASYMMETRIC_ALGO_RSA_OAEP)
       })
   }
 }

@@ -1,10 +1,9 @@
-var webCrypto = require('./web-crypto')
 var splitRequire = require('split-require')
 
 module.exports = bindCrypto
 
 var cryptoProvider = window.crypto && window.crypto.subtle
-  ? Promise.resolve(webCrypto)
+  ? getWebCrypto()
   : getForgeCrypto()
 
 function bindCrypto (consumerFn) {
@@ -15,6 +14,10 @@ function bindCrypto (consumerFn) {
         return consumerFn.apply(cryptoImplementation, args)
       })
   }
+}
+
+function getWebCrypto () {
+  return Promise.resolve(require('./web-crypto'))
 }
 
 function getForgeCrypto () {

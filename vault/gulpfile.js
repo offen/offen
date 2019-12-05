@@ -3,6 +3,7 @@ var crypto = require('crypto')
 var gulp = require('gulp')
 var clean = require('gulp-clean')
 var browserify = require('browserify')
+var uglify = require('gulp-uglify')
 var source = require('vinyl-source-stream')
 var rev = require('gulp-rev')
 var buffer = require('vinyl-buffer')
@@ -10,6 +11,7 @@ var revReplace = require('gulp-rev-replace')
 var sriHash = require('gulp-sri-hash')
 var gap = require('gulp-append-prepend')
 var to = require('flush-write-stream')
+var UglifyJS = require('uglify-js')
 
 var extractStrings = require('offen/localize/task.js')
 
@@ -68,31 +70,34 @@ function makeScriptTask (dest, locale) {
       .exclude('dexie')
       .plugin('split-require', {
         dir: dest,
-        sri: 'sha384',
         filename: function (entry) {
-          return 'chunk' + entry.index + '.js'
+          return 'chunk-' + entry.index + '.js'
         },
         output: function (bundleName) {
-          var stream = fs.createWriteStream(dest + bundleName)
-          var hash = crypto.createHash('sha1')
+          var buf = ''
           return to(onwrite, onend)
 
           function onwrite (chunk, enc, cb) {
-            hash.update(chunk)
-            stream.write(chunk, cb)
+            buf += chunk
+            cb()
           }
+
           function onend (cb) {
-            stream.end()
+            var minified = UglifyJS.minify(buf)
+            if (minified.error) {
+              return cb(minified.error)
+            }
+            var hash = crypto.createHash('sha1').update(minified.code)
             var name = bundleName.replace(/\.js$/, '') + '-' + hash.digest('hex').slice(0, 10) + '.js'
             this.emit('name', name)
-            fs.rename(dest + bundleName, dest + name, cb)
+            fs.writeFile(dest + name, minified.code, cb)
           }
         }
       })
-      .plugin('tinyify')
       .bundle()
       .pipe(source('index.js'))
       .pipe(buffer())
+      .pipe(uglify())
       .pipe(gap.prependText('*/'))
       .pipe(gap.prependFile('./../banner.txt'))
       .pipe(gap.prependText('/**'))
