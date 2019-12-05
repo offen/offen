@@ -139,17 +139,6 @@ func TestPersistenceLayer_GetAccount(t *testing.T) {
 			AccountResult{
 				AccountID: "account-id",
 				Name:      "name",
-				Events: &EventsByAccountID{
-					"account-id": []EventResult{
-						{EventID: "event-a", UserID: strptr("user-a"), AccountID: "account-id", Payload: "payload-a"},
-						{EventID: "event-b", UserID: strptr("user-b"), AccountID: "account-id", Payload: "payload-b"},
-						{EventID: "event-c", AccountID: "account-id", Payload: "payload-c"},
-					},
-				},
-				UserSecrets: &SecretsByUserID{
-					"user-a": "aaaaa",
-					"user-b": "bbbbb",
-				},
 				PublicKey: (func() jwk.Key {
 					s, _ := jwk.ParseString(publicKey)
 					return s.Keys[0]
