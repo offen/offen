@@ -184,26 +184,26 @@ function view (state, emit) {
       <h4 class ="f5 normal mt0 mb3 mb5-ns">Key metrics</h4>
       <div class="flex flex-wrap">
         <div class="w-50 w-100-ns mb3 mb4-ns">
-          <p class="mt0 mb0 f2">${uniqueEntities}</p>
-          <p class="mt0 mb0 normal">${__('Unique %s', entityName)}</p>
+          <p class="mv0 f2">${uniqueEntities}</p>
+          <p class="mv0 normal">${__('Unique %s', entityName)}</p>
         </div>
         <div class="w-50 w-100-ns mb3 mb4-ns">
-          <p class="mt0 mb0 f2">${uniqueSessions}</p>
-          <p class="mt0 mb0 normal">${__('Unique sessions')}</p>
+          <p class="mv0 f2">${uniqueSessions}</p>
+          <p class="mv0 normal">${__('Unique sessions')}</p>
         </div>
         <div class="w-50 w-100-ns mb3 mb4-ns">
-          <p class="mt0 mb0 f2">${formatPercentage(state.model.bounceRate)} %</p>
-          <p class="mt0 mb0 normal">${__('Bounce rate')}</p>
+          <p class="mv0 f2">${formatPercentage(state.model.bounceRate)} %</p>
+          <p class="mv0 normal">${__('Bounce rate')}</p>
         </div>
         ${isOperator ? html`
           <div class="w-50 w-100-ns mb3 mb4-ns">
-            <p class="mt0 mb0 f2">${formatPercentage(state.model.loss)} %</p>
-            <p class="mt0 mb0 normal">${__('Plus')}</p>
+            <p class="mv0 f2">${formatPercentage(state.model.loss)} %</p>
+            <p class="mv0 normal">${__('Plus')}</p>
           </div>` : null}
         ${state.model.avgPageload ? html`
           <div class="w-50 w-100-ns mb3 mb4-ns">
-            <p class="mt0 mb0 f2">${state.model.avgPageload}ms</p>
-          <p class="mt0 mb0 normal">${__('Average pageload')}</p>
+            <p class="mv0 f2">${state.model.avgPageload}ms</p>
+          <p class="mv0 normal">${__('Average pageload')}</p>
           </div>` : null}
       </div>
     </div>
