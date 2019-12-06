@@ -57,7 +57,8 @@
       "__"
     ],
     "ignore": [
-      "dist/**/*.*"
+      "dist/**/*.*",
+      "bundle.*.js"
     ],
     "env": [
       "mocha"

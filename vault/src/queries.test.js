@@ -53,7 +53,7 @@ describe('src/queries.js', function () {
               [
                 'uniqueUsers', 'uniqueAccounts', 'uniqueSessions',
                 'referrers', 'pages', 'pageviews', 'bounceRate', 'loss',
-                'resolution', 'range'
+                'avgPageload', 'resolution', 'range'
               ]
             )
             assert.strictEqual(data.uniqueUsers, 0)
@@ -151,7 +151,8 @@ describe('src/queries.js', function () {
                   title: 'Transparent web analytics',
                   sessionId: 'session-id-1',
                   referrer: '',
-                  timestamp: minuteAgo.toJSON()
+                  timestamp: minuteAgo.toJSON(),
+                  pageload: null
                 }
               },
               {
@@ -165,7 +166,8 @@ describe('src/queries.js', function () {
                   title: 'Contact',
                   sessionId: 'session-id-1',
                   referrer: '',
-                  timestamp: minuteAgo.toJSON()
+                  timestamp: minuteAgo.toJSON(),
+                  pageload: 200
                 }
               },
               {
@@ -179,7 +181,8 @@ describe('src/queries.js', function () {
                   title: 'Deep dive',
                   sessionId: 'session-id-2',
                   referrer: 'https://www.offen.dev',
-                  timestamp: subDays(now, 1).toJSON()
+                  timestamp: subDays(now, 1).toJSON(),
+                  pageload: 100
                 }
               },
               {
@@ -193,7 +196,8 @@ describe('src/queries.js', function () {
                   title: 'Deep dive',
                   sessionId: 'session-id-3',
                   referrer: '',
-                  timestamp: subDays(now, 1).toJSON()
+                  timestamp: subDays(now, 1).toJSON(),
+                  pageload: 200
                 }
               },
               {
@@ -207,7 +211,8 @@ describe('src/queries.js', function () {
                   title: 'Very cute',
                   sessionId: 'session-id-4',
                   referrer: 'https://www.cute.com',
-                  timestamp: subDays(now, 2).toJSON()
+                  timestamp: subDays(now, 2).toJSON(),
+                  pageload: null
                 }
               },
               {
@@ -221,7 +226,8 @@ describe('src/queries.js', function () {
                   title: 'Very cute',
                   sessionId: 'session-id-5',
                   referrer: '',
-                  timestamp: subDays(now, 12).toJSON()
+                  timestamp: subDays(now, 12).toJSON(),
+                  pageload: 100
                 }
               },
               {
@@ -231,7 +237,8 @@ describe('src/queries.js', function () {
                 timestamp: minuteAgo.toJSON(),
                 payload: {
                   type: 'PAGEVIEW',
-                  timestamp: minuteAgo.toJSON()
+                  timestamp: minuteAgo.toJSON(),
+                  pageload: 150
                 }
               },
               {
@@ -241,7 +248,8 @@ describe('src/queries.js', function () {
                 timestamp: subDays(now, 12).toJSON(),
                 payload: {
                   type: 'PAGEVIEW',
-                  timestamp: subDays(now, 12).toJSON()
+                  timestamp: subDays(now, 12).toJSON(),
+                  pageload: null
                 }
               },
               {
@@ -251,7 +259,8 @@ describe('src/queries.js', function () {
                 timestamp: subDays(now, 4).toJSON(),
                 payload: {
                   type: 'PAGEVIEW',
-                  timestamp: subDays(now, 4).toJSON()
+                  timestamp: subDays(now, 4).toJSON(),
+                  pageload: 150
                 }
               }
             ].map(function (event) {
@@ -304,7 +313,7 @@ describe('src/queries.js', function () {
               [
                 'uniqueUsers', 'uniqueAccounts', 'uniqueSessions',
                 'referrers', 'pages', 'pageviews', 'bounceRate', 'loss',
-                'resolution', 'range'
+                'avgPageload', 'resolution', 'range'
               ]
             )
 
@@ -313,6 +322,7 @@ describe('src/queries.js', function () {
             assert.strictEqual(data.uniqueSessions, 4)
             assert.strictEqual(data.pages.length, 4)
             assert.strictEqual(data.referrers.length, 1)
+            assert.strictEqual(data.avgPageload, 160)
 
             assert.strictEqual(data.pageviews[6].accounts, 1)
             assert.strictEqual(data.pageviews[6].pageviews, 2)
@@ -347,7 +357,7 @@ describe('src/queries.js', function () {
               [
                 'uniqueUsers', 'uniqueAccounts', 'uniqueSessions',
                 'referrers', 'pages', 'pageviews', 'bounceRate', 'loss',
-                'resolution', 'range'
+                'avgPageload', 'resolution', 'range'
               ]
             )
 
@@ -356,6 +366,7 @@ describe('src/queries.js', function () {
             assert.strictEqual(data.uniqueSessions, 5)
             assert.strictEqual(data.pages.length, 4)
             assert.strictEqual(data.referrers.length, 1)
+            assert.strictEqual(data.avgPageload, 150)
 
             assert.strictEqual(data.pageviews[1].accounts, 2)
             assert.strictEqual(data.pageviews[1].pageviews, 5)
@@ -383,7 +394,7 @@ describe('src/queries.js', function () {
               [
                 'uniqueUsers', 'uniqueAccounts', 'uniqueSessions',
                 'referrers', 'pages', 'pageviews', 'bounceRate', 'loss',
-                'resolution', 'range'
+                'avgPageload', 'resolution', 'range'
               ]
             )
 
@@ -392,6 +403,7 @@ describe('src/queries.js', function () {
             assert.strictEqual(data.uniqueSessions, 1)
             assert.strictEqual(data.pages.length, 2)
             assert.strictEqual(data.referrers.length, 0)
+            assert.strictEqual(data.avgPageload, 175)
 
             assert.strictEqual(data.pageviews[11].accounts, 1)
             assert.strictEqual(data.pageviews[11].pageviews, 2)

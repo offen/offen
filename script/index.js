@@ -20,13 +20,13 @@ app.on('PAGEVIEW', supportMiddleware, function (context, send, next) {
     type: 'EVENT',
     payload: {
       accountId: accountId,
-      event: events.pageview()
+      event: events.pageview(context === 'initial')
     }
   }
   send(message)
 })
 
-app.dispatch('PAGEVIEW')
+app.dispatch('PAGEVIEW', 'initial')
 
 historyEvents.addEventListener(window, 'changestate', function () {
   app.dispatch('PAGEVIEW')
