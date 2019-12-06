@@ -94,6 +94,16 @@ function getDefaultStatsWith (getDatabase) {
           )
           : events
       })
+      .then(function (events) {
+        return events.map(function (event) {
+          if (event.userId === null || !event.payload) {
+            return event
+          }
+          event.payload.referrer = event.payload.referrer && new window.URL(event.payload.referrer)
+          event.payload.href = event.payload.href && new window.URL(event.payload.href)
+          return event
+        })
+      })
 
     // `pageviews` is a list of basic metrics grouped by the given range
     // and resolution. It contains the number of pageviews, unique visitors
@@ -207,13 +217,10 @@ function getDefaultStatsWith (getDatabase) {
             if (event.userId === null || !event.payload || !event.payload.referrer) {
               return false
             }
-            var referrerUrl = new window.URL(event.payload.referrer)
-            var hrefUrl = new window.URL(event.payload.href)
-            return referrerUrl.host !== hrefUrl.host
+            return event.payload.referrer.host !== event.payload.href.host
           })
           .map(function (event) {
-            var url = new window.URL(event.payload.referrer)
-            return url.host || url.href
+            return event.payload.referrer.host || event.payload.referrer.href
           })
           .filter(function (referrerValue) {
             return referrerValue
@@ -245,9 +252,10 @@ function getDefaultStatsWith (getDatabase) {
       })
       .then(function (keys) {
         var cleanedKeys = keys.map(function (pair) {
-          var url = new window.URL(pair[1])
+          var accountId = pair[0]
+          var url = pair[1]
           var strippedHref = url.origin + url.pathname
-          return [pair[0], strippedHref]
+          return [accountId, strippedHref]
         })
 
         var byAccount = cleanedKeys.reduce(function (acc, next) {
@@ -274,18 +282,24 @@ function getDefaultStatsWith (getDatabase) {
 
     var avgPageload = decryptedEvents
       .then(function (events) {
-        var applicable = _.chain(events)
+        var count
+        var total = _.chain(events)
           .pluck('payload')
           .pluck('pageload')
           .compact()
+          .tap(function (entries) {
+            count = entries.length
+          })
+          .reduce(function (acc, next) {
+            return acc + next
+          }, 0)
           .value()
-        if (applicable.length === 0) {
+
+        if (count === 0) {
           return null
         }
-        var total = applicable.reduce(function (acc, next) {
-          return acc + next
-        }, 0)
-        return total / applicable.length
+
+        return total / count
       })
 
     var avgPageDepth = decryptedEvents
@@ -308,6 +322,11 @@ function getDefaultStatsWith (getDatabase) {
         return views / uniqueSessions
       })
 
+    var landingPages = decryptedEvents
+      .then(function (events) {
+
+      })
+
     return Promise
       .all([
         uniqueUsers,
@@ -319,7 +338,8 @@ function getDefaultStatsWith (getDatabase) {
         bounceRate,
         loss,
         avgPageload,
-        avgPageDepth
+        avgPageDepth,
+        landingPages
       ])
       .then(function (results) {
         return {
