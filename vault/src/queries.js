@@ -272,6 +272,23 @@ function getDefaultStatsWith (getDatabase) {
           .value()
       })
 
+    var avgPageload = decryptedEvents
+      .then(function (events) {
+        var applicable = _.chain(events)
+          .pluck('payload')
+          .pluck('pageload')
+          .compact()
+          .value()
+        if (applicable.length === 0) {
+          return null
+        }
+
+        var total = applicable.reduce(function (acc, next) {
+          return acc + next
+        }, 0)
+        return Math.round(total / applicable.length)
+      })
+
     return Promise
       .all([
         uniqueUsers,
@@ -281,7 +298,8 @@ function getDefaultStatsWith (getDatabase) {
         pages,
         pageviews,
         bounceRate,
-        loss
+        loss,
+        avgPageload
       ])
       .then(function (results) {
         return {
@@ -293,6 +311,7 @@ function getDefaultStatsWith (getDatabase) {
           pageviews: results[5],
           bounceRate: results[6],
           loss: results[7],
+          avgPageload: results[8],
           resolution: resolution,
           range: range
         }
