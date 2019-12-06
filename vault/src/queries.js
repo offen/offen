@@ -94,6 +94,16 @@ function getDefaultStatsWith (getDatabase) {
           )
           : events
       })
+      .then(function (events) {
+        return events.map(function (event) {
+          if (event.userId === null || !event.payload) {
+            return event
+          }
+          event.payload.referrer = event.payload.referrer && new window.URL(event.payload.referrer)
+          event.payload.href = event.payload.href && new window.URL(event.payload.href)
+          return event
+        })
+      })
 
     // `pageviews` is a list of basic metrics grouped by the given range
     // and resolution. It contains the number of pageviews, unique visitors
@@ -207,13 +217,10 @@ function getDefaultStatsWith (getDatabase) {
             if (event.userId === null || !event.payload || !event.payload.referrer) {
               return false
             }
-            var referrerUrl = new window.URL(event.payload.referrer)
-            var hrefUrl = new window.URL(event.payload.href)
-            return referrerUrl.host !== hrefUrl.host
+            return event.payload.referrer.host !== event.payload.href.host
           })
           .map(function (event) {
-            var url = new window.URL(event.payload.referrer)
-            return url.host || url.href
+            return event.payload.referrer.host || event.payload.referrer.href
           })
           .filter(function (referrerValue) {
             return referrerValue
@@ -245,9 +252,10 @@ function getDefaultStatsWith (getDatabase) {
       })
       .then(function (keys) {
         var cleanedKeys = keys.map(function (pair) {
-          var url = new window.URL(pair[1])
+          var accountId = pair[0]
+          var url = pair[1]
           var strippedHref = url.origin + url.pathname
-          return [pair[0], strippedHref]
+          return [accountId, strippedHref]
         })
 
         var byAccount = cleanedKeys.reduce(function (acc, next) {
@@ -274,18 +282,24 @@ function getDefaultStatsWith (getDatabase) {
 
     var avgPageload = decryptedEvents
       .then(function (events) {
-        var applicable = _.chain(events)
+        var count
+        var total = _.chain(events)
           .pluck('payload')
           .pluck('pageload')
           .compact()
+          .tap(function (entries) {
+            count = entries.length
+          })
+          .reduce(function (acc, next) {
+            return acc + next
+          }, 0)
           .value()
-        if (applicable.length === 0) {
+
+        if (count === 0) {
           return null
         }
-        var total = applicable.reduce(function (acc, next) {
-          return acc + next
-        }, 0)
-        return total / applicable.length
+
+        return total / count
       })
 
     var avgPageDepth = decryptedEvents
@@ -308,6 +322,66 @@ function getDefaultStatsWith (getDatabase) {
         return views / uniqueSessions
       })
 
+    var landingPages = decryptedEvents
+      .then(function (events) {
+        return _.chain(events)
+          .filter(function (e) {
+            return e.userId !== null && e.payload.sessionId && e.payload.href
+          })
+          .groupBy(function (e) {
+            return e.payload.sessionId
+          })
+          .map(function (events, key) {
+            // for each session, we are only interested in the first
+            // event and its href value
+            var landing = _.chain(events)
+              .sortBy('timestamp')
+              .first()
+              .value()
+            return landing.payload.href.origin + landing.payload.href.pathname
+          })
+          .countBy(_.identity)
+          .pairs()
+          .map(function (pair) {
+            return { url: pair[0], pageviews: pair[1] }
+          })
+          .sortBy('pageviews')
+          .reverse()
+          .value()
+      })
+
+    var exitPages = decryptedEvents
+      .then(function (events) {
+        return _.chain(events)
+          .filter(function (e) {
+            return e.userId !== null && e.payload.sessionId && e.payload.href
+          })
+          .groupBy(function (e) {
+            return e.payload.sessionId
+          })
+          .map(function (events, key) {
+            if (events.length < 2) {
+              return null
+            }
+            // for each session, we are only interested in the first
+            // event and its href value
+            var landing = _.chain(events)
+              .sortBy('timestamp')
+              .last()
+              .value()
+            return landing.payload.href.origin + landing.payload.href.pathname
+          })
+          .compact()
+          .countBy(_.identity)
+          .pairs()
+          .map(function (pair) {
+            return { url: pair[0], pageviews: pair[1] }
+          })
+          .sortBy('pageviews')
+          .reverse()
+          .value()
+      })
+
     return Promise
       .all([
         uniqueUsers,
@@ -319,7 +393,9 @@ function getDefaultStatsWith (getDatabase) {
         bounceRate,
         loss,
         avgPageload,
-        avgPageDepth
+        avgPageDepth,
+        landingPages,
+        exitPages
       ])
       .then(function (results) {
         return {
@@ -333,6 +409,8 @@ function getDefaultStatsWith (getDatabase) {
           loss: results[7],
           avgPageload: results[8],
           avgPageDepth: results[9],
+          landingPages: results[10],
+          exitPages: results[11],
           resolution: resolution,
           range: range
         }

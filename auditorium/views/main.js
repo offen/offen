@@ -178,38 +178,26 @@ function view (state, emit) {
     ? __('Users')
     : __('Accounts')
 
+  function keyMetric (name, value) {
+    return html`
+      <div class="w-50 w-100-ns mb3 mb4-ns">
+        <p class="mv0 f2">${value}</p>
+        <p class="mv0 normal">${name}</p>
+      </div>
+    `
+  }
+
   var uniqueSessions = state.model.uniqueSessions
   var keyMetrics = html`
     <div class="w-100 w-25-m w-20-ns pa3 mb2 ba b--black-10 br2 bg-white">
       <h4 class ="f5 normal mt0 mb3 mb4-ns">Key metrics</h4>
       <div class="flex flex-wrap">
-        <div class="w-50 w-100-ns mb3 mb4-ns">
-          <p class="mv0 f2">${uniqueEntities}</p>
-          <p class="mv0 normal">${__('Unique %s', entityName)}</p>
-        </div>
-        <div class="w-50 w-100-ns mb3 mb4-ns">
-          <p class="mv0 f2">${uniqueSessions}</p>
-          <p class="mv0 normal">${__('Unique Sessions')}</p>
-        </div>
-        <div class="w-50 w-100-ns mb3 mb4-ns">
-          <p class="mv0 f2">${formatPercentage(state.model.bounceRate)} %</p>
-          <p class="mv0 normal">${__('Bounce Rate')}</p>
-        </div>
-        ${isOperator ? html`
-          <div class="w-50 w-100-ns mb3 mb4-ns">
-            <p class="mv0 f2">${formatPercentage(state.model.loss)} %</p>
-            <p class="mv0 normal">${__('Plus')}</p>
-          </div>` : null}
-        ${state.model.avgPageload ? html`
-          <div class="w-50 w-100-ns mb3 mb4-ns">
-            <p class="mv0 f2">${Math.round(state.model.avgPageload)} ms</p>
-            <p class="mv0 normal">${__('Avg. Page Load time')}</p>
-          </div>` : null}
-        ${state.model.avgPageDepth ? html`
-          <div class="w-50 w-100-ns mb3 mb4-ns">
-            <p class="mv0 f2">${state.model.avgPageDepth.toFixed(1)}</p>
-            <p class="mv0 normal">${__('Avg. Page Depth')}</p>
-          </div>` : null}
+        ${keyMetric(__('Unique %s', entityName), uniqueEntities)}
+        ${keyMetric(__('Unique Sessions'), uniqueSessions)}
+        ${keyMetric(__('Bounce Rate'), `${state.model.bounceRate} %`)}
+        ${isOperator && state.model.loss ? keyMetric(__('Plus'), formatPercentage(state.model.loss)) : null}
+        ${state.model.avgPageload ? keyMetric(__('Avg. Page Load time'), `${Math.round(state.model.avgPageload)} ms`) : null}
+        ${state.model.avgPageDepth ? keyMetric(__('Avg. Page Depth'), state.model.avgPageDepth.toFixed(1)) : null}
       </div>
     </div>
   `
@@ -221,8 +209,11 @@ function view (state, emit) {
     </div>
   `
 
-  var pagesData = state.model.pages
-    .map(function (row) {
+  function urlTable (headline, col1Label, col2Label, rows) {
+    if (!Array.isArray(rows) || rows.length === 0) {
+      return null
+    }
+    var data = rows.map(function (row) {
       return html`
         <tr>
           <td class="pv2 bt b--black-10">${row.url}</td>
@@ -230,55 +221,30 @@ function view (state, emit) {
         </tr>
       `
     })
-
-  var pages = html`
-    <h4 class ="f5 normal mt0 mb3">${__('Top pages')}</h4>
-    <table class="w-100 collapse mb3">
-      <thead>
-        <tr>
-          <td class="pv2 b">${__('URL')}</td>
-          <td class="pv2 b">${__('Pageviews')}</td>
-        </tr>
-      </thead>
-      <tbody>
-        ${pagesData}
-      </tbody>
-    </table>
-  `
-
-  var referrerData = state.model.referrers
-    .map(function (row) {
-      return html`
-        <tr>
-          <td class="pv2 bt b--black-10">${row.host}</td>
-          <td class="pv2 bt b--black-10">${row.pageviews}</td>
-        </tr>
-      `
-    })
-
-  var referrers = referrerData.length
-    ? html`
-      <h4 class ="f5 normal mt0 mb3">${__('Top referrers')}</h4>
-      <table class="w-100 collapse mb3">
+    return html`
+      <h4 class ="f5 normal mt0 mb3">${headline}</h4>
+      <table class="w-100 collapse mb3 dt--fixed">
         <thead>
           <tr>
-            <td class="pv2 b">${__('Host')}</td>
-            <td class="pv2 b">${__('Pageviews')}</td>
+            <td class="pv2 b">${col1Label}</td>
+            <td class="pv2 b">${col2Label}</td>
           </tr>
         </thead>
         <tbody>
-          ${referrerData}
+          ${data}
         </tbody>
       </table>
     `
-    : null
+  }
 
-  var pagesReferrers = html`
-      <div class="w-100 pa3 mb2 ba b--black-10 br2 bg-white">
-        ${pages}
-        ${referrers}
-      </div>
-    `
+  var urlTables = html`
+    <div class="w-100 pa3 mb2 ba b--black-10 br2 bg-white">
+      ${urlTable(__('Top pages'), __('URL'), __('Pageviews'), state.model.pages)}
+      ${urlTable(__('Top referrers'), __('Host'), __('Pageviews'), state.model.referrers)}
+      ${urlTable(__('Landing pages'), __('URL'), __('Landings'), state.model.landingPages)}
+      ${urlTable(__('Exit pages'), __('URL'), __('Exits'), state.model.exitPages)}
+    </div>
+  `
 
   var goSettings = isOperator
     ? html`
@@ -302,7 +268,7 @@ function view (state, emit) {
         ${accountHeader}
         ${rowRangeManage}
         ${rowUsersSessionsChart}
-        ${pagesReferrers}
+        ${urlTables}
         ${goSettings}
       </div>
     `
