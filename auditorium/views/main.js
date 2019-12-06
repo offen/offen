@@ -178,38 +178,26 @@ function view (state, emit) {
     ? __('Users')
     : __('Accounts')
 
+  function keyMetric (name, value) {
+    return html`
+      <div class="w-50 w-100-ns mb3 mb4-ns">
+        <p class="mv0 f2">${value}</p>
+        <p class="mv0 normal">${name}</p>
+      </div>
+    `
+  }
+
   var uniqueSessions = state.model.uniqueSessions
   var keyMetrics = html`
     <div class="w-100 w-25-m w-20-ns pa3 mb2 ba b--black-10 br2 bg-white">
       <h4 class ="f5 normal mt0 mb3 mb4-ns">Key metrics</h4>
       <div class="flex flex-wrap">
-        <div class="w-50 w-100-ns mb3 mb4-ns">
-          <p class="mv0 f2">${uniqueEntities}</p>
-          <p class="mv0 normal">${__('Unique %s', entityName)}</p>
-        </div>
-        <div class="w-50 w-100-ns mb3 mb4-ns">
-          <p class="mv0 f2">${uniqueSessions}</p>
-          <p class="mv0 normal">${__('Unique Sessions')}</p>
-        </div>
-        <div class="w-50 w-100-ns mb3 mb4-ns">
-          <p class="mv0 f2">${formatPercentage(state.model.bounceRate)} %</p>
-          <p class="mv0 normal">${__('Bounce Rate')}</p>
-        </div>
-        ${isOperator ? html`
-          <div class="w-50 w-100-ns mb3 mb4-ns">
-            <p class="mv0 f2">${formatPercentage(state.model.loss)} %</p>
-            <p class="mv0 normal">${__('Plus')}</p>
-          </div>` : null}
-        ${state.model.avgPageload ? html`
-          <div class="w-50 w-100-ns mb3 mb4-ns">
-            <p class="mv0 f2">${Math.round(state.model.avgPageload)} ms</p>
-            <p class="mv0 normal">${__('Avg. Page Load time')}</p>
-          </div>` : null}
-        ${state.model.avgPageDepth ? html`
-          <div class="w-50 w-100-ns mb3 mb4-ns">
-            <p class="mv0 f2">${state.model.avgPageDepth.toFixed(1)}</p>
-            <p class="mv0 normal">${__('Avg. Page Depth')}</p>
-          </div>` : null}
+        ${keyMetric(__('Unique %s', entityName), uniqueEntities)}
+        ${keyMetric(__('Unique Sessions'), uniqueSessions)}
+        ${keyMetric(__('Bounce Rate'), `${state.model.bounceRate} %`)}
+        ${isOperator && state.model.loss ? keyMetric(__('Plus'), formatPercentage(state.model.loss)) : null}
+        ${state.model.avgPageload ? keyMetric(__('Avg. Page Load time'), `${Math.round(state.model.avgPageload)} ms`) : null}
+        ${state.model.avgPageDepth ? keyMetric(__('Avg. Page Depth'), state.model.avgPageDepth.toFixed(1)) : null}
       </div>
     </div>
   `
