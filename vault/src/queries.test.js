@@ -53,7 +53,7 @@ describe('src/queries.js', function () {
               [
                 'uniqueUsers', 'uniqueAccounts', 'uniqueSessions',
                 'referrers', 'pages', 'pageviews', 'bounceRate', 'loss',
-                'avgPageload', 'resolution', 'range'
+                'avgPageload', 'avgPageDepth', 'resolution', 'range'
               ]
             )
             assert.strictEqual(data.uniqueUsers, 0)
@@ -313,7 +313,7 @@ describe('src/queries.js', function () {
               [
                 'uniqueUsers', 'uniqueAccounts', 'uniqueSessions',
                 'referrers', 'pages', 'pageviews', 'bounceRate', 'loss',
-                'avgPageload', 'resolution', 'range'
+                'avgPageload', 'avgPageDepth', 'resolution', 'range'
               ]
             )
 
@@ -323,6 +323,7 @@ describe('src/queries.js', function () {
             assert.strictEqual(data.pages.length, 4)
             assert.strictEqual(data.referrers.length, 1)
             assert.strictEqual(data.avgPageload, 160)
+            assert.strictEqual(data.avgPageDepth, 1.25)
 
             assert.strictEqual(data.pageviews[6].accounts, 1)
             assert.strictEqual(data.pageviews[6].pageviews, 2)
@@ -357,7 +358,7 @@ describe('src/queries.js', function () {
               [
                 'uniqueUsers', 'uniqueAccounts', 'uniqueSessions',
                 'referrers', 'pages', 'pageviews', 'bounceRate', 'loss',
-                'avgPageload', 'resolution', 'range'
+                'avgPageload', 'avgPageDepth', 'resolution', 'range'
               ]
             )
 
@@ -367,6 +368,7 @@ describe('src/queries.js', function () {
             assert.strictEqual(data.pages.length, 4)
             assert.strictEqual(data.referrers.length, 1)
             assert.strictEqual(data.avgPageload, 150)
+            assert.strictEqual(data.avgPageDepth, 1.2)
 
             assert.strictEqual(data.pageviews[1].accounts, 2)
             assert.strictEqual(data.pageviews[1].pageviews, 5)
@@ -394,7 +396,7 @@ describe('src/queries.js', function () {
               [
                 'uniqueUsers', 'uniqueAccounts', 'uniqueSessions',
                 'referrers', 'pages', 'pageviews', 'bounceRate', 'loss',
-                'avgPageload', 'resolution', 'range'
+                'avgPageload', 'avgPageDepth', 'resolution', 'range'
               ]
             )
 
@@ -404,6 +406,7 @@ describe('src/queries.js', function () {
             assert.strictEqual(data.pages.length, 2)
             assert.strictEqual(data.referrers.length, 0)
             assert.strictEqual(data.avgPageload, 175)
+            assert.strictEqual(data.avgPageDepth, 2)
 
             assert.strictEqual(data.pageviews[11].accounts, 1)
             assert.strictEqual(data.pageviews[11].pageviews, 2)

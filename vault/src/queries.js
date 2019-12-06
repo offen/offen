@@ -282,11 +282,30 @@ function getDefaultStatsWith (getDatabase) {
         if (applicable.length === 0) {
           return null
         }
-
         var total = applicable.reduce(function (acc, next) {
           return acc + next
         }, 0)
-        return Math.round(total / applicable.length)
+        return total / applicable.length
+      })
+
+    var avgPageDepth = decryptedEvents
+      .then(function (events) {
+        var views
+        var uniqueSessions = _.chain(events)
+          .pluck('payload')
+          .pluck('sessionId')
+          .compact()
+          .tap(function (collection) {
+            views = collection.length
+          })
+          .uniq()
+          .size()
+          .value()
+
+        if (uniqueSessions === 0) {
+          return null
+        }
+        return views / uniqueSessions
       })
 
     return Promise
@@ -299,7 +318,8 @@ function getDefaultStatsWith (getDatabase) {
         pageviews,
         bounceRate,
         loss,
-        avgPageload
+        avgPageload,
+        avgPageDepth
       ])
       .then(function (results) {
         return {
@@ -312,6 +332,7 @@ function getDefaultStatsWith (getDatabase) {
           bounceRate: results[6],
           loss: results[7],
           avgPageload: results[8],
+          avgPageDepth: results[9],
           resolution: resolution,
           range: range
         }
