@@ -53,7 +53,8 @@ describe('src/queries.js', function () {
               [
                 'uniqueUsers', 'uniqueAccounts', 'uniqueSessions',
                 'referrers', 'pages', 'pageviews', 'bounceRate', 'loss',
-                'avgPageload', 'avgPageDepth', 'resolution', 'range'
+                'avgPageload', 'avgPageDepth', 'landingPages', 'exitPages',
+                'resolution', 'range'
               ]
             )
             assert.strictEqual(data.uniqueUsers, 0)
@@ -313,7 +314,8 @@ describe('src/queries.js', function () {
               [
                 'uniqueUsers', 'uniqueAccounts', 'uniqueSessions',
                 'referrers', 'pages', 'pageviews', 'bounceRate', 'loss',
-                'avgPageload', 'avgPageDepth', 'resolution', 'range'
+                'avgPageload', 'avgPageDepth', 'landingPages', 'exitPages',
+                'resolution', 'range'
               ]
             )
 
@@ -358,7 +360,8 @@ describe('src/queries.js', function () {
               [
                 'uniqueUsers', 'uniqueAccounts', 'uniqueSessions',
                 'referrers', 'pages', 'pageviews', 'bounceRate', 'loss',
-                'avgPageload', 'avgPageDepth', 'resolution', 'range'
+                'avgPageload', 'avgPageDepth', 'landingPages', 'exitPages',
+                'resolution', 'range'
               ]
             )
 
@@ -396,7 +399,8 @@ describe('src/queries.js', function () {
               [
                 'uniqueUsers', 'uniqueAccounts', 'uniqueSessions',
                 'referrers', 'pages', 'pageviews', 'bounceRate', 'loss',
-                'avgPageload', 'avgPageDepth', 'resolution', 'range'
+                'avgPageload', 'avgPageDepth', 'landingPages', 'exitPages',
+                'resolution', 'range'
               ]
             )
 

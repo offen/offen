@@ -324,7 +324,62 @@ function getDefaultStatsWith (getDatabase) {
 
     var landingPages = decryptedEvents
       .then(function (events) {
+        return _.chain(events)
+          .filter(function (e) {
+            return e.userId !== null && e.payload.sessionId && e.payload.href
+          })
+          .groupBy(function (e) {
+            return e.payload.sessionId
+          })
+          .map(function (events, key) {
+            // for each session, we are only interested in the first
+            // event and its href value
+            var landing = _.chain(events)
+              .sortBy('timestamp')
+              .first()
+              .value()
+            return landing.payload.href.origin + landing.payload.href.pathname
+          })
+          .countBy(_.identity)
+          .pairs()
+          .map(function (pair) {
+            return { url: pair[0], pageviews: pair[1] }
+          })
+          .sortBy('pageviews')
+          .reverse()
+          .value()
+      })
 
+    var exitPages = decryptedEvents
+      .then(function (events) {
+        return _.chain(events)
+          .filter(function (e) {
+            return e.userId !== null && e.payload.sessionId && e.payload.href
+          })
+          .groupBy(function (e) {
+            return e.payload.sessionId
+          })
+          .map(function (events, key) {
+            if (events.length < 2) {
+              return null
+            }
+            // for each session, we are only interested in the first
+            // event and its href value
+            var landing = _.chain(events)
+              .sortBy('timestamp')
+              .last()
+              .value()
+            return landing.payload.href.origin + landing.payload.href.pathname
+          })
+          .compact()
+          .countBy(_.identity)
+          .pairs()
+          .map(function (pair) {
+            return { url: pair[0], pageviews: pair[1] }
+          })
+          .sortBy('pageviews')
+          .reverse()
+          .value()
       })
 
     return Promise
@@ -339,7 +394,8 @@ function getDefaultStatsWith (getDatabase) {
         loss,
         avgPageload,
         avgPageDepth,
-        landingPages
+        landingPages,
+        exitPages
       ])
       .then(function (results) {
         return {
@@ -353,6 +409,8 @@ function getDefaultStatsWith (getDatabase) {
           loss: results[7],
           avgPageload: results[8],
           avgPageDepth: results[9],
+          landingPages: results[10],
+          exitPages: results[11],
           resolution: resolution,
           range: range
         }
