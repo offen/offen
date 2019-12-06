@@ -194,8 +194,8 @@ function view (state, emit) {
       <div class="flex flex-wrap">
         ${keyMetric(__('Unique %s', entityName), uniqueEntities)}
         ${keyMetric(__('Unique Sessions'), uniqueSessions)}
-        ${keyMetric(__('Bounce Rate'), `${state.model.bounceRate} %`)}
-        ${isOperator && state.model.loss ? keyMetric(__('Plus'), formatPercentage(state.model.loss)) : null}
+        ${keyMetric(__('Bounce Rate'), `${formatPercentage(state.model.bounceRate)} %`)}
+        ${isOperator && state.model.loss ? keyMetric(__('Plus'), `${formatPercentage(state.model.loss)} %`) : null}
         ${state.model.avgPageload ? keyMetric(__('Avg. Page Load time'), `${Math.round(state.model.avgPageload)} ms`) : null}
         ${state.model.avgPageDepth ? keyMetric(__('Avg. Page Depth'), state.model.avgPageDepth.toFixed(1)) : null}
       </div>
