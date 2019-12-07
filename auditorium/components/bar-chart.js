@@ -35,7 +35,7 @@ BarChart.prototype.createElement = function (params) {
   params = params || {}
   Object.assign(this.local, params)
   return html`
-    <div class="chart"></div>
+    <div class="mb4 chart flex-auto"></div>
   `
 }
 
@@ -106,6 +106,7 @@ BarChart.prototype.getChartData = function () {
   ]
 
   var layout = {
+    autosize: true,
     yaxis: {
       fixedrange: true,
       dtick: 1,

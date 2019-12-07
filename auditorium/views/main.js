@@ -161,13 +161,11 @@ function view (state, emit) {
   }
 
   var chart = html`
-    <div class="w-100 w-75-m w-80-ns pa3 mb2 mr2-ns ba b--black-10 br2 bg-white">
+    <div class="w-100 w-75-m w-80-ns pa3 mb2 mr2-ns ba b--black-10 br2 bg-white flex flex-column">
       <h4 class="f5 normal mt0 mb3">
         ${__('Page views and %s', isOperator ? __('visitors') : __('accounts'))}
       </h4>
-      <div class="mb4">
-        ${state.cache(BarChart, 'bar-chart').render(chartData)}
-      </div>
+      ${state.cache(BarChart, 'bar-chart').render(chartData)}
     </div>
   `
 
