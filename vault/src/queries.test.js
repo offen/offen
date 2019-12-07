@@ -54,12 +54,14 @@ describe('src/queries.js', function () {
                 'uniqueUsers', 'uniqueAccounts', 'uniqueSessions',
                 'referrers', 'pages', 'pageviews', 'bounceRate', 'loss',
                 'avgPageload', 'avgPageDepth', 'landingPages', 'exitPages',
-                'resolution', 'range'
+                'mobileShare', 'resolution', 'range'
               ]
             )
             assert.strictEqual(data.uniqueUsers, 0)
             assert.strictEqual(data.uniqueAccounts, 0)
             assert.strictEqual(data.uniqueSessions, 0)
+            assert.strictEqual(data.mobileShare, null)
+
             assert.deepStrictEqual(data.referrers, [])
 
             assert.strictEqual(data.pageviews.length, 7)
@@ -315,7 +317,7 @@ describe('src/queries.js', function () {
                 'uniqueUsers', 'uniqueAccounts', 'uniqueSessions',
                 'referrers', 'pages', 'pageviews', 'bounceRate', 'loss',
                 'avgPageload', 'avgPageDepth', 'landingPages', 'exitPages',
-                'resolution', 'range'
+                'mobileShare', 'resolution', 'range'
               ]
             )
 
@@ -328,6 +330,7 @@ describe('src/queries.js', function () {
             assert.strictEqual(data.referrers.length, 1)
             assert.strictEqual(data.avgPageload, 160)
             assert.strictEqual(data.avgPageDepth, 1.25)
+            assert.strictEqual(data.mobileShare, 0)
 
             assert.strictEqual(data.pageviews[6].accounts, 1)
             assert.strictEqual(data.pageviews[6].pageviews, 2)
@@ -363,7 +366,7 @@ describe('src/queries.js', function () {
                 'uniqueUsers', 'uniqueAccounts', 'uniqueSessions',
                 'referrers', 'pages', 'pageviews', 'bounceRate', 'loss',
                 'avgPageload', 'avgPageDepth', 'landingPages', 'exitPages',
-                'resolution', 'range'
+                'mobileShare', 'resolution', 'range'
               ]
             )
 
@@ -376,6 +379,7 @@ describe('src/queries.js', function () {
             assert.strictEqual(data.exitPages.length, 1)
             assert.strictEqual(data.avgPageload, 150)
             assert.strictEqual(data.avgPageDepth, 1.2)
+            assert.strictEqual(data.mobileShare, 0)
 
             assert.strictEqual(data.pageviews[1].accounts, 2)
             assert.strictEqual(data.pageviews[1].pageviews, 5)
@@ -404,7 +408,7 @@ describe('src/queries.js', function () {
                 'uniqueUsers', 'uniqueAccounts', 'uniqueSessions',
                 'referrers', 'pages', 'pageviews', 'bounceRate', 'loss',
                 'avgPageload', 'avgPageDepth', 'landingPages', 'exitPages',
-                'resolution', 'range'
+                'mobileShare', 'resolution', 'range'
               ]
             )
 
@@ -417,6 +421,7 @@ describe('src/queries.js', function () {
             assert.strictEqual(data.exitPages.length, 1)
             assert.strictEqual(data.avgPageload, 175)
             assert.strictEqual(data.avgPageDepth, 2)
+            assert.strictEqual(data.mobileShare, 0)
 
             assert.strictEqual(data.pageviews[11].accounts, 1)
             assert.strictEqual(data.pageviews[11].pageviews, 2)

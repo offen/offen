@@ -126,7 +126,8 @@ BarChart.prototype.getChartData = function () {
   }
 
   var config = {
-    displayModeBar: false
+    displayModeBar: false,
+    responsive: true
   }
 
   return [data, layout, config]

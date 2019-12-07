@@ -188,9 +188,7 @@ function getDefaultStatsWith (getDatabase) {
           .pluck('payload')
           .pluck('sessionId')
           .compact()
-          .countBy(function (identifier) {
-            return identifier
-          })
+          .countBy(_.identity)
           .values()
           .value()
 
@@ -222,9 +220,7 @@ function getDefaultStatsWith (getDatabase) {
           .map(function (event) {
             return event.payload.referrer.host || event.payload.referrer.href
           })
-          .filter(function (referrerValue) {
-            return referrerValue
-          })
+          .filter(_.identity)
           .map(placeInBucket)
           .reduce(function (acc, referrerValue) {
             acc[referrerValue] = acc[referrerValue] || 0
@@ -382,6 +378,24 @@ function getDefaultStatsWith (getDatabase) {
           .value()
       })
 
+    var mobileShare = decryptedEvents
+      .then(function (events) {
+        var allEvents
+        var mobileEvents = _.chain(events)
+          .filter('userId')
+          .tap(function (events) {
+            allEvents = events.length
+          })
+          .filter(_.property(['payload', 'isMobile']))
+          .size()
+          .value()
+
+        if (allEvents === 0) {
+          return null
+        }
+        return mobileEvents / allEvents
+      })
+
     return Promise
       .all([
         uniqueUsers,
@@ -395,7 +409,8 @@ function getDefaultStatsWith (getDatabase) {
         avgPageload,
         avgPageDepth,
         landingPages,
-        exitPages
+        exitPages,
+        mobileShare
       ])
       .then(function (results) {
         return {
@@ -411,6 +426,7 @@ function getDefaultStatsWith (getDatabase) {
           avgPageDepth: results[9],
           landingPages: results[10],
           exitPages: results[11],
+          mobileShare: results[12],
           resolution: resolution,
           range: range
         }

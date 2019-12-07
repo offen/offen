@@ -13,6 +13,9 @@ function pageview (initial) {
         )
       }
       return null
-    })()
+    })(),
+    // TODO: this works well at the moment, but is likely to be deprecated at
+    // some point in the future. Find a more robust feature detect.
+    isMobile: typeof window.onorientationchange !== 'undefined'
   }
 }
