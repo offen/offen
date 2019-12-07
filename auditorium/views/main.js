@@ -194,10 +194,13 @@ function view (state, emit) {
       <div class="flex flex-wrap">
         ${keyMetric(__('Unique %s', entityName), uniqueEntities)}
         ${keyMetric(__('Unique Sessions'), uniqueSessions)}
+        <hr class="mt0 mb3 w-100 bb bw1 b--black-10">
+        ${state.model.avgPageDepth ? keyMetric(__('Avg. Page Depth'), state.model.avgPageDepth.toFixed(1)) : null}
         ${keyMetric(__('Bounce Rate'), `${formatPercentage(state.model.bounceRate)} %`)}
         ${isOperator && state.model.loss ? keyMetric(__('Plus'), `${formatPercentage(state.model.loss)} %`) : null}
+        <hr class="mt0 mb3 w-100 bb bw1 b--black-10">
+        ${keyMetric(__('Mobile Users'), `${formatPercentage(state.model.mobileShare)} %`)}
         ${state.model.avgPageload ? keyMetric(__('Avg. Page Load time'), `${Math.round(state.model.avgPageload)} ms`) : null}
-        ${state.model.avgPageDepth ? keyMetric(__('Avg. Page Depth'), state.model.avgPageDepth.toFixed(1)) : null}
       </div>
     </div>
   `
