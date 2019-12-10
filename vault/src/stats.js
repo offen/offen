@@ -6,30 +6,14 @@ exports.loss = consumeAsync(loss)
 
 function loss (events) {
   var totalCount = events.length
-  var nonNullCount = _.chain(events)
-    .pluck('userId')
-    .compact()
-    .size()
-    .value()
-
   if (totalCount === 0) {
     return 0
   }
-
+  var nonNullCount = countKeys('userId', false)(events)
   return 1 - (nonNullCount / totalCount)
 }
 
-exports.uniqueSessions = consumeAsync(uniqueSessions)
-
-function uniqueSessions (events) {
-  return _.chain(events)
-    .map(_.property(['payload', 'sessionId']))
-    // anonymous events do not have a sessionId prop
-    .compact()
-    .unique()
-    .size()
-    .value()
-}
+exports.uniqueSessions = consumeAsync(countKeys(['payload', 'sessionId'], true))
 
 exports.bounceRate = consumeAsync(bounceRate)
 
@@ -61,7 +45,7 @@ function bounceRate (events) {
 exports.referrers = consumeAsync(referrers)
 
 function referrers (events) {
-  var perHost = _.chain(events)
+  return _.chain(events)
     .filter(function (event) {
       if (event.userId === null || !event.payload || !event.payload.referrer) {
         return false
@@ -73,18 +57,14 @@ function referrers (events) {
     })
     .compact()
     .map(placeInBucket)
-    .reduce(function (acc, referrerValue) {
-      acc[referrerValue] = acc[referrerValue] || 0
-      acc[referrerValue]++
-      return acc
-    }, {})
-    .value()
-
-  var unique = Object.keys(perHost)
-    .map(function (host) {
-      return { host: host, pageviews: perHost[host] }
+    .countBy(_.identity)
+    .pairs()
+    .map(function (pair) {
+      return { host: pair[0], pageviews: pair[1] }
     })
-  return _.sortBy(unique, 'pageviews').reverse()
+    .sortBy('pageviews')
+    .reverse()
+    .value()
 }
 
 exports.pages = consumeAsync(pages)
@@ -92,7 +72,7 @@ exports.pages = consumeAsync(pages)
 function pages (events) {
   var keys = events
     .filter(function (event) {
-      return event.userId !== null && event.payload.href
+      return event.userId !== null && event.payload && event.payload.href
     })
     .map(function (event) {
       return [event.accountId, event.payload.href]
@@ -101,6 +81,7 @@ function pages (events) {
   var cleanedKeys = keys.map(function (pair) {
     var accountId = pair[0]
     var url = pair[1]
+    // query string parameters are disregarded
     var strippedHref = url.origin + url.pathname
     return [accountId, strippedHref]
   })
@@ -152,17 +133,8 @@ function avgPageload (events) {
 exports.avgPageDepth = consumeAsync(avgPageDepth)
 
 function avgPageDepth (events) {
-  var views
-  var uniqueSessions = _.chain(events)
-    .map(_.property(['payload', 'sessionId']))
-    .compact()
-    .tap(function (collection) {
-      views = collection.length
-    })
-    .uniq()
-    .size()
-    .value()
-
+  var views = countKeys(['payload', 'sessionId'], false)(events)
+  var uniqueSessions = countKeys(['payload', 'sessionId'], true)(events)
   if (uniqueSessions === 0) {
     return null
   }
@@ -174,7 +146,7 @@ exports.exitPages = consumeAsync(exitPages)
 function exitPages (events) {
   return _.chain(events)
     .filter(function (e) {
-      return e.userId !== null && e.payload.sessionId && e.payload.href
+      return e.userId !== null && e.payload && e.payload.sessionId && e.payload.href
     })
     .groupBy(function (e) {
       return e.payload.sessionId
@@ -207,7 +179,7 @@ exports.landingPages = consumeAsync(landingPages)
 function landingPages (events) {
   return _.chain(events)
     .filter(function (e) {
-      return e.userId !== null && e.payload.sessionId && e.payload.href
+      return e.userId !== null && e.payload && e.payload.sessionId && e.payload.href
     })
     .groupBy(function (e) {
       return e.payload.sessionId
@@ -250,22 +222,19 @@ function mobileShare (events) {
   return mobileEvents / allEvents
 }
 
-exports.pageviews = countKeys('userId', false)
-exports.visitors = countKeys('userId', true)
-exports.accounts = countKeys('accountId', true)
+exports.pageviews = consumeAsync(countKeys('userId', false))
+exports.visitors = consumeAsync(countKeys('userId', true))
+exports.accounts = consumeAsync(countKeys('accountId', true))
 
 function countKeys (keys, unique) {
-  return consumeAsync(function (elements) {
-    if (!Array.isArray(keys)) {
-      keys = [keys]
-    }
+  return function (elements) {
     var list = _.map(elements, _.property(keys))
     list = _.compact(list)
     if (unique) {
       list = _.uniq(list)
     }
     return list.length
-  })
+  }
 }
 
 function consumeAsync (fn, ctx = null) {
