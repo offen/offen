@@ -267,7 +267,8 @@ function countKeys (keys, unique) {
 // `consumeAsync` ensures the given function can be called with both
 // synchronous and asynchronous values as arguments. The return value
 // will be wrapped in a Promise.
-function consumeAsync (fn, ctx = null) {
+function consumeAsync (fn, ctx) {
+  ctx = ctx || null
   return function () {
     var args = [].slice.call(arguments)
     return Promise.all(args)
