@@ -138,29 +138,12 @@ function getDefaultStatsWith (getDatabase) {
         return _.sortBy(days, 'date')
       })
 
-    // `uniqueUsers` is the number of unique user ids for the given
-    //  timerange.
     var uniqueUsers = stats.visitors(eventsInBounds)
-    // `loss` is the percentage of anonymous events (i.e. events without a
-    // user identifier) in the given timeframe.
-    // indexed DB does not index on `null` (which maps to an anonymous event)
-    // so the loss rate can simply be calculated by comparing the count
-    // in an index with and one without userId
     var loss = stats.loss(decryptedEvents)
-    // This is the number of unique accounts for the given timeframe
     var uniqueAccounts = stats.accounts(eventsInBounds)
-    // This is the number of unique sessions for the given timeframe
     var uniqueSessions = stats.uniqueSessions(decryptedEvents)
-    // The bounce rate is calculated as the percentage of session identifiers
-    // in the timerange that are associated with one event only, i.e. there
-    // has been no follow-up event.
     var bounceRate = stats.bounceRate(decryptedEvents)
-    // `referrers` is the list of referrer values, grouped by host name. Common
-    // referrers (i.e. search engines or apps) will replaced with a human-friendly
-    // name assigned to their bucket.
     var referrers = stats.referrers(decryptedEvents)
-    // `pages` contains all pages visited sorted by the number of pageviews.
-    // URLs are stripped off potential query strings before grouping.
     var pages = stats.pages(decryptedEvents)
     var avgPageload = stats.avgPageload(decryptedEvents)
     var avgPageDepth = stats.avgPageDepth(decryptedEvents)

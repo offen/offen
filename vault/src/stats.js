@@ -2,6 +2,8 @@ var _ = require('underscore')
 
 var placeInBucket = require('./buckets')
 
+// `loss` is the percentage of anonymous events (i.e. events without a
+// user identifier) in the given set of events.
 exports.loss = consumeAsync(loss)
 
 function loss (events) {
@@ -13,8 +15,9 @@ function loss (events) {
   return 1 - (nonNullCount / totalCount)
 }
 
-exports.uniqueSessions = consumeAsync(countKeys(['payload', 'sessionId'], true))
-
+// The bounce rate is calculated as the percentage of session identifiers
+// in the set of events that are associated with one event only, i.e. there
+// has been no follow-up event.
 exports.bounceRate = consumeAsync(bounceRate)
 
 function bounceRate (events) {
@@ -42,6 +45,9 @@ function bounceRate (events) {
   return bounces / sessionCounts
 }
 
+// `referrers` is the list of referrer values, grouped by host name. Common
+// referrers (i.e. search engines or apps) will replaced with a human-friendly
+// name assigned to their bucket.
 exports.referrers = consumeAsync(referrers)
 
 function referrers (events) {
@@ -67,6 +73,9 @@ function referrers (events) {
     .value()
 }
 
+// `pages` contains all pages visited sorted by the number of pageviews.
+// URLs are stripped off potential query strings and hash parameters
+// before grouping.
 exports.pages = consumeAsync(pages)
 
 function pages (events) {
@@ -108,6 +117,8 @@ function pages (events) {
     .value()
 }
 
+// `avgPageload` calculates the average pageload time of the given
+// set of events
 exports.avgPageload = consumeAsync(avgPageload)
 
 function avgPageload (events) {
@@ -130,6 +141,8 @@ function avgPageload (events) {
   return total / count
 }
 
+// `avgPageDepth` calculates the average session length in the given
+// set of events
 exports.avgPageDepth = consumeAsync(avgPageDepth)
 
 function avgPageDepth (events) {
@@ -143,6 +156,10 @@ function avgPageDepth (events) {
 
 exports.exitPages = consumeAsync(exitPages)
 
+// `exitPages` groups the given events by session identifier and then
+// returns a sorted list of exit pages for these sessions. URLs will be
+// stripped off query and hash parameters. Sessions that only contain
+// a single page will be excluded.
 function exitPages (events) {
   return _.chain(events)
     .filter(function (e) {
@@ -174,6 +191,9 @@ function exitPages (events) {
     .value()
 }
 
+// `landingPages` groups the given events by session identifier and then
+// returns a sorted list of landing pages for these sessions. URLs will be
+// stripped off query and hash parameters.
 exports.landingPages = consumeAsync(landingPages)
 
 function landingPages (events) {
@@ -203,6 +223,8 @@ function landingPages (events) {
     .value()
 }
 
+// `mobileShare` returns the percentage of events flagged as mobile
+// in the given set of events.
 exports.mobileShare = consumeAsync(mobileShare)
 
 function mobileShare (events) {
@@ -223,8 +245,13 @@ function mobileShare (events) {
 }
 
 exports.pageviews = consumeAsync(countKeys('userId', false))
+// `visitors` is the number of unique users for the given
+//  set of events.
 exports.visitors = consumeAsync(countKeys('userId', true))
+// This is the number of unique accounts for the given timeframe
 exports.accounts = consumeAsync(countKeys('accountId', true))
+// This is the number of unique sessions for the given timeframe
+exports.uniqueSessions = consumeAsync(countKeys(['payload', 'sessionId'], true))
 
 function countKeys (keys, unique) {
   return function (elements) {
@@ -237,6 +264,9 @@ function countKeys (keys, unique) {
   }
 }
 
+// `consumeAsync` ensures the given function can be called with both
+// synchronous and asynchronous values as arguments. The return value
+// will be wrapped in a Promise.
 function consumeAsync (fn, ctx = null) {
   return function () {
     var args = [].slice.call(arguments)
