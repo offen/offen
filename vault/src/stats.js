@@ -79,37 +79,24 @@ function referrers (events) {
 exports.pages = consumeAsync(pages)
 
 function pages (events) {
-  var keys = events
+  return _.chain(events)
     .filter(function (event) {
       return event.userId !== null && event.payload && event.payload.href
     })
     .map(function (event) {
-      return [event.accountId, event.payload.href]
+      var strippedHref = event.payload.href.origin + event.payload.href.pathname
+      return { accountId: event.accountId, href: strippedHref }
     })
-
-  var cleanedKeys = keys.map(function (pair) {
-    var accountId = pair[0]
-    var url = pair[1]
-    // query string parameters are disregarded
-    var strippedHref = url.origin + url.pathname
-    return [accountId, strippedHref]
-  })
-
-  var byAccount = cleanedKeys.reduce(function (acc, next) {
-    acc[next[0]] = acc[next[0]] || []
-    acc[next[0]].push(next)
-    return acc
-  }, {})
-
-  return _.chain(byAccount)
+    .groupBy('accountId')
     .values()
-    .map(function (pageviews) {
-      var counts = _.countBy(pageviews, function (pageview) {
-        return pageview[1]
-      })
-      return Object.keys(counts).map(function (url) {
-        return { url: url, pageviews: counts[url] }
-      })
+    .map(function (pageviewsPerAccount) {
+      return _.chain(pageviewsPerAccount)
+        .countBy('href')
+        .pairs()
+        .map(function (pair) {
+          return { url: pair[0], pageviews: pair[1] }
+        })
+        .value()
     })
     .flatten(true)
     .sortBy('pageviews')
