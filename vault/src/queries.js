@@ -13,8 +13,8 @@ var subWeeks = require('date-fns/sub_weeks')
 var subMonths = require('date-fns/sub_months')
 
 var getDatabase = require('./database')
-var placeInBucket = require('./buckets')
 var decryptEvents = require('./decrypt-events')
+var stats = require('./stats')
 
 var startOf = {
   hours: startOfHour,
@@ -73,6 +73,7 @@ function getDefaultStatsWith (getDatabase) {
     var eventsInBounds = table
       .where('timestamp')
       .between(lowerBound, upperBound)
+      .toArray()
 
     // There are two types of queries happening here: those that rely solely
     // on the IndexedDB indices, and those that require the event payload
@@ -81,7 +82,7 @@ function getDefaultStatsWith (getDatabase) {
     // encryption, yet it seems using the IndexedDB API where possible makes
     // more sense and performs better.
     var decryptedEvents = eventsInBounds
-      .toArray(function (events) {
+      .then(function (events) {
         // User events are already decrypted, so there is no need to proceed
         // further. This may seem counterintuitive at first, but it'd be
         // relatively pointless to store the encrypted events alongside a
@@ -117,15 +118,11 @@ function getDefaultStatsWith (getDatabase) {
         var eventsInBounds = table
           .where('timestamp')
           .between(lowerBound, upperBound)
+          .toArray()
 
-        var pageviews = eventsInBounds
-          .toArray(countKeys('userId', false))
-
-        var visitors = eventsInBounds
-          .toArray(countKeys('userId', true))
-
-        var accounts = eventsInBounds
-          .toArray(countKeys('accountId', true))
+        var pageviews = stats.pageviews(eventsInBounds)
+        var visitors = stats.visitors(eventsInBounds)
+        var accounts = stats.accounts(eventsInBounds)
 
         return Promise.all([pageviews, visitors, accounts])
           .then(function (values) {
@@ -141,260 +138,18 @@ function getDefaultStatsWith (getDatabase) {
         return _.sortBy(days, 'date')
       })
 
-    // `uniqueUsers` is the number of unique user ids for the given
-    //  timerange.
-    var uniqueUsers = eventsInBounds
-      .toArray(countKeys('userId', true))
-
-    // `loss` is the percentage of anonymous events (i.e. events without a
-    // user identifier) in the given timeframe.
-    // indexed DB does not index on `null` (which maps to an anonymous event)
-    // so the loss rate can simply be calculated by comparing the count
-    // in an index with and one without userId
-    var loss = eventsInBounds
-      .toArray(function (allEvents) {
-        if (allEvents.length === 0) {
-          return 0
-        }
-        var notNull = allEvents.filter(function (event) {
-          return event.userId !== null
-        })
-        return 1 - (notNull.length / allEvents.length)
-      })
-
-    // This is the number of unique accounts for the given timeframe
-    var uniqueAccounts = eventsInBounds
-      .toArray(countKeys('accountId', true))
-
-    // This is the number of unique sessions for the given timeframe
-    var uniqueSessions = decryptedEvents
-      .then(function (events) {
-        return _.chain(events)
-          .pluck('payload')
-          .pluck('sessionId')
-          // anonymous events do not have a sessionId prop
-          .compact()
-          .unique()
-          .size()
-          .value()
-      })
-
-    // The bounce rate is calculated as the percentage of session identifiers
-    // in the timerange that are associated with one event only, i.e. there
-    // has been no follow-up event.
-    var bounceRate = decryptedEvents
-      .then(function (events) {
-        var sessionCounts = _.chain(events)
-          .pluck('payload')
-          .pluck('sessionId')
-          .compact()
-          .countBy(_.identity)
-          .values()
-          .value()
-
-        if (sessionCounts.length === 0) {
-          return 0
-        }
-
-        // The bounce rate is the percentage of sessions where there is only
-        // one event with the respective identifier in the given se
-        var bounces = sessionCounts
-          .filter(function (viewsInSession) {
-            return viewsInSession === 1
-          })
-        return bounces.length / sessionCounts.length
-      })
-
-    // `referrers` is the list of referrer values, grouped by host name. Common
-    // referrers (i.e. search engines or apps) will replaced with a human-friendly
-    // name assigned to their bucket.
-    var referrers = decryptedEvents
-      .then(function (events) {
-        var perHost = events
-          .filter(function (event) {
-            if (event.userId === null || !event.payload || !event.payload.referrer) {
-              return false
-            }
-            return event.payload.referrer.host !== event.payload.href.host
-          })
-          .map(function (event) {
-            return event.payload.referrer.host || event.payload.referrer.href
-          })
-          .filter(_.identity)
-          .map(placeInBucket)
-          .reduce(function (acc, referrerValue) {
-            acc[referrerValue] = acc[referrerValue] || 0
-            acc[referrerValue]++
-            return acc
-          }, {})
-        var unique = Object.keys(perHost)
-          .map(function (host) {
-            return { host: host, pageviews: perHost[host] }
-          })
-        return _.sortBy(unique, 'pageviews').reverse()
-      })
-
-    // `pages` contains all pages visited sorted by the number of pageviews.
-    // URLs are stripped off potential query strings before grouping.
-    var pages = decryptedEvents
-      .then(function (events) {
-        return events
-          .filter(function (event) {
-            return event.userId !== null && event.payload.href
-          })
-          .map(function (event) {
-            return [event.accountId, event.payload.href]
-          })
-      })
-      .then(function (keys) {
-        var cleanedKeys = keys.map(function (pair) {
-          var accountId = pair[0]
-          var url = pair[1]
-          var strippedHref = url.origin + url.pathname
-          return [accountId, strippedHref]
-        })
-
-        var byAccount = cleanedKeys.reduce(function (acc, next) {
-          acc[next[0]] = acc[next[0]] || []
-          acc[next[0]].push(next)
-          return acc
-        }, {})
-
-        return _.chain(byAccount)
-          .values()
-          .map(function (pageviews) {
-            var counts = _.countBy(pageviews, function (pageview) {
-              return pageview[1]
-            })
-            return Object.keys(counts).map(function (url) {
-              return { url: url, pageviews: counts[url] }
-            })
-          })
-          .flatten(true)
-          .sortBy('pageviews')
-          .reverse()
-          .value()
-      })
-
-    var avgPageload = decryptedEvents
-      .then(function (events) {
-        var count
-        var total = _.chain(events)
-          .pluck('payload')
-          .pluck('pageload')
-          .compact()
-          .tap(function (entries) {
-            count = entries.length
-          })
-          .reduce(function (acc, next) {
-            return acc + next
-          }, 0)
-          .value()
-
-        if (count === 0) {
-          return null
-        }
-
-        return total / count
-      })
-
-    var avgPageDepth = decryptedEvents
-      .then(function (events) {
-        var views
-        var uniqueSessions = _.chain(events)
-          .pluck('payload')
-          .pluck('sessionId')
-          .compact()
-          .tap(function (collection) {
-            views = collection.length
-          })
-          .uniq()
-          .size()
-          .value()
-
-        if (uniqueSessions === 0) {
-          return null
-        }
-        return views / uniqueSessions
-      })
-
-    var landingPages = decryptedEvents
-      .then(function (events) {
-        return _.chain(events)
-          .filter(function (e) {
-            return e.userId !== null && e.payload.sessionId && e.payload.href
-          })
-          .groupBy(function (e) {
-            return e.payload.sessionId
-          })
-          .map(function (events, key) {
-            // for each session, we are only interested in the first
-            // event and its href value
-            var landing = _.chain(events)
-              .sortBy('timestamp')
-              .first()
-              .value()
-            return landing.payload.href.origin + landing.payload.href.pathname
-          })
-          .countBy(_.identity)
-          .pairs()
-          .map(function (pair) {
-            return { url: pair[0], pageviews: pair[1] }
-          })
-          .sortBy('pageviews')
-          .reverse()
-          .value()
-      })
-
-    var exitPages = decryptedEvents
-      .then(function (events) {
-        return _.chain(events)
-          .filter(function (e) {
-            return e.userId !== null && e.payload.sessionId && e.payload.href
-          })
-          .groupBy(function (e) {
-            return e.payload.sessionId
-          })
-          .map(function (events, key) {
-            if (events.length < 2) {
-              return null
-            }
-            // for each session, we are only interested in the first
-            // event and its href value
-            var landing = _.chain(events)
-              .sortBy('timestamp')
-              .last()
-              .value()
-            return landing.payload.href.origin + landing.payload.href.pathname
-          })
-          .compact()
-          .countBy(_.identity)
-          .pairs()
-          .map(function (pair) {
-            return { url: pair[0], pageviews: pair[1] }
-          })
-          .sortBy('pageviews')
-          .reverse()
-          .value()
-      })
-
-    var mobileShare = decryptedEvents
-      .then(function (events) {
-        var allEvents
-        var mobileEvents = _.chain(events)
-          .filter('userId')
-          .tap(function (events) {
-            allEvents = events.length
-          })
-          .filter(_.property(['payload', 'isMobile']))
-          .size()
-          .value()
-
-        if (allEvents === 0) {
-          return null
-        }
-        return mobileEvents / allEvents
-      })
+    var uniqueUsers = stats.visitors(eventsInBounds)
+    var loss = stats.loss(decryptedEvents)
+    var uniqueAccounts = stats.accounts(eventsInBounds)
+    var uniqueSessions = stats.uniqueSessions(decryptedEvents)
+    var bounceRate = stats.bounceRate(decryptedEvents)
+    var referrers = stats.referrers(decryptedEvents)
+    var pages = stats.pages(decryptedEvents)
+    var avgPageload = stats.avgPageload(decryptedEvents)
+    var avgPageDepth = stats.avgPageDepth(decryptedEvents)
+    var landingPages = stats.landingPages(decryptedEvents)
+    var exitPages = stats.exitPages(decryptedEvents)
+    var mobileShare = stats.mobileShare(decryptedEvents)
 
     return Promise
       .all([
@@ -560,22 +315,5 @@ function getEncryptedUserSecretsWith (getDatabase) {
       .where('type')
       .equals(TYPE_ENCRYPTED_USER_SECRET)
       .toArray()
-  }
-}
-
-function countKeys (keys, unique) {
-  return function (elements) {
-    var list = _.chain(elements)
-    if (!Array.isArray(keys)) {
-      keys = [keys]
-    }
-    keys.forEach(function (key) {
-      list = list.pluck(key)
-    })
-    list = list.compact()
-    if (unique) {
-      list = list.uniq()
-    }
-    return list.size().value()
   }
 }
