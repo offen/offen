@@ -15,6 +15,7 @@ var withTitle = require('./views/decorators/with-title')
 var withModel = require('./views/decorators/with-model')
 var withError = require('./views/decorators/with-error')
 var withLayout = require('./views/decorators/with-layout')
+var withPreviousRoute = require('./views/decorators/with-previous-route')
 
 var app = choo()
 
@@ -30,7 +31,7 @@ app.use(authStore)
 app.use(bailOutStore)
 
 function decorateWithDefaults (view, title) {
-  var wrapper = _.compose(withLayout(), withError(), withTitle(title))
+  var wrapper = _.compose(withPreviousRoute(), withLayout(), withError(), withTitle(title))
   return wrapper(view)
 }
 

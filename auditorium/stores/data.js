@@ -1,4 +1,5 @@
 var vault = require('offen/vault')
+var _ = require('underscore')
 
 module.exports = store
 
@@ -36,6 +37,8 @@ function store (state, emitter) {
         }
       })
       .then(function () {
+        delete state.stale
+        delete state.updatePending
         emitter.emit(state.events.RENDER)
       })
   }
@@ -57,7 +60,15 @@ function store (state, emitter) {
   })
 
   emitter.on(state.events.NAVIGATE, function () {
-    delete state.model
+    if (state.route === state.previousRoute && _.isEqual(state.params, state.previousParams)) {
+      // This means the only thing that changed are query parameters and the
+      // application is likely going to update the same view with new data.
+      state.stale = true
+      state.updatePending = true
+      emitter.emit('offen:query', Object.assign({}, state.params, state.query), state.authenticatedUser)
+    } else {
+      delete state.model
+    }
   })
 }
 
