@@ -264,6 +264,7 @@ function view (state, emit) {
       `
     : null
 
+  // TODO: add properly styled loading overlay
   return html`
       <div>
         ${accountHeader}
@@ -271,6 +272,7 @@ function view (state, emit) {
         ${rowUsersSessionsChart}
         ${urlTables}
         ${goSettings}
+        ${state.stale ? html`<div class="fixed top-0 right-0 bottom-0 left-0 bg-white o-40"></div>` : null}
       </div>
     `
 }
