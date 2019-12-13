@@ -45,7 +45,7 @@ describe('views/main.js', function () {
 
       var headlines = result.querySelectorAll('h4')
       assert(headlines)
-      assert.strictEqual(headlines.length, 7)
+      assert.strictEqual(headlines.length, 8)
 
       var chart = result.querySelector('.chart')
       assert(chart)

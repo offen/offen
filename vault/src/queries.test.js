@@ -54,7 +54,7 @@ describe('src/queries.js', function () {
                 'uniqueUsers', 'uniqueAccounts', 'uniqueSessions',
                 'referrers', 'pages', 'pageviews', 'bounceRate', 'loss',
                 'avgPageload', 'avgPageDepth', 'landingPages', 'exitPages',
-                'mobileShare', 'resolution', 'range'
+                'mobileShare', 'livePages', 'liveUsers', 'resolution', 'range'
               ]
             )
             assert.strictEqual(data.uniqueUsers, 0)
@@ -317,7 +317,7 @@ describe('src/queries.js', function () {
                 'uniqueUsers', 'uniqueAccounts', 'uniqueSessions',
                 'referrers', 'pages', 'pageviews', 'bounceRate', 'loss',
                 'avgPageload', 'avgPageDepth', 'landingPages', 'exitPages',
-                'mobileShare', 'resolution', 'range'
+                'mobileShare', 'livePages', 'liveUsers', 'resolution', 'range'
               ]
             )
 
@@ -366,7 +366,7 @@ describe('src/queries.js', function () {
                 'uniqueUsers', 'uniqueAccounts', 'uniqueSessions',
                 'referrers', 'pages', 'pageviews', 'bounceRate', 'loss',
                 'avgPageload', 'avgPageDepth', 'landingPages', 'exitPages',
-                'mobileShare', 'resolution', 'range'
+                'mobileShare', 'livePages', 'liveUsers', 'resolution', 'range'
               ]
             )
 
@@ -408,7 +408,7 @@ describe('src/queries.js', function () {
                 'uniqueUsers', 'uniqueAccounts', 'uniqueSessions',
                 'referrers', 'pages', 'pageviews', 'bounceRate', 'loss',
                 'avgPageload', 'avgPageDepth', 'landingPages', 'exitPages',
-                'mobileShare', 'resolution', 'range'
+                'mobileShare', 'livePages', 'liveUsers', 'resolution', 'range'
               ]
             )
 

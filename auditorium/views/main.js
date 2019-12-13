@@ -200,7 +200,7 @@ function view (state, emit) {
   if (isOperator) {
     live = html`
       <div class="w-100 pa3 mb2 mr2-ns ba b--black-10 br2 bg-white flex flex-column">
-        <div class="flex-ns flex-row">
+        <div class="flex flex-column flex-row-ns">
           <div class="w-100 w-30-ns">
             <h4 class="f5 normal mt0 mb3">
               ${__('Right now')}
@@ -208,7 +208,7 @@ function view (state, emit) {
             ${keyMetric('Unique users', state.model.liveUsers)}
           </div>
           <div class="w-100 w-70-ns">
-            ${urlTable('Currently active pages', 'URL', 'Visitors', state.model.livePages)}
+            ${urlTable(__('Currently active pages'), __('URL'), __('Visitors'), state.model.livePages)}
           </div>
         </div>
       </div>

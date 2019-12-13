@@ -5,7 +5,7 @@ var queries = require('./queries')
 var bindCrypto = require('./bind-crypto')
 var decryptEvents = require('./decrypt-events')
 
-module.exports = getOperatorEventsWith(queries, api, {})
+module.exports = getOperatorEventsWith(queries, api)
 module.exports.getOperatorEventsWith = getOperatorEventsWith
 
 function getOperatorEventsWith (queries, api) {

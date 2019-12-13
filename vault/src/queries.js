@@ -162,8 +162,8 @@ function getDefaultStatsWith (getDatabase) {
     var mobileShare = stats.mobileShare(decryptedEvents)
 
     var realtime = decryptions[1]
+    var livePages = stats.activePages(realtime)
     var liveUsers = stats.visitors(realtime)
-    var livePages = stats.pages(realtime)
 
     return Promise
       .all([
@@ -180,8 +180,8 @@ function getDefaultStatsWith (getDatabase) {
         landingPages,
         exitPages,
         mobileShare,
-        liveUsers,
-        livePages
+        livePages,
+        liveUsers
       ])
       .then(function (results) {
         return {
@@ -198,8 +198,8 @@ function getDefaultStatsWith (getDatabase) {
           landingPages: results[10],
           exitPages: results[11],
           mobileShare: results[12],
-          liveUsers: results[13],
-          livePages: results[14],
+          livePages: results[13],
+          liveUsers: results[14],
           resolution: resolution,
           range: range
         }
