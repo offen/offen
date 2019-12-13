@@ -216,13 +216,38 @@ describe('src/stats.js', function () {
       ])
         .then(function (result) {
           assert.deepStrictEqual(result, [
-            { host: 'www.example.net', pageviews: 3 },
-            { host: 'beep.boop', pageviews: 1 }
+            { key: 'www.example.net', count: 3 },
+            { key: 'beep.boop', count: 1 }
           ])
         })
     })
     it('returns an empty array when given an empty array', function () {
       return stats.referrers([])
+        .then(function (result) {
+          assert.deepStrictEqual(result, [])
+        })
+    })
+  })
+
+  describe('stats.campaigns(events)', function () {
+    it('returns sorted referrer campaigns from foreign domains grouped by host', function () {
+      return stats.campaigns([
+        {},
+        { payload: { href: new window.URL('https://www.mysite.com/x'), referrer: new window.URL('https://www.example.net/foo?utm_campaign=beep') } },
+        { payload: { href: new window.URL('https://www.mysite.com/y'), referrer: new window.URL('https://www.example.net/bar?something=12&utm_campaign=boop') } },
+        { payload: { href: new window.URL('https://www.mysite.com/z'), referrer: new window.URL('https://www.example.net/baz') } },
+        { payload: { href: new window.URL('https://www.mysite.com/x'), referrer: new window.URL('https://beep.boop/site?utm_campaign=beep') } },
+        { payload: { href: new window.URL('https://www.mysite.com/x'), referrer: new window.URL('https://www.mysite.com/a') } }
+      ])
+        .then(function (result) {
+          assert.deepStrictEqual(result, [
+            { key: 'beep', count: 2 },
+            { key: 'boop', count: 1 }
+          ])
+        })
+    })
+    it('returns an empty array when given an empty array', function () {
+      return stats.campaigns([])
         .then(function (result) {
           assert.deepStrictEqual(result, [])
         })
@@ -240,8 +265,8 @@ describe('src/stats.js', function () {
       ])
         .then(function (result) {
           assert.deepStrictEqual(result, [
-            { url: 'https://www.example.net/foo', pageviews: 2 },
-            { url: 'https://beep.boop/site', pageviews: 1 }
+            { key: 'https://www.example.net/foo', count: 2 },
+            { key: 'https://beep.boop/site', count: 1 }
           ])
         })
     })
@@ -264,8 +289,8 @@ describe('src/stats.js', function () {
       ])
         .then(function (result) {
           assert.deepStrictEqual(result, [
-            { url: 'https://beep.boop/site', pageviews: 1 },
-            { url: 'https://www.example.net/foo', pageviews: 1 }
+            { key: 'https://beep.boop/site', count: 1 },
+            { key: 'https://www.example.net/foo', count: 1 }
           ])
         })
     })
@@ -291,8 +316,8 @@ describe('src/stats.js', function () {
       ])
         .then(function (result) {
           assert.deepStrictEqual(result, [
-            { url: 'https://www.example.net/foo', pageviews: 2 },
-            { url: 'https://beep.boop/site', pageviews: 1 }
+            { key: 'https://www.example.net/foo', count: 2 },
+            { key: 'https://beep.boop/site', count: 1 }
           ])
         })
     })
@@ -318,8 +343,8 @@ describe('src/stats.js', function () {
       ])
         .then(function (result) {
           assert.deepStrictEqual(result, [
-            { url: 'https://www.example.net/bar', pageviews: 1 },
-            { url: 'https://www.example.net/baz', pageviews: 1 }
+            { key: 'https://www.example.net/bar', count: 1 },
+            { key: 'https://www.example.net/baz', count: 1 }
           ])
         })
     })
