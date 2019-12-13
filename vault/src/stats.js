@@ -51,24 +51,57 @@ function bounceRate (events) {
 exports.referrers = consumeAsync(referrers)
 
 function referrers (events) {
-  return _.chain(events)
+  return _referrers(events, function (set) {
+    return set
+      .map(function (event) {
+        return event.payload.referrer.host || event.payload.referrer.href
+      })
+      .filter(_.identity)
+      .map(placeInBucket)
+  })
+}
+
+// `campaigns` groups the referrer values by their `utm_campaign` if present
+exports.campaigns = consumeAsync(campaigns)
+
+function campaigns (events) {
+  return _referrers(events, function (set) {
+    return set
+      .map(function (event) {
+        return event.payload.referrer.searchParams.get('utm_campaign')
+      })
+      .filter(_.identity)
+  })
+}
+
+// `sources` groups the referrer values by their `utm_source` if present
+exports.sources = consumeAsync(sources)
+
+function sources (events) {
+  return _referrers(events, function (set) {
+    return set
+      .map(function (event) {
+        return event.payload.referrer.searchParams.get('utm_source')
+      })
+      .filter(_.identity)
+  })
+}
+
+function _referrers (events, groupFn) {
+  var foreign = events
     .filter(function (event) {
       if (event.userId === null || !event.payload || !event.payload.referrer) {
         return false
       }
       return event.payload.referrer.host !== event.payload.href.host
     })
-    .map(function (event) {
-      return event.payload.referrer.host || event.payload.referrer.href
-    })
-    .compact()
-    .map(placeInBucket)
+  return _.chain(groupFn(foreign))
     .countBy(_.identity)
     .pairs()
     .map(function (pair) {
-      return { host: pair[0], pageviews: pair[1] }
+      return { key: pair[0], count: pair[1] }
     })
-    .sortBy('pageviews')
+    .sortBy('count')
     .reverse()
     .value()
 }
@@ -124,12 +157,12 @@ function _pages (events, perUser) {
         .countBy('href')
         .pairs()
         .map(function (pair) {
-          return { url: pair[0], pageviews: pair[1] }
+          return { key: pair[0], count: pair[1] }
         })
         .value()
     })
     .flatten(true)
-    .sortBy('pageviews')
+    .sortBy('count')
     .reverse()
     .value()
 }
@@ -201,9 +234,9 @@ function exitPages (events) {
     .countBy(_.identity)
     .pairs()
     .map(function (pair) {
-      return { url: pair[0], pageviews: pair[1] }
+      return { key: pair[0], count: pair[1] }
     })
-    .sortBy('pageviews')
+    .sortBy('count')
     .reverse()
     .value()
 }
@@ -233,9 +266,9 @@ function landingPages (events) {
     .countBy(_.identity)
     .pairs()
     .map(function (pair) {
-      return { url: pair[0], pageviews: pair[1] }
+      return { key: pair[0], count: pair[1] }
     })
-    .sortBy('pageviews')
+    .sortBy('count')
     .reverse()
     .value()
 }

@@ -54,7 +54,8 @@ describe('src/queries.js', function () {
                 'uniqueUsers', 'uniqueAccounts', 'uniqueSessions',
                 'referrers', 'pages', 'pageviews', 'bounceRate', 'loss',
                 'avgPageload', 'avgPageDepth', 'landingPages', 'exitPages',
-                'mobileShare', 'livePages', 'liveUsers', 'resolution', 'range'
+                'mobileShare', 'livePages', 'liveUsers', 'campaigns',
+                'sources', 'resolution', 'range'
               ]
             )
             assert.strictEqual(data.uniqueUsers, 0)
@@ -317,7 +318,8 @@ describe('src/queries.js', function () {
                 'uniqueUsers', 'uniqueAccounts', 'uniqueSessions',
                 'referrers', 'pages', 'pageviews', 'bounceRate', 'loss',
                 'avgPageload', 'avgPageDepth', 'landingPages', 'exitPages',
-                'mobileShare', 'livePages', 'liveUsers', 'resolution', 'range'
+                'mobileShare', 'livePages', 'liveUsers', 'campaigns',
+                'sources', 'resolution', 'range'
               ]
             )
 
@@ -366,7 +368,8 @@ describe('src/queries.js', function () {
                 'uniqueUsers', 'uniqueAccounts', 'uniqueSessions',
                 'referrers', 'pages', 'pageviews', 'bounceRate', 'loss',
                 'avgPageload', 'avgPageDepth', 'landingPages', 'exitPages',
-                'mobileShare', 'livePages', 'liveUsers', 'resolution', 'range'
+                'mobileShare', 'livePages', 'liveUsers', 'campaigns',
+                'sources', 'resolution', 'range'
               ]
             )
 
@@ -408,7 +411,8 @@ describe('src/queries.js', function () {
                 'uniqueUsers', 'uniqueAccounts', 'uniqueSessions',
                 'referrers', 'pages', 'pageviews', 'bounceRate', 'loss',
                 'avgPageload', 'avgPageDepth', 'landingPages', 'exitPages',
-                'mobileShare', 'livePages', 'liveUsers', 'resolution', 'range'
+                'mobileShare', 'livePages', 'liveUsers', 'campaigns',
+                'sources', 'resolution', 'range'
               ]
             )
 

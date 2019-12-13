@@ -13,8 +13,8 @@ function urlTable (headline, col1Label, col2Label, rows) {
   var data = rows.map(function (row) {
     return html`
         <tr>
-          <td class="pv2 bt b--black-10">${row.url}</td>
-          <td class="pv2 bt b--black-10">${row.pageviews}</td>
+          <td class="pv2 bt b--black-10">${row.key}</td>
+          <td class="pv2 bt b--black-10">${row.count}</td>
         </tr>
       `
   })
@@ -266,6 +266,8 @@ function view (state, emit) {
     <div class="w-100 pa3 mb2 ba b--black-10 br2 bg-white">
       ${urlTable(__('Top pages'), __('URL'), __('Pageviews'), state.model.pages)}
       ${urlTable(__('Top referrers'), __('Host'), __('Pageviews'), state.model.referrers)}
+      ${urlTable(__('Top campaigns'), __('Campaign'), __('Pageviews'), state.model.campaigns)}
+      ${urlTable(__('Top sources'), __('Source'), __('Pageviews'), state.model.sources)}
       ${urlTable(__('Landing pages'), __('URL'), __('Landings'), state.model.landingPages)}
       ${urlTable(__('Exit pages'), __('URL'), __('Exits'), state.model.exitPages)}
     </div>

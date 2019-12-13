@@ -155,6 +155,8 @@ function getDefaultStatsWith (getDatabase) {
     var bounceRate = stats.bounceRate(decryptedEvents)
     var referrers = stats.referrers(decryptedEvents)
     var pages = stats.pages(decryptedEvents)
+    var campaigns = stats.campaigns(decryptedEvents)
+    var sources = stats.sources(decryptedEvents)
     var avgPageload = stats.avgPageload(decryptedEvents)
     var avgPageDepth = stats.avgPageDepth(decryptedEvents)
     var landingPages = stats.landingPages(decryptedEvents)
@@ -181,7 +183,9 @@ function getDefaultStatsWith (getDatabase) {
         exitPages,
         mobileShare,
         livePages,
-        liveUsers
+        liveUsers,
+        campaigns,
+        sources
       ])
       .then(function (results) {
         return {
@@ -200,6 +204,8 @@ function getDefaultStatsWith (getDatabase) {
           mobileShare: results[12],
           livePages: results[13],
           liveUsers: results[14],
+          campaigns: results[15],
+          sources: results[16],
           resolution: resolution,
           range: range
         }
