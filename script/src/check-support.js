@@ -9,9 +9,6 @@ function checkSupport (callback) {
   if (!err && !supportsIndexedDb()) {
     err = new Error(__('Browser does not support IndexedDB which is required'))
   }
-  if (!err && !supportsFetch()) {
-    err = new Error(__('Browser does not support window.fetch which is required'))
-  }
   if (!err && !supportsURL()) {
     err = new Error(__('Browser does not support window.URL which is required'))
   }
@@ -22,10 +19,6 @@ function checkSupport (callback) {
 
 function supportsIndexedDb () {
   return typeof window.indexedDB === 'object'
-}
-
-function supportsFetch () {
-  return typeof window.fetch === 'function'
 }
 
 function supportsURL () {
