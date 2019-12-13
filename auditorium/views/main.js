@@ -19,6 +19,11 @@ function view (state, emit) {
   }
 
   var isOperator = !!(state.params && state.params.accountId)
+
+  if (isOperator) {
+    emit('offen:schedule-refresh', 15000)
+  }
+
   var accountHeader = null
   var pageTitle
   if (isOperator) {
