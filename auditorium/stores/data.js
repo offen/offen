@@ -4,7 +4,7 @@ var _ = require('underscore')
 module.exports = store
 
 function store (state, emitter) {
-  function handleRequest (request, onSuccessMessage) {
+  function handleRequest (request, onSuccessMessage, softFailure) {
     state.updatePending = true
     var fetchQuery = vault(process.env.VAULT_HOST || '/vault/')
       .then(function (postMessage) {
@@ -32,9 +32,15 @@ function store (state, emitter) {
           console.error(err)
         }
         state.flash = null
-        state.error = {
-          message: err.message,
-          stack: err.originalStack || err.stack
+        if (!softFailure) {
+          state.error = {
+            message: err.message,
+            stack: err.originalStack || err.stack
+          }
+        } else {
+          state.flash = __(
+            'This view failed to update automatically, data may be out of date. Check your network connection if the problem persists.'
+          )
         }
       })
       .then(function () {
@@ -51,13 +57,13 @@ function store (state, emitter) {
     }, __('Your user data has been deleted.'))
   })
 
-  emitter.on('offen:query', function (data, authenticatedUser) {
+  emitter.on('offen:query', function (data, authenticatedUser, softFailure) {
     handleRequest({
       type: 'QUERY',
       payload: data
         ? { query: data, authenticatedUser: authenticatedUser }
         : { authenticatedUser: authenticatedUser }
-    })
+    }, null, softFailure)
   })
 
   emitter.on('offen:schedule-refresh', function (interval) {
@@ -68,7 +74,7 @@ function store (state, emitter) {
       if (state.updatePending) {
         return
       }
-      emitter.emit('offen:query', Object.assign({}, state.params, state.query), state.authenticatedUser)
+      emitter.emit('offen:query', Object.assign({}, state.params, state.query), state.authenticatedUser, true)
     }, interval)
   })
 
