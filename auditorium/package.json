@@ -44,7 +44,7 @@
   },
   "browserify": {
     "transform": [
-      "envify",
+      ["envify", { "LOCALE": "en" }],
       "nanohtml",
       "offen/localize"
     ]

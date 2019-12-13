@@ -58,11 +58,11 @@ BarChart.prototype.getChartData = function () {
       return 'W' + getISOWeek(date)
     }
     if (self.local.resolution === 'months') {
-      return date.toLocaleDateString(undefined, { month: 'short' })
+      return date.toLocaleDateString(process.env.LOCALE, { month: 'short' })
     }
-    var result = date.toLocaleDateString(undefined, { day: 'numeric' })
+    var result = date.toLocaleDateString(process.env.LOCALE, { day: 'numeric' })
     if (index === 0 || isFirstDayOfMonth(date)) {
-      result = date.toLocaleDateString(undefined, { month: 'short' }) + ' ' + result
+      result = date.toLocaleDateString(process.env.LOCALE, { month: 'short' }) + ' ' + result
     }
     return result
   })

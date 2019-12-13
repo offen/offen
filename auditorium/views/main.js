@@ -43,8 +43,8 @@ function keyMetric (name, value) {
     `
 }
 
-function formatPercentage (value) {
-  return (value * 100).toLocaleString(undefined, {
+function formatNumber (value, factor) {
+  return (parseInt(value, 10) * (factor || 1)).toLocaleString(process.env.LOCALE, {
     maximumFractionDigits: 1,
     minimumFractionDigits: 1
   })
@@ -245,11 +245,11 @@ function view (state, emit) {
         ${keyMetric(__('Unique %s', entityName), uniqueEntities)}
         ${keyMetric(__('Unique Sessions'), uniqueSessions)}
         <hr class="mt0 mb3 w-100 bb bw1 b--black-10">
-        ${state.model.avgPageDepth ? keyMetric(__('Avg. Page Depth'), state.model.avgPageDepth.toFixed(1)) : null}
-        ${keyMetric(__('Bounce Rate'), `${formatPercentage(state.model.bounceRate)} %`)}
-        ${isOperator && state.model.loss ? keyMetric(__('Plus'), `${formatPercentage(state.model.loss)} %`) : null}
+        ${state.model.avgPageDepth ? keyMetric(__('Avg. Page Depth'), formatNumber(state.model.avgPageDepth)) : null}
+        ${keyMetric(__('Bounce Rate'), `${formatNumber(state.model.bounceRate, 100)} %`)}
+        ${isOperator && state.model.loss ? keyMetric(__('Plus'), `${formatNumber(state.model.loss, 100)} %`) : null}
         <hr class="mt0 mb3 w-100 bb bw1 b--black-10">
-        ${keyMetric(__('Mobile Users'), `${formatPercentage(state.model.mobileShare)} %`)}
+        ${keyMetric(__('Mobile Users'), `${formatNumber(state.model.mobileShare, 100)} %`)}
         ${state.model.avgPageload ? keyMetric(__('Avg. Page Load time'), `${Math.round(state.model.avgPageload)} ms`) : null}
       </div>
     </div>
