@@ -234,7 +234,7 @@ describe('src/stats.js', function () {
       return stats.pages([
         {},
         { accountId: 'account-a', userId: 'user-a', payload: { href: new window.URL('https://www.example.net/foo') } },
-        { accountId: 'account-a', userId: 'user-b', payload: { href: new window.URL('https://www.example.net/foo?param=bar') } },
+        { accountId: 'account-a', userId: 'user-a', payload: { href: new window.URL('https://www.example.net/foo?param=bar') } },
         { accountId: 'account-b', userId: 'user-z', payload: { href: new window.URL('https://beep.boop/site#!/foo') } },
         { accountId: 'account-a', userId: null, payload: { } }
       ])
@@ -242,6 +242,30 @@ describe('src/stats.js', function () {
           assert.deepStrictEqual(result, [
             { url: 'https://www.example.net/foo', pageviews: 2 },
             { url: 'https://beep.boop/site', pageviews: 1 }
+          ])
+        })
+    })
+    it('returns an empty array when given no events', function () {
+      return stats.pages([])
+        .then(function (result) {
+          assert.deepStrictEqual(result, [])
+        })
+    })
+  })
+
+  describe('stats.activePages(events)', function () {
+    it('returns a sorted list of active pages grouped by a clean URL', function () {
+      return stats.activePages([
+        {},
+        { accountId: 'account-a', userId: 'user-a', payload: { href: new window.URL('https://www.example.net/foo') } },
+        { accountId: 'account-a', userId: 'user-a', payload: { href: new window.URL('https://www.example.net/foo?param=bar') } },
+        { accountId: 'account-b', userId: 'user-z', payload: { href: new window.URL('https://beep.boop/site#!/foo') } },
+        { accountId: 'account-a', userId: null, payload: { } }
+      ])
+        .then(function (result) {
+          assert.deepStrictEqual(result, [
+            { url: 'https://beep.boop/site', pageviews: 1 },
+            { url: 'https://www.example.net/foo', pageviews: 1 }
           ])
         })
     })

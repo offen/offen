@@ -5,6 +5,7 @@ module.exports = store
 
 function store (state, emitter) {
   function handleRequest (request, onSuccessMessage) {
+    state.updatePending = true
     var fetchQuery = vault(process.env.VAULT_HOST || '/vault/')
       .then(function (postMessage) {
         return postMessage(request, true)
@@ -59,14 +60,28 @@ function store (state, emitter) {
     })
   })
 
+  emitter.on('offen:schedule-refresh', function (interval) {
+    if (state.interval) {
+      return
+    }
+    state.interval = window.setInterval(function () {
+      if (state.updatePending) {
+        return
+      }
+      emitter.emit('offen:query', Object.assign({}, state.params, state.query), state.authenticatedUser)
+    }, interval)
+  })
+
   emitter.on(state.events.NAVIGATE, function () {
+    delete state.updatePending
     if (state.route === state.previousRoute && _.isEqual(state.params, state.previousParams)) {
       // This means the only thing that changed are query parameters and the
       // application is likely going to update the same view with new data.
       state.stale = true
-      state.updatePending = true
       emitter.emit('offen:query', Object.assign({}, state.params, state.query), state.authenticatedUser)
     } else {
+      window.clearInterval(state.interval)
+      delete state.interval
       delete state.model
     }
   })

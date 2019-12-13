@@ -5,16 +5,16 @@ var queries = require('./queries')
 var bindCrypto = require('./bind-crypto')
 var decryptEvents = require('./decrypt-events')
 
-module.exports = getOperatorEventsWith(queries, api, {})
+module.exports = getOperatorEventsWith(queries, api)
 module.exports.getOperatorEventsWith = getOperatorEventsWith
 
-function getOperatorEventsWith (queries, api, cache) {
+function getOperatorEventsWith (queries, api) {
   return function (query, authenticatedUser) {
     var matchingAccount = _.findWhere(authenticatedUser.accounts, { accountId: query.accountId })
     if (!matchingAccount) {
       return Promise.reject(new Error('No matching key found for account with id ' + query.accountId))
     }
-    return ensureSyncWith(queries, api, cache)(query.accountId, matchingAccount.keyEncryptionKey)
+    return ensureSyncWith(queries, api)(query.accountId, matchingAccount.keyEncryptionKey)
       .then(function (account) {
         return queries.getDefaultStats(query.accountId, query, account.privateJwk)
           .then(function (stats) {
@@ -45,12 +45,9 @@ function fetchOperatorEventsWith (api, queries) {
   }
 }
 
-function ensureSyncWith (queries, api, cache) {
+function ensureSyncWith (queries, api) {
   return bindCrypto(function (accountId, keyEncryptionJWK) {
     var crypto = this
-    if (cache && cache[accountId]) {
-      return Promise.resolve(cache[accountId])
-    }
     return queries.getAllEventIds(accountId)
       .then(function (knownEventIds) {
         var fetchNewEvents = queries.getLatestEvent(accountId)
@@ -110,9 +107,6 @@ function ensureSyncWith (queries, api, cache) {
                     var result = Object.assign(payload.account, {
                       privateJwk: privateJwk
                     })
-                    if (cache) {
-                      cache[accountId] = result
-                    }
                     return result
                   })
               })

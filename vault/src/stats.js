@@ -79,10 +79,40 @@ function referrers (events) {
 exports.pages = consumeAsync(pages)
 
 function pages (events) {
-  return _.chain(events)
+  return _pages(events, false)
+}
+
+// `activePages` contains the pages last visited by each user in the given set
+// of events and is sorted by the number of pageviews.
+// URLs are stripped off potential query strings and hash parameters
+// before grouping.
+exports.activePages = consumeAsync(activePages)
+
+function activePages (events) {
+  return _pages(events, true)
+}
+
+function _pages (events, perUser) {
+  var result = _.chain(events)
     .filter(function (event) {
       return event.userId !== null && event.payload && event.payload.href
     })
+
+  if (perUser) {
+    // in this branch, only the most recent event for each user
+    // will be considered
+    result = result
+      .groupBy('userId')
+      .pairs()
+      .map(function (pair) {
+        return _.head(
+          _.sortBy(pair[1], _.property(['payload', 'timestamp']))
+        )
+      })
+      .flatten(true)
+  }
+
+  return result
     .map(function (event) {
       var strippedHref = event.payload.href.origin + event.payload.href.pathname
       return { accountId: event.accountId, href: strippedHref }
