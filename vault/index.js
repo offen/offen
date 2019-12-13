@@ -3,6 +3,10 @@ var handler = require('./src/handler')
 var allowsCookies = require('./src/allows-cookies')
 var getSessionId = require('./src/session-id')
 
+if (!window.fetch) {
+  require('unfetch/polyfill')
+}
+
 var register = router()
 
 register('EVENT', eventDuplexerMiddleware, anonymousMiddleware, function (event, respond, next) {

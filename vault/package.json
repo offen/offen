@@ -20,6 +20,7 @@
     "offen": "file:./../packages",
     "split-require": "^3.1.2",
     "underscore": "^1.9.1",
+    "unfetch": "^4.1.0",
     "unibabel": "^2.1.8",
     "uuid": "^3.3.2"
   },
