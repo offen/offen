@@ -6,6 +6,43 @@ var BarChart = require('./../components/bar-chart')
 
 module.exports = view
 
+function urlTable (headline, col1Label, col2Label, rows) {
+  if (!Array.isArray(rows) || rows.length === 0) {
+    return null
+  }
+  var data = rows.map(function (row) {
+    return html`
+        <tr>
+          <td class="pv2 bt b--black-10">${row.url}</td>
+          <td class="pv2 bt b--black-10">${row.pageviews}</td>
+        </tr>
+      `
+  })
+  return html`
+      <h4 class ="f5 normal mt0 mb3">${headline}</h4>
+      <table class="w-100 collapse mb3 dt--fixed">
+        <thead>
+          <tr>
+            <td class="pv2 b">${col1Label}</td>
+            <td class="pv2 b">${col2Label}</td>
+          </tr>
+        </thead>
+        <tbody>
+          ${data}
+        </tbody>
+      </table>
+    `
+}
+
+function keyMetric (name, value) {
+  return html`
+      <div class="w-50 w-100-ns mb3 mb4-ns">
+        <p class="mv0 f2">${value}</p>
+        <p class="mv0 normal">${name}</p>
+      </div>
+    `
+}
+
 function formatPercentage (value) {
   return (value * 100).toLocaleString(undefined, {
     maximumFractionDigits: 1,
@@ -159,6 +196,25 @@ function view (state, emit) {
       </div>
     `
 
+  var live = null
+  if (isOperator) {
+    live = html`
+      <div class="w-100 pa3 mb2 mr2-ns ba b--black-10 br2 bg-white flex flex-column">
+        <div class="flex-ns flex-row">
+          <div class="w-100 w-30-ns">
+            <h4 class="f5 normal mt0 mb3">
+              ${__('Right now')}
+            </h4>
+            ${keyMetric('Unique users', state.model.liveUsers)}
+          </div>
+          <div class="w-100 w-70-ns">
+            ${urlTable('Currently active pages', 'URL', 'Visitors', state.model.livePages)}
+          </div>
+        </div>
+      </div>
+    `
+  }
+
   var chartData = {
     data: state.model.pageviews,
     isOperator: isOperator,
@@ -180,15 +236,6 @@ function view (state, emit) {
   var entityName = isOperator
     ? __('Users')
     : __('Accounts')
-
-  function keyMetric (name, value) {
-    return html`
-      <div class="w-50 w-100-ns mb3 mb4-ns">
-        <p class="mv0 f2">${value}</p>
-        <p class="mv0 normal">${name}</p>
-      </div>
-    `
-  }
 
   var uniqueSessions = state.model.uniqueSessions
   var keyMetrics = html`
@@ -214,34 +261,6 @@ function view (state, emit) {
       ${keyMetrics}
     </div>
   `
-
-  function urlTable (headline, col1Label, col2Label, rows) {
-    if (!Array.isArray(rows) || rows.length === 0) {
-      return null
-    }
-    var data = rows.map(function (row) {
-      return html`
-        <tr>
-          <td class="pv2 bt b--black-10">${row.url}</td>
-          <td class="pv2 bt b--black-10">${row.pageviews}</td>
-        </tr>
-      `
-    })
-    return html`
-      <h4 class ="f5 normal mt0 mb3">${headline}</h4>
-      <table class="w-100 collapse mb3 dt--fixed">
-        <thead>
-          <tr>
-            <td class="pv2 b">${col1Label}</td>
-            <td class="pv2 b">${col2Label}</td>
-          </tr>
-        </thead>
-        <tbody>
-          ${data}
-        </tbody>
-      </table>
-    `
-  }
 
   var urlTables = html`
     <div class="w-100 pa3 mb2 ba b--black-10 br2 bg-white">
@@ -274,6 +293,7 @@ function view (state, emit) {
       <div>
         ${accountHeader}
         ${rowRangeManage}
+        ${live}
         ${rowUsersSessionsChart}
         ${urlTables}
         ${goSettings}

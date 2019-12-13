@@ -7,6 +7,7 @@ var endOfHour = require('date-fns/end_of_hour')
 var endOfDay = require('date-fns/end_of_day')
 var endOfWeek = require('date-fns/end_of_week')
 var endOfMonth = require('date-fns/end_of_week')
+var subMinutes = require('date-fns/sub_minutes')
 var subHours = require('date-fns/sub_hours')
 var subDays = require('date-fns/sub_days')
 var subWeeks = require('date-fns/sub_weeks')
@@ -75,37 +76,46 @@ function getDefaultStatsWith (getDatabase) {
       .between(lowerBound, upperBound)
       .toArray()
 
+    var realtimeLowerBound = subMinutes(now, 15).toJSON()
+    var realtimeUpperBound = now.toJSON()
+    var realtimeEvents = table
+      .where('timestamp')
+      .between(realtimeLowerBound, realtimeUpperBound)
+      .toArray()
+
     // There are two types of queries happening here: those that rely solely
     // on the IndexedDB indices, and those that require the event payload
     // (which might be encrypted and therefore not indexable).
     // Theoretically *all* queries could be done on the set of events after
     // encryption, yet it seems using the IndexedDB API where possible makes
     // more sense and performs better.
-    var decryptedEvents = eventsInBounds
-      .then(function (events) {
-        // User events are already decrypted, so there is no need to proceed
-        // further. This may seem counterintuitive at first, but it'd be
-        // relatively pointless to store the encrypted events alongside a
-        // key that is able to decrypt them.
-        return accountId
-          ? decryptEvents(
-            events,
-            getEncryptedUserSecretsWith(getDatabase)(accountId),
-            privateJwk
-          )
-          : events
-      })
-      .then(function (events) {
-        return events.map(function (event) {
-          if (event.userId === null || !event.payload) {
-            return event
-          }
-          event.payload.referrer = event.payload.referrer && new window.URL(event.payload.referrer)
-          event.payload.href = event.payload.href && new window.URL(event.payload.href)
-          return event
+    var decryptions = [eventsInBounds, realtimeEvents].map(function (query) {
+      return query
+        .then(function (events) {
+          // User events are already decrypted, so there is no need to proceed
+          // further. This may seem counterintuitive at first, but it'd be
+          // relatively pointless to store the encrypted events alongside a
+          // key that is able to decrypt them.
+          return accountId
+            ? decryptEvents(
+              events,
+              getEncryptedUserSecretsWith(getDatabase)(accountId),
+              privateJwk
+            )
+            : events
         })
-      })
-
+        .then(function (events) {
+          return events.map(function (event) {
+            if (event.userId === null || !event.payload) {
+              return event
+            }
+            event.payload.referrer = event.payload.referrer && new window.URL(event.payload.referrer)
+            event.payload.href = event.payload.href && new window.URL(event.payload.href)
+            return event
+          })
+        })
+    })
+    var decryptedEvents = decryptions[0]
     // `pageviews` is a list of basic metrics grouped by the given range
     // and resolution. It contains the number of pageviews, unique visitors
     // for operators and accounts for users.
@@ -151,6 +161,10 @@ function getDefaultStatsWith (getDatabase) {
     var exitPages = stats.exitPages(decryptedEvents)
     var mobileShare = stats.mobileShare(decryptedEvents)
 
+    var realtime = decryptions[1]
+    var liveUsers = stats.visitors(realtime)
+    var livePages = stats.pages(realtime)
+
     return Promise
       .all([
         uniqueUsers,
@@ -165,7 +179,9 @@ function getDefaultStatsWith (getDatabase) {
         avgPageDepth,
         landingPages,
         exitPages,
-        mobileShare
+        mobileShare,
+        liveUsers,
+        livePages
       ])
       .then(function (results) {
         return {
@@ -182,6 +198,8 @@ function getDefaultStatsWith (getDatabase) {
           landingPages: results[10],
           exitPages: results[11],
           mobileShare: results[12],
+          liveUsers: results[13],
+          livePages: results[14],
           resolution: resolution,
           range: range
         }
