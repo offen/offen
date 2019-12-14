@@ -167,6 +167,21 @@ function getDefaultStatsWith (getDatabase) {
     var livePages = stats.activePages(realtime)
     var liveUsers = stats.visitors(realtime)
 
+    var retentionChunks = []
+    for (var i = 0; i < 4; i++) {
+      var currentChunkUpperBound = subtract.days(now, i * 7).toJSON()
+      var currentChunkLowerBound = subtract.days(now, i + 1 * 7).toJSON()
+      var chunk = table
+        .where('timestamp')
+        .between(currentChunkLowerBound, currentChunkUpperBound)
+        .toArray()
+      retentionChunks.push(chunk)
+    }
+    var retentionMatrix = Promise.all(retentionChunks)
+      .then(function (chunks) {
+        return stats.retention.apply(stats, chunks)
+      })
+
     return Promise
       .all([
         uniqueUsers,
@@ -185,7 +200,8 @@ function getDefaultStatsWith (getDatabase) {
         livePages,
         liveUsers,
         campaigns,
-        sources
+        sources,
+        retentionMatrix
       ])
       .then(function (results) {
         return {
@@ -206,6 +222,7 @@ function getDefaultStatsWith (getDatabase) {
           liveUsers: results[14],
           campaigns: results[15],
           sources: results[16],
+          retentionMatrix: results[17],
           resolution: resolution,
           range: range
         }
