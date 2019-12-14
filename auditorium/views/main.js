@@ -43,8 +43,58 @@ function keyMetric (name, value) {
     `
 }
 
+function retentionSquare (value) {
+  if (value === null) {
+    return null
+  }
+  return html`
+    <div title="${formatNumber(value, 100)}%">
+      <div
+        style="opacity: ${value !== 0 ? (value * 0.75 + 0.25) : 1}"
+        class="${value !== 0 ? 'bg-dark-green' : 'bg-light-gray'} h3 w-100"
+      >
+      </div>
+    </div>
+  `
+}
+
+function relativeTime (offset) {
+  if (offset === 0) {
+    return __('This week')
+  }
+  return __('%d days earlier', offset * 7)
+}
+
+function retentionTable (matrix) {
+  var rows = matrix.map(function (row, index) {
+    var elements = row.slice()
+    while (elements.length < matrix[0].length) {
+      elements.push(null)
+    }
+    return html`
+      <tr>
+        <td>${relativeTime(index)}</td>
+        ${elements.map(function (element) { return html`<td>${retentionSquare(element)}</td>` })}
+      </tr>
+    `
+  })
+  return html`
+    <table class="w-100 collapse mb3 dt--fixed">
+      <thead>
+        <tr>
+          <td></td>
+          ${matrix.map(function (row, index) { return html`<td>${relativeTime(index)}</td>` })}
+        </tr>
+      </thead>
+      <tbody>
+        ${rows}
+      </tbody>
+    </table>
+  `
+}
+
 function formatNumber (value, factor) {
-  return (parseInt(value, 10) * (factor || 1)).toLocaleString(process.env.LOCALE, {
+  return (value * (factor || 1)).toLocaleString(process.env.LOCALE, {
     maximumFractionDigits: 1,
     minimumFractionDigits: 1
   })
@@ -273,6 +323,13 @@ function view (state, emit) {
     </div>
   `
 
+  var retention = html`
+    <div class="w-100 pa3 mb2 ba b--black-10 br2 bg-white">
+      <h4 class ="f5 normal mt0 mb3 mb4-ns">Weekly retention</h4>
+      ${retentionTable(state.model.retentionMatrix)}
+    </div>
+  `
+
   var goSettings = isOperator
     ? html`
         <div class="flex flex-column flex-row-ns mt4">
@@ -298,6 +355,7 @@ function view (state, emit) {
         ${live}
         ${rowUsersSessionsChart}
         ${urlTables}
+        ${retention}
         ${goSettings}
         ${state.stale ? html`<div class="fixed top-0 right-0 bottom-0 left-0 bg-white o-40"></div>` : null}
       </div>

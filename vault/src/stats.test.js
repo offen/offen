@@ -365,7 +365,7 @@ describe('src/stats.js', function () {
         []
       )
         .then(function (result) {
-          assert.deepStrictEqual(result, [[1, 0.5, 0.25, 0], [1, 2 / 3, 0], [1, 0], [1]])
+          assert.deepStrictEqual(result, [[1, 0.5, 0.25, 0], [1, 2 / 3, 0], [1, 0], [0]])
         })
     })
     it('returns 0 values when given empty chunks', function () {
@@ -375,7 +375,7 @@ describe('src/stats.js', function () {
         []
       )
         .then(function (result) {
-          assert.deepStrictEqual(result, [[1, 0, 0], [1, 0], [1]])
+          assert.deepStrictEqual(result, [[0, 0, 0], [0, 0], [0]])
         })
     })
     it('returns an empty array when given no events', function () {

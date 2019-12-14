@@ -317,7 +317,7 @@ function retention (/* ...events */) {
       }
       acc.push(share)
       return acc
-    }, [1])
+    }, [referenceIds.length ? 1 : 0])
     result.push(innerResult)
   }
   return result
