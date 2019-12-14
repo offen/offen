@@ -55,7 +55,7 @@ describe('src/queries.js', function () {
                 'referrers', 'pages', 'pageviews', 'bounceRate', 'loss',
                 'avgPageload', 'avgPageDepth', 'landingPages', 'exitPages',
                 'mobileShare', 'livePages', 'liveUsers', 'campaigns',
-                'sources', 'resolution', 'range'
+                'sources', 'retentionMatrix', 'resolution', 'range'
               ]
             )
             assert.strictEqual(data.uniqueUsers, 0)
@@ -74,6 +74,7 @@ describe('src/queries.js', function () {
             assert(data.pageviews[0].date < data.pageviews[1].date)
 
             assert.strictEqual(data.bounceRate, 0)
+            assert.strictEqual(data.retentionMatrix.length, 4)
           })
       })
 
@@ -319,7 +320,7 @@ describe('src/queries.js', function () {
                 'referrers', 'pages', 'pageviews', 'bounceRate', 'loss',
                 'avgPageload', 'avgPageDepth', 'landingPages', 'exitPages',
                 'mobileShare', 'livePages', 'liveUsers', 'campaigns',
-                'sources', 'resolution', 'range'
+                'sources', 'retentionMatrix', 'resolution', 'range'
               ]
             )
 
@@ -352,6 +353,7 @@ describe('src/queries.js', function () {
 
             assert.strictEqual(data.bounceRate, 0.75)
             assert.strictEqual(data.loss, 1 - (5 / 7))
+            assert.strictEqual(data.retentionMatrix.length, 4)
           })
       })
 
@@ -369,7 +371,7 @@ describe('src/queries.js', function () {
                 'referrers', 'pages', 'pageviews', 'bounceRate', 'loss',
                 'avgPageload', 'avgPageDepth', 'landingPages', 'exitPages',
                 'mobileShare', 'livePages', 'liveUsers', 'campaigns',
-                'sources', 'resolution', 'range'
+                'sources', 'retentionMatrix', 'resolution', 'range'
               ]
             )
 
@@ -395,6 +397,7 @@ describe('src/queries.js', function () {
             assert.strictEqual(data.bounceRate, 0.8)
 
             assert.strictEqual(data.loss, 1 - (6 / 9))
+            assert.strictEqual(data.retentionMatrix.length, 4)
           })
       })
 
@@ -412,7 +415,7 @@ describe('src/queries.js', function () {
                 'referrers', 'pages', 'pageviews', 'bounceRate', 'loss',
                 'avgPageload', 'avgPageDepth', 'landingPages', 'exitPages',
                 'mobileShare', 'livePages', 'liveUsers', 'campaigns',
-                'sources', 'resolution', 'range'
+                'sources', 'retentionMatrix', 'resolution', 'range'
               ]
             )
 
@@ -438,6 +441,7 @@ describe('src/queries.js', function () {
             assert.strictEqual(data.bounceRate, 0)
 
             assert.strictEqual(data.loss, 1 - (2 / 3))
+            assert.strictEqual(data.retentionMatrix.length, 4)
           })
       })
     })

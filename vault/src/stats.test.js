@@ -355,4 +355,34 @@ describe('src/stats.js', function () {
         })
     })
   })
+
+  describe('stats.retention(...events)', function () {
+    it('returns a retention matrix for the given event chunks', function () {
+      return stats.retention(
+        [{}, { userId: 'user-a' }, { userId: 'user-b' }, { userId: 'user-y' }, { userId: 'user-z' }],
+        [{}, { userId: 'user-m' }, { userId: 'user-a' }, { userId: 'user-z' }],
+        [{}, { userId: 'user-k' }, { userId: 'user-m' }, { userId: 'user-z' }],
+        []
+      )
+        .then(function (result) {
+          assert.deepStrictEqual(result, [[1, 0.5, 0.25, 0], [1, 2 / 3, 0], [1, 0], [0]])
+        })
+    })
+    it('returns 0 values when given empty chunks', function () {
+      return stats.retention(
+        [],
+        [],
+        []
+      )
+        .then(function (result) {
+          assert.deepStrictEqual(result, [[0, 0, 0], [0, 0], [0]])
+        })
+    })
+    it('returns an empty array when given no events', function () {
+      return stats.retention()
+        .then(function (result) {
+          assert.deepStrictEqual(result, [])
+        })
+    })
+  })
 })
