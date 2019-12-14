@@ -7,6 +7,10 @@ if (!window.fetch) {
   require('unfetch/polyfill')
 }
 
+if (!window.URL || !window.URLSearchParams) {
+  require('url-polyfill')
+}
+
 var register = router()
 
 register('EVENT', eventDuplexerMiddleware, anonymousMiddleware, function (event, respond, next) {

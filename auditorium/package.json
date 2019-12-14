@@ -20,7 +20,8 @@
     "date-fns": "^1.30.1",
     "offen": "file:./../packages",
     "plotly.js-basic-dist": "^1.51.2",
-    "underscore": "^1.9.1"
+    "underscore": "^1.9.1",
+    "url-polyfill": "^1.1.7"
   },
   "devDependencies": {
     "browserify": "^16.2.3",
@@ -44,7 +45,12 @@
   },
   "browserify": {
     "transform": [
-      ["envify", { "LOCALE": "en" }],
+      [
+        "envify",
+        {
+          "LOCALE": "en"
+        }
+      ],
       "nanohtml",
       "offen/localize"
     ]
