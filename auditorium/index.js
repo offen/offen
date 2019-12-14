@@ -17,6 +17,10 @@ var withError = require('./views/decorators/with-error')
 var withLayout = require('./views/decorators/with-layout')
 var withPreviousRoute = require('./views/decorators/with-previous-route')
 
+if (!window.URL || !window.URLSearchParams) {
+  require('url-polyfill')
+}
+
 var app = choo()
 
 if (process.env.NODE_ENV !== 'production') {
