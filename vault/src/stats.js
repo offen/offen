@@ -294,6 +294,35 @@ function mobileShare (events) {
   return mobileEvents / allEvents
 }
 
+// `retention` calculates a retention matrix for the given slices of events.
+// The function itself does not make any assumptions about how these chunks are
+// distributed in time.
+exports.retention = consumeAsync(retention)
+
+function retention (/* ...events */) {
+  var chunks = [].slice.call(arguments)
+  var result = []
+  while (chunks.length) {
+    var head = chunks.shift()
+    var referenceIds = _.chain(head).pluck('userId').compact().uniq().value()
+    var innerResult = chunks.reduce(function (acc, next) {
+      var share
+      if (referenceIds.length === 0) {
+        share = 0
+      } else {
+        var matching = _.chain(next)
+          .pluck('userId').compact().uniq()
+          .intersection(referenceIds).size().value()
+        share = matching / referenceIds.length
+      }
+      acc.push(share)
+      return acc
+    }, [1])
+    result.push(innerResult)
+  }
+  return result
+}
+
 exports.pageviews = consumeAsync(countKeys('userId', false))
 // `visitors` is the number of unique users for the given
 //  set of events.
