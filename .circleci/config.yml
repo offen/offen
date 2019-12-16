@@ -202,7 +202,7 @@ jobs:
             else
               export DOCKER_IMAGE_TAG="latest"
             fi
-            echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
+            echo "$DOCKER_ACCESSTOKEN" | docker login --username $DOCKER_USER --password-stdin
             docker push offen/offen:$DOCKER_IMAGE_TAG
       - store_artifacts:
           path: /tmp/artifacts
