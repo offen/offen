@@ -3,36 +3,9 @@ var raw = require('choo/html/raw')
 var _ = require('underscore')
 
 var BarChart = require('./../components/bar-chart')
+var Table = require('./../components/table')
 
 module.exports = view
-
-function urlTable (headline, col1Label, col2Label, rows) {
-  if (!Array.isArray(rows) || rows.length === 0) {
-    return null
-  }
-  var data = rows.map(function (row) {
-    return html`
-        <tr>
-          <td class="pv2 bt b--black-10">${row.key}</td>
-          <td class="pv2 bt b--black-10">${row.count}</td>
-        </tr>
-      `
-  })
-  return html`
-      <h4 class ="f5 normal mt0 mb3">${headline}</h4>
-      <table class="w-100 collapse mb3 dt--fixed">
-        <thead>
-          <tr>
-            <td class="pv2 b">${col1Label}</td>
-            <td class="pv2 b">${col2Label}</td>
-          </tr>
-        </thead>
-        <tbody>
-          ${data}
-        </tbody>
-      </table>
-    `
-}
 
 function keyMetric (name, value) {
   return html`
@@ -182,9 +155,9 @@ function view (state, emit) {
   })
 
   var rangeSelector = html`
-      <h4 class ="f5 normal mt0 mb3">${__('Show data from the last')}</h4>
-      <ul class="flex flex-wrap list pl0 mt0 mb3">${ranges}</ul>
-    `
+    <h4 class ="f5 normal mt0 mb3">${__('Show data from the last')}</h4>
+    <ul class="flex flex-wrap list pl0 mt0 mb3">${ranges}</ul>
+  `
 
   if (isOperator) {
     var availableAccounts = state.authenticatedUser.accounts
@@ -210,17 +183,17 @@ function view (state, emit) {
   }
 
   var chooseAccounts = html`
-      <h4 class ="f5 normal mt0 mb3">Choose account</h4>
-      <ul class="flex flex-wrap list pl0 mt0 mb3">
-        ${availableAccounts}
-      </ul>
-    `
+    <h4 class ="f5 normal mt0 mb3">Choose account</h4>
+    <ul class="flex flex-wrap list pl0 mt0 mb3">
+      ${availableAccounts}
+    </ul>
+  `
 
   var manageOperator = html`
     <div class="w-100 w-30-ns pa3 mb2 mr2-ns br2 bg-black-05">
       ${chooseAccounts}
     </div>
-    `
+  `
 
   var manageUser = !isOperator && state.model.allowsCookies
     ? html`
@@ -238,16 +211,17 @@ function view (state, emit) {
 
   var firstCardContent = isOperator ? manageOperator : manageUser
   var rowRangeManage = html`
-      <div class="flex flex-column flex-row-ns mt4">
-        ${firstCardContent}
-        <div class="w-100 w-70-ns pa3 mb2 ba b--black-10 br2 bg-white">
-          ${rangeSelector}
-        </div>
+    <div class="flex flex-column flex-row-ns mt4">
+      ${firstCardContent}
+      <div class="w-100 w-70-ns pa3 mb2 ba b--black-10 br2 bg-white">
+        ${rangeSelector}
       </div>
-    `
+    </div>
+  `
 
   var live = null
   if (isOperator) {
+    var tableData = { headline: __('Currently active pages'), col1Label: __('URL'), col2Label: __('Visitors'), rows: state.model.livePages }
     live = html`
       <div class="w-100 pa3 mb2 mr2-ns ba b--black-10 br2 bg-white flex flex-column">
         <div class="flex flex-column flex-row-ns">
@@ -258,7 +232,7 @@ function view (state, emit) {
             ${keyMetric('Unique users', state.model.liveUsers)}
           </div>
           <div class="w-100 w-70-ns">
-            ${urlTable(__('Currently active pages'), __('URL'), __('Visitors'), state.model.livePages)}
+            ${state.cache(Table, 'live-table').render([tableData])}
           </div>
         </div>
       </div>
@@ -312,14 +286,27 @@ function view (state, emit) {
     </div>
   `
 
+  var pagesTableData = [
+    { headline: __('Top pages'), col1Label: __('URL'), col2Label: __('Pageviews'), rows: state.model.pages }
+  ]
+  var referrersTableData = [
+    { headline: __('Top referrers'), col1Label: __('Host'), col2Label: __('Pageviews'), rows: state.model.referrers },
+    { headline: __('Top campaigns'), col1Label: __('Campaign'), col2Label: __('Pageviews'), rows: state.model.campaigns },
+    { headline: __('Top sources'), col1Label: __('Source'), col2Label: __('Pageviews'), rows: state.model.sources }
+  ]
+  var landingExitTableData = [
+    { headline: __('Landing pages'), col1Label: __('URL'), col2Label: __('Landings'), rows: state.model.landingPages },
+    { headline: __('Exit pages'), col1Label: __('URL'), col2Label: __('Exits'), rows: state.model.exitPages }
+  ]
   var urlTables = html`
     <div class="w-100 pa3 mb2 ba b--black-10 br2 bg-white">
-      ${urlTable(__('Top pages'), __('URL'), __('Pageviews'), state.model.pages)}
-      ${urlTable(__('Top referrers'), __('Host'), __('Pageviews'), state.model.referrers)}
-      ${urlTable(__('Top campaigns'), __('Campaign'), __('Pageviews'), state.model.campaigns)}
-      ${urlTable(__('Top sources'), __('Source'), __('Pageviews'), state.model.sources)}
-      ${urlTable(__('Landing pages'), __('URL'), __('Landings'), state.model.landingPages)}
-      ${urlTable(__('Exit pages'), __('URL'), __('Exits'), state.model.exitPages)}
+      ${state.cache(Table, 'pages-table').render(pagesTableData)}
+    </div>
+    <div class="w-100 pa3 mb2 ba b--black-10 br2 bg-white">
+      ${state.cache(Table, 'referrers-table').render(referrersTableData)}
+    </div>
+    <div class="w-100 pa3 mb2 ba b--black-10 br2 bg-white">
+      ${state.cache(Table, 'landing-exit-table').render(landingExitTableData)}
     </div>
   `
 
@@ -332,19 +319,19 @@ function view (state, emit) {
 
   var goSettings = isOperator
     ? html`
-        <div class="flex flex-column flex-row-ns mt4">
-          <div class="w-100 w-20-ns pa3 mb2 mr2-ns br2 bg-black-05">
-            <h4 class ="f5 normal mt0 mb3">
-              ${__('Admin console')}
-            </h4>
-            <a href="/auditorium/account/" class="w-100-ns f5 tc link dim bn ph3 pv2 mr1 mb2 dib br1 white bg-mid-gray">
-              ${__('Settings')}
-            </a>
-          </div>
-          <div class="dn db-ns w-100 w-80-ns pa3 mb2 br2 bg-black-05">
-          </div>
+      <div class="flex flex-column flex-row-ns mt4">
+        <div class="w-100 w-20-ns pa3 mb2 mr2-ns br2 bg-black-05">
+          <h4 class ="f5 normal mt0 mb3">
+            ${__('Admin console')}
+          </h4>
+          <a href="/auditorium/account/" class="w-100-ns f5 tc link dim bn ph3 pv2 mr1 mb2 dib br1 white bg-mid-gray">
+            ${__('Settings')}
+          </a>
         </div>
-      `
+        <div class="dn db-ns w-100 w-80-ns pa3 mb2 br2 bg-black-05">
+        </div>
+      </div>
+    `
     : null
 
   // TODO: add properly styled loading overlay
