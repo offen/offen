@@ -51,7 +51,7 @@
         event.ports[0].postMessage(loginResponses[loginCalled])
         loginCalled++
       }
-      if (event.data.type === 'OPTIN') {
+      if (event.data.type === 'CONSENT') {
         event.ports[0].postMessage({
           payload: null
         })

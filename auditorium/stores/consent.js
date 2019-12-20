@@ -3,16 +3,16 @@ var vault = require('offen/vault')
 module.exports = store
 
 function store (state, emitter) {
-  emitter.on('offen:optin', function (allow) {
+  emitter.on('offen:consent', function (allow) {
     vault(process.env.VAULT_HOST || '/vault/')
       .then(function (postMessage) {
-        var optoutRequest = {
-          type: 'OPTIN',
+        var consentRequest = {
+          type: 'CONSENT',
           payload: {
             expressConsent: allow
           }
         }
-        return postMessage(optoutRequest)
+        return postMessage(consentRequest)
       })
       .then(function () {
         emitter.emit('offen:query')

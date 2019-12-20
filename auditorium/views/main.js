@@ -74,8 +74,8 @@ function formatNumber (value, factor) {
 }
 
 function view (state, emit) {
-  function handleOptin () {
-    emit('offen:optin', !state.model.hasOptedIn)
+  function handleConsent () {
+    emit('offen:consent', !state.model.hasOptedIn)
   }
 
   function handlePurge () {
@@ -208,8 +208,8 @@ function view (state, emit) {
         <button class="pointer w-100-ns f5 link dim bn ph3 pv2 mr1 mb2 dib br1 white bg-mid-gray" data-role="purge" onclick="${handlePurge}">
           ${raw(__('Delete my <strong>user</strong> data'))}
         </button>
-        <button class="pointer w-100-ns f5 link bn ph3 pv2 mb3 dib br1 white bg-mid-gray" data-role="optin" onclick=${handleOptin}>
-          ${state.model.hasOptedIn ? __('Opt me out') : __('Opt me in')}
+        <button class="pointer w-100-ns f5 link dim bn ph3 pv2 mb3 dib br1 white bg-mid-gray" data-role="consent" onclick=${handleConsent}>
+          ${state.model.hasOptedIn ? __('Opt out and delete my user data') : __('Opt in')}
         </button>
       </div>
     `

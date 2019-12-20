@@ -1,9 +1,9 @@
 var choo = require('choo')
 
-var optIn = require('./opt-in')
+var consent = require('./consent')
 
-describe('stores/opt-in.js', function () {
-  describe('optIn(state, emitter)', function () {
+describe('stores/consent.js', function () {
+  describe('consent(state, emitter)', function () {
     var app
     beforeEach(function () {
       app = choo()
@@ -12,7 +12,7 @@ describe('stores/opt-in.js', function () {
     })
 
     it('delegates an opt-in request to the vault', function (done) {
-      optIn(app.state, app.emitter)
+      consent(app.state, app.emitter)
 
       app.emitter.on('offen:query', function () {
         done()
@@ -21,7 +21,7 @@ describe('stores/opt-in.js', function () {
         done(new Error('Unexpected render call'))
       })
 
-      app.emitter.emit('offen:optin', true)
+      app.emitter.emit('offen:consent', true)
     })
   })
 })

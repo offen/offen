@@ -43,16 +43,21 @@ function handleOptinStatusWith (getConsentStatus, allowsCookies) {
   }
 }
 
-exports.handleOptin = handleOptinWith()
-exports.handleOptinWith = handleOptinWith
+exports.handleConsent = handleConsentWith(api, queries)
+exports.handleConsentWith = handleConsentWith
 
-function handleOptinWith () {
+function handleConsentWith (api, queries) {
   return function (message) {
     consentStatus.set(message.payload.expressConsent ? consentStatus.ALLOW : consentStatus.DENY)
-    return {
-      type: 'OPTIN_SUCCESS',
-      payload: null
-    }
+    var purge = message.payload.expressConsent
+      ? Promise.resolve()
+      : Promise.all([api.purge(), queries.purge()])
+    return purge.then(function () {
+      return {
+        type: 'CONSENT_SUCCESS',
+        payload: null
+      }
+    })
   }
 }
 

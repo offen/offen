@@ -33,7 +33,8 @@ function setConsentStatus (status) {
   var cookie = {
     consent: status,
     expires: expires.toUTCString(),
-    path: '/'
+    path: '/',
+    SameSite: 'Lax'
   }
   document.cookie = serialize(cookie)
 }
