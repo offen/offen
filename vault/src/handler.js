@@ -1,6 +1,7 @@
 var api = require('./api')
 var queries = require('./queries')
 var relayEvent = require('./relay-event')
+var consentStatus = require('./user-consent')
 var allowsCookies = require('./allows-cookies')
 var getUserEvents = require('./get-user-events')
 var getOperatorEvents = require('./get-operator-events')
@@ -27,17 +28,36 @@ function handleAnonymousEventWith (relayEvent) {
   }
 }
 
-exports.handleOptoutStatus = handleOptoutStatusWith(allowsCookies)
-exports.handleOptoutStatusWith = handleOptoutStatusWith
+exports.handleOptinStatus = handleOptinStatusWith(consentStatus.get, allowsCookies)
+exports.handleOptinStatusWith = handleOptinStatusWith
 
-function handleOptoutStatusWith (allowsCookies) {
+function handleOptinStatusWith (getConsentStatus, allowsCookies) {
   return function (message) {
     return {
-      type: 'OPTOUT_STATUS_SUCCESS',
+      type: 'OPTIN_STATUS_SUCCESS',
       payload: {
+        hasOptedIn: getConsentStatus() === 'allow',
         allowsCookies: allowsCookies()
       }
     }
+  }
+}
+
+exports.handleConsent = handleConsentWith(api, queries)
+exports.handleConsentWith = handleConsentWith
+
+function handleConsentWith (api, queries) {
+  return function (message) {
+    consentStatus.set(message.payload.expressConsent ? consentStatus.ALLOW : consentStatus.DENY)
+    var purge = message.payload.expressConsent
+      ? Promise.resolve()
+      : Promise.all([api.purge(), queries.purge()])
+    return purge.then(function () {
+      return {
+        type: 'CONSENT_SUCCESS',
+        payload: null
+      }
+    })
   }
 }
 

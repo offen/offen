@@ -71,7 +71,7 @@ describe('views/main.js', function () {
           }
         ],
         allowsCookies: true,
-        hasOptedOut: false,
+        hasOptedIn: true,
         retentionMatrix: [[1, 0, 0], [1, 0], [0]]
       }
       app.state.authenticated = true
@@ -85,8 +85,8 @@ describe('views/main.js', function () {
       var chart = result.querySelector('.chart')
       assert(chart)
 
-      var optinButton = result.querySelector('[data-role="optin"]')
-      assert(optinButton)
+      var consentButton = result.querySelector('[data-role="consent"]')
+      assert(consentButton)
     })
   })
 })

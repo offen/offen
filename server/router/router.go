@@ -35,7 +35,8 @@ func (rt *router) logError(err error, message string) {
 
 const (
 	cookieKey               = "user"
-	optoutKey               = "optout"
+	optinKey                = "consent"
+	optinValue              = "allow"
 	authKey                 = "auth"
 	contextKeyCookie        = "contextKeyCookie"
 	contextKeyAuth          = "contextKeyAuth"
@@ -125,6 +126,7 @@ func New(opts ...Config) http.Handler {
 	rt.cookieSigner = securecookie.New(rt.config.Secrets.CookieExchange.Bytes(), nil)
 	rt.mailer = rt.config.NewMailer()
 
+	optin := optinMiddleware(optinKey, optinValue)
 	userCookie := userCookieMiddleware(cookieKey, contextKeyCookie)
 	accountAuth := rt.accountUserMiddleware(authKey, contextKeyAuth)
 	noStore := headerMiddleware(map[string]func() string{
@@ -179,7 +181,7 @@ func New(opts ...Config) http.Handler {
 
 		api.GET("/events", userCookie, rt.getEvents)
 		api.POST("/events/anonymous", rt.postEvents)
-		api.POST("/events", userCookie, rt.postEvents)
+		api.POST("/events", optin, userCookie, rt.postEvents)
 	}
 
 	fileServer := http.FileServer(rt.fs)

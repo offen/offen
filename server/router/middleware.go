@@ -17,6 +17,18 @@ func secureContextMiddleware(contextKey string, isDevelopment bool) gin.HandlerF
 		u := location.Get(c)
 		isLocalhost := u.Hostname() == "localhost"
 		c.Set(contextKey, !isLocalhost && !isDevelopment)
+	}
+}
+
+// optinMiddleware drops all requests to the given handler that are missing
+// a consent cookie
+func optinMiddleware(cookieName, passWhen string) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		if ck, err := c.Request.Cookie(cookieName); err != nil || ck.Value != passWhen {
+			c.Status(http.StatusNoContent)
+			c.Abort()
+			return
+		}
 		c.Next()
 	}
 }

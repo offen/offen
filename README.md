@@ -6,7 +6,7 @@
 
 ---
 
-**IMPORTANT NOTE BEFORE YOU START**: This software is not yet in a usable state. It is still missing a mechanism for opting in and out of data collection and should therefore **not be used in any kind of production scenario**. Once you can start using offen, we will add instructions on how to do so here. In the meantime, feel free to open an issue if you have any questions.
+**IMPORTANT NOTE BEFORE YOU START**: This software is in the early stages of its development. We're happy if you would like to experiment with using it, but at this point in time, we cannot guarantee any upgrade stability. Each release might contain breaking changes that might result in data being lost on the next upgrade.
 
 ---
 

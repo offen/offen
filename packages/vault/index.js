@@ -21,21 +21,11 @@ function createVault (host) {
 
   createVault[host] = new Promise(function (resolve, reject) {
     vault.addEventListener('load', function (e) {
-      function postMessage (message, waitForResponse) {
+      function postMessage (message) {
         return new Promise(function (resolve, reject) {
           var origin = new window.URL(vault.src).origin
-          if (!waitForResponse) {
-            try {
-              vault.contentWindow.postMessage(message, origin)
-              resolve(null)
-            } catch (err) {
-              reject(err)
-            }
-            return
-          }
-
-          var channel = new window.MessageChannel()
-          channel.port1.onmessage = function (event) {
+          var messageChannel = new window.MessageChannel()
+          messageChannel.port1.onmessage = function (event) {
             var responseMessage = event.data
             if (responseMessage.type === 'ERROR') {
               var err = new Error(responseMessage.payload.error)
@@ -45,10 +35,19 @@ function createVault (host) {
             }
             resolve(responseMessage)
           }
-          channel.port1.onmessageerror = function (err) {
+          messageChannel.port1.onmessageerror = function (err) {
             reject(err)
           }
-          vault.contentWindow.postMessage(message, origin, [channel.port2])
+
+          var receiveStyles = new window.MessageChannel()
+          receiveStyles.port1.onmessage = function (event) {
+            Object.assign(vault.style, event.data.styles)
+            Object.keys(event.data.attributes || {}).forEach(function (attribute) {
+              vault.setAttribute(attribute, event.data.attributes[attribute])
+            })
+          }
+
+          vault.contentWindow.postMessage(message, origin, [messageChannel.port2, receiveStyles.port2])
         })
       }
       resolve(postMessage)
