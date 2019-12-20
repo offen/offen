@@ -344,12 +344,14 @@ function view (state, emit) {
   return html`
       <div>
         ${accountHeader}
-        ${rowRangeManage}
-        ${live}
-        ${rowUsersSessionsChart}
-        ${urlTables}
-        ${retention}
-        ${goSettings}
+        <div id="main">
+          ${rowRangeManage}
+          ${live}
+          ${rowUsersSessionsChart}
+          ${urlTables}
+          ${retention}
+          ${goSettings}
+        </div>
         ${state.stale ? html`<div class="fixed top-0 right-0 bottom-0 left-0 bg-white o-40"></div>` : null}
       </div>
     `
