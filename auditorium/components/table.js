@@ -66,10 +66,10 @@ Table.prototype.createElement = function (tableSets) {
       <table class="w-100 collapse mb3 dt--fixed">
         <thead>
           <tr>
-            <th class="pv2 b">
+            <th class="tl pv2 b">
               ${selected.col1Label}
             </th>
-            <th class="pv2 b">
+            <th class="tl pv2 b">
               ${selected.col2Label}
             </th>
           </tr>
