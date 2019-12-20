@@ -15,7 +15,7 @@ function store (state, emitter) {
         return postMessage(consentRequest)
       })
       .then(function () {
-        emitter.emit('offen:query')
+        emitter.emit('offen:query', Object.assign({}, state.params, state.query), state.authenticatedUser)
       })
       .catch(function (err) {
         state.error = err
