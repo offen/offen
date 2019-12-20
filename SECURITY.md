@@ -1,6 +1,6 @@
 # Security Policy
 
-We work hard on making _offen_ as secure as possible. Unfortunately, this does
+We work hard on making Offen as secure as possible. Yet, this does
 not mean we might miss possible vulnerabilities in the software. If you found a
 vulnerability, we would like to ask you to follow the steps described below.
 
@@ -9,7 +9,7 @@ vulnerability, we would like to ask you to follow the steps described below.
 ### Mode of disclosure
 
 Please **do not open an issue** when you found a security vulnerability in
-_offen_. Instead, please send an email to security@offen.dev. Please do not make
+Offen. Instead, please send an email to hioffen@posteo.de. Please do not make
 your findings public until you hear back from us as described below.
 
 ### Mode of response and remedy

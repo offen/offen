@@ -2,15 +2,24 @@
 [![CircleCI](https://circleci.com/gh/offen/offen/tree/master.svg?style=svg)](https://circleci.com/gh/offen/offen/tree/master)
 [![Patreon](https://img.shields.io/static/v1.svg?label=patreon&message=donate&color=e85b46)](https://www.patreon.com/offen)
 
-> The offen analytics software
+> Web analytics that handle your data with respect
 
 ---
 
-**IMPORTANT NOTE BEFORE YOU START**: This software is in the early stages of its development. We're happy if you would like to experiment with using it, but at this point in time, we cannot guarantee any upgrade stability. Each release might contain breaking changes that might result in data being lost on the next upgrade.
+**IMPORTANT NOTE BEFORE YOU START**: Offen is in the early stages of its development. We're happy if you would like to experiment with using it, but at this point in time we cannot guarantee any upgrade stability. Each release might contain breaking changes that might result in data being lost on the next upgrade.
+
+
+This repository contains all source code needed to build and run Offen, both on the server as well as on the client. Also see each of the READMEs in the subdirectories for information on how to work on that particular area of the application. Documentation on developing, running and using Offen is currently being collected in our [wiki][].
+
+[wiki]: https://github.com/offen/offen/wiki
 
 ---
 
-This repository contains all source code needed to build and run __offen__, both on the server as well as on the client. Also see each of the READMEs in the subdirectories for information on how to work on that particular area of the application.
+### Project status
+
+We are currently working on __Milestone 2 out of 6: Collecting data securely__. Check our [blog][] for detailed updates on what we are working on right now and what's up next.
+
+[blog]: https://www.offen.dev/blog/
 
 ---
 
