@@ -1,4 +1,4 @@
-# Contributing to _offen_
+# Contributing to Offen
 
 ## Did you find a bug?
 
@@ -35,7 +35,7 @@ and release it when ready.
 
 ### You want to contribute to our ongoing work
 
-If you want to become a regular contributor to _offen_, working on our
+If you want to become a regular contributor to Offen, working on our
 continuous development cycle, please get in touch with us at
-contributing@offen.dev and we'll get back to you so we can discuss possible
+hioffen@posteo.de and we'll get back to you so we can discuss possible
 options.
