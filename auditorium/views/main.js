@@ -322,7 +322,6 @@ function view (state, emit) {
       ${retentionTable(state.model.retentionMatrix)}
     </div>
   `
-
   var goSettings = isOperator
     ? html`
       <div class="flex flex-column flex-row-ns mt4">
@@ -330,11 +329,16 @@ function view (state, emit) {
           <h4 class ="f5 normal mt0 mb3">
             ${__('Admin console')}
           </h4>
-          <a href="/auditorium/account/" class="w-100-ns f5 tc link dim bn ph3 pv2 mr1 mb2 dib br1 white bg-mid-gray">
-            ${__('Settings')}
-          </a>
+          <div class="flex items-center">
+            <a href="/auditorium/account/" class="w-100-ns f5 tc link dim bn ph3 pv2 mr1 mb2 dib br1 white bg-mid-gray">
+              ${__('Settings')}
+            </a>
+          </div>
         </div>
-        <div class="dn db-ns w-100 w-80-ns pa3 mb2 br2 bg-black-05">
+        <div class="w-100 w-80-ns pa3 mb2 br2 bg-black-05">
+          <h4 class="f5 mb3 mt0">${__('No data showing up?')}</h4>
+          <p>${raw(__('To use Offen with the account <strong>%s</strong> on your website, embed the following script on each page you want to appear in your statistics:', state.model.account.name))}</p>
+          <pre class="pre">${raw(`&lt;script src="${window.location.origin}/script.js" data-account-id="${state.model.account.accountId}"&gt;&lt;/script&gt;`)}</pre>
         </div>
       </div>
     `
