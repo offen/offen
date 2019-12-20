@@ -51,10 +51,11 @@ function optInMiddleware (event, respond, next) {
           left: '0',
           width: '100%',
           display: 'block',
-          backgroundColor: 'hotpink'
+          backgroundColor: 'transparent'
         },
         attributes: {
-          height: '100'
+          height: '120px',
+          width: '100%'
         }
       })
       return consentStatus.askForConsent()

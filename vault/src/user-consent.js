@@ -51,12 +51,28 @@ exports.askForConsent = askForConsent
 function askForConsent () {
   return new Promise(function (resolve) {
     var banner = html`
-      <div>
-        <p>Are you ok with us collecting usage data?</p>
-        <button onclick=${handleConsentAction(ALLOW)}>Accept</button>
-        <button onclick=${handleConsentAction(DENY)}>Decline</button>
+      <div class="roboto dark-gray bg-white absolute w-100 h-100 ph5 pv2 flex flex-column items-center justify-center">
+        <div>
+          <p class="mt0">
+            ${__('Are you ok with us collecting usage data?')}
+          </p>
+          <button class="pointer f5 tc dim bn ph3 pv2 dib br1 white bg-dark-green mr2" onclick=${handleConsentAction(ALLOW)}>
+            ${__('Accept')}
+          </button>
+          <button class="pointer f5 tc dim bn ph3 pv2 dib br1 white bg-dark-green mr2" onclick=${handleConsentAction(DENY)}>
+            ${__('Decline')}
+          </button>
+          <a target="_blank" rel="noopener" href="https://www.offen.dev" class="f5 tc dim bn ph3 pv2 dib br1 white bg-dark-green">
+            ${__('Learn more')}
+          </button>
+        </div>
       </div>
     `
+    var styleSheet = html`
+      <link rel="stylesheet" href="/tachyons.min.css">
+      <link rel="stylesheet" href="/fonts.css">
+    `
+    document.head.appendChild(styleSheet)
     document.body.appendChild(banner)
 
     function handleConsentAction (result) {
