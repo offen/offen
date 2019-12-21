@@ -10,6 +10,8 @@ help:
 	@echo "        **IMPORTANT**: this wipes any existing data in your local database"
 	@echo "    update"
 	@echo "        Install / update dependencies in the containers"
+	@echo "    audit"
+	@echo "        Run npm audit for all apps"
 	@echo "    migrate"
 	@echo "        Apply pending database migrations"
 	@echo "    build"
@@ -39,6 +41,12 @@ update:
 	@docker-compose run --rm vault npm install
 	@docker-compose run --rm auditorium npm install
 	@docker-compose run --rm server go mod download
+
+audit:
+	@echo "Auditing npm dependencies ..."
+	@docker-compose run --rm script npm audit
+	@docker-compose run --rm vault npm audit
+	@docker-compose run --rm auditorium npm audit
 
 migrate:
 	@docker-compose run --rm server make migrate
