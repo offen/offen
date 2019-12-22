@@ -1,5 +1,7 @@
 var html = require('choo/html')
 
+var Input = require('./../components/input')
+
 module.exports = view
 
 function view (state, emit) {
@@ -17,11 +19,11 @@ function view (state, emit) {
       <form class="mw6 center" onsubmit=${handleSubmit}>
         <label class="b lh-copy">
           ${__('Email address')}
-          <input class="w-100 pa2 mb3 input-reset ba b--black-10 bg-white" required type="email" name="username">
+          ${state.cache(Input, 'login/username', { required: true, type: 'email', name: 'username' }).render()}
         </label>
         <label class="b lh-copy">
           ${__('Password')}
-          <input class="w-100 pa2 mb3 input-reset ba b--black-10 bg-white" required type="password" name="password">
+          ${state.cache(Input, 'login/password', { name: 'password', required: true, type: 'password' }).render()}
         </label>
         <input class="pointer w-100 w4-ns f5 link dim bn ph3 pv2 mb3 dib br1 white bg-mid-gray" type="submit" value="${__('Log in')}">
         <div class="mb3">

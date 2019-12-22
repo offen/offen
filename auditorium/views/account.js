@@ -1,6 +1,8 @@
 var html = require('choo/html')
 var raw = require('choo/html/raw')
 
+var Input = require('./../components/input')
+
 module.exports = view
 
 function view (state, emit) {
@@ -43,11 +45,11 @@ function view (state, emit) {
       <form class="mw6 center" onsubmit="${handleChangeEmail}">
         <label class="b lh-copy">
           ${__('New email address')}
-          <input class="w-100 pa2 mb3 input-reset ba b--black-10 bg-white" type="text" name="email-address">
+          ${state.cache(Input, 'account/change-email-email', { name: 'email-address' }).render()}
         </label>
         <label class="b lh-copy">
           ${__('Password')}
-          <input class="w-100 pa2 mb3 input-reset ba b--black-10 bg-white" type="password" name="password">
+          ${state.cache(Input, 'account/change-email-password', { name: 'password', type: 'password' }).render()}
         </label>
         <input class="pointer w-100 w-auto-ns f5 link dim bn ph3 pv2 mb3 dib br1 white bg-mid-gray" type="submit" value="${__('Change Email address')}">
       </form>
@@ -72,15 +74,15 @@ function view (state, emit) {
       <form class="mw6 center" onsubmit="${handleChangePassword}">
         <label class="b lh-copy">
           ${__('Current password')}
-          <input class="w-100 pa2 mb3 input-reset ba b--black-10 bg-white" type="password" name="current">
+          ${state.cache(Input, 'account/change-password-current', { type: 'password', name: 'password' }).render()}
         </label>
         <label class="b lh-copy">
           ${__('New password')}
-          <input class="w-100 pa2 mb3 input-reset ba b--black-10 bg-white" type="password" name="changed">
+          ${state.cache(Input, 'account/change-password-changed', { type: 'password', name: 'changed' }).render()}
         </label>
         <label class="b lh-copy">
           ${__('Repeat new password')}
-          <input class="w-100 pa2 mb3 input-reset ba b--black-10 bg-white" type="password" name="repeat">
+          ${state.cache(Input, 'account/change-password-repeat', { type: 'password', name: 'repeat' }).render()}
         </label>
         <input class="pointer w-100 w-auto-ns f5 link dim bn ph3 pv2 mb3 dib br1 white bg-mid-gray" type="submit" value="${__('Change password')}">
       </form>

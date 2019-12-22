@@ -24,7 +24,9 @@ function store (state, emitter) {
           return
         } else if (response.type === 'LOGIN_FAILURE') {
           state.flash = __('Could not log in. Try again.')
-          emitter.emit(state.events.PUSHSTATE, '/auditorium/login/')
+          if (!credentials) {
+            emitter.emit(state.events.PUSHSTATE, '/auditorium/login/')
+          }
           return
         }
         throw new Error('Received unknown response type: ' + response.type)
