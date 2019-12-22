@@ -238,7 +238,7 @@ function view (state, emit) {
             ${keyMetric('Unique users', state.model.liveUsers)}
           </div>
           <div class="w-100 w-70-ns">
-            ${state.cache(Table, 'live-table').render([tableData])}
+            ${state.cache(Table, 'main/live-table').render([tableData])}
           </div>
         </div>
       </div>
@@ -256,7 +256,7 @@ function view (state, emit) {
       <h4 class="f5 normal mt0 mb3">
         ${__('Page views and %s', isOperator ? __('visitors') : __('accounts'))}
       </h4>
-      ${state.cache(BarChart, 'bar-chart').render(chartData)}
+      ${state.cache(BarChart, 'main/bar-chart').render(chartData)}
     </div>
   `
 
@@ -306,13 +306,13 @@ function view (state, emit) {
   ]
   var urlTables = html`
     <div class="w-100 pa3 mb2 ba b--black-10 br2 bg-white">
-      ${state.cache(Table, 'pages-table').render(pagesTableData)}
+      ${state.cache(Table, 'main/pages-table').render(pagesTableData)}
     </div>
     <div class="w-100 pa3 mb2 ba b--black-10 br2 bg-white">
-      ${state.cache(Table, 'referrers-table').render(referrersTableData)}
+      ${state.cache(Table, 'main/referrers-table').render(referrersTableData)}
     </div>
     <div class="w-100 pa3 mb2 ba b--black-10 br2 bg-white">
-      ${state.cache(Table, 'landing-exit-table').render(landingExitTableData)}
+      ${state.cache(Table, 'main/landing-exit-table').render(landingExitTableData)}
     </div>
   `
 
