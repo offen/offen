@@ -28,9 +28,6 @@ describe('vault/index.js', function () {
           var vaultElement = iframeElements[0]
           assert.strictEqual(vaultElement.src, 'http://localhost:9876/')
 
-          assert.strictEqual(vaultElement.getAttribute('height'), '0')
-          assert.strictEqual(vaultElement.getAttribute('width'), '0')
-
           assert.strictEqual(typeof postMessage, 'function')
           return postMessage({ please: 'respond' }, false)
         })
