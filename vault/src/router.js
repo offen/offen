@@ -14,6 +14,7 @@ function router () {
         event.ports[1].postMessage(data)
       }
     }
+    respond.styleHost.selector = event.data.host
 
     var stack = (registeredRoutes[event.data.type] || []).slice()
 

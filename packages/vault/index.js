@@ -14,10 +14,11 @@ function createVault (host) {
   vault.src = host
 
   vault.style.display = 'none'
-  vault.setAttribute('width', '0')
-  vault.setAttribute('height', '0')
   vault.setAttribute('frameBorder', '0')
   vault.setAttribute('scrolling', 'no')
+
+  var elementId = createElementId()
+  vault.setAttribute('id', elementId)
 
   createVault[host] = new Promise(function (resolve, reject) {
     vault.addEventListener('load', function (e) {
@@ -40,13 +41,18 @@ function createVault (host) {
           }
 
           var receiveStyles = new window.MessageChannel()
+          var stylesheet = document.createElement('style')
+          stylesheet.setAttribute('id', 'offen-vault-styles')
           receiveStyles.port1.onmessage = function (event) {
-            Object.assign(vault.style, event.data.styles)
+            if (!document.head.contains(stylesheet)) {
+              document.head.appendChild(stylesheet)
+            }
+            stylesheet.innerHTML = event.data.styles
             Object.keys(event.data.attributes || {}).forEach(function (attribute) {
               vault.setAttribute(attribute, event.data.attributes[attribute])
             })
           }
-
+          message.host = message.host || '#' + elementId
           vault.contentWindow.postMessage(message, origin, [messageChannel.port2, receiveStyles.port2])
         })
       }
@@ -69,4 +75,8 @@ function createVault (host) {
       })
   }
   return createVault[host]
+}
+
+function createElementId () {
+  return 'offen-vault-' + Math.random().toString(36).slice(2)
 }

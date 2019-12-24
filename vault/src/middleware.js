@@ -11,29 +11,12 @@ function optIn (event, respond, next) {
         return status
       }
       respond.styleHost({
-        styles: {
-          position: 'fixed',
-          right: '0',
-          bottom: '0',
-          left: '0',
-          width: '100%',
-          display: 'block',
-          backgroundColor: 'transparent'
-        },
-        attributes: {
-          height: '120px',
-          width: '100%'
-        }
+        styles: consentStatus.hostStyles(respond.styleHost.selector).visible.innerHTML
       })
       return consentStatus.askForConsent()
         .then(function (result) {
           respond.styleHost({
-            styles: {
-              display: 'none'
-            },
-            attributes: {
-              height: '0'
-            }
+            styles: consentStatus.hostStyles(respond.styleHost.selector).hidden.innerHTML
           })
           return result
         })
