@@ -20,6 +20,7 @@ require (
 	github.com/leonelquinteros/gotext v1.4.0
 	github.com/lestrrat-go/jwx v0.9.0
 	github.com/oklog/ulid v1.3.1
+	github.com/phayes/freeport v0.0.0-20180830031419-95f893ade6f2
 	github.com/rakyll/statik v0.1.6
 	github.com/sirupsen/logrus v1.4.2
 	golang.org/x/crypto v0.0.0-20191122220453-ac88ee75c92c
