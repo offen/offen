@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"context"
+	"encoding/base64"
 	"errors"
 	"flag"
 	"fmt"
@@ -24,6 +25,7 @@ import (
 	"github.com/offen/offen/server/persistence/relational"
 	"github.com/offen/offen/server/public"
 	"github.com/offen/offen/server/router"
+	"github.com/phayes/freeport"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/acme/autocert"
 	yaml "gopkg.in/yaml.v2"
@@ -58,6 +60,94 @@ func main() {
 	subcommand := os.Args[1]
 
 	switch subcommand {
+	case "demo":
+		cfg, _ := config.New(false)
+		cfg.Database.Dialect = config.Dialect("sqlite3")
+		cfg.Database.ConnectionString = ":memory:"
+		cfg.Secrets.CookieExchange = mustSecret(16)
+		cfg.Secrets.EmailSalt = mustSecret(16)
+
+		port, portErr := freeport.GetFreePort()
+		if portErr != nil {
+			logger.WithError(portErr).Fatal("Unable to allocate free port to run demo")
+		}
+		cfg.Server.Port = port
+
+		accountID, err := uuid.NewV4()
+		if err != nil {
+			logger.WithError(err).Fatal("Unable to create random account identifier")
+		}
+		cfg.App.RootAccount = accountID.String()
+
+		gormDB, err := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString)
+		if err != nil {
+			logger.WithError(err).Fatal("Unable to establish database connection")
+		}
+		gormDB.LogMode(cfg.App.Development)
+
+		db, err := persistence.New(
+			relational.NewRelationalDAL(gormDB),
+			persistence.WithEmailSalt(cfg.Secrets.EmailSalt.Bytes()),
+		)
+		if err != nil {
+			logger.WithError(err).Fatal("Unable to create persistence layer")
+		}
+
+		if err := db.Migrate(); err != nil {
+			logger.WithError(err).Fatal("Error applying initial database migrations")
+		}
+		if err := db.Bootstrap(persistence.BootstrapConfig{
+			Accounts: []persistence.BootstrapAccount{
+				{ID: cfg.App.RootAccount, Name: "Demo Account"},
+			},
+			AccountUsers: []persistence.BootstrapAccountUser{
+				{Email: "demo@offen.dev", Password: "demo", Accounts: []string{cfg.App.RootAccount}},
+			},
+		}, cfg.Secrets.EmailSalt.Bytes()); err != nil {
+			logger.WithError(err).Fatal("Error bootstrapping database")
+		}
+
+		gettext, gettextErr := locales.GettextFor(cfg.App.Locale.String())
+		if gettextErr != nil {
+			logger.WithError(gettextErr).Fatal("Failed reading locale files, cannot continue")
+		}
+		tpl, tplErr := public.HTMLTemplate(gettext)
+		if tplErr != nil {
+			logger.WithError(tplErr).Fatal("Failed parsing template files, cannot continue")
+		}
+		fs := public.NewLocalizedFS(cfg.App.Locale.String())
+
+		srv := &http.Server{
+			Addr: fmt.Sprintf("0.0.0.0:%d", cfg.Server.Port),
+			Handler: router.New(
+				router.WithDatabase(db),
+				router.WithLogger(logger),
+				router.WithTemplate(tpl),
+				router.WithConfig(cfg),
+				router.WithFS(fs),
+			),
+		}
+		go func() {
+			if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+				logger.WithError(err).Fatal("Error binding server to network")
+			}
+		}()
+		logger.Infof("Demo application now serving http://localhost:%d", cfg.Server.Port)
+		logger.Info(`You can log into the demo account using "demo@offen.dev" and password "demo"`)
+		logger.Info("Data is stored in-memory only for this demo.")
+		logger.Info("Refer to the documentation on how to connect a persistent database.")
+
+		quit := make(chan os.Signal)
+		signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+		<-quit
+
+		ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+		defer cancel()
+		if err := srv.Shutdown(ctx); err != nil {
+			logger.WithError(err).Fatal("Error shutting down server")
+		}
+
+		logger.Info("Gracefully shut down server")
 	case "serve":
 		cfg := mustConfig(false)
 
@@ -310,4 +400,16 @@ func main() {
 	default:
 		logger.Fatalf("Unknown subcommand %s\n", os.Args[1])
 	}
+}
+
+func mustSecret(length int) []byte {
+	secret, err := keys.GenerateRandomValue(16)
+	if err != nil {
+		panic(err)
+	}
+	b, err := base64.StdEncoding.DecodeString(secret)
+	if err != nil {
+		panic(err)
+	}
+	return b
 }
