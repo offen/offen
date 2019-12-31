@@ -160,7 +160,9 @@ jobs:
       - setup_remote_docker
       - run:
           name: Build binary
-          command: make build
+          command: |
+            make build
+            cp ./bin/offen-linux-amd64 ./offen
       - run:
           name: Setup application
           command: sudo ./offen bootstrap -email circle@offen.dev -name circle -password secret
