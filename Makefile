@@ -15,7 +15,7 @@ help:
 	@echo "    migrate"
 	@echo "        Apply pending database migrations"
 	@echo "    build"
-	@echo "        Build a local docker image, tagged as offen/offen:local"
+	@echo "        Build binaries and Docker image"
 	@echo "    extract-strings"
 	@echo "        Extract strings for localization"
 	@echo "    secret"
@@ -65,7 +65,7 @@ BUILD_DARWIN ?= ''
 
 build:
 	@docker build --build-arg BUILD_LINUX=${BUILD_LINUX} --build-arg BUILD_WINDOWS=${BUILD_WINDOWS} --build-arg BUILD_DARWIN=${BUILD_DARWIN} --build-arg GIT_REVISION=$(shell git rev-parse --short HEAD) -t offen/build:${DOCKER_IMAGE_TAG} -f build/Dockerfile.build .
-	@docker create -it --name binary offen/build:local bash
+	@docker create -it --name binary offen/build:${DOCKER_IMAGE_TAG} bash
 	@docker cp binary:/code/server/bin/ .
 	@docker rm binary
 	@docker build -t offen/offen:${DOCKER_IMAGE_TAG} -f build/Dockerfile .
