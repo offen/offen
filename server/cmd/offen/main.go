@@ -53,6 +53,7 @@ func main() {
 
 	secretCmd := flag.NewFlagSet("secret", flag.ExitOnError)
 	bootstrapCmd := flag.NewFlagSet("bootstrap", flag.ExitOnError)
+	demoCmd := flag.NewFlagSet("demo", flag.ExitOnError)
 
 	if len(os.Args) < 2 {
 		os.Args = append(os.Args, "serve")
@@ -61,17 +62,25 @@ func main() {
 
 	switch subcommand {
 	case "demo":
+		var (
+			port = demoCmd.Int("port", 0, "the port to bind to")
+		)
+		demoCmd.Parse(os.Args[2:])
+
 		cfg, _ := config.New(false)
 		cfg.Database.Dialect = config.Dialect("sqlite3")
 		cfg.Database.ConnectionString = ":memory:"
 		cfg.Secrets.CookieExchange = mustSecret(16)
 		cfg.Secrets.EmailSalt = mustSecret(16)
 
-		port, portErr := freeport.GetFreePort()
-		if portErr != nil {
-			logger.WithError(portErr).Fatal("Unable to allocate free port to run demo")
+		if *port == 0 {
+			freePort, portErr := freeport.GetFreePort()
+			if portErr != nil {
+				logger.WithError(portErr).Fatal("Unable to allocate free port to run demo")
+			}
+			*port = freePort
 		}
-		cfg.Server.Port = port
+		cfg.Server.Port = *port
 
 		accountID, err := uuid.NewV4()
 		if err != nil {
