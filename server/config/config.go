@@ -41,7 +41,6 @@ type Config struct {
 	App struct {
 		Development          bool          `default:"false"`
 		EventRetentionPeriod time.Duration `default:"4464h"`
-		Revision             string        `default:"not set"`
 		LogLevel             LogLevel      `default:"info"`
 		SingleNode           bool          `default:"true"`
 		Locale               Locale        `default:"en"`
@@ -135,10 +134,6 @@ func New(populateMissing bool) (*Config, error) {
 	err := envconfig.Process("offen", &c)
 	if err != nil && !populateMissing {
 		return &c, fmt.Errorf("error processing environment: %v", err)
-	}
-
-	if Revision != "" {
-		c.App.Revision = Revision
 	}
 
 	if err != nil && populateMissing {

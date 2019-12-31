@@ -402,10 +402,7 @@ func main() {
 			logger.WithField("secret", value).Infof("Created %d bytes secret", *length)
 		}
 	case "version":
-		// calling version does not require a valid config, so this does not
-		// check errors.
-		cfg, _ := config.New(false)
-		logger.WithField("revision", cfg.App.Revision).Info("Current build created using")
+		logger.WithField("revision", config.Revision).Info("Current build created using")
 	default:
 		logger.Fatalf("Unknown subcommand %s\n", os.Args[1])
 	}
