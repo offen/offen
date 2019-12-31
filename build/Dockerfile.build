@@ -72,7 +72,7 @@ ENV GOOS linux
 RUN if [ "x$BUILD_LINUX" != "x" ]; then CC=musl-gcc go build -ldflags "-linkmode external -extldflags '-static' -s -w -X github.com/offen/offen/server/config.Revision=$GIT_REVISION" -o bin/offen-linux-amd64 cmd/offen/main.go; fi
 
 ENV GOOS windows
-RUN if [ "x$BUILD_WINDOWS" != "x" ]; then CC=x86_64-w64-mingw32-gcc go build -ldflags "-linkmode external -extldflags '-static' -s -w -X github.com/offen/offen/server/config.Revision=$GIT_REVISION" -o bin/offen-windows-amd64 cmd/offen/main.go; fi
+RUN if [ "x$BUILD_WINDOWS" != "x" ]; then CC=x86_64-w64-mingw32-gcc go build -ldflags "-linkmode external -extldflags '-static' -s -w -X github.com/offen/offen/server/config.Revision=$GIT_REVISION" -o bin/offen-windows-amd64.exe cmd/offen/main.go; fi
 
 ENV GOOS darwin
 RUN if [ "x$BUILD_DARWIN" != "x" ]; then CC=o64-clang go build -ldflags "-s -w -X github.com/offen/offen/server/config.Revision=$GIT_REVISION" -o bin/offen-darwin-amd64 cmd/offen/main.go; fi
