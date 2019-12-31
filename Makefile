@@ -59,12 +59,16 @@ extract-strings:
 
 DOCKER_IMAGE_TAG ?= local
 ROBOTS_FILE ?= robots.txt.staging
+BUILD_LINUX ?= '1'
+BUILD_WINDOWS ?= ''
+BUILD_DARWIN ?= ''
 
 build:
-	@docker build --build-arg rev=$(shell git rev-parse --short HEAD) -t offen/offen:${DOCKER_IMAGE_TAG} -f build/Dockerfile .
-	@docker create -it --name binary offen/offen:local ash
-	@docker cp binary:/offen .
+	@docker build --build-arg BUILD_LINUX=${BUILD_LINUX} --build-arg BUILD_WINDOWS=${BUILD_WINDOWS} --build-arg BUILD_DARWIN=${BUILD_DARWIN} --build-arg GIT_REVISION=$(shell git rev-parse --short HEAD) -t offen/build:${DOCKER_IMAGE_TAG} -f build/Dockerfile.build .
+	@docker create -it --name binary offen/build:local bash
+	@docker cp binary:/code/server/bin/ .
 	@docker rm binary
+	@docker build -t offen/offen:${DOCKER_IMAGE_TAG} -f build/Dockerfile .
 
 secret:
 	@docker-compose run server make secret

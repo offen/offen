@@ -160,7 +160,9 @@ jobs:
       - setup_remote_docker
       - run:
           name: Build binary
-          command: make build
+          command: |
+            make build
+            cp ./bin/offen-linux-amd64 ./offen
       - run:
           name: Setup application
           command: sudo ./offen bootstrap -email circle@offen.dev -name circle -password secret
@@ -188,21 +190,11 @@ jobs:
 
   build:
     docker:
-      - image: docker:18-git
+      - image: circleci/golang:1.13
     working_directory: ~/offen
     steps:
       - checkout
       - setup_remote_docker
-      - restore_cache:
-          keys:
-            - v1-{{ .Branch }}
-          paths:
-            - /caches/offen.tar
-      - run:
-          name: Load Docker image layer cache
-          command: |
-            set +o pipefail
-            docker load -i /caches/offen.tar | true
       - run:
           name: Build application Docker image and binary
           command: |
@@ -212,32 +204,10 @@ jobs:
             else
               export DOCKER_IMAGE_TAG="latest"
             fi
-            docker build --build-arg rev=$OFFEN_GIT_REVISION -t offen/offen:$DOCKER_IMAGE_TAG -f build/Dockerfile .
-            # next, extract the single binary from the container so it can
-            # be stored as a build artifact (this needs to be formalized into
-            # versioned releases at some point)
-            docker create -it --name builder offen/offen:$DOCKER_IMAGE_TAG ash
-            docker cp builder:/offen .
-            docker rm -f builder
+            BUILD_DARWIN=1 BUILD_WINDOWS=1 make build
+            make build-docker
             mkdir -p /tmp/artifacts
-            tar -czvf /tmp/artifacts/offen-$DOCKER_IMAGE_TAG.tar.gz offen
-      - run:
-          name: Save Docker image layer cache
-          command: |
-            mkdir -p /caches
-            docker save -o /caches/offen.tar offen/offen
-      - save_cache:
-          key: v1-{{ .Branch }}-{{ epoch }}
-          paths:
-            - /caches/server.tar
-      - deploy:
-          name: Push application Docker image
-          command: |
-            if [ "${CIRCLE_BRANCH}" == "master" ]; then
-              export DOCKER_IMAGE_TAG="stable"
-            else
-              export DOCKER_IMAGE_TAG="latest"
-            fi
+            cd ./bin && tar -czvf /tmp/artifacts/offen-$DOCKER_IMAGE_TAG.tar.gz $(ls -A)
             echo "$DOCKER_ACCESSTOKEN" | docker login --username $DOCKER_USER --password-stdin
             docker push offen/offen:$DOCKER_IMAGE_TAG
       - store_artifacts:

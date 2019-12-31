@@ -14,6 +14,16 @@ Offen is designed with the following objectives in mind:
 
 ---
 
+If you're curious, you can give it a test drive right now:
+
+```sh
+docker run --rm -it -p 9876:9876 offen/offen:latest demo -port 9876
+```
+
+This gives you a ephemeral one-off installation running on `http://localhost:9876`.
+
+---
+
 **IMPORTANT NOTE BEFORE YOU START**: Offen is in the early stages of its development. We're happy if you would like to experiment with using it, but at this point in time we cannot guarantee any upgrade stability. Each release might contain breaking changes that might result in data being lost on the next upgrade.
 
 
