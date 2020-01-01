@@ -33,7 +33,7 @@ howto:
 
 bootstrap:
 	@echo "Bootstrapping Server service ..."
-	@docker-compose run --rm server make bootstrap
+	@docker-compose run --rm server make setup
 
 update:
 	@echo "Installing / updating dependencies ..."
