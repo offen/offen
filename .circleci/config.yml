@@ -165,7 +165,7 @@ jobs:
             cp ./bin/offen-linux-amd64 ./offen
       - run:
           name: Setup application
-          command: sudo ./offen bootstrap -email circle@offen.dev -name circle -password secret
+          command: sudo ./offen setup -email circle@offen.dev -name circle -password secret
       - run:
           name: Serve application
           command: OFFEN_SERVER_PORT=8080 sudo ./offen

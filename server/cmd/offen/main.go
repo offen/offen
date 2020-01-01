@@ -52,7 +52,7 @@ func main() {
 	}
 
 	secretCmd := flag.NewFlagSet("secret", flag.ExitOnError)
-	bootstrapCmd := flag.NewFlagSet("bootstrap", flag.ExitOnError)
+	setupCmd := flag.NewFlagSet("bootstrap", flag.ExitOnError)
 	demoCmd := flag.NewFlagSet("demo", flag.ExitOnError)
 
 	if len(os.Args) < 2 {
@@ -246,17 +246,17 @@ func main() {
 		}
 
 		logger.Info("Gracefully shut down server")
-	case "bootstrap":
+	case "setup":
 		var (
-			accountID         = bootstrapCmd.String("forceid", "", "force usage of given account id")
-			accountName       = bootstrapCmd.String("name", "", "the account name")
-			email             = bootstrapCmd.String("email", "", "the email address used for login")
-			password          = bootstrapCmd.String("password", "", "the password used for login")
-			passwordFromStdin = bootstrapCmd.Bool("stdin-password", false, "read password from stdin")
-			source            = bootstrapCmd.String("source", "", "the configuration file")
-			populateMissing   = bootstrapCmd.Bool("populate", true, "in case required secrets are missing from the configuration, create and persist them in ~/.config/offen.env")
+			accountID         = setupCmd.String("forceid", "", "force usage of given account id")
+			accountName       = setupCmd.String("name", "", "the account name")
+			email             = setupCmd.String("email", "", "the email address used for login")
+			password          = setupCmd.String("password", "", "the password used for login")
+			passwordFromStdin = setupCmd.Bool("stdin-password", false, "read password from stdin")
+			source            = setupCmd.String("source", "", "the configuration file")
+			populateMissing   = setupCmd.Bool("populate", true, "in case required secrets are missing from the configuration, create and persist them in ~/.config/offen.env")
 		)
-		bootstrapCmd.Parse(os.Args[2:])
+		setupCmd.Parse(os.Args[2:])
 
 		pw := *password
 		if *passwordFromStdin {
