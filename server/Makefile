@@ -7,8 +7,8 @@ up:
 install:
 	@go mod download
 
-bootstrap:
-	@go run cmd/offen/main.go bootstrap -source bootstrap.yml
+setup:
+	@go run cmd/offen/main.go setup -source bootstrap.yml
 	@echo ""
 	@echo "You can now log into the development backend using the following credentials:"
 	@echo ""
@@ -22,7 +22,7 @@ migrate:
 secret:
 	@go run cmd/offen/main.go secret
 
-test-ci: bootstrap
+test-ci: setup
 	@go test ./... -cover -tags="integration"
 
 extract-strings:
