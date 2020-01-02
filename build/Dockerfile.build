@@ -40,22 +40,10 @@ RUN cp -a /code/deps/node_modules /code/vault/
 ENV NODE_ENV production
 RUN npm run build
 
-FROM bepsays/ci-goreleaser:latest as server
+FROM golang:1.13 as statik
 
-RUN apt-get update \
-    && apt-get -y install musl-tools \
-    && rm -rf /var/lib/apt/lists/*
-
-COPY ./server/go.mod ./server/go.sum /code/server/
 WORKDIR /code/server
-RUN go mod download
-
 COPY ./server /code/server
-
-ARG GIT_REVISION
-ARG BUILD_LINUX
-ARG BUILD_WINDOWS
-ARG BUILD_DARWIN
 
 COPY --from=script /code/script/dist /code/server/public
 COPY --from=vault /code/vault/dist /code/server/public
@@ -65,14 +53,19 @@ RUN go get github.com/rakyll/statik
 RUN statik -dest public -src public
 RUN statik -dest locales -src locales
 
-ENV GOARCH amd64
-ENV CGO_ENABLED 1
+FROM karalabe/xgo-1.13.x as compiler
 
-ENV GOOS linux
-RUN if [ "x$BUILD_LINUX" != "x" ]; then CC=musl-gcc go build -ldflags "-linkmode external -extldflags '-static' -s -w -X github.com/offen/offen/server/config.Revision=$GIT_REVISION" -o bin/offen-linux-amd64 cmd/offen/main.go; fi
+ARG rev
+ENV GIT_REVISION=$rev
+ARG targets
+ENV TARGETS=$targets
+ARG ldflags
+ENV LDFLAGS=$ldflags
 
-ENV GOOS windows
-RUN if [ "x$BUILD_WINDOWS" != "x" ]; then CC=x86_64-w64-mingw32-gcc go build -ldflags "-linkmode external -extldflags '-static' -s -w -X github.com/offen/offen/server/config.Revision=$GIT_REVISION" -o bin/offen-windows-amd64.exe cmd/offen/main.go; fi
+COPY --from=statik /code /go/src/github.com/offen/offen
+ENV GOPATH /go
+WORKDIR /build
 
-ENV GOOS darwin
-RUN if [ "x$BUILD_DARWIN" != "x" ]; then CC=o64-clang go build -ldflags "-s -w -X github.com/offen/offen/server/config.Revision=$GIT_REVISION" -o bin/offen-darwin-amd64 cmd/offen/main.go; fi
+RUN xgo --targets=$TARGETS --ldflags="-linkmode external -extldflags '$LDFLAGS' -s -w -X github.com/offen/offen/server/config.Revision=$GIT_REVISION" github.com/offen/offen/server/cmd/offen
+
+RUN md5sum * > checksums.txt
