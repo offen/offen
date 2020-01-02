@@ -15,7 +15,11 @@ help:
 	@echo "    migrate"
 	@echo "        Apply pending database migrations"
 	@echo "    build"
-	@echo "        Build binaries and Docker image"
+	@echo "        Build binaries"
+	@echo "        You can pass TARGETS if you are targeting other platforms than Linux"
+	@echo "    build-docker"
+	@echo "        Build the Docker image"
+	@echo "        You can pass DOCKER_IMAGE_TAG if you want to use a non-default tag"
 	@echo "    extract-strings"
 	@echo "        Extract strings for localization"
 	@echo "    secret"
@@ -59,15 +63,17 @@ extract-strings:
 
 DOCKER_IMAGE_TAG ?= local
 ROBOTS_FILE ?= robots.txt.staging
-BUILD_LINUX ?= '1'
-BUILD_WINDOWS ?= ''
-BUILD_DARWIN ?= ''
+TARGETS ?= linux/amd64
+LDFLAGS ?= -static
 
 build:
-	@docker build --build-arg BUILD_LINUX=${BUILD_LINUX} --build-arg BUILD_WINDOWS=${BUILD_WINDOWS} --build-arg BUILD_DARWIN=${BUILD_DARWIN} --build-arg GIT_REVISION=$(shell git rev-parse --short HEAD) -t offen/build:${DOCKER_IMAGE_TAG} -f build/Dockerfile.build .
-	@docker create -it --name binary offen/build:${DOCKER_IMAGE_TAG} bash
-	@docker cp binary:/code/server/bin/ .
+	@docker build --build-arg ldflags=${LDFLAGS} --build-arg targets=${TARGETS} --build-arg rev=$(shell git rev-parse --short HEAD) -t offen/build -f build/Dockerfile.build .
+	@rm -rf ./bin && mkdir bin
+	@docker create --entrypoint=bash -it --name binary offen/build
+	@docker cp binary:/build/. ./bin
 	@docker rm binary
+
+build-docker:
 	@docker build -t offen/offen:${DOCKER_IMAGE_TAG} -f build/Dockerfile .
 
 secret:
@@ -85,4 +91,4 @@ test:
 	@docker-compose run --rm auditorium npm test
 	@docker-compose run --rm server make test
 
-.PHONY: setup build bootstrap build secret test up down
+.PHONY: setup build build-docker bootstrap build secret test up down

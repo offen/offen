@@ -204,7 +204,13 @@ jobs:
             else
               export DOCKER_IMAGE_TAG="latest"
             fi
-            BUILD_DARWIN=1 BUILD_WINDOWS=1 make build
+
+            TARGETS=linux/amd64,windows/amd64 make build
+            # Darwin builds cannot be statically linked right now
+            # so we override the default LDFLAGS value
+            TARGETS=darwin/amd64 LDFLAGS='' make build
+            make build-docker
+
             mkdir -p /tmp/artifacts
             cd ./bin && tar -czvf /tmp/artifacts/offen-$DOCKER_IMAGE_TAG.tar.gz $(ls -A)
             echo "$DOCKER_ACCESSTOKEN" | docker login --username $DOCKER_USER --password-stdin
