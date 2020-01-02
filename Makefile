@@ -68,7 +68,7 @@ LDFLAGS ?= -static
 
 build:
 	@docker build --build-arg ldflags=${LDFLAGS} --build-arg targets=${TARGETS} --build-arg rev=$(shell git rev-parse --short HEAD) -t offen/build -f build/Dockerfile.build .
-	@rm -rf ./bin && mkdir bin
+	@mkdir -p bin
 	@docker create --entrypoint=bash -it --name binary offen/build
 	@docker cp binary:/build/. ./bin
 	@docker rm binary
