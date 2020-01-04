@@ -67,5 +67,3 @@ ENV GOPATH /go
 WORKDIR /build
 
 RUN xgo --targets=$TARGETS --ldflags="-linkmode external -extldflags '$LDFLAGS' -s -w -X github.com/offen/offen/server/config.Revision=$GIT_REVISION" github.com/offen/offen/server/cmd/offen
-
-RUN md5sum * > checksums.txt

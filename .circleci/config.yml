@@ -212,7 +212,7 @@ jobs:
             make build-docker
 
             mkdir -p /tmp/artifacts
-            cd ./bin && tar -czvf /tmp/artifacts/offen-$DOCKER_IMAGE_TAG.tar.gz $(ls -A)
+            cd ./bin && md5sum * > checksums.txt && tar -czvf /tmp/artifacts/offen-$DOCKER_IMAGE_TAG.tar.gz $(ls -A)
             echo "$DOCKER_ACCESSTOKEN" | docker login --username $DOCKER_USER --password-stdin
             docker push offen/offen:$DOCKER_IMAGE_TAG
       - store_artifacts:
