@@ -118,6 +118,7 @@ github.com/mwitkow/go-conntrack v0.0.0-20161129095857-cc309e4a2223/go.mod h1:qRW
 github.com/offen/offen v0.0.0-20191031105048-b8b1e9b77391 h1:DnYbQd85n0arrKigA91TEwSWWEYBfa67g2BS5K+Yiq8=
 github.com/offen/offen v0.0.0-20191104142728-b3c572c7322a h1:ZXG6TXOuTtu65EmViepsbG/Ja0kD97S3ZDIipURhQYE=
 github.com/offen/offen v0.0.0-20191231104847-1b7795e97e91 h1:dm8IPul9ciqmqgdZ6apNSu3zBCmOpdpHLInYkn6ERR8=
+github.com/offen/offen v0.0.0-20200102091349-13b48c8e9b3b h1:A+6ZjmdsqnTROFiBoyeT5EjEtN1YHN+jIPWJ5/k41Ws=
 github.com/oklog/ulid v1.3.1 h1:EGfNDEx6MqHz8B3uNV6QAib1UR2Lm97sHi3ocA6ESJ4=
 github.com/oklog/ulid v1.3.1/go.mod h1:CirwcVhetQ6Lv90oh/F+FBtV6XMibvdAFo93nm5qn4U=
 github.com/onsi/ginkgo v1.6.0/go.mod h1:lLunBs/Ym6LB5Z9jYTR76FiuTmxDTDusOGeTQH+WWjE=
