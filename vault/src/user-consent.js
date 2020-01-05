@@ -12,35 +12,50 @@ exports.askForConsent = askForConsent
 function askForConsent () {
   return new Promise(function (resolve) {
     var banner = html`
-      <div class="w-100 h-100 absolute roboto f5 lh-copy dark-gray bg-white">
-        <div class="ma4-ns ma3">
-          <p class="mt0 mb3 b">
-            ${__('Continue with transparent analytics')}
-          </p>
-          <p class="mt0 mb4">
-            ${__('Help us to make this website better by granting access to your usage data. Your data always remains yours. Review and delete it at any time.')}
-            <a target="_blank" rel="noopener" href="https://www.offen.dev" class="link underline dim dark-gray ">
-              ${__('Learn more')}
-            </a>
-          </p>
-          <div class="flex pb5">
-            <div class="w-50 mr2">
-              <button class="w-100 pointer f5 tc dim bn ph3 pv2 dib br1 white bg-dark-gray" onclick=${handleConsentAction(ALLOW)}>
-                ${__('Yes Please')}
-              </button>
-            </div>
-            <div class="w-50 ml2">
-              <button class="w-100 pointer f5 tc dim bn ph3 pv2 dib br1 white bg-dark-gray" onclick=${handleConsentAction(DENY)}>
-                ${__('I Do Not Allow')}
-              </button>
-            </div>
-          </div>
-        </div>
+
+
+    <div class="roboto f5-ns f6 shadow-2 bg-white">
+
+    <input id="collaps" class="toggle" type="checkbox" checked>
+    
+    <label for="collaps" class="lbl-toggle"></label>
+    
+    <div class="collaps-content">
+      <p class="b mt0 mb3 mh3">
+        ${__('Continue with transparent analytics')} 
+        <a target="_blank" rel="noopener" href="https://www.offen.dev" class="normal link underline dim dark-gray" id="toggle-link">
+          ${__('Learn more')}
+        </a>
+      </p>
+      <p class="mt0 mb3 mh3" id="toggle-text">
+        ${__('Help us to make this website better by granting access to your usage data. Your data always remains yours. Review and delete it at any time.')}
+        <a target="_blank" rel="noopener" href="https://www.offen.dev" class="link underline dim dark-gray ">
+          ${__('Learn more')}
+        </a>
+      </p>
+    </div>
+    
+    <div class="flex pb3 mh3">
+      <div class="w-50 mr2">
+        <button class="w-100 pointer f5 tc dim bn ph3 pv2 dib br1 white bg-dark-gray" onclick=${handleConsentAction(ALLOW)}>
+          ${__('Yes Please')}
+        </button>
       </div>
+      <div class="w-50 ml2">
+        <button class="w-100 pointer f5 tc dim bn ph3 pv2 dib br1 white bg-dark-gray" onclick=${handleConsentAction(DENY)}>
+          ${__('I Do Not Allow')}
+        </button>
+      </div>
+    </div>
+
+    </div>
+      
+      
     `
     var styleSheet = html`
       <link rel="stylesheet" href="/tachyons.min.css">
       <link rel="stylesheet" href="/fonts.css">
+      <link rel="stylesheet" href="/banner-fix.css">
     `
     document.head.appendChild(styleSheet)
     document.body.appendChild(banner)
@@ -63,17 +78,17 @@ function hostStyles (selector) {
   ${selector} {
     display: block !important;
     position: fixed;
-    top: 50vh;
+    bottom: 0;
     right: 0;
     left: 0;
     margin: 0 auto;
-    height: 220px;
+    height: 300px;
     width: 450px;
   }
   @media all and (max-width: 480px) {
     ${selector} {
-      height: 250px;
-      width: 92vw;
+      height: 295px;
+      width: 100vw;
     }
   }
 </style>`,
