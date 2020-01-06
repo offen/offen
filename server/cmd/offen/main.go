@@ -217,7 +217,11 @@ func main() {
 				}
 			}
 		}()
-		logger.Infof("Server now listening on port %d", cfg.Server.Port)
+		if cfg.Server.AutoTLS != "" {
+			logger.Info("Server now listening using AutoTLS settings")
+		} else {
+			logger.Infof("Server now listening on port %d", cfg.Server.Port)
+		}
 
 		if cfg.App.SingleNode {
 			scheduler := gocron.NewScheduler()
