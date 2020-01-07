@@ -47,7 +47,9 @@ function createVault (host) {
             if (!document.head.contains(stylesheet)) {
               document.head.appendChild(stylesheet)
             }
-            stylesheet.innerHTML = event.data.styles
+            if (event.data.styles) {
+              stylesheet.innerHTML = event.data.styles
+            }
             Object.keys(event.data.attributes || {}).forEach(function (attribute) {
               vault.setAttribute(attribute, event.data.attributes[attribute])
             })
