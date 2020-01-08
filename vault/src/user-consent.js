@@ -122,22 +122,22 @@ function bannerStyles () {
     <style>
       .label-toggle::after {
         border-style: solid;
-      	border-width: 0.15em 0.15em 0 0;
-      	content: '';
-      	display: inline-block;
-      	height: 0.45em;
-      	left: 0.15em;
-      	position: relative;
-      	top: 0.15em;
-      	transform: rotate(135deg);
-      	vertical-align: top;
-      	width: 0.45em;
+        border-width: 0.15em 0.15em 0 0;
+        content: '';
+        display: inline-block;
+        height: 0.45em;
+        left: 0.15em;
+        position: relative;
+        top: 0.15em;
+        transform: rotate(135deg);
+        vertical-align: top;
+        width: 0.45em;
         margin-top: -0.2em;
         margin-left: -1.2em;
       }
       .label-toggle.label-toggle--rotate::after {
         top: 0;
-      	transform: rotate(-45deg);
+        transform: rotate(-45deg);
         margin-top: 0.4em;
       }
       body {
