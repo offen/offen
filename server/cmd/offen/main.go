@@ -413,6 +413,9 @@ func main() {
 		}
 	case "version":
 		logger.WithField("revision", config.Revision).Info("Current build created using")
+	case "debug":
+		cfg := mustConfig(false)
+		logger.WithField("config", fmt.Sprintf("%+v", cfg)).Info("Current configuration values")
 	default:
 		logger.Fatalf("Unknown subcommand %s\n", os.Args[1])
 	}
