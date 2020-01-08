@@ -76,7 +76,7 @@ function askForConsent (styleHost) {
 }
 
 function bannerView (collapsed, handleCollapseAction, handleAllow, handleDeny) {
-  var containerClass = 'roboto f5-ns f6 shadow-2 bg-white pa3'
+  var containerClass = 'roboto pa3'
   var toggleClass = 'fr pointer gray dim label-toggle'
   if (collapsed) {
     containerClass += ' collapse'
@@ -103,12 +103,12 @@ function bannerView (collapsed, handleCollapseAction, handleAllow, handleDeny) {
       ` : null}
       <div class="flex">
         <div class="w-50 mr2">
-          <button class="w-100 pointer f5 tc dim bn ph3 pv2 dib br1 white bg-dark-gray" onclick=${handleAllow}>
+          <button class="w-100 pointer tc dim bn ph3 pv2 dib br1 white bg-dark-gray" onclick=${handleAllow}>
             ${__('Yes Please')}
           </button>
         </div>
         <div class="w-50 ml2">
-          <button class="w-100 pointer f5 tc dim bn ph3 pv2 dib br1 white bg-dark-gray" onclick=${handleDeny}>
+          <button class="w-100 pointer tc dim bn ph3 pv2 dib br1 white bg-dark-gray" onclick=${handleDeny}>
             ${__('I Do Not Allow')}
           </button>
         </div>
@@ -121,24 +121,44 @@ function bannerStyles () {
   return html`
     <style>
       .label-toggle::after {
-        content: ' ';
-        display: inline-block;
-        border-top: 8px solid transparent;
-        border-bottom: 8px solid transparent;
-        border-left: 8px solid currentColor;
-        vertical-align: middle;
-        transform: rotate(90deg);
-        margin-right: 8px;
+        border-style: solid;
+      	border-width: 0.15em 0.15em 0 0;
+      	content: '';
+      	display: inline-block;
+      	height: 0.45em;
+      	left: 0.15em;
+      	position: relative;
+      	top: 0.15em;
+      	transform: rotate(135deg);
+      	vertical-align: top;
+      	width: 0.45em;
+        margin-top: -0.2em;
+        margin-left: -1.2em;
       }
       .label-toggle.label-toggle--rotate::after {
-        transform: rotate(-90deg);
+        top: 0;
+      	transform: rotate(-45deg);
+        margin-top: 0.4em;
+      }
+      body {
+        font-size: 1rem; 
+      }
+      @media all and (max-width: 430px) {
+        body {   
+          font-size: .75rem; 
+        }
+      }
+      @media all and (max-width: 340px) {
+        body {   
+          font-size: .65rem; 
+        }
       }
     </style>
   `
 }
 
 function hostStylesVisible (selector, isCollapsed) {
-  var bottom = isCollapsed ? '0px' : '138px'
+  var bottom = isCollapsed ? '-1px' : '138px'
   return html`
 <style>
   ${selector} {
@@ -149,10 +169,17 @@ function hostStylesVisible (selector, isCollapsed) {
     left: 0;
     margin: 0 auto;
     width: 450px;
+    border: 1px solid #8a8a8a;
+    border-radius: 3px;
+    background-color: #FFFDF4;
+    box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.50);
   }
   @media all and (max-width: 480px) {
     ${selector} {
       width: 100%;
+      border-left: none;
+      border-right: none;
+      border-radius: 0;
     }
   }
 </style>
