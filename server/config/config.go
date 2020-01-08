@@ -74,8 +74,7 @@ func (c *Config) NewMailer() mailer.Mailer {
 	if !c.SMTPConfigured() {
 		return localmailer.New()
 	}
-	user, pass, host, port := c.SMTP.Host, c.SMTP.User, c.SMTP.Password, c.SMTP.Port
-	return smtpmailer.New(host, user, pass, port)
+	return smtpmailer.New(c.SMTP.Host, c.SMTP.User, c.SMTP.Password, c.SMTP.Port)
 }
 
 const envFileName = "offen.env"
