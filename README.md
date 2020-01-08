@@ -12,15 +12,13 @@ Offen is designed with the following objectives in mind:
 - **Self hosted and lightweight**: You can run Offen on-premises, or in any other deployment scenario that fits your need. All you need to do is download a single binary file and run it on your server. It will automatically install SSL certficates for you if you want it to. If you do not want to deploy a database, you can use SQLite to store data directly on the server.
 - **Transparent and fair**: Offen treats the user as a party of equal importance in the collection of usage data. Users have access to the same set of tools for analyzing their own data and they can delete their data at any time.
 
----
-
-If you're curious, you can give it a test drive right now:
+If you're curious, give it a test drive right now:
 
 ```sh
 docker run --rm -it -p 9876:9876 offen/offen:latest demo -port 9876
 ```
 
-This gives you a ephemeral one-off installation running on `http://localhost:9876`.
+This creates ephemeral one-off installation running on `http://localhost:9876`.
 
 ---
 
