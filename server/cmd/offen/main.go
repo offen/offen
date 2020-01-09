@@ -208,7 +208,13 @@ func main() {
 					logger.WithError(err).Fatal("Error binding server to network")
 				}
 			} else if cfg.Server.AutoTLS != "" {
-				if err := http.Serve(autocert.NewListener(cfg.Server.AutoTLS), srv.Handler); err != nil && err != http.ErrServerClosed {
+				m := autocert.Manager{
+					Prompt:     autocert.AcceptTOS,
+					HostPolicy: autocert.HostWhitelist(cfg.Server.AutoTLS),
+					Cache:      autocert.DirCache(cfg.Server.CertificateCache),
+				}
+				go http.ListenAndServe(":http", m.HTTPHandler(nil))
+				if err := http.Serve(m.Listener(), srv.Handler); err != nil && err != http.ErrServerClosed {
 					logger.WithError(err).Fatal("Error binding server to network")
 				}
 			} else {
@@ -217,7 +223,11 @@ func main() {
 				}
 			}
 		}()
-		logger.Infof("Server now listening on port %d", cfg.Server.Port)
+		if cfg.Server.AutoTLS != "" {
+			logger.Info("Server now listening on port 80 and 443 using AutoTLS")
+		} else {
+			logger.Infof("Server now listening on port %d", cfg.Server.Port)
+		}
 
 		if cfg.App.SingleNode {
 			scheduler := gocron.NewScheduler()
@@ -403,6 +413,9 @@ func main() {
 		}
 	case "version":
 		logger.WithField("revision", config.Revision).Info("Current build created using")
+	case "debug":
+		cfg := mustConfig(false)
+		logger.WithField("config", fmt.Sprintf("%+v", cfg)).Info("Current configuration values")
 	default:
 		logger.Fatalf("Unknown subcommand %s\n", os.Args[1])
 	}

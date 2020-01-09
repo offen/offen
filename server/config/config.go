@@ -28,11 +28,12 @@ var Revision string
 // source values from the application environment at runtime.
 type Config struct {
 	Server struct {
-		Port           int  `default:"8080"`
-		ReverseProxy   bool `default:"false"`
-		SSLCertificate string
-		SSLKey         string
-		AutoTLS        string
+		Port             int  `default:"8080"`
+		ReverseProxy     bool `default:"false"`
+		SSLCertificate   string
+		SSLKey           string
+		AutoTLS          string
+		CertificateCache string `default:"/var/www/.cache"`
 	}
 	Database struct {
 		Dialect          Dialect `default:"sqlite3"`
@@ -73,8 +74,7 @@ func (c *Config) NewMailer() mailer.Mailer {
 	if !c.SMTPConfigured() {
 		return localmailer.New()
 	}
-	user, pass, host, port := c.SMTP.Host, c.SMTP.User, c.SMTP.Password, c.SMTP.Port
-	return smtpmailer.New(host, user, pass, port)
+	return smtpmailer.New(c.SMTP.Host, c.SMTP.User, c.SMTP.Password, c.SMTP.Port)
 }
 
 const envFileName = "offen.env"

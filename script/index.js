@@ -26,7 +26,17 @@ app.on('PAGEVIEW', supportMiddleware, function (context, send, next) {
   send(message)
 })
 
-app.dispatch('PAGEVIEW', 'initial')
+switch (document.readyState) {
+  case 'complete':
+  case 'loaded':
+  case 'interactive':
+    app.dispatch('PAGEVIEW', 'initial')
+    break
+  default:
+    document.addEventListener('DOMContentLoaded', function () {
+      app.dispatch('PAGEVIEW', 'initial')
+    })
+}
 
 historyEvents.addEventListener(window, 'changestate', function () {
   app.dispatch('PAGEVIEW')

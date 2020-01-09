@@ -141,16 +141,16 @@ function bannerStyles () {
         margin-top: 0.4em;
       }
       body {
-        font-size: 1rem; 
+        font-size: 1rem;
       }
       @media all and (max-width: 430px) {
-        body {   
-          font-size: .75rem; 
+        body {
+          font-size: .75rem;
         }
       }
       @media all and (max-width: 340px) {
-        body {   
-          font-size: .65rem; 
+        body {
+          font-size: .65rem;
         }
       }
     </style>

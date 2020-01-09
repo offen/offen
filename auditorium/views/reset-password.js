@@ -23,15 +23,15 @@ function view (state, emit) {
       <form class="mw6 center" onsubmit=${handleSubmit}>
         <label class="b lh-copy">
           ${__('Email address')}
-          ${state.cache(Input, 'reset-password/email', { name: 'email-address', required: true })}
+          ${state.cache(Input, 'reset-password/email', { name: 'email-address', required: true }).render()}
         </label>
         <label class="b lh-copy">
           ${__('New password')}
-          ${state.cache(Input, 'reset-password/password', { name: 'password', type: 'password', required: true })}
+          ${state.cache(Input, 'reset-password/password', { name: 'password', type: 'password', required: true }).render()}
         </label>
         <label class="b lh-copy">
           ${__('Repeat new password')}
-          ${state.cache(Input, 'reset-password/repeat', { name: 'repeat-password', type: 'password', required: true })}
+          ${state.cache(Input, 'reset-password/repeat', { name: 'repeat-password', type: 'password', required: true }).render()}
         </label>
         <input class="pointer w-100 w-auto-ns f5 link dim bn ph3 pv2 mb3 dib br1 white bg-mid-gray" type="submit" value="${__('Reset password')}">
         <input type="hidden" name="token" value=${state.params.token}>

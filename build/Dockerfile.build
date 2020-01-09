@@ -66,6 +66,4 @@ COPY --from=statik /code /go/src/github.com/offen/offen
 ENV GOPATH /go
 WORKDIR /build
 
-RUN xgo --targets=$TARGETS --ldflags="-linkmode external -extldflags '$LDFLAGS' -s -w -X github.com/offen/offen/server/config.Revision=$GIT_REVISION" github.com/offen/offen/server/cmd/offen
-
-RUN md5sum * > checksums.txt
+RUN xgo --targets=$TARGETS --tags 'osusergo netgo static_build' --ldflags="-linkmode external -extldflags '$LDFLAGS' -s -w -X github.com/offen/offen/server/config.Revision=$GIT_REVISION" github.com/offen/offen/server/cmd/offen

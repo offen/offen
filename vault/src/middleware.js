@@ -10,7 +10,14 @@ function optIn (event, respond, next) {
       if (status) {
         return status
       }
-      return consentStatus.askForConsent(respond.styleHost)
+      function styleHost (payload) {
+        return respond({
+          type: 'STYLES',
+          payload: payload
+        })
+      }
+      styleHost.selector = respond.selector
+      return consentStatus.askForConsent(styleHost)
     })
     .then(function (status) {
       consentStatus.set(status)

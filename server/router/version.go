@@ -12,7 +12,7 @@ type versionInfo struct {
 }
 
 func (rt *router) getVersion(c *gin.Context) {
-	// this endpoint is mostly to be consumed by humans, so
+	// this endpoint is most likely to be consumed by humans, so
 	// we pretty print the output
 	c.IndentedJSON(http.StatusOK, versionInfo{
 		Revision: config.Revision,

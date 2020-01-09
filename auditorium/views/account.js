@@ -74,7 +74,7 @@ function view (state, emit) {
       <form class="mw6 center" onsubmit="${handleChangePassword}">
         <label class="b lh-copy">
           ${__('Current password')}
-          ${state.cache(Input, 'account/change-password-current', { type: 'password', name: 'password' }).render()}
+          ${state.cache(Input, 'account/change-password-current', { type: 'password', name: 'current' }).render()}
         </label>
         <label class="b lh-copy">
           ${__('New password')}
