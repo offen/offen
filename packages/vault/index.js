@@ -25,35 +25,40 @@ function createVault (host) {
       function postMessage (message) {
         return new Promise(function (resolve, reject) {
           var origin = new window.URL(vault.src).origin
+          var stylesheet = document.createElement('style')
+          stylesheet.setAttribute('id', 'offen-vault-styles')
+          message.host = message.host || '#' + elementId
+
           var messageChannel = new window.MessageChannel()
           messageChannel.port1.onmessage = function (event) {
-            var responseMessage = event.data
-            if (responseMessage.type === 'ERROR') {
-              var err = new Error(responseMessage.payload.error)
-              err.originalStack = responseMessage.payload.stack
-              err.status = responseMessage.payload.status
-              reject(err)
+            var responseMessage = event.data || {}
+            switch (responseMessage.type) {
+              case 'STYLES':
+                if (!document.head.contains(stylesheet)) {
+                  document.head.appendChild(stylesheet)
+                }
+                var payload = responseMessage.payload
+                if (payload.styles) {
+                  stylesheet.innerHTML = payload.styles
+                }
+                Object.keys(payload.attributes || {}).forEach(function (attribute) {
+                  vault.setAttribute(attribute, payload.attributes[attribute])
+                })
+                break
+              case 'ERROR':
+                var err = new Error(responseMessage.payload.error)
+                err.originalStack = responseMessage.payload.stack
+                err.status = responseMessage.payload.status
+                reject(err)
+                break
+              default:
+                resolve(responseMessage)
             }
-            resolve(responseMessage)
           }
           messageChannel.port1.onmessageerror = function (err) {
             reject(err)
           }
-
-          var receiveStyles = new window.MessageChannel()
-          var stylesheet = document.createElement('style')
-          stylesheet.setAttribute('id', 'offen-vault-styles')
-          receiveStyles.port1.onmessage = function (event) {
-            if (!document.head.contains(stylesheet)) {
-              document.head.appendChild(stylesheet)
-            }
-            stylesheet.innerHTML = event.data.styles
-            Object.keys(event.data.attributes || {}).forEach(function (attribute) {
-              vault.setAttribute(attribute, event.data.attributes[attribute])
-            })
-          }
-          message.host = message.host || '#' + elementId
-          vault.contentWindow.postMessage(message, origin, [messageChannel.port2, receiveStyles.port2])
+          vault.contentWindow.postMessage(message, origin, [messageChannel.port2])
         })
       }
       resolve(postMessage)

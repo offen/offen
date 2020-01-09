@@ -9,12 +9,7 @@ function router () {
         event.ports[0].postMessage(message)
       }
     }
-    respond.styleHost = function (data) {
-      if (event.ports && event.ports.length > 1) {
-        event.ports[1].postMessage(data)
-      }
-    }
-    respond.styleHost.selector = event.data.host
+    respond.selector = event.data.host
 
     var stack = (registeredRoutes[event.data.type] || []).slice()
 

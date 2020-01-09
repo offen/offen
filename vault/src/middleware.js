@@ -10,13 +10,19 @@ function optIn (event, respond, next) {
       if (status) {
         return status
       }
-      respond.styleHost({
-        styles: consentStatus.hostStyles(respond.styleHost.selector).visible.innerHTML
+      respond({
+        type: 'STYLES',
+        payload: {
+          styles: consentStatus.hostStyles(respond.selector).visible.innerHTML
+        }
       })
       return consentStatus.askForConsent()
         .then(function (result) {
-          respond.styleHost({
-            styles: consentStatus.hostStyles(respond.styleHost.selector).hidden.innerHTML
+          respond({
+            type: 'STYLES',
+            payload: {
+              styles: consentStatus.hostStyles(respond.selector).hidden.innerHTML
+            }
           })
           return result
         })
