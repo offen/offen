@@ -32,7 +32,7 @@ function askForConsent (styleHost) {
     function makeConsentActionHandler (result) {
       return function () {
         styleHost({
-          styles: hostStylesHidden(styleHost.selector).hidden.innerHTML
+          styles: hostStylesHidden(styleHost.selector).innerHTML
         })
         while (document.body.firstChild) {
           document.body.removeChild(document.body.firstChild)
