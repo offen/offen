@@ -223,7 +223,7 @@ function setConsentStatus (status) {
     consent: status,
     expires: expires.toUTCString(),
     path: '/',
-    SameSite: 'Lax'
+    SameSite: 'None'
   }
   document.cookie = serialize(cookie)
 }

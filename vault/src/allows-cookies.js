@@ -3,11 +3,11 @@ module.exports = allowsCookies
 function allowsCookies () {
   var token = randomString()
   document.cookie = serialize({
-    ok: token, SameSite: 'Lax'
+    ok: token, SameSite: 'None'
   })
   var support = document.cookie.indexOf(token) >= 0
   document.cookie = serialize({
-    ok: '', expires: new Date(0).toUTCString(), SameSite: 'Lax'
+    ok: '', expires: new Date(0).toUTCString(), SameSite: 'None'
   })
   return support
 }
