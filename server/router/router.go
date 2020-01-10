@@ -157,7 +157,7 @@ func New(opts ...Config) http.Handler {
 
 	app.GET("/", etag, csp, rt.getRoot)
 
-	app.GET("/healthz", noStore, rt.getHealth)
+	app.Any("/healthz", noStore, rt.getHealth)
 	app.GET("/versionz", noStore, rt.getVersion)
 	{
 		api := app.Group("/api")
