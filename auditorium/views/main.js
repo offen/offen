@@ -105,7 +105,7 @@ function view (state, emit) {
     pageTitle = __('user') + ' | ' + state.title
     accountHeader = html`
       <p class="dib pa2 br2 bg-black-05 mt0 mb2">
-        ${raw(__('You are viewing your <strong>user</strong> data.'))}
+        ${raw(__('You are viewing your <strong>usage</strong> data.'))}
       </p>
       ${!state.model.hasOptedIn ? html`<p><strong>${__('You have not opted in to data collection. You can use the buttons below to do so.')}</strong></p>` : null}
       ${state.model.allowsCookies ? null : html`<p><strong>${__('Your browser does not allow 3rd party cookies. We respect this setting and collect only very basic data in this case, yet it also means we cannot display any data to you here.')}</strong></p>`}
@@ -206,10 +206,10 @@ function view (state, emit) {
       <div class="w-100 w-30-ns pa3 mb2 mr2-ns br2 bg-black-05">
         <h4 class ="f5 normal mt0 mb3">${__('Manage data')}</h4>
         <button class="pointer w-100-ns f5 link dim bn ph3 pv2 mr1 mb2 dib br1 white bg-mid-gray" data-role="purge" onclick="${handlePurge}">
-          ${raw(__('Delete my <strong>user</strong> data'))}
+          ${raw(__('Delete my <strong>usage</strong> data'))}
         </button>
         <button class="pointer w-100-ns f5 link dim bn ph3 pv2 mb3 dib br1 white bg-mid-gray" data-role="consent" onclick=${handleConsent}>
-          ${state.model.hasOptedIn ? __('Opt out and delete my user data') : __('Opt in')}
+          ${state.model.hasOptedIn ? __('Opt out and delete my usage data') : __('Opt in')}
         </button>
       </div>
     `

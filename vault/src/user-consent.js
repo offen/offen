@@ -84,7 +84,7 @@ function bannerView (collapsed, handleCollapseAction, handleAllow, handleDeny) {
   }
 
   var learnMore = html`
-    <a target="_blank" rel="noopener" href="https://www.offen.dev" class="normal link underline dim dark-gray">
+    <a target="_blank" rel="noopener" href="/" class="normal link underline dim dark-gray">
       ${__('Learn more')}
     </a>
   `
