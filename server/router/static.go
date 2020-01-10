@@ -14,6 +14,7 @@ var (
 	defaultCSP             = "default-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'"
 	revisionedJSRe         = regexp.MustCompile("-[0-9a-z]{10}\\.js$")
 	webfontRe              = regexp.MustCompile("\\.(woff|woff2|ttf)$")
+	scriptRe               = regexp.MustCompile("script\\.js$")
 	defaultResponseHeaders = map[string]string{
 		"Referrer-Policy":        "origin-when-cross-origin",
 		"X-Content-Type-Options": "no-sniff",
@@ -21,7 +22,7 @@ var (
 	}
 )
 
-func staticMiddleware(fileServer http.Handler, spaRoots ...string) gin.HandlerFunc {
+func staticMiddleware(fileServer http.Handler, SPARoots ...string) gin.HandlerFunc {
 	tryServe := func(method, url string) (int, string) {
 		r := httptest.NewRequest(method, url, nil)
 		w := httptest.NewRecorder()
@@ -34,7 +35,7 @@ func staticMiddleware(fileServer http.Handler, spaRoots ...string) gin.HandlerFu
 
 		status, contentType := tryServe(c.Request.Method, c.Request.URL.String())
 		if status == 404 {
-			for _, root := range spaRoots {
+			for _, root := range SPARoots {
 				if strings.HasPrefix(c.Request.URL.String(), root) {
 					override, _ = http.NewRequest(c.Request.Method, root, nil)
 					break
@@ -48,6 +49,7 @@ func staticMiddleware(fileServer http.Handler, spaRoots ...string) gin.HandlerFu
 		}
 
 		if strings.HasPrefix(contentType, "text/html") {
+			c.Header("Cache-Control", "no-cache")
 			c.Header("Content-Security-Policy", defaultCSP)
 		}
 
@@ -55,6 +57,8 @@ func staticMiddleware(fileServer http.Handler, spaRoots ...string) gin.HandlerFu
 		case revisionedJSRe.MatchString(uri), webfontRe.MatchString(uri):
 			expires := time.Now().Add(time.Hour * 24 * 365).Format(time.RFC1123)
 			c.Header("Expires", expires)
+		case scriptRe.MatchString(uri):
+			c.Header("Cache-Control", "no-cache")
 		}
 
 		for key, value := range defaultResponseHeaders {
