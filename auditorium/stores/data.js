@@ -25,7 +25,7 @@ function store (state, emitter) {
         var optinMessage = results[1]
         state.model = queryMessage.payload.result
         Object.assign(state.model, optinMessage.payload)
-        state.flash = onSuccessMessage
+        state.flash = state.flash || onSuccessMessage
       })
       .catch(function (err) {
         if (process.env.NODE_ENV !== 'production') {
