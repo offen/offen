@@ -223,7 +223,8 @@ function setConsentStatus (status) {
     consent: status,
     expires: expires.toUTCString(),
     path: '/',
-    SameSite: 'None'
+    SameSite: 'None',
+    Secure: true
   }
   document.cookie = serialize(cookie)
 }
@@ -231,6 +232,9 @@ function setConsentStatus (status) {
 function serialize (obj) {
   return Object.keys(obj)
     .map(function (key) {
+      if (obj[key] === true) {
+        return key
+      }
       return [key, '=', obj[key]].join('')
     })
     .join(';')
