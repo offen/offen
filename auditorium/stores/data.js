@@ -54,7 +54,7 @@ function store (state, emitter) {
     handleRequest({
       type: 'PURGE',
       payload: null
-    }, __('Your user data has been deleted.'))
+    }, __('Your usage data has been deleted.'))
   })
 
   emitter.on('offen:query', function (data, authenticatedUser, softFailure) {
