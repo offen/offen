@@ -134,12 +134,13 @@ function _pages (events, perUser) {
   if (perUser) {
     // in this branch, only the most recent event for each user
     // will be considered
+    var sortBy = _.property(['payload', 'timestamp'])
     result = result
       .groupBy('userId')
       .pairs()
       .map(function (pair) {
-        return _.head(
-          _.sortBy(pair[1], _.property(['payload', 'timestamp']))
+        return _.last(
+          _.sortBy(pair[1], sortBy)
         )
       })
       .flatten(true)
