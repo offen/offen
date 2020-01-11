@@ -108,7 +108,6 @@ function view (state, emit) {
         ${raw(__('You are viewing your <strong>usage</strong> data.'))}
       </p>
       ${!state.model.hasOptedIn ? html`<p><strong>${__('You have not opted in to data collection. You can use the buttons below to do so.')}</strong></p>` : null}
-      ${state.model.allowsCookies ? null : html`<p><strong>${__('Your browser does not allow 3rd party cookies. We respect this setting and collect only very basic data in this case, yet it also means we cannot display any data to you here.')}</strong></p>`}
     `
     if (!state.model.allowsCookies) {
       var noCookiesCopy = __('Your browser does not allow 3rd party cookies. We respect this setting and collect only very basic data in this case, yet it also means we cannot display any data to you here.')
