@@ -1,7 +1,7 @@
 [![CircleCI](https://circleci.com/gh/offen/offen/tree/master.svg?style=svg)](https://circleci.com/gh/offen/offen/tree/master)
 [![Patreon](https://img.shields.io/static/v1.svg?label=patreon&message=donate&color=e85b46)](https://www.patreon.com/offen)
 
-# offen
+# Offen
 
 ## Web analytics that handle your data with respect
 
@@ -63,7 +63,7 @@ You can test your setup by starting the application:
 $ make up
 ```
 
-which should enable you to access <http://localhost:8080/auditorium/> and use the `auditorium`
+which should enable you to access <http://localhost:8080/auditorium/> and use the `Auditorium`
 
 Run the tests for all subapplicatons using
 

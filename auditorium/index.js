@@ -45,27 +45,27 @@ var base = (document.querySelector('base') && document.querySelector('base').get
 
 app.route(
   base + 'account/:accountId',
-  decorateWithDefaults(withAuthentication()(withModel()(mainView)), __('offen auditorium'))
+  decorateWithDefaults(withAuthentication()(withModel()(mainView)), __('Offen Auditorium'))
 )
 app.route(
   base + 'account',
-  decorateWithDefaults(withAuthentication()(accountView), __('offen accounts'))
+  decorateWithDefaults(withAuthentication()(accountView), __('Offen accounts'))
 )
 app.route(
   base + 'login',
-  decorateWithDefaults(loginView, __('offen login'))
+  decorateWithDefaults(loginView, __('Offen login'))
 )
 app.route(
   base + 'reset-password/:token',
-  decorateWithDefaults(resetPasswordView, __('offen reset password'))
+  decorateWithDefaults(resetPasswordView, __('Offen reset password'))
 )
 app.route(
   base + 'reset-password',
-  decorateWithDefaults(forgotPasswordView, __('offen forgot password'))
+  decorateWithDefaults(forgotPasswordView, __('Offen forgot password'))
 )
 app.route(
   base.replace(/\/$/, ''),
-  decorateWithDefaults(withModel()(mainView), __('offen auditorium'))
+  decorateWithDefaults(withModel()(mainView), __('Offen Auditorium'))
 )
 app.route(
   base + '*',

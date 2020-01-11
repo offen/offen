@@ -107,7 +107,7 @@ function view (state, emit) {
       <p class="dib pa2 br2 bg-black-05 mt0 mb2">
         ${raw(__('You are viewing your <strong>usage</strong> data.'))}
       </p>
-      ${!state.model.hasOptedIn ? html`<p><strong>${__('You have not opted in to data collection. You can use the buttons below to do so.')}</strong></p>` : null}
+      ${state.model.allowsCookies ? null : html`<p class="dib pa2 black br2 bg-black-05 mt0 mb2">${__('Your browser does not allow 3rd party cookies. We respect this setting and collect only very basic data in this case, yet it also means we cannot display any data to you here.')}</p>`}
     `
     if (!state.model.allowsCookies) {
       var noCookiesCopy = __('Your browser does not allow 3rd party cookies. We respect this setting and collect only very basic data in this case, yet it also means we cannot display any data to you here.')
@@ -115,9 +115,7 @@ function view (state, emit) {
         accountHeader,
         html`
           <p class="dib pa2 black br2 bg-black-05 mt0 mb2">
-            <strong>
-              ${noCookiesCopy}
-            </strong>
+            ${noCookiesCopy}
           </p>
         `
       ]
