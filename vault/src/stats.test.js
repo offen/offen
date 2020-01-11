@@ -282,9 +282,9 @@ describe('src/stats.js', function () {
     it('returns a sorted list of active pages grouped by a clean URL', function () {
       return stats.activePages([
         {},
-        { accountId: 'account-a', userId: 'user-a', payload: { href: new window.URL('https://www.example.net/foo') } },
-        { accountId: 'account-a', userId: 'user-a', payload: { href: new window.URL('https://www.example.net/foo?param=bar') } },
-        { accountId: 'account-b', userId: 'user-z', payload: { href: new window.URL('https://beep.boop/site#!/foo') } },
+        { accountId: 'account-a', userId: 'user-a', payload: { timestamp: '100', href: new window.URL('https://www.example.net/bar') } },
+        { accountId: 'account-a', userId: 'user-a', payload: { timestamp: '120', href: new window.URL('https://www.example.net/foo?param=bar') } },
+        { accountId: 'account-b', userId: 'user-z', payload: { timestamp: '200', href: new window.URL('https://beep.boop/site#!/foo') } },
         { accountId: 'account-a', userId: null, payload: { } }
       ])
         .then(function (result) {
