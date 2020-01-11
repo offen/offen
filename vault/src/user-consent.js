@@ -218,13 +218,14 @@ function getConsentStatus () {
 exports.set = setConsentStatus
 
 function setConsentStatus (status) {
+  var isLocalhost = window.location.hostname === 'localhost'
   var expires = new Date(Date.now() + 100 * 365 * 24 * 60 * 60 * 1000)
   var cookie = {
     consent: status,
     expires: expires.toUTCString(),
     path: '/',
-    SameSite: 'None',
-    Secure: true
+    SameSite: isLocalhost ? 'Lax' : 'None',
+    Secure: !isLocalhost
   }
   document.cookie = serialize(cookie)
 }
@@ -235,7 +236,11 @@ function serialize (obj) {
       if (obj[key] === true) {
         return key
       }
+      if (obj[key] === false) {
+        return null
+      }
       return [key, '=', obj[key]].join('')
     })
+    .filter(Boolean)
     .join(';')
 }

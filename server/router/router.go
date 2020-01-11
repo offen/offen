@@ -44,13 +44,17 @@ const (
 )
 
 func (rt *router) userCookie(userID string, secure bool) *http.Cookie {
+	sameSite := http.SameSiteNoneMode
+	if !secure {
+		sameSite = http.SameSiteLaxMode
+	}
 	return &http.Cookie{
 		Name:     cookieKey,
 		Value:    userID,
 		Expires:  time.Now().Add(rt.config.App.EventRetentionPeriod),
 		HttpOnly: true,
 		Secure:   secure,
-		SameSite: http.SameSiteNoneMode,
+		SameSite: sameSite,
 		Path:     "/",
 	}
 }
