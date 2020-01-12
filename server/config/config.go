@@ -20,11 +20,13 @@ const envFileName = "offen.env"
 
 // ErrPopulatedMissing can be returned by New to signal that missing values
 // have been populated and persisted.
-var ErrPopulatedMissing = errors.New("created missing secrets in ~/.config/offen.env")
+var ErrPopulatedMissing = errors.New("created missing secrets")
 
 // Revision will be set by ldflags on build time
 var Revision string
 
+// IsDefaultDatabase checks whether the database connection string matches
+// the default value.
 func (c *Config) IsDefaultDatabase() bool {
 	field, _ := reflect.TypeOf(c.Database).FieldByName("ConnectionString")
 	return c.Database.ConnectionString == field.Tag.Get("default")
@@ -76,34 +78,30 @@ func walkConfigurationCascade() (string, error) {
 	return "", nil
 }
 
-// PersistSettings persists the given update on disk.
-func PersistSettings(update map[string]string) error {
-	switch runtime.GOOS {
-	case "linux", "darwin":
-		homedir, err := os.UserHomeDir()
+func persistSettings(update map[string]string, envFile string) error {
+	if envFile == "" {
+		wd, err := os.Getwd()
 		if err != nil {
-			return fmt.Errorf("error looking up home directory: %v", err)
+			return fmt.Errorf("config: error looking up current working directory: %w", err)
 		}
-		configFile := fmt.Sprintf("%s/.config/%s", homedir, envFileName)
-		existing, _ := godotenv.Read(configFile)
-		if existing != nil {
-			for key, value := range existing {
-				update[key] = value
-			}
-		}
-		_ = os.Mkdir(fmt.Sprintf("%s/.config", homedir), os.ModeDir)
-		if err := godotenv.Write(update, configFile); err != nil {
-			return fmt.Errorf("error writing env file: %v", err)
-		}
-		return nil
-	default:
-		return fmt.Errorf("operating system %s not yet supported", runtime.GOOS)
+		envFile = path.Join(wd, envFileName)
 	}
+	existing, _ := godotenv.Read(envFile)
+	if existing != nil {
+		for key, value := range existing {
+			update[key] = value
+		}
+	}
+	if err := godotenv.Write(update, envFile); err != nil {
+		return fmt.Errorf("config: error writing env file: %w", err)
+	}
+	return nil
 }
 
 // New returns a new runtime configuration
 func New(populateMissing bool, override string) (*Config, error) {
 	var c Config
+	var envFile string
 	// Depending on the system, a certain cascade of configuration options will
 	// be sourced. In case a variable is already set in the environment, it will
 	// not be overridden by any file content.
@@ -111,7 +109,7 @@ func New(populateMissing bool, override string) (*Config, error) {
 		if _, err := os.Stat(override); err != nil {
 			return nil, fmt.Errorf("config: error looking up config file override: %w", err)
 		}
-		godotenv.Load(override)
+		envFile = override
 	} else {
 		match, err := walkConfigurationCascade()
 		if err != nil {
@@ -120,8 +118,12 @@ func New(populateMissing bool, override string) (*Config, error) {
 		// there might not exist a config file at all in which case all values
 		// are sourced from environment variables
 		if match != "" {
-			godotenv.Load(match)
+			envFile = match
 		}
+	}
+
+	if envFile != "" {
+		godotenv.Load(envFile)
 	}
 
 	err := envconfig.Process("offen", &c)
@@ -130,17 +132,20 @@ func New(populateMissing bool, override string) (*Config, error) {
 	}
 
 	if err != nil && populateMissing {
+		if envFile == "" {
+			return nil, errors.New("config: unable to find env file to persist settings as no env file could be found")
+		}
 		update := map[string]string{}
 		for _, key := range []string{"OFFEN_SECRETS_EMAILSALT", "OFFEN_SECRETS_COOKIEEXCHANGE"} {
 			secret, err := keys.GenerateRandomValue(keys.DefaultSecretLength)
 			update[key] = secret
 			if err != nil {
-				return nil, fmt.Errorf("error creating secret for use as %s: %v", key, err)
+				return nil, fmt.Errorf("config: error creating secret for use as %s: %w", key, err)
 			}
 		}
 
-		if err := PersistSettings(update); err != nil {
-			return nil, fmt.Errorf("error persisting settings: %v", err)
+		if err := persistSettings(update, envFile); err != nil {
+			return nil, fmt.Errorf("config: error persisting settings: %w", err)
 		}
 
 		result, err := New(false, override)
