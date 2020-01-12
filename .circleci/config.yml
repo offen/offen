@@ -17,7 +17,7 @@ build_preconditions: &build_preconditions
 jobs:
   server:
     docker:
-      - image: circleci/golang:1.12
+      - image: circleci/golang:1.13
         environment:
           OFFEN_APP_EVENTRETENTIONPERIOD: 4464h
           OFFEN_DATABASE_DIALECT: postgres
