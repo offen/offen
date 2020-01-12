@@ -34,8 +34,8 @@ import (
 func main() {
 	logger := logrus.New()
 
-	var mustConfig = func(populateMissing bool) *config.Config {
-		cfg, cfgErr := config.New(populateMissing)
+	var mustConfig = func(populateMissing bool, override string) *config.Config {
+		cfg, cfgErr := config.New(populateMissing, override)
 		if cfgErr != nil {
 			if errors.Is(cfgErr, config.ErrPopulatedMissing) {
 				logger.Infof("Some configuration values were missing: %v", cfgErr.Error())
@@ -67,7 +67,7 @@ func main() {
 		)
 		demoCmd.Parse(os.Args[2:])
 
-		cfg, _ := config.New(false)
+		cfg, _ := config.New(false, "")
 		cfg.Database.Dialect = config.Dialect("sqlite3")
 		cfg.Database.ConnectionString = ":memory:"
 		cfg.Secrets.CookieExchange = mustSecret(16)
@@ -158,7 +158,7 @@ func main() {
 
 		logger.Info("Gracefully shut down server")
 	case "serve":
-		cfg := mustConfig(false)
+		cfg := mustConfig(false, "")
 
 		gormDB, err := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString)
 		if err != nil {
@@ -288,7 +288,7 @@ func main() {
 			}
 		}
 
-		cfg := mustConfig(*populateMissing)
+		cfg := mustConfig(*populateMissing, "")
 		conf := persistence.BootstrapConfig{}
 		if *source != "" {
 			logger.Infof("Trying to read account seed data from %s", *source)
@@ -364,7 +364,7 @@ func main() {
 			logger.Infof("Successfully bootstrapped database from data in %s", *source)
 		}
 	case "migrate":
-		cfg := mustConfig(false)
+		cfg := mustConfig(false, "")
 		gormDB, dbErr := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString)
 		if dbErr != nil {
 			logger.WithError(dbErr).Fatal("Error establishing database connection")
@@ -382,7 +382,7 @@ func main() {
 		}
 		logger.Info("Successfully ran database migrations")
 	case "expire":
-		cfg := mustConfig(false)
+		cfg := mustConfig(false, "")
 		gormDB, dbErr := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString)
 		if dbErr != nil {
 			logger.WithError(dbErr).Fatal("Error establishing database connection")
@@ -414,7 +414,7 @@ func main() {
 	case "version":
 		logger.WithField("revision", config.Revision).Info("Current build created using")
 	case "debug":
-		cfg := mustConfig(false)
+		cfg := mustConfig(false, "")
 		logger.WithField("config", fmt.Sprintf("%+v", cfg)).Info("Current configuration values")
 	default:
 		logger.Fatalf("Unknown subcommand %s\n", os.Args[1])
