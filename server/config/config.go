@@ -20,7 +20,7 @@ const envFileName = "offen.env"
 
 // ErrPopulatedMissing can be returned by New to signal that missing values
 // have been populated and persisted.
-var ErrPopulatedMissing = errors.New("created missing secrets")
+var ErrPopulatedMissing = errors.New("populated missing secrets")
 
 // Revision will be set by ldflags on build time
 var Revision string
@@ -61,8 +61,8 @@ func walkConfigurationCascade() (string, error) {
 	case "darwin", "linux":
 		cascade = []string{
 			path.Join(wd, envFileName),
-			path.Join(os.ExpandEnv("$HOME/.config"), envFileName),
-			path.Join(os.ExpandEnv("$XDG_CONFIG_HOME"), envFileName),
+			path.Join(ExpandString("$HOME/.config"), envFileName),
+			path.Join(ExpandString("$XDG_CONFIG_HOME"), envFileName),
 			path.Join("/etc/offen", envFileName),
 		}
 	}
@@ -128,8 +128,12 @@ func New(populateMissing bool, override string) (*Config, error) {
 
 	err := envconfig.Process("offen", &c)
 	if err != nil && !populateMissing {
-		return &c, fmt.Errorf("error processing environment: %v", err)
+		return &c, fmt.Errorf("config: error processing configuration: %w", err)
 	}
+
+	// these might contain environment variables on windows so we expand them
+	c.Database.ConnectionString = ExpandString(c.Database.ConnectionString)
+	c.Server.CertificateCache = ExpandString(c.Server.CertificateCache)
 
 	if err != nil && populateMissing {
 		if envFile == "" {

@@ -53,7 +53,7 @@ func main() {
 	}
 
 	secretCmd := flag.NewFlagSet("secret", flag.ExitOnError)
-	setupCmd := flag.NewFlagSet("bootstrap", flag.ExitOnError)
+	setupCmd := flag.NewFlagSet("setup", flag.ExitOnError)
 	demoCmd := flag.NewFlagSet("demo", flag.ExitOnError)
 	serveCmd := flag.NewFlagSet("serve", flag.ExitOnError)
 	migrateCmd := flag.NewFlagSet("migrate", flag.ExitOnError)
