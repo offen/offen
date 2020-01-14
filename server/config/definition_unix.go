@@ -11,14 +11,14 @@ type Config struct {
 	Server struct {
 		Port             int  `default:"3000"`
 		ReverseProxy     bool `default:"false"`
-		SSLCertificate   string
-		SSLKey           string
+		SSLCertificate   EnvString
+		SSLKey           EnvString
 		AutoTLS          string
-		CertificateCache string `default:"/var/www/.cache"`
+		CertificateCache EnvString `default:"/var/www/.cache"`
 	}
 	Database struct {
-		Dialect          Dialect `default:"sqlite3"`
-		ConnectionString string  `default:"/tmp/offen.db"`
+		Dialect          Dialect   `default:"sqlite3"`
+		ConnectionString EnvString `default:"/tmp/offen.db"`
 	}
 	App struct {
 		Development          bool          `default:"false"`

@@ -49,6 +49,10 @@ func main() {
 			logger.Warn("The configuration is currently using a temporary local database, data will not persist")
 			logger.Warn("Refer to the documentation to find out how to connect to a persistent database")
 		}
+		if !cfg.SMTPConfigured() {
+			logger.Warn("SMTP for transactional email is not configured right now, mail delivery will be unreliable")
+			logger.Warn("Refer to the documentation to find out how to configure SMTP")
+		}
 		return cfg
 	}
 
@@ -99,7 +103,7 @@ func main() {
 		}
 		cfg.App.RootAccount = accountID.String()
 
-		gormDB, err := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString)
+		gormDB, err := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString.String())
 		if err != nil {
 			logger.WithError(err).Fatal("Unable to establish database connection")
 		}
@@ -175,7 +179,7 @@ func main() {
 		serveCmd.Parse(flags)
 		cfg := mustConfig(false, *envFile)
 
-		gormDB, err := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString)
+		gormDB, err := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString.String())
 		if err != nil {
 			logger.WithError(err).Fatal("Unable to establish database connection")
 		}
@@ -219,7 +223,8 @@ func main() {
 		}
 		go func() {
 			if cfg.Server.SSLCertificate != "" && cfg.Server.SSLKey != "" {
-				if err := srv.ListenAndServeTLS(cfg.Server.SSLCertificate, cfg.Server.SSLKey); err != nil && err != http.ErrServerClosed {
+				err := srv.ListenAndServeTLS(cfg.Server.SSLCertificate.String(), cfg.Server.SSLKey.String())
+				if err != nil && err != http.ErrServerClosed {
 					logger.WithError(err).Fatal("Error binding server to network")
 				}
 			} else if cfg.Server.AutoTLS != "" {
@@ -273,12 +278,12 @@ func main() {
 		logger.Info("Gracefully shut down server")
 	case "setup":
 		var (
-			accountID         = setupCmd.String("forceid", "", "force usage of given account id")
+			accountID         = setupCmd.String("forceid", "", "force usage of given valid UUID as account ID")
 			accountName       = setupCmd.String("name", "", "the account name")
 			email             = setupCmd.String("email", "", "the email address used for login")
 			password          = setupCmd.String("password", "", "the password used for login")
 			passwordFromStdin = setupCmd.Bool("stdin-password", false, "read password from stdin")
-			source            = setupCmd.String("source", "", "the configuration file")
+			source            = setupCmd.String("source", "", "a configuration file")
 			envFile           = setupCmd.String("envfile", "", "the env file to use")
 			populateMissing   = setupCmd.Bool("populate", false, "in case required secrets are missing from the configuration, create and persist them in the target env file")
 		)
@@ -351,7 +356,7 @@ func main() {
 			)
 		}
 
-		gormDB, dbErr := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString)
+		gormDB, dbErr := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString.String())
 		gormDB.LogMode(cfg.App.Development)
 
 		if dbErr != nil {
@@ -382,7 +387,7 @@ func main() {
 		migrateCmd.Parse(flags)
 		cfg := mustConfig(false, *envFile)
 
-		gormDB, dbErr := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString)
+		gormDB, dbErr := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString.String())
 		if dbErr != nil {
 			logger.WithError(dbErr).Fatal("Error establishing database connection")
 		}
@@ -405,7 +410,7 @@ func main() {
 		expireCmd.Parse(flags)
 		cfg := mustConfig(false, *envFile)
 
-		gormDB, dbErr := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString)
+		gormDB, dbErr := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString.String())
 		if dbErr != nil {
 			logger.WithError(dbErr).Fatal("Error establishing database connection")
 		}

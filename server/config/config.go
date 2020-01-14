@@ -29,7 +29,7 @@ var Revision string
 // the default value.
 func (c *Config) IsDefaultDatabase() bool {
 	field, _ := reflect.TypeOf(c.Database).FieldByName("ConnectionString")
-	return c.Database.ConnectionString == field.Tag.Get("default")
+	return c.Database.ConnectionString.RawString() == field.Tag.Get("default")
 }
 
 // SMTPConfigured returns true if all required SMTP credentials are set
@@ -130,10 +130,6 @@ func New(populateMissing bool, override string) (*Config, error) {
 	if err != nil && !populateMissing {
 		return &c, fmt.Errorf("config: error processing configuration: %w", err)
 	}
-
-	// these might contain environment variables on windows so we expand them
-	c.Database.ConnectionString = ExpandString(c.Database.ConnectionString)
-	c.Server.CertificateCache = ExpandString(c.Server.CertificateCache)
 
 	if err != nil && populateMissing {
 		if envFile == "" {
