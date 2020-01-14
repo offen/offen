@@ -165,7 +165,9 @@ jobs:
             cp ./bin/offen-linux-amd64 ./offen
       - run:
           name: Setup application
-          command: sudo ./offen setup -email circle@offen.dev -name circle -password secret
+          command: |
+            touch offen.env
+            sudo ./offen setup -email circle@offen.dev -name circle -password secret -populate
       - run:
           name: Serve application
           command: OFFEN_SERVER_PORT=8080 sudo ./offen
@@ -175,7 +177,7 @@ jobs:
           command: |
             for i in `seq 1 10`;
             do
-              nc -z localhost 8080 && echo Success && exit 0
+              nc -z localhost 3000 && echo Success && exit 0
               echo -n .
               sleep 1
             done
@@ -183,10 +185,10 @@ jobs:
       - run:
           name: Check URLs
           command: |
-            curl -sS -X GET localhost:8080 > /dev/null
-            curl -sS -X GET localhost:8080/script.js > /dev/null
-            curl -sS -X GET localhost:8080/vault/ > /dev/null
-            curl -sS -X GET localhost:8080/auditorium/ > /dev/null
+            curl -sS -X GET localhost:3000 > /dev/null
+            curl -sS -X GET localhost:3000/script.js > /dev/null
+            curl -sS -X GET localhost:3000/vault/ > /dev/null
+            curl -sS -X GET localhost:3000/auditorium/ > /dev/null
 
   build:
     docker:

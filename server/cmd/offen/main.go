@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 	"time"
 
@@ -34,8 +35,8 @@ import (
 func main() {
 	logger := logrus.New()
 
-	var mustConfig = func(populateMissing bool) *config.Config {
-		cfg, cfgErr := config.New(populateMissing)
+	var mustConfig = func(populateMissing bool, override string) *config.Config {
+		cfg, cfgErr := config.New(populateMissing, override)
 		if cfgErr != nil {
 			if errors.Is(cfgErr, config.ErrPopulatedMissing) {
 				logger.Infof("Some configuration values were missing: %v", cfgErr.Error())
@@ -48,26 +49,40 @@ func main() {
 			logger.Warn("The configuration is currently using a temporary local database, data will not persist")
 			logger.Warn("Refer to the documentation to find out how to connect to a persistent database")
 		}
+		if !cfg.SMTPConfigured() {
+			logger.Warn("SMTP for transactional email is not configured right now, mail delivery will be unreliable")
+			logger.Warn("Refer to the documentation to find out how to configure SMTP")
+		}
 		return cfg
 	}
 
 	secretCmd := flag.NewFlagSet("secret", flag.ExitOnError)
-	setupCmd := flag.NewFlagSet("bootstrap", flag.ExitOnError)
+	setupCmd := flag.NewFlagSet("setup", flag.ExitOnError)
 	demoCmd := flag.NewFlagSet("demo", flag.ExitOnError)
+	serveCmd := flag.NewFlagSet("serve", flag.ExitOnError)
+	migrateCmd := flag.NewFlagSet("migrate", flag.ExitOnError)
+	expireCmd := flag.NewFlagSet("expire", flag.ExitOnError)
+	debugCmd := flag.NewFlagSet("debug", flag.ExitOnError)
 
-	if len(os.Args) < 2 {
-		os.Args = append(os.Args, "serve")
+	subcommand := "serve"
+	var flags []string
+	if len(os.Args) > 1 {
+		subcommand = os.Args[1]
+		flags = os.Args[2:]
 	}
-	subcommand := os.Args[1]
+	if strings.HasPrefix(subcommand, "-") {
+		subcommand = "serve"
+		flags = os.Args[1:]
+	}
 
 	switch subcommand {
 	case "demo":
 		var (
 			port = demoCmd.Int("port", 0, "the port to bind to")
 		)
-		demoCmd.Parse(os.Args[2:])
+		demoCmd.Parse(flags)
 
-		cfg, _ := config.New(false)
+		cfg, _ := config.New(false, "")
 		cfg.Database.Dialect = config.Dialect("sqlite3")
 		cfg.Database.ConnectionString = ":memory:"
 		cfg.Secrets.CookieExchange = mustSecret(16)
@@ -88,7 +103,7 @@ func main() {
 		}
 		cfg.App.RootAccount = accountID.String()
 
-		gormDB, err := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString)
+		gormDB, err := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString.String())
 		if err != nil {
 			logger.WithError(err).Fatal("Unable to establish database connection")
 		}
@@ -158,9 +173,13 @@ func main() {
 
 		logger.Info("Gracefully shut down server")
 	case "serve":
-		cfg := mustConfig(false)
+		var (
+			envFile = serveCmd.String("envfile", "", "the env file to use")
+		)
+		serveCmd.Parse(flags)
+		cfg := mustConfig(false, *envFile)
 
-		gormDB, err := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString)
+		gormDB, err := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString.String())
 		if err != nil {
 			logger.WithError(err).Fatal("Unable to establish database connection")
 		}
@@ -204,7 +223,8 @@ func main() {
 		}
 		go func() {
 			if cfg.Server.SSLCertificate != "" && cfg.Server.SSLKey != "" {
-				if err := srv.ListenAndServeTLS(cfg.Server.SSLCertificate, cfg.Server.SSLKey); err != nil && err != http.ErrServerClosed {
+				err := srv.ListenAndServeTLS(cfg.Server.SSLCertificate.String(), cfg.Server.SSLKey.String())
+				if err != nil && err != http.ErrServerClosed {
 					logger.WithError(err).Fatal("Error binding server to network")
 				}
 			} else if cfg.Server.AutoTLS != "" {
@@ -258,15 +278,16 @@ func main() {
 		logger.Info("Gracefully shut down server")
 	case "setup":
 		var (
-			accountID         = setupCmd.String("forceid", "", "force usage of given account id")
+			accountID         = setupCmd.String("forceid", "", "force usage of given valid UUID as account ID")
 			accountName       = setupCmd.String("name", "", "the account name")
 			email             = setupCmd.String("email", "", "the email address used for login")
 			password          = setupCmd.String("password", "", "the password used for login")
 			passwordFromStdin = setupCmd.Bool("stdin-password", false, "read password from stdin")
-			source            = setupCmd.String("source", "", "the configuration file")
-			populateMissing   = setupCmd.Bool("populate", true, "in case required secrets are missing from the configuration, create and persist them in ~/.config/offen.env")
+			source            = setupCmd.String("source", "", "a configuration file")
+			envFile           = setupCmd.String("envfile", "", "the env file to use")
+			populateMissing   = setupCmd.Bool("populate", false, "in case required secrets are missing from the configuration, create and persist them in the target env file")
 		)
-		setupCmd.Parse(os.Args[2:])
+		setupCmd.Parse(flags)
 
 		pw := *password
 		if *passwordFromStdin {
@@ -288,7 +309,7 @@ func main() {
 			}
 		}
 
-		cfg := mustConfig(*populateMissing)
+		cfg := mustConfig(*populateMissing, *envFile)
 		conf := persistence.BootstrapConfig{}
 		if *source != "" {
 			logger.Infof("Trying to read account seed data from %s", *source)
@@ -325,10 +346,6 @@ func main() {
 				logger.Fatalf("Given account ID %s is not of expected UUID format xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx", *accountID)
 			}
 
-			if err := config.PersistSettings(map[string]string{"OFFEN_APP_ROOTACCOUNT": *accountID}); err != nil {
-				logger.WithError(err).Fatal("Error persisting created account ID in local env file")
-			}
-
 			conf.AccountUsers = append(
 				conf.AccountUsers,
 				persistence.BootstrapAccountUser{Email: *email, Password: pw, Accounts: []string{*accountID}},
@@ -339,7 +356,7 @@ func main() {
 			)
 		}
 
-		gormDB, dbErr := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString)
+		gormDB, dbErr := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString.String())
 		gormDB.LogMode(cfg.App.Development)
 
 		if dbErr != nil {
@@ -364,8 +381,13 @@ func main() {
 			logger.Infof("Successfully bootstrapped database from data in %s", *source)
 		}
 	case "migrate":
-		cfg := mustConfig(false)
-		gormDB, dbErr := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString)
+		var (
+			envFile = migrateCmd.String("envfile", "", "the env file to use")
+		)
+		migrateCmd.Parse(flags)
+		cfg := mustConfig(false, *envFile)
+
+		gormDB, dbErr := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString.String())
 		if dbErr != nil {
 			logger.WithError(dbErr).Fatal("Error establishing database connection")
 		}
@@ -382,8 +404,13 @@ func main() {
 		}
 		logger.Info("Successfully ran database migrations")
 	case "expire":
-		cfg := mustConfig(false)
-		gormDB, dbErr := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString)
+		var (
+			envFile = expireCmd.String("envfile", "", "the env file to use")
+		)
+		expireCmd.Parse(flags)
+		cfg := mustConfig(false, *envFile)
+
+		gormDB, dbErr := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString.String())
 		if dbErr != nil {
 			logger.WithError(dbErr).Fatal("Error establishing database connection")
 		}
@@ -398,12 +425,19 @@ func main() {
 			logger.WithError(err).Fatalf("Error pruning expired events")
 		}
 		logger.WithField("removed", affected).Info("Successfully expired events")
+	case "debug":
+		var (
+			envFile = debugCmd.String("envfile", "", "the env file to use")
+		)
+		debugCmd.Parse(flags)
+		cfg := mustConfig(false, *envFile)
+		logger.WithField("config", fmt.Sprintf("%+v", cfg)).Info("Current configuration values")
 	case "secret":
 		var (
 			length = secretCmd.Int("length", keys.DefaultSecretLength, "the length in bytes")
 			count  = secretCmd.Int("count", 1, "the number of secrets to generate")
 		)
-		secretCmd.Parse(os.Args[2:])
+		secretCmd.Parse(flags)
 		for i := 0; i < *count; i++ {
 			value, err := keys.GenerateRandomValue(*length)
 			if err != nil {
@@ -413,9 +447,6 @@ func main() {
 		}
 	case "version":
 		logger.WithField("revision", config.Revision).Info("Current build created using")
-	case "debug":
-		cfg := mustConfig(false)
-		logger.WithField("config", fmt.Sprintf("%+v", cfg)).Info("Current configuration values")
 	default:
 		logger.Fatalf("Unknown subcommand %s\n", os.Args[1])
 	}

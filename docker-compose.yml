@@ -30,6 +30,7 @@ services:
       OFFEN_DATABASE_CONNECTIONSTRING: /data/db.sqlite
       OFFEN_SECRETS_COOKIEEXCHANGE: 3P+w6QetKO3Kn8h1YyRlCw==
       OFFEN_SECRETS_EMAILSALT: JuhbRA4lCdo8rt5qVdLpk3==
+      OFFEN_SERVER_PORT: 8080
     command: refresh run
     ports:
       - 8081:8080
