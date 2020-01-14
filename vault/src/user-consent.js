@@ -12,6 +12,7 @@ exports.askForConsent = askForConsent
 function askForConsent (styleHost) {
   return new Promise(function (resolve) {
     var isCollapsed = false
+    var consentGiven = false
     var stylesReady = new Promise(function (resolve) {
       var styleSheet = html`
         <link rel="stylesheet" href="/fonts.css">
@@ -29,17 +30,25 @@ function askForConsent (styleHost) {
       render()
     }
 
-    function makeConsentActionHandler (result) {
-      return function () {
-        styleHost({
-          styles: hostStylesHidden(styleHost.selector).innerHTML
-        })
-        while (document.body.firstChild) {
-          document.body.removeChild(document.body.firstChild)
-        }
-        window.removeEventListener('resize', onResize)
-        resolve(result)
+    function allowHandler () {
+      consentGiven = true
+      render()
+      resolve(ALLOW)
+    }
+
+    function denyHandler () {
+      closeHandler()
+      resolve(DENY)
+    }
+
+    function closeHandler () {
+      styleHost({
+        styles: hostStylesHidden(styleHost.selector).innerHTML
+      })
+      while (document.body.firstChild) {
+        document.body.removeChild(document.body.firstChild)
       }
+      window.removeEventListener('resize', onResize)
     }
 
     function onResize (event) {
@@ -58,16 +67,19 @@ function askForConsent (styleHost) {
     }
 
     function render () {
-      while (document.body.firstChild) {
-        document.body.removeChild(document.body.firstChild)
-      }
       var banner = bannerView(
+        consentGiven,
         isCollapsed,
         handleCollapseAction,
-        makeConsentActionHandler(ALLOW),
-        makeConsentActionHandler(DENY)
+        allowHandler,
+        denyHandler,
+        closeHandler
       )
-      document.body.appendChild(banner)
+      if (document.body.firstChild) {
+        document.body.replaceChild(banner, document.body.firstChild)
+      } else {
+        document.body.appendChild(banner)
+      }
       adjustHostStyles(
         hostStylesVisible(styleHost.selector, isCollapsed).innerHTML
       )
@@ -75,25 +87,35 @@ function askForConsent (styleHost) {
   })
 }
 
-function bannerView (collapsed, handleCollapseAction, handleAllow, handleDeny) {
-  var containerClass = 'roboto pa3'
+function bannerView (consentGiven, collapsed, handleCollapse, handleAllow, handleDeny, handleClose) {
   var toggleClass = 'fr pointer gray dim label-toggle'
   if (collapsed) {
-    containerClass += ' collapse'
     toggleClass += ' label-toggle--rotate'
   }
 
-  var learnMore = html`
-    <a target="_blank" rel="noopener" href="/" class="normal link underline dim dark-gray">
-      ${__('Learn more')}
-    </a>
-  `
-  return html`
-    <div class="${containerClass}">
+  var content
+  if (consentGiven) {
+    content = html`
+      <p class="b mt0 mb3">
+        ${__('Thanks a lot for your help. Manage the usage data this website has collected from you in the Auditorium.')}
+        <a role="button" class="fr pointer gray dim" onclick="${handleClose}">X</a>
+        <a role="button" class="${toggleClass}" onclick="${handleCollapse}"></a>
+      </p>
+      <a class="db w-100 pointer tc dim bn ph3 pv2 dib br1 white bg-dark-gray" href="/auditorium" target="_blank" rel="noopener">
+        ${__('Open Auditorium')}
+      </a>
+    `
+  } else {
+    var learnMore = html`
+      <a target="_blank" rel="noopener" href="/" class="normal link underline dim dark-gray">
+        ${__('Learn more')}
+      </a>
+    `
+    content = html`
       <p class="b mt0 mb3">
         ${__('Continue with transparent analytics')}
         ${collapsed ? learnMore : null}
-        <a role="button" class="${toggleClass}" onclick="${handleCollapseAction}"></a>
+        <a role="button" class="${toggleClass}" onclick="${handleCollapse}"></a>
       </p>
       ${!collapsed ? html`
         <p class="mt0 mb3">
@@ -113,6 +135,12 @@ function bannerView (collapsed, handleCollapseAction, handleAllow, handleDeny) {
           </button>
         </div>
       </div>
+    `
+  }
+
+  return html`
+    <div class="roboto pa3">
+      ${content}
     </div>
   `
 }
