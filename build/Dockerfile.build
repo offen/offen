@@ -3,6 +3,8 @@ FROM node:12 as auditorium
 COPY ./auditorium/package.json ./auditorium/package-lock.json /code/deps/
 COPY ./packages /code/packages
 WORKDIR /code/deps
+ENV ADBLOCK true
+ENV DISABLE_OPENCOLLECTIVE true
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 RUN npm ci
 COPY ./auditorium /code/auditorium
@@ -17,6 +19,8 @@ FROM node:12 as script
 COPY ./script/package.json ./script/package-lock.json /code/deps/
 COPY ./packages /code/packages
 WORKDIR /code/deps
+ENV ADBLOCK true
+ENV DISABLE_OPENCOLLECTIVE true
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 RUN npm ci
 COPY ./script /code/script
@@ -31,6 +35,8 @@ FROM node:12 as vault
 COPY ./vault/package.json ./vault/package-lock.json /code/deps/
 COPY ./packages /code/packages
 WORKDIR /code/deps
+ENV ADBLOCK true
+ENV DISABLE_OPENCOLLECTIVE true
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 RUN npm ci
 COPY ./vault /code/vault
