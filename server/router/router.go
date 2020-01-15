@@ -2,7 +2,6 @@ package router
 
 import (
 	"fmt"
-	"html/template"
 	"net/http"
 	"time"
 
@@ -10,6 +9,7 @@ import (
 	"github.com/felixge/httpsnoop"
 	"github.com/gin-contrib/location"
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/render"
 	"github.com/gorilla/securecookie"
 	"github.com/offen/offen/server/config"
 	"github.com/offen/offen/server/mailer"
@@ -23,7 +23,7 @@ type router struct {
 	fs           http.FileSystem
 	logger       *logrus.Logger
 	cookieSigner *securecookie.SecureCookie
-	template     *template.Template
+	htmlRender   render.HTMLRender
 	config       *config.Config
 }
 
@@ -96,11 +96,11 @@ func WithLogger(l *logrus.Logger) Config {
 	}
 }
 
-// WithTemplate ensures the router is using the given template object
+// WithHTMLRender ensures the router is using the given template object
 // for rendering dynamic HTML output.
-func WithTemplate(t *template.Template) Config {
+func WithHTMLRender(h render.HTMLRender) Config {
 	return func(r *router) {
-		r.template = t
+		r.htmlRender = h
 	}
 }
 
@@ -156,11 +156,11 @@ func New(opts ...Config) http.Handler {
 		location.Default(),
 		secureContextMiddleware(contextKeySecureContext, rt.config.App.Development),
 	)
-	if rt.template != nil {
-		app.SetHTMLTemplate(rt.template)
+	if rt.htmlRender != nil {
+		app.HTMLRender = rt.htmlRender
 	}
 
-	app.GET("/", etag, csp, rt.getRoot)
+	app.GET("/", etag, csp, rt.getIndex)
 
 	app.Any("/healthz", noStore, rt.getHealth)
 	app.GET("/versionz", noStore, rt.getVersion)

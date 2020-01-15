@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
+	ginrender "github.com/gin-gonic/gin/render"
 	_ "github.com/offen/offen/server/public/statik"
 	"github.com/rakyll/statik/fs"
 )
@@ -60,27 +61,71 @@ func NewLocalizedFS(locale string) http.FileSystem {
 	}
 }
 
-// HTMLTemplate creates a template object containing all of the templates in the
-// public file system
-func HTMLTemplate(gettext func(string, ...interface{}) template.HTML) (*template.Template, error) {
-	t := template.New("index.go.html")
-	t.Funcs(template.FuncMap{
-		"__": gettext,
-	})
-	templates := []string{"/index.go.html"}
-	for _, file := range templates {
-		f, err := FS.Open(file)
-		if err != nil {
-			return nil, fmt.Errorf("public: error finding template file %s: %w", file, err)
+// HTMLRender creates a gin HTML renderer containing all of the templates in the
+// public file system.
+func HTMLRender(gettext func(string, ...interface{}) template.HTML) (ginrender.HTMLRender, error) {
+	views := []string{"views/index.go.html"}
+
+	result := map[string]*template.Template{}
+	for _, view := range views {
+		t := template.New(view)
+		t.Funcs(template.FuncMap{
+			"__": gettext,
+		})
+
+		addFile := func(file string) error {
+			f, err := FS.Open("/" + file)
+			if err != nil {
+				return fmt.Errorf("public: error finding template file %s: %w", view, err)
+			}
+			b, err := ioutil.ReadAll(f)
+			if err != nil {
+				return fmt.Errorf("public: error reading template file %s: %w", view, err)
+			}
+			t, err = t.Parse(string(b))
+			if err != nil {
+				return fmt.Errorf("public: error parsing template file %s: %w", view, err)
+			}
+			return nil
 		}
-		b, err := ioutil.ReadAll(f)
-		if err != nil {
-			return nil, fmt.Errorf("public: error reading template file %s: %w", file, err)
+
+		if err := addFile("templates/layout.go.html"); err != nil {
+			return nil, err
 		}
-		t, err = t.Parse(string(b))
-		if err != nil {
-			return nil, fmt.Errorf("public: error parsing template file %s: %w", file, err)
+		if err := addFile(view); err != nil {
+			return nil, err
 		}
+		result[view] = t
 	}
-	return t, nil
+	return &htmlRender{templates: result}, nil
+}
+
+type render struct {
+	tpl         *template.Template
+	data        interface{}
+	contentType string
+}
+
+func (r *render) Render(w http.ResponseWriter) error {
+	return r.tpl.ExecuteTemplate(w, "layout", r.data)
+}
+
+func (r *render) WriteContentType(w http.ResponseWriter) {
+	w.Header().Set("Content-Type", r.contentType)
+}
+
+type htmlRender struct {
+	templates map[string]*template.Template
+}
+
+func (h *htmlRender) Instance(name string, data interface{}) ginrender.Render {
+	tpl, ok := h.templates[name]
+	if !ok {
+		panic(fmt.Errorf("Requested template %s unknown", name))
+	}
+	return &render{
+		tpl:         tpl,
+		data:        data,
+		contentType: "text/html; charset=utf-8",
+	}
 }
