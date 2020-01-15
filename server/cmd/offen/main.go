@@ -135,9 +135,9 @@ func main() {
 		if gettextErr != nil {
 			logger.WithError(gettextErr).Fatal("Failed reading locale files, cannot continue")
 		}
-		tpl, tplErr := public.HTMLTemplate(gettext)
-		if tplErr != nil {
-			logger.WithError(tplErr).Fatal("Failed parsing template files, cannot continue")
+		render, renderErr := public.HTMLRender(gettext)
+		if renderErr != nil {
+			logger.WithError(renderErr).Fatal("Failed parsing template files, cannot continue")
 		}
 		fs := public.NewLocalizedFS(cfg.App.Locale.String())
 
@@ -146,7 +146,7 @@ func main() {
 			Handler: router.New(
 				router.WithDatabase(db),
 				router.WithLogger(logger),
-				router.WithTemplate(tpl),
+				router.WithHTMLRender(render),
 				router.WithConfig(cfg),
 				router.WithFS(fs),
 			),
@@ -205,9 +205,9 @@ func main() {
 		if gettextErr != nil {
 			logger.WithError(gettextErr).Fatal("Failed reading locale files, cannot continue")
 		}
-		tpl, tplErr := public.HTMLTemplate(gettext)
-		if tplErr != nil {
-			logger.WithError(tplErr).Fatal("Failed parsing template files, cannot continue")
+		render, renderErr := public.HTMLRender(gettext)
+		if renderErr != nil {
+			logger.WithError(renderErr).Fatal("Failed parsing template files, cannot continue")
 		}
 		fs := public.NewLocalizedFS(cfg.App.Locale.String())
 
@@ -216,7 +216,7 @@ func main() {
 			Handler: router.New(
 				router.WithDatabase(db),
 				router.WithLogger(logger),
-				router.WithTemplate(tpl),
+				router.WithHTMLRender(render),
 				router.WithConfig(cfg),
 				router.WithFS(fs),
 			),
