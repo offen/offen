@@ -1,4 +1,5 @@
 var html = require('nanohtml')
+var raw = require('nanohtml/raw')
 
 var ALLOW = 'allow'
 var DENY = 'deny'
@@ -55,34 +56,41 @@ function askForConsent (styleHost) {
       adjustHostStyles()
     }
 
-    function adjustHostStyles (styles) {
-      stylesReady.then(function () {
-        styleHost({
-          attributes: {
-            height: document.body.clientHeight
-          },
-          styles: styles
-        })
+    function adjustHostStyles (styles, height) {
+      styleHost({
+        attributes: {
+          height: height || document.body.clientHeight
+        },
+        styles: styles
       })
     }
 
     function render () {
-      var banner = bannerView(
-        consentGiven,
-        isCollapsed,
-        handleCollapseAction,
-        allowHandler,
-        denyHandler,
-        closeHandler
-      )
-      if (document.body.firstChild) {
-        document.body.replaceChild(banner, document.body.firstChild)
-      } else {
-        document.body.appendChild(banner)
-      }
-      adjustHostStyles(
-        hostStylesVisible(styleHost.selector, isCollapsed).innerHTML
-      )
+      var host = document.body.querySelector('#host')
+      stylesReady.then(function () {
+        var banner = bannerView(
+          consentGiven,
+          isCollapsed,
+          handleCollapseAction,
+          allowHandler,
+          denyHandler,
+          closeHandler
+        )
+        if (host.firstChild) {
+          var current = host.firstChild
+          host.insertBefore(banner, current)
+          adjustHostStyles(
+            hostStylesVisible(styleHost.selector, isCollapsed).innerHTML,
+            banner.getBoundingClientRect().height
+          )
+          host.removeChild(current)
+        } else {
+          host.appendChild(banner)
+          adjustHostStyles(
+            hostStylesVisible(styleHost.selector, isCollapsed).innerHTML
+          )
+        }
+      })
     }
   })
 }
@@ -96,13 +104,11 @@ function bannerView (consentGiven, collapsed, handleCollapse, handleAllow, handl
   var content
   if (consentGiven) {
     content = html`
-      <p class="b mt0 mb3">
-        ${__('Thanks a lot for your help. Manage the usage data this website has collected from you in the Auditorium.')}
-        <a role="button" class="fr pointer gray dim" onclick="${handleClose}">X</a>
-        <a role="button" class="${toggleClass}" onclick="${handleCollapse}"></a>
+      <p class="mt0 mb3">
+        ${raw(__('Thanks a lot for your help. To manage the usage data this website has collected from you, <a class="normal link underline dim dark-gray" target="_blank" rel="noopener" href="%s">open the Auditorium</a>.', '/auditorium/'))}
       </p>
-      <a class="db w-100 pointer tc dim bn ph3 pv2 dib br1 white bg-dark-gray" href="/auditorium" target="_blank" rel="noopener">
-        ${__('Open Auditorium')}
+      <button class="db w-100 pointer tc dim bn ph3 pv2 dib br1 white bg-dark-gray" onclick="${handleClose}">
+        ${__('Continue')}
       </a>
     `
   } else {
