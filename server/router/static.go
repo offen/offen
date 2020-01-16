@@ -22,8 +22,8 @@ var (
 	}
 )
 
-func staticMiddleware(fileServer http.Handler, SPARoots ...string) gin.HandlerFunc {
-	tryServe := func(method, url string) (int, string) {
+func staticMiddleware(fileServer, fallback http.Handler) gin.HandlerFunc {
+	tryStatic := func(method, url string) (int, string) {
 		r := httptest.NewRequest(method, url, nil)
 		w := httptest.NewRecorder()
 		fileServer.ServeHTTP(w, r)
@@ -31,20 +31,9 @@ func staticMiddleware(fileServer http.Handler, SPARoots ...string) gin.HandlerFu
 	}
 
 	return func(c *gin.Context) {
-		var override *http.Request
-
-		status, contentType := tryServe(c.Request.Method, c.Request.URL.String())
+		status, contentType := tryStatic(c.Request.Method, c.Request.URL.String())
 		if status == 404 {
-			for _, root := range SPARoots {
-				if strings.HasPrefix(c.Request.URL.String(), root) {
-					override, _ = http.NewRequest(c.Request.Method, root, nil)
-					break
-				}
-			}
-		}
-
-		if status == 404 && override == nil {
-			c.Next()
+			fallback.ServeHTTP(c.Writer, c.Request)
 			return
 		}
 
@@ -64,11 +53,6 @@ func staticMiddleware(fileServer http.Handler, SPARoots ...string) gin.HandlerFu
 		for key, value := range defaultResponseHeaders {
 			c.Header(key, value)
 		}
-
-		if override != nil {
-			fileServer.ServeHTTP(c.Writer, override)
-		} else {
-			fileServer.ServeHTTP(c.Writer, c.Request)
-		}
+		fileServer.ServeHTTP(c.Writer, c.Request)
 	}
 }

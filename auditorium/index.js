@@ -5,11 +5,12 @@ var dataStore = require('./stores/data')
 var authStore = require('./stores/auth')
 var consentStore = require('./stores/consent')
 var bailOutStore = require('./stores/bail-out')
+var indexView = require('./views/index')
 var mainView = require('./views/main')
 var loginView = require('./views/login')
 var forgotPasswordView = require('./views/forgot-password')
 var resetPasswordView = require('./views/reset-password')
-var accountView = require('./views/account')
+var consoleView = require('./views/console')
 var notFoundView = require('./views/404')
 var withAuthentication = require('./views/decorators/with-authentication')
 var withTitle = require('./views/decorators/with-title')
@@ -36,39 +37,41 @@ app.use(authStore)
 app.use(bailOutStore)
 app.use(consentStore)
 
-function decorateWithDefaults (view, title) {
-  var wrapper = _.compose(withPreviousRoute(), withLayout(), withError(), withTitle(title))
+function decorateWithDefaults (view, title, headline) {
+  var wrapper = _.compose(withPreviousRoute(), withLayout(headline), withError(), withTitle(title))
   return wrapper(view)
 }
 
-var base = (document.querySelector('base') && document.querySelector('base').getAttribute('href')) || '/'
-
 app.route(
-  base + 'account/:accountId',
+  '/auditorium/:accountId',
   decorateWithDefaults(withAuthentication()(withModel()(mainView)), __('Offen Auditorium'))
 )
 app.route(
-  base + 'account',
-  decorateWithDefaults(withAuthentication()(accountView), __('Offen accounts'))
-)
-app.route(
-  base + 'login',
-  decorateWithDefaults(loginView, __('Offen login'))
-)
-app.route(
-  base + 'reset-password/:token',
-  decorateWithDefaults(resetPasswordView, __('Offen reset password'))
-)
-app.route(
-  base + 'reset-password',
-  decorateWithDefaults(forgotPasswordView, __('Offen forgot password'))
-)
-app.route(
-  base.replace(/\/$/, ''),
+  '/auditorium',
   decorateWithDefaults(withModel()(mainView), __('Offen Auditorium'))
 )
 app.route(
-  base + '*',
+  '/console',
+  decorateWithDefaults(withAuthentication()(consoleView), __('Offen console'))
+)
+app.route(
+  '/login',
+  decorateWithDefaults(loginView, __('Offen login'))
+)
+app.route(
+  '/reset-password/:token',
+  decorateWithDefaults(resetPasswordView, __('Offen reset password'))
+)
+app.route(
+  '/reset-password',
+  decorateWithDefaults(forgotPasswordView, __('Offen forgot password'))
+)
+app.route(
+  '/',
+  decorateWithDefaults(indexView, __('Offen'), __('Welcome to Offen web analytics'))
+)
+app.route(
+  '*',
   decorateWithDefaults(notFoundView, __('Not found'))
 )
 

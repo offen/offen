@@ -19,13 +19,13 @@ function store (state, emitter) {
           state.authenticatedUser = response.payload
           var firstAccount = state.authenticatedUser.accounts[0].accountId
           if (credentials) {
-            emitter.emit(state.events.PUSHSTATE, '/auditorium/account/' + firstAccount)
+            emitter.emit(state.events.PUSHSTATE, '/auditorium/' + firstAccount)
           }
           return
         } else if (response.type === 'LOGIN_FAILURE') {
           state.flash = __('Could not log in. Try again.')
           if (!credentials) {
-            emitter.emit(state.events.PUSHSTATE, '/auditorium/login/')
+            emitter.emit(state.events.PUSHSTATE, '/login/')
           }
           return
         }
@@ -57,7 +57,7 @@ function store (state, emitter) {
             authenticatedUser: null,
             flash: __('Please log in again, using your new credentials.')
           })
-          emitter.emit(state.events.PUSHSTATE, '/auditorium/login/')
+          emitter.emit(state.events.PUSHSTATE, '/login/')
           return
         } else if (response.type === 'CHANGE_CREDENTIALS_FAILURE') {
           state.flash = __('Could not change credentials. Try again.')
@@ -124,7 +124,7 @@ function store (state, emitter) {
             authenticatedUser: null,
             flash: __('Please log in again, using your new credentials.')
           })
-          emitter.emit(state.events.PUSHSTATE, '/auditorium/login/')
+          emitter.emit(state.events.PUSHSTATE, '/login/')
           return
         } else if (response.type === 'RESET_PASSWORD_FAILURE') {
           state.flash = __('Could not handle your request, please try again.')

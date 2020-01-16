@@ -189,6 +189,8 @@ jobs:
             curl -sS -X GET localhost:3000/script.js > /dev/null
             curl -sS -X GET localhost:3000/vault/ > /dev/null
             curl -sS -X GET localhost:3000/auditorium/ > /dev/null
+            curl -sS -X GET localhost:3000/healthz > /dev/null
+            curl -sS -X GET localhost:3000/versionz > /dev/null
 
   build:
     docker:

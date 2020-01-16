@@ -14,7 +14,7 @@ function view (state, emit) {
     .map(function (account) {
       return html`
         <li>
-          <a href="./account/${account.accountId}/" class="f5 link dim bn ph3 pv2 mr2 mb1 dib br1 white bg-mid-gray">${account.accountName}</a>
+          <a href="/auditorium/${account.accountId}/" class="f5 link dim bn ph3 pv2 mr2 mb1 dib br1 white bg-mid-gray">${account.accountName}</a>
         </li>
       `
     })
@@ -45,11 +45,11 @@ function view (state, emit) {
       <form class="mw6 center" onsubmit="${handleChangeEmail}">
         <label class="b lh-copy">
           ${__('New email address')}
-          ${state.cache(Input, 'account/change-email-email', { name: 'email-address' }).render()}
+          ${state.cache(Input, 'console/change-email-email', { name: 'email-address' }).render()}
         </label>
         <label class="b lh-copy">
           ${__('Password')}
-          ${state.cache(Input, 'account/change-email-password', { name: 'password', type: 'password' }).render()}
+          ${state.cache(Input, 'console/change-email-password', { name: 'password', type: 'password' }).render()}
         </label>
         <input class="pointer w-100 w-auto-ns f5 link dim bn ph3 pv2 mb3 dib br1 white bg-mid-gray" type="submit" value="${__('Change Email address')}">
       </form>
@@ -74,15 +74,15 @@ function view (state, emit) {
       <form class="mw6 center" onsubmit="${handleChangePassword}">
         <label class="b lh-copy">
           ${__('Current password')}
-          ${state.cache(Input, 'account/change-password-current', { type: 'password', name: 'current' }).render()}
+          ${state.cache(Input, 'console/change-password-current', { type: 'password', name: 'current' }).render()}
         </label>
         <label class="b lh-copy">
           ${__('New password')}
-          ${state.cache(Input, 'account/change-password-changed', { type: 'password', name: 'changed' }).render()}
+          ${state.cache(Input, 'console/change-password-changed', { type: 'password', name: 'changed' }).render()}
         </label>
         <label class="b lh-copy">
           ${__('Repeat new password')}
-          ${state.cache(Input, 'account/change-password-repeat', { type: 'password', name: 'repeat' }).render()}
+          ${state.cache(Input, 'console/change-password-repeat', { type: 'password', name: 'repeat' }).render()}
         </label>
         <input class="pointer w-100 w-auto-ns f5 link dim bn ph3 pv2 mb3 dib br1 white bg-mid-gray" type="submit" value="${__('Change password')}">
       </form>

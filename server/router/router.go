@@ -2,6 +2,7 @@ package router
 
 import (
 	"fmt"
+	"html/template"
 	"net/http"
 	"time"
 
@@ -9,7 +10,6 @@ import (
 	"github.com/felixge/httpsnoop"
 	"github.com/gin-contrib/location"
 	"github.com/gin-gonic/gin"
-	"github.com/gin-gonic/gin/render"
 	"github.com/gorilla/securecookie"
 	"github.com/offen/offen/server/config"
 	"github.com/offen/offen/server/mailer"
@@ -23,7 +23,7 @@ type router struct {
 	fs           http.FileSystem
 	logger       *logrus.Logger
 	cookieSigner *securecookie.SecureCookie
-	htmlRender   render.HTMLRender
+	template     *template.Template
 	config       *config.Config
 }
 
@@ -96,11 +96,11 @@ func WithLogger(l *logrus.Logger) Config {
 	}
 }
 
-// WithHTMLRender ensures the router is using the given template object
+// WithTemplate ensures the router is using the given template object
 // for rendering dynamic HTML output.
-func WithHTMLRender(h render.HTMLRender) Config {
+func WithTemplate(t *template.Template) Config {
 	return func(r *router) {
-		r.htmlRender = h
+		r.template = t
 	}
 }
 
@@ -156,11 +156,11 @@ func New(opts ...Config) http.Handler {
 		location.Default(),
 		secureContextMiddleware(contextKeySecureContext, rt.config.App.Development),
 	)
-	if rt.htmlRender != nil {
-		app.HTMLRender = rt.htmlRender
-	}
 
-	app.GET("/", etag, csp, rt.getIndex)
+	root := gin.New()
+	root.SetHTMLTemplate(rt.template)
+	root.GET("/*any", etag, csp, rt.getIndex)
+	app.GET("/", gin.WrapH(root))
 
 	app.Any("/healthz", noStore, rt.getHealth)
 	app.GET("/versionz", noStore, rt.getVersion)
@@ -194,7 +194,7 @@ func New(opts ...Config) http.Handler {
 		fileServer = gziphandler.GzipHandler(fileServer)
 	}
 
-	app.Use(staticMiddleware(fileServer, "/auditorium/"))
+	app.Use(staticMiddleware(fileServer, root))
 
 	if rt.config.Server.ReverseProxy {
 		return app

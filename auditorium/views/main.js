@@ -177,7 +177,7 @@ function view (state, emit) {
         }
         return html`
           <li>
-            <a href="./account/${account.accountId}/" class="${buttonClass}">
+            <a href="/auditorium/${account.accountId}/" class="${buttonClass}">
               ${account.accountName}
             </a>
           </li>
@@ -327,7 +327,7 @@ function view (state, emit) {
             ${__('Admin console')}
           </h4>
           <div class="flex items-center">
-            <a href="/auditorium/account/" class="w-100-ns f5 tc link dim bn ph3 pv2 mr1 mb2 dib br1 white bg-mid-gray">
+            <a href="/console/" class="w-100-ns f5 tc link dim bn ph3 pv2 mr1 mb2 dib br1 white bg-mid-gray">
               ${__('Settings')}
             </a>
           </div>

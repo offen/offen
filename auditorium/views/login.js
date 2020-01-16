@@ -27,7 +27,7 @@ function view (state, emit) {
         </label>
         <input class="pointer w-100 w4-ns f5 link dim bn ph3 pv2 mb3 dib br1 white bg-mid-gray" type="submit" value="${__('Log in')}">
         <div class="mb3">
-          <a class="link dim dark-green" href="./reset-password/">${__('Forgot password?')}</a>
+          <a class="link dim dark-green" href="/reset-password/">${__('Forgot password?')}</a>
         </div>
       </form>
     </div>
