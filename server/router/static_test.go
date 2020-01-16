@@ -13,7 +13,11 @@ func TestStaticMiddleware(t *testing.T) {
 	m := gin.New()
 	fileServer := http.FileServer(http.Dir("./testdata"))
 
-	middleware := staticMiddleware(fileServer, "/spa/")
+	middleware := staticMiddleware(fileServer, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/plain")
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("ok"))
+	}))
 
 	m.Use(middleware)
 
@@ -42,7 +46,7 @@ func TestStaticMiddleware(t *testing.T) {
 
 		m.ServeHTTP(w, r)
 
-		if w.Code != http.StatusNotFound {
+		if w.Code != http.StatusOK {
 			t.Errorf("Unexpected status code %v", w.Code)
 		}
 	}
@@ -102,7 +106,7 @@ func TestStaticMiddleware(t *testing.T) {
 			t.Errorf("Unexpected status code %v", w.Code)
 		}
 
-		if !strings.HasPrefix(w.Header().Get("Content-Type"), "text/html") {
+		if !strings.HasPrefix(w.Header().Get("Content-Type"), "text/plain") {
 			t.Errorf("Unexpected Content-Type %v", w.Header().Get("Content-Type"))
 		}
 	}

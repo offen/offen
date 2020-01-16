@@ -10,7 +10,7 @@ function view (state, emit) {
     var formData = new window.FormData(e.currentTarget)
     emit('offen:forgot-password', {
       emailAddress: formData.get('email-address'),
-      urlTemplate: window.location.origin + '/auditorium/reset-password/{token}/'
+      urlTemplate: window.location.origin + '/reset-password/{token}/'
     })
   }
   var form = html`

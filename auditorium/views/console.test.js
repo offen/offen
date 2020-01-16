@@ -1,9 +1,9 @@
 var assert = require('assert')
 var choo = require('choo')
 
-var accountView = require('./account')
+var consoleView = require('./console')
 
-describe('views/account.js', function () {
+describe('views/console.js', function () {
   var app
   beforeEach(function () {
     app = choo()
@@ -19,9 +19,9 @@ describe('views/account.js', function () {
     app._setCache(app.state)
   })
 
-  describe('accountView', function () {
+  describe('consoleView', function () {
     it('renders a paragraph', function () {
-      var result = accountView(app.state, app.emit)
+      var result = consoleView(app.state, app.emit)
 
       var paragraph = result.querySelectorAll('p')
       assert(paragraph)

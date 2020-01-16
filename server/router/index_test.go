@@ -16,7 +16,7 @@ func TestRouter_getRoot(t *testing.T) {
 	}
 	m := gin.New()
 	m.GET("/", rt.getIndex)
-	tpl := template.Must(template.New("views/index.go.html").Parse("ok!"))
+	tpl := template.Must(template.New("index.go.html").Parse("ok!"))
 	m.SetHTMLTemplate(tpl)
 
 	w := httptest.NewRecorder()

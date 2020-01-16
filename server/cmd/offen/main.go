@@ -131,22 +131,24 @@ func main() {
 			logger.WithError(err).Fatal("Error bootstrapping database")
 		}
 
+		fs := public.NewLocalizedFS(cfg.App.Locale.String())
+
 		gettext, gettextErr := locales.GettextFor(cfg.App.Locale.String())
 		if gettextErr != nil {
 			logger.WithError(gettextErr).Fatal("Failed reading locale files, cannot continue")
 		}
-		render, renderErr := public.HTMLRender(gettext)
-		if renderErr != nil {
-			logger.WithError(renderErr).Fatal("Failed parsing template files, cannot continue")
+
+		tpl, tplErr := public.HTMLTemplate(gettext, public.RevWith(fs))
+		if tplErr != nil {
+			logger.WithError(tplErr).Fatal("Failed parsing template files, cannot continue")
 		}
-		fs := public.NewLocalizedFS(cfg.App.Locale.String())
 
 		srv := &http.Server{
 			Addr: fmt.Sprintf("0.0.0.0:%d", cfg.Server.Port),
 			Handler: router.New(
 				router.WithDatabase(db),
 				router.WithLogger(logger),
-				router.WithHTMLRender(render),
+				router.WithTemplate(tpl),
 				router.WithConfig(cfg),
 				router.WithFS(fs),
 			),
@@ -201,22 +203,22 @@ func main() {
 			}
 		}
 
+		fs := public.NewLocalizedFS(cfg.App.Locale.String())
 		gettext, gettextErr := locales.GettextFor(cfg.App.Locale.String())
 		if gettextErr != nil {
 			logger.WithError(gettextErr).Fatal("Failed reading locale files, cannot continue")
 		}
-		render, renderErr := public.HTMLRender(gettext)
-		if renderErr != nil {
-			logger.WithError(renderErr).Fatal("Failed parsing template files, cannot continue")
+		tpl, tplErr := public.HTMLTemplate(gettext, public.RevWith(fs))
+		if tplErr != nil {
+			logger.WithError(tplErr).Fatal("Failed parsing template files, cannot continue")
 		}
-		fs := public.NewLocalizedFS(cfg.App.Locale.String())
 
 		srv := &http.Server{
 			Addr: fmt.Sprintf("0.0.0.0:%d", cfg.Server.Port),
 			Handler: router.New(
 				router.WithDatabase(db),
 				router.WithLogger(logger),
-				router.WithHTMLRender(render),
+				router.WithTemplate(tpl),
 				router.WithConfig(cfg),
 				router.WithFS(fs),
 			),
