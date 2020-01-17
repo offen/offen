@@ -74,7 +74,14 @@ function store (state, emitter) {
       if (state.updatePending) {
         return
       }
-      emitter.emit('offen:query', Object.assign({}, state.params, state.query), state.authenticatedUser, true)
+      if (document.hasFocus()) {
+        emitter.emit('offen:query', Object.assign({}, state.params, state.query), state.authenticatedUser, true)
+      } else {
+        window.onfocus = function () {
+          emitter.emit('offen:query', Object.assign({}, state.params, state.query), state.authenticatedUser, true)
+          window.onfocus = Function.prototype
+        }
+      }
     }, interval)
   })
 
