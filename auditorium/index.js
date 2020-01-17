@@ -15,6 +15,7 @@ var notFoundView = require('./views/404')
 var withAuthentication = require('./views/decorators/with-authentication')
 var withTitle = require('./views/decorators/with-title')
 var withModel = require('./views/decorators/with-model')
+var withConsentStatus = require('./views/decorators/with-consent-status')
 var withError = require('./views/decorators/with-error')
 var withLayout = require('./views/decorators/with-layout')
 var withPreviousRoute = require('./views/decorators/with-previous-route')
@@ -48,7 +49,7 @@ app.route(
 )
 app.route(
   '/auditorium',
-  decorateWithDefaults(withModel()(mainView), __('Offen Auditorium'))
+  decorateWithDefaults(withConsentStatus()(withModel()(mainView)), __('Offen Auditorium'))
 )
 app.route(
   '/console',

@@ -1,15 +1,15 @@
 var html = require('choo/html')
 
-module.exports = withModel
+module.exports = withConsentStatus
 
-function withModel () {
+function withConsentStatus () {
   return function (originalView) {
     return function (state, emit) {
-      if (!state.model) {
-        emit('offen:query', Object.assign({}, state.params, state.query), state.authenticatedUser)
+      if (!state.consentStatus) {
+        emit('offen:check-consent')
         return html`
           <p class="loading dib pa2 br2 bg-black-05 mt0 mb2">
-            ${__('Fetching and decrypting the latest data...')}
+            ${__('Checking consent status...')}
           </p>
         `
       }

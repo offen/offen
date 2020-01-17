@@ -74,8 +74,11 @@ function formatNumber (value, factor) {
 }
 
 function view (state, emit) {
+  var userHasOptedIn = state.consentStatus && state.consentStatus.status === 'allow'
+  var userAllowsCookies = state.consentStatus && state.consentStatus.allowsCookies
+
   function handleConsent () {
-    emit('offen:express-consent', state.model.hasOptedIn ? 'deny' : 'allow', function (state, emitter) {
+    emit('offen:express-consent', userHasOptedIn ? 'deny' : 'allow', function (state, emitter) {
       emitter.emit('offen:query', Object.assign({}, state.params, state.query), state.authenticatedUser)
     })
   }
@@ -109,19 +112,8 @@ function view (state, emit) {
       <p class="dib pa2 br2 bg-black-05 mt0 mb2">
         ${raw(__('You are viewing your <strong>usage</strong> data.'))}
       </p>
-      ${state.model.allowsCookies ? null : html`<p class="dib pa2 black br2 bg-black-05 mt0 mb2">${__('Your browser does not allow 3rd party cookies. We respect this setting and collect only very basic data in this case, yet it also means we cannot display any data to you here.')}</p>`}
+      ${userAllowsCookies ? null : html`<p class="dib pa2 black br2 bg-black-05 mt0 mb2">${__('Your browser does not allow 3rd party cookies. We respect this setting and collect only very basic data in this case, yet it also means we cannot display any data to you here.')}</p>`}
     `
-    if (!state.model.allowsCookies) {
-      var noCookiesCopy = __('Your browser does not allow 3rd party cookies. We respect this setting and collect only very basic data in this case, yet it also means we cannot display any data to you here.')
-      accountHeader = [
-        accountHeader,
-        html`
-          <p class="dib pa2 black br2 bg-black-05 mt0 mb2">
-            ${noCookiesCopy}
-          </p>
-        `
-      ]
-    }
   }
   emit(state.events.DOMTITLECHANGE, pageTitle)
 
@@ -193,13 +185,19 @@ function view (state, emit) {
       </ul>
     `
   } else {
+    var deleteButton = null
+    if (userHasOptedIn) {
+      deleteButton = html`
+        <button class="pointer w-100-ns f5 link dim bn ph3 pv2 mr1 mb2 dib br1 white bg-mid-gray" data-role="purge" onclick="${handlePurge}">
+          ${raw(__('Delete my <strong>usage</strong> data'))}
+        </button>
+      `
+    }
     manage = html`
       <h4 class ="f5 normal mt0 mb3">${__('Manage data')}</h4>
-      <button class="pointer w-100-ns f5 link dim bn ph3 pv2 mr1 mb2 dib br1 white bg-mid-gray" data-role="purge" onclick="${handlePurge}">
-        ${raw(__('Delete my <strong>usage</strong> data'))}
-      </button>
+      ${deleteButton}
       <button class="pointer w-100-ns f5 link dim bn ph3 pv2 mb3 dib br1 white bg-mid-gray" data-role="consent" onclick=${handleConsent}>
-        ${state.model.hasOptedIn ? __('Opt out and delete my usage data') : __('Opt in')}
+        ${userHasOptedIn ? __('Opt out and delete my usage data') : __('Opt in')}
       </button>
     `
   }

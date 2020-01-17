@@ -217,9 +217,13 @@ exports.purge = purgeWith(window.location.origin + '/api/purge')
 exports.purgeWith = purgeWith
 
 function purgeWith (purgeUrl) {
-  return function () {
+  return function (deleteUserID) {
+    var url = new window.URL(purgeUrl)
+    if (deleteUserID) {
+      url.search = new window.URLSearchParams({ user: '1' })
+    }
     return window
-      .fetch(purgeUrl, {
+      .fetch(url, {
         method: 'POST',
         credentials: 'include'
       })
