@@ -75,7 +75,9 @@ function formatNumber (value, factor) {
 
 function view (state, emit) {
   function handleConsent () {
-    emit('offen:consent', !state.model.hasOptedIn)
+    emit('offen:express-consent', state.model.hasOptedIn ? 'deny' : 'allow', function (state, emitter) {
+      emitter.emit('offen:query', Object.assign({}, state.params, state.query), state.authenticatedUser)
+    })
   }
 
   function handlePurge () {
@@ -162,6 +164,7 @@ function view (state, emit) {
     <ul class="flex flex-wrap list pl0 mt0 mb3">${ranges}</ul>
   `
 
+  var manage = null
   if (isOperator) {
     var availableAccounts = state.authenticatedUser.accounts
       .slice()
@@ -183,39 +186,29 @@ function view (state, emit) {
           </li>
         `
       })
+    manage = html`
+      <h4 class ="f5 normal mt0 mb3">Choose account</h4>
+      <ul class="flex flex-wrap list pl0 mt0 mb3">
+        ${availableAccounts}
+      </ul>
+    `
+  } else {
+    manage = html`
+      <h4 class ="f5 normal mt0 mb3">${__('Manage data')}</h4>
+      <button class="pointer w-100-ns f5 link dim bn ph3 pv2 mr1 mb2 dib br1 white bg-mid-gray" data-role="purge" onclick="${handlePurge}">
+        ${raw(__('Delete my <strong>usage</strong> data'))}
+      </button>
+      <button class="pointer w-100-ns f5 link dim bn ph3 pv2 mb3 dib br1 white bg-mid-gray" data-role="consent" onclick=${handleConsent}>
+        ${state.model.hasOptedIn ? __('Opt out and delete my usage data') : __('Opt in')}
+      </button>
+    `
   }
 
-  var chooseAccounts = html`
-    <h4 class ="f5 normal mt0 mb3">Choose account</h4>
-    <ul class="flex flex-wrap list pl0 mt0 mb3">
-      ${availableAccounts}
-    </ul>
-  `
-
-  var manageOperator = html`
-    <div class="w-100 w-30-ns pa3 mb2 mr2-ns br2 bg-black-05">
-      ${chooseAccounts}
-    </div>
-  `
-
-  var manageUser = !isOperator && state.model.allowsCookies
-    ? html`
-      <div class="w-100 w-30-ns pa3 mb2 mr2-ns br2 bg-black-05">
-        <h4 class ="f5 normal mt0 mb3">${__('Manage data')}</h4>
-        <button class="pointer w-100-ns f5 link dim bn ph3 pv2 mr1 mb2 dib br1 white bg-mid-gray" data-role="purge" onclick="${handlePurge}">
-          ${raw(__('Delete my <strong>usage</strong> data'))}
-        </button>
-        <button class="pointer w-100-ns f5 link dim bn ph3 pv2 mb3 dib br1 white bg-mid-gray" data-role="consent" onclick=${handleConsent}>
-          ${state.model.hasOptedIn ? __('Opt out and delete my usage data') : __('Opt in')}
-        </button>
-      </div>
-    `
-    : null
-
-  var firstCardContent = isOperator ? manageOperator : manageUser
   var rowRangeManage = html`
     <div class="flex flex-column flex-row-ns mt4">
-      ${firstCardContent}
+      <div class="w-100 w-30-ns pa3 mb2 mr2-ns br2 bg-black-05">
+        ${manage}
+      </div>
       <div class="w-100 w-70-ns pa3 mb2 ba b--black-10 br2 bg-white">
         ${rangeSelector}
       </div>

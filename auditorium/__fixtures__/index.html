@@ -51,9 +51,11 @@
         event.ports[0].postMessage(loginResponses[loginCalled])
         loginCalled++
       }
-      if (event.data.type === 'CONSENT') {
+      if (event.data.type === 'EXPRESS_CONSENT') {
         event.ports[0].postMessage({
-          payload: null
+          payload: {
+            status: 'allow'
+          }
         })
       }
     })

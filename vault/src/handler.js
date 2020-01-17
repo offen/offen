@@ -48,14 +48,20 @@ exports.handleConsentWith = handleConsentWith
 
 function handleConsentWith (api, queries) {
   return function (message) {
-    consentStatus.set(message.payload.expressConsent ? consentStatus.ALLOW : consentStatus.DENY)
-    var purge = message.payload.expressConsent
+    var status = message.payload.status
+    if ([consentStatus.ALLOW, consentStatus.DENY].indexOf(status) < 0) {
+      return Promise.reject(new Error('Received invalid consent status: ' + status))
+    }
+    consentStatus.set(status)
+    var purge = status === consentStatus.ALLOW
       ? Promise.resolve()
       : Promise.all([api.purge(), queries.purge()])
     return purge.then(function () {
       return {
-        type: 'CONSENT_SUCCESS',
-        payload: null
+        type: 'EXPRESS_CONSENT_SUCCESS',
+        payload: {
+          status: status
+        }
       }
     })
   }

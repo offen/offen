@@ -26,7 +26,7 @@ register('EVENT',
 
 register('QUERY', middleware.sameOrigin, callHandler(handler.handleQuery))
 register('OPTIN_STATUS', middleware.sameOrigin, callHandler(handler.handleOptinStatus))
-register('CONSENT', middleware.sameOrigin, callHandler(handler.handleConsent))
+register('EXPRESS_CONSENT', middleware.sameOrigin, callHandler(handler.handleConsent))
 register('PURGE', middleware.sameOrigin, callHandler(handler.handlePurge))
 register('LOGIN', middleware.sameOrigin, callHandler(handler.handleLogin))
 register('CHANGE_CREDENTIALS', middleware.sameOrigin, callHandler(handler.handleChangeCredentials))
