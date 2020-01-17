@@ -5,6 +5,7 @@ var dataStore = require('./stores/data')
 var authStore = require('./stores/auth')
 var consentStore = require('./stores/consent')
 var bailOutStore = require('./stores/bail-out')
+var navigationStore = require('./stores/navigation')
 var indexView = require('./views/index')
 var mainView = require('./views/main')
 var loginView = require('./views/login')
@@ -37,6 +38,7 @@ app.use(dataStore)
 app.use(authStore)
 app.use(bailOutStore)
 app.use(consentStore)
+app.use(navigationStore)
 
 function decorateWithDefaults (view, title, headline) {
   var wrapper = _.compose(withPreviousRoute(), withLayout(headline), withError(), withTitle(title))
@@ -49,7 +51,7 @@ app.route(
 )
 app.route(
   '/auditorium',
-  decorateWithDefaults(withConsentStatus()(withModel()(mainView)), __('Offen Auditorium'))
+  decorateWithDefaults(withConsentStatus(true)(withModel()(mainView)), __('Offen Auditorium'))
 )
 app.route(
   '/console',

@@ -31,7 +31,7 @@ function store (state, emitter) {
       })
   })
 
-  emitter.on('offen:check-consent', function () {
+  emitter.on('offen:check-consent', function (requireCookies) {
     vault(process.env.VAULT_HOST || '/vault/')
       .then(function (postMessage) {
         var request = {
@@ -42,6 +42,9 @@ function store (state, emitter) {
       })
       .then(function (consentMessage) {
         state.consentStatus = consentMessage.payload
+        if (requireCookies && !state.consentStatus.allowsCookies) {
+          emitter.emit(state.events.PUSHSTATE, '/')
+        }
       })
       .catch(function (err) {
         state.error = {
