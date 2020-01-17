@@ -55,7 +55,19 @@ function handleExpressConsentWith (api, queries, getConsentStatus) {
     consentStatus.set(status)
     var purge = status === consentStatus.ALLOW
       ? Promise.resolve()
-      : Promise.all([api.purge(true), queries.purge()])
+      : Promise.all([
+        api
+          .purge(true)
+          .catch(function (err) {
+            if (err.status === 400) {
+              // users might request to delete data even if they do not have any
+              // associated, so a 400 response is ok here
+              return null
+            }
+            throw err
+          }),
+        queries.purge()
+      ])
     return purge.then(function () {
       return {
         type: 'EXPRESS_CONSENT_SUCCESS',

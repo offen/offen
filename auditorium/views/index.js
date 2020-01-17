@@ -1,20 +1,44 @@
 var html = require('choo/html')
 var raw = require('choo/html/raw')
 
-module.exports = function () {
+module.exports = function (state, emit) {
+  function handleConsent (status) {
+    return function () {
+      emit('offen:express-consent', status, function () {
+        emit(state.events.RENDER)
+      })
+    }
+  }
+
+  var allowsCookies = state.consentStatus && state.consentStatus.allowsCookies
+  var consentStatus = state.consentStatus && state.consentStatus.status
+
+  var consentStatusDisplay = null
+  if (consentStatus) {
+    var text = consentStatus === 'allow'
+      ? __('You are <strong>opted in</strong>.')
+      : __('You are <strong>opted out</strong>.')
+    consentStatusDisplay = html`
+      <p class="dib pa2 br2 bg-black-05 mt0 mb2">
+        ${raw(text)}
+      </p>
+    `
+  }
+
+  var headerCard = null
+  if (!allowsCookies) {
+    headerCard = noCookiesBox()
+  } else if (!consentStatus) {
+    headerCard = consentBox(handleConsent('allow'), handleConsent('deny'))
+  } else if (consentStatus === 'deny') {
+    headerCard = consentBox(handleConsent('allow'))
+  } else if (consentStatus === 'allow') {
+    headerCard = auditoriumBox()
+  }
+
   return html`
-    <div class="flex flex-column flex-row-ns items-center w-100 ph3 ph4-ns pv4 mt4 mb2 ba b--black-10 br2 bg-white">
-      <div class="w-100 w-70-ns mr3-ns">
-        <h3 class="f5 b tc tl-ns mt0 mb0">
-          ${__('View and manage the usage data this website has collected from you.')}
-        </h3>
-      </div>
-      <div class="w-100 w-30-ns tc mt2 mt0-ns">
-        <a href="/auditorium/" class="f5 tc link dim bn ph3 pv2 dib br1 white bg-dark-green">
-          ${__('Open Auditorium')}
-        </a>
-      </div>
-    </div>
+    ${consentStatusDisplay}
+    ${wrapCard(headerCard)}
     <div class="w-100 ph3 ph4-ns pv4 mb2 br2 bg-black-05">
       <div class="flex justify-center justify-start-ns">
         <a href="https://www.offen.dev/" class="dim mb4" target="_blank">
@@ -98,6 +122,63 @@ module.exports = function () {
           ${__('Log in as operator')}
         </a>
       </div>
+    </div>
+  `
+}
+
+function wrapCard (content) {
+  return html`
+    <div class="flex flex-column flex-row-ns items-center w-100 ph3 ph4-ns pv4 mt4 mb2 ba b--black-10 br2 bg-white">
+      ${content}
+    </div>
+  `
+}
+
+function consentBox (handleAllow, handleDeny) {
+  return html`
+    <div class="w-100 w-70-ns mr3-ns">
+      <h3 class="f5 b tc tl-ns mt0 mb0">
+        ${__('Continue with transparent analytics.')}
+      </h3>
+      <p>
+        ${__('Offen is a fair and open source analytics software. Help the website that linked you here by granting access to your usage data.')}
+      </p>
+      <p>
+        ${__('Your data always remains yours. You can review and delete it at any time. Opt out again whenever you want.')}
+      </p>
+    </div>
+    <div class="w-100 w-30-ns tc mt2 mt0-ns">
+      <button class="pointer f5 tc link dim bn ph3 pv2 dib br1 mr1 white bg-dark-gray" onclick="${handleAllow}">
+        ${__('Yes Please')}
+      </button>
+      <button disabled=${!handleDeny} class="f5 tc link dim bn ph3 pv2 dib br1 white ${handleDeny ? 'bg-dark-gray pointer' : 'bg-light-gray'}" onclick="${handleDeny}">
+        ${__('I Do Not Allow')}
+      </button>
+    </div>
+  `
+}
+
+function noCookiesBox () {
+  return html`
+    <div class="w-100 w-70-ns mr3-ns">
+      <p>
+        ${__('Enable cookies in your browser to use Offen.')}
+      </p>
+    </div>
+  `
+}
+
+function auditoriumBox () {
+  return html`
+    <div class="w-100 w-70-ns mr3-ns">
+      <h3 class="f5 b tc tl-ns mt0 mb0">
+        ${__('View and manage the usage data this website has collected from you.')}
+      </h3>
+    </div>
+    <div class="w-100 w-30-ns tc mt2 mt0-ns">
+      <a href="/auditorium/" class="f5 tc link dim bn ph3 pv2 dib br1 white bg-dark-green">
+        ${__('Open Auditorium')}
+      </a>
     </div>
   `
 }

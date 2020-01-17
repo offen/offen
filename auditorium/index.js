@@ -69,7 +69,7 @@ app.route(
 )
 app.route(
   '/',
-  decorateWithDefaults(indexView, __('Offen'), __('Welcome to Offen web analytics'))
+  decorateWithDefaults(withConsentStatus()(indexView), __('Offen'), __('Welcome to Offen web analytics'))
 )
 app.route(
   '*',
