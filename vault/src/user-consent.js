@@ -1,4 +1,5 @@
 var html = require('nanohtml')
+var raw = require('nanohtml/raw')
 
 var ALLOW = 'allow'
 var DENY = 'deny'
@@ -12,6 +13,7 @@ exports.askForConsent = askForConsent
 function askForConsent (styleHost) {
   return new Promise(function (resolve) {
     var isCollapsed = false
+    var consentGiven = false
     var stylesReady = new Promise(function (resolve) {
       var styleSheet = html`
         <link rel="stylesheet" href="/fonts.css">
@@ -29,75 +31,103 @@ function askForConsent (styleHost) {
       render()
     }
 
-    function makeConsentActionHandler (result) {
-      return function () {
-        styleHost({
-          styles: hostStylesHidden(styleHost.selector).innerHTML
-        })
-        while (document.body.firstChild) {
-          document.body.removeChild(document.body.firstChild)
-        }
-        window.removeEventListener('resize', onResize)
-        resolve(result)
+    function allowHandler () {
+      consentGiven = true
+      render()
+      resolve(ALLOW)
+    }
+
+    function denyHandler () {
+      closeHandler()
+      resolve(DENY)
+    }
+
+    function closeHandler () {
+      styleHost({
+        styles: hostStylesHidden(styleHost.selector).innerHTML
+      })
+      while (document.body.firstChild) {
+        document.body.removeChild(document.body.firstChild)
       }
+      window.removeEventListener('resize', onResize)
     }
 
     function onResize (event) {
       adjustHostStyles()
     }
 
-    function adjustHostStyles (styles) {
-      stylesReady.then(function () {
-        styleHost({
-          attributes: {
-            height: document.body.clientHeight
-          },
-          styles: styles
-        })
+    function adjustHostStyles (styles, height) {
+      styleHost({
+        attributes: {
+          height: height || document.body.clientHeight
+        },
+        styles: styles
       })
     }
 
     function render () {
-      while (document.body.firstChild) {
-        document.body.removeChild(document.body.firstChild)
-      }
-      var banner = bannerView(
-        isCollapsed,
-        handleCollapseAction,
-        makeConsentActionHandler(ALLOW),
-        makeConsentActionHandler(DENY)
-      )
-      document.body.appendChild(banner)
-      adjustHostStyles(
-        hostStylesVisible(styleHost.selector, isCollapsed).innerHTML
-      )
+      var host = document.body.querySelector('#host')
+      stylesReady.then(function () {
+        var banner = bannerView(
+          consentGiven,
+          isCollapsed,
+          handleCollapseAction,
+          allowHandler,
+          denyHandler,
+          closeHandler
+        )
+        if (host.firstChild) {
+          var current = host.firstChild
+          host.insertBefore(banner, current)
+          adjustHostStyles(
+            hostStylesVisible(styleHost.selector, isCollapsed).innerHTML,
+            banner.getBoundingClientRect().height
+          )
+          host.removeChild(current)
+        } else {
+          host.appendChild(banner)
+          adjustHostStyles(
+            hostStylesVisible(styleHost.selector, isCollapsed).innerHTML
+          )
+        }
+      })
     }
   })
 }
 
-function bannerView (collapsed, handleCollapseAction, handleAllow, handleDeny) {
-  var containerClass = 'roboto pa3'
+function bannerView (consentGiven, collapsed, handleCollapse, handleAllow, handleDeny, handleClose) {
   var toggleClass = 'fr pointer gray dim label-toggle'
   if (collapsed) {
-    containerClass += ' collapse'
     toggleClass += ' label-toggle--rotate'
   }
 
-  var learnMore = html`
-    <a target="_blank" rel="noopener" href="/" class="normal link underline dim dark-gray">
-      ${__('Learn more')}
-    </a>
-  `
-  return html`
-    <div class="${containerClass}">
+  var content
+  if (consentGiven) {
+    content = html`
+      <p class="mt0 mb3">
+        ${raw(__('Thanks a lot for your help. To manage the usage data this website has collected from you, <a class="normal link underline dim dark-gray" target="_blank" rel="noopener" href="%s">open the Auditorium.</a>', '/auditorium/'))}
+      </p>
+      <div class="w-100 flex">
+        <button class="db w-40 center pointer tc dim bn ph3 pv2 dib br1 white bg-dark-gray" onclick="${handleClose}">
+          ${__('Continue')}
+        </button>
+      </div>
+    `
+  } else {
+    var learnMore = html`
+      <a target="_blank" rel="noopener" href="/" class="normal link underline dim dark-gray">
+        ${__('Learn more')}
+      </a>
+    `
+    content = html`
       <p class="b mt0 mb3">
         ${__('Continue with transparent analytics')}
         ${collapsed ? learnMore : null}
-        <a role="button" class="${toggleClass}" onclick="${handleCollapseAction}"></a>
+        <a role="button" class="${toggleClass}" onclick="${handleCollapse}"></a>
       </p>
       ${!collapsed ? html`
         <p class="mt0 mb3">
-          ${__('Help us to make this website better by granting access to your usage data. Your data always remains yours. Review and delete it at any time.')}
+          ${__('Help to make this website better by granting access to your usage data. Your data always remains yours. Review and delete it at any time.')}
           ${learnMore}
         </p>
       ` : null}
@@ -113,6 +143,12 @@ function bannerView (collapsed, handleCollapseAction, handleAllow, handleDeny) {
           </button>
         </div>
       </div>
+    `
+  }
+
+  return html`
+    <div class="roboto pa3">
+      ${content}
     </div>
   `
 }
