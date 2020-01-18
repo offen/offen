@@ -1,4 +1,3 @@
-var allowsCookies = require('./allows-cookies')
 var consentStatus = require('./user-consent')
 var getSessionId = require('./session-id')
 
@@ -37,14 +36,6 @@ function eventDuplexer (event, respond, next) {
   // or unwanted access by 3rd parties in "script". For example adding the session id
   // here instead of the script prevents other scripts from reading this value.
   var now = new Date()
-  if (!allowsCookies()) {
-    event.data.anoynmous = true
-    event.data.payload.event = {
-      timestamp: now,
-      type: event.data.payload.event.type
-    }
-    return next()
-  }
   Object.assign(event.data.payload.event, {
     timestamp: now,
     sessionId: getSessionId(event.data.payload.accountId)
