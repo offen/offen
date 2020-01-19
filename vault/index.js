@@ -1,6 +1,7 @@
 var router = require('./src/router')
 var handler = require('./src/handler')
 var middleware = require('./src/middleware')
+var allowsCookies = require('./src/allows-cookies')
 
 if (!window.fetch) {
   require('unfetch/polyfill')
@@ -14,13 +15,15 @@ var register = router()
 
 register('EVENT',
   middleware.eventDuplexer,
-  anonymousMiddleware,
+  allowsCookiesMiddleware,
   middleware.optIn,
   function (event, respond, next) {
-    console.log(__('This page is using offen to collect usage statistics.'))
-    console.log(__('You can access and manage all of your personal data or opt-out at "%s/auditorium/".', window.location.origin))
-    console.log(__('Find out more about offen at "https://www.offen.dev".'))
     handler.handleAnalyticsEvent(event.data)
+      .then(function () {
+        console.log(__('This page is using Offen to collect usage statistics.'))
+        console.log(__('You can access and manage all of your personal data or opt-out at "%s/auditorium/".', window.location.origin))
+        console.log(__('Find out more about Offen at "https://www.offen.dev".'))
+      })
       .catch(next)
   })
 
@@ -35,21 +38,21 @@ register('RESET_PASSWORD', middleware.sameOrigin, callHandler(handler.handleRese
 
 module.exports = register
 
-function anonymousMiddleware (event, respond, next) {
-  if (!event.data.anoynmous) {
+function allowsCookiesMiddleware (event, respond, next) {
+  if (allowsCookies()) {
     return next()
   }
-  console.log(__('This page is using offen to collect usage statistics.'))
+  console.log(__('This page is using Offen to collect usage statistics.'))
   console.log(__('Your setup prevents third party cookies or you have disabled it in your browser\'s settings.'))
-  console.log(__('Basic usage data will be collected anonymously.'))
+  console.log(__('No usage data will be collected.'))
   console.log(__('Find out more at "%s".', window.location.origin))
-  handler.handleAnonymousEvent(event.data)
-    .catch(next)
 }
 
 function callHandler (handler) {
   return function (event, respond, next) {
-    Promise.resolve(handler(event.data))
+    new Promise(function (resolve) {
+      resolve(handler(event.data))
+    })
       .then(respond, next)
   }
 }
