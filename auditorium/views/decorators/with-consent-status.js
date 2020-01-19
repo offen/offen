@@ -8,7 +8,7 @@ function withConsentStatus (requireCookies) {
       if (!state.consentStatus) {
         emit('offen:check-consent', requireCookies)
         return html`
-          <p class="loading dib pa2 br2 bg-black-05 mt0 mb2">
+          <p class="dib pa2 br2 ma0 mt3 ml3 ml0-ns bg-light-yellow">
             ${__('Checking consent status...')}
           </p>
         `
