@@ -1,9 +1,10 @@
 exports.pageview = pageview
 
 function pageview (initial) {
+  var canonicalLink = document.head.querySelector('link[rel="canonical"]')
   return {
     type: 'PAGEVIEW',
-    href: window.location.href,
+    href: (canonicalLink && canonicalLink.getAttribute('href')) || window.location.href,
     title: document.title,
     referrer: document.referrer,
     pageload: (function () {
