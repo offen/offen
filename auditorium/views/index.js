@@ -30,7 +30,7 @@ module.exports = function (state, emit) {
       </p>
       `
   }
-  
+
   var mainQuestion = null
   if (consentStatus === 'allow') {
     mainQuestion = html`
@@ -51,7 +51,7 @@ module.exports = function (state, emit) {
       </p>
       `
   }
-  
+
   var mainCard = null
   if (allowsCookies) {
     mainCard = html`
@@ -120,7 +120,7 @@ module.exports = function (state, emit) {
       </div>
     `
   }
-  
+
   var headerCard = null
   if (!allowsCookies) {
     headerCard = noCookiesBox()
