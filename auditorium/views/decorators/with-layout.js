@@ -16,7 +16,7 @@ function withLayout (headline) {
           </div>
           <div class="mw8 center ph0 ph3-ns pb4">
             ${flash ? html`
-              <p data-role="flash-message" class="dib pa2 br2 ma0 mt3 ml3 ml0-ns bg-light-yellow">${flash}</p>
+              <p data-role="flash-message" class="dib pa2 br2 ma0 mt3 ml3 ml0-ns mr3 mr0-ns bg-light-yellow">${flash}</p>
             ` : null}
             ${originalView(state, emit)}
           </div>

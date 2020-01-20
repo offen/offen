@@ -19,11 +19,19 @@ module.exports = function (state, emit) {
       ? __('You are <strong>opted in</strong>.')
       : __('You are <strong>opted out</strong>.')
     consentStatusDisplay = html`
-      <p class="dib pa2 br2 ma0 mt3 ml3 ml0-ns bg-light-yellow">
+      <p class="dib pa2 br2 ma0 mt3 ml3 ml0-ns mr3 mr0-ns bg-light-yellow">
         ${raw(text)}
       </p>
     `
+  } else if (!allowsCookies) {
+    consentStatusDisplay = html`
+      <p class="dib pa2 br2 ma0 mt3 ml3 ml0-ns mr3 mr0-ns bg-light-yellow">
+        ${raw(__('It seems like your browser is <strong>blocking cookies.</strong>'))}
+      </p>
+      `
   }
+  
+  
 
   var mainQuestion = null
   if (consentStatus == 'allow') {
@@ -169,9 +177,12 @@ function consentBox (handleAllow, handleDeny) {
 
 function noCookiesBox () {
   return html`
-    <div class="w-100 w-70-ns mr3-ns">
-      <p>
-        ${__('Enable cookies in your browser to use Offen.')}
+    <div class="w-100 w-90-ns mr3-ns">
+      <h3 class="f5 b ma0 mb2">
+        ${__('Offen is a fair and open source analytics software. It is installed on the website that linked you here.')}
+      </h3>
+      <p class="ma0">
+        ${__('For Offen to work, your browser has to accept cookies. Please change your browsers settings and reload this page. Subsequently, you will be asked for consent to collect your usage data.')}
       </p>
     </div>
   `
@@ -179,12 +190,12 @@ function noCookiesBox () {
 
 function auditoriumBox () {
   return html`
-    <div class="w-100 w-70-ns mr3-ns">
+    <div class="w-100 w-60-ns mr3-ns">
       <h3 class="f5 b tc tl-ns mt0 mb0">
         ${__('Manage the usage data that has been collected from you.')}
       </h3>
     </div>
-    <div class="w-100 w-30-ns tc mt2 mt0-ns">
+    <div class="w-100 w-40-ns tc mt2 mt0-ns">
       <a href="/auditorium/" class="f5 tc link dim bn ph3 pv2 dib br1 white bg-dark-green">
         ${__('Open Auditorium')}
       </a>
