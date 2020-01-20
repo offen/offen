@@ -31,10 +31,8 @@ module.exports = function (state, emit) {
       `
   }
   
-  
-
   var mainQuestion = null
-  if (consentStatus == 'allow') {
+  if (consentStatus === 'allow') {
     mainQuestion = html`
       <p class="b mt0 mb1">
         ${__('How can I review and delete my usage data or opt out?')}
@@ -123,8 +121,6 @@ module.exports = function (state, emit) {
     `
   }
   
-  
-
   var headerCard = null
   if (!allowsCookies) {
     headerCard = noCookiesBox()
