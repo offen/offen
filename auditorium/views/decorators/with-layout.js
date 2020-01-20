@@ -10,8 +10,9 @@ function withLayout (headline) {
       return html`
         <div data-role="app-host" class="f5 roboto dark-gray">
           <div class="w-100 h3 bg-black-05">
-            <div class="mw8 ph3 pt2 center" id="headline">
-              <h1 class="f2 normal mt0 mb4">${headline || __('Offen Auditorium')}</h1>
+            <div class="mw8 center flex ph3 pt2" id="headline">
+              <img src="offen-icon-black.svg" alt="Offen logo" width="37" height="40" class="ma0 mt1 mr3">
+              <h1 class="f2 normal ma0 mt1">${headline || __('Offen Auditorium')}</h1>
             </div>
           </div>
           <div class="mw8 center ph0 ph3-ns pb4">

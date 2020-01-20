@@ -101,7 +101,7 @@ function view (state, emit) {
       state.model.account.name
     )
     accountHeader = html`
-      <p class="dib pa2 br2 bg-black-05 mt0 mb2">
+      <p class="dib pa2 br2 ma0 mt3 ml3 ml0-ns mr3 mr0-ns bg-light-yellow">
         ${raw(copy)}
       </p>
     `
@@ -109,7 +109,7 @@ function view (state, emit) {
   } else {
     pageTitle = __('user') + ' | ' + state.title
     accountHeader = html`
-      <p class="dib pa2 br2 bg-black-05 mt0 mb2">
+      <p class="dib pa2 br2 ma0 mt3 ml3 ml0-ns mr3 mr0-ns bg-light-yellow">
         ${raw(__('You are viewing your <strong>usage</strong> data.'))}
       </p>
       ${userAllowsCookies ? null : html`<p class="dib pa2 black br2 bg-black-05 mt0 mb2">${__('Your browser does not allow 3rd party cookies. We respect this setting and collect only very basic data in this case, yet it also means we cannot display any data to you here.')}</p>`}
