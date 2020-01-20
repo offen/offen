@@ -112,7 +112,7 @@ function view (state, emit) {
       <p class="dib pa2 br2 ma0 mt3 ml3 ml0-ns mr3 mr0-ns bg-light-yellow">
         ${raw(__('You are viewing your <strong>usage</strong> data.'))}
       </p>
-      ${userAllowsCookies ? null : html`<p class="dib pa2 black br2 bg-black-05 mt0 mb2">${__('Your browser does not allow 3rd party cookies. We respect this setting and collect only very basic data in this case, yet it also means we cannot display any data to you here.')}</p>`}
+      ${userAllowsCookies ? null : html`<p class="dib pa2 br2 ma0 mt3 ml3 ml0-ns mr3 mr0-ns bg-light-yellow">${__('Your browser does not allow 3rd party cookies. We respect this setting and collect only very basic data in this case, yet it also means we cannot display any data to you here.')}</p>`}
     `
   }
   emit(state.events.DOMTITLECHANGE, pageTitle)
@@ -204,10 +204,10 @@ function view (state, emit) {
 
   var rowRangeManage = html`
     <div class="flex flex-column flex-row-ns mt4">
-      <div class="w-100 w-30-ns pa3 mb2 mr2-ns br2 bg-black-05">
+      <div class="w-100 w-30-ns pa3 mb2 mr2-ns br0 br2-ns bg-black-05">
         ${manage}
       </div>
-      <div class="w-100 w-70-ns pa3 mb2 ba b--black-10 br2 bg-white">
+      <div class="w-100 w-70-ns pa3 mb2 bt bb ba-ns br0 br2-ns b--black-10 bg-white">
         ${rangeSelector}
       </div>
     </div>
@@ -217,7 +217,7 @@ function view (state, emit) {
   if (isOperator) {
     var tableData = { headline: __('Currently active pages'), col1Label: __('URL'), col2Label: __('Visitors'), rows: state.model.livePages }
     live = html`
-      <div class="w-100 pa3 mb2 mr2-ns ba b--black-10 br2 bg-white flex flex-column">
+      <div class="w-100 pa3 mb2 mr2-ns bt bb ba-ns br0 br2-ns b--black-10 bg-white flex flex-column">
         <div class="flex flex-column flex-row-ns">
           <div class="w-100 w-30-ns">
             <h4 class="f5 normal mt0 mb3">
@@ -240,7 +240,7 @@ function view (state, emit) {
   }
 
   var chart = html`
-    <div class="w-100 w-75-m w-80-ns pa3 mb2 mr2-ns ba b--black-10 br2 bg-white flex flex-column">
+    <div class="w-100 w-75-m w-80-ns pa3 mb2 mr2-ns bt bb ba-ns br0 br2-ns b--black-10 bg-white flex flex-column">
       <h4 class="f5 normal mt0 mb3">
         ${__('Page views and %s', isOperator ? __('visitors') : __('accounts'))}
       </h4>
@@ -257,7 +257,7 @@ function view (state, emit) {
 
   var uniqueSessions = state.model.uniqueSessions
   var keyMetrics = html`
-    <div class="w-100 w-25-m w-20-ns pa3 mb2 ba b--black-10 br2 bg-white">
+    <div class="w-100 w-25-m w-20-ns pa3 mb2 bt bb ba-ns br0 br2-ns b--black-10 bg-white">
       <h4 class ="f5 normal mt0 mb3 mb4-ns">Key metrics</h4>
       <div class="flex flex-wrap">
         ${keyMetric(__('Unique %s', entityName), uniqueEntities)}
@@ -293,19 +293,19 @@ function view (state, emit) {
     { headline: __('Exit pages'), col1Label: __('URL'), col2Label: __('Exits'), rows: state.model.exitPages }
   ]
   var urlTables = html`
-    <div class="w-100 pa3 mb2 ba b--black-10 br2 bg-white">
+    <div class="w-100 pa3 mb2 bt bb ba-ns br0 br2-ns b--black-10 bg-white">
       ${state.cache(Table, 'main/pages-table').render(pagesTableData)}
     </div>
-    <div class="w-100 pa3 mb2 ba b--black-10 br2 bg-white">
+    <div class="w-100 pa3 mb2 bt bb ba-ns br0 br2-ns b--black-10 bg-white">
       ${state.cache(Table, 'main/referrers-table').render(referrersTableData)}
     </div>
-    <div class="w-100 pa3 mb2 ba b--black-10 br2 bg-white">
+    <div class="w-100 pa3 mb2 bt bb ba-ns br0 br2-ns b--black-10 bg-white">
       ${state.cache(Table, 'main/landing-exit-table').render(landingExitTableData)}
     </div>
   `
 
   var retention = html`
-    <div class="w-100 pa3 mb2 ba b--black-10 br2 bg-white">
+    <div class="w-100 pa3 mb2 bt bb ba-ns br0 br2-ns b--black-10 bg-white">
       <h4 class ="f5 normal mt0 mb3 mb4-ns">Weekly retention</h4>
       ${retentionTable(state.model.retentionMatrix)}
     </div>
@@ -313,7 +313,7 @@ function view (state, emit) {
   var goSettings = isOperator
     ? html`
       <div class="flex flex-column flex-row-ns mt4">
-        <div class="w-100 w-20-ns pa3 mb2 mr2-ns br2 bg-black-05">
+        <div class="w-100 w-20-ns pa3 mb2 mr2-ns br0 br2-ns bg-black-05">
           <h4 class ="f5 normal mt0 mb3">
             ${__('Admin console')}
           </h4>
@@ -323,7 +323,7 @@ function view (state, emit) {
             </a>
           </div>
         </div>
-        <div class="w-100 w-80-ns pa3 mb2 br2 bg-black-05">
+        <div class="w-100 w-80-ns pa3 mb2 br0 br2-ns bg-black-05">
           <h4 class="f5 mb3 mt0">${__('No data showing up?')}</h4>
           <p>${raw(__('To use Offen with the account <strong>%s</strong> on your website, embed the following script on each page you want to appear in your statistics:', state.model.account.name))}</p>
           <pre class="pre">${raw(`&lt;script src="${window.location.origin}/script.js" data-account-id="${state.model.account.accountId}"&gt;&lt;/script&gt;`)}</pre>
