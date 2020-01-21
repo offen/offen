@@ -32,7 +32,10 @@ func staticMiddleware(fileServer, fallback http.Handler) gin.HandlerFunc {
 
 	return func(c *gin.Context) {
 		status, contentType := tryStatic(c.Request.Method, c.Request.URL.String())
-		if status == 404 {
+		// Right now, we manually trigger an error when trying to read a directory
+		// so we can skip the directory listings provided by the Go FileServer.
+		// TODO: revisit this solution.
+		if status == http.StatusNotFound || status == http.StatusInternalServerError {
 			fallback.ServeHTTP(c.Writer, c.Request)
 			return
 		}
