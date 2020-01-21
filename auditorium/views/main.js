@@ -75,7 +75,6 @@ function formatNumber (value, factor) {
 
 function view (state, emit) {
   var userHasOptedIn = state.consentStatus && state.consentStatus.status === 'allow'
-  var userAllowsCookies = state.consentStatus && state.consentStatus.allowsCookies
 
   function handleConsent () {
     emit('offen:express-consent', userHasOptedIn ? 'deny' : 'allow', function (state, emitter) {
