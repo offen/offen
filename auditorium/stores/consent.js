@@ -16,13 +16,6 @@ function store (state, emitter) {
       })
       .then(function (message) {
         state.consentStatus = message.payload
-        /*
-        if (message.payload.status === 'allow') {
-          state.flash = __('Your have now opted in. Use the Auditorium to review and manage your data at any time.')
-        } else {
-          state.flash = __('Your have successfully opted out.')
-        }
-        */
         if (callback) {
           callback(state, emitter)
         }
