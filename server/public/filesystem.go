@@ -2,10 +2,12 @@ package public
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"html/template"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"path"
 
 	_ "github.com/offen/offen/server/public/statik"
@@ -49,7 +51,7 @@ func (l *localizedFS) Open(file string) (http.File, error) {
 	for _, location := range cascade {
 		f, err = l.root.Open(location)
 		if err == nil {
-			return f, nil
+			return neuteredReaddirFile{f}, nil
 		}
 	}
 	return nil, err
@@ -105,4 +107,12 @@ func HTMLTemplate(gettext func(string, ...interface{}) template.HTML, rev func(s
 		}
 	}
 	return t, nil
+}
+
+type neuteredReaddirFile struct {
+	http.File
+}
+
+func (f neuteredReaddirFile) Readdir(count int) ([]os.FileInfo, error) {
+	return nil, errors.New("forcefully skipping directory listings")
 }
