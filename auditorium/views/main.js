@@ -77,7 +77,12 @@ function view (state, emit) {
   var userHasOptedIn = state.consentStatus && state.consentStatus.status === 'allow'
 
   function handleConsent () {
-    emit('offen:express-consent', userHasOptedIn ? 'deny' : 'allow', function (state, emitter) {
+    var nextStatus = userHasOptedIn ? 'deny' : 'allow'
+    emit('offen:express-consent', nextStatus, function (state, emitter) {
+      var flashMessage = nextStatus === 'deny'
+        ? __('You have successfully opted out, all usage data has been deleted')
+        : __('You have now opted in.')
+      state.flash = flashMessage
       emitter.emit('offen:query', Object.assign({}, state.params, state.query), state.authenticatedUser)
     })
   }
