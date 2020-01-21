@@ -154,7 +154,7 @@ function consentBox (handleAllow, handleDeny) {
         ${__('Continue with transparent analytics')}
       </h3>
       <p class="ma0 mb2">
-        ${__('Offen is a fair and open source analytics software. Help the website that linked you here by granting access to your usage data.')}
+        ${__('Offen is a fair and open source analytics software. Help the website that linked you here by opting in and thereby granting access to your usage data.')}
       </p>
       <p class="ma0 mb2 mb0-ns">
         ${__('Your data always remains yours. You can review and delete it at any time. Opt out again whenever you want.')}
