@@ -28,8 +28,8 @@ register('EVENT',
   })
 
 register('QUERY', middleware.sameOrigin, callHandler(handler.handleQuery))
-register('OPTIN_STATUS', middleware.sameOrigin, callHandler(handler.handleOptinStatus))
-register('CONSENT', middleware.sameOrigin, callHandler(handler.handleConsent))
+register('CONSENT_STATUS', middleware.sameOrigin, callHandler(handler.handleConsentStatus))
+register('EXPRESS_CONSENT', middleware.sameOrigin, callHandler(handler.handleExpressConsent))
 register('PURGE', middleware.sameOrigin, callHandler(handler.handlePurge))
 register('LOGIN', middleware.sameOrigin, callHandler(handler.handleLogin))
 register('CHANGE_CREDENTIALS', middleware.sameOrigin, callHandler(handler.handleChangeCredentials))

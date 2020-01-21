@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
-    <title>Offen Auditorium</title>
+    <title>Offen</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="/tachyons.min.css">
@@ -17,7 +17,38 @@
     <script src="{{ rev "/auditorium/vendor.js" }}"></script>
     <script src="{{ rev "/auditorium/index.js" }}"></script>
     <noscript>
-      {{ __ "Please enable JavaScript in your browser's settings to use this application." }}
+      <div class="f5 roboto dark-gray">
+        <div class="w-100 h3 bg-black-05">
+          <div class="mw8 center flex ph3 pt2">
+            <a href="/" class="dim">
+              <img src="/offen-icon-black.svg" alt="Offen logo" width="37" height="40" class="ma0 mt1 mr3">
+            </a>
+            <h1 class="f2 normal ma0 mt1">Offen</h1>
+          </div>
+        </div>
+        <div class="mw8 center hp0 ph3-ns">
+          <p class="dib pa2 br2 ma0 mt3 ml3 ml0-ns mr3 mr0-ns bg-light-yellow">
+            It seems like your browser has <strong>JavaScript disabled.</strong>
+          </p>
+          <div class="w-100 ph3 ph4-ns pv4 mt4 mb4 bt bb ba-ns br0 br2-ns b--black-10 bg-white">
+            <div class="w-100 w-90-ns mr3">
+              <h3 class="f5 b ma0 mb2">Offen is a fair and open source analytics software. It is installed on the website that linked you here.</h3>
+              <p class="ma0">For Offen to work, your browser has to accept JavaScript and cookies. Please change your browser settings and reload this page. Subsequently, you will be asked for consent to collect your usage data.</p>
+            </div>
+          </div>
+          <div class="flex flex-column flex-row-ns justify-between pb5 mh3 mh0-ns moon-gray">
+            <div>
+              <p class="b ma0 mb1">Offen</p>
+              <p class="ma0 mb2">
+               Transparent web analytics <br>for everyone
+              </p>
+            </div>
+            <div>
+              <a href="https://www.offen.dev/" class="normal link underline dim moon-gray" target="_blank">www.offen.dev</a>
+            </div>
+          </div>
+        </div>    
+      </div>
     </noscript>
   </body>
 </html>

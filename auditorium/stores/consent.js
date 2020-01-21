@@ -3,27 +3,51 @@ var vault = require('offen/vault')
 module.exports = store
 
 function store (state, emitter) {
-  emitter.on('offen:consent', function (allow) {
+  emitter.on('offen:express-consent', function (status, callback) {
     vault(process.env.VAULT_HOST || '/vault/')
       .then(function (postMessage) {
         var consentRequest = {
-          type: 'CONSENT',
+          type: 'EXPRESS_CONSENT',
           payload: {
-            expressConsent: allow
+            status: status
           }
         }
         return postMessage(consentRequest)
       })
-      .then(function () {
-        if (allow) {
-          state.flash = __('Your have now opted in. Use the Auditorium to review and manage your data at any time.')
-        } else {
-          state.flash = __('Your have now opted out and all usage data has been deleted.')
+      .then(function (message) {
+        state.consentStatus = message.payload
+        if (callback) {
+          callback(state, emitter)
         }
-        emitter.emit('offen:query', Object.assign({}, state.params, state.query), state.authenticatedUser)
       })
       .catch(function (err) {
         state.error = err
+        emitter.emit(state.events.RENDER)
+      })
+  })
+
+  emitter.on('offen:check-consent', function (requireCookies) {
+    vault(process.env.VAULT_HOST || '/vault/')
+      .then(function (postMessage) {
+        var request = {
+          type: 'CONSENT_STATUS',
+          payload: null
+        }
+        return postMessage(request)
+      })
+      .then(function (consentMessage) {
+        state.consentStatus = consentMessage.payload
+        if (requireCookies && !state.consentStatus.allowsCookies) {
+          emitter.emit(state.events.PUSHSTATE, '/')
+        }
+      })
+      .catch(function (err) {
+        state.error = {
+          message: err.message,
+          stack: err.originalStack || err.stack
+        }
+      })
+      .then(function () {
         emitter.emit(state.events.RENDER)
       })
   })

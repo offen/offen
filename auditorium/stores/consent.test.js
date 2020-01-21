@@ -14,14 +14,13 @@ describe('stores/consent.js', function () {
     it('delegates an opt-in request to the vault', function (done) {
       consent(app.state, app.emitter)
 
-      app.emitter.on('offen:query', function () {
-        done()
-      })
       app.emitter.on(app.state.events.RENDER, function () {
         done(new Error('Unexpected render call'))
       })
 
-      app.emitter.emit('offen:consent', true)
+      app.emitter.emit('offen:express-consent', 'allow', function () {
+        done()
+      })
     })
   })
 })

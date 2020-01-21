@@ -28,34 +28,53 @@ function handleAnonymousEventWith (relayEvent) {
   }
 }
 
-exports.handleOptinStatus = handleOptinStatusWith(consentStatus.get, allowsCookies)
-exports.handleOptinStatusWith = handleOptinStatusWith
+exports.handleConsentStatus = handleConsentStatusWith(consentStatus.get, allowsCookies)
+exports.handleConsentStatusWith = handleConsentStatusWith
 
-function handleOptinStatusWith (getConsentStatus, allowsCookies) {
+function handleConsentStatusWith (getConsentStatus, allowsCookies) {
   return function (message) {
     return {
-      type: 'OPTIN_STATUS_SUCCESS',
+      type: 'CONSENT_STATUS_SUCCESS',
       payload: {
-        hasOptedIn: getConsentStatus() === 'allow',
+        status: getConsentStatus(),
         allowsCookies: allowsCookies()
       }
     }
   }
 }
 
-exports.handleConsent = handleConsentWith(api, queries)
-exports.handleConsentWith = handleConsentWith
+exports.handleExpressConsent = handleExpressConsentWith(api, queries, consentStatus.get)
+exports.handleExpressConsentWith = handleExpressConsentWith
 
-function handleConsentWith (api, queries) {
+function handleExpressConsentWith (api, queries, getConsentStatus) {
   return function (message) {
-    consentStatus.set(message.payload.expressConsent ? consentStatus.ALLOW : consentStatus.DENY)
-    var purge = message.payload.expressConsent
+    var status = message.payload.status
+    if ([consentStatus.ALLOW, consentStatus.DENY].indexOf(status) < 0) {
+      return Promise.reject(new Error('Received invalid consent status: ' + status))
+    }
+    consentStatus.set(status)
+    var purge = status === consentStatus.ALLOW
       ? Promise.resolve()
-      : Promise.all([api.purge(), queries.purge()])
+      : Promise.all([
+        api
+          .purge(true)
+          .catch(function (err) {
+            if (err.status === 400) {
+              // users might request to delete data even if they do not have any
+              // associated, so a 400 response is ok here
+              return null
+            }
+            throw err
+          }),
+        queries.purge()
+      ])
     return purge.then(function () {
       return {
-        type: 'CONSENT_SUCCESS',
-        payload: null
+        type: 'EXPRESS_CONSENT_SUCCESS',
+        payload: {
+          status: getConsentStatus(),
+          allowsCookies: allowsCookies()
+        }
       }
     })
   }

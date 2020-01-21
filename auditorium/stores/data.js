@@ -1,30 +1,16 @@
 var vault = require('offen/vault')
-var _ = require('underscore')
 
 module.exports = store
 
 function store (state, emitter) {
   function handleRequest (request, onSuccessMessage, softFailure) {
     state.updatePending = true
-    var fetchQuery = vault(process.env.VAULT_HOST || '/vault/')
+    vault(process.env.VAULT_HOST || '/vault/')
       .then(function (postMessage) {
         return postMessage(request)
       })
-    var fetchOptinStatus = vault(process.env.VAULT_HOST || '/vault/')
-      .then(function (postMessage) {
-        var request = {
-          type: 'OPTIN_STATUS',
-          payload: null
-        }
-        return postMessage(request)
-      })
-
-    Promise.all([fetchQuery, fetchOptinStatus])
-      .then(function (results) {
-        var queryMessage = results[0]
-        var optinMessage = results[1]
+      .then(function (queryMessage) {
         state.model = queryMessage.payload.result
-        Object.assign(state.model, optinMessage.payload)
         state.flash = state.flash || onSuccessMessage
       })
       .catch(function (err) {
@@ -83,20 +69,6 @@ function store (state, emitter) {
         }
       }
     }, interval)
-  })
-
-  emitter.on(state.events.NAVIGATE, function () {
-    delete state.updatePending
-    if (state.route === state.previousRoute && _.isEqual(state.params, state.previousParams)) {
-      // This means the only thing that changed are query parameters and the
-      // application is likely going to update the same view with new data.
-      state.stale = true
-      emitter.emit('offen:query', Object.assign({}, state.params, state.query), state.authenticatedUser)
-    } else {
-      window.clearInterval(state.interval)
-      delete state.interval
-      delete state.model
-    }
   })
 }
 

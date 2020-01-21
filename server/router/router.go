@@ -48,15 +48,20 @@ func (rt *router) userCookie(userID string, secure bool) *http.Cookie {
 	if !secure {
 		sameSite = http.SameSiteLaxMode
 	}
-	return &http.Cookie{
+
+	c := &http.Cookie{
 		Name:     cookieKey,
 		Value:    userID,
-		Expires:  time.Now().Add(rt.config.App.EventRetentionPeriod),
+		Expires:  time.Unix(0, 0),
 		HttpOnly: true,
 		Secure:   secure,
 		SameSite: sameSite,
 		Path:     "/",
 	}
+	if userID != "" {
+		c.Expires = time.Now().Add(rt.config.App.EventRetentionPeriod)
+	}
+	return c
 }
 
 func (rt *router) authCookie(userID string, secure bool) (*http.Cookie, error) {

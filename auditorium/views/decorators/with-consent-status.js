@@ -1,18 +1,17 @@
 var html = require('choo/html')
 
-module.exports = withAuthentication
+module.exports = withConsentStatus
 
-function withAuthentication () {
+function withConsentStatus (requireCookies) {
   return function (originalView) {
     return function (state, emit) {
-      if (!state.authenticatedUser) {
-        emit('offen:login', null)
-        var authenticating = html`
+      if (!state.consentStatus) {
+        emit('offen:check-consent', requireCookies)
+        return html`
           <p class="dib pa2 br2 ma0 mt3 ml3 ml0-ns mr3 mr0-ns bg-light-yellow">
-            ${__('Checking authentication...')}
+            ${__('Checking consent status...')}
           </p>
         `
-        return authenticating
       }
       return originalView(state, emit)
     }

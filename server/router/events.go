@@ -132,5 +132,11 @@ func (rt *router) purgeEvents(c *gin.Context) {
 		).Pipe(c)
 		return
 	}
+	if c.Query("user") != "" {
+		http.SetCookie(
+			c.Writer,
+			rt.userCookie("", c.GetBool(contextKeySecureContext)),
+		)
+	}
 	c.Status(http.StatusNoContent)
 }

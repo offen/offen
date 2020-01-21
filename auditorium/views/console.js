@@ -19,11 +19,11 @@ function view (state, emit) {
       `
     })
   var accountHeader = html`
-    <p class="dib pa2 br2 bg-black-05 mt0 mb2">${raw(__('You are logged in as <strong>operator.</strong>'))}</p>
+    <p class="dib pa2 br2 ma0 mt3 ml3 ml0-ns mr3 mr0-ns bg-light-yellow">${raw(__('You are logged in as <strong>operator.</strong>'))}</p>
   `
 
   var loggedInMessage = html`
-    <div class="w-100 pa3 mt4 mb2 br2 bg-black-05">
+    <div class="w-100 pa3 mt4 mb2 br0 br2-ns bg-black-05">
       <h4 class ="f5 normal mt0 mb3">${__('Choose account')}</h4>
       <ul class="flex flex-wrap list pl0 mt0 mb3">
         ${availableAccounts}
@@ -40,7 +40,7 @@ function view (state, emit) {
   }
 
   var changeEmailForm = html`
-    <div class="w-100 pa3 mb2 br2 bg-black-05">
+    <div class="w-100 pa3 mb2 br0 br2-ns bg-black-05">
       <h4 class="f5 normal mt0 mb3">Change email address</h4>
       <form class="mw6 center" onsubmit="${handleChangeEmail}">
         <label class="b lh-copy">
@@ -69,7 +69,7 @@ function view (state, emit) {
   }
 
   var changePasswordForm = html`
-    <div class="w-100 pa3 mb2 br2 bg-black-05">
+    <div class="w-100 pa3 mb2 br0 br2-ns bg-black-05">
       <h4 class="f5 normal mt0 mb3">Change password</h4>
       <form class="mw6 center" onsubmit="${handleChangePassword}">
         <label class="b lh-copy">
