@@ -112,7 +112,6 @@ function view (state, emit) {
       <p class="dib pa2 br2 ma0 mt3 ml3 ml0-ns mr3 mr0-ns bg-light-yellow">
         ${raw(__('You are viewing your <strong>usage data.</strong> '))}
       </p>
-      ${userAllowsCookies ? null : html`<p class="dib pa2 br2 ma0 mt3 ml3 ml0-ns mr3 mr0-ns bg-light-yellow">${__('Your browser does not allow 3rd party cookies. We respect this setting and collect only very basic data in this case, yet it also means we cannot display any data to you here.')}</p>`}
     `
   }
   emit(state.events.DOMTITLECHANGE, pageTitle)
