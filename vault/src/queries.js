@@ -170,7 +170,7 @@ function getDefaultStatsWith (getDatabase) {
     var retentionChunks = []
     for (var i = 0; i < 4; i++) {
       var currentChunkUpperBound = subtract.days(now, i * 7).toJSON()
-      var currentChunkLowerBound = subtract.days(now, i + 1 * 7).toJSON()
+      var currentChunkLowerBound = subtract.days(now, (i + 1) * 7).toJSON()
       var chunk = table
         .where('timestamp')
         .between(currentChunkLowerBound, currentChunkUpperBound)
