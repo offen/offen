@@ -60,7 +60,8 @@ function view (state, emit) {
     e.preventDefault()
     var formData = new window.FormData(e.currentTarget)
     if (formData.get('changed') !== formData.get('repeat')) {
-      return emit('offen:flash', __('Passwords did not match. Please try again.'))
+      state.flash = __('Passwords did not match. Please try again.')
+      return emit(state.events.RENDER)
     }
     emit('offen:change-credentials', {
       currentPassword: formData.get('current'),

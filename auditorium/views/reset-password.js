@@ -9,7 +9,8 @@ function view (state, emit) {
     e.preventDefault()
     var formData = new window.FormData(e.currentTarget)
     if (formData.get('password') !== formData.get('repeat-password')) {
-      return emit('offen:flash', __('Passwords did not match. Please try again.'))
+      state.flash = __('Passwords did not match. Please try again.')
+      return emit(state.events.RENDER)
     }
     emit('offen:reset-password', {
       emailAddress: formData.get('email-address'),
