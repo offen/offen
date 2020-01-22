@@ -3,7 +3,7 @@ var vault = require('offen/vault')
 module.exports = store
 
 function store (state, emitter) {
-  function handleRequest (request, onSuccessMessage, softFailure) {
+  function handleRequest (request, onSuccessMessage, onFailureMessage) {
     state.updatePending = true
     vault(process.env.VAULT_HOST || '/vault/')
       .then(function (postMessage) {
@@ -18,15 +18,13 @@ function store (state, emitter) {
           console.error(err)
         }
         state.flash = null
-        if (!softFailure) {
+        if (!onFailureMessage) {
           state.error = {
             message: err.message,
             stack: err.originalStack || err.stack
           }
         } else {
-          state.flash = __(
-            'This view failed to update automatically, data may be out of date. Check your network connection if the problem persists.'
-          )
+          state.flash = onFailureMessage
         }
       })
       .then(function () {
@@ -36,11 +34,11 @@ function store (state, emitter) {
       })
   }
 
-  emitter.on('offen:purge', function () {
+  emitter.on('offen:purge', function (onSuccessMessage) {
     handleRequest({
       type: 'PURGE',
       payload: null
-    }, __('Your usage data has been deleted.'))
+    }, onSuccessMessage)
   })
 
   emitter.on('offen:query', function (data, authenticatedUser, softFailure) {
@@ -52,7 +50,7 @@ function store (state, emitter) {
     }, null, softFailure)
   })
 
-  emitter.on('offen:schedule-refresh', function (interval) {
+  emitter.on('offen:schedule-refresh', function (interval, onFailureMessage) {
     if (state.interval) {
       return
     }
@@ -61,10 +59,10 @@ function store (state, emitter) {
         return
       }
       if (document.hasFocus()) {
-        emitter.emit('offen:query', Object.assign({}, state.params, state.query), state.authenticatedUser, true)
+        emitter.emit('offen:query', Object.assign({}, state.params, state.query), state.authenticatedUser, onFailureMessage)
       } else {
         window.onfocus = function () {
-          emitter.emit('offen:query', Object.assign({}, state.params, state.query), state.authenticatedUser, true)
+          emitter.emit('offen:query', Object.assign({}, state.params, state.query), state.authenticatedUser, onFailureMessage)
           window.onfocus = Function.prototype
         }
       }

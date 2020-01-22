@@ -33,10 +33,15 @@ function view (state, emit) {
   function handleChangeEmail (e) {
     e.preventDefault()
     var formData = new window.FormData(e.currentTarget)
-    emit('offen:change-credentials', {
-      password: formData.get('password'),
-      emailAddress: formData.get('email-address')
-    })
+    emit(
+      'offen:change-credentials',
+      {
+        password: formData.get('password'),
+        emailAddress: formData.get('email-address')
+      },
+      __('Please log in again, using your updated email.'),
+      __('Could not change email. Try again.')
+    )
   }
 
   var changeEmailForm = html`
@@ -63,10 +68,15 @@ function view (state, emit) {
       state.flash = __('Passwords did not match. Please try again.')
       return emit(state.events.RENDER)
     }
-    emit('offen:change-credentials', {
-      currentPassword: formData.get('current'),
-      changedPassword: formData.get('changed')
-    })
+    emit(
+      'offen:change-credentials',
+      {
+        currentPassword: formData.get('current'),
+        changedPassword: formData.get('changed')
+      },
+      __('Please log in again, using your new password.'),
+      __('Could not change passwords. Try again.')
+    )
   }
 
   var changePasswordForm = html`

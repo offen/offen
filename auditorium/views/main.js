@@ -78,23 +78,25 @@ function view (state, emit) {
 
   function handleConsent () {
     var nextStatus = userHasOptedIn ? 'deny' : 'allow'
-    emit('offen:express-consent', nextStatus, function (state, emitter) {
-      var flashMessage = nextStatus === 'deny'
-        ? __('You have successfully opted out, all usage data has been deleted')
-        : __('You have now opted in.')
-      state.flash = flashMessage
+    var flashMessage = nextStatus === 'deny'
+      ? __('You have successfully opted out, all usage data has been deleted')
+      : __('You have now opted in.')
+    emit('offen:express-consent', nextStatus, flashMessage, function (state, emitter) {
       emitter.emit('offen:query', Object.assign({}, state.params, state.query), state.authenticatedUser)
     })
   }
 
   function handlePurge () {
-    emit('offen:purge')
+    emit('offen:purge', __('Your usage data has been deleted.'))
   }
 
   var isOperator = !!(state.params && state.params.accountId)
 
   if (isOperator) {
-    emit('offen:schedule-refresh', 15000)
+    var softFailure = __(
+      'This view failed to update automatically, data may be out of date. Check your network connection if the problem persists.'
+    )
+    emit('offen:schedule-refresh', 15000, softFailure)
   }
 
   var accountHeader = null

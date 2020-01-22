@@ -12,11 +12,16 @@ function view (state, emit) {
       state.flash = __('Passwords did not match. Please try again.')
       return emit(state.events.RENDER)
     }
-    emit('offen:reset-password', {
-      emailAddress: formData.get('email-address'),
-      password: formData.get('password'),
-      token: formData.get('token')
-    })
+    emit(
+      'offen:reset-password',
+      {
+        emailAddress: formData.get('email-address'),
+        password: formData.get('password'),
+        token: formData.get('token')
+      },
+      __('Please log in again, using your new credentials.'),
+      __('Could not handle your request, please try again.')
+    )
   }
   var form = html`
     <div class="w-100 pa3 mt4 mb2 br0 br2-ns bg-black-05">
