@@ -3,7 +3,7 @@ var vault = require('offen/vault')
 module.exports = store
 
 function store (state, emitter) {
-  emitter.on('offen:express-consent', function (status, callback) {
+  emitter.on('offen:express-consent', function (status, onSuccessMessage, callback) {
     vault(process.env.VAULT_HOST || '/vault/')
       .then(function (postMessage) {
         var consentRequest = {
@@ -16,13 +16,21 @@ function store (state, emitter) {
       })
       .then(function (message) {
         state.consentStatus = message.payload
-        if (callback) {
-          callback(state, emitter)
+        if (onSuccessMessage) {
+          state.flash = onSuccessMessage
         }
       })
       .catch(function (err) {
-        state.error = err
+        state.error = {
+          message: err.message,
+          stack: err.originalStack || err.stack
+        }
+      })
+      .then(function () {
         emitter.emit(state.events.RENDER)
+        if (callback) {
+          callback(state, emitter)
+        }
       })
   })
 

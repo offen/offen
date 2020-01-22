@@ -3,11 +3,7 @@ var raw = require('choo/html/raw')
 
 module.exports = function (state, emit) {
   function handleConsent (status) {
-    return function () {
-      emit('offen:express-consent', status, function () {
-        emit(state.events.RENDER)
-      })
-    }
+    emit('offen:express-consent', status)
   }
 
   var allowsCookies = state.consentStatus && state.consentStatus.allowsCookies
@@ -125,9 +121,9 @@ module.exports = function (state, emit) {
   if (!allowsCookies) {
     headerCard = noCookiesBox()
   } else if (!consentStatus) {
-    headerCard = consentBox(handleConsent('allow'), handleConsent('deny'))
+    headerCard = consentBox(handleConsent.bind(null, 'allow'), handleConsent.bind(null, 'deny'))
   } else if (consentStatus === 'deny') {
-    headerCard = consentBox(handleConsent('allow'))
+    headerCard = consentBox(handleConsent.bind(null, 'allow'))
   } else if (consentStatus === 'allow') {
     headerCard = auditoriumBox()
   }

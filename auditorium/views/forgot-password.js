@@ -8,10 +8,15 @@ function view (state, emit) {
   function handleSubmit (e) {
     e.preventDefault()
     var formData = new window.FormData(e.currentTarget)
-    emit('offen:forgot-password', {
-      emailAddress: formData.get('email-address'),
-      urlTemplate: window.location.origin + '/reset-password/{token}/'
-    })
+    emit(
+      'offen:forgot-password',
+      {
+        emailAddress: formData.get('email-address'),
+        urlTemplate: window.location.origin + '/reset-password/{token}/'
+      },
+      __('Check your inbox and follow the instructions in the email.'),
+      __('Could not handle your request, please try again.')
+    )
   }
   var form = html`
     <div class="w-100 pa3 mt4 mb2 br0 br2-ns bg-black-05">

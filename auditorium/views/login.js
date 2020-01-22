@@ -11,7 +11,7 @@ function view (state, emit) {
     emit('offen:login', {
       username: formData.get('username'),
       password: formData.get('password')
-    })
+    }, __('Could not log in using the given credentials. Try again.'))
   }
   var form = html`
     <div class="w-100 pa3 mt4 mb2 br0 br2-ns bg-black-05">
