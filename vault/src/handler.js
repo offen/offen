@@ -116,7 +116,17 @@ exports.handlePurgeWith = handlePurgeWith
 function handlePurgeWith (api, queries, getUserEvents, getOperatorEvents) {
   var handleQuery = handleQueryWith(getUserEvents, getOperatorEvents)
   return function handlePurge (message) {
-    return Promise.all([api.purge(), queries.purge()])
+    return Promise.all([
+      api
+        .purge()
+        .catch(function (err) {
+          if (err.status === 400) {
+            return null
+          }
+          throw err
+        }),
+      queries.purge()
+    ])
       .then(function () {
         return handleQuery(message)
       })
