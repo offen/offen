@@ -5,6 +5,7 @@ import (
 
 	"github.com/jinzhu/gorm"
 	"github.com/offen/offen/server/persistence"
+
 	// GORM imports the dialects for side effects only
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
@@ -55,8 +56,8 @@ func (r *relationalDAL) ApplyMigrations() error {
 		},
 	})
 
-	m.InitSchema(func(tx *gorm.DB) error {
-		return tx.AutoMigrate(
+	m.InitSchema(func(db *gorm.DB) error {
+		return db.AutoMigrate(
 			&Event{},
 			&Account{},
 			&User{},
@@ -73,20 +74,15 @@ func (r *relationalDAL) Ping() error {
 }
 
 func (r *relationalDAL) DropAll() error {
-	if err := r.db.Delete(&Event{}).Error; err != nil {
-		return fmt.Errorf("relational: error dropping events table: %w,", err)
-	}
-	if err := r.db.Delete(&Account{}).Error; err != nil {
-		return fmt.Errorf("relational: error dropping accounts table: %w,", err)
-	}
-	if err := r.db.Delete(&User{}).Error; err != nil {
-		return fmt.Errorf("relational: error dropping user table: %w,", err)
-	}
-	if err := r.db.Delete(&AccountUser{}).Error; err != nil {
-		return fmt.Errorf("relational: error dropping account user table: %w,", err)
-	}
-	if err := r.db.Delete(&AccountUserRelationship{}).Error; err != nil {
-		return fmt.Errorf("relational: error dropping account user relationship table: %w,", err)
+	if err := r.db.DropTableIfExists(
+		&Event{},
+		&Account{},
+		&User{},
+		&AccountUser{},
+		&AccountUserRelationship{},
+		"migrations",
+	).Error; err != nil {
+		return fmt.Errorf("relational: error dropping tables: %w,", err)
 	}
 	return nil
 }
