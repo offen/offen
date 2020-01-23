@@ -37,8 +37,8 @@ type AccountResult struct {
 
 // LoginResult is a successful account user authentication response.
 type LoginResult struct {
-	UserID   string               `json:"userId"`
-	Accounts []LoginAccountResult `json:"accounts"`
+	AccountUserID string               `json:"accountUserId"`
+	Accounts      []LoginAccountResult `json:"accounts"`
 }
 
 // CanAccessAccount checks whether the login result is allowed to access the

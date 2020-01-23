@@ -125,7 +125,7 @@ type mockUserLookupDatabase struct {
 func (*mockUserLookupDatabase) LookupUser(userID string) (persistence.LoginResult, error) {
 	if userID == "account-user-id-1" {
 		return persistence.LoginResult{
-			UserID: "account-user-id-1",
+			AccountUserID: "account-user-id-1",
 		}, nil
 	}
 	return persistence.LoginResult{}, fmt.Errorf("account user with id %s not found", userID)
@@ -140,7 +140,7 @@ func TestAccountUserMiddleware(t *testing.T) {
 	m := gin.New()
 	m.GET("/", rt.accountUserMiddleware("auth", "1"), func(c *gin.Context) {
 		user, _ := c.Value("2").(persistence.LoginResult)
-		c.String(http.StatusOK, "user id is %v", user.UserID)
+		c.String(http.StatusOK, "user id is %v", user.AccountUserID)
 	})
 
 	t.Run("no cookie", func(t *testing.T) {

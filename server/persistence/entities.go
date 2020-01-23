@@ -32,7 +32,7 @@ type Secret struct {
 // AccountUser is a person that can log in and access data related to all
 // associated accounts.
 type AccountUser struct {
-	UserID         string
+	AccountUserID  string
 	HashedEmail    string
 	HashedPassword string
 	Salt           string
@@ -43,7 +43,7 @@ type AccountUser struct {
 // an AccountUser to access the data of the account it links to.
 type AccountUserRelationship struct {
 	RelationshipID                    string
-	UserID                            string
+	AccountUserID                     string
 	AccountID                         string
 	PasswordEncryptedKeyEncryptionKey string
 	EmailEncryptedKeyEncryptionKey    string

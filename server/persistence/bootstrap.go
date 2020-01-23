@@ -140,7 +140,7 @@ func bootstrapAccounts(config *BootstrapConfig, emailSalt []byte) ([]Account, []
 		}
 
 		user := AccountUser{
-			UserID:         userID.String(),
+			AccountUserID:  userID.String(),
 			Salt:           salt,
 			HashedPassword: hashedPw.Marshal(),
 			HashedEmail:    hashedEmail,
@@ -183,7 +183,7 @@ func bootstrapAccounts(config *BootstrapConfig, emailSalt []byte) ([]Account, []
 			}
 			r := AccountUserRelationship{
 				RelationshipID:                    relationshipID.String(),
-				UserID:                            userID.String(),
+				AccountUserID:                     userID.String(),
 				AccountID:                         accountID,
 				PasswordEncryptedKeyEncryptionKey: encryptedPasswordDerivedKey.Marshal(),
 				EmailEncryptedKeyEncryptionKey:    encryptedEmailDerivedKey.Marshal(),

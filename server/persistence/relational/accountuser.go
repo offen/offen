@@ -28,7 +28,7 @@ func (r *relationalDAL) FindAccountUser(q interface{}) (persistence.AccountUser,
 		}
 		return accountUser.export(), nil
 	case persistence.FindAccountUserQueryByUserIDIncludeRelationships:
-		if err := r.db.Preload("Relationships").Where("user_id = ?", string(query)).First(&accountUser).Error; err != nil {
+		if err := r.db.Preload("Relationships").Where("account_user_id = ?", string(query)).First(&accountUser).Error; err != nil {
 			return accountUser.export(), fmt.Errorf("relational: error looking up account user by user id: %w", err)
 		}
 		return accountUser.export(), nil
@@ -39,7 +39,7 @@ func (r *relationalDAL) FindAccountUser(q interface{}) (persistence.AccountUser,
 
 func (r *relationalDAL) UpdateAccountUser(u *persistence.AccountUser) error {
 	local := importAccountUser(u)
-	exists := r.db.Where("user_id = ?", local.UserID).First(&AccountUser{}).Error
+	exists := r.db.Where("account_user_id = ?", local.AccountUserID).First(&AccountUser{}).Error
 	if exists != nil {
 		return fmt.Errorf("relational: error looking up account user for update: %w", exists)
 	}

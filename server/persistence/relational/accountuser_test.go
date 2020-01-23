@@ -19,11 +19,11 @@ func TestRelationalDAL_CreateAccountUser(t *testing.T) {
 		{
 			"ok",
 			&persistence.AccountUser{
-				UserID: "account-user-id",
+				AccountUserID: "account-user-id",
 			},
 			false,
 			func(db *gorm.DB) error {
-				if err := db.Where("user_id = ?", "account-user-id").First(&AccountUser{}).Error; err != nil {
+				if err := db.Where("account_user_id = ?", "account-user-id").First(&AccountUser{}).Error; err != nil {
 					return fmt.Errorf("error looking up account user: %w", err)
 				}
 				return nil
@@ -69,13 +69,13 @@ func TestRelationalDAL_FindAccountUser(t *testing.T) {
 			"by hashed email found",
 			func(db *gorm.DB) error {
 				if err := db.Save(&AccountUser{
-					UserID:      "user-id",
-					HashedEmail: "xyz123",
+					AccountUserID: "user-id",
+					HashedEmail:   "xyz123",
 				}).Error; err != nil {
 					return fmt.Errorf("error saving fixture data: %v", err)
 				}
 				if err := db.Save(&AccountUserRelationship{
-					UserID:         "user-id",
+					AccountUserID:  "user-id",
 					AccountID:      "account-id",
 					RelationshipID: "relationship-id",
 				}).Error; err != nil {
@@ -85,8 +85,8 @@ func TestRelationalDAL_FindAccountUser(t *testing.T) {
 			},
 			persistence.FindAccountUserQueryByHashedEmail("xyz123"),
 			persistence.AccountUser{
-				UserID:      "user-id",
-				HashedEmail: "xyz123",
+				AccountUserID: "user-id",
+				HashedEmail:   "xyz123",
 			},
 			false,
 		},
@@ -94,13 +94,13 @@ func TestRelationalDAL_FindAccountUser(t *testing.T) {
 			"by hashed email not found",
 			func(db *gorm.DB) error {
 				if err := db.Save(&AccountUser{
-					UserID:      "user-id",
-					HashedEmail: "xyz123",
+					AccountUserID: "user-id",
+					HashedEmail:   "xyz123",
 				}).Error; err != nil {
 					return fmt.Errorf("error saving fixture data: %v", err)
 				}
 				if err := db.Save(&AccountUserRelationship{
-					UserID:         "user-id",
+					AccountUserID:  "user-id",
 					AccountID:      "account-id",
 					RelationshipID: "relationship-id",
 				}).Error; err != nil {
@@ -116,13 +116,13 @@ func TestRelationalDAL_FindAccountUser(t *testing.T) {
 			"by hashed email found - include relationships",
 			func(db *gorm.DB) error {
 				if err := db.Save(&AccountUser{
-					UserID:      "user-id",
-					HashedEmail: "xyz123",
+					AccountUserID: "user-id",
+					HashedEmail:   "xyz123",
 				}).Error; err != nil {
 					return fmt.Errorf("error saving fixture data: %v", err)
 				}
 				if err := db.Save(&AccountUserRelationship{
-					UserID:         "user-id",
+					AccountUserID:  "user-id",
 					AccountID:      "account-id",
 					RelationshipID: "relationship-id",
 				}).Error; err != nil {
@@ -132,11 +132,11 @@ func TestRelationalDAL_FindAccountUser(t *testing.T) {
 			},
 			persistence.FindAccountUserQueryByHashedEmailIncludeRelationships("xyz123"),
 			persistence.AccountUser{
-				UserID:      "user-id",
-				HashedEmail: "xyz123",
+				AccountUserID: "user-id",
+				HashedEmail:   "xyz123",
 				Relationships: []persistence.AccountUserRelationship{
 					{
-						UserID:         "user-id",
+						AccountUserID:  "user-id",
 						AccountID:      "account-id",
 						RelationshipID: "relationship-id",
 					},
@@ -148,13 +148,13 @@ func TestRelationalDAL_FindAccountUser(t *testing.T) {
 			"by hashed email not found - include relationships",
 			func(db *gorm.DB) error {
 				if err := db.Save(&AccountUser{
-					UserID:      "user-id",
-					HashedEmail: "xyz123",
+					AccountUserID: "user-id",
+					HashedEmail:   "xyz123",
 				}).Error; err != nil {
 					return fmt.Errorf("error saving fixture data: %v", err)
 				}
 				if err := db.Save(&AccountUserRelationship{
-					UserID:         "user-id",
+					AccountUserID:  "user-id",
 					AccountID:      "account-id",
 					RelationshipID: "relationship-id",
 				}).Error; err != nil {
@@ -170,13 +170,13 @@ func TestRelationalDAL_FindAccountUser(t *testing.T) {
 			"by user id found - include relationships",
 			func(db *gorm.DB) error {
 				if err := db.Save(&AccountUser{
-					UserID:      "user-id",
-					HashedEmail: "xyz123",
+					AccountUserID: "user-id",
+					HashedEmail:   "xyz123",
 				}).Error; err != nil {
 					return fmt.Errorf("error saving fixture data: %v", err)
 				}
 				if err := db.Save(&AccountUserRelationship{
-					UserID:         "user-id",
+					AccountUserID:  "user-id",
 					AccountID:      "account-id",
 					RelationshipID: "relationship-id",
 				}).Error; err != nil {
@@ -186,11 +186,11 @@ func TestRelationalDAL_FindAccountUser(t *testing.T) {
 			},
 			persistence.FindAccountUserQueryByUserIDIncludeRelationships("user-id"),
 			persistence.AccountUser{
-				UserID:      "user-id",
-				HashedEmail: "xyz123",
+				AccountUserID: "user-id",
+				HashedEmail:   "xyz123",
 				Relationships: []persistence.AccountUserRelationship{
 					{
-						UserID:         "user-id",
+						AccountUserID:  "user-id",
 						AccountID:      "account-id",
 						RelationshipID: "relationship-id",
 					},
@@ -202,13 +202,13 @@ func TestRelationalDAL_FindAccountUser(t *testing.T) {
 			"by user id not found - include relationships",
 			func(db *gorm.DB) error {
 				if err := db.Save(&AccountUser{
-					UserID:      "user-id",
-					HashedEmail: "xyz123",
+					AccountUserID: "user-id",
+					HashedEmail:   "xyz123",
 				}).Error; err != nil {
 					return fmt.Errorf("error saving fixture data: %v", err)
 				}
 				if err := db.Save(&AccountUserRelationship{
-					UserID:         "user-id",
+					AccountUserID:  "user-id",
 					AccountID:      "account-id",
 					RelationshipID: "relationship-id",
 				}).Error; err != nil {
@@ -258,7 +258,7 @@ func TestRelationalDAL_UpdateAccountUser(t *testing.T) {
 			"user does not exist",
 			func(db *gorm.DB) error {
 				if err := db.Save(&AccountUser{
-					UserID:         "account-user-id-z",
+					AccountUserID:  "account-user-id-z",
 					HashedPassword: "abc123",
 				}).Error; err != nil {
 					return fmt.Errorf("error creating account user fixture: %v", err)
@@ -266,13 +266,13 @@ func TestRelationalDAL_UpdateAccountUser(t *testing.T) {
 				return nil
 			},
 			&persistence.AccountUser{
-				UserID:         "account-user-id-a",
+				AccountUserID:  "account-user-id-a",
 				HashedPassword: "xyz987",
 			},
 			true,
 			func(db *gorm.DB) error {
 				var accountUser AccountUser
-				if err := db.Where("user_id = ?", "account-user-id-z").First(&accountUser).Error; err != nil {
+				if err := db.Where("account_user_id = ?", "account-user-id-z").First(&accountUser).Error; err != nil {
 					return fmt.Errorf("error looking up record: %v", err)
 				}
 				if accountUser.HashedPassword != "abc123" {
@@ -285,7 +285,7 @@ func TestRelationalDAL_UpdateAccountUser(t *testing.T) {
 			"ok",
 			func(db *gorm.DB) error {
 				if err := db.Save(&AccountUser{
-					UserID:         "account-user-id-z",
+					AccountUserID:  "account-user-id-z",
 					HashedPassword: "abc123",
 				}).Error; err != nil {
 					return fmt.Errorf("error creating account user fixture: %v", err)
@@ -293,13 +293,13 @@ func TestRelationalDAL_UpdateAccountUser(t *testing.T) {
 				return nil
 			},
 			&persistence.AccountUser{
-				UserID:         "account-user-id-z",
+				AccountUserID:  "account-user-id-z",
 				HashedPassword: "xyz987",
 			},
 			false,
 			func(db *gorm.DB) error {
 				var accountUser AccountUser
-				if err := db.Where("user_id = ?", "account-user-id-z").First(&accountUser).Error; err != nil {
+				if err := db.Where("account_user_id = ?", "account-user-id-z").First(&accountUser).Error; err != nil {
 					return fmt.Errorf("error looking up record: %v", err)
 				}
 				if accountUser.HashedPassword != "xyz987" {

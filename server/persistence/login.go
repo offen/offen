@@ -31,7 +31,7 @@ func (p *persistenceLayer) Login(email, password string) (LoginResult, error) {
 	}
 
 	relationships, err := p.dal.FindAccountUserRelationships(
-		FindAccountUserRelationShipsQueryByUserID(accountUser.UserID),
+		FindAccountUserRelationShipsQueryByUserID(accountUser.AccountUserID),
 	)
 	if err != nil {
 		return LoginResult{}, fmt.Errorf("persistence: error retrieving account to user relationships: %w", err)
@@ -63,7 +63,7 @@ func (p *persistenceLayer) Login(email, password string) (LoginResult, error) {
 	}
 
 	return LoginResult{
-		UserID:   accountUser.UserID,
+		AccountUserID:   accountUser.AccountUserID,
 		Accounts: results,
 	}, nil
 }
@@ -76,7 +76,7 @@ func (p *persistenceLayer) LookupUser(userID string) (LoginResult, error) {
 		return LoginResult{}, fmt.Errorf("persistence: error looking up account user: %w", err)
 	}
 	result := LoginResult{
-		UserID:   accountUser.UserID,
+		AccountUserID:   accountUser.AccountUserID,
 		Accounts: []LoginAccountResult{},
 	}
 	for _, relationship := range accountUser.Relationships {
@@ -166,7 +166,7 @@ func (p *persistenceLayer) ResetPassword(emailAddress, password string, oneTimeK
 	}
 
 	relationships, err := p.dal.FindAccountUserRelationships(
-		FindAccountUserRelationShipsQueryByUserID(accountUser.UserID),
+		FindAccountUserRelationShipsQueryByUserID(accountUser.AccountUserID),
 	)
 	if err != nil {
 		return fmt.Errorf("persistence: error looking up relationships: %w", err)

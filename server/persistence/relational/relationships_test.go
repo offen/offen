@@ -71,14 +71,14 @@ func TestRelationalDAL_FindAccountUserRelationships(t *testing.T) {
 				for _, id := range []string{"relationship-a", "relationship-b", "relationship-c"} {
 					if err := db.Save(&AccountUserRelationship{
 						RelationshipID: id,
-						UserID:         "user-a",
+						AccountUserID:  "user-a",
 					}).Error; err != nil {
 						return fmt.Errorf("error saving fixtures: %w", err)
 					}
 				}
 				if err := db.Save(&AccountUserRelationship{
 					RelationshipID: "relationship-z",
-					UserID:         "user-b",
+					AccountUserID:  "user-b",
 				}).Error; err != nil {
 					return fmt.Errorf("error saving fixtures: %w", err)
 				}
@@ -86,9 +86,9 @@ func TestRelationalDAL_FindAccountUserRelationships(t *testing.T) {
 			},
 			persistence.FindAccountUserRelationShipsQueryByUserID("user-a"),
 			[]persistence.AccountUserRelationship{
-				{RelationshipID: "relationship-a", UserID: "user-a"},
-				{RelationshipID: "relationship-b", UserID: "user-a"},
-				{RelationshipID: "relationship-c", UserID: "user-a"},
+				{RelationshipID: "relationship-a", AccountUserID: "user-a"},
+				{RelationshipID: "relationship-b", AccountUserID: "user-a"},
+				{RelationshipID: "relationship-c", AccountUserID: "user-a"},
 			},
 			false,
 		},
