@@ -11,51 +11,51 @@ import (
 type Event struct {
 	EventID   string `gorm:"primary_key"`
 	AccountID string
-	// the user id is nullable for anonymous events
-	HashedUserID *string
-	Payload      string
-	User         User `gorm:"foreignkey:HashedUserID;association_foreignkey:HashedUserID"`
+	// the secret id is nullable for anonymous events
+	SecretID *string
+	Payload  string
+	Secret   Secret `gorm:"foreignkey:SecretID;association_foreignkey:SecretID"`
 }
 
 func (e *Event) export() persistence.Event {
 	return persistence.Event{
-		EventID:      e.EventID,
-		AccountID:    e.AccountID,
-		HashedUserID: e.HashedUserID,
-		Payload:      e.Payload,
-		User:         e.User.export(),
+		EventID:   e.EventID,
+		AccountID: e.AccountID,
+		SecretID:  e.SecretID,
+		Payload:   e.Payload,
+		Secret:    e.Secret.export(),
 	}
 }
 
 func importEvent(e *persistence.Event) Event {
 	return Event{
-		EventID:      e.EventID,
-		AccountID:    e.AccountID,
-		HashedUserID: e.HashedUserID,
-		Payload:      e.Payload,
-		User:         importUser(&e.User),
+		EventID:   e.EventID,
+		AccountID: e.AccountID,
+		SecretID:  e.SecretID,
+		Payload:   e.Payload,
+		Secret:    importSecret(&e.Secret),
 	}
 }
 
-// User associates a hashed user id - which ties a user and account together
+// Secret associates a hashed user id - which ties a user and account together
 // uniquely - with the encrypted user secret the account owner can use
 // to decrypt events stored for that user.
-type User struct {
-	HashedUserID        string `gorm:"primary_key"`
-	EncryptedUserSecret string
+type Secret struct {
+	SecretID        string `gorm:"primary_key"`
+	EncryptedSecret string
 }
 
-func (u *User) export() persistence.User {
-	return persistence.User{
-		HashedUserID:        u.HashedUserID,
-		EncryptedUserSecret: u.EncryptedUserSecret,
+func (s *Secret) export() persistence.Secret {
+	return persistence.Secret{
+		SecretID:        s.SecretID,
+		EncryptedSecret: s.EncryptedSecret,
 	}
 }
 
-func importUser(u *persistence.User) User {
-	return User{
-		HashedUserID:        u.HashedUserID,
-		EncryptedUserSecret: u.EncryptedUserSecret,
+func importSecret(s *persistence.Secret) Secret {
+	return Secret{
+		SecretID:        s.SecretID,
+		EncryptedSecret: s.EncryptedSecret,
 	}
 }
 

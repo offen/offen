@@ -15,18 +15,18 @@ import (
 type Event struct {
 	EventID   string
 	AccountID string
-	// the user id is nullable for anonymous events
-	HashedUserID *string
-	Payload      string
-	User         User
+	// the secret id is nullable for anonymous events
+	SecretID *string
+	Payload  string
+	Secret   Secret
 }
 
-// User associates a hashed user id - which ties a user and account together
+// Secret associates a hashed user id - which ties a user and account together
 // uniquely - with the encrypted user secret the account owner can use
 // to decrypt events stored for that user.
-type User struct {
-	HashedUserID        string
-	EncryptedUserSecret string
+type Secret struct {
+	SecretID        string
+	EncryptedSecret string
 }
 
 // AccountUser is a person that can log in and access data related to all

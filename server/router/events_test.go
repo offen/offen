@@ -172,12 +172,12 @@ func TestRouter_getEvents(t *testing.T) {
 			&mockGetEventsService{
 				result: map[string][]persistence.EventResult{
 					"account-a": []persistence.EventResult{
-						{AccountID: "account-a", UserID: strptr("user-a"), EventID: "event-a", Payload: "payload"},
+						{AccountID: "account-a", SecretID: strptr("hashed-user-a"), EventID: "event-a", Payload: "payload"},
 					},
 				},
 			},
 			http.StatusOK,
-			`{"events":{"account-a":[{"accountId":"account-a","userId":"user-a","eventId":"event-a","payload":"payload"}]}}`,
+			`{"events":{"account-a":[{"accountId":"account-a","secretId":"hashed-user-a","eventId":"event-a","payload":"payload"}]}}`,
 		},
 	}
 
@@ -255,7 +255,7 @@ func TestRouter_postEvents(t *testing.T) {
 		{
 			"unknown user",
 			&mockPostEventsService{
-				err: persistence.ErrUnknownUser("unknown user"),
+				err: persistence.ErrUnknownSecret("unknown secret"),
 			},
 			`{"accountId":"account-a","payload":"some-payload"}`,
 			http.StatusBadRequest,

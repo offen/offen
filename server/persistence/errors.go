@@ -10,11 +10,11 @@ func (e ErrUnknownAccount) Error() string {
 	return string(e)
 }
 
-// ErrUnknownUser will be returned when a given UserID (most likely in its hashed
-// form) is not found in the database
-type ErrUnknownUser string
+// ErrUnknownSecret will be returned when a given SecretID
+// is not found in the database
+type ErrUnknownSecret string
 
-func (e ErrUnknownUser) Error() string {
+func (e ErrUnknownSecret) Error() string {
 	return string(e)
 }
 

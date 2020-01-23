@@ -2,17 +2,17 @@ package persistence
 
 import "time"
 
-// UserResult contains information about a single user entry
-type UserResult struct {
-	HashedUserID        string `json:"hashedUserId"`
-	EncryptedUserSecret string `json:"encryptedUserSecret"`
+// SecretResult contains information about a single secret record
+type SecretResult struct {
+	SecretID        string `json:"secretId"`
+	EncryptedSecret string `json:"encryptedSecret"`
 }
 
 // EventResult is an element returned from a query. It contains all data that
 // is stored about an atomic event.
 type EventResult struct {
 	AccountID string  `json:"accountId"`
-	UserID    *string `json:"userId"`
+	SecretID  *string `json:"secretId"`
 	EventID   string  `json:"eventId"`
 	Payload   string  `json:"payload"`
 }
@@ -20,19 +20,19 @@ type EventResult struct {
 // EventsByAccountID groups a list of events by AccountID in a response
 type EventsByAccountID map[string][]EventResult
 
-// SecretsByUserID is a map of hashed user IDs and their respective
+// EncryptedSecretsByID is a map of secret IDs and their respective
 // encrypted user secrets
-type SecretsByUserID map[string]string
+type EncryptedSecretsByID map[string]string
 
 // AccountResult is the data returned from looking up an account by id
 type AccountResult struct {
-	AccountID           string             `json:"accountId"`
-	Name                string             `json:"name"`
-	PublicKey           interface{}        `json:"publicKey,omitempty"`
-	EncryptedPrivateKey string             `json:"encryptedPrivateKey,omitempty"`
-	Events              *EventsByAccountID `json:"events,omitempty"`
-	UserSecrets         *SecretsByUserID   `json:"userSecrets,omitempty"`
-	Created             time.Time          `json:"created,omitempty"`
+	AccountID           string                `json:"accountId"`
+	Name                string                `json:"name"`
+	PublicKey           interface{}           `json:"publicKey,omitempty"`
+	EncryptedPrivateKey string                `json:"encryptedPrivateKey,omitempty"`
+	Events              *EventsByAccountID    `json:"events,omitempty"`
+	Secrets             *EncryptedSecretsByID `json:"encryptedSecrets,omitempty"`
+	Created             time.Time             `json:"created,omitempty"`
 }
 
 // LoginResult is a successful account user authentication response.

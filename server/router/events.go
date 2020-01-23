@@ -41,10 +41,10 @@ func (rt *router) postEvents(c *gin.Context) {
 			return
 		}
 
-		var unknownUserErr persistence.ErrUnknownUser
-		if errors.As(err, &unknownUserErr) {
+		var unknownSecretErr persistence.ErrUnknownSecret
+		if errors.As(err, &unknownSecretErr) {
 			newJSONError(
-				unknownUserErr,
+				unknownSecretErr,
 				http.StatusBadRequest,
 			).Pipe(c)
 			return

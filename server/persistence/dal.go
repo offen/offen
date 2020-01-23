@@ -7,9 +7,9 @@ type DataAccessLayer interface {
 	CreateEvent(*Event) error
 	FindEvents(interface{}) ([]Event, error)
 	DeleteEvents(interface{}) (int64, error)
-	CreateUser(*User) error
-	FindUser(interface{}) (User, error)
-	DeleteUser(interface{}) error
+	CreateSecret(*Secret) error
+	FindSecret(interface{}) (Secret, error)
+	DeleteSecret(interface{}) error
 	CreateAccount(*Account) error
 	FindAccount(interface{}) (Account, error)
 	FindAccounts(interface{}) ([]Account, error)
@@ -25,12 +25,12 @@ type DataAccessLayer interface {
 	Ping() error
 }
 
-// FindEventsQueryForHashedIDs requests all events that match the list of hashed
+// FindEventsQueryForSecretIDs requests all events that match the list of hashed
 // user identifiers. In case the Since value is non-zero it will be used to request
 // only events that are newer than the given ULID.
-type FindEventsQueryForHashedIDs struct {
-	HashedUserIDs []string
-	Since         string
+type FindEventsQueryForSecretIDs struct {
+	SecretIDs []string
+	Since     string
 }
 
 // FindEventsQueryByEventIDs requests all events that match the given list of
@@ -41,12 +41,12 @@ type FindEventsQueryByEventIDs []string
 // that do not have a hashed user id contained in the given set.
 type FindEventsQueryExclusion struct {
 	EventIDs      []string
-	HashedUserIDs []string
+	SecretIDs []string
 }
 
-// DeleteEventsQueryByHashedIDs requests deletion of all events that match
+// DeleteEventsQueryBySecretIDs requests deletion of all events that match
 // the given identifiers.
-type DeleteEventsQueryByHashedIDs []string
+type DeleteEventsQueryBySecretIDs []string
 
 // DeleteEventsQueryOlderThan requests deletion of all events that are older than
 // the given ULID event identifier.
@@ -56,12 +56,12 @@ type DeleteEventsQueryOlderThan string
 // given set.
 type DeleteEventsQueryByEventIDs []string
 
-// DeleteUserQueryByHashedID requests deletion of the user record with the given
-// hashed id.
-type DeleteUserQueryByHashedID string
+// DeleteSecretQueryBySecretID requests deletion of the secret record with the given
+// secret id.
+type DeleteSecretQueryBySecretID string
 
-// FindUserQueryByHashedUserID requests the user of the given ID
-type FindUserQueryByHashedUserID string
+// FindSecretQueryBySecretID requests the user of the given ID
+type FindSecretQueryBySecretID string
 
 // FindAccountQueryActiveByID requests a non-retired account of the given ID
 type FindAccountQueryActiveByID string

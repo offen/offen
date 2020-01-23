@@ -35,32 +35,13 @@ func (r *relationalDAL) Transaction() (persistence.Transaction, error) {
 }
 
 func (r *relationalDAL) ApplyMigrations() error {
-	m := gormigrate.New(r.db, gormigrate.DefaultOptions, []*gormigrate.Migration{
-		{
-			ID: "001_add_one_time_keys",
-			Migrate: func(db *gorm.DB) error {
-				type AccountUserRelationship struct {
-					RelationshipID                    string `gorm:"primary_key"`
-					UserID                            string
-					AccountID                         string
-					PasswordEncryptedKeyEncryptionKey string
-					EmailEncryptedKeyEncryptionKey    string
-					// this is the field introducted in this migration
-					OneTimeEncryptedKeyEncryptionKey string
-				}
-				return db.AutoMigrate(&AccountUserRelationship{}).Error
-			},
-			Rollback: func(db *gorm.DB) error {
-				return db.Table("account_user_relationships").DropColumn("one_time_encrypted_key_encryption_key").Error
-			},
-		},
-	})
+	m := gormigrate.New(r.db, gormigrate.DefaultOptions, []*gormigrate.Migration{})
 
 	m.InitSchema(func(db *gorm.DB) error {
 		return db.AutoMigrate(
 			&Event{},
 			&Account{},
-			&User{},
+			&Secret{},
 			&AccountUser{},
 			&AccountUserRelationship{},
 		).Error
@@ -77,7 +58,7 @@ func (r *relationalDAL) DropAll() error {
 	if err := r.db.DropTableIfExists(
 		&Event{},
 		&Account{},
-		&User{},
+		&Secret{},
 		&AccountUser{},
 		&AccountUserRelationship{},
 		"migrations",

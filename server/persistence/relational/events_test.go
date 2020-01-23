@@ -86,46 +86,46 @@ func TestRelationalDAL_FindEvents(t *testing.T) {
 			false,
 		},
 		{
-			"by hashed user id - all events",
+			"by secret id - all events",
 			func(db *gorm.DB) error {
 				for _, token := range []string{"a", "b", "c"} {
 					if err := db.Save(&Event{
-						EventID:      fmt.Sprintf("event-%s", token),
-						HashedUserID: strptr(fmt.Sprintf("hashed-user-id-%s", token)),
+						EventID:  fmt.Sprintf("event-%s", token),
+						SecretID: strptr(fmt.Sprintf("hashed-user-id-%s", token)),
 					}).Error; err != nil {
 						return fmt.Errorf("error saving fixture data: %v", err)
 					}
 				}
 				return nil
 			},
-			persistence.FindEventsQueryForHashedIDs{
-				HashedUserIDs: []string{"hashed-user-id-a", "hashed-user-id-b", "hashed-user-id-z"},
+			persistence.FindEventsQueryForSecretIDs{
+				SecretIDs: []string{"hashed-user-id-a", "hashed-user-id-b", "hashed-user-id-z"},
 			},
 			[]persistence.Event{
-				{EventID: "event-a", HashedUserID: strptr("hashed-user-id-a")},
-				{EventID: "event-b", HashedUserID: strptr("hashed-user-id-b")},
+				{EventID: "event-a", SecretID: strptr("hashed-user-id-a")},
+				{EventID: "event-b", SecretID: strptr("hashed-user-id-b")},
 			},
 			false,
 		},
 		{
-			"by hashed user id - using since param",
+			"by secret id - using since param",
 			func(db *gorm.DB) error {
 				for _, token := range []string{"a", "b", "c"} {
 					if err := db.Save(&Event{
-						EventID:      fmt.Sprintf("event-%s", token),
-						HashedUserID: strptr(fmt.Sprintf("hashed-user-id-%s", token)),
+						EventID:  fmt.Sprintf("event-%s", token),
+						SecretID: strptr(fmt.Sprintf("hashed-user-id-%s", token)),
 					}).Error; err != nil {
 						return fmt.Errorf("error saving fixture data: %v", err)
 					}
 				}
 				return nil
 			},
-			persistence.FindEventsQueryForHashedIDs{
-				Since:         "event-a",
-				HashedUserIDs: []string{"hashed-user-id-a", "hashed-user-id-b", "hashed-user-id-z"},
+			persistence.FindEventsQueryForSecretIDs{
+				Since:     "event-a",
+				SecretIDs: []string{"hashed-user-id-a", "hashed-user-id-b", "hashed-user-id-z"},
 			},
 			[]persistence.Event{
-				{EventID: "event-b", HashedUserID: strptr("hashed-user-id-b")},
+				{EventID: "event-b", SecretID: strptr("hashed-user-id-b")},
 			},
 			false,
 		},
@@ -134,8 +134,8 @@ func TestRelationalDAL_FindEvents(t *testing.T) {
 			func(db *gorm.DB) error {
 				for _, token := range []string{"a", "b", "c"} {
 					if err := db.Save(&Event{
-						EventID:      fmt.Sprintf("event-%s", token),
-						HashedUserID: strptr(fmt.Sprintf("hashed-user-id-%s", token)),
+						EventID:  fmt.Sprintf("event-%s", token),
+						SecretID: strptr(fmt.Sprintf("hashed-user-id-%s", token)),
 					}).Error; err != nil {
 						return fmt.Errorf("error saving fixture data: %v", err)
 					}
@@ -143,11 +143,11 @@ func TestRelationalDAL_FindEvents(t *testing.T) {
 				return nil
 			},
 			persistence.FindEventsQueryExclusion{
-				EventIDs:      []string{"event-a", "event-c"},
-				HashedUserIDs: []string{"hashed-user-id-b", "hashed-user-id-c"},
+				EventIDs:  []string{"event-a", "event-c"},
+				SecretIDs: []string{"hashed-user-id-b", "hashed-user-id-c"},
 			},
 			[]persistence.Event{
-				{EventID: "event-a", HashedUserID: strptr("hashed-user-id-a")},
+				{EventID: "event-a", SecretID: strptr("hashed-user-id-a")},
 			},
 			false,
 		},
@@ -224,15 +224,15 @@ func TestRelationalDAL_DeleteEvents(t *testing.T) {
 			func(db *gorm.DB) error {
 				for _, token := range []string{"x", "y", "z"} {
 					if err := db.Save(&Event{
-						EventID:      fmt.Sprintf("event-%s", token),
-						HashedUserID: strptr(fmt.Sprintf("hashed-user-id-%s", token)),
+						EventID:  fmt.Sprintf("event-%s", token),
+						SecretID: strptr(fmt.Sprintf("hashed-user-id-%s", token)),
 					}).Error; err != nil {
 						return fmt.Errorf("error creating fixture record: %v", err)
 					}
 				}
 				return nil
 			},
-			persistence.DeleteEventsQueryByHashedIDs{"hashed-user-id-y", "hashed-user-id-z"},
+			persistence.DeleteEventsQueryBySecretIDs{"hashed-user-id-y", "hashed-user-id-z"},
 			2,
 			false,
 			func(db *gorm.DB) error {
