@@ -69,7 +69,7 @@ describe('src/get-operator-events', function () {
           getLatestEvent: sinon.stub().resolves({ eventId: 'd' }),
           deleteEvents: sinon.stub().resolves(true),
           putEvents: sinon.stub().resolves(true),
-          putEncryptedUserSecrets: sinon.stub().resolves()
+          putEncryptedSecrets: sinon.stub().resolves()
         }
         var mockApi = {
           getDeletedEvents: sinon.stub().resolves({ eventIds: ['a'] }),
@@ -203,7 +203,7 @@ describe('src/get-operator-events', function () {
           getLatestEvent: sinon.stub().resolves({ eventId: 'd' }),
           deleteEvents: sinon.stub().resolves(true),
           putEvents: sinon.stub().resolves(true),
-          putEncryptedUserSecrets: sinon.stub().resolves()
+          putEncryptedSecrets: sinon.stub().resolves()
         }
         var mockApi = {
           getDeletedEvents: sinon.stub().resolves({ eventIds: ['a'] }),
@@ -211,12 +211,12 @@ describe('src/get-operator-events', function () {
             events: {
               'account-a': [{
                 eventId: 'z',
-                userId: 'user-a',
+                secretId: 'user-a',
                 accountId: 'account-a',
                 payload: encryptedEventPayload
               }]
             },
-            userSecrets: {
+            secrets: {
               'user-a': encryptedUserSecret
             },
             name: 'test',
@@ -251,7 +251,7 @@ describe('src/get-operator-events', function () {
             assert(mockQueries.putEvents.calledOnce)
             assert(mockQueries.putEvents.calledWith('account-a', {
               eventId: 'z',
-              userId: 'user-a',
+              secretId: 'user-a',
               accountId: 'account-a',
               timestamp: 'timestamp-fixture',
               payload: encryptedEventPayload

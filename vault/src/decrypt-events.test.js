@@ -3,7 +3,7 @@ var Unibabel = require('unibabel').Unibabel
 
 var decryptEventsWith = require('./decrypt-events').decryptEventsWith
 
-describe('src/decrypt-event.js', function () {
+describe('src/decrypt-events.js', function () {
   describe('decryptEvents', function () {
     var decryptEvents = decryptEventsWith(null)
 
@@ -78,21 +78,21 @@ describe('src/decrypt-event.js', function () {
       return decryptEvents(
         [
           {
-            userId: 'user-id',
+            secretId: 'user-id',
             payload: encryptedEventPayload
           },
           {
-            userId: 'unknown-user',
+            secretId: 'unknown-user',
             payload: encryptedEventPayload
           },
           {
-            userId: 'user-id',
+            secretId: 'user-id',
             payload: 'bogus-value'
           }
         ],
         [
           {
-            userId: 'user-id',
+            secretId: 'user-id',
             value: encryptedUserSecret
           }
         ],
@@ -103,7 +103,7 @@ describe('src/decrypt-event.js', function () {
             result,
             [
               {
-                userId: 'user-id',
+                secretId: 'user-id',
                 payload: { type: 'TEST' }
               }
             ]

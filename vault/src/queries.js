@@ -99,14 +99,14 @@ function getDefaultStatsWith (getDatabase) {
           return accountId
             ? decryptEvents(
               events,
-              getEncryptedUserSecretsWith(getDatabase)(accountId),
+              getEncryptedSecretsWith(getDatabase)(accountId),
               privateJwk
             )
             : events
         })
         .then(function (events) {
           return events.map(function (event) {
-            if (event.userId === null || !event.payload) {
+            if (event.secretId === null || !event.payload) {
               return event
             }
             event.payload.referrer = event.payload.referrer && new window.URL(event.payload.referrer)
@@ -231,7 +231,7 @@ function getDefaultStatsWith (getDatabase) {
 }
 
 var TYPE_USER_SECRET = 'USER_SECRET'
-var TYPE_ENCRYPTED_USER_SECRET = 'ENCRYPTED_USER_SECRET'
+var TYPE_ENCRYPTED_SECRET = 'ENCRYPTED_SECRET'
 
 exports.getUserSecret = getUserSecretWith(getDatabase)
 exports.getUserSecretWith = getUserSecretWith
@@ -273,10 +273,10 @@ function deleteUserSecretWith (getDatabase) {
   }
 }
 
-exports.putEncryptedUserSecrets = putEncryptedUserSecretsWith(getDatabase)
-exports.putEncryptedUserSecretsWith = putEncryptedUserSecretsWith
-function putEncryptedUserSecretsWith (getDatabase) {
-  // user secrets are expected to be passed in [userId, secret] tuples
+exports.putEncryptedSecrets = putEncryptedSecretsWith(getDatabase)
+exports.putEncryptedSecretsWith = putEncryptedSecretsWith
+function putEncryptedSecretsWith (getDatabase) {
+  // user secrets are expected to be passed in [secretUd, secret] tuples
   return function (/* accountId, ...userSecrets */) {
     var args = [].slice.call(arguments)
     var accountId = args.shift()
@@ -284,8 +284,8 @@ function putEncryptedUserSecretsWith (getDatabase) {
     var db = getDatabase(accountId)
     var records = args.map(function (pair) {
       return {
-        type: TYPE_ENCRYPTED_USER_SECRET,
-        userId: pair[0],
+        type: TYPE_ENCRYPTED_SECRET,
+        secretId: pair[0],
         value: pair[1]
       }
     })
@@ -349,12 +349,12 @@ function purgeWith (getDatabase) {
   }
 }
 
-function getEncryptedUserSecretsWith (getDatabase) {
+function getEncryptedSecretsWith (getDatabase) {
   return function (accountId) {
     var db = getDatabase(accountId)
     return db.keys
       .where('type')
-      .equals(TYPE_ENCRYPTED_USER_SECRET)
+      .equals(TYPE_ENCRYPTED_SECRET)
       .toArray()
   }
 }

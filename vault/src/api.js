@@ -217,9 +217,9 @@ exports.purge = purgeWith(window.location.origin + '/api/purge')
 exports.purgeWith = purgeWith
 
 function purgeWith (purgeUrl) {
-  return function (deleteUserID) {
+  return function (deleteUserCookie) {
     var url = new window.URL(purgeUrl)
-    if (deleteUserID) {
+    if (deleteUserCookie) {
       url.search = new window.URLSearchParams({ user: '1' })
     }
     return window

@@ -31,7 +31,7 @@ type AccountResult struct {
 	PublicKey           interface{}           `json:"publicKey,omitempty"`
 	EncryptedPrivateKey string                `json:"encryptedPrivateKey,omitempty"`
 	Events              *EventsByAccountID    `json:"events,omitempty"`
-	Secrets             *EncryptedSecretsByID `json:"encryptedSecrets,omitempty"`
+	Secrets             *EncryptedSecretsByID `json:"secrets,omitempty"`
 	Created             time.Time             `json:"created,omitempty"`
 }
 
