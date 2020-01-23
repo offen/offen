@@ -231,7 +231,7 @@ function view (state, emit) {
             ${keyMetric('Unique users', state.model.liveUsers)}
           </div>
           <div class="w-100 w-70-ns">
-            ${state.cache(Table, 'main/live-table').render([tableData])}
+            ${state.cache(Table, 'main/live-table').render([tableData], __('No data available for this view'))}
           </div>
         </div>
       </div>
@@ -299,13 +299,13 @@ function view (state, emit) {
   ]
   var urlTables = html`
     <div class="w-100 pa3 mb2 bt bb ba-ns br0 br2-ns b--black-10 bg-white">
-      ${state.cache(Table, 'main/pages-table').render(pagesTableData)}
+      ${state.cache(Table, 'main/pages-table').render(pagesTableData, __('No data available for this view'))}
     </div>
     <div class="w-100 pa3 mb2 bt bb ba-ns br0 br2-ns b--black-10 bg-white">
-      ${state.cache(Table, 'main/referrers-table').render(referrersTableData)}
+      ${state.cache(Table, 'main/referrers-table').render(referrersTableData, __('No data available for this view'))}
     </div>
     <div class="w-100 pa3 mb2 bt bb ba-ns br0 br2-ns b--black-10 bg-white">
-      ${state.cache(Table, 'main/landing-exit-table').render(landingExitTableData)}
+      ${state.cache(Table, 'main/landing-exit-table').render(landingExitTableData, __('No data available for this view'))}
     </div>
   `
 

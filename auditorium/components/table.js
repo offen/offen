@@ -19,7 +19,7 @@ Table.prototype.toggle = function (index) {
   this.rerender()
 }
 
-Table.prototype.createElement = function (tableSets) {
+Table.prototype.createElement = function (tableSets, onEmptyMessage) {
   var self = this
   if (!Array.isArray(tableSets)) {
     tableSets = [tableSets]
@@ -38,7 +38,7 @@ Table.prototype.createElement = function (tableSets) {
         </tr>
       `
     })
-    : html`<tr><td colspan="2">${__('No data available for this view')}</td></tr>`
+    : html`<tr><td colspan="2">${onEmptyMessage}</td></tr>`
 
   var headlines = tableSets.map(function (set, index) {
     var css = ['f5', 'normal', 'mt0', 'mb3', 'dib', 'mr3']
