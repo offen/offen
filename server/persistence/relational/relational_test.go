@@ -50,6 +50,10 @@ func TestRelationalDAL_DropAll(t *testing.T) {
 		t.Errorf("Unexpected error: %v", err)
 	}
 
+	if err := dal.ApplyMigrations(); err != nil {
+		t.Errorf("Unexpected error: %v", err)
+	}
+
 	err := db.Where("event_id = ?", "event-id").First(&Event{}).Error
 	if !gorm.IsRecordNotFoundError(err) {
 		t.Errorf("Unexpected error value %v", err)

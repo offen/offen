@@ -27,8 +27,8 @@ func TestRelationalDAL_Transaction(t *testing.T) {
 		t.Error("Expected error when using transaction to ping")
 	}
 
-	if err := txn.ApplyMigrations(); err == nil {
-		t.Errorf("Expected error when applying migrations to a transaction")
+	if err := txn.ApplyMigrations(); err != nil {
+		t.Errorf("Unexpected error when applying migrations to a transaction")
 	}
 
 	if err := txn.CreateEvent(&persistence.Event{

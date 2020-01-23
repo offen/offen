@@ -47,6 +47,11 @@ func (p *persistenceLayer) Bootstrap(config BootstrapConfig, emailSalt []byte) e
 		return fmt.Errorf("persistence: error dropping tables before inserting seed data: %w", err)
 	}
 
+	if err := txn.ApplyMigrations(); err != nil {
+		txn.Rollback()
+		return fmt.Errorf("persistence: error applying initial migrations: %w", err)
+	}
+
 	accounts, accountUsers, relationships, err := bootstrapAccounts(&config, emailSalt)
 	if err != nil {
 		txn.Rollback()
