@@ -122,13 +122,13 @@ type mockUserLookupDatabase struct {
 	persistence.Service
 }
 
-func (*mockUserLookupDatabase) LookupUser(userID string) (persistence.LoginResult, error) {
-	if userID == "account-user-id-1" {
+func (*mockUserLookupDatabase) LookupAccountUser(accountUserID string) (persistence.LoginResult, error) {
+	if accountUserID == "account-user-id-1" {
 		return persistence.LoginResult{
 			AccountUserID: "account-user-id-1",
 		}, nil
 	}
-	return persistence.LoginResult{}, fmt.Errorf("account user with id %s not found", userID)
+	return persistence.LoginResult{}, fmt.Errorf("account user with id %s not found", accountUserID)
 }
 
 func TestAccountUserMiddleware(t *testing.T) {

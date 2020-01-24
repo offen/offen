@@ -45,7 +45,7 @@ function allowsCookiesMiddleware (event, respond, next) {
   console.log(__('This page is using Offen to collect usage statistics.'))
   console.log(__('Your setup prevents third party cookies or you have disabled it in your browser\'s settings.'))
   console.log(__('No usage data will be collected.'))
-  console.log(__('Find out more at "%s".', window.location.origin))
+  console.log(__('Find out more about Offen at "https://www.offen.dev".'))
 }
 
 function callHandler (handler) {

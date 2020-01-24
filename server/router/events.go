@@ -35,7 +35,7 @@ func (rt *router) postEvents(c *gin.Context) {
 		var unknownAccountErr persistence.ErrUnknownAccount
 		if errors.As(err, &unknownAccountErr) {
 			newJSONError(
-				unknownAccountErr,
+				fmt.Errorf("router: error inserting event: %w", unknownAccountErr),
 				http.StatusNotFound,
 			).Pipe(c)
 			return
@@ -44,7 +44,7 @@ func (rt *router) postEvents(c *gin.Context) {
 		var unknownSecretErr persistence.ErrUnknownSecret
 		if errors.As(err, &unknownSecretErr) {
 			newJSONError(
-				unknownSecretErr,
+				fmt.Errorf("router: error inserting event: %w", unknownSecretErr),
 				http.StatusBadRequest,
 			).Pipe(c)
 			return

@@ -31,7 +31,7 @@ func (p *persistenceLayer) Login(email, password string) (LoginResult, error) {
 	}
 
 	relationships, err := p.dal.FindAccountUserRelationships(
-		FindAccountUserRelationShipsQueryByUserID(accountUser.AccountUserID),
+		FindAccountUserRelationshipsQueryByAccountUserID(accountUser.AccountUserID),
 	)
 	if err != nil {
 		return LoginResult{}, fmt.Errorf("persistence: error retrieving account to user relationships: %w", err)
@@ -68,9 +68,9 @@ func (p *persistenceLayer) Login(email, password string) (LoginResult, error) {
 	}, nil
 }
 
-func (p *persistenceLayer) LookupUser(userID string) (LoginResult, error) {
+func (p *persistenceLayer) LookupAccountUser(accountUserID string) (LoginResult, error) {
 	accountUser, err := p.dal.FindAccountUser(
-		FindAccountUserQueryByUserIDIncludeRelationships(userID),
+		FindAccountUserQueryByAccountUserIDIncludeRelationships(accountUserID),
 	)
 	if err != nil {
 		return LoginResult{}, fmt.Errorf("persistence: error looking up account user: %w", err)
@@ -89,7 +89,7 @@ func (p *persistenceLayer) LookupUser(userID string) (LoginResult, error) {
 
 func (p *persistenceLayer) ChangePassword(userID, currentPassword, changedPassword string) error {
 	accountUser, err := p.dal.FindAccountUser(
-		FindAccountUserQueryByUserIDIncludeRelationships(userID),
+		FindAccountUserQueryByAccountUserIDIncludeRelationships(userID),
 	)
 	if err != nil {
 		return fmt.Errorf("persistence: error looking up account user: %w", err)
@@ -166,7 +166,7 @@ func (p *persistenceLayer) ResetPassword(emailAddress, password string, oneTimeK
 	}
 
 	relationships, err := p.dal.FindAccountUserRelationships(
-		FindAccountUserRelationShipsQueryByUserID(accountUser.AccountUserID),
+		FindAccountUserRelationshipsQueryByAccountUserID(accountUser.AccountUserID),
 	)
 	if err != nil {
 		return fmt.Errorf("persistence: error looking up relationships: %w", err)
@@ -212,7 +212,7 @@ func (p *persistenceLayer) ResetPassword(emailAddress, password string, oneTimeK
 
 func (p *persistenceLayer) ChangeEmail(userID, emailAddress, password string) error {
 	accountUser, err := p.dal.FindAccountUser(
-		FindAccountUserQueryByUserIDIncludeRelationships(userID),
+		FindAccountUserQueryByAccountUserIDIncludeRelationships(userID),
 	)
 	if err != nil {
 		return fmt.Errorf("persistence: error looking up account user: %w", err)

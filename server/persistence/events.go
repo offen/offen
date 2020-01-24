@@ -25,7 +25,7 @@ func (p *persistenceLayer) Insert(userID, accountID, payload string) error {
 	// already exists for the account so events can be decrypted lateron
 	if hashedUserID != nil {
 		if _, err := p.dal.FindSecret(FindSecretQueryBySecretID(*hashedUserID)); err != nil {
-			return fmt.Errorf("persistence: error finding user for given event: %w", err)
+			return fmt.Errorf("persistence: error finding secret for given event: %w", err)
 		}
 	}
 

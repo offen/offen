@@ -184,7 +184,7 @@ func TestRelationalDAL_FindAccountUser(t *testing.T) {
 				}
 				return nil
 			},
-			persistence.FindAccountUserQueryByUserIDIncludeRelationships("user-id"),
+			persistence.FindAccountUserQueryByAccountUserIDIncludeRelationships("user-id"),
 			persistence.AccountUser{
 				AccountUserID: "user-id",
 				HashedEmail:   "xyz123",
@@ -216,7 +216,7 @@ func TestRelationalDAL_FindAccountUser(t *testing.T) {
 				}
 				return nil
 			},
-			persistence.FindAccountUserQueryByUserIDIncludeRelationships("user-id-2"),
+			persistence.FindAccountUserQueryByAccountUserIDIncludeRelationships("user-id-2"),
 			persistence.AccountUser{},
 			true,
 		},

@@ -25,8 +25,8 @@ type DataAccessLayer interface {
 	Ping() error
 }
 
-// FindEventsQueryForSecretIDs requests all events that match the list of hashed
-// user identifiers. In case the Since value is non-zero it will be used to request
+// FindEventsQueryForSecretIDs requests all events that match the list of
+// secret identifiers. In case the Since value is non-zero it will be used to request
 // only events that are newer than the given ULID.
 type FindEventsQueryForSecretIDs struct {
 	SecretIDs []string
@@ -40,7 +40,7 @@ type FindEventsQueryByEventIDs []string
 // FindEventsQueryExclusion requests all events of the given identifiers
 // that do not have a hashed user id contained in the given set.
 type FindEventsQueryExclusion struct {
-	EventIDs      []string
+	EventIDs  []string
 	SecretIDs []string
 }
 
@@ -60,7 +60,7 @@ type DeleteEventsQueryByEventIDs []string
 // secret id.
 type DeleteSecretQueryBySecretID string
 
-// FindSecretQueryBySecretID requests the user of the given ID
+// FindSecretQueryBySecretID requests the secret of the given ID
 type FindSecretQueryBySecretID string
 
 // FindAccountQueryActiveByID requests a non-retired account of the given ID
@@ -88,13 +88,13 @@ type FindAccountUserQueryByHashedEmail string
 // hashed email and all of its relationships.
 type FindAccountUserQueryByHashedEmailIncludeRelationships string
 
-// FindAccountUserQueryByUserIDIncludeRelationships requests the account user of
+// FindAccountUserQueryByAccountUserIDIncludeRelationships requests the account user of
 // the given id and all of its relationships.
-type FindAccountUserQueryByUserIDIncludeRelationships string
+type FindAccountUserQueryByAccountUserIDIncludeRelationships string
 
-// FindAccountUserRelationShipsQueryByUserID requests all relationships for the user
-// with the given user ID.
-type FindAccountUserRelationShipsQueryByUserID string
+// FindAccountUserRelationshipsQueryByAccountUserID requests all relationships for the user
+// with the given account user ID.
+type FindAccountUserRelationshipsQueryByAccountUserID string
 
 // Transaction is a data access layer that does not persist data until commit
 // is called. In case rollback is called before, the underlying database will

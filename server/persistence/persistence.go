@@ -15,7 +15,7 @@ type Service interface {
 	AssociateUserSecret(accountID, userID, encryptedUserSecret string) error
 	Purge(userID string) error
 	Login(email, password string) (LoginResult, error)
-	LookupUser(userID string) (LoginResult, error)
+	LookupAccountUser(userID string) (LoginResult, error)
 	ChangePassword(userID, currentPassword, changedPassword string) error
 	ChangeEmail(userID, emailAddress, password string) error
 	GenerateOneTimeKey(emailAddress string) ([]byte, error)

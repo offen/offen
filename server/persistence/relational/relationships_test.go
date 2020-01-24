@@ -84,7 +84,7 @@ func TestRelationalDAL_FindAccountUserRelationships(t *testing.T) {
 				}
 				return nil
 			},
-			persistence.FindAccountUserRelationShipsQueryByUserID("user-a"),
+			persistence.FindAccountUserRelationshipsQueryByAccountUserID("user-a"),
 			[]persistence.AccountUserRelationship{
 				{RelationshipID: "relationship-a", AccountUserID: "user-a"},
 				{RelationshipID: "relationship-b", AccountUserID: "user-a"},

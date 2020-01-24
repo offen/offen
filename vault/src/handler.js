@@ -153,7 +153,7 @@ function handleLoginWith (api, get, set) {
               throw noSessionErr
             }
             if (response.accountUserId !== storedResponse.accountUserId) {
-              var mismatchErr = new Error('Received user id did not match local session')
+              var mismatchErr = new Error('Received account user id did not match local session')
               mismatchErr.status = 401
               throw mismatchErr
             }

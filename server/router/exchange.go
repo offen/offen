@@ -22,7 +22,7 @@ func (rt *router) getPublicKey(c *gin.Context) {
 			return
 		}
 		newJSONError(
-			fmt.Errorf("router: error looking up account: %v", err),
+			fmt.Errorf("router: error looking up account: %w", err),
 			http.StatusInternalServerError,
 		).Pipe(c)
 		return
@@ -31,7 +31,7 @@ func (rt *router) getPublicKey(c *gin.Context) {
 }
 
 type userSecretPayload struct {
-	EncryptedUserSecret string `json:"encryptedUserSecret"`
+	EncryptedUserSecret string `json:"encryptedSecret"`
 	AccountID           string `json:"accountId"`
 }
 

@@ -56,7 +56,7 @@ function exchangeUserSecret (api, accountId) {
     .then(function (result) {
       var body = {
         accountId: accountId,
-        encryptedUserSecret: result.encryptedUserSecret
+        encryptedSecret: result.encryptedUserSecret
       }
       return api.postUserSecret(body)
         .then(function () {

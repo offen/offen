@@ -52,7 +52,7 @@ func (rt *router) postLogin(c *gin.Context) {
 }
 
 func (rt *router) getLogin(c *gin.Context) {
-	user, ok := c.Value(contextKeyAuth).(persistence.LoginResult)
+	accountUser, ok := c.Value(contextKeyAuth).(persistence.LoginResult)
 	if !ok {
 		authCookie, _ := rt.authCookie("", c.GetBool(contextKeySecureContext))
 		http.SetCookie(c.Writer, authCookie)
@@ -62,7 +62,7 @@ func (rt *router) getLogin(c *gin.Context) {
 		).Pipe(c)
 		return
 	}
-	c.JSON(http.StatusOK, map[string]string{"accountUserId": user.AccountUserID})
+	c.JSON(http.StatusOK, map[string]string{"accountUserId": accountUser.AccountUserID})
 }
 
 type changePasswordRequest struct {
@@ -74,7 +74,7 @@ func (rt *router) postChangePassword(c *gin.Context) {
 	user, ok := c.Value(contextKeyAuth).(persistence.LoginResult)
 	if !ok {
 		newJSONError(
-			errors.New("router: user object not found on request context"),
+			errors.New("router: account user object not found on request context"),
 			http.StatusInternalServerError,
 		).Pipe(c)
 		return
@@ -82,7 +82,7 @@ func (rt *router) postChangePassword(c *gin.Context) {
 	var req changePasswordRequest
 	if err := c.BindJSON(&req); err != nil {
 		newJSONError(
-			fmt.Errorf("router: error decoding request payload: %v", err),
+			fmt.Errorf("router: error decoding request payload: %w", err),
 			http.StatusBadRequest,
 		).Pipe(c)
 		return
@@ -105,10 +105,10 @@ type changeEmailRequest struct {
 }
 
 func (rt *router) postChangeEmail(c *gin.Context) {
-	user, ok := c.Value(contextKeyAuth).(persistence.LoginResult)
+	accountUser, ok := c.Value(contextKeyAuth).(persistence.LoginResult)
 	if !ok {
 		newJSONError(
-			errors.New("router: user object not found on request context"),
+			errors.New("router: account user object not found on request context"),
 			http.StatusInternalServerError,
 		).Pipe(c)
 		return
@@ -121,7 +121,7 @@ func (rt *router) postChangeEmail(c *gin.Context) {
 		).Pipe(c)
 		return
 	}
-	if err := rt.db.ChangeEmail(user.AccountUserID, req.EmailAddress, req.Password); err != nil {
+	if err := rt.db.ChangeEmail(accountUser.AccountUserID, req.EmailAddress, req.Password); err != nil {
 		newJSONError(
 			fmt.Errorf("router: error changing email address: %v", err),
 			http.StatusInternalServerError,
@@ -180,6 +180,7 @@ func (rt *router) postForgotPassword(c *gin.Context) {
 		).Pipe(c)
 		return
 	}
+	// TODO: make email sender configurable
 	if err := rt.mailer.Send("no-reply@offen.dev", req.EmailAddress, "Reset your password", emailBody); err != nil {
 		newJSONError(
 			fmt.Errorf("error sending email message: %v", err),

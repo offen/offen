@@ -11,7 +11,7 @@ import (
 )
 
 // Event is any analytics event that will be stored in the database. It is
-// uniquely tied to an Account and a User model.
+// uniquely tied to an Account and a Secret model.
 type Event struct {
 	EventID   string
 	AccountID string
