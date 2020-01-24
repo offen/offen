@@ -23,7 +23,7 @@ describe('stores/consent.js', function () {
       app.emitter.emit('offen:express-consent', 'allow', 'flash-fixture', function () {
         var error
         try {
-          assert(renderCalled)
+          assert(!renderCalled)
           assert.strictEqual(app.state.flash, 'flash-fixture')
         } catch (err) {
           error = err
