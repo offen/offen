@@ -82,7 +82,7 @@ describe('src/get-user-events', function () {
             null,
             {
               eventId: 'z',
-              userId: 'local',
+              secretId: 'local',
               accountId: 'account-a',
               payload: { type: 'TEST', timestamp: 'timestamp-fixture' },
               timestamp: 'timestamp-fixture'

@@ -12,18 +12,18 @@ import (
 func (rt *router) getAccount(c *gin.Context) {
 	accountID := c.Param("accountID")
 
-	user, ok := c.Value("contextKeyAuth").(persistence.LoginResult)
+	accountUser, ok := c.Value("contextKeyAuth").(persistence.LoginResult)
 	if !ok {
 		newJSONError(
-			errors.New("could not find user object in request context"),
+			errors.New("router: could not find account user object in request context"),
 			http.StatusNotFound,
 		).Pipe(c)
 		return
 	}
 
-	if ok := user.CanAccessAccount(accountID); !ok {
+	if ok := accountUser.CanAccessAccount(accountID); !ok {
 		newJSONError(
-			fmt.Errorf("user does not have permissions to access account %s", accountID),
+			fmt.Errorf("router: account user does not have permissions to access account %s", accountID),
 			http.StatusForbidden,
 		).Pipe(c)
 		return
@@ -33,20 +33,16 @@ func (rt *router) getAccount(c *gin.Context) {
 	if err != nil {
 		if _, ok := err.(persistence.ErrUnknownAccount); ok {
 			newJSONError(
-				fmt.Errorf("account %s not found", accountID),
+				fmt.Errorf("router: account %s not found", accountID),
 				http.StatusNotFound,
 			).Pipe(c)
 			return
 		}
 		newJSONError(
-			fmt.Errorf("router: error looking up account: %v", err),
+			fmt.Errorf("router: error looking up account: %w", err),
 			http.StatusInternalServerError,
 		).Pipe(c)
 		return
 	}
 	c.JSON(http.StatusOK, result)
-}
-
-type accountPayload struct {
-	AccountID string `json:"accountId"`
 }

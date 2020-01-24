@@ -21,9 +21,9 @@ func (r *relationalDAL) FindAccount(q interface{}) (persistence.Account, error) 
 	case persistence.FindAccountQueryIncludeEvents:
 		queryDB := r.db
 		if query.Since != "" {
-			queryDB = queryDB.Preload("Events", "event_id > ?", query.Since).Preload("Events.User")
+			queryDB = queryDB.Preload("Events", "event_id > ?", query.Since).Preload("Events.Secret")
 		} else {
-			queryDB = queryDB.Preload("Events").Preload("Events.User")
+			queryDB = queryDB.Preload("Events").Preload("Events.Secret")
 		}
 
 		if err := queryDB.Find(&account, "account_id = ?", query.AccountID).Error; err != nil {

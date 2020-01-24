@@ -28,9 +28,9 @@ function fetchOperatorEventsWith (api, queries) {
   return function (accountId, params) {
     return api.getAccount(accountId, params)
       .then(function (account) {
-        var returnedUserSecrets = Object.keys(account.userSecrets || {})
-          .map(function (hashedUserId) {
-            return [hashedUserId, account.userSecrets[hashedUserId]]
+        var returnedSecrets = Object.keys(account.secrets || {})
+          .map(function (secretId) {
+            return [secretId, account.secrets[secretId]]
           })
           .filter(function (pair) {
             return pair[1]
@@ -38,7 +38,7 @@ function fetchOperatorEventsWith (api, queries) {
         var returnedEvents = _.flatten(Object.values(account.events || {}), true)
         return {
           events: returnedEvents,
-          encryptedUserSecrets: returnedUserSecrets,
+          encryptedSecrets: returnedSecrets,
           account: account
         }
       })
@@ -71,15 +71,15 @@ function ensureSyncWith (queries, api) {
             var payload = results[0]
             return crypto.decryptSymmetricWith(keyEncryptionJWK)(payload.account.encryptedPrivateKey)
               .then(function (privateJwk) {
-                var userSecrets = payload.encryptedUserSecrets
+                var secrets = payload.encryptedSecrets
                   .map(function (pair) {
                     return {
-                      userId: pair[0],
+                      secretId: pair[0],
                       value: pair[1]
                     }
                   })
                 return decryptEvents(
-                  payload.events, userSecrets, privateJwk
+                  payload.events, secrets, privateJwk
                 )
                   .then(function (decryptedEvents) {
                     return decryptedEvents.map(function (decryptedEvent) {
@@ -98,8 +98,8 @@ function ensureSyncWith (queries, api) {
                         queries.putEvents.apply(
                           null, [accountId].concat(events)
                         ),
-                        queries.putEncryptedUserSecrets.apply(
-                          null, [accountId].concat(payload.encryptedUserSecrets)
+                        queries.putEncryptedSecrets.apply(
+                          null, [accountId].concat(payload.encryptedSecrets)
                         )
                       ])
                   })

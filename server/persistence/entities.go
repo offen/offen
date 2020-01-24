@@ -11,28 +11,28 @@ import (
 )
 
 // Event is any analytics event that will be stored in the database. It is
-// uniquely tied to an Account and a User model.
+// uniquely tied to an Account and a Secret model.
 type Event struct {
 	EventID   string
 	AccountID string
-	// the user id is nullable for anonymous events
-	HashedUserID *string
-	Payload      string
-	User         User
+	// the secret id is nullable for anonymous events
+	SecretID *string
+	Payload  string
+	Secret   Secret
 }
 
-// User associates a hashed user id - which ties a user and account together
+// Secret associates a hashed user id - which ties a user and account together
 // uniquely - with the encrypted user secret the account owner can use
 // to decrypt events stored for that user.
-type User struct {
-	HashedUserID        string
-	EncryptedUserSecret string
+type Secret struct {
+	SecretID        string
+	EncryptedSecret string
 }
 
 // AccountUser is a person that can log in and access data related to all
 // associated accounts.
 type AccountUser struct {
-	UserID         string
+	AccountUserID  string
 	HashedEmail    string
 	HashedPassword string
 	Salt           string
@@ -43,7 +43,7 @@ type AccountUser struct {
 // an AccountUser to access the data of the account it links to.
 type AccountUserRelationship struct {
 	RelationshipID                    string
-	UserID                            string
+	AccountUserID                     string
 	AccountID                         string
 	PasswordEncryptedKeyEncryptionKey string
 	EmailEncryptedKeyEncryptionKey    string

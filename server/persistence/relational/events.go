@@ -25,17 +25,17 @@ func exportEvents(evts []Event) []persistence.Event {
 func (r *relationalDAL) FindEvents(q interface{}) ([]persistence.Event, error) {
 	var events []Event
 	switch query := q.(type) {
-	case persistence.FindEventsQueryForHashedIDs:
+	case persistence.FindEventsQueryForSecretIDs:
 		var eventConditions []interface{}
 		if query.Since != "" {
 			eventConditions = []interface{}{
-				"event_id > ? AND hashed_user_id in (?)",
+				"event_id > ? AND secret_id in (?)",
 				query.Since,
-				query.HashedUserIDs,
+				query.SecretIDs,
 			}
 		} else {
 			eventConditions = []interface{}{
-				"hashed_user_id in (?)", query.HashedUserIDs,
+				"secret_id in (?)", query.SecretIDs,
 			}
 		}
 
@@ -50,9 +50,9 @@ func (r *relationalDAL) FindEvents(q interface{}) ([]persistence.Event, error) {
 		return exportEvents(events), nil
 	case persistence.FindEventsQueryExclusion:
 		if err := r.db.Where(
-			"event_id IN (?) AND hashed_user_id NOT IN (?)",
+			"event_id IN (?) AND secret_id NOT IN (?)",
 			query.EventIDs,
-			query.HashedUserIDs,
+			query.SecretIDs,
 		).Find(&events).Error; err != nil {
 			return nil, fmt.Errorf("relational: error looking up events: %w", err)
 		}
@@ -70,9 +70,9 @@ func (r *relationalDAL) DeleteEvents(q interface{}) (int64, error) {
 			return 0, fmt.Errorf("relational: error deleting orphaned events: %w", err)
 		}
 		return deletion.RowsAffected, nil
-	case persistence.DeleteEventsQueryByHashedIDs:
+	case persistence.DeleteEventsQueryBySecretIDs:
 		deletion := r.db.Where(
-			"hashed_user_id IN (?)",
+			"secret_id IN (?)",
 			[]string(query),
 		).Delete(&Event{})
 		if err := deletion.Error; err != nil {

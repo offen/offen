@@ -2,6 +2,8 @@ var api = require('./api')
 var bindCrypto = require('./bind-crypto')
 var queries = require('./queries')
 
+var LOCAL_SECRET_ID = 'local'
+
 module.exports = getUserEventsWith(queries, api)
 module.exports.getUserEventsWith = getUserEventsWith
 
@@ -57,13 +59,13 @@ function ensureSyncWith (queries, api) {
       })
       .then(function (events) {
         events = events.map(function (event) {
-          // User events come without any userId attached as it is implicitly
-          // ensured it is always the same value and saving it locally would
-          // just create a possible leak of identifiers. We need to index on
+          // User events come without any userId or secretId attached as it's
+          // implicitly ensured it is always the same value and saving it locally
+          // would just create a possible leak of identifiers. We need to index on
           // this value in IndexedDB though, so a fixed value is used instead
           // of using real data.
           return Object.assign(
-            event, { userId: 'local', timestamp: event.payload.timestamp }
+            event, { secretId: LOCAL_SECRET_ID, timestamp: event.payload.timestamp }
           )
         })
         return queries.putEvents.apply(null, [null].concat(events))
@@ -105,10 +107,8 @@ function decryptUserEventsWith (queries) {
       }, [])
 
     return Promise.all(decrypted)
-      .then(function (result) {
-        return result.filter(function (v) {
-          return v
-        })
+      .then(function (results) {
+        return results.filter(Boolean)
       })
   })
 }

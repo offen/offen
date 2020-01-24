@@ -53,7 +53,6 @@ func userCookieMiddleware(cookieKey, contextKey string) gin.HandlerFunc {
 
 func (rt *router) accountUserMiddleware(cookieKey, contextKey string) gin.HandlerFunc {
 	return func(c *gin.Context) {
-
 		authCookie, authCookieErr := c.Request.Cookie(cookieKey)
 		if authCookieErr != nil {
 			newJSONError(
@@ -74,7 +73,7 @@ func (rt *router) accountUserMiddleware(cookieKey, contextKey string) gin.Handle
 			return
 		}
 
-		user, userErr := rt.db.LookupUser(userID)
+		user, userErr := rt.db.LookupAccountUser(userID)
 		if userErr != nil {
 			authCookie, _ = rt.authCookie("", c.GetBool(contextKeySecureContext))
 			http.SetCookie(c.Writer, authCookie)

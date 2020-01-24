@@ -6,33 +6,33 @@ module.exports = decryptEventsWith({})
 module.exports.decryptEventsWith = decryptEventsWith
 
 function decryptEventsWith (cache) {
-  return bindCrypto(function (encryptedEvents, userSecrets, privateJWK) {
+  return bindCrypto(function (encryptedEvents, secrets, privateJWK) {
     var crypto = this
     var decryptWithAccountKey = crypto.decryptAsymmetricWith(privateJWK)
 
-    function getMatchingUserSecret (userId) {
+    function getMatchingSecret (secretId) {
       function doDecrypt () {
-        return Promise.resolve(userSecrets)
-          .then(function (userSecrets) {
-            var userSecret = _.findWhere(userSecrets, { userId: userId })
-            if (!userSecret) {
+        return Promise.resolve(secrets)
+          .then(function (secrets) {
+            var secret = _.findWhere(secrets, { secretId: secretId })
+            if (!secret) {
               return Promise.reject(
-                new Error('Unable to find matching user secret')
+                new Error('Unable to find matching secret')
               )
             }
 
-            return decryptWithAccountKey(userSecret.value)
+            return decryptWithAccountKey(secret.value)
               .then(function (jwk) {
                 var withKey = Object.assign(
-                  {}, userSecret, { jwk: jwk }
+                  {}, secret, { jwk: jwk }
                 )
                 return withKey
               })
           })
       }
       if (cache) {
-        cache[userId] = cache[userId] || doDecrypt()
-        return cache[userId]
+        cache[secretId] = cache[secretId] || doDecrypt()
+        return cache[secretId]
       }
       return doDecrypt()
     }
@@ -43,16 +43,16 @@ function decryptEventsWith (cache) {
           return cache[encryptedEvent.eventId]
         }
         var decryptPayload
-        if (encryptedEvent.userId === null) {
+        if (encryptedEvent.secretId === null) {
           decryptPayload = decryptWithAccountKey
         } else {
           decryptPayload = function (payload) {
-            return getMatchingUserSecret(encryptedEvent.userId)
-              .then(function (userSecret) {
-                if (!userSecret) {
+            return getMatchingSecret(encryptedEvent.secretId)
+              .then(function (secret) {
+                if (!secret) {
                   return null
                 }
-                return crypto.decryptSymmetricWith(userSecret.jwk)(payload)
+                return crypto.decryptSymmetricWith(secret.jwk)(payload)
               })
           }
         }

@@ -138,8 +138,8 @@ describe('src/queries.js', function () {
         return Promise.all(userSecrets)
           .then(function (encryptedSecrets) {
             return db.keys.bulkAdd([
-              { type: 'ENCRYPTED_USER_SECRET', userId: 'test-user-1', value: encryptedSecrets[0] },
-              { type: 'ENCRYPTED_USER_SECRET', userId: 'test-user-2', value: encryptedSecrets[1] }
+              { type: 'ENCRYPTED_SECRET', secretId: 'test-user-1', value: encryptedSecrets[0] },
+              { type: 'ENCRYPTED_SECRET', secretId: 'test-user-2', value: encryptedSecrets[1] }
             ])
           })
           .then(function (res) {
@@ -147,7 +147,7 @@ describe('src/queries.js', function () {
             var events = [
               {
                 accountId: 'test-account-1',
-                userId: 'test-user-1',
+                secretId: 'test-user-1',
                 eventId: ULID.ulid(minuteAgo.getTime()),
                 timestamp: minuteAgo.toJSON(),
                 payload: {
@@ -162,7 +162,7 @@ describe('src/queries.js', function () {
               },
               {
                 accountId: 'test-account-1',
-                userId: 'test-user-1',
+                secretId: 'test-user-1',
                 eventId: ULID.ulid(minuteAgo.getTime()),
                 timestamp: minuteAgo.toJSON(),
                 payload: {
@@ -177,7 +177,7 @@ describe('src/queries.js', function () {
               },
               {
                 accountId: 'test-account-1',
-                userId: 'test-user-1',
+                secretId: 'test-user-1',
                 eventId: ULID.ulid(subDays(now, 1).getTime()),
                 timestamp: subDays(now, 1).toJSON(),
                 payload: {
@@ -192,7 +192,7 @@ describe('src/queries.js', function () {
               },
               {
                 accountId: 'test-account-1',
-                userId: 'test-user-2',
+                secretId: 'test-user-2',
                 eventId: ULID.ulid(subDays(now, 1).getTime()),
                 timestamp: subDays(now, 1).toJSON(),
                 payload: {
@@ -207,7 +207,7 @@ describe('src/queries.js', function () {
               },
               {
                 accountId: 'test-account-2',
-                userId: 'test-user-1',
+                secretId: 'test-user-1',
                 eventId: ULID.ulid(subDays(now, 2).getTime()),
                 timestamp: subDays(now, 2).toJSON(),
                 payload: {
@@ -222,7 +222,7 @@ describe('src/queries.js', function () {
               },
               {
                 accountId: 'test-account-2',
-                userId: 'test-user-1',
+                secretId: 'test-user-1',
                 eventId: ULID.ulid(subDays(now, 12).getTime()),
                 timestamp: subDays(now, 12).toJSON(),
                 payload: {
@@ -237,7 +237,7 @@ describe('src/queries.js', function () {
               },
               {
                 accountId: 'test-account-1',
-                userId: null,
+                secretId: null,
                 eventId: ULID.ulid(minuteAgo.getTime()),
                 timestamp: minuteAgo.toJSON(),
                 payload: {
@@ -248,7 +248,7 @@ describe('src/queries.js', function () {
               },
               {
                 accountId: 'test-account-1',
-                userId: null,
+                secretId: null,
                 eventId: ULID.ulid(subDays(now, 12).getTime()),
                 timestamp: subDays(now, 12).toJSON(),
                 payload: {
@@ -259,7 +259,7 @@ describe('src/queries.js', function () {
               },
               {
                 accountId: 'test-account-1',
-                userId: null,
+                secretId: null,
                 eventId: ULID.ulid(subDays(now, 4).getTime()),
                 timestamp: subDays(now, 4).toJSON(),
                 payload: {
@@ -269,7 +269,7 @@ describe('src/queries.js', function () {
                 }
               }
             ].map(function (event) {
-              if (!event.userId) {
+              if (!event.secretId) {
                 return window.crypto.subtle
                   .encrypt(
                     {
@@ -291,7 +291,7 @@ describe('src/queries.js', function () {
                     iv: nonce,
                     length: 128
                   },
-                  userSecretsById[event.userId],
+                  userSecretsById[event.secretId],
                   Unibabel.utf8ToBuffer(JSON.stringify(event.payload))
                 )
                 .then(function (encryptedEventPayload) {

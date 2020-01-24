@@ -122,7 +122,7 @@ func main() {
 		}
 		if err := db.Bootstrap(persistence.BootstrapConfig{
 			Accounts: []persistence.BootstrapAccount{
-				{ID: cfg.App.RootAccount, Name: "Demo Account"},
+				{AccountID: cfg.App.RootAccount, Name: "Demo Account"},
 			},
 			AccountUsers: []persistence.BootstrapAccountUser{
 				{Email: "demo@offen.dev", Password: "demo", Accounts: []string{cfg.App.RootAccount}},
@@ -326,7 +326,7 @@ func main() {
 			if *email == "" || pw == "" || *accountName == "" {
 				logger.Fatal("Missing required parameters to create initial account, use the -help flag for reference on parameters")
 			}
-			logger.Infof("Using command line arguments to create seed user and account")
+			logger.Infof("Using command line arguments to create seed account user and account")
 			if *accountID == "" {
 				if cfg.App.RootAccount != "" {
 					// in case configuration knows about a root id, bootstrap
@@ -354,7 +354,7 @@ func main() {
 			)
 			conf.Accounts = append(
 				conf.Accounts,
-				persistence.BootstrapAccount{Name: *accountName, ID: *accountID},
+				persistence.BootstrapAccount{Name: *accountName, AccountID: *accountID},
 			)
 		}
 

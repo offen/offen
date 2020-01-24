@@ -11,62 +11,62 @@ import (
 type Event struct {
 	EventID   string `gorm:"primary_key"`
 	AccountID string
-	// the user id is nullable for anonymous events
-	HashedUserID *string
-	Payload      string
-	User         User `gorm:"foreignkey:HashedUserID;association_foreignkey:HashedUserID"`
+	// the secret id is nullable for anonymous events
+	SecretID *string
+	Payload  string
+	Secret   Secret `gorm:"foreignkey:SecretID;association_foreignkey:SecretID"`
 }
 
 func (e *Event) export() persistence.Event {
 	return persistence.Event{
-		EventID:      e.EventID,
-		AccountID:    e.AccountID,
-		HashedUserID: e.HashedUserID,
-		Payload:      e.Payload,
-		User:         e.User.export(),
+		EventID:   e.EventID,
+		AccountID: e.AccountID,
+		SecretID:  e.SecretID,
+		Payload:   e.Payload,
+		Secret:    e.Secret.export(),
 	}
 }
 
 func importEvent(e *persistence.Event) Event {
 	return Event{
-		EventID:      e.EventID,
-		AccountID:    e.AccountID,
-		HashedUserID: e.HashedUserID,
-		Payload:      e.Payload,
-		User:         importUser(&e.User),
+		EventID:   e.EventID,
+		AccountID: e.AccountID,
+		SecretID:  e.SecretID,
+		Payload:   e.Payload,
+		Secret:    importSecret(&e.Secret),
 	}
 }
 
-// User associates a hashed user id - which ties a user and account together
+// Secret associates a hashed user id - which ties a user and account together
 // uniquely - with the encrypted user secret the account owner can use
 // to decrypt events stored for that user.
-type User struct {
-	HashedUserID        string `gorm:"primary_key"`
-	EncryptedUserSecret string
+type Secret struct {
+	SecretID        string `gorm:"primary_key"`
+	EncryptedSecret string
 }
 
-func (u *User) export() persistence.User {
-	return persistence.User{
-		HashedUserID:        u.HashedUserID,
-		EncryptedUserSecret: u.EncryptedUserSecret,
+func (s *Secret) export() persistence.Secret {
+	return persistence.Secret{
+		SecretID:        s.SecretID,
+		EncryptedSecret: s.EncryptedSecret,
 	}
 }
 
-func importUser(u *persistence.User) User {
-	return User{
-		HashedUserID:        u.HashedUserID,
-		EncryptedUserSecret: u.EncryptedUserSecret,
+func importSecret(s *persistence.Secret) Secret {
+	return Secret{
+		SecretID:        s.SecretID,
+		EncryptedSecret: s.EncryptedSecret,
 	}
 }
 
 // AccountUser is a person that can log in and access data related to all
 // associated accounts.
 type AccountUser struct {
-	UserID         string `gorm:"primary_key"`
+	AccountUserID  string `gorm:"primary_key"`
 	HashedEmail    string
 	HashedPassword string
 	Salt           string
-	Relationships  []AccountUserRelationship `gorm:"foreignkey:UserID;association_foreignkey:UserID"`
+	Relationships  []AccountUserRelationship `gorm:"foreignkey:AccountUserID;association_foreignkey:AccountUserID"`
 }
 
 func (a *AccountUser) export() persistence.AccountUser {
@@ -75,7 +75,7 @@ func (a *AccountUser) export() persistence.AccountUser {
 		relationships = append(relationships, r.export())
 	}
 	return persistence.AccountUser{
-		UserID:         a.UserID,
+		AccountUserID:  a.AccountUserID,
 		HashedEmail:    a.HashedEmail,
 		HashedPassword: a.HashedPassword,
 		Salt:           a.Salt,
@@ -89,7 +89,7 @@ func importAccountUser(a *persistence.AccountUser) AccountUser {
 		relationships = append(relationships, importAccountUserRelationship(&r))
 	}
 	return AccountUser{
-		UserID:         a.UserID,
+		AccountUserID:  a.AccountUserID,
 		HashedEmail:    a.HashedEmail,
 		HashedPassword: a.HashedPassword,
 		Salt:           a.Salt,
@@ -101,7 +101,7 @@ func importAccountUser(a *persistence.AccountUser) AccountUser {
 // an AccountUser to access the data of the account it links to.
 type AccountUserRelationship struct {
 	RelationshipID                    string `gorm:"primary_key"`
-	UserID                            string
+	AccountUserID                     string
 	AccountID                         string
 	PasswordEncryptedKeyEncryptionKey string
 	EmailEncryptedKeyEncryptionKey    string
@@ -111,7 +111,7 @@ type AccountUserRelationship struct {
 func (a *AccountUserRelationship) export() persistence.AccountUserRelationship {
 	return persistence.AccountUserRelationship{
 		RelationshipID:                    a.RelationshipID,
-		UserID:                            a.UserID,
+		AccountUserID:                     a.AccountUserID,
 		AccountID:                         a.AccountID,
 		PasswordEncryptedKeyEncryptionKey: a.PasswordEncryptedKeyEncryptionKey,
 		EmailEncryptedKeyEncryptionKey:    a.EmailEncryptedKeyEncryptionKey,
@@ -122,7 +122,7 @@ func (a *AccountUserRelationship) export() persistence.AccountUserRelationship {
 func importAccountUserRelationship(a *persistence.AccountUserRelationship) AccountUserRelationship {
 	return AccountUserRelationship{
 		RelationshipID:                    a.RelationshipID,
-		UserID:                            a.UserID,
+		AccountUserID:                     a.AccountUserID,
 		AccountID:                         a.AccountID,
 		PasswordEncryptedKeyEncryptionKey: a.PasswordEncryptedKeyEncryptionKey,
 		EmailEncryptedKeyEncryptionKey:    a.EmailEncryptedKeyEncryptionKey,

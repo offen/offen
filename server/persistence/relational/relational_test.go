@@ -12,7 +12,7 @@ func createTestDatabase() (*gorm.DB, func() error) {
 	if err != nil {
 		panic(err)
 	}
-	if err := db.AutoMigrate(&Event{}, &Account{}, &User{}, &AccountUser{}, &AccountUserRelationship{}).Error; err != nil {
+	if err := db.AutoMigrate(&Event{}, &Account{}, &Secret{}, &AccountUser{}, &AccountUserRelationship{}).Error; err != nil {
 		panic(err)
 	}
 	return db, db.Close

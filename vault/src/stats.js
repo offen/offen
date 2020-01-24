@@ -11,7 +11,7 @@ function loss (events) {
   if (totalCount === 0) {
     return 0
   }
-  var nonNullCount = countKeys('userId', false)(events)
+  var nonNullCount = countKeys('secretId', false)(events)
   return 1 - (nonNullCount / totalCount)
 }
 
@@ -90,7 +90,7 @@ function sources (events) {
 function _referrers (events, groupFn) {
   var foreign = events
     .filter(function (event) {
-      if (event.userId === null || !event.payload || !event.payload.referrer) {
+      if (event.secretId === null || !event.payload || !event.payload.referrer) {
         return false
       }
       return event.payload.referrer.host !== event.payload.href.host
@@ -128,7 +128,7 @@ function activePages (events) {
 function _pages (events, perUser) {
   var result = _.chain(events)
     .filter(function (event) {
-      return event.userId !== null && event.payload && event.payload.href
+      return event.secretId !== null && event.payload && event.payload.href
     })
 
   if (perUser) {
@@ -136,7 +136,7 @@ function _pages (events, perUser) {
     // will be considered
     var sortBy = _.property(['payload', 'timestamp'])
     result = result
-      .groupBy('userId')
+      .groupBy('secretId')
       .pairs()
       .map(function (pair) {
         return _.last(
@@ -214,7 +214,7 @@ exports.exitPages = consumeAsync(exitPages)
 function exitPages (events) {
   return _.chain(events)
     .filter(function (e) {
-      return e.userId !== null && e.payload && e.payload.sessionId && e.payload.href
+      return e.secretId !== null && e.payload && e.payload.sessionId && e.payload.href
     })
     .groupBy(function (e) {
       return e.payload.sessionId
@@ -250,7 +250,7 @@ exports.landingPages = consumeAsync(landingPages)
 function landingPages (events) {
   return _.chain(events)
     .filter(function (e) {
-      return e.userId !== null && e.payload && e.payload.sessionId && e.payload.href
+      return e.secretId !== null && e.payload && e.payload.sessionId && e.payload.href
     })
     .groupBy(function (e) {
       return e.payload.sessionId
@@ -281,7 +281,7 @@ exports.mobileShare = consumeAsync(mobileShare)
 function mobileShare (events) {
   var allEvents
   var mobileEvents = _.chain(events)
-    .filter('userId')
+    .filter('secretId')
     .tap(function (events) {
       allEvents = events.length
     })
@@ -305,14 +305,14 @@ function retention (/* ...events */) {
   var result = []
   while (chunks.length) {
     var head = chunks.shift()
-    var referenceIds = _.chain(head).pluck('userId').compact().uniq().value()
+    var referenceIds = _.chain(head).pluck('secretId').compact().uniq().value()
     var innerResult = chunks.reduce(function (acc, next) {
       var share
       if (referenceIds.length === 0) {
         share = 0
       } else {
         var matching = _.chain(next)
-          .pluck('userId').compact().uniq()
+          .pluck('secretId').compact().uniq()
           .intersection(referenceIds).size().value()
         share = matching / referenceIds.length
       }
@@ -324,10 +324,10 @@ function retention (/* ...events */) {
   return result
 }
 
-exports.pageviews = consumeAsync(countKeys('userId', false))
+exports.pageviews = consumeAsync(countKeys('secretId', false))
 // `visitors` is the number of unique users for the given
 //  set of events.
-exports.visitors = consumeAsync(countKeys('userId', true))
+exports.visitors = consumeAsync(countKeys('secretId', true))
 // This is the number of unique accounts for the given timeframe
 exports.accounts = consumeAsync(countKeys('accountId', true))
 // This is the number of unique sessions for the given timeframe
