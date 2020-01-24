@@ -27,9 +27,10 @@ function store (state, emitter) {
         }
       })
       .then(function () {
-        emitter.emit(state.events.RENDER)
         if (callback) {
           callback(state, emitter)
+        } else {
+          emitter.emit(state.events.RENDER)
         }
       })
   })
