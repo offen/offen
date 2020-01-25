@@ -5,6 +5,8 @@ help:
 	@echo "        Install / update dependencies in the development containers."
 	@echo "    build"
 	@echo "        Build the production assets."
+	@echo "    up"
+	@echo "        Start the development server."
 
 setup: dev-build update
 
@@ -17,6 +19,7 @@ up:
 update:
 	@echo "Installing / updating dependencies ..."
 	@docker-compose run --rm docs bundle install
+	@docker-compose run --rm docs bundle exec just-the-docs rake search:init
 	@echo "Successfully built containers and installed dependencies."
 
 build:
