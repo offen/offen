@@ -1,9 +1,9 @@
 ---
 layout: default
 title: Configuring The Application
-nav_order: 4
+nav_order: 3
 description: "Just the Docs is a responsive Jekyll theme with built-in search that is easily customizable and hosted on GitHub Pages."
-permalink: /running-offen/configuring-the-application
+permalink: /running-offen/configuring-the-application/
 parent: Running Offen
 ---
 

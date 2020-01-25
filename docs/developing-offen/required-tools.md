@@ -3,7 +3,7 @@ layout: default
 title: Required Tools
 nav_order: 1
 description: "Just the Docs is a responsive Jekyll theme with built-in search that is easily customizable and hosted on GitHub Pages."
-permalink: /developing-offen/required-tools
+permalink: /developing-offen/required-tools/
 parent: Developing Offen
 ---
 

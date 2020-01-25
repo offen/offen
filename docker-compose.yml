@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  docs:
+    build:
+      context: '.'
+      dockerfile: ./Dockerfile.ruby
+    working_dir: /repo
+    ports:
+      - 4000:4000
+    volumes:
+      - .:/repo
+      - docsdeps:/usr/local/bundle
+    command: bundle exec jekyll serve -H 0.0.0.0
+
+volumes:
+  docsdeps:

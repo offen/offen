@@ -15,12 +15,20 @@
 # in the templates via {{ site.myvariable }}.
 title: Offen
 description: The official Documentation site for the Offen analytics software
-url: "https://docs.offen.dev" # the base hostname & protocol for your site, e.g. http://example.com
+url: "http://docs.offen.dev" # the base hostname & protocol for your site, e.g. http://example.com
 
 theme: 'just-the-docs'
 
 permalink: pretty
-exclude: ["node_modules/", "*.gemspec", "*.gem", "Gemfile", "Gemfile.lock", "package.json", "package-lock.json",  "script/", "LICENSE.txt", "lib/", "bin/", "README.md", "Rakefile"]
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - LICENSE
+  - README.md
+  - CODE_OF_CONDUCT.md
+  - Dockerfile.ruby
+  - docker-compose.yml
+  - Makefile
 
 # Set a path/url to a logo that will be displayed instead of the title
 logo: https://offen.github.io/press-kit/offen-logo/offen-logo-black.svg

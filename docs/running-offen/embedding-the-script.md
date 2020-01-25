@@ -1,9 +1,9 @@
 ---
 layout: default
 title: Embedding The Offen Script
-nav_order: 5
+nav_order: 4
 description: "Just the Docs is a responsive Jekyll theme with built-in search that is easily customizable and hosted on GitHub Pages."
-permalink: /running-offen/embedding-the-script
+permalink: /running-offen/embedding-the-script/
 parent: Running Offen
 ---
 
