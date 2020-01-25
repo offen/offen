@@ -1,13 +1,13 @@
 ---
 layout: default
-title: Production Requirements
+title: Installation Requirements
 nav_order: 1
-description: "Just the Docs is a responsive Jekyll theme with built-in search that is easily customizable and hosted on GitHub Pages."
-permalink: /running-offen/production-requirements/
+description: "Considerations for installing Offen in an production environment."
+permalink: /running-offen/installation-requirements/
 parent: Running Offen
 ---
 
-# Production Requirements
+# Installation Requirements
 
 In case you want to use Offen for collecting usage data in a production setup or similar, there are a few requirements to consider.
 

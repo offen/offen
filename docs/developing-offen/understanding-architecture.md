@@ -2,7 +2,7 @@
 layout: default
 title: Understanding the Application Architecture
 nav_order: 5
-description: "Just the Docs is a responsive Jekyll theme with built-in search that is easily customizable and hosted on GitHub Pages."
+description: "Explaining the key concepts of Offen's application architecture."
 permalink: /developing-offen/understanding-architecture/
 parent: Developing Offen
 ---

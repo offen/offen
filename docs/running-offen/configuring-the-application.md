@@ -2,7 +2,7 @@
 layout: default
 title: Configuring The Application
 nav_order: 3
-description: "Just the Docs is a responsive Jekyll theme with built-in search that is easily customizable and hosted on GitHub Pages."
+description: "How to configure an Offen instance at runtime."
 permalink: /running-offen/configuring-the-application/
 parent: Running Offen
 ---

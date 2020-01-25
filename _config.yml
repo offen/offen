@@ -14,8 +14,8 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 title: Offen
-description: The official Documentation site for the Offen analytics software
-url: "https://docs.offen.dev" # the base hostname & protocol for your site, e.g. http://example.com
+description: The official documentation site for the Offen analytics software
+url: https://docs.offen.dev # the base hostname & protocol for your site, e.g. http://example.com
 
 theme: 'just-the-docs'
 
@@ -44,11 +44,11 @@ heading_anchors: true
 
 # Aux links for the upper right navigation
 aux_links:
-  "Offen on GitHub":
-    - "https://github.com/offen/offen"
+  'Offen on GitHub':
+    - https://github.com/offen/offen
 
 # Footer content appears at the bottom of every page's main content
-footer_content: "Copyright &copy; Offen. Distributed by an <a href=\"https://github.com/offen/docs/tree/master/LICENSE\">MIT license.</a>"
+footer_content: Copyright &copy; Offen. Distributed by an <a href="https://github.com/offen/docs/tree/master/LICENSE">MIT license.</a>
 
 # Color scheme currently only supports "dark" or nil (default)
 color_scheme: nil

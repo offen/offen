@@ -2,7 +2,7 @@
 layout: default
 title: Programming Languages
 nav_order: 3
-description: "Just the Docs is a responsive Jekyll theme with built-in search that is easily customizable and hosted on GitHub Pages."
+description: "An introduction to the languages chosen to develop Offen."
 permalink: /developing-offen/programming-languages/
 parent: Developing Offen
 ---
