@@ -54,14 +54,6 @@ Offen can source configuration from environment variables as well as configurati
 └── offen.db
 ```
 
-## Setting the Database Location
-
-Offen needs to know where the database file is located. To let it know, put the following line in your `offen.env` file:
-
-```
-OFFEN_DATABASE_CONNECTIONSTRING = "/root/offen.db"
-```
-
 ## Running the `setup` Command
 
 Now that we have defined the database location, Offen lets you setup a new instance using the `setup` command:
@@ -83,7 +75,6 @@ When finished, the command has created an account for you, using the given name 
 Your `offen.env` file will now look something like this:
 
 ```
-OFFEN_DATABASE_CONNECTIONSTRING="/root/offen.db"
 OFFEN_SECRETS_COOKIEEXCHANGE="uNrZP7r5fY3sfS35tbzR9w==" # do not use this secret in production
 OFFEN_SECRETS_EMAILSALT="uVXyuzCcpTim0v7uChCs1UA==" # do not use this secret in production
 ```
@@ -121,7 +112,6 @@ Offen will run without these values being set and try to fall back to a local `s
 Your config file should now contain an entry for each of these values:
 
 ```
-OFFEN_DATABASE_CONNECTIONSTRING="/root/offen.db"
 OFFEN_SECRETS_COOKIEEXCHANGE="uNrZP7r5fY3sfS35tbzR9w==" # do not use this secret in production
 OFFEN_SECRETS_EMAILSALT="VXyuzCcpTim0v7uChCs1UA==" # do not use this secret in production
 OFFEN_SERVER_AUTOTLS=offen.mysite.com
