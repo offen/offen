@@ -61,13 +61,13 @@ extract-strings:
 	@docker-compose run --rm script npm run extract-strings
 	@docker-compose run --rm vault npm run extract-strings
 
-DOCKER_IMAGE_TAG ?= local
-ROBOTS_FILE ?= robots.txt.staging
 TARGETS ?= linux/amd64
 LDFLAGS ?= -static
+DOCKER_IMAGE_TAG ?= local
+OFFEN_GIT_REVISION ?= none
 
 build:
-	@docker build --build-arg ldflags=${LDFLAGS} --build-arg targets=${TARGETS} --build-arg rev=$(shell git rev-parse --short HEAD) -t offen/build -f build/Dockerfile.build .
+	@docker build --build-arg ldflags=${LDFLAGS} --build-arg targets=${TARGETS} --build-arg rev=${OFFEN_GIT_REVISION} -t offen/build -f build/Dockerfile.build .
 	@mkdir -p bin
 	@docker create --entrypoint=bash -it --name binary offen/build
 	@docker cp binary:/build/. ./bin
