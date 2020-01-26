@@ -24,18 +24,17 @@ This creates ephemeral one-off installation running on `http://localhost:9876`.
 
 **IMPORTANT NOTE BEFORE YOU START**: Offen is in the early stages of its development. We're happy if you would like to experiment with using it, but at this point in time we cannot guarantee any upgrade stability. Each release might contain breaking changes that might result in data being lost on the next upgrade.
 
-
 This repository contains all source code needed to build and run Offen, both on the server as well as on the client. Also see each of the READMEs in the subdirectories for information on how to work on that particular area of the application.
 
-__Documentation on developing, running and using Offen__ is currently being collected in our [wiki][].
+__Documentation on developing, running and using Offen__ is currently being collected on our [docs site][docs].
 
-[wiki]: https://github.com/offen/offen/wiki
+[docs]: https://docs.offen.dev
 
 ---
 
 ### Project status
 
-We are currently working on __Milestone 2 out of 6: Collecting data securely__. Check our [blog][] for detailed updates on what we are working on right now and what's up next.
+We are currently working on __Milestone 3 out of 6: Displaying data__. Check our [blog][] for detailed updates on what we are working on right now and what's up next.
 
 [blog]: https://www.offen.dev/blog/
 
