@@ -24,7 +24,7 @@ The official Docker image is available as [`offen/offen`][docker-hub] on Docker 
 docker pull offen/offen:stable
 ```
 
-If you are feeling adventurous or require features that are not yet available in a release you can also use the `latest` tag which represent the latest state of development, but might be unstable.
+If you are feeling adventurous, or require features that are not yet available in a release you can also use the `latest` tag which represents the latest state of development. Be aware though that these versions might be unstable.
 
 [docker-hub]: https://hub.docker.com/r/offen/offen
 
