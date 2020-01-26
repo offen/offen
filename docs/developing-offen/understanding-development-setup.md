@@ -48,16 +48,18 @@ All of the subapplications use a "gettext"-style approach for handling localizat
 In JavaScript this would look like:
 
 ```js
-return html``
+return html`
   <h1>${__('Welcome to Offen')}</h1>
-``
+`
 ```
 
 and like this in a Go template:
 
+{% raw  %}
 ```go
 <h1>{{ __ "Welcome to Offen" }}</h1>
 ```
+{% endraw  %}
 
 ### Extracting strings
 
