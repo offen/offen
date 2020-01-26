@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Understanding The Devlopment Setup
+title: Understanding The Development Setup
 nav_order: 4
 description: "An in-depth look at the development setup for Offen and how to work with it."
 permalink: /developing-offen/understanding-development-setup/
@@ -21,13 +21,13 @@ All routes served are identical to the compiled version so the development envir
 To run the test of a single container, the easiest way is simply using `docker-compose` to execute the command inside the container, e.g.:
 
 ```
-docker-compose run auditorium npm t
+docker-compose run --rm auditorium npm t
 ```
 
 for client containers and
 
 ```
-docker-compose run server make test
+docker-compose run --rm server make test
 ```
 
 for the server application.

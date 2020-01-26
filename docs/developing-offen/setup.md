@@ -13,14 +13,14 @@ parent: Developing Offen
 
 After cloning the [repository][], you will need to do two things:
 
-1. Pull the required docker images and install each container's dependencies:
-    ```
-    make setup
-    ```
+1. Pull the required Docker images and install each container's dependencies:
+  ```
+  make setup
+  ```
 1. Bootstrap the development database:
-    ```
-    make bootstrap
-    ```
+  ```
+  make bootstrap
+  ```
 You should now be able to start your local version of offen using:
 ```
 make up
