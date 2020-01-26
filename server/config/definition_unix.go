@@ -18,7 +18,9 @@ type Config struct {
 	}
 	Database struct {
 		Dialect          Dialect   `default:"sqlite3"`
-		ConnectionString EnvString `default:"/tmp/offen.db"`
+		// The default value is expecting usage in the official Docker image.
+		// Other consumers will likely need to adjust this value.
+		ConnectionString EnvString `default:"/root/offen.db"`
 	}
 	App struct {
 		Development          bool          `default:"false"`
