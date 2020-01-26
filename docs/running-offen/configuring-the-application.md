@@ -133,13 +133,13 @@ The `SECRETS` namespace collects secrets used for signing cookies and hashing ac
 
 ### `OFFEN_SECRETS_COOKIEEXCHANGE`
 
-No default value.
+No default value. __Required__.
 
 A Base64 encoded secret that is used for signing cookies. Ideally, it is of 16 bytes length. Changing this value during the lifecycle of the application means all currently active account user sessions are invalidated and users would have to log in again.
 
 ### `OFFEN_SECRETS_EMAILSALT`
 
-No default value.
+No default value. __Required__.
 
 Offen does not store Email addresses in plain text, but in a hashed form. This salt is used for hashing addresses. Ideally, it is of 16 bytes length. This value is not expected to change during the lifecycle of an Offen instance. Changing it would mean all existing user accounts **cannot log in anymore**.
 

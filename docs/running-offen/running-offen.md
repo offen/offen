@@ -15,6 +15,12 @@ Offen is distributed as a single binary file, and is currently built for Linux, 
 
 [repo-releases]: https://github.com/offen/offen/releases
 
+## Docker Image
+
+All releases are also [published to Docker Hub][docker-hub], and are available as `offen/offen`.
+
+[docker-hub]: https://hub.docker.com/r/offen/offen
+
 ## Test Drive
 
 If you just want to experiment with Offen or give it a quick test drive, you can run the application in demo mode:

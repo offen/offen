@@ -46,7 +46,7 @@ Usage of setup:
 
 ```
 
-In case the current runtime configuration is incomplete, the command will generate missing secrets and store them on the system so that they get picked up when the application is run the next time.
+In case the current runtime configuration is missing required secrets, you can use the `-populate` flag and the command will generate the missing values and store them on the system so that they get picked up when the application is run the next time.
 
 If you do not want to supply your root account's password in plaintext, you can use `-stdin-password` and either pipe your password:
 
