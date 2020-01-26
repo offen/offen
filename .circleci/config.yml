@@ -1,19 +1,5 @@
 version: 2
 
-build_preconditions: &build_preconditions
-  requires:
-    - server
-    - vault
-    - script
-    - auditorium
-    - packages
-    - integration
-  filters:
-    branches:
-      only:
-        - master
-        - development
-
 jobs:
   server:
     docker:
@@ -202,11 +188,12 @@ jobs:
       - run:
           name: Build application Docker image and binary
           command: |
-            export OFFEN_GIT_REVISION=$(git rev-parse --short HEAD)
-            if [ "${CIRCLE_BRANCH}" == "master" ]; then
-              export DOCKER_IMAGE_TAG="stable"
-            else
+            if [ -z "$CIRCLE_TAG" ]; then
+              export OFFEN_GIT_REVISION=$(git rev-parse --short HEAD)
               export DOCKER_IMAGE_TAG="latest"
+            else
+              export OFFEN_GIT_REVISION=$CIRCLE_TAG
+              export DOCKER_IMAGE_TAG=$CIRCLE_TAG
             fi
 
             TARGETS=linux/amd64,windows/amd64 make build
@@ -216,7 +203,7 @@ jobs:
             make build-docker
 
             mkdir -p /tmp/artifacts
-            cd ./bin && md5sum * > checksums.txt && tar -czvf /tmp/artifacts/offen-$DOCKER_IMAGE_TAG.tar.gz $(ls -A)
+            cd ./bin && md5sum * > checksums.txt && cp ~/offen/LICENSE . && cp ~/offen/README.md . && tar -czvf /tmp/artifacts/offen-$DOCKER_IMAGE_TAG.tar.gz $(ls -A)
             echo "$DOCKER_ACCESSTOKEN" | docker login --username $DOCKER_USER --password-stdin
             docker push offen/offen:$DOCKER_IMAGE_TAG
       - store_artifacts:
@@ -224,7 +211,7 @@ jobs:
 
 workflows:
   version: 2
-  test_build:
+  test:
     jobs:
       - server
       - vault
@@ -233,4 +220,17 @@ workflows:
       - packages
       - integration
       - build:
-          <<: *build_preconditions
+          requires:
+            - server
+            - vault
+            - script
+            - auditorium
+            - packages
+            - integration
+          filters:
+            tags:
+              only:
+                - /^v.*/ # tagged release from master branch
+            branches:
+              only:
+                - development # "latest" release from development branch
