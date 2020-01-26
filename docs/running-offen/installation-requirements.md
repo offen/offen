@@ -1,13 +1,13 @@
 ---
 layout: default
-title: Installation Requirements
+title: Requirements for Installing Offen
 nav_order: 1
 description: "Considerations for installing Offen in an production environment."
 permalink: /running-offen/installation-requirements/
 parent: Running Offen
 ---
 
-# Installation Requirements
+# Requirements for Installing Offen
 
 In case you want to use Offen for collecting usage data in a production setup or similar, there are a few requirements to consider.
 
@@ -16,12 +16,6 @@ In case you want to use Offen for collecting usage data in a production setup or
 Offen is a single binary that binds to a TCP port and listens for incoming traffic. This means that in a production setup you will need to ensure the process is always running and restarts on failure or system restart.
 
 Choice of tools for this task depends heavily on your host OS. Alternatively, you can use the official Docker image that wraps the binary to have a unified interface across operating systems for this task.
-
-## Running the application behind a reverse proxy
-
-Offen itself is hardened in order to be exposed to the public internet directly. You still might want to use a reverse proxy like Apache or nginx in front of the process. This lets you leverage its buffering and caching capabilities, thus making the application easier to configure and run more smoothly in times of heavy load.
-
-See the configuration section below for how to run Offen behind a reverse proxy.
 
 ## Usage of a subdomain
 
@@ -60,7 +54,15 @@ offen is expecting a relational datastore to be available for it to store event 
 
 In case you want to scale Offen or need more performance you might want to use a MySQL or Postgres database instead. See the configuration section below for how to configure dialect and database location.
 
-## Transactional email
+## Additional considerations
+
+### Running the application behind a reverse proxy
+
+Offen itself is hardened in order to be exposed to the public internet directly. You still might want to use a reverse proxy like Apache or nginx in front of the process. This lets you leverage its buffering and caching capabilities, thus making the application easier to configure and run more smoothly in times of heavy load.
+
+See the configuration section for information on how to run Offen behind a reverse proxy.
+
+### Transactional email
 
 Offen can email you a link to reset your account's password in case you forgot it. The recommended way of doing so is configuring Offen with SMTP credentials (you might well be able to use your default mail setup here).
 
