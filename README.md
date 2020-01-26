@@ -24,7 +24,7 @@ You can test your setup by starting the application:
 $ make up
 ```
 
-which should enable you to access the docs at <http://0.0.0.0:4000/>.
+which should enable you to access the docs at <http://localhost:4000/>.
 
 ### License
 
