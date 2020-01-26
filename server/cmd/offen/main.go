@@ -45,10 +45,6 @@ func main() {
 			}
 		}
 		logger.SetLevel(cfg.App.LogLevel.LogLevel())
-		if cfg.IsDefaultDatabase() {
-			logger.Warn("The configuration is currently using a temporary local database, data will not persist")
-			logger.Warn("Refer to the documentation to find out how to connect to a persistent database")
-		}
 		if !cfg.SMTPConfigured() {
 			logger.Warn("SMTP for transactional email is not configured right now, mail delivery will be unreliable")
 			logger.Warn("Refer to the documentation to find out how to configure SMTP")
