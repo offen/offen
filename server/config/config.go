@@ -135,8 +135,8 @@ func New(populateMissing bool, override string) (*Config, error) {
 	// The Heroku runtimes does not allow specifying the port in any other
 	// variable than PORT which is why we need to make an exception in this case
 	// and override the default.
-	if _, ok := os.LookupEnv("HEROKU_APP_ID"); ok {
-		port, _ := strconv.Atoi(os.Getenv("PORT"))
+	if val, ok := os.LookupEnv("PORT"); ok {
+		port, _ := strconv.Atoi(val)
 		c.Server.Port = port
 	}
 
