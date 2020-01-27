@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: page
 title: Home
 nav_order: 1
 description: "Depending on who you are and what you want to do, we have dedicated guides for you and your usecase."

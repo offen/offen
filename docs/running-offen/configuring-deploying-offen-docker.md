@@ -13,8 +13,11 @@ This tutorial walks you through the steps needed to setup and deploy a standalon
 
 Other and more complex configuration options are documented in ["Configuring The Application At Runtime"][config-docs]. General considerations for deploying Offen are described in ["Requirements for Installing Offen"][installation].
 
+If you have questions about configuring and deploying Offen using Docker that are not covered in this tutorial feel free to [open an issue in our GitHub repository][issues] or send us an email at <hioffen@posteo.de>.
+
 [config-docs]: /running-offen/configuring-the-application/
 [installation]: /running-offen/installation-requirements/
+[issues]: https://github.com/offen/offen/issues
 
 ---
 
