@@ -189,6 +189,10 @@ jobs:
           name: Build application Docker image and binary
           command: |
             if [ -z "$CIRCLE_TAG" ]; then
+              if [ "${CIRCLE_BRANCH}" == "master" ]; then
+                echo "Skipping build for master with no tags."
+                exit 0
+              fi
               export OFFEN_GIT_REVISION=$(git rev-parse --short HEAD)
               export DOCKER_IMAGE_TAG="latest"
             else
@@ -240,3 +244,4 @@ workflows:
             branches:
               only:
                 - development # "latest" release from development branch
+                - master
