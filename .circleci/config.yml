@@ -248,6 +248,5 @@ workflows:
           filters:
             tags:
               only: /^v.*/ # tagged release from master branch
-                - /^v.*/
             branches:
               only: development # "latest" release from development branch
