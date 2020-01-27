@@ -1,23 +1,16 @@
 ---
-layout: page
-title: "Tutorial: Configuring and Deploying Offen Using Docker"
-nav_order: 5
+layout: default
+title: "Configuring and Deploying Offen Using Docker"
+nav_order: 1
 description: "A step by step tutorial on how to use Docker to deploy Offen."
-permalink: /running-offen/configuring-deploying-offen-docker/
-parent: Running Offen
+permalink: /running-offen/tutorials/configuring-deploying-offen-docker/
+parent: Tutorials
+grand_parent: Running Offen
 ---
 
 # Configuring and Deploying Offen Using Docker
 
 This tutorial walks you through the steps needed to setup and deploy a standalone, single-node Offen instance that is using a local SQLite file as its database backend.
-
-Other and more complex configuration options are documented in ["Configuring The Application At Runtime"][config-docs]. General considerations for deploying Offen are described in ["Requirements for Installing Offen"][installation].
-
-If you have questions about configuring and deploying Offen using Docker that are not covered in this tutorial feel free to [open an issue in our GitHub repository][issues] or send us an email at <hioffen@posteo.de>.
-
-[config-docs]: /running-offen/configuring-the-application/
-[installation]: /running-offen/installation-requirements/
-[issues]: https://github.com/offen/offen/issues
 
 ---
 
@@ -44,6 +37,8 @@ In the simple setup described in this tutorial Offen needs to persist the follow
 - cache files the SSL certificates
 
 Keeping these files available at any time is required for running the application, so make sure they are not stored on ephemeral systems. If you deploy to a ephemeral host (e.g. Heroku), check ["Configuring The Application At Runtime"][config-docs] for how to configure the application using environment variables and connecting to a remote Database.
+
+[config-docs]: /running-offen/configuring-the-application/
 
 ---
 

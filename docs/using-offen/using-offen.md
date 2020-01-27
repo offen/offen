@@ -1,5 +1,5 @@
 ---
-layout: page
+layout: default
 title: Using Offen
 has_children: true
 nav_order: 2

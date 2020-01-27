@@ -1,5 +1,5 @@
 ---
-layout: page
+layout: default
 title: Required Tools
 nav_order: 1
 description: "Tools required for developing Offen."

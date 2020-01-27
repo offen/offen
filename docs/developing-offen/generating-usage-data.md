@@ -1,5 +1,5 @@
 ---
-layout: page
+layout: default
 title: Generating Usage Data for Development
 nav_order: 7
 description: "How to generate usage data while developing Offen."

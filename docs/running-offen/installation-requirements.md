@@ -1,5 +1,5 @@
 ---
-layout: page
+layout: default
 title: Requirements for Installing Offen
 nav_order: 1
 description: "Considerations for installing Offen in an production environment."

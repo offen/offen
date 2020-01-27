@@ -1,5 +1,5 @@
 ---
-layout: page
+layout: default
 title: Developing Offen
 has_children: true
 nav_order: 3

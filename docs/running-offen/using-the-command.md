@@ -1,5 +1,5 @@
 ---
-layout: page
+layout: default
 title: Using The offen Command
 nav_order: 2
 description: "Explaining subcommands and flags for the offen command."

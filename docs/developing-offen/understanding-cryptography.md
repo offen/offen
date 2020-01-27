@@ -1,5 +1,5 @@
 ---
-layout: page
+layout: default
 title: Understanding the Cryptographic Entities
 nav_order: 6
 description: "Explaining the key concepts for encrypting user data."

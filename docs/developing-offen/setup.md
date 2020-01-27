@@ -1,5 +1,5 @@
 ---
-layout: page
+layout: default
 title: Setup
 nav_order: 2
 description: "How to setup the development environment for Offen."
