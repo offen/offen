@@ -7,6 +7,7 @@ import (
 	"path"
 	"reflect"
 	"runtime"
+	"strconv"
 
 	"github.com/joho/godotenv"
 	"github.com/kelseyhightower/envconfig"
@@ -129,6 +130,14 @@ func New(populateMissing bool, override string) (*Config, error) {
 	err := envconfig.Process("offen", &c)
 	if err != nil && !populateMissing {
 		return &c, fmt.Errorf("config: error processing configuration: %w", err)
+	}
+
+	// The Heroku runtimes does not allow specifying the port in any other
+	// variable than PORT which is why we need to make an exception in this case
+	// and override the default.
+	if _, ok := os.LookupEnv("HEROKU_APP_ID"); ok {
+		port, _ := strconv.Atoi(os.Getenv("PORT"))
+		c.Server.Port = port
 	}
 
 	if err != nil && populateMissing {
