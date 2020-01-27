@@ -223,12 +223,20 @@ workflows:
   version: 2
   test:
     jobs:
-      - server
-      - vault
-      - script
-      - auditorium
-      - packages
-      - integration
+      - server: &all_tags_filter
+          filters:
+            tags:
+              only: /.*/
+      - vault:
+          <<: *all_tags_filter
+      - script:
+          <<: *all_tags_filter
+      - auditorium:
+          <<: *all_tags_filter
+      - packages:
+          <<: *all_tags_filter
+      - integration:
+          <<: *all_tags_filter
       - build:
           requires:
             - server
@@ -239,9 +247,7 @@ workflows:
             - integration
           filters:
             tags:
-              only:
-                - /^v.*/ # tagged release from master branch
+              only: /^v.*/ # tagged release from master branch
+                - /^v.*/
             branches:
-              only:
-                - development # "latest" release from development branch
-                - master
+              only: development # "latest" release from development branch
