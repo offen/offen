@@ -161,6 +161,7 @@ To start Offen use the main `offen` command:
 
 ```
 docker run -d \ # detach and run in the background
+  -p 80:80 -p 443:443 \
   -v /home/you/offen/cache:/var/www/.cache \
   --mount type=bind,src=/home/you/offen/offen.env,dst=/root/offen.env \
   --mount type=bind,src=/home/you/offen/offen.db,dst=/root/offen.db \
