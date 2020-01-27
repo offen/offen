@@ -2,21 +2,21 @@ var _ = require('underscore')
 
 var api = require('./api')
 var queries = require('./queries')
-var crypto = require('./crypto')
+var bindCrypto = require('./bind-crypto')
 var decryptEvents = require('./decrypt-events')
 
-module.exports = getOperatorEventsWith(queries, api, {})
+module.exports = getOperatorEventsWith(queries, api)
 module.exports.getOperatorEventsWith = getOperatorEventsWith
 
-function getOperatorEventsWith (queries, api, cache) {
+function getOperatorEventsWith (queries, api) {
   return function (query, authenticatedUser) {
     var matchingAccount = _.findWhere(authenticatedUser.accounts, { accountId: query.accountId })
     if (!matchingAccount) {
       return Promise.reject(new Error('No matching key found for account with id ' + query.accountId))
     }
-    return ensureSyncWith(queries, api, cache)(query.accountId, matchingAccount.keyEncryptionKey)
+    return ensureSyncWith(queries, api)(query.accountId, matchingAccount.keyEncryptionKey)
       .then(function (account) {
-        return queries.getDefaultStats(query.accountId, query, account.privateKey)
+        return queries.getDefaultStats(query.accountId, query, account.privateJwk)
           .then(function (stats) {
             return Object.assign(stats, { account: account })
           })
@@ -28,9 +28,9 @@ function fetchOperatorEventsWith (api, queries) {
   return function (accountId, params) {
     return api.getAccount(accountId, params)
       .then(function (account) {
-        var returnedUserSecrets = Object.keys(account.userSecrets || {})
-          .map(function (hashedUserId) {
-            return [hashedUserId, account.userSecrets[hashedUserId]]
+        var returnedSecrets = Object.keys(account.secrets || {})
+          .map(function (secretId) {
+            return [secretId, account.secrets[secretId]]
           })
           .filter(function (pair) {
             return pair[1]
@@ -38,18 +38,16 @@ function fetchOperatorEventsWith (api, queries) {
         var returnedEvents = _.flatten(Object.values(account.events || {}), true)
         return {
           events: returnedEvents,
-          encryptedUserSecrets: returnedUserSecrets,
+          encryptedSecrets: returnedSecrets,
           account: account
         }
       })
   }
 }
 
-function ensureSyncWith (queries, api, cache) {
-  return function (accountId, keyEncryptionJWK) {
-    if (cache && cache[accountId]) {
-      return Promise.resolve(cache[accountId])
-    }
+function ensureSyncWith (queries, api) {
+  return bindCrypto(function (accountId, keyEncryptionJWK) {
+    var crypto = this
     return queries.getAllEventIds(accountId)
       .then(function (knownEventIds) {
         var fetchNewEvents = queries.getLatestEvent(accountId)
@@ -71,23 +69,17 @@ function ensureSyncWith (queries, api, cache) {
         return Promise.all([fetchNewEvents, pruneEvents])
           .then(function (results) {
             var payload = results[0]
-            return crypto.importSymmetricKey(keyEncryptionJWK)
-              .then(function (cryptoKey) {
-                return crypto.decryptSymmetricWith(cryptoKey)(payload.account.encryptedPrivateKey)
-              })
-              .then(function (privateJWK) {
-                return crypto.importPrivateKey(privateJWK)
-              })
-              .then(function (privateCryptoKey) {
-                var userSecrets = payload.encryptedUserSecrets
+            return crypto.decryptSymmetricWith(keyEncryptionJWK)(payload.account.encryptedPrivateKey)
+              .then(function (privateJwk) {
+                var secrets = payload.encryptedSecrets
                   .map(function (pair) {
                     return {
-                      userId: pair[0],
+                      secretId: pair[0],
                       value: pair[1]
                     }
                   })
                 return decryptEvents(
-                  payload.events, userSecrets, privateCryptoKey
+                  payload.events, secrets, privateJwk
                 )
                   .then(function (decryptedEvents) {
                     return decryptedEvents.map(function (decryptedEvent) {
@@ -106,22 +98,19 @@ function ensureSyncWith (queries, api, cache) {
                         queries.putEvents.apply(
                           null, [accountId].concat(events)
                         ),
-                        queries.putEncryptedUserSecrets.apply(
-                          null, [accountId].concat(payload.encryptedUserSecrets)
+                        queries.putEncryptedSecrets.apply(
+                          null, [accountId].concat(payload.encryptedSecrets)
                         )
                       ])
                   })
                   .then(function (results) {
                     var result = Object.assign(payload.account, {
-                      privateKey: privateCryptoKey
+                      privateJwk: privateJwk
                     })
-                    if (cache) {
-                      cache[accountId] = result
-                    }
                     return result
                   })
               })
           })
       })
-  }
+  })
 }

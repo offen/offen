@@ -21,7 +21,7 @@ type ackResponse struct {
 var errBadRequestContext = errors.New("could not use user id in request context")
 
 func (rt *router) postEvents(c *gin.Context) {
-	userID, _ := c.Value(contextKeyCookie).(string)
+	userID := c.GetString(contextKeyCookie)
 	evt := inboundEventPayload{}
 	if err := c.BindJSON(&evt); err != nil {
 		newJSONError(
@@ -35,16 +35,16 @@ func (rt *router) postEvents(c *gin.Context) {
 		var unknownAccountErr persistence.ErrUnknownAccount
 		if errors.As(err, &unknownAccountErr) {
 			newJSONError(
-				unknownAccountErr,
+				fmt.Errorf("router: error inserting event: %w", unknownAccountErr),
 				http.StatusNotFound,
 			).Pipe(c)
 			return
 		}
 
-		var unknownUserErr persistence.ErrUnknownUser
-		if errors.As(err, &unknownUserErr) {
+		var unknownSecretErr persistence.ErrUnknownSecret
+		if errors.As(err, &unknownSecretErr) {
 			newJSONError(
-				unknownUserErr,
+				fmt.Errorf("router: error inserting event: %w", unknownSecretErr),
 				http.StatusBadRequest,
 			).Pipe(c)
 			return
@@ -74,14 +74,7 @@ type getResponse struct {
 }
 
 func (rt *router) getEvents(c *gin.Context) {
-	userID, ok := c.Value(contextKeyCookie).(string)
-	if !ok {
-		newJSONError(
-			errBadRequestContext,
-			http.StatusInternalServerError,
-		).Pipe(c)
-		return
-	}
+	userID := c.GetString(contextKeyCookie)
 	result, err := rt.db.Query(persistence.Query{
 		UserID: userID,
 		Since:  c.Query("since"),
@@ -106,7 +99,7 @@ type deletedQuery struct {
 }
 
 func (rt *router) getDeletedEvents(c *gin.Context) {
-	userID, _ := c.Value(contextKeyCookie).(string)
+	userID := c.GetString(contextKeyCookie)
 
 	query := deletedQuery{}
 	if err := c.BindJSON(&query); err != nil {
@@ -131,13 +124,19 @@ func (rt *router) getDeletedEvents(c *gin.Context) {
 }
 
 func (rt *router) purgeEvents(c *gin.Context) {
-	userID, _ := c.Value(contextKeyCookie).(string)
+	userID := c.GetString(contextKeyCookie)
 	if err := rt.db.Purge(userID); err != nil {
 		newJSONError(
 			fmt.Errorf("router: error purging user events: %v", err),
 			http.StatusInternalServerError,
 		).Pipe(c)
 		return
+	}
+	if c.Query("user") != "" {
+		http.SetCookie(
+			c.Writer,
+			rt.userCookie("", c.GetBool(contextKeySecureContext)),
+		)
 	}
 	c.Status(http.StatusNoContent)
 }

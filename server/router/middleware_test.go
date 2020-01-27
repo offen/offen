@@ -13,11 +13,65 @@ import (
 	"github.com/offen/offen/server/persistence"
 )
 
+func TestOptinMiddleware(t *testing.T) {
+	m := gin.New()
+	m.GET("/", optinMiddleware("consent", "allow"), func(c *gin.Context) {
+		c.String(http.StatusOK, "hey there")
+	})
+	t.Run("no cookie", func(t *testing.T) {
+		w := httptest.NewRecorder()
+		r := httptest.NewRequest(http.MethodGet, "/", nil)
+		m.ServeHTTP(w, r)
+
+		if w.Code != http.StatusNoContent {
+			t.Errorf("Unexpected status code %d", w.Code)
+		}
+
+		if w.Body.String() != "" {
+			t.Errorf("Unexpected response body %s", w.Body.String())
+		}
+	})
+	t.Run("explicit denial", func(t *testing.T) {
+		w := httptest.NewRecorder()
+		r := httptest.NewRequest(http.MethodGet, "/", nil)
+		r.AddCookie(&http.Cookie{
+			Name:  "consent",
+			Value: "deny",
+		})
+		m.ServeHTTP(w, r)
+
+		if w.Code != http.StatusNoContent {
+			t.Errorf("Unexpected status code %d", w.Code)
+		}
+
+		if w.Body.String() != "" {
+			t.Errorf("Unexpected response body %s", w.Body.String())
+		}
+	})
+	t.Run("explicit allow", func(t *testing.T) {
+		w := httptest.NewRecorder()
+		r := httptest.NewRequest(http.MethodGet, "/", nil)
+		r.AddCookie(&http.Cookie{
+			Name:  "consent",
+			Value: "allow",
+		})
+		m.ServeHTTP(w, r)
+
+		if w.Code != http.StatusOK {
+			t.Errorf("Unexpected status code %d", w.Code)
+		}
+
+		if w.Body.String() != "hey there" {
+			t.Errorf("Unexpected response body %s", w.Body.String())
+		}
+	})
+}
+
 func TestUserCookieMiddleware(t *testing.T) {
 	m := gin.New()
 	m.GET("/", userCookieMiddleware("user", "1"), func(c *gin.Context) {
 		value := c.Value("1")
-		c.String(http.StatusOK, fmt.Sprintf("value is %v", value))
+		c.String(http.StatusOK, "value is %v", value)
 	})
 	t.Run("no cookie", func(t *testing.T) {
 		w := httptest.NewRecorder()
@@ -68,13 +122,13 @@ type mockUserLookupDatabase struct {
 	persistence.Service
 }
 
-func (*mockUserLookupDatabase) LookupUser(userID string) (persistence.LoginResult, error) {
-	if userID == "account-user-id-1" {
+func (*mockUserLookupDatabase) LookupAccountUser(accountUserID string) (persistence.LoginResult, error) {
+	if accountUserID == "account-user-id-1" {
 		return persistence.LoginResult{
-			UserID: "account-user-id-1",
+			AccountUserID: "account-user-id-1",
 		}, nil
 	}
-	return persistence.LoginResult{}, fmt.Errorf("account user with id %s not found", userID)
+	return persistence.LoginResult{}, fmt.Errorf("account user with id %s not found", accountUserID)
 }
 
 func TestAccountUserMiddleware(t *testing.T) {
@@ -83,11 +137,10 @@ func TestAccountUserMiddleware(t *testing.T) {
 		cookieSigner: cookieSigner,
 		db:           &mockUserLookupDatabase{},
 	}
-
 	m := gin.New()
 	m.GET("/", rt.accountUserMiddleware("auth", "1"), func(c *gin.Context) {
 		user, _ := c.Value("2").(persistence.LoginResult)
-		c.String(http.StatusOK, fmt.Sprintf("user id is %v", user.UserID))
+		c.String(http.StatusOK, "user id is %v", user.AccountUserID)
 	})
 
 	t.Run("no cookie", func(t *testing.T) {

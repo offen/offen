@@ -13,8 +13,8 @@ type mockInsertEventDatabase struct {
 	DataAccessLayer
 	findAccountResult Account
 	findAccountErr    error
-	findUserResult    User
-	findUserErr       error
+	findSecretResult  Secret
+	findSecretErr     error
 	createEventErr    error
 	methodArgs        []interface{}
 }
@@ -24,9 +24,9 @@ func (m *mockInsertEventDatabase) FindAccount(q interface{}) (Account, error) {
 	return m.findAccountResult, m.findAccountErr
 }
 
-func (m *mockInsertEventDatabase) FindUser(q interface{}) (User, error) {
+func (m *mockInsertEventDatabase) FindSecret(q interface{}) (Secret, error) {
 	m.methodArgs = append(m.methodArgs, q)
-	return m.findUserResult, m.findUserErr
+	return m.findSecretResult, m.findSecretErr
 }
 
 func (m *mockInsertEventDatabase) CreateEvent(e *Event) error {
@@ -68,7 +68,7 @@ func TestPersistenceLayer_Insert(t *testing.T) {
 					Name:     "test",
 					UserSalt: "CaHVhk78uhoPmf5wanA0vg==",
 				},
-				findUserErr: errors.New("did not work"),
+				findSecretErr: errors.New("did not work"),
 			},
 			true,
 			[]assertion{
@@ -81,7 +81,7 @@ func TestPersistenceLayer_Insert(t *testing.T) {
 					return nil
 				},
 				func(userID interface{}) error {
-					if cast, ok := userID.(FindUserQueryByHashedUserID); ok {
+					if cast, ok := userID.(FindSecretQueryBySecretID); ok {
 						if cast == "user-id" || cast == "" {
 							return fmt.Errorf("unexpected user identifier %v", cast)
 						}
@@ -111,7 +111,7 @@ func TestPersistenceLayer_Insert(t *testing.T) {
 					return nil
 				},
 				func(userID interface{}) error {
-					if cast, ok := userID.(FindUserQueryByHashedUserID); ok {
+					if cast, ok := userID.(FindSecretQueryBySecretID); ok {
 						if cast == "user-id" || cast == "" {
 							return fmt.Errorf("unexpected user identifier %v", cast)
 						}
@@ -123,7 +123,7 @@ func TestPersistenceLayer_Insert(t *testing.T) {
 						wellformed := cast.Payload == "payload" &&
 							cast.AccountID == "account-id" &&
 							cast.EventID != "" &&
-							*cast.HashedUserID != "user-id"
+							*cast.SecretID != "user-id"
 						if !wellformed {
 							return fmt.Errorf("unexpected event shape %v", cast)
 						}
@@ -152,7 +152,7 @@ func TestPersistenceLayer_Insert(t *testing.T) {
 					return nil
 				},
 				func(userID interface{}) error {
-					if cast, ok := userID.(FindUserQueryByHashedUserID); ok {
+					if cast, ok := userID.(FindSecretQueryBySecretID); ok {
 						if cast == "user-id" || cast == "" {
 							return fmt.Errorf("unexpected user identifier %v", cast)
 						}
@@ -164,7 +164,7 @@ func TestPersistenceLayer_Insert(t *testing.T) {
 						wellformed := cast.Payload == "payload" &&
 							cast.AccountID == "account-id" &&
 							cast.EventID != "" &&
-							*cast.HashedUserID != "user-id"
+							*cast.SecretID != "user-id"
 						if !wellformed {
 							return fmt.Errorf("unexpected event shape %v", cast)
 						}
@@ -181,7 +181,7 @@ func TestPersistenceLayer_Insert(t *testing.T) {
 					Name:     "test",
 					UserSalt: "CaHVhk78uhoPmf5wanA0vg==",
 				},
-				findUserErr: errors.New("did not work"),
+				findSecretErr: errors.New("did not work"),
 			},
 			false,
 			[]assertion{
@@ -198,7 +198,7 @@ func TestPersistenceLayer_Insert(t *testing.T) {
 						wellformed := cast.Payload == "payload" &&
 							cast.AccountID == "account-id" &&
 							cast.EventID != "" &&
-							cast.HashedUserID == nil
+							cast.SecretID == nil
 						if !wellformed {
 							return fmt.Errorf("unexpected event shape %v", cast)
 						}
@@ -288,7 +288,7 @@ func TestPersistenceLayer_Purge(t *testing.T) {
 					return fmt.Errorf("unexpected argument %v", q)
 				},
 				func(q interface{}) error {
-					if hashes, ok := q.(DeleteEventsQueryByHashedIDs); ok {
+					if hashes, ok := q.(DeleteEventsQueryBySecretIDs); ok {
 						for _, hash := range hashes {
 							if hash == "user-id" {
 								return errors.New("encountered plain user id when hash was expected")
@@ -317,7 +317,7 @@ func TestPersistenceLayer_Purge(t *testing.T) {
 					return fmt.Errorf("unexpected argument %v", q)
 				},
 				func(q interface{}) error {
-					if hashes, ok := q.(DeleteEventsQueryByHashedIDs); ok {
+					if hashes, ok := q.(DeleteEventsQueryBySecretIDs); ok {
 						for _, hash := range hashes {
 							if hash == "user-id" {
 								return errors.New("encountered plain user id when hash was expected")
@@ -413,12 +413,12 @@ func TestPersistenceLayer_Query(t *testing.T) {
 					return fmt.Errorf("unexpected argument %v", q)
 				},
 				func(q interface{}) error {
-					if query, ok := q.(FindEventsQueryForHashedIDs); ok {
+					if query, ok := q.(FindEventsQueryForSecretIDs); ok {
 						if query.Since != "yesterday" {
 							return fmt.Errorf("unexpected since value: %v", query.Since)
 						}
-						if len(query.HashedUserIDs) != 2 {
-							return fmt.Errorf("unexpected number of user ids: %d", len(query.HashedUserIDs))
+						if len(query.SecretIDs) != 2 {
+							return fmt.Errorf("unexpected number of user ids: %d", len(query.SecretIDs))
 						}
 						return nil
 					}
@@ -455,12 +455,12 @@ func TestPersistenceLayer_Query(t *testing.T) {
 					return fmt.Errorf("unexpected argument %v", q)
 				},
 				func(q interface{}) error {
-					if query, ok := q.(FindEventsQueryForHashedIDs); ok {
+					if query, ok := q.(FindEventsQueryForSecretIDs); ok {
 						if query.Since != "yesterday" {
 							return fmt.Errorf("unexpected since value: %v", query.Since)
 						}
-						if len(query.HashedUserIDs) != 2 {
-							return fmt.Errorf("unexpected number of user ids: %d", len(query.HashedUserIDs))
+						if len(query.SecretIDs) != 2 {
+							return fmt.Errorf("unexpected number of user ids: %d", len(query.SecretIDs))
 						}
 						return nil
 					}
@@ -665,8 +665,8 @@ func TestPersistenceLayer_GetDeletedEvents(t *testing.T) {
 						if !reflect.DeepEqual(query.EventIDs, []string{"event-a", "event-m", "event-z"}) {
 							return fmt.Errorf("unexpected list of event ids %v", query.EventIDs)
 						}
-						if len(query.HashedUserIDs) != 1 {
-							return fmt.Errorf("unexpected number of user ids %v", len(query.HashedUserIDs))
+						if len(query.SecretIDs) != 1 {
+							return fmt.Errorf("unexpected number of user ids %v", len(query.SecretIDs))
 						}
 						return nil
 					}
@@ -718,8 +718,8 @@ func TestPersistenceLayer_GetDeletedEvents(t *testing.T) {
 						if !reflect.DeepEqual(query.EventIDs, []string{"event-a", "event-m", "event-z"}) {
 							return fmt.Errorf("unexpected list of event ids %v", query.EventIDs)
 						}
-						if len(query.HashedUserIDs) != 1 {
-							return fmt.Errorf("unexpected number of user ids %v", len(query.HashedUserIDs))
+						if len(query.SecretIDs) != 1 {
+							return fmt.Errorf("unexpected number of user ids %v", len(query.SecretIDs))
 						}
 						return nil
 					}

@@ -9,8 +9,8 @@ func TestErrUnknownAccount(t *testing.T) {
 	}
 }
 
-func TestErrUnknownUser(t *testing.T) {
-	err := ErrUnknownUser("unknown")
+func TestErrUnknownSecret(t *testing.T) {
+	err := ErrUnknownSecret("unknown")
 	if message := err.Error(); message != "unknown" {
 		t.Errorf("Unexpected error message %s", message)
 	}

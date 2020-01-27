@@ -7,11 +7,11 @@ function withModel () {
     return function (state, emit) {
       if (!state.model) {
         emit('offen:query', Object.assign({}, state.params, state.query), state.authenticatedUser)
-        var loading = html`
-          <p class="loading dib pa2 br2 bg-black-05 mt0 mb2">${__('Fetching the latest data...')}</p>
-
+        return html`
+          <p class="dib pa2 br2 ma0 mt3 ml3 ml0-ns mr3 mr0-ns bg-light-yellow">
+            ${__('Fetching and decrypting the latest data...')}
+          </p>
         `
-        return loading
       }
       return originalView(state, emit)
     }

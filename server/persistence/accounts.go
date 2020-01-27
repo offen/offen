@@ -21,36 +21,36 @@ func (p *persistenceLayer) GetAccount(accountID string, includeEvents bool, even
 		Created:   account.Created,
 	}
 
-	if includeEvents {
-		result.EncryptedPrivateKey = account.EncryptedPrivateKey
-	} else {
+	if !includeEvents {
 		key, err := account.WrapPublicKey()
 		if err != nil {
 			return AccountResult{}, fmt.Errorf("persistence: error wrapping account public key: %v", err)
 		}
 		result.PublicKey = key
+		return result, nil
 	}
+	result.EncryptedPrivateKey = account.EncryptedPrivateKey
 
 	eventResults := EventsByAccountID{}
-	userSecrets := SecretsByUserID{}
+	secrets := EncryptedSecretsByID{}
 
 	for _, evt := range account.Events {
 		eventResults[evt.AccountID] = append(eventResults[evt.AccountID], EventResult{
-			UserID:    evt.HashedUserID,
+			SecretID:  evt.SecretID,
 			EventID:   evt.EventID,
 			Payload:   evt.Payload,
 			AccountID: evt.AccountID,
 		})
-		if evt.HashedUserID != nil {
-			userSecrets[*evt.HashedUserID] = evt.User.EncryptedUserSecret
+		if evt.SecretID != nil {
+			secrets[*evt.SecretID] = evt.Secret.EncryptedSecret
 		}
 	}
 
 	if len(eventResults) != 0 {
 		result.Events = &eventResults
 	}
-	if len(userSecrets) != 0 {
-		result.UserSecrets = &userSecrets
+	if len(secrets) != 0 {
+		result.Secrets = &secrets
 	}
 
 	return result, nil
@@ -63,9 +63,9 @@ func (p *persistenceLayer) AssociateUserSecret(accountID, userID, encryptedUserS
 	}
 
 	hashedUserID := account.HashUserID(userID)
-	user, err := p.dal.FindUser(FindUserQueryByHashedUserID(hashedUserID))
+	secret, err := p.dal.FindSecret(FindSecretQueryBySecretID(hashedUserID))
 	if err != nil {
-		var notFound ErrUnknownUser
+		var notFound ErrUnknownSecret
 		if !errors.As(err, &notFound) {
 			return fmt.Errorf("persistence: error looking up user: %v", err)
 		}
@@ -89,15 +89,15 @@ func (p *persistenceLayer) AssociateUserSecret(accountID, userID, encryptedUserS
 		if err != nil {
 			return fmt.Errorf("persistence: error creating transaction: %w", err)
 		}
-		if err := txn.CreateUser(&User{
-			HashedUserID:        parkedHash,
-			EncryptedUserSecret: user.EncryptedUserSecret,
+		if err := txn.CreateSecret(&Secret{
+			SecretID:        parkedHash,
+			EncryptedSecret: secret.EncryptedSecret,
 		}); err != nil {
 			txn.Rollback()
 			return fmt.Errorf("persistence: error creating user for use as migration target: %w", err)
 		}
 
-		if err := txn.DeleteUser(DeleteUserQueryByHashedID(user.HashedUserID)); err != nil {
+		if err := txn.DeleteSecret(DeleteSecretQueryBySecretID(secret.SecretID)); err != nil {
 			txn.Rollback()
 			return fmt.Errorf("persistence: error deleting existing user: %v", err)
 		}
@@ -105,8 +105,8 @@ func (p *persistenceLayer) AssociateUserSecret(accountID, userID, encryptedUserS
 		// The previous user is now deleted so all orphaned events need to be
 		// copied over to the one used for parking the events.
 		var idsToDelete []string
-		orphanedEvents, err := txn.FindEvents(FindEventsQueryForHashedIDs{
-			HashedUserIDs: []string{hashedUserID},
+		orphanedEvents, err := txn.FindEvents(FindEventsQueryForSecretIDs{
+			SecretIDs: []string{hashedUserID},
 		})
 		if err != nil {
 			return fmt.Errorf("persistence: error looking up orphaned events: %w", err)
@@ -119,10 +119,10 @@ func (p *persistenceLayer) AssociateUserSecret(accountID, userID, encryptedUserS
 			}
 
 			if err := txn.CreateEvent(&Event{
-				EventID:      newID,
-				AccountID:    orphan.AccountID,
-				HashedUserID: &parkedHash,
-				Payload:      orphan.Payload,
+				EventID:   newID,
+				AccountID: orphan.AccountID,
+				SecretID:  &parkedHash,
+				Payload:   orphan.Payload,
 			}); err != nil {
 				return fmt.Errorf("persistence: error migrating an existing event: %w", err)
 			}
@@ -137,9 +137,9 @@ func (p *persistenceLayer) AssociateUserSecret(accountID, userID, encryptedUserS
 		}
 	}
 
-	if err := p.dal.CreateUser(&User{
-		EncryptedUserSecret: encryptedUserSecret,
-		HashedUserID:        hashedUserID,
+	if err := p.dal.CreateSecret(&Secret{
+		SecretID:        hashedUserID,
+		EncryptedSecret: encryptedUserSecret,
 	}); err != nil {
 		return fmt.Errorf("persistence: error creating user: %w", err)
 	}

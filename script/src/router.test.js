@@ -14,6 +14,8 @@ describe('src/router.js', function () {
           payload: context
         }, true)
           .then(function (response) {
+            assert(response.host)
+            delete response.host
             assert.deepStrictEqual(
               response,
               { type: 'TEST', payload: { some: 'value', other: true } }

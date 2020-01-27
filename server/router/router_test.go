@@ -1,6 +1,7 @@
 package router
 
 import (
+	"html/template"
 	"os"
 	"testing"
 
@@ -22,5 +23,6 @@ func TestNew(t *testing.T) {
 	New(
 		WithDatabase(&mockDatabase{}),
 		WithConfig(&config.Config{}),
+		WithTemplate(template.New("a test")),
 	)
 }

@@ -1,18 +1,5 @@
 version: 2
 
-build_preconditions: &build_preconditions
-  requires:
-    - server
-    - vault
-    - script
-    - auditorium
-    - packages
-  filters:
-    branches:
-      only:
-        - master
-        - development
-
 jobs:
   server:
     docker:
@@ -150,71 +137,106 @@ jobs:
           name: Run tests
           command: npm test
 
-  build:
+  integration:
     docker:
-      - image: docker:18-git
+      - image: circleci/node:12-browsers
     working_directory: ~/offen
     steps:
       - checkout
       - setup_remote_docker
-      - restore_cache:
-          keys:
-            - v1-{{ .Branch }}
-          paths:
-            - /caches/offen.tar
       - run:
-          name: Load Docker image layer cache
+          name: Build binary
           command: |
-            set +o pipefail
-            docker load -i /caches/offen.tar | true
+            make build
+            cp ./bin/offen-linux-amd64 ./offen
+      - run:
+          name: Setup application
+          command: |
+            touch offen.env
+            sudo ./offen setup -email circle@offen.dev -name circle -password secret -populate
+      - run:
+          name: Serve application
+          command: OFFEN_SERVER_PORT=8080 sudo ./offen
+          background: true
+      - run:
+          name: Wait for server to be ready
+          command: |
+            for i in `seq 1 10`;
+            do
+              nc -z localhost 3000 && echo Success && exit 0
+              echo -n .
+              sleep 1
+            done
+            echo Failed waiting for server && exit 1
+      - run:
+          name: Check URLs
+          command: |
+            curl -sS -X GET localhost:3000 > /dev/null
+            curl -sS -X GET localhost:3000/script.js > /dev/null
+            curl -sS -X GET localhost:3000/vault/ > /dev/null
+            curl -sS -X GET localhost:3000/auditorium/ > /dev/null
+            curl -sS -X GET localhost:3000/healthz > /dev/null
+            curl -sS -X GET localhost:3000/versionz > /dev/null
+
+  build:
+    docker:
+      - image: circleci/golang:1.13
+    working_directory: ~/offen
+    steps:
+      - checkout
+      - setup_remote_docker
       - run:
           name: Build application Docker image and binary
           command: |
-            export OFFEN_GIT_REVISION=$(git rev-parse --short HEAD)
-            if [ "${CIRCLE_BRANCH}" == "master" ]; then
-              export DOCKER_IMAGE_TAG="stable"
-            else
+            if [ -z "$CIRCLE_TAG" ]; then
+              export OFFEN_GIT_REVISION=$(git rev-parse --short HEAD)
               export DOCKER_IMAGE_TAG="latest"
+            else
+              export OFFEN_GIT_REVISION=$CIRCLE_TAG
+              export DOCKER_IMAGE_TAG=$CIRCLE_TAG
             fi
-            docker build --build-arg rev=$OFFEN_GIT_REVISION -t offen/offen:$DOCKER_IMAGE_TAG -f build/Dockerfile .
-            # next, extract the single binary from the container so it can
-            # be stored as a build artifact (this needs to be formalized into
-            # versioned releases at some point)
-            docker create -it --name builder offen/offen:$DOCKER_IMAGE_TAG ash
-            docker cp builder:/offen .
-            docker rm -f builder
+
+            TARGETS=linux/amd64,windows/amd64 make build
+            # Darwin builds cannot be statically linked right now
+            # so we override the default LDFLAGS value
+            TARGETS=darwin/amd64 LDFLAGS='' make build
+            make build-docker
+
             mkdir -p /tmp/artifacts
-            tar -czvf /tmp/artifacts/offen-$DOCKER_IMAGE_TAG.tar.gz offen
-      - run:
-          name: Save Docker image layer cache
-          command: |
-            mkdir -p /caches
-            docker save -o /caches/offen.tar offen/offen
-      - save_cache:
-          key: v1-{{ .Branch }}-{{ epoch }}
-          paths:
-            - /caches/server.tar
-      - deploy:
-          name: Push application Docker image
-          command: |
-            if [ "${CIRCLE_BRANCH}" == "master" ]; then
-              export DOCKER_IMAGE_TAG="stable"
-            else
-              export DOCKER_IMAGE_TAG="latest"
+            cd ./bin && md5sum * > checksums.txt && cp ~/offen/LICENSE . && cp ~/offen/README.md . && tar -czvf /tmp/artifacts/offen-$DOCKER_IMAGE_TAG.tar.gz $(ls -A)
+
+            echo "$DOCKER_ACCESSTOKEN" | docker login --username $DOCKER_USER --password-stdin
+
+            if [ ! -z "$CIRCLE_TAG" ]; then
+              docker tag offen/offen:$DOCKER_IMAGE_TAG offen/offen:stable
+              docker push offen/offen:stable
             fi
-            echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
             docker push offen/offen:$DOCKER_IMAGE_TAG
       - store_artifacts:
           path: /tmp/artifacts
 
 workflows:
   version: 2
-  test_build:
+  test:
     jobs:
       - server
       - vault
       - script
       - auditorium
       - packages
+      - integration
       - build:
-          <<: *build_preconditions
+          requires:
+            - server
+            - vault
+            - script
+            - auditorium
+            - packages
+            - integration
+          filters:
+            tags:
+              only:
+                - /^v.*/ # tagged release from master branch
+            branches:
+              only:
+                - development # "latest" release from development branch

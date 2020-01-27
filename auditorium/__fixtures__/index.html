@@ -9,7 +9,7 @@
       {
         type: 'LOGIN_SUCCESS',
         payload: {
-          user: { userId: 'some-id' }
+          user: { accountUserId: 'some-id' }
         }
       },
       {
@@ -37,11 +37,11 @@
           }
         })
       }
-      if (event.data.type === 'OPTOUT_STATUS') {
+      if (event.data.type === 'OPTIN_STATUS') {
         event.ports[0].postMessage({
           payload: {
             result: {
-              hasOptedOut: false,
+              hasOptedIn: true,
               allowsCookies: true
             }
           }
@@ -51,9 +51,11 @@
         event.ports[0].postMessage(loginResponses[loginCalled])
         loginCalled++
       }
-      if (event.data.type === 'OPTOUT') {
+      if (event.data.type === 'EXPRESS_CONSENT') {
         event.ports[0].postMessage({
-          payload: null
+          payload: {
+            status: 'allow'
+          }
         })
       }
     })

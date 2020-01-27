@@ -1,6 +1,7 @@
 var api = require('./api')
 var queries = require('./queries')
 var relayEvent = require('./relay-event')
+var consentStatus = require('./user-consent')
 var allowsCookies = require('./allows-cookies')
 var getUserEvents = require('./get-user-events')
 var getOperatorEvents = require('./get-operator-events')
@@ -27,17 +28,55 @@ function handleAnonymousEventWith (relayEvent) {
   }
 }
 
-exports.handleOptoutStatus = handleOptoutStatusWith(allowsCookies)
-exports.handleOptoutStatusWith = handleOptoutStatusWith
+exports.handleConsentStatus = handleConsentStatusWith(consentStatus.get, allowsCookies)
+exports.handleConsentStatusWith = handleConsentStatusWith
 
-function handleOptoutStatusWith (allowsCookies) {
+function handleConsentStatusWith (getConsentStatus, allowsCookies) {
   return function (message) {
     return {
-      type: 'OPTOUT_STATUS_SUCCESS',
+      type: 'CONSENT_STATUS_SUCCESS',
       payload: {
+        status: getConsentStatus(),
         allowsCookies: allowsCookies()
       }
     }
+  }
+}
+
+exports.handleExpressConsent = handleExpressConsentWith(api, queries, consentStatus.get)
+exports.handleExpressConsentWith = handleExpressConsentWith
+
+function handleExpressConsentWith (api, queries, getConsentStatus) {
+  return function (message) {
+    var status = message.payload.status
+    if ([consentStatus.ALLOW, consentStatus.DENY].indexOf(status) < 0) {
+      return Promise.reject(new Error('Received invalid consent status: ' + status))
+    }
+    consentStatus.set(status)
+    var purge = status === consentStatus.ALLOW
+      ? Promise.resolve()
+      : Promise.all([
+        api
+          .purge(true)
+          .catch(function (err) {
+            if (err.status === 400) {
+              // users might request to delete data even if they do not have any
+              // associated, so a 400 response is ok here
+              return null
+            }
+            throw err
+          }),
+        queries.purge()
+      ])
+    return purge.then(function () {
+      return {
+        type: 'EXPRESS_CONSENT_SUCCESS',
+        payload: {
+          status: getConsentStatus(),
+          allowsCookies: allowsCookies()
+        }
+      }
+    })
   }
 }
 
@@ -77,7 +116,17 @@ exports.handlePurgeWith = handlePurgeWith
 function handlePurgeWith (api, queries, getUserEvents, getOperatorEvents) {
   var handleQuery = handleQueryWith(getUserEvents, getOperatorEvents)
   return function handlePurge (message) {
-    return Promise.all([api.purge(), queries.purge()])
+    return Promise.all([
+      api
+        .purge()
+        .catch(function (err) {
+          if (err.status === 400) {
+            return null
+          }
+          throw err
+        }),
+      queries.purge()
+    ])
       .then(function () {
         return handleQuery(message)
       })
@@ -103,8 +152,8 @@ function handleLoginWith (api, get, set) {
               noSessionErr.status = 401
               throw noSessionErr
             }
-            if (response.userId !== storedResponse.userId) {
-              var mismatchErr = new Error('Received user id did not match local session')
+            if (response.accountUserId !== storedResponse.accountUserId) {
+              var mismatchErr = new Error('Received account user id did not match local session')
               mismatchErr.status = 401
               throw mismatchErr
             }

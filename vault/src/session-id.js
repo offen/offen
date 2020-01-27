@@ -25,7 +25,7 @@ function getSessionId (accountId) {
 
     if (!sessionId) {
       sessionId = uuid()
-      document.cookie = [lookupKey, sessionId].join('=')
+      document.cookie = [lookupKey, sessionId].join('=') + '; SameSite=Lax'
     }
   } catch (err) {
     sessionId = uuid()

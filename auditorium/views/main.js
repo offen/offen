@@ -3,22 +3,102 @@ var raw = require('choo/html/raw')
 var _ = require('underscore')
 
 var BarChart = require('./../components/bar-chart')
+var Table = require('./../components/table')
 
 module.exports = view
 
-function formatPercentage (value) {
-  return (value * 100).toLocaleString(undefined, {
+function keyMetric (name, value) {
+  return html`
+      <div class="w-50 w-100-ns mb3 mb4-ns">
+        <p class="mv0 f2">${value}</p>
+        <p class="mv0 normal">${name}</p>
+      </div>
+    `
+}
+
+function retentionSquare (value) {
+  if (value === null) {
+    return null
+  }
+  return html`
+    <div title="${formatNumber(value, 100)}%">
+      <div
+        style="opacity: ${value !== 0 ? (value * 0.75 + 0.25) : 1}"
+        class="${value !== 0 ? 'bg-dark-green' : 'bg-light-gray'} h3 w-100"
+      >
+      </div>
+    </div>
+  `
+}
+
+function relativeTime (offset) {
+  if (offset === 0) {
+    return __('This week')
+  }
+  return __('%d days earlier', offset * 7)
+}
+
+function retentionTable (matrix) {
+  var rows = matrix.map(function (row, index) {
+    var elements = row.slice()
+    while (elements.length < matrix[0].length) {
+      elements.push(null)
+    }
+    return html`
+      <tr>
+        <td>${relativeTime(index)}</td>
+        ${elements.map(function (element) { return html`<td>${retentionSquare(element)}</td>` })}
+      </tr>
+    `
+  })
+  return html`
+    <table class="w-100 collapse mb3 dt--fixed">
+      <thead>
+        <tr>
+          <td></td>
+          ${matrix.map(function (row, index) { return html`<td>${relativeTime(index)}</td>` })}
+        </tr>
+      </thead>
+      <tbody>
+        ${rows}
+      </tbody>
+    </table>
+  `
+}
+
+function formatNumber (value, factor) {
+  return (value * (factor || 1)).toLocaleString(process.env.LOCALE, {
     maximumFractionDigits: 1,
     minimumFractionDigits: 1
   })
 }
 
 function view (state, emit) {
+  var userHasOptedIn = state.consentStatus && state.consentStatus.status === 'allow'
+
+  function handleConsent () {
+    var nextStatus = userHasOptedIn ? 'deny' : 'allow'
+    var flashMessage = nextStatus === 'deny'
+      ? __('You have successfully opted out, all usage data has been deleted')
+      : __('You have now opted in.')
+    emit('offen:express-consent', nextStatus, flashMessage, function (state, emitter) {
+      emitter.emit('offen:query', Object.assign({}, state.params, state.query), state.authenticatedUser)
+    })
+  }
+
   function handlePurge () {
-    emit('offen:purge')
+    emit('offen:purge', __('Your usage data has been deleted.'))
   }
 
   var isOperator = !!(state.params && state.params.accountId)
+
+  if (isOperator) {
+    var softFailure = __(
+      'This view failed to update automatically, data may be out of date. Check your network connection if the problem persists.'
+    )
+    emit('offen:schedule-refresh', 15000, softFailure)
+  }
+
   var accountHeader = null
   var pageTitle
   if (isOperator) {
@@ -27,7 +107,7 @@ function view (state, emit) {
       state.model.account.name
     )
     accountHeader = html`
-      <p class="dib pa2 br2 bg-black-05 mt0 mb2">
+      <p class="dib pa2 br2 ma0 mt3 ml3 ml0-ns mr3 mr0-ns bg-light-yellow">
         ${raw(copy)}
       </p>
     `
@@ -35,23 +115,10 @@ function view (state, emit) {
   } else {
     pageTitle = __('user') + ' | ' + state.title
     accountHeader = html`
-      <p class="dib pa2 br2 bg-black-05 mt0 mb2">
-        ${raw(__('You are viewing your <strong>user</strong> data.'))}
+      <p class="dib pa2 br2 ma0 mt3 ml3 ml0-ns mr3 mr0-ns bg-light-yellow">
+        ${raw(__('You are viewing your <strong>usage data.</strong> '))}
       </p>
     `
-    if (!state.model.allowsCookies) {
-      var noCookiesCopy = __('Your browser does not allow 3rd party cookies. We respect this setting and collect only very basic data in this case, yet it also means we cannot display any data to you here.')
-      accountHeader = [
-        accountHeader,
-        html`
-          <p class="dib pa2 black br2 bg-black-05 mt0 mb2">
-            <strong>
-              ${noCookiesCopy}
-            </strong>
-          </p>
-        `
-      ]
-    }
   }
   emit(state.events.DOMTITLECHANGE, pageTitle)
 
@@ -90,10 +157,11 @@ function view (state, emit) {
   })
 
   var rangeSelector = html`
-      <h4 class ="f5 normal mt0 mb3">${__('Show data from the last')}</h4>
-      <ul class="flex flex-wrap list pl0 mt0 mb3">${ranges}</ul>
-    `
+    <h4 class ="f5 normal mt0 mb3">${__('Show data from the last')}</h4>
+    <ul class="flex flex-wrap list pl0 mt0 mb3">${ranges}</ul>
+  `
 
+  var manage = null
   if (isOperator) {
     var availableAccounts = state.authenticatedUser.accounts
       .slice()
@@ -109,50 +177,66 @@ function view (state, emit) {
         }
         return html`
           <li>
-            <a href="./account/${account.accountId}/" class="${buttonClass}">
+            <a href="/auditorium/${account.accountId}/" class="${buttonClass}">
               ${account.accountName}
             </a>
           </li>
         `
       })
-  }
-
-  var chooseAccounts = html`
+    manage = html`
       <h4 class ="f5 normal mt0 mb3">Choose account</h4>
       <ul class="flex flex-wrap list pl0 mt0 mb3">
         ${availableAccounts}
       </ul>
     `
-
-  var manageOperator = html`
-    <div class="w-100 w-30-ns pa3 mb2 mr2-ns br2 bg-black-05">
-      ${chooseAccounts}
-    </div>
-    `
-
-  var manageUser = !isOperator && state.model.allowsCookies
-    ? html`
-      <div class="w-100 w-30-ns pa3 mb2 mr2-ns br2 bg-black-05">
-        <h4 class ="f5 normal mt0 mb3">${__('Manage data')}</h4>
+  } else {
+    var deleteButton = null
+    if (userHasOptedIn) {
+      deleteButton = html`
         <button class="pointer w-100-ns f5 link dim bn ph3 pv2 mr1 mb2 dib br1 white bg-mid-gray" data-role="purge" onclick="${handlePurge}">
-          ${raw(__('Delete my <strong>user</strong> data'))}
+          ${raw(__('Delete my <strong>usage data</strong>'))}
         </button>
-        <button class="pointer w-100-ns f5 link bn ph3 pv2 mb3 dib br1 white bg-black-05" data-role="optin" disabled>
-          ${__('Opt me in')}
-        </button>
-      </div>
+      `
+    }
+    manage = html`
+      <h4 class ="f5 normal mt0 mb3">${__('Manage data')}</h4>
+      ${deleteButton}
+      <button class="pointer w-100-ns f5 link dim bn ph3 pv2 mb3 dib br1 white bg-mid-gray" data-role="consent" onclick=${handleConsent}>
+        ${userHasOptedIn ? raw(__('Opt out and delete my <strong>usage data</strong>')) : __('Opt in')}
+      </button>
     `
-    : null
+  }
 
-  var firstCardContent = isOperator ? manageOperator : manageUser
   var rowRangeManage = html`
-      <div class="flex flex-column flex-row-ns mt4">
-        ${firstCardContent}
-        <div class="w-100 w-70-ns pa3 mb2 ba b--black-10 br2 bg-white">
-          ${rangeSelector}
+    <div class="flex flex-column flex-row-ns mt4">
+      <div class="w-100 w-30-ns pa3 mb2 mr2-ns br0 br2-ns bg-black-05">
+        ${manage}
+      </div>
+      <div class="w-100 w-70-ns pa3 mb2 bt bb ba-ns br0 br2-ns b--black-10 bg-white">
+        ${rangeSelector}
+      </div>
+    </div>
+  `
+
+  var live = null
+  if (isOperator) {
+    var tableData = { headline: __('Currently active pages'), col1Label: __('URL'), col2Label: __('Visitors'), rows: state.model.livePages }
+    live = html`
+      <div class="w-100 pa3 mb2 mr2-ns bt bb ba-ns br0 br2-ns b--black-10 bg-white flex flex-column">
+        <div class="flex flex-column flex-row-ns">
+          <div class="w-100 w-30-ns">
+            <h4 class="f5 normal mt0 mb3">
+              ${__('Right now')}
+            </h4>
+            ${keyMetric('Unique users', state.model.liveUsers)}
+          </div>
+          <div class="w-100 w-70-ns">
+            ${state.cache(Table, 'main/live-table').render([tableData], __('No data available for this view'))}
+          </div>
         </div>
       </div>
     `
+  }
 
   var chartData = {
     data: state.model.pageviews,
@@ -161,13 +245,11 @@ function view (state, emit) {
   }
 
   var chart = html`
-    <div class="w-100 w-75-m w-80-ns pa3 mb2 mr2-ns ba b--black-10 br2 bg-white">
+    <div class="w-100 w-75-m w-80-ns pa3 mb2 mr2-ns bt bb ba-ns br0 br2-ns b--black-10 bg-white flex flex-column">
       <h4 class="f5 normal mt0 mb3">
         ${__('Page views and %s', isOperator ? __('visitors') : __('accounts'))}
       </h4>
-      <div class="mb4">
-        ${state.cache(BarChart, 'bar-chart').render(chartData)}
-      </div>
+      ${state.cache(BarChart, 'main/bar-chart').render(chartData)}
     </div>
   `
 
@@ -175,31 +257,23 @@ function view (state, emit) {
     ? state.model.uniqueUsers
     : state.model.uniqueAccounts
   var entityName = isOperator
-    ? __('users')
-    : __('accounts')
+    ? __('Users')
+    : __('Accounts')
+
   var uniqueSessions = state.model.uniqueSessions
-  var usersAndSessions = html`
-    <div class="w-100 w-25-m w-20-ns pa3 mb2 ba b--black-10 br2 bg-white">
-      <h4 class ="f5 normal mt0 mb3 mb5-ns">Key metrics</h4>
+  var keyMetrics = html`
+    <div class="w-100 w-25-m w-20-ns pa3 mb2 bt bb ba-ns br0 br2-ns b--black-10 bg-white">
+      <h4 class ="f5 normal mt0 mb3 mb4-ns">Key metrics</h4>
       <div class="flex flex-wrap">
-        <div class="w-50 w-100-ns mb3 mb4-ns">
-          <p class="mt0 mb0 f2">${uniqueEntities}</p>
-          <p class="mt0 mb0 normal">${__('Unique %s', entityName)}</p>
-        </div>
-        <div class="w-50 w-100-ns mb3 mb4-ns">
-          <p class="mt0 mb0 f2">${uniqueSessions}</p>
-          <p class="mt0 mb0 normal">${__('Unique sessions')}</p>
-        </div>
-        <div class="w-50 w-100-ns mb3 mb4-ns">
-          <p class="mt0 mb0 f2">${formatPercentage(state.model.bounceRate)} %</p>
-          <p class="mt0 mb0 normal">${__('Bounce rate')}</p>
-        </div>
-        <div class="w-50 w-100-ns mb3 mb4-ns">
-          ${isOperator ? html`
-            <p class="mt0 mb0 f2">${formatPercentage(state.model.loss)} %</p>
-            <p class="mt0 mb0 normal">${__('Plus')}</p>
-          ` : null}
-        </div>
+        ${keyMetric(__('Unique %s', entityName), uniqueEntities)}
+        ${keyMetric(__('Unique Sessions'), uniqueSessions)}
+        <hr class="mt0 mb3 w-100 bb bw1 b--black-10">
+        ${state.model.avgPageDepth ? keyMetric(__('Avg. Page Depth'), formatNumber(state.model.avgPageDepth)) : null}
+        ${keyMetric(__('Bounce Rate'), `${formatNumber(state.model.bounceRate, 100)} %`)}
+        ${isOperator && state.model.loss ? keyMetric(__('Plus'), `${formatNumber(state.model.loss, 100)} %`) : null}
+        <hr class="mt0 mb3 w-100 bb bw1 b--black-10">
+        ${keyMetric(__('Mobile Users'), `${formatNumber(state.model.mobileShare, 100)} %`)}
+        ${state.model.avgPageload ? keyMetric(__('Avg. Page Load time'), `${Math.round(state.model.avgPageload)} ms`) : null}
       </div>
     </div>
   `
@@ -207,93 +281,75 @@ function view (state, emit) {
   var rowUsersSessionsChart = html`
     <div class="flex flex-column flex-row-ns">
       ${chart}
-      ${usersAndSessions}
+      ${keyMetrics}
     </div>
   `
 
-  var pagesData = state.model.pages
-    .map(function (row) {
-      return html`
-        <tr>
-          <td class="pv2 bt b--black-10">${row.url}</td>
-          <td class="pv2 bt b--black-10">${row.pageviews}</td>
-        </tr>
-      `
-    })
-
-  var pages = html`
-    <h4 class ="f5 normal mt0 mb3">${__('Top pages')}</h4>
-    <table class="w-100 collapse mb3">
-      <thead>
-        <tr>
-          <td class="pv2 b">${__('URL')}</td>
-          <td class="pv2 b">${__('Pageviews')}</td>
-        </tr>
-      </thead>
-      <tbody>
-        ${pagesData}
-      </tbody>
-    </table>
+  var pagesTableData = [
+    { headline: __('Top pages'), col1Label: __('URL'), col2Label: __('Pageviews'), rows: state.model.pages }
+  ]
+  var referrersTableData = [
+    { headline: __('Top referrers'), col1Label: __('Host'), col2Label: __('Pageviews'), rows: state.model.referrers },
+    { headline: __('Top campaigns'), col1Label: __('Campaign'), col2Label: __('Pageviews'), rows: state.model.campaigns },
+    { headline: __('Top sources'), col1Label: __('Source'), col2Label: __('Pageviews'), rows: state.model.sources }
+  ]
+  var landingExitTableData = [
+    { headline: __('Landing pages'), col1Label: __('URL'), col2Label: __('Landings'), rows: state.model.landingPages },
+    { headline: __('Exit pages'), col1Label: __('URL'), col2Label: __('Exits'), rows: state.model.exitPages }
+  ]
+  var urlTables = html`
+    <div class="w-100 pa3 mb2 bt bb ba-ns br0 br2-ns b--black-10 bg-white">
+      ${state.cache(Table, 'main/pages-table').render(pagesTableData, __('No data available for this view'))}
+    </div>
+    <div class="w-100 pa3 mb2 bt bb ba-ns br0 br2-ns b--black-10 bg-white">
+      ${state.cache(Table, 'main/referrers-table').render(referrersTableData, __('No data available for this view'))}
+    </div>
+    <div class="w-100 pa3 mb2 bt bb ba-ns br0 br2-ns b--black-10 bg-white">
+      ${state.cache(Table, 'main/landing-exit-table').render(landingExitTableData, __('No data available for this view'))}
+    </div>
   `
 
-  var referrerData = state.model.referrers
-    .map(function (row) {
-      return html`
-        <tr>
-          <td class="pv2 bt b--black-10">${row.host}</td>
-          <td class="pv2 bt b--black-10">${row.pageviews}</td>
-        </tr>
-      `
-    })
-
-  var referrers = referrerData.length
-    ? html`
-      <h4 class ="f5 normal mt0 mb3">${__('Top referrers')}</h4>
-      <table class="w-100 collapse mb3">
-        <thead>
-          <tr>
-            <td class="pv2 b">${__('Host')}</td>
-            <td class="pv2 b">${__('Pageviews')}</td>
-          </tr>
-        </thead>
-        <tbody>
-          ${referrerData}
-        </tbody>
-      </table>
-    `
-    : null
-
-  var pagesReferrers = html`
-      <div class="w-100 pa3 mb2 ba b--black-10 br2 bg-white">
-        ${pages}
-        ${referrers}
-      </div>
-    `
-
+  var retention = html`
+    <div class="w-100 pa3 mb2 bt bb ba-ns br0 br2-ns b--black-10 bg-white">
+      <h4 class ="f5 normal mt0 mb3 mb4-ns">Weekly retention</h4>
+      ${retentionTable(state.model.retentionMatrix)}
+    </div>
+  `
   var goSettings = isOperator
     ? html`
-        <div class="flex flex-column flex-row-ns mt4">
-          <div class="w-100 w-20-ns pa3 mb2 mr2-ns br2 bg-black-05">
-            <h4 class ="f5 normal mt0 mb3">
-              ${__('Admin console')}
-            </h4>
-            <a href="/auditorium/account/" class="w-100-ns f5 tc link dim bn ph3 pv2 mr1 mb2 dib br1 white bg-mid-gray">
+      <div class="flex flex-column flex-row-ns mt4">
+        <div class="w-100 w-20-ns pa3 mb2 mr2-ns br0 br2-ns bg-black-05">
+          <h4 class ="f5 normal mt0 mb3">
+            ${__('Admin console')}
+          </h4>
+          <div class="flex items-center">
+            <a href="/console/" class="w-100-ns f5 tc link dim bn ph3 pv2 mr1 mb2 dib br1 white bg-mid-gray">
               ${__('Settings')}
             </a>
           </div>
-          <div class="dn db-ns w-100 w-80-ns pa3 mb2 br2 bg-black-05">
-          </div>
         </div>
-      `
+        <div class="w-100 w-80-ns pa3 mb2 br0 br2-ns bg-black-05">
+          <h4 class="f5 mb3 mt0">${__('No data showing up?')}</h4>
+          <p>${raw(__('To use Offen with the account <strong>%s</strong> on your website, embed the following script on each page you want to appear in your statistics:', state.model.account.name))}</p>
+          <pre class="pre">${raw(`&lt;script async src="${window.location.origin}/script.js" data-account-id="${state.model.account.accountId}"&gt;&lt;/script&gt;`)}</pre>
+        </div>
+      </div>
+    `
     : null
 
+  // TODO: add properly styled loading overlay
   return html`
       <div>
         ${accountHeader}
-        ${rowRangeManage}
-        ${rowUsersSessionsChart}
-        ${pagesReferrers}
-        ${goSettings}
+        <div id="main">
+          ${rowRangeManage}
+          ${live}
+          ${rowUsersSessionsChart}
+          ${urlTables}
+          ${retention}
+          ${goSettings}
+        </div>
+        ${state.stale ? html`<div class="fixed top-0 right-0 bottom-0 left-0 bg-white o-40"></div>` : null}
       </div>
     `
 }

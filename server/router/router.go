@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
-	"strings"
 	"time"
 
 	"github.com/NYTimes/gziphandler"
@@ -36,7 +35,8 @@ func (rt *router) logError(err error, message string) {
 
 const (
 	cookieKey               = "user"
-	optoutKey               = "optout"
+	optinKey                = "consent"
+	optinValue              = "allow"
 	authKey                 = "auth"
 	contextKeyCookie        = "contextKeyCookie"
 	contextKeyAuth          = "contextKeyAuth"
@@ -44,32 +44,22 @@ const (
 )
 
 func (rt *router) userCookie(userID string, secure bool) *http.Cookie {
-	return &http.Cookie{
+	sameSite := http.SameSiteNoneMode
+	if !secure {
+		sameSite = http.SameSiteLaxMode
+	}
+
+	c := &http.Cookie{
 		Name:     cookieKey,
 		Value:    userID,
-		Expires:  time.Now().Add(rt.config.App.EventRetentionPeriod),
+		Expires:  time.Unix(0, 0),
 		HttpOnly: true,
 		Secure:   secure,
+		SameSite: sameSite,
 		Path:     "/",
 	}
-}
-
-func (rt *router) optoutCookie(optout, secure bool) *http.Cookie {
-	c := &http.Cookie{
-		Name:  optoutKey,
-		Value: "1",
-		// the optout cookie is supposed to outlive the software, so
-		// it expires in ~100 years
-		Expires: time.Now().Add(time.Hour * 24 * 365 * 100),
-		Path:    "/",
-		// this cookie is supposed to be read by the client so it can
-		// stop operating before even sending requests
-		HttpOnly: false,
-		SameSite: http.SameSiteDefaultMode,
-		Secure:   secure,
-	}
-	if !optout {
-		c.Expires = time.Unix(0, 0)
+	if userID != "" {
+		c.Expires = time.Now().Add(rt.config.App.EventRetentionPeriod)
 	}
 	return c
 }
@@ -78,7 +68,7 @@ func (rt *router) authCookie(userID string, secure bool) (*http.Cookie, error) {
 	c := http.Cookie{
 		Name:     authKey,
 		HttpOnly: true,
-		SameSite: http.SameSiteDefaultMode,
+		SameSite: http.SameSiteLaxMode,
 		Secure:   secure,
 	}
 	if userID == "" {
@@ -146,23 +136,17 @@ func New(opts ...Config) http.Handler {
 	rt.cookieSigner = securecookie.New(rt.config.Secrets.CookieExchange.Bytes(), nil)
 	rt.mailer = rt.config.NewMailer()
 
-	fileServer := http.FileServer(rt.fs)
-	if !rt.config.Server.ReverseProxy {
-		fileServer = gziphandler.GzipHandler(staticHeaderMiddleware(fileServer))
-	}
-
-	static := http.NewServeMux()
-	// In development, these routes will be served by a different nginx
-	// upstream. They are only relevant when building the application into
-	// a single binary that inlines the filesystems.
-	static.Handle("/auditorium/", singlePageAppMiddleware("/auditorium/")(fileServer))
-	static.Handle("/", fileServer)
-
+	optin := optinMiddleware(optinKey, optinValue)
 	userCookie := userCookieMiddleware(cookieKey, contextKeyCookie)
 	accountAuth := rt.accountUserMiddleware(authKey, contextKeyAuth)
 	noStore := headerMiddleware(map[string]func() string{
 		"Cache-Control": func() string {
 			return "no-store"
+		},
+	})
+	csp := headerMiddleware(map[string]func() string{
+		"Content-Security-Policy": func() string {
+			return defaultCSP
 		},
 	})
 	etag := etagMiddleware()
@@ -177,11 +161,13 @@ func New(opts ...Config) http.Handler {
 		location.Default(),
 		secureContextMiddleware(contextKeySecureContext, rt.config.App.Development),
 	)
-	if rt.template != nil {
-		app.SetHTMLTemplate(rt.template)
-	}
-	app.GET("/", etag, rt.getRoot)
-	app.GET("/healthz", noStore, rt.getHealth)
+
+	root := gin.New()
+	root.SetHTMLTemplate(rt.template)
+	root.GET("/*any", etag, csp, rt.getIndex)
+	app.GET("/", gin.WrapH(root))
+
+	app.Any("/healthz", noStore, rt.getHealth)
 	app.GET("/versionz", noStore, rt.getVersion)
 	{
 		api := app.Group("/api")
@@ -205,27 +191,24 @@ func New(opts ...Config) http.Handler {
 
 		api.GET("/events", userCookie, rt.getEvents)
 		api.POST("/events/anonymous", rt.postEvents)
-		api.POST("/events", userCookie, rt.postEvents)
+		api.POST("/events", optin, userCookie, rt.postEvents)
 	}
 
-	m := http.NewServeMux()
-	m.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		switch uri := r.URL.Path; {
-		case strings.HasPrefix(uri, "/api/"),
-			strings.HasPrefix(uri, "/healthz"),
-			strings.HasPrefix(uri, "/versionz"),
-			uri == "/":
-			app.ServeHTTP(w, r)
-		default:
-			static.ServeHTTP(w, r)
-		}
-	})
+	fileServer := http.FileServer(rt.fs)
+	if !rt.config.Server.ReverseProxy {
+		fileServer = gziphandler.GzipHandler(fileServer)
+	}
+
+	app.Use(staticMiddleware(fileServer, root))
 
 	if rt.config.Server.ReverseProxy {
-		return m
+		return app
 	}
+
+	// HTTP logging is only added when the reverse proxy setting is not
+	// enabled
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		metrics := httpsnoop.CaptureMetrics(m, w, r)
+		metrics := httpsnoop.CaptureMetrics(app, w, r)
 		logLevel := logrus.InfoLevel
 		if metrics.Code >= http.StatusInternalServerError {
 			logLevel = logrus.ErrorLevel

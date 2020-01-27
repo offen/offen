@@ -17,8 +17,8 @@ func (r *relationalDAL) CreateAccountUserRelationship(a *persistence.AccountUser
 func (r *relationalDAL) FindAccountUserRelationships(q interface{}) ([]persistence.AccountUserRelationship, error) {
 	var relationships []AccountUserRelationship
 	switch query := q.(type) {
-	case persistence.FindAccountUserRelationShipsQueryByUserID:
-		if err := r.db.Where("user_id = ?", string(query)).Find(&relationships).Error; err != nil {
+	case persistence.FindAccountUserRelationshipsQueryByAccountUserID:
+		if err := r.db.Where("account_user_id = ?", string(query)).Find(&relationships).Error; err != nil {
 			return nil, fmt.Errorf("relational: error looking up account to account user relationships: %w", err)
 		}
 		result := []persistence.AccountUserRelationship{}

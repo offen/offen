@@ -26,43 +26,55 @@ services:
       GOPATH: /data/go
       OFFEN_APP_DEVELOPMENT: '1'
       OFFEN_APP_EVENTRETENTIONPERIOD: 4464h
-      OFFEN_APP_ROOTACCOUNT: 9b63c4d8-65c0-438c-9d30-cc4b01173393
       OFFEN_DATABASE_CONNECTIONSTRING: /data/db.sqlite
       OFFEN_SECRETS_COOKIEEXCHANGE: 3P+w6QetKO3Kn8h1YyRlCw==
       OFFEN_SECRETS_EMAILSALT: JuhbRA4lCdo8rt5qVdLpk3==
+      OFFEN_SERVER_PORT: 8080
+      OFFEN_SERVER_REVERSEPROXY: '1'
     command: refresh run
-    ports:
-      - 8081:8080
 
   vault:
     build:
       context: '.'
       dockerfile: Dockerfile.node
     working_dir: /offen/vault
+    environment:
+      PORT: 9977
     volumes:
       - .:/offen
       - vaultdeps:/offen/vault/node_modules
-    command: npm start -- --port 9977
+    command: npm start
 
   script:
     build:
       context: '.'
       dockerfile: Dockerfile.node
     working_dir: /offen/script
+    environment:
+      PORT: 9966
     volumes:
       - .:/offen
       - scriptdeps:/offen/script/node_modules
-    command: npm start -- --port 9966
+    command: npm start
 
   auditorium:
     build:
       context: '.'
       dockerfile: Dockerfile.node
     working_dir: /offen/auditorium
+    environment:
+      PORT: 9955
     volumes:
       - .:/offen
       - auditoriumdeps:/offen/auditorium/node_modules
-    command: npm start -- --port 9955
+    command: npm start
+
+  test_site:
+    image: nginx:1.17-alpine
+    ports:
+      - 8081:80
+    volumes:
+      - ./test-site:/usr/share/nginx/html
 
 volumes:
   serverdata:

@@ -14,41 +14,51 @@ function createVault (host) {
   vault.src = host
 
   vault.style.display = 'none'
-  vault.setAttribute('width', '0')
-  vault.setAttribute('height', '0')
   vault.setAttribute('frameBorder', '0')
   vault.setAttribute('scrolling', 'no')
 
+  var elementId = createElementId()
+  vault.setAttribute('id', elementId)
+
   createVault[host] = new Promise(function (resolve, reject) {
     vault.addEventListener('load', function (e) {
-      function postMessage (message, waitForResponse) {
+      function postMessage (message) {
         return new Promise(function (resolve, reject) {
           var origin = new window.URL(vault.src).origin
-          if (!waitForResponse) {
-            try {
-              vault.contentWindow.postMessage(message, origin)
-              resolve(null)
-            } catch (err) {
-              reject(err)
-            }
-            return
-          }
+          var stylesheet = document.createElement('style')
+          stylesheet.setAttribute('id', 'offen-vault-styles')
+          message.host = message.host || '#' + elementId
 
-          var channel = new window.MessageChannel()
-          channel.port1.onmessage = function (event) {
-            var responseMessage = event.data
-            if (responseMessage.type === 'ERROR') {
-              var err = new Error(responseMessage.payload.error)
-              err.originalStack = responseMessage.payload.stack
-              err.status = responseMessage.payload.status
-              reject(err)
+          var messageChannel = new window.MessageChannel()
+          messageChannel.port1.onmessage = function (event) {
+            var responseMessage = event.data || {}
+            switch (responseMessage.type) {
+              case 'STYLES':
+                if (!document.head.contains(stylesheet)) {
+                  document.head.appendChild(stylesheet)
+                }
+                var payload = responseMessage.payload
+                if (payload.styles) {
+                  stylesheet.innerHTML = payload.styles
+                }
+                Object.keys(payload.attributes || {}).forEach(function (attribute) {
+                  vault.setAttribute(attribute, payload.attributes[attribute])
+                })
+                break
+              case 'ERROR':
+                var err = new Error(responseMessage.payload.error)
+                err.originalStack = responseMessage.payload.stack
+                err.status = responseMessage.payload.status
+                reject(err)
+                break
+              default:
+                resolve(responseMessage)
             }
-            resolve(responseMessage)
           }
-          channel.port1.onmessageerror = function (err) {
+          messageChannel.port1.onmessageerror = function (err) {
             reject(err)
           }
-          vault.contentWindow.postMessage(message, origin, [channel.port2])
+          vault.contentWindow.postMessage(message, origin, [messageChannel.port2])
         })
       }
       resolve(postMessage)
@@ -70,4 +80,8 @@ function createVault (host) {
       })
   }
   return createVault[host]
+}
+
+function createElementId () {
+  return 'offen-vault-' + Math.random().toString(36).slice(2)
 }

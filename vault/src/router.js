@@ -5,10 +5,11 @@ function router () {
 
   function listen (event) {
     function respond (message) {
-      if (event.ports && event.ports.length) {
+      if (event.ports && event.ports.length > 0) {
         event.ports[0].postMessage(message)
       }
     }
+    respond.selector = event.data.host
 
     var stack = (registeredRoutes[event.data.type] || []).slice()
 

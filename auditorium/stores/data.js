@@ -3,61 +3,70 @@ var vault = require('offen/vault')
 module.exports = store
 
 function store (state, emitter) {
-  function handleRequest (request, onSuccessMessage) {
-    var fetchQuery = vault(process.env.VAULT_HOST || '/vault/')
+  function handleRequest (request, onSuccessMessage, onFailureMessage) {
+    state.updatePending = true
+    vault(process.env.VAULT_HOST || '/vault/')
       .then(function (postMessage) {
-        return postMessage(request, true)
+        return postMessage(request)
       })
-    var fetchOptoutStatus = vault(process.env.VAULT_HOST || '/vault/')
-      .then(function (postMessage) {
-        var request = {
-          type: 'OPTOUT_STATUS',
-          payload: null
-        }
-        return postMessage(request, true)
-      })
-
-    Promise.all([fetchQuery, fetchOptoutStatus])
-      .then(function (results) {
-        var queryMessage = results[0]
-        var optoutMessage = results[1]
+      .then(function (queryMessage) {
         state.model = queryMessage.payload.result
-        Object.assign(state.model, optoutMessage.payload)
-        state.flash = onSuccessMessage
+        state.flash = state.flash || onSuccessMessage
       })
       .catch(function (err) {
         if (process.env.NODE_ENV !== 'production') {
           console.error(err)
         }
         state.flash = null
-        state.error = {
-          message: err.message,
-          stack: err.originalStack || err.stack
+        if (!onFailureMessage) {
+          state.error = {
+            message: err.message,
+            stack: err.originalStack || err.stack
+          }
+        } else {
+          state.flash = onFailureMessage
         }
       })
       .then(function () {
+        delete state.stale
+        delete state.updatePending
         emitter.emit(state.events.RENDER)
       })
   }
 
-  emitter.on('offen:purge', function () {
+  emitter.on('offen:purge', function (onSuccessMessage) {
     handleRequest({
       type: 'PURGE',
       payload: null
-    }, __('Your user data has been deleted.'))
+    }, onSuccessMessage)
   })
 
-  emitter.on('offen:query', function (data, authenticatedUser) {
+  emitter.on('offen:query', function (data, authenticatedUser, softFailure) {
     handleRequest({
       type: 'QUERY',
       payload: data
         ? { query: data, authenticatedUser: authenticatedUser }
         : { authenticatedUser: authenticatedUser }
-    })
+    }, null, softFailure)
   })
 
-  emitter.on(state.events.NAVIGATE, function () {
-    delete state.model
+  emitter.on('offen:schedule-refresh', function (interval, onFailureMessage) {
+    if (state.interval) {
+      return
+    }
+    state.interval = window.setInterval(function () {
+      if (state.updatePending) {
+        return
+      }
+      if (document.hasFocus()) {
+        emitter.emit('offen:query', Object.assign({}, state.params, state.query), state.authenticatedUser, onFailureMessage)
+      } else {
+        window.onfocus = function () {
+          emitter.emit('offen:query', Object.assign({}, state.params, state.query), state.authenticatedUser, onFailureMessage)
+          window.onfocus = Function.prototype
+        }
+      }
+    }, interval)
   })
 }
 

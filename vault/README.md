@@ -6,4 +6,4 @@ The `vault` is responsible for ensuring both cookies and cryptographic keys are 
 
 ---
 
-The app builds into a single HTML file with inlined JavaScript that is supposed to be loaded in an `<iframe>` element.
+The app builds into a single HTML file and JavaScript bundles that will be served by the `server` application and embedded into an iframe.

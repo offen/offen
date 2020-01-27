@@ -4,9 +4,9 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"path"
 	"reflect"
 	"runtime"
-	"time"
 
 	"github.com/joho/godotenv"
 	"github.com/kelseyhightower/envconfig"
@@ -16,52 +16,20 @@ import (
 	"github.com/offen/offen/server/mailer/smtpmailer"
 )
 
+const envFileName = "offen.env"
+
 // ErrPopulatedMissing can be returned by New to signal that missing values
 // have been populated and persisted.
-var ErrPopulatedMissing = errors.New("created missing secrets in ~/.config/offen.env")
+var ErrPopulatedMissing = errors.New("populated missing secrets")
 
 // Revision will be set by ldflags on build time
 var Revision string
 
-// Config contains all runtime configuration needed for running offen as
-// and also defines the desired defaults. Package envconfig is used to
-// source values from the application environment at runtime.
-type Config struct {
-	Server struct {
-		Port           int  `default:"8080"`
-		ReverseProxy   bool `default:"false"`
-		SSLCertificate string
-		SSLKey         string
-		AutoTLS        string
-	}
-	Database struct {
-		Dialect          Dialect `default:"sqlite3"`
-		ConnectionString string  `default:"/tmp/offen.db"`
-	}
-	App struct {
-		Development          bool          `default:"false"`
-		EventRetentionPeriod time.Duration `default:"4464h"`
-		Revision             string        `default:"not set"`
-		LogLevel             LogLevel      `default:"info"`
-		SingleNode           bool          `default:"true"`
-		Locale               Locale        `default:"en"`
-		RootAccount          string
-	}
-	Secrets struct {
-		CookieExchange Bytes `required:"true"`
-		EmailSalt      Bytes `required:"true"`
-	}
-	SMTP struct {
-		User     string
-		Password string
-		Host     string
-		Port     int `default:"587"`
-	}
-}
-
+// IsDefaultDatabase checks whether the database connection string matches
+// the default value.
 func (c *Config) IsDefaultDatabase() bool {
 	field, _ := reflect.TypeOf(c.Database).FieldByName("ConnectionString")
-	return c.Database.ConnectionString == field.Tag.Get("default")
+	return c.Database.ConnectionString.RawString() == field.Tag.Get("default")
 }
 
 // SMTPConfigured returns true if all required SMTP credentials are set
@@ -74,88 +42,113 @@ func (c *Config) NewMailer() mailer.Mailer {
 	if !c.SMTPConfigured() {
 		return localmailer.New()
 	}
-	user, pass, host, port := c.SMTP.Host, c.SMTP.User, c.SMTP.Password, c.SMTP.Port
-	return smtpmailer.New(host, user, pass, port)
+	return smtpmailer.New(c.SMTP.Host, c.SMTP.User, c.SMTP.Password, c.SMTP.Port)
 }
 
-const envFileName = "offen.env"
-
-func configurationCascade() []string {
+func walkConfigurationCascade() (string, error) {
+	wd, err := os.Getwd()
+	if err != nil {
+		return "", fmt.Errorf("config: error looking up current working directory: %w", err)
+	}
 	// in case there is an offen.env file next to the binary, it will be loaded
 	// as the env file with the highest precedence
-	locations := []string{envFileName}
-	if homedir, err := os.UserHomeDir(); err == nil {
-		// user specific configuration is looked up in ~/.config/offen.env
-		locations = append(locations, fmt.Sprintf("%s/.config/%s", homedir, envFileName))
+	var cascade []string
+	switch runtime.GOOS {
+	case "windows":
+		cascade = []string{
+			path.Join(wd, envFileName),
+		}
+	case "darwin", "linux":
+		cascade = []string{
+			path.Join(wd, envFileName),
+			path.Join(ExpandString("$HOME/.config"), envFileName),
+			path.Join(ExpandString("$XDG_CONFIG_HOME"), envFileName),
+			path.Join("/etc/offen", envFileName),
+		}
 	}
-	if runtime.GOOS == "linux" {
-		// when running in linux, system wide configuration is sourced from
-		// /etc/offen first
-		locations = append(locations, fmt.Sprintf("/etc/offen/%s", envFileName))
+	for _, file := range cascade {
+		_, err := os.Stat(file)
+		if os.IsNotExist(err) {
+			continue
+		} else if err != nil {
+			return "", fmt.Errorf("config: error checking if config file exists in location %s: %w", file, err)
+		}
+		return file, nil
 	}
-	return locations
+	return "", nil
 }
 
-// PersistSettings persists the given update on disk.
-func PersistSettings(update map[string]string) error {
-	switch runtime.GOOS {
-	case "linux", "darwin":
-		homedir, err := os.UserHomeDir()
+func persistSettings(update map[string]string, envFile string) error {
+	if envFile == "" {
+		wd, err := os.Getwd()
 		if err != nil {
-			return fmt.Errorf("error looking up home directory: %v", err)
+			return fmt.Errorf("config: error looking up current working directory: %w", err)
 		}
-		configFile := fmt.Sprintf("%s/.config/%s", homedir, envFileName)
-		existing, _ := godotenv.Read(configFile)
-		if existing != nil {
-			for key, value := range existing {
-				update[key] = value
-			}
-		}
-		_ = os.Mkdir(fmt.Sprintf("%s/.config", homedir), os.ModeDir)
-		if err := godotenv.Write(update, configFile); err != nil {
-			return fmt.Errorf("error writing env file: %v", err)
-		}
-		return nil
-	default:
-		return fmt.Errorf("operating system %s not yet supported", runtime.GOOS)
+		envFile = path.Join(wd, envFileName)
 	}
+	existing, _ := godotenv.Read(envFile)
+	if existing != nil {
+		for key, value := range existing {
+			update[key] = value
+		}
+	}
+	if err := godotenv.Write(update, envFile); err != nil {
+		return fmt.Errorf("config: error writing env file: %w", err)
+	}
+	return nil
 }
 
 // New returns a new runtime configuration
-func New(populateMissing bool) (*Config, error) {
+func New(populateMissing bool, override string) (*Config, error) {
 	var c Config
-
+	var envFile string
 	// Depending on the system, a certain cascade of configuration options will
 	// be sourced. In case a variable is already set in the environment, it will
 	// not be overridden by any file content.
-	for _, loc := range configurationCascade() {
-		godotenv.Load(loc)
+	if override != "" {
+		if _, err := os.Stat(override); err != nil {
+			return nil, fmt.Errorf("config: error looking up config file override: %w", err)
+		}
+		envFile = override
+	} else {
+		match, err := walkConfigurationCascade()
+		if err != nil {
+			return nil, fmt.Errorf("config: error checking if config file exists: %w", err)
+		}
+		// there might not exist a config file at all in which case all values
+		// are sourced from environment variables
+		if match != "" {
+			envFile = match
+		}
+	}
+
+	if envFile != "" {
+		godotenv.Load(envFile)
 	}
 
 	err := envconfig.Process("offen", &c)
 	if err != nil && !populateMissing {
-		return &c, fmt.Errorf("error processing environment: %v", err)
-	}
-
-	if Revision != "" {
-		c.App.Revision = Revision
+		return &c, fmt.Errorf("config: error processing configuration: %w", err)
 	}
 
 	if err != nil && populateMissing {
+		if envFile == "" {
+			return nil, errors.New("config: unable to find env file to persist settings as no env file could be found")
+		}
 		update := map[string]string{}
 		for _, key := range []string{"OFFEN_SECRETS_EMAILSALT", "OFFEN_SECRETS_COOKIEEXCHANGE"} {
 			secret, err := keys.GenerateRandomValue(keys.DefaultSecretLength)
 			update[key] = secret
 			if err != nil {
-				return nil, fmt.Errorf("error creating secret for use as %s: %v", key, err)
+				return nil, fmt.Errorf("config: error creating secret for use as %s: %w", key, err)
 			}
 		}
 
-		if err := PersistSettings(update); err != nil {
-			return nil, fmt.Errorf("error persisting settings: %v", err)
+		if err := persistSettings(update, envFile); err != nil {
+			return nil, fmt.Errorf("config: error persisting settings: %w", err)
 		}
 
-		result, err := New(false)
+		result, err := New(false, override)
 		if err == nil {
 			err = ErrPopulatedMissing
 		}

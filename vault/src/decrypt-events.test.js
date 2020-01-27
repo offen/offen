@@ -3,13 +3,14 @@ var Unibabel = require('unibabel').Unibabel
 
 var decryptEventsWith = require('./decrypt-events').decryptEventsWith
 
-describe('src/decrypt-event.js', function () {
+describe('src/decrypt-events.js', function () {
   describe('decryptEvents', function () {
     var decryptEvents = decryptEventsWith(null)
 
     var encryptedEventPayload
     var encryptedUserSecret
     var accountKey
+    var privateJwk
     var userSecret
     var userJWK
     var nonce
@@ -43,7 +44,8 @@ describe('src/decrypt-event.js', function () {
           accountKey = _accountKey
           return window.crypto.subtle.exportKey('jwk', accountKey.privateKey)
         })
-        .then(function (_accountJWK) {
+        .then(function (_privateJwk) {
+          privateJwk = _privateJwk
           return window.crypto.subtle.encrypt(
             {
               name: 'RSA-OAEP'
@@ -76,32 +78,32 @@ describe('src/decrypt-event.js', function () {
       return decryptEvents(
         [
           {
-            userId: 'user-id',
+            secretId: 'user-id',
             payload: encryptedEventPayload
           },
           {
-            userId: 'unknown-user',
+            secretId: 'unknown-user',
             payload: encryptedEventPayload
           },
           {
-            userId: 'user-id',
+            secretId: 'user-id',
             payload: 'bogus-value'
           }
         ],
         [
           {
-            userId: 'user-id',
+            secretId: 'user-id',
             value: encryptedUserSecret
           }
         ],
-        accountKey.privateKey
+        privateJwk
       )
         .then(function (result) {
           assert.deepStrictEqual(
             result,
             [
               {
-                userId: 'user-id',
+                secretId: 'user-id',
                 payload: { type: 'TEST' }
               }
             ]

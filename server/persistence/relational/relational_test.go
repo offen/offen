@@ -12,7 +12,7 @@ func createTestDatabase() (*gorm.DB, func() error) {
 	if err != nil {
 		panic(err)
 	}
-	if err := db.AutoMigrate(&Event{}, &Account{}, &User{}, &AccountUser{}, &AccountUserRelationship{}).Error; err != nil {
+	if err := db.AutoMigrate(&Event{}, &Account{}, &Secret{}, &AccountUser{}, &AccountUserRelationship{}).Error; err != nil {
 		panic(err)
 	}
 	return db, db.Close
@@ -47,6 +47,10 @@ func TestRelationalDAL_DropAll(t *testing.T) {
 
 	dal := NewRelationalDAL(db)
 	if err := dal.DropAll(); err != nil {
+		t.Errorf("Unexpected error: %v", err)
+	}
+
+	if err := dal.ApplyMigrations(); err != nil {
 		t.Errorf("Unexpected error: %v", err)
 	}
 

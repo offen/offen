@@ -9,12 +9,12 @@ func TestBootstrapAccounts(t *testing.T) {
 	config := BootstrapConfig{
 		Accounts: []BootstrapAccount{
 			{
-				ID:   "account-a",
-				Name: "a account",
+				AccountID: "account-a",
+				Name:      "a account",
 			},
 			{
-				ID:   "account-b",
-				Name: "b account",
+				AccountID: "account-b",
+				Name:      "b account",
 			},
 		},
 		AccountUsers: []BootstrapAccountUser{

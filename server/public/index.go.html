@@ -1,75 +1,54 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>{{ __ "offen" }}</title>
-  <link rel="stylesheet" type="text/css" href="/tachyons.min.css">
-  <link rel="stylesheet" type="text/css" href="/fonts.css">
-  <link rel="preload" href="/fonts/roboto-v20-latin-regular.woff2" as="font">
-  <link rel="preload" href="/fonts/roboto-v20-latin-700.woff2" as="font">
-  {{ with .rootAccount }}
-    <script src="/script.js" data-account-id="{{ . }}"></script>
-  {{ end }}
-</head>
-<body class="bg-washed-yellow">
-  <div class="mw8 center pa3 pb5 f5 roboto dark-gray">
-    <h1 class="f2 normal mt0 mb4">{{ __ "Welcome to <strong>offen</strong> web analytics" }}</h1>
-    <div class="flex flex-column flex-row-ns items-center w-100 ph3 ph4-ns pv4 mt4 mb2 ba b--black-10 br2 bg-white">
-      <div class="w-100 w-70-ns mr3-ns">
-        <h3 class="f5 b tc tl-ns mt0 mb0">
-          {{ __ "View and manage the usage data this website has collected from you." }}
-        </h3>
-      </div>
-      <div class="w-100 w-30-ns tc mt2 mt0-ns">
-        <a href="/auditorium/" class="f5 tc link dim bn ph3 pv2 dib br1 white bg-dark-green">
-          {{ __ "Open auditorium" }}
-        </a>
-      </div>
-    </div>
-    <div class="w-100 ph3 ph4-ns pv4 mb2 br2 bg-black-05">
-      <div class="flex justify-center justify-start-ns">
-        <a href="https://www.offen.dev/" class="dim mb4" target="_blank">
-          <img src="offen-logo-green.svg" alt="offen logo" width="128" height="80">
-        </a>
-      </div>
-      <div class="w-100 w-70-ns">
-        <p class="mt0 mb1">{{ __ "<strong>offen</strong> is a free and open source analytics software for websites that allows respectful handling of data. It is installed on the website that linked you here." }}</p>
-        <p class="mt0 mb5">{{ __ "Below will find answers to the most common questions website users have." }}</p>
-      </div>
-      <div class="flex flex-column flex-row-ns w-100">
-        <div class="w-100 w-50-ns mr2-ns">
-          <p class="b mt0 mb1">{{ __ "How can I view and manage my data?" }}</p>
-          <p class="mt0 mb4">{{ __ "Go to the <a href=\"/auditorium/\" class=\"link dim dark-green\">auditorium.</a>" }}</p>
-          <p class="b mt0 mb1">{{ __ "What data is collected?" }}</p>
-          <p class="mt0 mb4">{{ __ "Only page views, sessions, referrer and visited URL are collected. From this, other metrics such as the bounce rate are calculated." }}</p>
-          <p class="b mt0 mb1">{{ __ "What data isn't collected?" }}</p>
-          <p class="mt0 mb4">{{ __ "Location data, device information and engagement are not collected. There are also no fingerprinting technologies in use." }}</p>
-          <p class="b mt0 mb1">{{ __ "How is my data handled?" }}</p>
-          <p class="mt0 mb4">{{ __ "Your data is encrypted end-to-end. It will be deleted after 6 months at the latest. <strong>offen</strong> does not share your data with third-parties." }}</p>
+<html lang="en" dir="ltr">
+  <head>
+    <title>Offen</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="/tachyons.min.css">
+    <link rel="stylesheet" type="text/css" href="/fonts.css">
+    <link rel="preload" href="/fonts/roboto-v20-latin-regular.woff2" as="font">
+    <link rel="preload" href="/fonts/roboto-v20-latin-700.woff2" as="font">
+    {{ if .rootAccount }}
+      <script src="/script.js" data-account-id="{{ .rootAccount }}"></script>
+    {{ end }}
+  </head>
+  <body class="bg-washed-yellow">
+    <div id="app-host"></div>
+    <script src="{{ rev "/auditorium/vendor.js" }}"></script>
+    <script src="{{ rev "/auditorium/index.js" }}"></script>
+    <noscript>
+      <div class="f5 roboto dark-gray">
+        <div class="w-100 h3 bg-black-05">
+          <div class="mw8 center flex ph3 pt2">
+            <a href="/" class="dim">
+              <img src="/offen-icon-black.svg" alt="Offen logo" width="37" height="40" class="ma0 mt1 mr3">
+            </a>
+            <h1 class="f2 normal ma0 mt1">Offen</h1>
+          </div>
         </div>
-        <div class="w-100 w-50-ns ml4-ns">
-          <p class="b mt0 mb1">{{ __ "Can I delete my data?" }}</p>
-          <p class="mt0 mb4">{{ __ "Yes you can delete your data completely at any time on all participating websites. Go to the <a href=\"/auditorium/\" class=\"link dim dark-green\">auditorium.</a>" }}</p>
-          <p class="b mt0 mb1">{{ __ "How does it all work?" }}</p>
-          <p class="mt0 mb1">{{ __ "After opening a website that has offen installed you can explicitly opt in to the data collection and thereby help to improve the services you use." }}</p>
-          <p class="mt0 mb1">{{ __ "Only then will you be assigned an ID using a cookie. Learn more about cookies <a href=\"https://en.wikipedia.org/wiki/HTTP_cookie\" class=\"link dim dark-green\" target=\"_blank\">here.</a>" }}</p>
-          <p class="mt0 mb4">{{ __ "<strong>offen</strong> handles this ID in an unrecognizable form. Operators can identify you only within one website." }}</p>
-          <p class="mt0 mb3">{{ __ "Visit <a href=\"https://www.offen.dev/\" class=\"link dim dark-green\" target=\"_blank\">www.offen.dev</a> for more information." }}</p>
-        </div>
+        <div class="mw8 center hp0 ph3-ns">
+          <p class="dib pa2 br2 ma0 mt3 ml3 ml0-ns mr3 mr0-ns bg-light-yellow">
+            It seems like your browser has <strong>JavaScript disabled.</strong>
+          </p>
+          <div class="w-100 ph3 ph4-ns pv4 mt4 mb4 bt bb ba-ns br0 br2-ns b--black-10 bg-white">
+            <div class="w-100 w-90-ns mr3">
+              <h3 class="f5 b ma0 mb2">Offen is a fair and open source analytics software. It is installed on the website that linked you here.</h3>
+              <p class="ma0">For Offen to work, your browser has to accept JavaScript and cookies. Please change your browser settings and reload this page. Subsequently, you will be asked for consent to collect your usage data.</p>
+            </div>
+          </div>
+          <div class="flex flex-column flex-row-ns justify-between pb5 mh3 mh0-ns moon-gray">
+            <div>
+              <p class="b ma0 mb1">Offen</p>
+              <p class="ma0 mb2">
+               Transparent web analytics <br>for everyone
+              </p>
+            </div>
+            <div>
+              <a href="https://www.offen.dev/" class="normal link underline dim moon-gray" target="_blank">www.offen.dev</a>
+            </div>
+          </div>
+        </div>    
       </div>
-    </div>
-    <div class="flex flex-column flex-row-ns items-center w-100 ph3 ph4-ns pv4 br2 bg-black-05">
-      <div class="w-100 w-70-ns mr3-ns">
-        <h3 class="f5 tc tl-ns normal mt0 mb0">{{ __ "Are you the operator of this website? Log in to your account." }}</h3>
-      </div>
-      <div class="w-100 w-30-ns tc mt2 mt0-ns">
-        <a href="/auditorium/login/" class="f5 tc link dim bn ph3 pv2 dib br1 white bg-mid-gray">
-          {{ __ "Log in as operator" }}
-        </a>
-      </div>
-    </div>
-  </div>
-</body>
+    </noscript>
+  </body>
 </html>

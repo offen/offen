@@ -20,13 +20,23 @@ app.on('PAGEVIEW', supportMiddleware, function (context, send, next) {
     type: 'EVENT',
     payload: {
       accountId: accountId,
-      event: events.pageview()
+      event: events.pageview(context === 'initial')
     }
   }
   send(message)
 })
 
-app.dispatch('PAGEVIEW')
+switch (document.readyState) {
+  case 'complete':
+  case 'loaded':
+  case 'interactive':
+    app.dispatch('PAGEVIEW', 'initial')
+    break
+  default:
+    document.addEventListener('DOMContentLoaded', function () {
+      app.dispatch('PAGEVIEW', 'initial')
+    })
+}
 
 historyEvents.addEventListener(window, 'changestate', function () {
   app.dispatch('PAGEVIEW')
@@ -37,7 +47,7 @@ module.exports = app
 function supportMiddleware (context, send, next) {
   checkSupport(function (err) {
     if (err) {
-      console.log(__('"offen" does not support this site: %s', err.message))
+      console.log(__('Offen does not support this site: %s', err.message))
       console.log(__('No data will be collected. Find out more at "https://www.offen.dev".'))
       return
     }

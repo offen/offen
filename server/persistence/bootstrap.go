@@ -18,8 +18,8 @@ type BootstrapConfig struct {
 // BootstrapAccount contains the information needed for creating an account at
 // bootstrap time.
 type BootstrapAccount struct {
-	ID   string `yaml:"id"`
-	Name string `yaml:"name"`
+	AccountID string `yaml:"id"`
+	Name      string `yaml:"name"`
 }
 
 // BootstrapAccountUser contains the information needed for creating an account
@@ -45,6 +45,11 @@ func (p *persistenceLayer) Bootstrap(config BootstrapConfig, emailSalt []byte) e
 	if err := txn.DropAll(); err != nil {
 		txn.Rollback()
 		return fmt.Errorf("persistence: error dropping tables before inserting seed data: %w", err)
+	}
+
+	if err := txn.ApplyMigrations(); err != nil {
+		txn.Rollback()
+		return fmt.Errorf("persistence: error applying initial migrations: %w", err)
 	}
 
 	accounts, accountUsers, relationships, err := bootstrapAccounts(&config, emailSalt)
@@ -99,7 +104,7 @@ func bootstrapAccounts(config *BootstrapConfig, emailSalt []byte) ([]Account, []
 		}
 
 		record := Account{
-			AccountID:           account.ID,
+			AccountID:           account.AccountID,
 			Name:                account.Name,
 			PublicKey:           string(publicKey),
 			EncryptedPrivateKey: encryptedPrivateKey.Marshal(),
@@ -117,7 +122,7 @@ func bootstrapAccounts(config *BootstrapConfig, emailSalt []byte) ([]Account, []
 	relationshipCreations := []AccountUserRelationship{}
 
 	for _, accountUser := range config.AccountUsers {
-		userID, idErr := uuid.NewV4()
+		accountUserID, idErr := uuid.NewV4()
 		if idErr != nil {
 			return nil, nil, nil, idErr
 		}
@@ -135,7 +140,7 @@ func bootstrapAccounts(config *BootstrapConfig, emailSalt []byte) ([]Account, []
 		}
 
 		user := AccountUser{
-			UserID:         userID.String(),
+			AccountUserID:  accountUserID.String(),
 			Salt:           salt,
 			HashedPassword: hashedPw.Marshal(),
 			HashedEmail:    hashedEmail,
@@ -178,7 +183,7 @@ func bootstrapAccounts(config *BootstrapConfig, emailSalt []byte) ([]Account, []
 			}
 			r := AccountUserRelationship{
 				RelationshipID:                    relationshipID.String(),
-				UserID:                            userID.String(),
+				AccountUserID:                     accountUserID.String(),
 				AccountID:                         accountID,
 				PasswordEncryptedKeyEncryptionKey: encryptedPasswordDerivedKey.Marshal(),
 				EmailEncryptedKeyEncryptionKey:    encryptedEmailDerivedKey.Marshal(),

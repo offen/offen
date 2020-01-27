@@ -1,6 +1,7 @@
 package router
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -12,15 +13,16 @@ import (
 func (rt *router) getPublicKey(c *gin.Context) {
 	account, err := rt.db.GetAccount(c.Query("accountId"), false, "")
 	if err != nil {
-		if _, ok := err.(persistence.ErrUnknownAccount); ok {
+		var unknownAccountErr persistence.ErrUnknownAccount
+		if errors.As(err, &unknownAccountErr) {
 			newJSONError(
-				fmt.Errorf("router: unknown account: %v", err),
+				fmt.Errorf("router: unknown account: %w", unknownAccountErr),
 				http.StatusBadRequest,
 			).Pipe(c)
 			return
 		}
 		newJSONError(
-			fmt.Errorf("router: error looking up account: %v", err),
+			fmt.Errorf("router: error looking up account: %w", err),
 			http.StatusInternalServerError,
 		).Pipe(c)
 		return
@@ -29,7 +31,7 @@ func (rt *router) getPublicKey(c *gin.Context) {
 }
 
 type userSecretPayload struct {
-	EncryptedUserSecret string `json:"encryptedUserSecret"`
+	EncryptedUserSecret string `json:"encryptedSecret"`
 	AccountID           string `json:"accountId"`
 }
 

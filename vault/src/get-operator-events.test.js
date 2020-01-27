@@ -10,6 +10,7 @@ describe('src/get-operator-events', function () {
       var accountKey
       var keyEncryptionJWK
       var encryptedPrivateKey
+      var accountPrivateJWK
       before(function () {
         var keyEncryptionKey
         return window.crypto.subtle.generateKey(
@@ -43,7 +44,8 @@ describe('src/get-operator-events', function () {
             keyEncryptionJWK = _keyEncryptionJWK
             return window.crypto.subtle.exportKey('jwk', accountKey.privateKey)
           })
-          .then(function (accountPrivateJWK) {
+          .then(function (_accountPrivateJWK) {
+            accountPrivateJWK = _accountPrivateJWK
             var nonce = window.crypto.getRandomValues(new Uint8Array(12))
             return window.crypto.subtle.encrypt(
               {
@@ -67,7 +69,7 @@ describe('src/get-operator-events', function () {
           getLatestEvent: sinon.stub().resolves({ eventId: 'd' }),
           deleteEvents: sinon.stub().resolves(true),
           putEvents: sinon.stub().resolves(true),
-          putEncryptedUserSecrets: sinon.stub().resolves()
+          putEncryptedSecrets: sinon.stub().resolves()
         }
         var mockApi = {
           getDeletedEvents: sinon.stub().resolves({ eventIds: ['a'] }),
@@ -86,7 +88,7 @@ describe('src/get-operator-events', function () {
               mock: 'result',
               account: {
                 accountId: 'account-a',
-                privateKey: accountKey.privateKey,
+                privateJwk: accountPrivateJWK,
                 encryptedPrivateKey: encryptedPrivateKey
               }
             })
@@ -201,7 +203,7 @@ describe('src/get-operator-events', function () {
           getLatestEvent: sinon.stub().resolves({ eventId: 'd' }),
           deleteEvents: sinon.stub().resolves(true),
           putEvents: sinon.stub().resolves(true),
-          putEncryptedUserSecrets: sinon.stub().resolves()
+          putEncryptedSecrets: sinon.stub().resolves()
         }
         var mockApi = {
           getDeletedEvents: sinon.stub().resolves({ eventIds: ['a'] }),
@@ -209,12 +211,12 @@ describe('src/get-operator-events', function () {
             events: {
               'account-a': [{
                 eventId: 'z',
-                userId: 'user-a',
+                secretId: 'user-a',
                 accountId: 'account-a',
                 payload: encryptedEventPayload
               }]
             },
-            userSecrets: {
+            secrets: {
               'user-a': encryptedUserSecret
             },
             name: 'test',
@@ -249,7 +251,7 @@ describe('src/get-operator-events', function () {
             assert(mockQueries.putEvents.calledOnce)
             assert(mockQueries.putEvents.calledWith('account-a', {
               eventId: 'z',
-              userId: 'user-a',
+              secretId: 'user-a',
               accountId: 'account-a',
               timestamp: 'timestamp-fixture',
               payload: encryptedEventPayload

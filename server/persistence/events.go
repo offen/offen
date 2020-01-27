@@ -24,16 +24,16 @@ func (p *persistenceLayer) Insert(userID, accountID, payload string) error {
 	// in case the event is not anonymous, we need to check that the user
 	// already exists for the account so events can be decrypted lateron
 	if hashedUserID != nil {
-		if _, err := p.dal.FindUser(FindUserQueryByHashedUserID(*hashedUserID)); err != nil {
-			return fmt.Errorf("persistence: error finding user for given event: %w", err)
+		if _, err := p.dal.FindSecret(FindSecretQueryBySecretID(*hashedUserID)); err != nil {
+			return fmt.Errorf("persistence: error finding secret for given event: %w", err)
 		}
 	}
 
 	insertErr := p.dal.CreateEvent(&Event{
-		AccountID:    accountID,
-		HashedUserID: hashedUserID,
-		Payload:      payload,
-		EventID:      eventID,
+		AccountID: accountID,
+		SecretID:  hashedUserID,
+		Payload:   payload,
+		EventID:   eventID,
 	})
 	if insertErr != nil {
 		return fmt.Errorf("persistence: error inserting event: %w", insertErr)
@@ -55,9 +55,9 @@ func (p *persistenceLayer) Query(query Query) (map[string][]EventResult, error) 
 		return nil, fmt.Errorf("persistence: error looking up all accounts: %v", err)
 	}
 
-	results, err := p.dal.FindEvents(FindEventsQueryForHashedIDs{
-		HashedUserIDs: hashUserIDForAccounts(query.UserID, accounts),
-		Since:         query.Since,
+	results, err := p.dal.FindEvents(FindEventsQueryForSecretIDs{
+		SecretIDs: hashUserIDForAccounts(query.UserID, accounts),
+		Since:     query.Since,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("persistence: error looking up events: %w", err)
@@ -82,7 +82,7 @@ func (p *persistenceLayer) Purge(userID string) error {
 	}
 
 	hashedUserIDs := hashUserIDForAccounts(userID, accounts)
-	if _, err := p.dal.DeleteEvents(DeleteEventsQueryByHashedIDs(hashedUserIDs)); err != nil {
+	if _, err := p.dal.DeleteEvents(DeleteEventsQueryBySecretIDs(hashedUserIDs)); err != nil {
 		return fmt.Errorf("persistence: error purging events: %w", err)
 	}
 	return nil
@@ -116,8 +116,8 @@ outer:
 		}
 
 		foreign, err := p.dal.FindEvents(FindEventsQueryExclusion{
-			EventIDs:      ids,
-			HashedUserIDs: hashUserIDForAccounts(userID, accounts),
+			EventIDs:  ids,
+			SecretIDs: hashUserIDForAccounts(userID, accounts),
 		})
 		if err != nil {
 			return nil, fmt.Errorf("persistence: error looking up foreign events: %v", err)

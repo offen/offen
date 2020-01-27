@@ -1,4 +1,4 @@
-var crypto = require('./crypto')
+var bindCrypto = require('./bind-crypto')
 var api = require('./api')
 var queries = require('./queries')
 
@@ -19,21 +19,36 @@ function ensureUserSecretWith (api, queries) {
       .then(function () {
         return queries.getUserSecret(accountId)
       })
-      .then(function (userSecret) {
-        if (userSecret) {
-          return userSecret
+      .then(function (jwk) {
+        if (jwk) {
+          return jwk
         }
         return exchangeUserSecret(api, accountId)
-          .then(function (createdUserSecret) {
-            userSecret = createdUserSecret
-            return queries.putUserSecret(accountId, userSecret)
-          })
+      })
+      .then(function (jwk) {
+        return queries.putUserSecret(accountId, jwk)
           .then(function () {
-            return userSecret
+            return jwk
           })
       })
   }
 }
+
+var generateNewUserSecret = bindCrypto(function (publicJwk) {
+  var crypto = this
+  var userSecretJwk
+  return crypto.createSymmetricKey()
+    .then(function (_userSecretJwk) {
+      userSecretJwk = _userSecretJwk
+      return crypto.encryptAsymmetricWith(publicJwk)(userSecretJwk)
+    })
+    .then(function (encryptedUserSecret) {
+      return {
+        encryptedUserSecret: encryptedUserSecret,
+        userSecret: userSecretJwk
+      }
+    })
+})
 
 function exchangeUserSecret (api, accountId) {
   return api.getPublicKey(accountId)
@@ -41,32 +56,11 @@ function exchangeUserSecret (api, accountId) {
     .then(function (result) {
       var body = {
         accountId: accountId,
-        encryptedUserSecret: result.encryptedUserSecret
+        encryptedSecret: result.encryptedUserSecret
       }
       return api.postUserSecret(body)
         .then(function () {
           return result.userSecret
-        })
-    })
-}
-
-function generateNewUserSecret (publicJWK) {
-  return Promise
-    .all([
-      crypto.importPublicKey(publicJWK),
-      crypto.createSymmetricKey()
-    ])
-    .then(function (keys) {
-      var publicKey = keys[0]
-      var userSecret = keys[1]
-
-      return crypto.exportKey(userSecret)
-        .then(crypto.encryptAsymmetricWith(publicKey))
-        .then(function (encryptedUserSecret) {
-          return {
-            encryptedUserSecret: encryptedUserSecret,
-            userSecret: userSecret
-          }
         })
     })
 }

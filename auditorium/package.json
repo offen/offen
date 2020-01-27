@@ -4,7 +4,7 @@
   "private": true,
   "main": "index.js",
   "scripts": {
-    "start": "budo index.js --pushstate",
+    "start": "budo index.js --pushstate --port $PORT",
     "test": "npm run server & (VAULT_HOST=http://localhost:9876 npm run mochify; status=$?; kill $(lsof -t -i:9876); exit $status)",
     "mochify": "mochify --chrome $(which google-chrome) --allow-chrome-as-root {,**}/*.test.js",
     "server": "http-server __fixtures__ -p 9876 -s",
@@ -20,7 +20,8 @@
     "date-fns": "^1.30.1",
     "offen": "file:./../packages",
     "plotly.js-basic-dist": "^1.51.2",
-    "underscore": "^1.9.1"
+    "underscore": "^1.9.1",
+    "url-polyfill": "^1.1.7"
   },
   "devDependencies": {
     "browserify": "^16.2.3",
@@ -31,8 +32,6 @@
     "gulp-append-prepend": "^1.0.8",
     "gulp-clean": "^0.4.0",
     "gulp-rev": "^9.0.0",
-    "gulp-rev-replace": "^0.4.4",
-    "gulp-sri-hash": "^2.2.0",
     "gulp-uglify": "^3.0.2",
     "http-server": "^0.11.1",
     "mochify": "^6.3.0",
@@ -44,7 +43,12 @@
   },
   "browserify": {
     "transform": [
-      "envify",
+      [
+        "envify",
+        {
+          "LOCALE": "en"
+        }
+      ],
       "nanohtml",
       "offen/localize"
     ]

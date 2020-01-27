@@ -10,10 +10,16 @@ help:
 	@echo "        **IMPORTANT**: this wipes any existing data in your local database"
 	@echo "    update"
 	@echo "        Install / update dependencies in the containers"
+	@echo "    audit"
+	@echo "        Run npm audit for all apps"
 	@echo "    migrate"
 	@echo "        Apply pending database migrations"
 	@echo "    build"
-	@echo "        Build a local docker image, tagged as offen/offen:local"
+	@echo "        Build binaries"
+	@echo "        You can pass TARGETS if you are targeting other platforms than Linux"
+	@echo "    build-docker"
+	@echo "        Build the Docker image"
+	@echo "        You can pass DOCKER_IMAGE_TAG if you want to use a non-default tag"
 	@echo "    extract-strings"
 	@echo "        Extract strings for localization"
 	@echo "    secret"
@@ -31,7 +37,7 @@ howto:
 
 bootstrap:
 	@echo "Bootstrapping Server service ..."
-	@docker-compose run --rm server make bootstrap
+	@docker-compose run --rm server make setup
 
 update:
 	@echo "Installing / updating dependencies ..."
@@ -39,6 +45,12 @@ update:
 	@docker-compose run --rm vault npm install
 	@docker-compose run --rm auditorium npm install
 	@docker-compose run --rm server go mod download
+
+audit:
+	@echo "Auditing npm dependencies ..."
+	@docker-compose run --rm script npm audit
+	@docker-compose run --rm vault npm audit
+	@docker-compose run --rm auditorium npm audit
 
 migrate:
 	@docker-compose run --rm server make migrate
@@ -49,14 +61,20 @@ extract-strings:
 	@docker-compose run --rm script npm run extract-strings
 	@docker-compose run --rm vault npm run extract-strings
 
+TARGETS ?= linux/amd64
+LDFLAGS ?= -static
 DOCKER_IMAGE_TAG ?= local
-ROBOTS_FILE ?= robots.txt.staging
+OFFEN_GIT_REVISION ?= none
 
 build:
-	@docker build --build-arg rev=$(shell git rev-parse --short HEAD) -t offen/offen:${DOCKER_IMAGE_TAG} -f build/Dockerfile .
-	@docker create -it --name binary offen/offen:local ash
-	@docker cp binary:/offen .
+	@docker build --build-arg ldflags=${LDFLAGS} --build-arg targets=${TARGETS} --build-arg rev=${OFFEN_GIT_REVISION} -t offen/build -f build/Dockerfile.build .
+	@mkdir -p bin
+	@docker create --entrypoint=bash -it --name binary offen/build
+	@docker cp binary:/build/. ./bin
 	@docker rm binary
+
+build-docker:
+	@docker build -t offen/offen:${DOCKER_IMAGE_TAG} -f build/Dockerfile .
 
 secret:
 	@docker-compose run server make secret
@@ -73,4 +91,4 @@ test:
 	@docker-compose run --rm auditorium npm test
 	@docker-compose run --rm server make test
 
-.PHONY: setup build bootstrap build secret test up down
+.PHONY: setup build build-docker bootstrap build secret test up down

@@ -32,7 +32,8 @@ describe('views/main.js', function () {
         loss: 0.1234,
         account: {
           accountId: 'test'
-        }
+        },
+        retentionMatrix: [[1, 0, 0], [1, 0], [0]]
       }
       app.state.authenticatedUser = {
         accounts: [
@@ -45,13 +46,13 @@ describe('views/main.js', function () {
 
       var headlines = result.querySelectorAll('h4')
       assert(headlines)
-      assert.strictEqual(headlines.length, 7)
+      assert.strictEqual(headlines.length, 8)
 
       var chart = result.querySelector('.chart')
       assert(chart)
     })
 
-    it('renders 7 sections and an additional data management panel for users', function () {
+    it('renders 5 sections and an additional data management panel for users', function () {
       app.state.model = {
         pageviews: [
           { date: '12.12.2019', pageviews: 12 }
@@ -70,7 +71,8 @@ describe('views/main.js', function () {
           }
         ],
         allowsCookies: true,
-        hasOptedOut: false
+        hasOptedIn: true,
+        retentionMatrix: [[1, 0, 0], [1, 0], [0]]
       }
       app.state.authenticated = true
 
@@ -78,13 +80,13 @@ describe('views/main.js', function () {
 
       var headlines = result.querySelectorAll('h4')
       assert(headlines)
-      assert.strictEqual(headlines.length, 6)
+      assert.strictEqual(headlines.length, 5)
 
       var chart = result.querySelector('.chart')
       assert(chart)
 
-      var optinButton = result.querySelector('[data-role="optin"]')
-      assert(optinButton)
+      var consentButton = result.querySelector('[data-role="consent"]')
+      assert(consentButton)
     })
   })
 })

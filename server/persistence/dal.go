@@ -7,9 +7,9 @@ type DataAccessLayer interface {
 	CreateEvent(*Event) error
 	FindEvents(interface{}) ([]Event, error)
 	DeleteEvents(interface{}) (int64, error)
-	CreateUser(*User) error
-	FindUser(interface{}) (User, error)
-	DeleteUser(interface{}) error
+	CreateSecret(*Secret) error
+	FindSecret(interface{}) (Secret, error)
+	DeleteSecret(interface{}) error
 	CreateAccount(*Account) error
 	FindAccount(interface{}) (Account, error)
 	FindAccounts(interface{}) ([]Account, error)
@@ -25,12 +25,12 @@ type DataAccessLayer interface {
 	Ping() error
 }
 
-// FindEventsQueryForHashedIDs requests all events that match the list of hashed
-// user identifiers. In case the Since value is non-zero it will be used to request
+// FindEventsQueryForSecretIDs requests all events that match the list of
+// secret identifiers. In case the Since value is non-zero it will be used to request
 // only events that are newer than the given ULID.
-type FindEventsQueryForHashedIDs struct {
-	HashedUserIDs []string
-	Since         string
+type FindEventsQueryForSecretIDs struct {
+	SecretIDs []string
+	Since     string
 }
 
 // FindEventsQueryByEventIDs requests all events that match the given list of
@@ -40,13 +40,13 @@ type FindEventsQueryByEventIDs []string
 // FindEventsQueryExclusion requests all events of the given identifiers
 // that do not have a hashed user id contained in the given set.
 type FindEventsQueryExclusion struct {
-	EventIDs      []string
-	HashedUserIDs []string
+	EventIDs  []string
+	SecretIDs []string
 }
 
-// DeleteEventsQueryByHashedIDs requests deletion of all events that match
+// DeleteEventsQueryBySecretIDs requests deletion of all events that match
 // the given identifiers.
-type DeleteEventsQueryByHashedIDs []string
+type DeleteEventsQueryBySecretIDs []string
 
 // DeleteEventsQueryOlderThan requests deletion of all events that are older than
 // the given ULID event identifier.
@@ -56,12 +56,12 @@ type DeleteEventsQueryOlderThan string
 // given set.
 type DeleteEventsQueryByEventIDs []string
 
-// DeleteUserQueryByHashedID requests deletion of the user record with the given
-// hashed id.
-type DeleteUserQueryByHashedID string
+// DeleteSecretQueryBySecretID requests deletion of the secret record with the given
+// secret id.
+type DeleteSecretQueryBySecretID string
 
-// FindUserQueryByHashedUserID requests the user of the given ID
-type FindUserQueryByHashedUserID string
+// FindSecretQueryBySecretID requests the secret of the given ID
+type FindSecretQueryBySecretID string
 
 // FindAccountQueryActiveByID requests a non-retired account of the given ID
 type FindAccountQueryActiveByID string
@@ -88,13 +88,13 @@ type FindAccountUserQueryByHashedEmail string
 // hashed email and all of its relationships.
 type FindAccountUserQueryByHashedEmailIncludeRelationships string
 
-// FindAccountUserQueryByUserIDIncludeRelationships requests the account user of
+// FindAccountUserQueryByAccountUserIDIncludeRelationships requests the account user of
 // the given id and all of its relationships.
-type FindAccountUserQueryByUserIDIncludeRelationships string
+type FindAccountUserQueryByAccountUserIDIncludeRelationships string
 
-// FindAccountUserRelationShipsQueryByUserID requests all relationships for the user
-// with the given user ID.
-type FindAccountUserRelationShipsQueryByUserID string
+// FindAccountUserRelationshipsQueryByAccountUserID requests all relationships for the user
+// with the given account user ID.
+type FindAccountUserRelationshipsQueryByAccountUserID string
 
 // Transaction is a data access layer that does not persist data until commit
 // is called. In case rollback is called before, the underlying database will

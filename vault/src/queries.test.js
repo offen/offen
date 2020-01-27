@@ -9,6 +9,7 @@ var getDatabase = require('./database')
 
 describe('src/queries.js', function () {
   describe('getDefaultStats(accountId, query, privateKey)', function () {
+    var accountJwk
     var accountKey
     before(function () {
       return window.crypto.subtle.generateKey(
@@ -23,6 +24,10 @@ describe('src/queries.js', function () {
       )
         .then(function (_accountKey) {
           accountKey = _accountKey
+          return window.crypto.subtle.exportKey('jwk', accountKey.privateKey)
+        })
+        .then(function (_accountJwk) {
+          accountJwk = _accountJwk
         })
     })
     context('with no data present', function () {
@@ -41,19 +46,23 @@ describe('src/queries.js', function () {
       })
 
       it('returns an object of the correct shape without failing', function () {
-        return getDefaultStats('test-account', {}, accountKey.privateKey)
+        return getDefaultStats('test-account', {}, accountJwk)
           .then(function (data) {
             assert.deepStrictEqual(
               Object.keys(data),
               [
                 'uniqueUsers', 'uniqueAccounts', 'uniqueSessions',
                 'referrers', 'pages', 'pageviews', 'bounceRate', 'loss',
-                'resolution', 'range'
+                'avgPageload', 'avgPageDepth', 'landingPages', 'exitPages',
+                'mobileShare', 'livePages', 'liveUsers', 'campaigns',
+                'sources', 'retentionMatrix', 'resolution', 'range'
               ]
             )
             assert.strictEqual(data.uniqueUsers, 0)
             assert.strictEqual(data.uniqueAccounts, 0)
             assert.strictEqual(data.uniqueSessions, 0)
+            assert.strictEqual(data.mobileShare, null)
+
             assert.deepStrictEqual(data.referrers, [])
 
             assert.strictEqual(data.pageviews.length, 7)
@@ -65,13 +74,14 @@ describe('src/queries.js', function () {
             assert(data.pageviews[0].date < data.pageviews[1].date)
 
             assert.strictEqual(data.bounceRate, 0)
+            assert.strictEqual(data.retentionMatrix.length, 4)
           })
       })
 
       it('handles queries correctly', function () {
         return getDefaultStats(
           'test-account', { range: 12, resolution: 'weeks' },
-          accountKey.privateKey
+          accountJwk
         )
           .then(function (data) {
             assert.strictEqual(data.pageviews.length, 12)
@@ -128,8 +138,8 @@ describe('src/queries.js', function () {
         return Promise.all(userSecrets)
           .then(function (encryptedSecrets) {
             return db.keys.bulkAdd([
-              { type: 'ENCRYPTED_USER_SECRET', userId: 'test-user-1', value: encryptedSecrets[0] },
-              { type: 'ENCRYPTED_USER_SECRET', userId: 'test-user-2', value: encryptedSecrets[1] }
+              { type: 'ENCRYPTED_SECRET', secretId: 'test-user-1', value: encryptedSecrets[0] },
+              { type: 'ENCRYPTED_SECRET', secretId: 'test-user-2', value: encryptedSecrets[1] }
             ])
           })
           .then(function (res) {
@@ -137,7 +147,7 @@ describe('src/queries.js', function () {
             var events = [
               {
                 accountId: 'test-account-1',
-                userId: 'test-user-1',
+                secretId: 'test-user-1',
                 eventId: ULID.ulid(minuteAgo.getTime()),
                 timestamp: minuteAgo.toJSON(),
                 payload: {
@@ -146,12 +156,13 @@ describe('src/queries.js', function () {
                   title: 'Transparent web analytics',
                   sessionId: 'session-id-1',
                   referrer: '',
-                  timestamp: minuteAgo.toJSON()
+                  timestamp: minuteAgo.toJSON(),
+                  pageload: null
                 }
               },
               {
                 accountId: 'test-account-1',
-                userId: 'test-user-1',
+                secretId: 'test-user-1',
                 eventId: ULID.ulid(minuteAgo.getTime()),
                 timestamp: minuteAgo.toJSON(),
                 payload: {
@@ -160,12 +171,13 @@ describe('src/queries.js', function () {
                   title: 'Contact',
                   sessionId: 'session-id-1',
                   referrer: '',
-                  timestamp: minuteAgo.toJSON()
+                  timestamp: minuteAgo.toJSON(),
+                  pageload: 200
                 }
               },
               {
                 accountId: 'test-account-1',
-                userId: 'test-user-1',
+                secretId: 'test-user-1',
                 eventId: ULID.ulid(subDays(now, 1).getTime()),
                 timestamp: subDays(now, 1).toJSON(),
                 payload: {
@@ -174,12 +186,13 @@ describe('src/queries.js', function () {
                   title: 'Deep dive',
                   sessionId: 'session-id-2',
                   referrer: 'https://www.offen.dev',
-                  timestamp: subDays(now, 1).toJSON()
+                  timestamp: subDays(now, 1).toJSON(),
+                  pageload: 100
                 }
               },
               {
                 accountId: 'test-account-1',
-                userId: 'test-user-2',
+                secretId: 'test-user-2',
                 eventId: ULID.ulid(subDays(now, 1).getTime()),
                 timestamp: subDays(now, 1).toJSON(),
                 payload: {
@@ -188,12 +201,13 @@ describe('src/queries.js', function () {
                   title: 'Deep dive',
                   sessionId: 'session-id-3',
                   referrer: '',
-                  timestamp: subDays(now, 1).toJSON()
+                  timestamp: subDays(now, 1).toJSON(),
+                  pageload: 200
                 }
               },
               {
                 accountId: 'test-account-2',
-                userId: 'test-user-1',
+                secretId: 'test-user-1',
                 eventId: ULID.ulid(subDays(now, 2).getTime()),
                 timestamp: subDays(now, 2).toJSON(),
                 payload: {
@@ -202,12 +216,13 @@ describe('src/queries.js', function () {
                   title: 'Very cute',
                   sessionId: 'session-id-4',
                   referrer: 'https://www.cute.com',
-                  timestamp: subDays(now, 2).toJSON()
+                  timestamp: subDays(now, 2).toJSON(),
+                  pageload: null
                 }
               },
               {
                 accountId: 'test-account-2',
-                userId: 'test-user-1',
+                secretId: 'test-user-1',
                 eventId: ULID.ulid(subDays(now, 12).getTime()),
                 timestamp: subDays(now, 12).toJSON(),
                 payload: {
@@ -216,41 +231,45 @@ describe('src/queries.js', function () {
                   title: 'Very cute',
                   sessionId: 'session-id-5',
                   referrer: '',
-                  timestamp: subDays(now, 12).toJSON()
+                  timestamp: subDays(now, 12).toJSON(),
+                  pageload: 100
                 }
               },
               {
                 accountId: 'test-account-1',
-                userId: null,
+                secretId: null,
                 eventId: ULID.ulid(minuteAgo.getTime()),
                 timestamp: minuteAgo.toJSON(),
                 payload: {
                   type: 'PAGEVIEW',
-                  timestamp: minuteAgo.toJSON()
+                  timestamp: minuteAgo.toJSON(),
+                  pageload: 150
                 }
               },
               {
                 accountId: 'test-account-1',
-                userId: null,
+                secretId: null,
                 eventId: ULID.ulid(subDays(now, 12).getTime()),
                 timestamp: subDays(now, 12).toJSON(),
                 payload: {
                   type: 'PAGEVIEW',
-                  timestamp: subDays(now, 12).toJSON()
+                  timestamp: subDays(now, 12).toJSON(),
+                  pageload: null
                 }
               },
               {
                 accountId: 'test-account-1',
-                userId: null,
+                secretId: null,
                 eventId: ULID.ulid(subDays(now, 4).getTime()),
                 timestamp: subDays(now, 4).toJSON(),
                 payload: {
                   type: 'PAGEVIEW',
-                  timestamp: subDays(now, 4).toJSON()
+                  timestamp: subDays(now, 4).toJSON(),
+                  pageload: 150
                 }
               }
             ].map(function (event) {
-              if (!event.userId) {
+              if (!event.secretId) {
                 return window.crypto.subtle
                   .encrypt(
                     {
@@ -272,7 +291,7 @@ describe('src/queries.js', function () {
                     iv: nonce,
                     length: 128
                   },
-                  userSecretsById[event.userId],
+                  userSecretsById[event.secretId],
                   Unibabel.utf8ToBuffer(JSON.stringify(event.payload))
                 )
                 .then(function (encryptedEventPayload) {
@@ -292,14 +311,16 @@ describe('src/queries.js', function () {
       })
 
       it('calculates stats correctly using defaults', function () {
-        return getDefaultStats('test-account', { now: now }, accountKey.privateKey)
+        return getDefaultStats('test-account', { now: now }, accountJwk)
           .then(function (data) {
             assert.deepStrictEqual(
               Object.keys(data),
               [
                 'uniqueUsers', 'uniqueAccounts', 'uniqueSessions',
                 'referrers', 'pages', 'pageviews', 'bounceRate', 'loss',
-                'resolution', 'range'
+                'avgPageload', 'avgPageDepth', 'landingPages', 'exitPages',
+                'mobileShare', 'livePages', 'liveUsers', 'campaigns',
+                'sources', 'retentionMatrix', 'resolution', 'range'
               ]
             )
 
@@ -307,7 +328,12 @@ describe('src/queries.js', function () {
             assert.strictEqual(data.uniqueAccounts, 2)
             assert.strictEqual(data.uniqueSessions, 4)
             assert.strictEqual(data.pages.length, 4)
+            assert.strictEqual(data.landingPages.length, 3)
+            assert.strictEqual(data.exitPages.length, 1)
             assert.strictEqual(data.referrers.length, 1)
+            assert.strictEqual(data.avgPageload, 160)
+            assert.strictEqual(data.avgPageDepth, 1.25)
+            assert.strictEqual(data.mobileShare, 0)
 
             assert.strictEqual(data.pageviews[6].accounts, 1)
             assert.strictEqual(data.pageviews[6].pageviews, 2)
@@ -327,6 +353,7 @@ describe('src/queries.js', function () {
 
             assert.strictEqual(data.bounceRate, 0.75)
             assert.strictEqual(data.loss, 1 - (5 / 7))
+            assert.strictEqual(data.retentionMatrix.length, 4)
           })
       })
 
@@ -334,7 +361,7 @@ describe('src/queries.js', function () {
         return getDefaultStats(
           'test-account',
           { range: 2, resolution: 'weeks', now: now },
-          accountKey.privateKey
+          accountJwk
         )
           .then(function (data) {
             assert.deepStrictEqual(
@@ -342,7 +369,9 @@ describe('src/queries.js', function () {
               [
                 'uniqueUsers', 'uniqueAccounts', 'uniqueSessions',
                 'referrers', 'pages', 'pageviews', 'bounceRate', 'loss',
-                'resolution', 'range'
+                'avgPageload', 'avgPageDepth', 'landingPages', 'exitPages',
+                'mobileShare', 'livePages', 'liveUsers', 'campaigns',
+                'sources', 'retentionMatrix', 'resolution', 'range'
               ]
             )
 
@@ -351,6 +380,11 @@ describe('src/queries.js', function () {
             assert.strictEqual(data.uniqueSessions, 5)
             assert.strictEqual(data.pages.length, 4)
             assert.strictEqual(data.referrers.length, 1)
+            assert.strictEqual(data.landingPages.length, 3)
+            assert.strictEqual(data.exitPages.length, 1)
+            assert.strictEqual(data.avgPageload, 150)
+            assert.strictEqual(data.avgPageDepth, 1.2)
+            assert.strictEqual(data.mobileShare, 0)
 
             assert.strictEqual(data.pageviews[1].accounts, 2)
             assert.strictEqual(data.pageviews[1].pageviews, 5)
@@ -363,6 +397,7 @@ describe('src/queries.js', function () {
             assert.strictEqual(data.bounceRate, 0.8)
 
             assert.strictEqual(data.loss, 1 - (6 / 9))
+            assert.strictEqual(data.retentionMatrix.length, 4)
           })
       })
 
@@ -370,7 +405,7 @@ describe('src/queries.js', function () {
         return getDefaultStats(
           'test-account',
           { range: 12, resolution: 'hours', now: now },
-          accountKey.privateKey
+          accountJwk
         )
           .then(function (data) {
             assert.deepStrictEqual(
@@ -378,7 +413,9 @@ describe('src/queries.js', function () {
               [
                 'uniqueUsers', 'uniqueAccounts', 'uniqueSessions',
                 'referrers', 'pages', 'pageviews', 'bounceRate', 'loss',
-                'resolution', 'range'
+                'avgPageload', 'avgPageDepth', 'landingPages', 'exitPages',
+                'mobileShare', 'livePages', 'liveUsers', 'campaigns',
+                'sources', 'retentionMatrix', 'resolution', 'range'
               ]
             )
 
@@ -387,6 +424,11 @@ describe('src/queries.js', function () {
             assert.strictEqual(data.uniqueSessions, 1)
             assert.strictEqual(data.pages.length, 2)
             assert.strictEqual(data.referrers.length, 0)
+            assert.strictEqual(data.landingPages.length, 1)
+            assert.strictEqual(data.exitPages.length, 1)
+            assert.strictEqual(data.avgPageload, 175)
+            assert.strictEqual(data.avgPageDepth, 2)
+            assert.strictEqual(data.mobileShare, 0)
 
             assert.strictEqual(data.pageviews[11].accounts, 1)
             assert.strictEqual(data.pageviews[11].pageviews, 2)
@@ -399,6 +441,7 @@ describe('src/queries.js', function () {
             assert.strictEqual(data.bounceRate, 0)
 
             assert.strictEqual(data.loss, 1 - (2 / 3))
+            assert.strictEqual(data.retentionMatrix.length, 4)
           })
       })
     })

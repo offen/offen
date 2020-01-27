@@ -79,8 +79,8 @@ func TestPersistenceLayer_GetAccount(t *testing.T) {
 					PublicKey:           publicKey,
 					EncryptedPrivateKey: "encrypted-private-key",
 					Events: []Event{
-						{User: User{EncryptedUserSecret: "aaaaa"}, HashedUserID: strptr("user-a"), EventID: "event-a", AccountID: "account-id", Payload: "payload-a"},
-						{User: User{EncryptedUserSecret: "bbbbb"}, HashedUserID: strptr("user-b"), EventID: "event-b", AccountID: "account-id", Payload: "payload-b"},
+						{Secret: Secret{EncryptedSecret: "aaaaa"}, SecretID: strptr("hashed-user-a"), EventID: "event-a", AccountID: "account-id", Payload: "payload-a"},
+						{Secret: Secret{EncryptedSecret: "bbbbb"}, SecretID: strptr("hashed-user-b"), EventID: "event-b", AccountID: "account-id", Payload: "payload-b"},
 						{EventID: "event-c", AccountID: "account-id", Payload: "payload-c"},
 					},
 				},
@@ -93,14 +93,14 @@ func TestPersistenceLayer_GetAccount(t *testing.T) {
 				EncryptedPrivateKey: "encrypted-private-key",
 				Events: &EventsByAccountID{
 					"account-id": []EventResult{
-						{EventID: "event-a", UserID: strptr("user-a"), AccountID: "account-id", Payload: "payload-a"},
-						{EventID: "event-b", UserID: strptr("user-b"), AccountID: "account-id", Payload: "payload-b"},
+						{EventID: "event-a", SecretID: strptr("hashed-user-a"), AccountID: "account-id", Payload: "payload-a"},
+						{EventID: "event-b", SecretID: strptr("hashed-user-b"), AccountID: "account-id", Payload: "payload-b"},
 						{EventID: "event-c", AccountID: "account-id", Payload: "payload-c"},
 					},
 				},
-				UserSecrets: &SecretsByUserID{
-					"user-a": "aaaaa",
-					"user-b": "bbbbb",
+				Secrets: &EncryptedSecretsByID{
+					"hashed-user-a": "aaaaa",
+					"hashed-user-b": "bbbbb",
 				},
 			},
 			false,
@@ -128,8 +128,8 @@ func TestPersistenceLayer_GetAccount(t *testing.T) {
 					PublicKey:           publicKey,
 					EncryptedPrivateKey: "encrypted-private-key",
 					Events: []Event{
-						{User: User{EncryptedUserSecret: "aaaaa"}, HashedUserID: strptr("user-a"), EventID: "event-a", AccountID: "account-id", Payload: "payload-a"},
-						{User: User{EncryptedUserSecret: "bbbbb"}, HashedUserID: strptr("user-b"), EventID: "event-b", AccountID: "account-id", Payload: "payload-b"},
+						{Secret: Secret{EncryptedSecret: "aaaaa"}, SecretID: strptr("hashed-user-a"), EventID: "event-a", AccountID: "account-id", Payload: "payload-a"},
+						{Secret: Secret{EncryptedSecret: "bbbbb"}, SecretID: strptr("hashed-user-b"), EventID: "event-b", AccountID: "account-id", Payload: "payload-b"},
 						{EventID: "event-c", AccountID: "account-id", Payload: "payload-c"},
 					},
 				},
@@ -139,17 +139,6 @@ func TestPersistenceLayer_GetAccount(t *testing.T) {
 			AccountResult{
 				AccountID: "account-id",
 				Name:      "name",
-				Events: &EventsByAccountID{
-					"account-id": []EventResult{
-						{EventID: "event-a", UserID: strptr("user-a"), AccountID: "account-id", Payload: "payload-a"},
-						{EventID: "event-b", UserID: strptr("user-b"), AccountID: "account-id", Payload: "payload-b"},
-						{EventID: "event-c", AccountID: "account-id", Payload: "payload-c"},
-					},
-				},
-				UserSecrets: &SecretsByUserID{
-					"user-a": "aaaaa",
-					"user-b": "bbbbb",
-				},
 				PublicKey: (func() jwk.Key {
 					s, _ := jwk.ParseString(publicKey)
 					return s.Keys[0]

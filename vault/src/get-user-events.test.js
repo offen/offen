@@ -44,7 +44,7 @@ describe('src/get-user-events', function () {
         deleteEvents: sinon.stub().resolves(true),
         getLatestEvent: sinon.stub().resolves({ eventId: 'c' }),
         putEvents: sinon.stub().resolves(true),
-        getUserSecret: sinon.stub().resolves(userSecret)
+        getUserSecret: sinon.stub().resolves(window.crypto.subtle.exportKey('jwk', userSecret))
       }
       var mockApi = {
         getDeletedEvents: sinon.stub().resolves({ eventIds: ['a'] }),
@@ -82,7 +82,7 @@ describe('src/get-user-events', function () {
             null,
             {
               eventId: 'z',
-              userId: 'local',
+              secretId: 'local',
               accountId: 'account-a',
               payload: { type: 'TEST', timestamp: 'timestamp-fixture' },
               timestamp: 'timestamp-fixture'

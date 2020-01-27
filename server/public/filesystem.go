@@ -1,10 +1,14 @@
 package public
 
 import (
+	"encoding/json"
+	"errors"
 	"fmt"
 	"html/template"
 	"io/ioutil"
 	"net/http"
+	"os"
+	"path"
 
 	_ "github.com/offen/offen/server/public/statik"
 	"github.com/rakyll/statik/fs"
@@ -15,6 +19,25 @@ const defaultLocale = "en"
 type localizedFS struct {
 	locale string
 	root   http.FileSystem
+}
+
+// RevWith returns a function that can be used to look up revisioned assets
+// in the given file system by specifying their unrevisioned name. In case no
+// revisioned asset can be found the original asset name is returned.
+func RevWith(fs http.FileSystem) func(string) string {
+	return func(location string) string {
+		dir := path.Dir(location)
+		manifestFile, manifestErr := fs.Open(path.Join(dir, "rev-manifest.json"))
+		if manifestErr != nil {
+			return location
+		}
+		revs := map[string]string{}
+		json.NewDecoder(manifestFile).Decode(&revs)
+		if match, ok := revs[path.Base(location)]; ok {
+			return path.Join(dir, match)
+		}
+		return location
+	}
 }
 
 func (l *localizedFS) Open(file string) (http.File, error) {
@@ -28,7 +51,7 @@ func (l *localizedFS) Open(file string) (http.File, error) {
 	for _, location := range cascade {
 		f, err = l.root.Open(location)
 		if err == nil {
-			return f, nil
+			return neuteredReaddirFile{f}, nil
 		}
 	}
 	return nil, err
@@ -62,10 +85,11 @@ func NewLocalizedFS(locale string) http.FileSystem {
 
 // HTMLTemplate creates a template object containing all of the templates in the
 // public file system
-func HTMLTemplate(gettext func(string, ...interface{}) template.HTML) (*template.Template, error) {
+func HTMLTemplate(gettext func(string, ...interface{}) template.HTML, rev func(string) string) (*template.Template, error) {
 	t := template.New("index.go.html")
 	t.Funcs(template.FuncMap{
-		"__": gettext,
+		"__":  gettext,
+		"rev": rev,
 	})
 	templates := []string{"/index.go.html"}
 	for _, file := range templates {
@@ -83,4 +107,12 @@ func HTMLTemplate(gettext func(string, ...interface{}) template.HTML) (*template
 		}
 	}
 	return t, nil
+}
+
+type neuteredReaddirFile struct {
+	http.File
+}
+
+func (f neuteredReaddirFile) Readdir(count int) ([]os.FileInfo, error) {
+	return nil, errors.New("forcefully skipping directory listings")
 }

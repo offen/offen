@@ -35,7 +35,7 @@ BarChart.prototype.createElement = function (params) {
   params = params || {}
   Object.assign(this.local, params)
   return html`
-    <div class="chart"></div>
+    <div class="mb4 chart flex-auto"></div>
   `
 }
 
@@ -58,11 +58,11 @@ BarChart.prototype.getChartData = function () {
       return 'W' + getISOWeek(date)
     }
     if (self.local.resolution === 'months') {
-      return date.toLocaleDateString(undefined, { month: 'short' })
+      return date.toLocaleDateString(process.env.LOCALE, { month: 'short' })
     }
-    var result = date.toLocaleDateString(undefined, { day: 'numeric' })
+    var result = date.toLocaleDateString(process.env.LOCALE, { day: 'numeric' })
     if (index === 0 || isFirstDayOfMonth(date)) {
-      result = date.toLocaleDateString(undefined, { month: 'short' }) + ' ' + result
+      result = date.toLocaleDateString(process.env.LOCALE, { month: 'short' }) + ' ' + result
     }
     return result
   })
@@ -106,6 +106,7 @@ BarChart.prototype.getChartData = function () {
   ]
 
   var layout = {
+    autosize: true,
     yaxis: {
       fixedrange: true,
       dtick: 1,
@@ -126,7 +127,8 @@ BarChart.prototype.getChartData = function () {
   }
 
   var config = {
-    displayModeBar: false
+    displayModeBar: false,
+    responsive: true
   }
 
   return [data, layout, config]

@@ -17,6 +17,18 @@ func secureContextMiddleware(contextKey string, isDevelopment bool) gin.HandlerF
 		u := location.Get(c)
 		isLocalhost := u.Hostname() == "localhost"
 		c.Set(contextKey, !isLocalhost && !isDevelopment)
+	}
+}
+
+// optinMiddleware drops all requests to the given handler that are missing
+// a consent cookie
+func optinMiddleware(cookieName, passWhen string) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		if ck, err := c.Request.Cookie(cookieName); err != nil || ck.Value != passWhen {
+			c.Status(http.StatusNoContent)
+			c.Abort()
+			return
+		}
 		c.Next()
 	}
 }
@@ -41,7 +53,6 @@ func userCookieMiddleware(cookieKey, contextKey string) gin.HandlerFunc {
 
 func (rt *router) accountUserMiddleware(cookieKey, contextKey string) gin.HandlerFunc {
 	return func(c *gin.Context) {
-
 		authCookie, authCookieErr := c.Request.Cookie(cookieKey)
 		if authCookieErr != nil {
 			newJSONError(
@@ -62,7 +73,7 @@ func (rt *router) accountUserMiddleware(cookieKey, contextKey string) gin.Handle
 			return
 		}
 
-		user, userErr := rt.db.LookupUser(userID)
+		user, userErr := rt.db.LookupAccountUser(userID)
 		if userErr != nil {
 			authCookie, _ = rt.authCookie("", c.GetBool(contextKeySecureContext))
 			http.SetCookie(c.Writer, authCookie)

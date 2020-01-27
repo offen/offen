@@ -32,7 +32,3 @@ func (t *transaction) Transaction() (persistence.Transaction, error) {
 func (t *transaction) Ping() error {
 	return errors.New("relational: cannot call ping on a transaction")
 }
-
-func (t *transaction) ApplyMigrations() error {
-	return errors.New("relational: cannot apply migrations on a transaction")
-}

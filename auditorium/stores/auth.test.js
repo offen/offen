@@ -19,7 +19,7 @@ describe('stores/auth.js', function () {
 
       app.emitter.on(app.state.events.RENDER, function () {
         try {
-          assert.deepStrictEqual(app.state.authenticatedUser, { user: { userId: 'some-id' } })
+          assert.deepStrictEqual(app.state.authenticatedUser, { user: { accountUserId: 'some-id' } })
           done()
         } catch (err) {
           done(err)
@@ -41,7 +41,7 @@ describe('stores/auth.js', function () {
         try {
           assert.ok(!app.state.authenticated)
           assert.ok(!app.state.error)
-          assert.strictEqual(pushedState, '/auditorium/login/')
+          assert.strictEqual(pushedState, '/login/')
           done()
         } catch (err) {
           done(err)
