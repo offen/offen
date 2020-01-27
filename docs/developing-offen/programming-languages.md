@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: page
 title: Programming Languages
 nav_order: 3
 description: "An introduction to the languages chosen to develop Offen."

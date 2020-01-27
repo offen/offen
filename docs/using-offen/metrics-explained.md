@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: page
 title: Metrics Explained
 parent: Using Offen
 nav_order: 1

@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: page
 title: Embedding The Offen Script
 nav_order: 4
 description: "How to add the Offen script to your webpage."

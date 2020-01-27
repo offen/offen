@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: page
 title: Understanding The Development Setup
 nav_order: 4
 description: "An in-depth look at the development setup for Offen and how to work with it."

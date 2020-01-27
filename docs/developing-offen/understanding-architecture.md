@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: page
 title: Understanding the Application Architecture
 nav_order: 5
 description: "Explaining the key concepts of Offen's application architecture."

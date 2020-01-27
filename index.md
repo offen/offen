@@ -23,9 +23,3 @@ Have a look at our [guide to using Offen](/using-offen/).
 ## I am a developer and would like to work on Offen
 
 Have a look at our [guide to developing Offen](/developing-offen/).
-
----
-
-This documentation is Open Source. If you found an issue or want to add something, head over to the [GitHub repository][repo] and open an issue or pull request.
-
-[repo]: https://github.com/offen/docs

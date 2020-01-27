@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: page
 title: Configuring The Application
 nav_order: 3
 description: "How to configure an Offen instance at runtime."

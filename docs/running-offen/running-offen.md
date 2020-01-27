@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: page
 title: Running Offen
 has_children: true
 nav_order: 1
