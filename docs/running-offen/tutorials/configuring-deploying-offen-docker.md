@@ -4,7 +4,7 @@ title: "Configuring and Deploying Offen Using Docker"
 nav_order: 1
 description: "A step by step tutorial on how to use Docker to deploy Offen."
 permalink: /running-offen/tutorials/configuring-deploying-offen-docker/
-parent: Tutorials
+parent: Installation Tutorials
 grand_parent: Running Offen
 ---
 

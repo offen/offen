@@ -4,7 +4,7 @@ title: "Configuring and Deploying Offen on Ubuntu using systemd"
 nav_order: 2
 description: "A step by step tutorial on how to deploy Offen on an Ubuntu system using systemd."
 permalink: /running-offen/tutorials/configuring-deploying-offen-ubuntu/
-parent: Tutorials
+parent: Installation Tutorials
 grand_parent: Running Offen
 ---
 

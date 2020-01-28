@@ -4,7 +4,7 @@ title: "Configuring and Deploying Offen on Heroku"
 nav_order: 3
 description: "A step by step tutorial on how deploy Offen on Heroku."
 permalink: /running-offen/tutorials/configuring-deploying-offen-heroku/
-parent: Tutorials
+parent: Installation Tutorials
 grand_parent: Running Offen
 ---
 
