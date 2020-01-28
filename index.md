@@ -8,6 +8,12 @@ permalink: /
 
 # Transparent web analytics for everyone
 
+If you are interested in what Offen is, why we are building it or want to get in touch, have a look at [our homepage][homepage].
+
+[homepage]: https://www.offen.dev
+
+---
+
 Welcome to the __Offen Docs__!
 
 Depending on who you are and what you want to do, we have a few guides for you:

@@ -20,7 +20,7 @@ This tutorial walks you through the steps needed to setup and deploy a single-no
 
 To follow the steps in this tutorial you will need to have created an account with Heroku and have the [Heroku CLI tool][heroku-cli] installed which is available for Linux, Windows and MacOS.
 
-All resources created in this tutorial are free of charge. You might want to upgrade some of them to another plan with costs when running Offen in productio though.
+All resources created in this tutorial are free of charge. You might want to upgrade some of them to another plan with costs when running Offen in production though.
 
 ---
 
@@ -238,3 +238,9 @@ Adding heroku.offen.dev to ⬢ glacial-sierra-90893... done
 ```
 
 Now, you can set a CNAME record from your desired domain to the target given in the response.
+
+## 7. Setting up SSL
+
+Offen requires to be served via SSL. In case you are on a paid plan, Heroku offers free Certificate Management for your domain and there is nothing you need to other than enable it. In case you are using the free plan, you can use self-signed certificates. Instructions can be found [in the Heroku documentation on the topic][heroku-ssl].
+
+[heroku-ssl]: https://devcenter.heroku.com/articles/ssl
