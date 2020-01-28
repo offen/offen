@@ -140,6 +140,9 @@ jobs:
   integration:
     docker:
       - image: circleci/node:12-browsers
+        environment:
+          OFFEN_SERVER_PORT: 3000
+          OFFEN_DATABASE_CONNECTIONSTRING: $HOME/offen.db
     working_directory: ~/offen
     steps:
       - checkout
@@ -153,10 +156,10 @@ jobs:
           name: Setup application
           command: |
             touch offen.env
-            sudo ./offen setup -email circle@offen.dev -name circle -password secret -populate
+            ./offen setup -email circle@offen.dev -name circle -password secret -populate
       - run:
           name: Serve application
-          command: OFFEN_SERVER_PORT=8080 sudo ./offen
+          command:  ./offen
           background: true
       - run:
           name: Wait for server to be ready
