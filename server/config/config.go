@@ -132,11 +132,11 @@ func New(populateMissing bool, override string) (*Config, error) {
 		return &c, fmt.Errorf("config: error processing configuration: %w", err)
 	}
 
-	// The Heroku runtimes does not allow specifying the port in any other
-	// variable than PORT which is why we need to make an exception in this case
-	// and override the default.
-	if val, ok := os.LookupEnv("PORT"); ok {
-		port, _ := strconv.Atoi(val)
+	if c.Server.UseNakedPort {
+		port, portErr := strconv.Atoi(os.Getenv("PORT"))
+		if portErr != nil {
+			return &c, fmt.Errorf("config: error reading naked port: %w", portErr)
+		}
 		c.Server.Port = port
 	}
 

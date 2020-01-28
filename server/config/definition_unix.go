@@ -9,7 +9,12 @@ import "time"
 // source values from the application environment at runtime.
 type Config struct {
 	Server struct {
-		Port             int  `default:"3000"`
+		Port int `default:"3000"`
+		// Some runtimes (e.g. Heroku) require the usage of PORT for specifying
+		// the TCP port to bind to, no matter what. As a workaround, these environments
+		// can set OFFEN_SERVER_USENAKEDPORT to make the application use the
+		// port given by PORT.
+		UseNakedPort     bool `default:"false"`
 		ReverseProxy     bool `default:"false"`
 		SSLCertificate   EnvString
 		SSLKey           EnvString
@@ -18,9 +23,7 @@ type Config struct {
 	}
 	Database struct {
 		Dialect          Dialect   `default:"sqlite3"`
-		// The default value is expecting usage in the official Docker image.
-		// Other consumers will likely need to adjust this value.
-		ConnectionString EnvString `default:"/root/offen.db"`
+		ConnectionString EnvString `default:"/var/opt/offen/offen.db"`
 	}
 	App struct {
 		Development          bool          `default:"false"`
