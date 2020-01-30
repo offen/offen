@@ -34,7 +34,7 @@ type Config struct {
 		RootAccount          string
 	}
 	Secrets struct {
-		CookieExchange Bytes `required:"true"`
+		CookieExchange Bytes
 	}
 	SMTP struct {
 		User     string

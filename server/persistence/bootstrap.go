@@ -89,7 +89,7 @@ func bootstrapAccounts(config *BootstrapConfig) ([]Account, []AccountUser, []Acc
 			return nil, nil, nil, keyErr
 		}
 
-		encryptionKey, encryptionKeyErr := keys.GenerateEncryptionKey(keys.DefaultEncryptionKeySize)
+		encryptionKey, encryptionKeyErr := keys.GenerateRandomBytes(keys.DefaultEncryptionKeySize)
 		if encryptionKeyErr != nil {
 			return nil, nil, nil, encryptionKeyErr
 		}

@@ -13,7 +13,7 @@ func TestSymmetricEncryption(t *testing.T) {
 		{
 			"random",
 			func() ([]byte, error) {
-				return GenerateEncryptionKey(DefaultEncryptionKeySize)
+				return GenerateRandomBytes(DefaultEncryptionKeySize)
 			},
 		},
 		{

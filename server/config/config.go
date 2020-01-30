@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"path"
-	"reflect"
 	"runtime"
 	"strconv"
 
@@ -25,13 +24,6 @@ var ErrPopulatedMissing = errors.New("populated missing secrets")
 
 // Revision will be set by ldflags on build time
 var Revision string
-
-// IsDefaultDatabase checks whether the database connection string matches
-// the default value.
-func (c *Config) IsDefaultDatabase() bool {
-	field, _ := reflect.TypeOf(c.Database).FieldByName("ConnectionString")
-	return c.Database.ConnectionString.RawString() == field.Tag.Get("default")
-}
 
 // SMTPConfigured returns true if all required SMTP credentials are set
 func (c *Config) SMTPConfigured() bool {
@@ -138,6 +130,14 @@ func New(populateMissing bool, override string) (*Config, error) {
 			return &c, fmt.Errorf("config: error reading naked port: %w", portErr)
 		}
 		c.Server.Port = port
+	}
+
+	if c.Secrets.CookieExchange.IsZero() {
+		cookieSecret, cookieSecretErr := keys.GenerateRandomBytes(keys.DefaultSecretLength)
+		if cookieSecretErr != nil {
+			return &c, fmt.Errorf("config: error creating cookie secret: %w", cookieSecretErr)
+		}
+		c.Secrets.CookieExchange = Bytes(cookieSecret)
 	}
 
 	if err != nil && populateMissing {

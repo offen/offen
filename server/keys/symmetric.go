@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"crypto/aes"
 	"crypto/cipher"
+	"crypto/rand"
 	"encoding/base64"
 	"errors"
 	"fmt"
@@ -11,14 +12,15 @@ import (
 	"golang.org/x/crypto/argon2"
 )
 
-// GenerateEncryptionKey generates a slice of bytes of the given size that is
+// GenerateRandomBytes generates a slice of bytes of the given size that is
 // supposed to be used as a symmetric key.
-func GenerateEncryptionKey(size int) ([]byte, error) {
-	key, err := randomBytes(size)
+func GenerateRandomBytes(size int) ([]byte, error) {
+	b := make([]byte, size)
+	_, err := rand.Read(b)
 	if err != nil {
-		return nil, fmt.Errorf("keys: error generating encryption key: %w", err)
+		return nil, fmt.Errorf("keys: error reading random bytes: %w", err)
 	}
-	return key, nil
+	return b, nil
 }
 
 const (
@@ -42,7 +44,7 @@ func EncryptWith(key, value []byte) (*VersionedCipher, error) {
 
 	// Never use more than 2^32 random nonces with a given key because of the
 	// risk of a repeat.
-	nonce, nonceErr := randomBytes(aesgcm.NonceSize())
+	nonce, nonceErr := GenerateRandomBytes(aesgcm.NonceSize())
 	if nonceErr != nil {
 		return nil, fmt.Errorf("keys: error generating nonce for encryption: %w", nonceErr)
 	}
@@ -84,7 +86,7 @@ const (
 
 // HashString hashed the given string using argon2
 func HashString(pw string) (*VersionedCipher, error) {
-	salt, saltErr := randomBytes(DefaultSecretLength)
+	salt, saltErr := GenerateRandomBytes(DefaultSecretLength)
 	if saltErr != nil {
 		return nil, fmt.Errorf("keys: error generating random salt for password hash: %w", saltErr)
 	}
