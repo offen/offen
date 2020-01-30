@@ -35,7 +35,6 @@ type Config struct {
 	}
 	Secrets struct {
 		CookieExchange Bytes `required:"true"`
-		EmailSalt      Bytes `required:"true"`
 	}
 	SMTP struct {
 		User     string

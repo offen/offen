@@ -82,7 +82,6 @@ func main() {
 		cfg.Database.Dialect = config.Dialect("sqlite3")
 		cfg.Database.ConnectionString = ":memory:"
 		cfg.Secrets.CookieExchange = mustSecret(16)
-		cfg.Secrets.EmailSalt = mustSecret(16)
 
 		if *port == 0 {
 			freePort, portErr := freeport.GetFreePort()
@@ -107,7 +106,6 @@ func main() {
 
 		db, err := persistence.New(
 			relational.NewRelationalDAL(gormDB),
-			persistence.WithEmailSalt(cfg.Secrets.EmailSalt.Bytes()),
 		)
 		if err != nil {
 			logger.WithError(err).Fatal("Unable to create persistence layer")
@@ -123,7 +121,7 @@ func main() {
 			AccountUsers: []persistence.BootstrapAccountUser{
 				{Email: "demo@offen.dev", Password: "demo", Accounts: []string{cfg.App.RootAccount}},
 			},
-		}, cfg.Secrets.EmailSalt.Bytes()); err != nil {
+		}); err != nil {
 			logger.WithError(err).Fatal("Error bootstrapping database")
 		}
 
@@ -185,7 +183,6 @@ func main() {
 
 		db, err := persistence.New(
 			relational.NewRelationalDAL(gormDB),
-			persistence.WithEmailSalt(cfg.Secrets.EmailSalt.Bytes()),
 		)
 		if err != nil {
 			logger.WithError(err).Fatal("Unable to create persistence layer")
@@ -370,7 +367,7 @@ func main() {
 			logger.WithError(err).Fatal("Error applying database migrations")
 		}
 
-		if err := db.Bootstrap(conf, cfg.Secrets.EmailSalt.Bytes()); err != nil {
+		if err := db.Bootstrap(conf); err != nil {
 			logger.WithError(err).Fatal("Error bootstrapping database")
 		}
 		if *source == "" {
