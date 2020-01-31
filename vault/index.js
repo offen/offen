@@ -32,6 +32,7 @@ register('CONSENT_STATUS', middleware.sameOrigin, callHandler(handler.handleCons
 register('EXPRESS_CONSENT', middleware.sameOrigin, callHandler(handler.handleExpressConsent))
 register('PURGE', middleware.sameOrigin, callHandler(handler.handlePurge))
 register('LOGIN', middleware.sameOrigin, callHandler(handler.handleLogin))
+register('LOGOUT', middleware.sameOrigin, callHandler(handler.handleLogout))
 register('CHANGE_CREDENTIALS', middleware.sameOrigin, callHandler(handler.handleChangeCredentials))
 register('FORGOT_PASSWORD', middleware.sameOrigin, callHandler(handler.handleForgotPassword))
 register('RESET_PASSWORD', middleware.sameOrigin, callHandler(handler.handleResetPassword))

@@ -183,6 +183,7 @@ func New(opts ...Config) http.Handler {
 
 		api.GET("/login", accountAuth, rt.getLogin)
 		api.POST("/login", rt.postLogin)
+		api.POST("/logout", rt.postLogout)
 
 		api.POST("/change-password", accountAuth, rt.postChangePassword)
 		api.POST("/change-email", accountAuth, rt.postChangeEmail)

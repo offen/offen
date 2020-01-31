@@ -22,7 +22,7 @@ function view (state, emit) {
     <p class="dib pa2 br2 ma0 mt3 ml3 ml0-ns mr3 mr0-ns bg-light-yellow">${raw(__('You are logged in as <strong>operator.</strong>'))}</p>
   `
 
-  var loggedInMessage = html`
+  var chooseAccount = html`
     <div class="w-100 pa3 mt4 mb2 br0 br2-ns bg-black-05">
       <h4 class ="f5 normal mt0 mb3">${__('Choose account')}</h4>
       <ul class="flex flex-wrap list pl0 mt0 mb3">
@@ -100,10 +100,28 @@ function view (state, emit) {
     </div>
   `
 
+  function handleLogout () {
+    emit(
+      'offen:logout',
+      __('You have been logged out.'),
+      __('There was an error terminating your session, please try again.')
+    )
+  }
+
+  var logout = html`
+    <div class="w-100 pa3 mb2 br0 br2-ns bg-black-05">
+      <h4 class ="f5 normal mt0 mb3">${__('Logout')}</h4>
+      <button onclick="${handleLogout}" class="pointer f5 link dim bn ph3 pv2 mr2 mb1 dib br1 white bg-mid-gray">
+        ${__('Logout')}
+      </button>
+    </div>
+  `
+
   return html`
     ${accountHeader}
-    ${loggedInMessage}
+    ${chooseAccount}
     ${changeEmailForm}
     ${changePasswordForm}
+    ${logout}
   `
 }

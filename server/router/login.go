@@ -16,11 +16,26 @@ type loginCredentials struct {
 	Password string `json:"password"`
 }
 
+func (rt *router) postLogout(c *gin.Context) {
+	authCookie, authCookieErr := rt.authCookie("", c.GetBool(contextKeySecureContext))
+	if authCookieErr != nil {
+		jsonErr := newJSONError(
+			fmt.Errorf("router: error creating auth cookie: %w", authCookieErr),
+			http.StatusInternalServerError,
+		)
+		c.JSON(jsonErr.Status, jsonErr)
+		return
+	}
+
+	http.SetCookie(c.Writer, authCookie)
+	c.JSON(http.StatusNoContent, nil)
+}
+
 func (rt *router) postLogin(c *gin.Context) {
 	var credentials loginCredentials
 	if err := c.BindJSON(&credentials); err != nil {
 		jsonErr := newJSONError(
-			fmt.Errorf("router: error decoding request payload: %v", err),
+			fmt.Errorf("router: error decoding request payload: %w", err),
 			http.StatusBadRequest,
 		)
 		c.JSON(jsonErr.Status, jsonErr)
@@ -30,7 +45,7 @@ func (rt *router) postLogin(c *gin.Context) {
 	result, err := rt.db.Login(credentials.Username, credentials.Password)
 	if err != nil {
 		jsonErr := newJSONError(
-			fmt.Errorf("router: error logging in: %v", err),
+			fmt.Errorf("router: error logging in: %w", err),
 			http.StatusUnauthorized,
 		)
 		c.JSON(jsonErr.Status, jsonErr)
@@ -40,7 +55,7 @@ func (rt *router) postLogin(c *gin.Context) {
 	authCookie, authCookieErr := rt.authCookie(result.AccountUserID, c.GetBool(contextKeySecureContext))
 	if authCookieErr != nil {
 		jsonErr := newJSONError(
-			fmt.Errorf("router: error creating auth cookie: %v", authCookieErr),
+			fmt.Errorf("router: error creating auth cookie: %w", authCookieErr),
 			http.StatusInternalServerError,
 		)
 		c.JSON(jsonErr.Status, jsonErr)
@@ -89,7 +104,7 @@ func (rt *router) postChangePassword(c *gin.Context) {
 	}
 	if err := rt.db.ChangePassword(user.AccountUserID, req.CurrentPassword, req.ChangedPassword); err != nil {
 		newJSONError(
-			fmt.Errorf("router: error changing password: %v", err),
+			fmt.Errorf("router: error changing password: %w", err),
 			http.StatusInternalServerError,
 		).Pipe(c)
 		return
@@ -116,7 +131,7 @@ func (rt *router) postChangeEmail(c *gin.Context) {
 	var req changeEmailRequest
 	if err := c.BindJSON(&req); err != nil {
 		newJSONError(
-			fmt.Errorf("router: error decoding request payload: %v", err),
+			fmt.Errorf("router: error decoding request payload: %w", err),
 			http.StatusBadRequest,
 		).Pipe(c)
 		return
@@ -150,7 +165,7 @@ func (rt *router) postForgotPassword(c *gin.Context) {
 	var req forgotPasswordRequest
 	if err := c.BindJSON(&req); err != nil {
 		newJSONError(
-			fmt.Errorf("router: error decoding request body: %v", err),
+			fmt.Errorf("router: error decoding request body: %w", err),
 			http.StatusBadRequest,
 		).Pipe(c)
 		return
@@ -201,7 +216,7 @@ func (rt *router) postResetPassword(c *gin.Context) {
 	var req resetPasswordRequest
 	if err := c.BindJSON(&req); err != nil {
 		newJSONError(
-			fmt.Errorf("router: error decoding response body: %v", err),
+			fmt.Errorf("router: error decoding response body: %w", err),
 			http.StatusBadRequest,
 		).Pipe(c)
 		return
@@ -209,7 +224,7 @@ func (rt *router) postResetPassword(c *gin.Context) {
 	var credentials forgotPasswordCredentials
 	if err := rt.cookieSigner.Decode("credentials", req.Token, &credentials); err != nil {
 		newJSONError(
-			fmt.Errorf("error decoding signed token: %v", err),
+			fmt.Errorf("error decoding signed token: %w", err),
 			http.StatusBadRequest,
 		).Pipe(c)
 		return
