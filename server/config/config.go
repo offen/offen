@@ -145,7 +145,7 @@ func New(populateMissing bool, override string) (*Config, error) {
 			return nil, errors.New("config: unable to find env file to persist settings as no env file could be found")
 		}
 		update := map[string]string{}
-		for _, key := range []string{"OFFEN_SECRETS_EMAILSALT", "OFFEN_SECRETS_COOKIEEXCHANGE"} {
+		for _, key := range []string{"OFFEN_SECRETS_COOKIEEXCHANGE"} {
 			secret, err := keys.GenerateRandomValue(keys.DefaultSecretLength)
 			update[key] = secret
 			if err != nil {
