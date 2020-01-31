@@ -231,3 +231,79 @@ func TestRelationalDAL_UpdateAccountUser(t *testing.T) {
 		})
 	}
 }
+
+func TestRelationalDAL_FindAccountUsers(t *testing.T) {
+	tests := []struct {
+		name           string
+		setup          dbAccess
+		arg            interface{}
+		expectError    bool
+		expectedResult []persistence.AccountUser
+	}{
+		{
+			"bad query",
+			noop,
+			"puppies",
+			true,
+			nil,
+		},
+		{
+			"empty db",
+			noop,
+			persistence.FindAccountUsersQueryAllAccountUsers{},
+			false,
+			nil,
+		},
+		{
+			"find users",
+			func(db *gorm.DB) error {
+				if err := db.Create(&AccountUser{
+					AccountUserID: "account-user-a",
+				}).Error; err != nil {
+					return fmt.Errorf("error inserting fixture: %w", err)
+				}
+				if err := db.Create(&Account{
+					Name:      "test",
+					AccountID: "account-a",
+				}).Error; err != nil {
+					return fmt.Errorf("error inserting fixture: %w", err)
+				}
+				if err := db.Create(&AccountUserRelationship{
+					RelationshipID: "relationship-a",
+					AccountUserID:  "account-user-a",
+					AccountID:      "account-a",
+				}).Error; err != nil {
+					return fmt.Errorf("error inserting fixture: %w", err)
+				}
+				return nil
+			},
+			persistence.FindAccountUsersQueryAllAccountUsers{IncludeRelationships: true},
+			false,
+			[]persistence.AccountUser{
+				{AccountUserID: "account-user-a", Relationships: []persistence.AccountUserRelationship{
+					{RelationshipID: "relationship-a", AccountUserID: "account-user-a", AccountID: "account-a"},
+				}},
+			},
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			db, closeDB := createTestDatabase()
+			defer closeDB()
+			if err := test.setup(db); err != nil {
+				t.Fatalf("Error setting up database %v", err)
+			}
+
+			dal := NewRelationalDAL(db)
+
+			result, err := dal.FindAccountUsers(test.arg)
+			if test.expectError != (err != nil) {
+				t.Errorf("Unexpected error value %v", err)
+			}
+
+			if !reflect.DeepEqual(test.expectedResult, result) {
+				t.Errorf("Expected %v, got %v", test.expectedResult, result)
+			}
+		})
+	}
+}

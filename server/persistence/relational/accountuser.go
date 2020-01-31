@@ -27,6 +27,18 @@ func (r *relationalDAL) FindAccountUser(q interface{}) (persistence.AccountUser,
 	}
 }
 
+func (r *relationalDAL) UpdateAccountUser(u *persistence.AccountUser) error {
+	local := importAccountUser(u)
+	exists := r.db.Where("account_user_id = ?", local.AccountUserID).First(&AccountUser{}).Error
+	if exists != nil {
+		return fmt.Errorf("relational: error looking up account user for update: %w", exists)
+	}
+	if err := r.db.Save(&local).Error; err != nil {
+		return fmt.Errorf("relational: error updating account user: %w", err)
+	}
+	return nil
+}
+
 func (r *relationalDAL) FindAccountUsers(q interface{}) ([]persistence.AccountUser, error) {
 	var accountUsers []AccountUser
 	switch query := q.(type) {
@@ -38,7 +50,7 @@ func (r *relationalDAL) FindAccountUsers(q interface{}) ([]persistence.AccountUs
 		if err := db.Find(&accountUsers).Error; err != nil {
 			return nil, fmt.Errorf("relational: error looking up account users: %w", err)
 		}
-		result := []persistence.AccountUser{}
+		var result []persistence.AccountUser
 		for _, accountUser := range accountUsers {
 			result = append(result, accountUser.export())
 		}
@@ -46,16 +58,4 @@ func (r *relationalDAL) FindAccountUsers(q interface{}) ([]persistence.AccountUs
 	default:
 		return nil, persistence.ErrBadQuery
 	}
-}
-
-func (r *relationalDAL) UpdateAccountUser(u *persistence.AccountUser) error {
-	local := importAccountUser(u)
-	exists := r.db.Where("account_user_id = ?", local.AccountUserID).First(&AccountUser{}).Error
-	if exists != nil {
-		return fmt.Errorf("relational: error looking up account user for update: %w", exists)
-	}
-	if err := r.db.Save(&local).Error; err != nil {
-		return fmt.Errorf("relational: error updating account user: %w", err)
-	}
-	return nil
 }
