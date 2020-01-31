@@ -9,7 +9,7 @@ import "time"
 // source values from the application environment at runtime.
 type Config struct {
 	Server struct {
-		Port             int  `default:"8080"`
+		Port int `default:"8080"`
 		// Some runtimes (e.g. Heroku) require the usage of PORT for specifying
 		// the TCP port to bind to, no matter what. As a workaround, these environments
 		// can set OFFEN_SERVER_USENAKEDPORT to make the application use the
@@ -18,7 +18,7 @@ type Config struct {
 		ReverseProxy     bool `default:"false"`
 		SSLCertificate   EnvString
 		SSLKey           EnvString
-		AutoTLS          string
+		AutoTLS          []string
 		CertificateCache EnvString `default:"%AppData%\offen\.cache"`
 	}
 	Database struct {
