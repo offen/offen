@@ -19,3 +19,8 @@ func (b *Bytes) Decode(v string) error {
 func (b *Bytes) Bytes() []byte {
 	return []byte(*b)
 }
+
+// IsZero checks whether the underlying byte slice is empty
+func (b *Bytes) IsZero() bool {
+	return *b == nil
+}

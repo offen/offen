@@ -74,7 +74,7 @@ build:
 	@docker rm binary
 
 build-docker:
-	@docker build -t offen/offen:${DOCKER_IMAGE_TAG} -f build/Dockerfile .
+	@docker build --build-arg version=${DOCKER_IMAGE_TAG} -t offen/offen:${DOCKER_IMAGE_TAG} -f build/Dockerfile .
 
 secret:
 	@docker-compose run server make secret

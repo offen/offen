@@ -66,107 +66,6 @@ func TestRelationalDAL_FindAccountUser(t *testing.T) {
 			true,
 		},
 		{
-			"by hashed email found",
-			func(db *gorm.DB) error {
-				if err := db.Save(&AccountUser{
-					AccountUserID: "user-id",
-					HashedEmail:   "xyz123",
-				}).Error; err != nil {
-					return fmt.Errorf("error saving fixture data: %v", err)
-				}
-				if err := db.Save(&AccountUserRelationship{
-					AccountUserID:  "user-id",
-					AccountID:      "account-id",
-					RelationshipID: "relationship-id",
-				}).Error; err != nil {
-					return fmt.Errorf("error saving fixture data: %v", err)
-				}
-				return nil
-			},
-			persistence.FindAccountUserQueryByHashedEmail("xyz123"),
-			persistence.AccountUser{
-				AccountUserID: "user-id",
-				HashedEmail:   "xyz123",
-			},
-			false,
-		},
-		{
-			"by hashed email not found",
-			func(db *gorm.DB) error {
-				if err := db.Save(&AccountUser{
-					AccountUserID: "user-id",
-					HashedEmail:   "xyz123",
-				}).Error; err != nil {
-					return fmt.Errorf("error saving fixture data: %v", err)
-				}
-				if err := db.Save(&AccountUserRelationship{
-					AccountUserID:  "user-id",
-					AccountID:      "account-id",
-					RelationshipID: "relationship-id",
-				}).Error; err != nil {
-					return fmt.Errorf("error saving fixture data: %v", err)
-				}
-				return nil
-			},
-			persistence.FindAccountUserQueryByHashedEmail("abc123"),
-			persistence.AccountUser{},
-			true,
-		},
-		{
-			"by hashed email found - include relationships",
-			func(db *gorm.DB) error {
-				if err := db.Save(&AccountUser{
-					AccountUserID: "user-id",
-					HashedEmail:   "xyz123",
-				}).Error; err != nil {
-					return fmt.Errorf("error saving fixture data: %v", err)
-				}
-				if err := db.Save(&AccountUserRelationship{
-					AccountUserID:  "user-id",
-					AccountID:      "account-id",
-					RelationshipID: "relationship-id",
-				}).Error; err != nil {
-					return fmt.Errorf("error saving fixture data: %v", err)
-				}
-				return nil
-			},
-			persistence.FindAccountUserQueryByHashedEmailIncludeRelationships("xyz123"),
-			persistence.AccountUser{
-				AccountUserID: "user-id",
-				HashedEmail:   "xyz123",
-				Relationships: []persistence.AccountUserRelationship{
-					{
-						AccountUserID:  "user-id",
-						AccountID:      "account-id",
-						RelationshipID: "relationship-id",
-					},
-				},
-			},
-			false,
-		},
-		{
-			"by hashed email not found - include relationships",
-			func(db *gorm.DB) error {
-				if err := db.Save(&AccountUser{
-					AccountUserID: "user-id",
-					HashedEmail:   "xyz123",
-				}).Error; err != nil {
-					return fmt.Errorf("error saving fixture data: %v", err)
-				}
-				if err := db.Save(&AccountUserRelationship{
-					AccountUserID:  "user-id",
-					AccountID:      "account-id",
-					RelationshipID: "relationship-id",
-				}).Error; err != nil {
-					return fmt.Errorf("error saving fixture data: %v", err)
-				}
-				return nil
-			},
-			persistence.FindAccountUserQueryByHashedEmailIncludeRelationships("abc123"),
-			persistence.AccountUser{},
-			true,
-		},
-		{
 			"by user id found - include relationships",
 			func(db *gorm.DB) error {
 				if err := db.Save(&AccountUser{
@@ -328,6 +227,82 @@ func TestRelationalDAL_UpdateAccountUser(t *testing.T) {
 
 			if err := test.assertion(db); err != nil {
 				t.Errorf("Assertion error validating database content: %v", err)
+			}
+		})
+	}
+}
+
+func TestRelationalDAL_FindAccountUsers(t *testing.T) {
+	tests := []struct {
+		name           string
+		setup          dbAccess
+		arg            interface{}
+		expectError    bool
+		expectedResult []persistence.AccountUser
+	}{
+		{
+			"bad query",
+			noop,
+			"puppies",
+			true,
+			nil,
+		},
+		{
+			"empty db",
+			noop,
+			persistence.FindAccountUsersQueryAllAccountUsers{},
+			false,
+			nil,
+		},
+		{
+			"find users",
+			func(db *gorm.DB) error {
+				if err := db.Create(&AccountUser{
+					AccountUserID: "account-user-a",
+				}).Error; err != nil {
+					return fmt.Errorf("error inserting fixture: %w", err)
+				}
+				if err := db.Create(&Account{
+					Name:      "test",
+					AccountID: "account-a",
+				}).Error; err != nil {
+					return fmt.Errorf("error inserting fixture: %w", err)
+				}
+				if err := db.Create(&AccountUserRelationship{
+					RelationshipID: "relationship-a",
+					AccountUserID:  "account-user-a",
+					AccountID:      "account-a",
+				}).Error; err != nil {
+					return fmt.Errorf("error inserting fixture: %w", err)
+				}
+				return nil
+			},
+			persistence.FindAccountUsersQueryAllAccountUsers{IncludeRelationships: true},
+			false,
+			[]persistence.AccountUser{
+				{AccountUserID: "account-user-a", Relationships: []persistence.AccountUserRelationship{
+					{RelationshipID: "relationship-a", AccountUserID: "account-user-a", AccountID: "account-a"},
+				}},
+			},
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			db, closeDB := createTestDatabase()
+			defer closeDB()
+			if err := test.setup(db); err != nil {
+				t.Fatalf("Error setting up database %v", err)
+			}
+
+			dal := NewRelationalDAL(db)
+
+			result, err := dal.FindAccountUsers(test.arg)
+			if test.expectError != (err != nil) {
+				t.Errorf("Unexpected error value %v", err)
+			}
+
+			if !reflect.DeepEqual(test.expectedResult, result) {
+				t.Errorf("Expected %v, got %v", test.expectedResult, result)
 			}
 		})
 	}

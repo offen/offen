@@ -15,6 +15,7 @@ type DataAccessLayer interface {
 	FindAccounts(interface{}) ([]Account, error)
 	CreateAccountUser(*AccountUser) error
 	FindAccountUser(interface{}) (AccountUser, error)
+	FindAccountUsers(interface{}) ([]AccountUser, error)
 	UpdateAccountUser(*AccountUser) error
 	CreateAccountUserRelationship(*AccountUserRelationship) error
 	UpdateAccountUserRelationship(*AccountUserRelationship) error
@@ -80,14 +81,6 @@ type FindAccountQueryIncludeEvents struct {
 // FindAccountsQueryAllAccounts requests all known accounts to be returned.
 type FindAccountsQueryAllAccounts struct{}
 
-// FindAccountUserQueryByHashedEmail requests the account user with the given
-// hashed email.
-type FindAccountUserQueryByHashedEmail string
-
-// FindAccountUserQueryByHashedEmailIncludeRelationships requests the account user with the given
-// hashed email and all of its relationships.
-type FindAccountUserQueryByHashedEmailIncludeRelationships string
-
 // FindAccountUserQueryByAccountUserIDIncludeRelationships requests the account user of
 // the given id and all of its relationships.
 type FindAccountUserQueryByAccountUserIDIncludeRelationships string
@@ -95,6 +88,11 @@ type FindAccountUserQueryByAccountUserIDIncludeRelationships string
 // FindAccountUserRelationshipsQueryByAccountUserID requests all relationships for the user
 // with the given account user ID.
 type FindAccountUserRelationshipsQueryByAccountUserID string
+
+// FindAccountUsersQueryAllAccountUsers requests all account users.
+type FindAccountUsersQueryAllAccountUsers struct {
+	IncludeRelationships bool
+}
 
 // Transaction is a data access layer that does not persist data until commit
 // is called. In case rollback is called before, the underlying database will

@@ -37,7 +37,7 @@ type accountCreation struct {
 
 // Bootstrap seeds a blank database with the given account and user
 // data. This is likely only ever used in development.
-func (p *persistenceLayer) Bootstrap(config BootstrapConfig, emailSalt []byte) error {
+func (p *persistenceLayer) Bootstrap(config BootstrapConfig) error {
 	txn, err := p.dal.Transaction()
 	if err != nil {
 		return fmt.Errorf("persistence: error creating transaction: %w", err)
@@ -52,7 +52,7 @@ func (p *persistenceLayer) Bootstrap(config BootstrapConfig, emailSalt []byte) e
 		return fmt.Errorf("persistence: error applying initial migrations: %w", err)
 	}
 
-	accounts, accountUsers, relationships, err := bootstrapAccounts(&config, emailSalt)
+	accounts, accountUsers, relationships, err := bootstrapAccounts(&config)
 	if err != nil {
 		txn.Rollback()
 		return fmt.Errorf("persistence: error creating seed data: %w", err)
@@ -81,7 +81,7 @@ func (p *persistenceLayer) Bootstrap(config BootstrapConfig, emailSalt []byte) e
 	return nil
 }
 
-func bootstrapAccounts(config *BootstrapConfig, emailSalt []byte) ([]Account, []AccountUser, []AccountUserRelationship, error) {
+func bootstrapAccounts(config *BootstrapConfig) ([]Account, []AccountUser, []AccountUserRelationship, error) {
 	accountCreations := []accountCreation{}
 	for _, account := range config.Accounts {
 		publicKey, privateKey, keyErr := keys.GenerateRSAKeypair(keys.RSAKeyLength)
@@ -89,7 +89,7 @@ func bootstrapAccounts(config *BootstrapConfig, emailSalt []byte) ([]Account, []
 			return nil, nil, nil, keyErr
 		}
 
-		encryptionKey, encryptionKeyErr := keys.GenerateEncryptionKey(keys.DefaultEncryptionKeySize)
+		encryptionKey, encryptionKeyErr := keys.GenerateRandomBytes(keys.DefaultEncryptionKeySize)
 		if encryptionKeyErr != nil {
 			return nil, nil, nil, encryptionKeyErr
 		}
@@ -126,11 +126,11 @@ func bootstrapAccounts(config *BootstrapConfig, emailSalt []byte) ([]Account, []
 		if idErr != nil {
 			return nil, nil, nil, idErr
 		}
-		hashedPw, hashedPwErr := keys.HashPassword(accountUser.Password)
+		hashedPw, hashedPwErr := keys.HashString(accountUser.Password)
 		if hashedPwErr != nil {
 			return nil, nil, nil, hashedPwErr
 		}
-		hashedEmail, hashedEmailErr := keys.HashEmail(accountUser.Email, emailSalt)
+		hashedEmail, hashedEmailErr := keys.HashString(accountUser.Email)
 		if hashedEmailErr != nil {
 			return nil, nil, nil, hashedEmailErr
 		}
@@ -143,7 +143,7 @@ func bootstrapAccounts(config *BootstrapConfig, emailSalt []byte) ([]Account, []
 			AccountUserID:  accountUserID.String(),
 			Salt:           salt,
 			HashedPassword: hashedPw.Marshal(),
-			HashedEmail:    hashedEmail,
+			HashedEmail:    hashedEmail.Marshal(),
 		}
 		accountUserCreations = append(accountUserCreations, user)
 

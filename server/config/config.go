@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"path"
-	"reflect"
 	"runtime"
 	"strconv"
 
@@ -25,13 +24,6 @@ var ErrPopulatedMissing = errors.New("populated missing secrets")
 
 // Revision will be set by ldflags on build time
 var Revision string
-
-// IsDefaultDatabase checks whether the database connection string matches
-// the default value.
-func (c *Config) IsDefaultDatabase() bool {
-	field, _ := reflect.TypeOf(c.Database).FieldByName("ConnectionString")
-	return c.Database.ConnectionString.RawString() == field.Tag.Get("default")
-}
 
 // SMTPConfigured returns true if all required SMTP credentials are set
 func (c *Config) SMTPConfigured() bool {
@@ -140,12 +132,20 @@ func New(populateMissing bool, override string) (*Config, error) {
 		c.Server.Port = port
 	}
 
+	if c.Secrets.CookieExchange.IsZero() {
+		cookieSecret, cookieSecretErr := keys.GenerateRandomBytes(keys.DefaultSecretLength)
+		if cookieSecretErr != nil {
+			return &c, fmt.Errorf("config: error creating cookie secret: %w", cookieSecretErr)
+		}
+		c.Secrets.CookieExchange = Bytes(cookieSecret)
+	}
+
 	if err != nil && populateMissing {
 		if envFile == "" {
 			return nil, errors.New("config: unable to find env file to persist settings as no env file could be found")
 		}
 		update := map[string]string{}
-		for _, key := range []string{"OFFEN_SECRETS_EMAILSALT", "OFFEN_SECRETS_COOKIEEXCHANGE"} {
+		for _, key := range []string{"OFFEN_SECRETS_COOKIEEXCHANGE"} {
 			secret, err := keys.GenerateRandomValue(keys.DefaultSecretLength)
 			update[key] = secret
 			if err != nil {
