@@ -142,6 +142,20 @@ function loginWith (loginUrl) {
   }
 }
 
+exports.logout = logoutWith(window.location.origin + '/api/logout')
+exports.logoutWith = logoutWith
+
+function logoutWith (logoutUrl) {
+  return function () {
+    return window
+      .fetch(logoutUrl, {
+        method: 'POST',
+        credentials: 'include'
+      })
+      .then(handleFetchResponse)
+  }
+}
+
 exports.changePassword = changePasswordWith(window.location.origin + '/api/change-password')
 exports.changePasswordWith = changePasswordWith
 

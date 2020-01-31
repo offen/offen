@@ -142,4 +142,35 @@ function store (state, emitter) {
         emitter.emit(state.events.RENDER)
       })
   })
+
+  emitter.on('offen:logout', function (onSuccessMessage, onFailureMessage) {
+    vault(process.env.VAULT_HOST || '/vault/')
+      .then(function (postMessage) {
+        var queryRequest = {
+          type: 'LOGOUT',
+          payload: null
+        }
+        return postMessage(queryRequest)
+      })
+      .then(function (response) {
+        if (response.type === 'LOGOUT_SUCCESS') {
+          Object.assign(state, {
+            authenticatedUser: null,
+            flash: onSuccessMessage
+          })
+          emitter.emit(state.events.PUSHSTATE, '/login/')
+        } else if (response.type === 'LOGOUT_FAILURE') {
+          state.flash = onFailureMessage
+        }
+      })
+      .catch(function (err) {
+        state.error = {
+          message: err.message,
+          stack: err.originalStack || err.stack
+        }
+      })
+      .then(function () {
+        emitter.emit(state.events.RENDER)
+      })
+  })
 }

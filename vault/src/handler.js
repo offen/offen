@@ -133,6 +133,28 @@ function handlePurgeWith (api, queries, getUserEvents, getOperatorEvents) {
   }
 }
 
+exports.handleLogout = handleLogoutWith(api)
+exports.handleLogoutWith = handleLogoutWith
+
+function handleLogoutWith (api) {
+  return function () {
+    return api.logout()
+      .then(function () {
+        return {
+          type: 'LOGOUT_SUCCESS',
+          payload: null
+        }
+      }, function (err) {
+        return {
+          type: 'LOGOUT_FAILURE',
+          payload: {
+            message: err.message
+          }
+        }
+      })
+  }
+}
+
 exports.handleLogin = handleLoginWith(api, getFromSessionStorage, setInSessionStorage)
 exports.handleLoginWith = handleLoginWith
 
