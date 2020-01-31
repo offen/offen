@@ -18,7 +18,7 @@ type Config struct {
 		ReverseProxy     bool `default:"false"`
 		SSLCertificate   EnvString
 		SSLKey           EnvString
-		AutoTLS          string
+		AutoTLS          []string
 		CertificateCache EnvString `default:"/var/www/.cache"`
 	}
 	Database struct {

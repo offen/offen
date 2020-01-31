@@ -222,10 +222,10 @@ func main() {
 				if err != nil && err != http.ErrServerClosed {
 					logger.WithError(err).Fatal("Error binding server to network")
 				}
-			} else if cfg.Server.AutoTLS != "" {
+			} else if len(cfg.Server.AutoTLS) != 0 {
 				m := autocert.Manager{
 					Prompt:     autocert.AcceptTOS,
-					HostPolicy: autocert.HostWhitelist(cfg.Server.AutoTLS),
+					HostPolicy: autocert.HostWhitelist(cfg.Server.AutoTLS...),
 					Cache:      autocert.DirCache(cfg.Server.CertificateCache),
 				}
 				go http.ListenAndServe(":http", m.HTTPHandler(nil))
@@ -238,7 +238,7 @@ func main() {
 				}
 			}
 		}()
-		if cfg.Server.AutoTLS != "" {
+		if len(cfg.Server.AutoTLS) != 0 {
 			logger.Info("Server now listening on port 80 and 443 using AutoTLS")
 		} else {
 			logger.Infof("Server now listening on port %d", cfg.Server.Port)
