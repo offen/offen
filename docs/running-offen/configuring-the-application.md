@@ -64,11 +64,11 @@ In case you own a SSL certificate that is valid for the domain you are planning 
 
 ### `OFFEN_SERVER_AUTOTLS`
 
-In case you want Offen to automatically request a free SSL certifcate from LetsEncrypt you can use this parameter and assign the domain name (e.g. `offen.mydomain.org`) you are planning to serve Offen from. This will have the application automatically handle certificate issuing and renewal.
+In case you want Offen to automatically request a free SSL certifcate from LetsEncrypt you can use this parameter and assign a comma separated list of supported domain names (e.g. `offen.mydomain.org,offen.otherdomain.org`) you are planning to serve Offen from. This will have the application automatically handle certificate issuing and renewal.
 
 ### `OFFEN_SERVER_CERTFICATECACHE`
 
-Defaults to `/var/www/.cache`
+Defaults to `/var/www/.cache` on Linux and MacOS, `%Temp%\offen.db` on Windows.
 
 When using the AutoTLS feature, this sets the location where Offen will be caching certificates.
 
@@ -84,7 +84,7 @@ The SQL dialect to use. Supported options are `sqlite3`, `postgres` or `mysql`.
 
 ### `OFFEN_DATABASE_CONNECTIONSTRING`
 
-Defaults to `/tmp/offen.db`
+Defaults to `/var/opt/offen/offen.db` on Linux and MacOS, `%Temp%\offen.db` on Windows.
 
 The connection string or location of the database. For `sqlite3` this will be the location of the database file, for other dialects, it will be the URL the database is located at, including credentials needed to access it.
 
@@ -108,7 +108,6 @@ This value specifies how long events are kept before being deleted. It also dete
 
 [go-duration]: https://golang.org/pkg/time/#ParseDuration
 
-
 ### `OFFEN_APP_LOCALE`
 
 Defaults to `en`.
@@ -129,19 +128,13 @@ In case you want to run Offen as a horizontally scaling service, you can set thi
 
 ---
 
-The `SECRETS` namespace collects secrets used for signing cookies and hashing account data. All of the values are required to be populated.
+The `SECRETS` namespace collects secrets used for signing cookies. All of the values are required to be populated.
 
 ### `OFFEN_SECRETS_COOKIEEXCHANGE`
 
-No default value. __Required__.
+No default value.
 
-A Base64 encoded secret that is used for signing cookies. Ideally, it is of 16 bytes length. Changing this value during the lifecycle of the application means all currently active account user sessions are invalidated and users would have to log in again.
-
-### `OFFEN_SECRETS_EMAILSALT`
-
-No default value. __Required__.
-
-Offen does not store Email addresses in plain text, but in a hashed form. This salt is used for hashing addresses. Ideally, it is of 16 bytes length. This value is not expected to change during the lifecycle of an Offen instance. Changing it would mean all existing user accounts **cannot log in anymore**.
+A Base64 encoded secret that is used for signing cookies. Ideally, it is of 16 bytes length. If this is not set, a random value will be created at application startup. This means that an application restart would invalidate all existing sessions. If you do not want this behavior, populate this value.
 
 ---
 

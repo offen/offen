@@ -88,15 +88,7 @@ Your `offen.env` file will now look something like this:
 
 ```
 OFFEN_SECRETS_COOKIEEXCHANGE="uNrZP7r5fY3sfS35tbzR9w==" # do not use this secret in production
-OFFEN_SECRETS_EMAILSALT="uVXyuzCcpTim0v7uChCs1UA==" # do not use this secret in production
 ```
-
----
-
-__Heads Up__
-{: .label .label-red }
-
-The value for `OFFEN_SECRETS_EMAILSALT` is not expected to ever change during the lifetime of a deployment. If this value gets lost or changes, you will not be able to log in again.
 
 ---
 
@@ -143,7 +135,6 @@ Before you start the application, it's a good idea to double check the setup. Yo
 
 ```
 OFFEN_SECRETS_COOKIEEXCHANGE="uNrZP7r5fY3sfS35tbzR9w==" # do not use this secret in production
-OFFEN_SECRETS_EMAILSALT="VXyuzCcpTim0v7uChCs1UA==" # do not use this secret in production
 OFFEN_SERVER_AUTOTLS="offen.mysite.com"
 OFFEN_SMTP_HOST="smtp.mysite.com"
 OFFEN_SMTP_USER="me"

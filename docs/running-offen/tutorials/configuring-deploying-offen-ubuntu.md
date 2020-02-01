@@ -42,7 +42,7 @@ You can confirm that your installation is working as expected like this:
 $ which offen
 /usr/bin/offen
 $ offen version
-INFO[0000] Current build created using                   revision=v0.1.0-alpha.1
+INFO[0000] Current build created using                   revision=v0.1.0-alpha.2
 ```
 
 ---
@@ -52,18 +52,18 @@ INFO[0000] Current build created using                   revision=v0.1.0-alpha.1
 To update to a new version of Offen, download the contents of the newest release into a new directory in `/opt/offen` and update the symlink in `/usr/bin`:
 
 ```
-tar -xvz offen-v0.1.0-alpha.2.tar.gz
+tar -xvz offen-v0.1.0-alpha.4.tar.gz
 md5sum -c checksums.txt # check that your download contains the expected files
-sudo mkdir -p /opt/offen/v0.1.0-alpha.2
-sudo cp offen-linux-amd64 /opt/offen/v0.1.0-alpha.2
-sudo ln -s /opt/offen/v0.1.0-alpha.2/offen-linux-amd64 /usr/bin/offen
+sudo mkdir -p /opt/offen/v0.1.0-alpha.4
+sudo cp offen-linux-amd64 /opt/offen/v0.1.0-alpha.4
+sudo ln -s /opt/offen/v0.1.0-alpha.4/offen-linux-amd64 /usr/bin/offen
 ```
 
 Confirm that this worked by having `offen` print its version:
 
 ```
 $ offen version
-INFO[0000] Current build created using                   revision=v0.1.0-alpha.2
+INFO[0000] Current build created using                   revision=v0.1.0-alpha.4
 ```
 
 You can now restart your service to pick up the changes:
@@ -100,7 +100,7 @@ Keeping these files available at any time is required for running the applicatio
 
 ---
 
-This tutorial assumes you are allowed to use `sudo`, so we create a `/var/opt/offen` directory in which we will store our database.
+This tutorial assumes you are able to use `sudo`, so we create a `/var/opt/offen` directory in which we will store our database.
 
 ```
 sudo mkdir -p /var/opt/offen
@@ -112,11 +112,10 @@ In your `/var/www` directory, create a `.cache` directory if it doesn't already 
 sudo mkdir -p /var/www/.cache
 ```
 
-In your `/etc` directory create an `offen` directory and populate it with an empty file called `offen.env`. This will hold your application configuration. In this file, tell Offen about the location of your database file:
+In your `/etc` directory create an `offen` directory and populate it with an empty file called `offen.env`. This will hold your application configuration.
 
 ```
 sudo mkdir -p /etc/offen
-sudo echo 'OFFEN_DATABASE_CONNECTIONSTRING="/var/opt/offen/offen.db"' > /etc/offen/offen.env
 ```
 
 ---
@@ -138,17 +137,8 @@ When finished, the command has created an account for you, using the given name 
 Your `/etc/offen/offen.env` file will now look something like this:
 
 ```
-OFFEN_DATABASE_CONNECTIONSTRING="/var/opt/offen/offen.db"
 OFFEN_SECRETS_COOKIEEXCHANGE="uNrZP7r5fY3sfS35tbzR9w==" # do not use this secret in production
-OFFEN_SECRETS_EMAILSALT="uVXyuzCcpTim0v7uChCs1UA==" # do not use this secret in production
 ```
-
----
-
-__Heads Up__
-{: .label .label-red }
-
-The value for `OFFEN_SECRETS_EMAILSALT` is not expected to ever change during the lifetime of a deployment. If this value gets lost or changes, you will not be able to log in again.
 
 ---
 
@@ -194,9 +184,7 @@ Offen will run without these values being set and try to fall back to a local `s
 Before you start the application, it's a good idea to double check the setup. Your config file at `/etc/offen/offen.env` should now contain an entry for each of these values:
 
 ```
-OFFEN_DATABASE_CONNECTIONSTRING="/var/opt/offen/offen.db"
 OFFEN_SECRETS_COOKIEEXCHANGE="uNrZP7r5fY3sfS35tbzR9w==" # do not use this secret in production
-OFFEN_SECRETS_EMAILSALT="VXyuzCcpTim0v7uChCs1UA==" # do not use this secret in production
 OFFEN_SERVER_AUTOTLS="offen.mysite.com"
 OFFEN_SMTP_HOST="smtp.mysite.com"
 OFFEN_SMTP_USER="me"

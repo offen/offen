@@ -80,43 +80,9 @@ heroku config:set \
   --app glacial-sierra-90893
 ```
 
-### 3.2. Create Secrets
-
-Offen requires two unique **Base64 encoded secrets** for each instance to be configured. These values make sure you can login to your account safely. It is important that these values are unique to your instance, so please do not copy them from a webpage or similar.
-
-On Linux or MacOS you can create them like this:
-
-```
-$ head -c 16 /dev/urandom | base64
-Ar8BfwVi3vhqo3lvh0iizA== # do not use this secret
-```
-
-Alternatively you can use the `offen` command itself:
-
-```
-$ docker run --rm offen/offen:latest secret
-time="2020-01-28T18:20:46Z" level=info msg="Created 16 bytes secret" secret="JKaK+adPexEUjgGlTzZbow==" # do not use this secret
-```
-
-Generate two values and configure the `OFFEN_SECRETS_EMAILSALT` and `OFFEN_SECRETS_COOKIEEXCHANGE` value:
-
-```
-heroku config:set \
-  OFFEN_SECRETS_COOKIEEXCHANGE=Ar8BfwVi3vhqo3lvh0iizA== \
-  OFFEN_SECRETS_EMAILSALT=YFI/pKJCxzrc23J4bfbJUQ== \
-  --app glacial-sierra-90893
-```
-
 ---
 
-__Heads Up__
-{: .label .label-red }
-
-The value for `OFFEN_SECRETS_EMAILSALT` is not expected to ever change during the lifetime of a deployment. If this value gets lost or changes, you will not be able to log in again.
-
----
-
-### 3.3. Configure Email
+### 3.2. Configure Email
 
 Offen needs to send transactional email for the following features:
 
@@ -143,7 +109,7 @@ Offen will run without these values being set and try to fall back to a local `s
 
 ---
 
-### 3.4. Configure Offen to use the Correct Port
+### 3.3. Configure Offen to use the Correct Port
 
 Heroku mandates the usage of `PORT` which is why you need to configure Offen to pick this up correctly:
 
@@ -173,13 +139,6 @@ In an empty directory, create a `Dockerfile` looking like this:
 FROM offen/offen:latest
 CMD ["serve"]
 ```
-
----
-
-__Heads Up__
-{: .label .label-red }
-
-There is an issue in the last stable release of Offen that keeps it from working correctly in Heroku, so this tutorial is using the `latest` channel. If you consider using this setup in production, please lock the revision you are deploying.
 
 ---
 

@@ -43,7 +43,6 @@ Usage of setup:
         the configuration file
   -stdin-password
         read password from stdin
-
 ```
 
 In case the current runtime configuration is missing required secrets, you can use the `-populate` flag and the command will generate the missing values and store them on the system so that they get picked up when the application is run the next time.
