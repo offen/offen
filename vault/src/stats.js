@@ -177,6 +177,7 @@ function avgPageload (events) {
   var total = _.chain(events)
     .map(_.property(['payload', 'pageload']))
     .compact()
+    .filter(function (value) { return value > 0 })
     .tap(function (entries) {
       count = entries.length
     })

@@ -10,7 +10,7 @@ function pageview (initial) {
     pageload: (function () {
       if (initial && window.performance && window.performance.timing) {
         return Math.round(
-          window.performance.timing.domInteractive - (window.performance.timeOrigin || window.performance.timing.navigationStart)
+          window.performance.timing.domContentLoadedEventEnd - window.performance.timing.navigationStart
         )
       }
       return null
