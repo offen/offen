@@ -9,12 +9,21 @@ grand_parent: Running Offen
 ---
 
 # Configuring and Deploying Offen on Ubuntu
+{: .no_toc }
 
 This tutorial walks you through the steps needed to setup and deploy a standalone, single-node Offen instance that is using a local SQLite file as its database backend. `systemd` is used for managing the Offen service.
 
 ---
 
-## 1. Downloading and Installing the binaries
+## Table of Contents
+{: .no_toc }
+
+1. TOC
+{:toc}
+
+---
+
+## Downloading and Installing the binaries
 
 You can download a tarball of the latest release from our [Releases section on GitHub][releases].
 
@@ -48,6 +57,7 @@ INFO[0000] Current build created using                   revision=v0.1.0-alpha.2
 ---
 
 ### Detour: Updating the Version in Use
+{: .no_toc }
 
 To update to a new version of Offen, download the contents of the newest release into a new directory in `/opt/offen` and update the symlink in `/usr/bin`:
 
@@ -86,7 +96,7 @@ You can read more about our approach to versioning in [this blog post][versionin
 
 ---
 
-## 2. Choosing a Location for Storing Your Data
+## Choosing a Location for Storing Your Data
 
 In the simple setup described in this tutorial Offen needs to persist the following files:
 
@@ -120,7 +130,7 @@ sudo mkdir -p /etc/offen
 
 ---
 
-## 3. Running the `setup` Command
+## Running the `setup` Command
 
 Now that we have defined the database location, Offen lets you setup a new instance using the `setup` command:
 
@@ -142,7 +152,7 @@ OFFEN_SECRETS_COOKIEEXCHANGE="uNrZP7r5fY3sfS35tbzR9w==" # do not use this secret
 
 ---
 
-## 4. Setting up AutoTLS
+## Setting up AutoTLS
 
 Offen requires a secure connection and can automatically acquire a renew SSL certificates from LetsEncrypt for your domain. All you need to do is add the domain you want to serve Offen from to your `/etc/offen/offen.env` file:
 
@@ -154,7 +164,7 @@ To make sure the automatic certificate creation and renewal works, make sure you
 
 ---
 
-## 5. Setting up Email
+## Setting up Email
 
 Offen needs to send transactional email for the following features:
 
@@ -179,7 +189,7 @@ Offen will run without these values being set and try to fall back to a local `s
 
 ---
 
-## 6. Verifying your config file
+## Verifying your config file
 
 Before you start the application, it's a good idea to double check the setup. Your config file at `/etc/offen/offen.env` should now contain an entry for each of these values:
 
@@ -196,7 +206,7 @@ If all of this is populated with the values you expect, you're ready to use Offe
 
 ---
 
-## 7. Creating and Running a `systemd` Service
+## Creating and Running a `systemd` Service
 
 If you want to expose Offen to the internet, you need some other process to supervise it and restart it on failure or reboot. This tutorial uses `systemd` to do so for it ubiquity, but if you prefer any other tool to handle this for you it should work just as fine.
 
@@ -241,6 +251,7 @@ Your instance is now ready to use. Once you have setup DNS to point at your host
 ---
 
 ### Accessing Logs for the Service
+{: .no_toc }
 
 The easiest way for accessing application logs in this setup is using `journald`
 
@@ -252,6 +263,7 @@ offen[6573]: time="2020-01-27T15:57:41+01:00" level=info msg="Cron successfully 
 ```
 
 ### Uninstalling the Service
+{: .no_toc }
 
 If you want to uninstall the service from your system, stop and disable the `offen` service:
 

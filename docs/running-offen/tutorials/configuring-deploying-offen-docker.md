@@ -9,17 +9,26 @@ grand_parent: Running Offen
 ---
 
 # Configuring and Deploying Offen Using Docker
+{: .no_toc }
 
 This tutorial walks you through the steps needed to setup and deploy a standalone, single-node Offen instance that is using a local SQLite file as its database backend.
 
 ---
 
-## 1. Pulling the Docker Image
+## Table of Contents
+{: .no_toc }
 
-The official Docker image is available as [`offen/offen`][docker-hub] on Docker Hub. The most recent official release is tagged as `stable`:
+1. TOC
+{:toc}
+
+---
+
+## Pulling the Docker Image
+
+The official Docker image is available as [`offen/offen`][docker-hub] on Docker Hub. The most recent official release is tagged as `v0.1.0-alpha.2`:
 
 ```sh
-docker pull offen/offen:stable
+docker pull offen/offen:v0.1.0-alpha.2
 ```
 
 If you are feeling adventurous, or require features that are not yet available in a release you can also use the `latest` tag which represents the latest state of development. Be aware though that these versions might be unstable.
@@ -28,7 +37,7 @@ If you are feeling adventurous, or require features that are not yet available i
 
 ---
 
-## 2. Choosing a Location for Storing Your Data
+## Choosing a Location for Storing Your Data
 
 In the simple setup described in this tutorial Offen needs to persist the following files:
 
@@ -53,7 +62,7 @@ In your `~/offen` directory, create a `cache` directory, which will be used for 
 
 ---
 
-## 3. Creating a Configuration and Database File
+## Creating a Configuration and Database File
 
 Offen can source configuration from environment variables as well as configuration files. In this tutorial we will use a configuration file called `offen.env` and a database file called `offen.db` which you can create as empty files in your data directory:
 
@@ -66,7 +75,7 @@ Offen can source configuration from environment variables as well as configurati
 
 ---
 
-## 4. Running the `setup` Command
+## Running the `setup` Command
 
 Now that we have defined the database location, Offen lets you setup a new instance using the `setup` command:
 
@@ -75,7 +84,7 @@ docker run -it --rm \
   -v /home/you/offen/cache:/var/www/.cache \
   --mount type=bind,src=/home/you/offen/offen.env,dst=/root/offen.env \
   --mount type=bind,src=/home/you/offen/offen.db,dst=/root/offen.db \
-  offen/offen:stable setup \
+  offen/offen:v0.1.0-alpha.2 setup \
   -email me@mysite.com \ # the email used for login
   -name mysite \ # your account name, this will not be displayed to users
   -stdin-password \ # this will prompt for you password
@@ -92,7 +101,7 @@ OFFEN_SECRETS_COOKIEEXCHANGE="uNrZP7r5fY3sfS35tbzR9w==" # do not use this secret
 
 ---
 
-## 5. Setting up AutoTLS
+## Setting up AutoTLS
 
 Offen requires a secure connection and can automatically acquire a renew SSL certificates from LetsEncrypt for your domain. All you need to do is add the domain you want to serve Offen from to your `offen.env` file:
 
@@ -104,7 +113,7 @@ To make sure the automatic certificate creation and renewal works, make sure you
 
 ---
 
-## 6. Setting up Email
+## Setting up Email
 
 Offen needs to send transactional email for the following features:
 
@@ -129,7 +138,7 @@ Offen will run without these values being set and try to fall back to a local `s
 
 ---
 
-## 7. Verifying your config file
+## Verifying your config file
 
 Before you start the application, it's a good idea to double check the setup. Your config file should now contain an entry for each of these values:
 
@@ -146,25 +155,42 @@ If all of this is populated with the values you expect, you're ready to use Offe
 
 ---
 
-## 8. Starting the Application
+## Starting the Application
 
 To start Offen use the main `offen` command:
 
 ```
-docker run -d \ # detach and run in the background
+docker run -d \
   -p 80:80 -p 443:443 \
+  --name offen
   -v /home/you/offen/cache:/var/www/.cache \
   --mount type=bind,src=/home/you/offen/offen.env,dst=/root/offen.env \
   --mount type=bind,src=/home/you/offen/offen.db,dst=/root/offen.db \
-  offen/offen:stable
+  offen/offen:v0.1.0-alpha.2
 ```
 
 Once the application has started, you can use `docker ps` to check if it's up and running:
 
 ```
 $ docker ps
-CONTAINER ID        IMAGE                COMMAND                  CREATED             STATUS              PORTS                    NAMES
-70653aca75b4        offen/offen:stable   "offen"                  5 minutes ago       Up 5 minutes        80/tcp, 443/tcp          nice_murdock
+CONTAINER ID        IMAGE                        COMMAND                  CREATED             STATUS              PORTS                    NAMES
+70653aca75b4        offen/offen:v0.1.0-alpha.2   "offen"                  5 minutes ago       Up 5 minutes        80/tcp, 443/tcp          offen
 ```
 
 Your instance is now ready to use. Once you have setup DNS to point at your host system, you can head to `https://offen.mysite.com/login` and login to your account.
+
+### Stopping the application
+
+To stop the running container, run `stop`:
+
+```
+docker stop offen
+```
+
+### Reading logs
+
+To read log output, use `logs`:
+
+```
+docker logs offen
+```

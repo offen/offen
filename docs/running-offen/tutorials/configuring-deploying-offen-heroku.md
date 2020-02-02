@@ -9,6 +9,7 @@ grand_parent: Running Offen
 ---
 
 # Configuring and Deploying Offen on Heroku
+{: .no_toc }
 
 This tutorial walks you through the steps needed to setup and deploy a single-node Offen instance on [Heroku][heroku] using PostgreSQL for storing data.
 
@@ -16,7 +17,16 @@ This tutorial walks you through the steps needed to setup and deploy a single-no
 
 ---
 
-## 1. Prerequistes
+## Table of Contents
+{: .no_toc }
+
+1. TOC
+{:toc}
+
+
+---
+
+## Prerequistes
 
 To follow the steps in this tutorial you will need to have created an account with Heroku and have the [Heroku CLI tool][heroku-cli] installed which is available for Linux, Windows and MacOS.
 
@@ -33,7 +43,7 @@ If you do not want to use the command line, it's possible to do all of the follo
 
 ---
 
-## 2. Create the Heroku app and attach a database
+## Create the Heroku app and attach a database
 
 The first thing you will need to do is to create a new application:
 
@@ -59,9 +69,10 @@ Use heroku addons:docs heroku-postgresql to view documentation
 
 ---
 
-## 3. Set the Configuration Values
+## Set the Configuration Values
 
-### 3.1. Configure the Database
+### 1. Configure the Database
+{: .no_toc }
 
 Offen needs to know which database dialect you are planning to use (`postgres`) and how to connect to it. The connection string of the database you just created can be found in the application's config values:
 
@@ -82,7 +93,8 @@ heroku config:set \
 
 ---
 
-### 3.2. Configure Email
+### 2. Configure Email
+{: .no_toc }
 
 Offen needs to send transactional email for the following features:
 
@@ -109,7 +121,8 @@ Offen will run without these values being set and try to fall back to a local `s
 
 ---
 
-### 3.3. Configure Offen to use the Correct Port
+### 3. Configure Offen to use the Correct Port
+{: .no_toc }
 
 Heroku mandates the usage of `PORT` which is why you need to configure Offen to pick this up correctly:
 
@@ -117,11 +130,12 @@ Heroku mandates the usage of `PORT` which is why you need to configure Offen to 
 heroku config:set OFFEN_SERVER_USENAKEDPORT=1 --app glacial-sierra-90893
 ```
 
-## 4. Deploying the Application
+## Deploying the Application
 
 Now that all of the required configuration values are set, we are ready to deploy the application using our `offen/offen` Docker image using the Heroku container stack.
 
-### 4.1. Setting the Stack
+### 1. Setting the Stack
+{: .no_toc }
 
 Tell your app to use the `container` stack:
 
@@ -129,7 +143,8 @@ Tell your app to use the `container` stack:
 heroku stack:set container --app glacial-sierra-90893
 ```
 
-### 4.2. Create the Dockerfile and heroku.yml
+### 2. Create the Dockerfile and heroku.yml
+{: .no_toc }
 
 The `container` stack requires a Dockerfile for defining the application and a `heroku.yml` for defining your application structure.
 
@@ -150,7 +165,8 @@ build:
     web: Dockerfile
 ```
 
-### 4.3. Push the Setup to Heroku
+### 3. Push the Setup to Heroku
+{: .no_toc }
 
 To deploy your setup create a Git repository in your directory and push it to Heroku using the Git URL shown when creating the application:
 
@@ -166,7 +182,7 @@ You should now see Heroku building the Docker image and deploying Offen.
 
 ---
 
-## 5. Running the `setup` Command
+## Running the `setup` Command
 
 The final step for your installation is now to create an account that you can use to collect usage data and log in. To do so, run the `setup` command on your newly created deployment:
 
@@ -177,12 +193,13 @@ heroku run --app glacial-sierra-90893 -- setup -email="me@mysite.com" -name="my-
 When finished, the command has created an account for you, using the given name and credentials.
 
 ### Test the Setup
+{: .no_toc }
 
 You can now head to the running application at `https://glacial-sierra-90893.herokuapp.com/login` and login using your given credentials.
 
 ---
 
-## 6. Setting up a Custom Domain
+## Setting up a Custom Domain
 
 In a real world setup, you will likely want to make Offen available as a subdomain of your own domain. To do so, configure Heroku to use your desired custom domain:
 
@@ -198,7 +215,7 @@ Adding heroku.offen.dev to ⬢ glacial-sierra-90893... done
 
 Now, you can set a CNAME record from your desired domain to the target given in the response.
 
-## 7. Setting up SSL
+## Setting up SSL
 
 Offen requires to be served via SSL. In case you are on a paid plan, Heroku offers free Certificate Management for your domain and there is nothing you need to other than enable it. In case you are using the free plan, you can use self-signed certificates. Instructions can be found [in the Heroku documentation on the topic][heroku-ssl].
 
