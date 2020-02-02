@@ -180,6 +180,7 @@ CONTAINER ID        IMAGE                        COMMAND                  CREATE
 Your instance is now ready to use. Once you have setup DNS to point at your host system, you can head to `https://offen.mysite.com/login` and login to your account.
 
 ### Stopping the application
+{: .no_toc }
 
 To stop the running container, run `stop`:
 
@@ -188,6 +189,7 @@ docker stop offen
 ```
 
 ### Reading logs
+{: .no_toc }
 
 To read log output, use `logs`:
 
