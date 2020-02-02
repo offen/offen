@@ -8,8 +8,6 @@ jobs:
           OFFEN_APP_EVENTRETENTIONPERIOD: 4464h
           OFFEN_DATABASE_DIALECT: postgres
           OFFEN_DATABASE_CONNECTIONSTRING: postgres://circle:test@localhost:5432/circle_test?sslmode=disable
-          OFFEN_SECRETS_COOKIEEXCHANGE: VswgMshC4mPDfey8o+yScg==
-          OFFEN_SECRETS_EMAILSALT: IDOARoANjJYE6vbLo4L57w==
       - image: circleci/postgres:11.2-alpine
         environment:
           - POSTGRES_USER=circle
@@ -214,7 +212,7 @@ jobs:
 
             echo "$DOCKER_ACCESSTOKEN" | docker login --username $DOCKER_USER --password-stdin
 
-            if [ ! -z "$CIRCLE_TAG" ]; then
+            if [ ! -z "$CIRCLE_TAG" ] && [ "${CIRCLE_BRANCH}" == "master" ]; then
               docker tag offen/offen:$DOCKER_IMAGE_TAG offen/offen:stable
               docker push offen/offen:stable
             fi
