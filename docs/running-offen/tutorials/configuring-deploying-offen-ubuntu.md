@@ -35,14 +35,14 @@ Start by creating the `/opt/offen` directory:
 sudo mkdir -p /opt/offen
 ```
 
-Untar the archive you downloaded and look for the binary called `offen-linux-amd64`. Put this in a subdirectory of `/opt/offen` that specifies its version. This example is using the `v0.1.0-alpha.1` release:
+Untar the archive you downloaded and look for the binary called `offen-linux-amd64`. Put this in a subdirectory of `/opt/offen` that specifies its version. This example is using the `v0.1.0-alpha.2` release:
 
 ```
-tar -xvz offen-v0.1.0-alpha.1.tar.gz
+tar -xvz offen-v0.1.0-alpha.2.tar.gz
 md5sum -c checksums.txt # check that your download contains the expected files
-sudo mkdir -p /opt/offen/v0.1.0-alpha.1
-sudo cp offen-linux-amd64 /opt/offen/v0.1.0-alpha.1
-sudo ln -s /opt/offen/v0.1.0-alpha.1/offen-linux-amd64 /usr/bin/offen
+sudo mkdir -p /opt/offen/v0.1.0-alpha.2
+sudo cp offen-linux-amd64 /opt/offen/v0.1.0-alpha.2
+sudo ln -s /opt/offen/v0.1.0-alpha.2/offen-linux-amd64 /usr/bin/offen
 ```
 
 You can confirm that your installation is working as expected like this:
