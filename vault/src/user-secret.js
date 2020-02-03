@@ -24,11 +24,11 @@ function ensureUserSecretWith (api, queries) {
           return jwk
         }
         return exchangeUserSecret(api, accountId)
-      })
-      .then(function (jwk) {
-        return queries.putUserSecret(accountId, jwk)
-          .then(function () {
-            return jwk
+          .then(function (jwk) {
+            return queries.putUserSecret(accountId, jwk)
+              .then(function () {
+                return jwk
+              })
           })
       })
   }
