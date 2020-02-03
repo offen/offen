@@ -24,11 +24,13 @@ function ensureUserSecretWith (api, queries) {
           return jwk
         }
         return exchangeUserSecret(api, accountId)
-          .then(function (jwk) {
-            return queries.putUserSecret(accountId, jwk)
-              .then(function () {
-                return jwk
-              })
+      })
+      .then(function (jwk) {
+        // persisting the secret every time we look it up
+        // ensures it does not expire while in use
+        return queries.putUserSecret(accountId, jwk)
+          .then(function () {
+            return jwk
           })
       })
   }

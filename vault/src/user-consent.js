@@ -1,6 +1,8 @@
 var html = require('nanohtml')
 var raw = require('nanohtml/raw')
 
+var cookies = require('./cookie-tools')
+
 var ALLOW = 'allow'
 var DENY = 'deny'
 var COOKIE_NAME = 'consent'
@@ -263,20 +265,5 @@ function setConsentStatus (status) {
     SameSite: isLocalhost ? 'Lax' : 'None',
     Secure: !isLocalhost
   }
-  document.cookie = serialize(cookie)
-}
-
-function serialize (obj) {
-  return Object.keys(obj)
-    .map(function (key) {
-      if (obj[key] === true) {
-        return key
-      }
-      if (obj[key] === false) {
-        return null
-      }
-      return [key, '=', obj[key]].join('')
-    })
-    .filter(Boolean)
-    .join(';')
+  document.cookie = cookies.serialize(cookie)
 }

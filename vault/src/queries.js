@@ -18,6 +18,7 @@ var addDays = require('date-fns/add_days')
 var getDatabase = require('./database')
 var decryptEvents = require('./decrypt-events')
 var stats = require('./stats')
+var cookies = require('./cookie-tools')
 
 var startOf = {
   hours: startOfHour,
@@ -257,13 +258,7 @@ function getUserSecretWith (getDatabase) {
         throw new dexie.OpenFailedError('Trying to fall back to cookie based persistence.')
       })
       .catch(dexie.OpenFailedError, function () {
-        var cookieData = document.cookie.split(';')
-          .reduce(function (acc, pair) {
-            var chunks = pair.split('=')
-            acc[chunks[0]] = chunks[1]
-            return acc
-          }, {})
-
+        var cookieData = cookies.parse(document.cookie)
         var lookupKey = TYPE_USER_SECRET + '-' + accountId
         if (cookieData[lookupKey]) {
           return JSON.parse(cookieData[lookupKey])
@@ -295,7 +290,7 @@ function putUserSecretWith (getDatabase) {
           Secure: !isLocalhost,
           expires: addDays(new Date(), 365).toUTCString()
         })
-        document.cookie = serializeCookie(entry)
+        document.cookie = cookies.serialize(entry)
       })
   }
 }
@@ -314,7 +309,7 @@ function deleteUserSecretWith (getDatabase) {
         Object.assign(entry, {
           expires: new Date(0).toUTCString()
         })
-        document.cookie = serializeCookie(entry)
+        document.cookie = cookies.serialize(entry)
       })
   }
 }
@@ -403,19 +398,4 @@ function getEncryptedSecretsWith (getDatabase) {
       .equals(TYPE_ENCRYPTED_SECRET)
       .toArray()
   }
-}
-
-function serializeCookie (obj) {
-  return Object.keys(obj)
-    .map(function (key) {
-      if (obj[key] === true) {
-        return key
-      }
-      if (obj[key] === false) {
-        return null
-      }
-      return key + '=' + obj[key]
-    })
-    .filter(Boolean)
-    .join(';')
 }
