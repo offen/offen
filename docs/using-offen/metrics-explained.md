@@ -8,6 +8,16 @@ permalink: /using-offen/metrics-explained/
 ---
 
 # Metrics Explained
+{: .no_toc }
+
+---
+
+## Table of Contents
+{: .no_toc }
+
+1. TOC
+{:toc}
+
 
 ## Pageviews
 
