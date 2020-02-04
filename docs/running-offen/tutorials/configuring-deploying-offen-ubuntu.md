@@ -35,10 +35,11 @@ Start by creating the `/opt/offen` directory:
 sudo mkdir -p /opt/offen
 ```
 
-Untar the archive you downloaded and look for the binary called `offen-linux-amd64`. Put this in a subdirectory of `/opt/offen` that specifies its version. This example is using the `v0.1.0-alpha.2` release:
+Untar the archive you downloaded and look for the binary called `offen-linux-amd64`. Put this file in a subdirectory of `/opt/offen` that specifies its version. This example is using the `v0.1.0-alpha.2` release:
 
 ```
-tar -xvz offen-v0.1.0-alpha.2.tar.gz
+mkdir offen-download && cd offen-download
+curl -L https://get.offen.dev | tar -xvz
 md5sum -c checksums.txt # check that your download contains the expected files
 sudo mkdir -p /opt/offen/v0.1.0-alpha.2
 sudo cp offen-linux-amd64 /opt/offen/v0.1.0-alpha.2
@@ -62,7 +63,7 @@ INFO[0000] Current build created using                   revision=v0.1.0-alpha.2
 To update to a new version of Offen, download the contents of the newest release into a new directory in `/opt/offen` and update the symlink in `/usr/bin`:
 
 ```
-tar -xvz offen-v0.1.0-alpha.4.tar.gz
+curl -L https://get.offen.dev | tar -xvz
 md5sum -c checksums.txt # check that your download contains the expected files
 sudo mkdir -p /opt/offen/v0.1.0-alpha.4
 sudo cp offen-linux-amd64 /opt/offen/v0.1.0-alpha.4
