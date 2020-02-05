@@ -27,7 +27,6 @@ type Config struct {
 	}
 	App struct {
 		Development          bool          `default:"false"`
-		EventRetentionPeriod time.Duration `default:"4464h"`
 		LogLevel             LogLevel      `default:"info"`
 		SingleNode           bool          `default:"true"`
 		Locale               Locale        `default:"en"`

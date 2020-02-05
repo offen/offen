@@ -56,10 +56,10 @@ func (rt *router) userCookie(userID string, secure bool) *http.Cookie {
 		HttpOnly: true,
 		Secure:   secure,
 		SameSite: sameSite,
-		Path:     "/",
+		Path:     "/api",
 	}
 	if userID != "" {
-		c.Expires = time.Now().Add(rt.config.App.EventRetentionPeriod)
+		c.Expires = time.Now().Add(config.EventRetention)
 	}
 	return c
 }
@@ -70,6 +70,7 @@ func (rt *router) authCookie(userID string, secure bool) (*http.Cookie, error) {
 		HttpOnly: true,
 		SameSite: http.SameSiteLaxMode,
 		Secure:   secure,
+		Path:     "/api",
 	}
 	if userID == "" {
 		c.Expires = time.Unix(0, 0)

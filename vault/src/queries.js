@@ -1,4 +1,5 @@
 var _ = require('underscore')
+var dexie = require('dexie')
 var startOfHour = require('date-fns/start_of_hour')
 var startOfDay = require('date-fns/start_of_day')
 var startOfWeek = require('date-fns/start_of_week')
@@ -12,10 +13,12 @@ var subHours = require('date-fns/sub_hours')
 var subDays = require('date-fns/sub_days')
 var subWeeks = require('date-fns/sub_weeks')
 var subMonths = require('date-fns/sub_months')
+var addHours = require('date-fns/add_hours')
 
 var getDatabase = require('./database')
 var decryptEvents = require('./decrypt-events')
 var stats = require('./stats')
+var cookies = require('./cookie-tools')
 
 var startOf = {
   hours: startOfHour,
@@ -244,6 +247,22 @@ function getUserSecretWith (getDatabase) {
         if (result) {
           return result.value
         }
+        // This is a nifty hack to work around the following situation:
+        // When run in a non-Auditorium context, Safari throws an OpenFailedError
+        // when trying to access IndexedDB which is we we need to fall back to
+        // cookie based persistence for user secrets.
+        // When run in the context of the Auditorium, Safari allows IndexedDB
+        // to be accessed, but the lookup will not yield any result. This means
+        // we throw this error to make another lookup attempt before returning
+        // null.
+        throw new dexie.OpenFailedError('Trying to fall back to cookie based persistence.')
+      })
+      .catch(dexie.OpenFailedError, function () {
+        var cookieData = cookies.parse(document.cookie)
+        var lookupKey = TYPE_USER_SECRET + '-' + accountId
+        if (cookieData[lookupKey]) {
+          return JSON.parse(cookieData[lookupKey])
+        }
         return null
       })
   }
@@ -259,6 +278,20 @@ function putUserSecretWith (getDatabase) {
         type: TYPE_USER_SECRET,
         value: userSecret
       })
+      .catch(dexie.OpenFailedError, function () {
+        var isLocalhost = window.location.hostname === 'localhost'
+        var sameSite = isLocalhost ? 'Lax' : 'None'
+
+        var entry = {}
+        entry[TYPE_USER_SECRET + '-' + accountId] = JSON.stringify(userSecret)
+        Object.assign(entry, {
+          Path: '/vault',
+          SameSite: sameSite,
+          Secure: !isLocalhost,
+          expires: addHours(new Date(), 4464).toUTCString()
+        })
+        document.cookie = cookies.serialize(entry)
+      })
   }
 }
 
@@ -270,6 +303,14 @@ function deleteUserSecretWith (getDatabase) {
     return db.keys
       .where({ type: TYPE_USER_SECRET })
       .delete()
+      .catch(dexie.OpenFailedError, function () {
+        var entry = {}
+        entry[TYPE_USER_SECRET + '-' + accountId] = ''
+        Object.assign(entry, {
+          expires: new Date(0).toUTCString()
+        })
+        document.cookie = cookies.serialize(entry)
+      })
   }
 }
 
