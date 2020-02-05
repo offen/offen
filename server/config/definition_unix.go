@@ -37,6 +37,7 @@ type Config struct {
 		User     string
 		Password string
 		Host     string
-		Port     int `default:"587"`
+		Port     int    `default:"587"`
+		Sender   string `default:"no-reply@offen.dev"`
 	}
 }
