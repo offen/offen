@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+
 	"net/http"
 	"os"
 	"os/signal"
@@ -17,7 +18,6 @@ import (
 	"time"
 
 	uuid "github.com/gofrs/uuid"
-	"github.com/jasonlvhit/gocron"
 	"github.com/jinzhu/gorm"
 	"github.com/offen/offen/server/config"
 	"github.com/offen/offen/server/keys"
@@ -245,19 +245,24 @@ func main() {
 		}
 
 		if cfg.App.SingleNode {
-			scheduler := gocron.NewScheduler()
-			scheduler.Every(1).Hours().Do(func() {
-				affected, err := db.Expire(cfg.App.EventRetentionPeriod)
-				if err != nil {
-					logger.WithError(err).Errorf("Error pruning expired events")
-					return
-				}
-				logger.WithField("removed", affected).Info("Cron successfully pruned expired events")
-			})
+			hourlyJob := time.Tick(time.Minute)
+			runOnInit := make(chan bool)
 			go func() {
-				scheduler.RunAll()
-				scheduler.Start()
+				for {
+					select {
+					case <-hourlyJob:
+					case <-runOnInit:
+					}
+					affected, err := db.Expire(config.EventRetention)
+					if err != nil {
+						logger.WithError(err).Errorf("Error pruning expired events")
+						return
+					}
+					logger.WithField("removed", affected).Info("Cron successfully pruned expired events")
+				}
 			}()
+			runOnInit <- true
+			close(runOnInit)
 		}
 
 		quit := make(chan os.Signal)
@@ -415,7 +420,7 @@ func main() {
 			relational.NewRelationalDAL(gormDB),
 		)
 
-		affected, err := db.Expire(cfg.App.EventRetentionPeriod)
+		affected, err := db.Expire(config.EventRetention)
 		if err != nil {
 			logger.WithError(err).Fatalf("Error pruning expired events")
 		}

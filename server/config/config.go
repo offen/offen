@@ -7,6 +7,7 @@ import (
 	"path"
 	"runtime"
 	"strconv"
+	"time"
 
 	"github.com/joho/godotenv"
 	"github.com/kelseyhightower/envconfig"
@@ -17,6 +18,12 @@ import (
 )
 
 const envFileName = "offen.env"
+
+var (
+	// EventRetention defines the duration for which events are expected to
+	//  be kept before expired.
+	EventRetention = time.Hour * 24 * 6 * 31
+)
 
 // ErrPopulatedMissing can be returned by New to signal that missing values
 // have been populated and persisted.

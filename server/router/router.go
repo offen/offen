@@ -59,7 +59,7 @@ func (rt *router) userCookie(userID string, secure bool) *http.Cookie {
 		Path:     "/",
 	}
 	if userID != "" {
-		c.Expires = time.Now().Add(rt.config.App.EventRetentionPeriod)
+		c.Expires = time.Now().Add(config.EventRetention)
 	}
 	return c
 }
