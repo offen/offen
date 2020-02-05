@@ -245,7 +245,7 @@ func main() {
 		}
 
 		if cfg.App.SingleNode {
-			hourlyJob := time.Tick(time.Minute)
+			hourlyJob := time.Tick(time.Hour)
 			runOnInit := make(chan bool)
 			go func() {
 				for {
@@ -262,7 +262,6 @@ func main() {
 				}
 			}()
 			runOnInit <- true
-			close(runOnInit)
 		}
 
 		quit := make(chan os.Signal)

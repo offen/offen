@@ -261,6 +261,8 @@ function setConsentStatus (status) {
   var cookie = {
     consent: status,
     expires: expires.toUTCString(),
+    // it is important not to lock this cookie down to `/vault` as the
+    // server checks for it before accepting events
     path: '/',
     SameSite: isLocalhost ? 'Lax' : 'None',
     Secure: !isLocalhost
