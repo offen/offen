@@ -98,14 +98,6 @@ Defaults to `false`.
 
 If set to `true` the application assumes it is running in development mode, which will add verbose logging and disable production specific optimizations.
 
-### `OFFEN_APP_EVENTRETENTIONPERIOD`
-
-Defaults to `4464h`.
-
-This value specifies how long events are kept before being deleted. It also determines the expiry date of the user cookie that is used to enable users to access their data. The value is expected to be specified as a valid [Golang duration string][go-duration]. Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
-
-[go-duration]: https://golang.org/pkg/time/#ParseDuration
-
 ### `OFFEN_APP_LOCALE`
 
 Defaults to `en`.
@@ -132,7 +124,7 @@ The `SECRETS` namespace collects secrets used for signing cookies. All of the va
 
 No default value.
 
-A Base64 encoded secret that is used for signing cookies. Ideally, it is of 16 bytes length. If this is not set, a random value will be created at application startup. This means that an application restart would invalidate all existing sessions. If you do not want this behavior, populate this value.
+A Base64 encoded secret that is used for signing cookies. Ideally, it is of 16 bytes length. **If this is not set, a random value will be created at application startup**. This means that **an application restart would invalidate all existing sessions**. If you do not want this behavior, populate this value.
 
 ---
 
@@ -161,3 +153,9 @@ The SMTP hostname used when sending transactional email.
 Default value `587`.
 
 The SMTP port used when sending transactional email.
+
+### `OFFEN_SMTP_SENDER`
+
+Default value `no-reply@offen.dev`.
+
+The From address used when sending transactional email.
