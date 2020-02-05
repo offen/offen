@@ -13,7 +13,7 @@ var subHours = require('date-fns/sub_hours')
 var subDays = require('date-fns/sub_days')
 var subWeeks = require('date-fns/sub_weeks')
 var subMonths = require('date-fns/sub_months')
-var addDays = require('date-fns/add_days')
+var addHours = require('date-fns/add_hours')
 
 var getDatabase = require('./database')
 var decryptEvents = require('./decrypt-events')
@@ -288,7 +288,7 @@ function putUserSecretWith (getDatabase) {
           Path: '/vault',
           SameSite: sameSite,
           Secure: !isLocalhost,
-          expires: addDays(new Date(), 365).toUTCString()
+          expires: addHours(new Date(), 4464).toUTCString()
         })
         document.cookie = cookies.serialize(entry)
       })
