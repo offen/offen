@@ -2,8 +2,6 @@
 
 package config
 
-import "time"
-
 // Config contains all runtime configuration needed for running offen as
 // and also defines the desired defaults. Package envconfig is used to
 // source values from the application environment at runtime.
@@ -26,11 +24,11 @@ type Config struct {
 		ConnectionString EnvString `default:"%Temp%\offen.db"`
 	}
 	App struct {
-		Development          bool          `default:"false"`
-		LogLevel             LogLevel      `default:"info"`
-		SingleNode           bool          `default:"true"`
-		Locale               Locale        `default:"en"`
-		RootAccount          string
+		Development bool     `default:"false"`
+		LogLevel    LogLevel `default:"info"`
+		SingleNode  bool     `default:"true"`
+		Locale      Locale   `default:"en"`
+		RootAccount string
 	}
 	Secrets struct {
 		CookieExchange Bytes
@@ -39,6 +37,7 @@ type Config struct {
 		User     string
 		Password string
 		Host     string
-		Port     int `default:"587"`
+		Port     int    `default:"587"`
+		Sender   string `default:"no-reply@offen.dev"`
 	}
 }
