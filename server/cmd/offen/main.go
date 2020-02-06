@@ -145,6 +145,7 @@ func main() {
 				router.WithTemplate(tpl),
 				router.WithConfig(cfg),
 				router.WithFS(fs),
+				router.WithMailer(cfg.NewMailer()),
 			),
 		}
 		go func() {
@@ -214,6 +215,7 @@ func main() {
 				router.WithTemplate(tpl),
 				router.WithConfig(cfg),
 				router.WithFS(fs),
+				router.WithMailer(cfg.NewMailer()),
 			),
 		}
 		go func() {

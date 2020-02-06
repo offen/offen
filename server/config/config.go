@@ -14,6 +14,7 @@ import (
 	"github.com/offen/offen/server/keys"
 	"github.com/offen/offen/server/mailer"
 	"github.com/offen/offen/server/mailer/localmailer"
+	"github.com/offen/offen/server/mailer/sendmailmailer"
 	"github.com/offen/offen/server/mailer/smtpmailer"
 )
 
@@ -32,17 +33,22 @@ var ErrPopulatedMissing = errors.New("populated missing secrets")
 // Revision will be set by ldflags on build time
 var Revision string
 
-// SMTPConfigured returns true if all required SMTP credentials are set
+// SMTPConfigured returns true if a SMTP Host is configured
 func (c *Config) SMTPConfigured() bool {
-	return c.SMTP.User != "" && c.SMTP.Host != "" && c.SMTP.Password != ""
+	return c.SMTP.Host != ""
 }
 
-// NewMailer returns the appropriate mailer to use with the given config.
+// NewMailer returns a new mailer that is suitable for the given config.
+// In development, mail content will be printed to stdout. In production,
+// SMTP is preferred and falls back to sendmail if no SMTP credentials are given.
 func (c *Config) NewMailer() mailer.Mailer {
-	if !c.SMTPConfigured() {
+	if c.App.Development {
 		return localmailer.New()
 	}
-	return smtpmailer.New(c.SMTP.Host, c.SMTP.User, c.SMTP.Password, c.SMTP.Port)
+	if c.SMTPConfigured() {
+		return smtpmailer.New(c.SMTP.Host, c.SMTP.User, c.SMTP.Password, c.SMTP.Port)
+	}
+	return sendmailmailer.New()
 }
 
 func walkConfigurationCascade() (string, error) {
