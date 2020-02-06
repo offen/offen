@@ -150,15 +150,6 @@ The `container` stack requires a Dockerfile for defining the application and a `
 
 ---
 
-__Heads Up__
-{: .label .label-red }
-
-The files created below are also [available as a GitHub repository][heroku-repo].
-
-[heroku-repo]: https://github.com/offen/heroku
-
----
-
 In an empty directory, create a `Dockerfile` looking like this:
 
 ```
@@ -175,6 +166,17 @@ build:
   docker:
     web: Dockerfile
 ```
+
+---
+
+__Heads Up__
+{: .label .label-red }
+
+The files created above are also [available as a GitHub repository][heroku-repo].
+
+[heroku-repo]: https://github.com/offen/heroku
+
+---
 
 ### 3. Push the Setup to Heroku
 {: .no_toc }
