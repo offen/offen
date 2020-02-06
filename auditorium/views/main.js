@@ -7,72 +7,6 @@ var Table = require('./../components/table')
 
 module.exports = view
 
-function keyMetric (name, value) {
-  return html`
-      <div class="w-50 w-100-ns mb3 mb4-ns">
-        <p class="mv0 f2">${value}</p>
-        <p class="mv0 normal">${name}</p>
-      </div>
-    `
-}
-
-function retentionSquare (value) {
-  if (value === null) {
-    return null
-  }
-  return html`
-    <div title="${formatNumber(value, 100)}%">
-      <div
-        style="opacity: ${value !== 0 ? (value * 0.75 + 0.25) : 1}"
-        class="${value !== 0 ? 'bg-dark-green' : 'bg-light-gray'} h3 w-100"
-      >
-      </div>
-    </div>
-  `
-}
-
-function relativeTime (offset) {
-  if (offset === 0) {
-    return __('This week')
-  }
-  return __('%d days earlier', offset * 7)
-}
-
-function retentionTable (matrix) {
-  var rows = matrix.map(function (row, index) {
-    var elements = row.slice()
-    while (elements.length < matrix[0].length) {
-      elements.push(null)
-    }
-    return html`
-      <tr>
-        <td>${relativeTime(index)}</td>
-        ${elements.map(function (element) { return html`<td>${retentionSquare(element)}</td>` })}
-      </tr>
-    `
-  })
-  return html`
-    <table class="w-100 collapse mb3 dt--fixed">
-      <thead>
-        <tr>
-          <td></td>
-          ${matrix.map(function (row, index) { return html`<td>${relativeTime(index)}</td>` })}
-        </tr>
-      </thead>
-      <tbody>
-        ${rows}
-      </tbody>
-    </table>
-  `
-}
-
-function formatNumber (value, factor) {
-  return (value * (factor || 1)).toLocaleString(process.env.LOCALE, {
-    maximumFractionDigits: 1,
-    minimumFractionDigits: 1
-  })
-}
-
 function view (state, emit) {
   var userHasOptedIn = state.consentStatus && state.consentStatus.status === 'allow'
 
@@ -265,15 +199,15 @@ function view (state, emit) {
     <div class="w-100 w-25-m w-20-ns pa3 mb2 bt bb ba-ns br0 br2-ns b--black-10 bg-white">
       <h4 class ="f5 normal mt0 mb3 mb4-ns">Key metrics</h4>
       <div class="flex flex-wrap">
-        ${keyMetric(__('Unique %s', entityName), uniqueEntities)}
-        ${keyMetric(__('Unique Sessions'), uniqueSessions)}
+        ${keyMetric(__('Unique %s', entityName), formatCount(uniqueEntities))}
+        ${keyMetric(__('Unique Sessions'), formatCount(uniqueSessions))}
         <hr class="mt0 mb3 w-100 bb bw1 b--black-10">
         ${state.model.avgPageDepth ? keyMetric(__('Avg. Page Depth'), formatNumber(state.model.avgPageDepth)) : null}
-        ${keyMetric(__('Bounce Rate'), `${formatNumber(state.model.bounceRate, 100)} %`)}
-        ${isOperator && state.model.loss ? keyMetric(__('Plus'), `${formatNumber(state.model.loss, 100)} %`) : null}
+        ${keyMetric(__('Bounce Rate'), `${formatNumber(state.model.bounceRate, 100)}%`)}
+        ${isOperator && state.model.loss ? keyMetric(__('Plus'), `${formatNumber(state.model.loss, 100)}%`) : null}
         <hr class="mt0 mb3 w-100 bb bw1 b--black-10">
-        ${keyMetric(__('Mobile Users'), `${formatNumber(state.model.mobileShare, 100)} %`)}
-        ${state.model.avgPageload ? keyMetric(__('Avg. Page Load time'), `${Math.round(state.model.avgPageload)} ms`) : null}
+        ${keyMetric(__('Mobile Users'), `${formatNumber(state.model.mobileShare, 100)}%`)}
+        ${state.model.avgPageload ? keyMetric(__('Avg. Page Load time'), formatDuration(state.model.avgPageload)) : null}
       </div>
     </div>
   `
@@ -352,4 +286,87 @@ function view (state, emit) {
         ${state.stale ? html`<div class="fixed top-0 right-0 bottom-0 left-0 bg-white o-40"></div>` : null}
       </div>
     `
+}
+
+function keyMetric (name, value) {
+  return html`
+      <div class="w-50 w-100-ns mb3 mb4-ns">
+        <p class="mv0 f2">${value}</p>
+        <p class="mv0 normal">${name}</p>
+      </div>
+    `
+}
+
+function retentionSquare (value) {
+  if (value === null) {
+    return null
+  }
+  return html`
+    <div title="${formatNumber(value, 100)}%">
+      <div
+        style="opacity: ${value !== 0 ? (value * 0.75 + 0.25) : 1}"
+        class="${value !== 0 ? 'bg-dark-green' : 'bg-light-gray'} h3 w-100"
+      >
+      </div>
+    </div>
+  `
+}
+
+function relativeTime (offset) {
+  if (offset === 0) {
+    return __('This week')
+  }
+  return __('%d days earlier', offset * 7)
+}
+
+function retentionTable (matrix) {
+  var rows = matrix.map(function (row, index) {
+    var elements = row.slice()
+    while (elements.length < matrix[0].length) {
+      elements.push(null)
+    }
+    return html`
+      <tr>
+        <td>${relativeTime(index)}</td>
+        ${elements.map(function (element) { return html`<td>${retentionSquare(element)}</td>` })}
+      </tr>
+    `
+  })
+  return html`
+    <table class="w-100 collapse mb3 dt--fixed">
+      <thead>
+        <tr>
+          <td></td>
+          ${matrix.map(function (row, index) { return html`<td>${relativeTime(index)}</td>` })}
+        </tr>
+      </thead>
+      <tbody>
+        ${rows}
+      </tbody>
+    </table>
+  `
+}
+
+function formatDuration (valueInMs) {
+  if (valueInMs >= 1000) {
+    return formatNumber(valueInMs / 1000, 1, 2) + __('s')
+  }
+  return Math.round(valueInMs) + __('ms')
+}
+
+function formatCount (count) {
+  if (count > 1000000) {
+    return formatNumber(count / 1000000) + __('M')
+  }
+  if (count > 1000) {
+    return formatNumber(count / 1000) + __('k')
+  }
+  return count
+}
+
+function formatNumber (value, factor, digits) {
+  return (value * (factor || 1)).toLocaleString(process.env.LOCALE, {
+    maximumFractionDigits: digits || 1,
+    minimumFractionDigits: digits || 1
+  })
 }
