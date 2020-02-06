@@ -7,12 +7,7 @@ package config
 // source values from the application environment at runtime.
 type Config struct {
 	Server struct {
-		Port int `default:"3000"`
-		// Some runtimes (e.g. Heroku) require the usage of PORT for specifying
-		// the TCP port to bind to, no matter what. As a workaround, these environments
-		// can set OFFEN_SERVER_USENAKEDPORT to make the application use the
-		// port given by PORT.
-		UseNakedPort     bool `default:"false"`
+		Port             int  `default:"3000"`
 		ReverseProxy     bool `default:"false"`
 		SSLCertificate   EnvString
 		SSLKey           EnvString
@@ -24,11 +19,12 @@ type Config struct {
 		ConnectionString EnvString `default:"/var/opt/offen/offen.db"`
 	}
 	App struct {
-		Development bool     `default:"false"`
-		LogLevel    LogLevel `default:"info"`
-		SingleNode  bool     `default:"true"`
-		Locale      Locale   `default:"en"`
-		RootAccount string
+		Development  bool     `default:"false"`
+		LogLevel     LogLevel `default:"info"`
+		SingleNode   bool     `default:"true"`
+		Locale       Locale   `default:"en"`
+		RootAccount  string
+		DeployTarget DeployTarget
 	}
 	Secrets struct {
 		CookieExchange Bytes

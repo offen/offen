@@ -6,7 +6,6 @@ import (
 	"os"
 	"path"
 	"runtime"
-	"strconv"
 	"time"
 
 	"github.com/joho/godotenv"
@@ -137,12 +136,13 @@ func New(populateMissing bool, override string) (*Config, error) {
 		return &c, fmt.Errorf("config: error processing configuration: %w", err)
 	}
 
-	if c.Server.UseNakedPort {
-		port, portErr := strconv.Atoi(os.Getenv("PORT"))
-		if portErr != nil {
-			return &c, fmt.Errorf("config: error reading naked port: %w", portErr)
+	// some deploy targets have custom overrides for creating the
+	// runtime configuration
+	switch c.App.DeployTarget {
+	case DeployTargetHeroku:
+		if err := applyHerokuSpecificOverrides(&c); err != nil {
+			return &c, fmt.Errorf("config: error applying deploy target specific rules: %w", err)
 		}
-		c.Server.Port = port
 	}
 
 	if c.Secrets.CookieExchange.IsZero() {
