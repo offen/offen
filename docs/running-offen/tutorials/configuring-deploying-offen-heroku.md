@@ -148,10 +148,21 @@ heroku stack:set container --app glacial-sierra-90893
 
 The `container` stack requires a Dockerfile for defining the application and a `heroku.yml` for defining your application structure.
 
+---
+
+__Heads Up__
+{: .label .label-red }
+
+The files created below are also [available as a GitHub repository][heroku-repo].
+
+[heroku-repo]: https://github.com/offen/heroku
+
+---
+
 In an empty directory, create a `Dockerfile` looking like this:
 
 ```
-FROM offen/offen:latest
+FROM offen/offen:v0.1.0-alpha.2
 CMD ["serve"]
 ```
 
