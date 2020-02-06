@@ -29,7 +29,7 @@ function view (state, emit) {
       <form class="mw6 center" onsubmit=${handleSubmit}>
         <label class="b lh-copy">
           ${__('Email address')}
-          ${state.cache(Input, 'reset-password/email', { name: 'email-address', required: true }).render()}
+          ${state.cache(Input, 'reset-password/email', { name: 'email-address', required: true, autofocus: true }).render()}
         </label>
         <label class="b lh-copy">
           ${__('New password')}

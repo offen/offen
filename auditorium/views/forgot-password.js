@@ -24,7 +24,7 @@ function view (state, emit) {
       <form class="mw6 center" onsubmit=${handleSubmit}>
         <label class="b lh-copy">
           ${__('Email address')}
-          ${state.cache(Input, 'forgot-password/email', { name: 'email-address', required: true }).render()}
+          ${state.cache(Input, 'forgot-password/email', { name: 'email-address', required: true, autofocus: true }).render()}
         </label>
         <input class="pointer w-100 w-auto-ns f5 link dim bn ph3 pv2 mb3 dib br1 white bg-mid-gray" type="submit" value="${__('Send Email')}">
     </form>

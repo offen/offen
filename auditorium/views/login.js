@@ -19,7 +19,7 @@ function view (state, emit) {
       <form class="mw6 center" onsubmit=${handleSubmit}>
         <label class="b lh-copy">
           ${__('Email address')}
-          ${state.cache(Input, 'login/username', { required: true, type: 'email', name: 'username' }).render()}
+          ${state.cache(Input, 'login/username', { autofocus: true, required: true, type: 'email', name: 'username' }).render()}
         </label>
         <label class="b lh-copy">
           ${__('Password')}
