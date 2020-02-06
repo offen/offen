@@ -18,7 +18,7 @@ func (*localMailer) Send(from, to, subject, body string) error {
 	fmt.Println("=========")
 	fmt.Printf("From: %s\n", from)
 	fmt.Printf("To: %s\n", to)
-	fmt.Printf("Subject: %s\n", to)
+	fmt.Printf("Subject: %s\n", subject)
 	fmt.Printf("Body: %s\n", body)
 	fmt.Println("=========")
 	return nil

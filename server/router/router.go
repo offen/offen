@@ -124,6 +124,13 @@ func WithFS(fs http.FileSystem) Config {
 	}
 }
 
+// WithMailer attaches a mailer for sending transactional email
+func WithMailer(m mailer.Mailer) Config {
+	return func(r *router) {
+		r.mailer = m
+	}
+}
+
 // New creates a new application router that reads and writes data
 // to the given database implementation. In the context of the application
 // this expects to be the only top level router in charge of handling all
@@ -135,7 +142,6 @@ func New(opts ...Config) http.Handler {
 	}
 
 	rt.cookieSigner = securecookie.New(rt.config.Secrets.CookieExchange.Bytes(), nil)
-	rt.mailer = rt.config.NewMailer()
 
 	optin := optinMiddleware(optinKey, optinValue)
 	userCookie := userCookieMiddleware(cookieKey, contextKeyCookie)
