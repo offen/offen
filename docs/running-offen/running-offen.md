@@ -7,7 +7,7 @@ description: "Explaining how to install and configure the Offen web analytics so
 permalink: /running-offen/
 ---
 
-# Running offen
+# Running Offen
 
 ## Downloads
 

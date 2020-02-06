@@ -88,8 +88,6 @@ Defaults to `/var/opt/offen/offen.db` on Linux and MacOS, `%Temp%\offen.db` on W
 
 The connection string or location of the database. For `sqlite3` this will be the location of the database file, for other dialects, it will be the URL the database is located at, including credentials needed to access it.
 
-__Heads up:__ Using the default value will mean all data is lost at the next system restart, so you will likely not want to use the default for purposes other than testing.
-
 ---
 
 The `APP` namespace affects how the application will behave.
@@ -138,7 +136,7 @@ A Base64 encoded secret that is used for signing cookies. Ideally, it is of 16 b
 
 ---
 
-`SMTP` is a namespace used for configuring how transactional email is being sent. If any of these values is missing, Offen will fallback to using local `sendmail` which will likely be unreliable, so configuring these values is recommended.
+`SMTP` is a namespace used for configuring how transactional email is being sent. If any of these values is missing, Offen will fallback to using local `sendmail` which will likely be unreliable, so **configuring these values is highly recommended**.
 
 ### `OFFEN_SMTP_USER`
 

@@ -21,7 +21,7 @@ After cloning the [repository][], you will need to do two things:
   ```
   make bootstrap
   ```
-You should now be able to start your local version of offen using:
+You should now be able to start your local version of Offen using:
 ```
 make up
 ```

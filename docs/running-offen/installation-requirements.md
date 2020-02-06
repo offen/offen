@@ -50,7 +50,7 @@ __Using SSL for your site will be benefitial regarding lots of other aspects as 
 
 ## Choosing a datastore
 
-offen is expecting a relational datastore to be available for it to store event and account data. By default it will use a SQLite database that is simply stored on the host system.
+Offen is expecting a relational datastore to be available for it to store event and account data. By default it will use a SQLite database that is simply stored on the host system.
 
 In case you want to scale Offen or need more performance you might want to use a MySQL or Postgres database instead. See the configuration section below for how to configure dialect and database location.
 
