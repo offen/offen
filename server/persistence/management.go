@@ -4,7 +4,6 @@ import (
 	"encoding/base64"
 	"fmt"
 
-	"github.com/gofrs/uuid"
 	"github.com/offen/offen/server/keys"
 )
 
@@ -56,39 +55,31 @@ func (p *persistenceLayer) InviteUser(invitee, providerAccountUserID, providerPa
 		return nil, fmt.Errorf("persistence: error persisting user record for invitee: %w", err)
 	}
 
+	// we copy over all relationship of the provider to the invitee
 	for _, providerRelationship := range provider.Relationships {
+		inviteeRelationship, err := newAccountUserRelationship(invitedAccountUser.AccountUserID, providerRelationship.AccountID)
+		if err != nil {
+			txn.Rollback()
+			return nil, fmt.Errorf("persistence: error creating account user relationship: %w", err)
+		}
+
 		decryptedKey, decryptErr := keys.DecryptWith(providerKey, providerRelationship.PasswordEncryptedKeyEncryptionKey)
 		if decryptErr != nil {
 			txn.Rollback()
 			return nil, fmt.Errorf("persistence: error decrypting email encrypted key: %w", decryptErr)
 		}
-		oneTimeEncryptedKey, encryptErr := keys.EncryptWith(oneTimeKeyBytes, decryptedKey)
-		if encryptErr != nil {
+
+		if err := inviteeRelationship.addOneTimeEncryptedKey(decryptedKey, oneTimeKeyBytes); err != nil {
 			txn.Rollback()
-			return nil, fmt.Errorf("persistence: error encrypting key with one time key: %w", encryptErr)
-		}
-		relationshipID, idErr := uuid.NewV4()
-		if idErr != nil {
-			return nil, fmt.Errorf("persistence: error creating identifier for relationship: %w", idErr)
+			return nil, fmt.Errorf("persistence: error adding one time key: %w", err)
 		}
 
-		inviteeEmailDerivedKey, emailDerivedKeyErr := keys.DeriveKey(invitee, invitedAccountUser.Salt)
-		if emailDerivedKeyErr != nil {
-			return nil, fmt.Errorf("persistence: error deriving key from invitee email: %w", emailDerivedKeyErr)
-		}
-		encryptedEmailDerivedKey, encryptionErr := keys.EncryptWith(inviteeEmailDerivedKey, providerKey)
-		if encryptionErr != nil {
-			return nil, fmt.Errorf("persistence: error encrypting email derived key: %w", encryptionErr)
+		if err := inviteeRelationship.addEmailEncryptedKey(decryptedKey, invitedAccountUser.Salt, invitee); err != nil {
+			txn.Rollback()
+			return nil, fmt.Errorf("persistence: error adding email encrypted key: %w", err)
 		}
 
-		inviteeRelationship := AccountUserRelationship{
-			RelationshipID:                   relationshipID.String(),
-			AccountUserID:                    invitedAccountUser.AccountUserID,
-			AccountID:                        providerRelationship.AccountID,
-			EmailEncryptedKeyEncryptionKey:   encryptedEmailDerivedKey.Marshal(),
-			OneTimeEncryptedKeyEncryptionKey: oneTimeEncryptedKey.Marshal(),
-		}
-		if err := txn.CreateAccountUserRelationship(&inviteeRelationship); err != nil {
+		if err := txn.CreateAccountUserRelationship(inviteeRelationship); err != nil {
 			return nil, fmt.Errorf("persistence: error persisting account user relationship: %w", err)
 		}
 	}

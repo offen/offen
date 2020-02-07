@@ -2,8 +2,8 @@ package persistence
 
 import (
 	"encoding/base64"
-	"sync"
 	"fmt"
+	"sync"
 
 	"github.com/lestrrat-go/jwx/jwk"
 	"github.com/offen/offen/server/keys"
@@ -53,17 +53,17 @@ func (p *persistenceLayer) Login(email, password string) (LoginResult, error) {
 		}
 
 		result := LoginAccountResult{
-			AccountName: account.Name,
-			AccountID:   relationship.AccountID,
-			Created:     account.Created,
+			AccountName:      account.Name,
+			AccountID:        relationship.AccountID,
+			Created:          account.Created,
 			KeyEncryptionKey: k,
 		}
 		results = append(results, result)
 	}
 
 	return LoginResult{
-		AccountUserID:   accountUser.AccountUserID,
-		Accounts: results,
+		AccountUserID: accountUser.AccountUserID,
+		Accounts:      results,
 	}, nil
 }
 
@@ -75,8 +75,8 @@ func (p *persistenceLayer) LookupAccountUser(accountUserID string) (LoginResult,
 		return LoginResult{}, fmt.Errorf("persistence: error looking up account user: %w", err)
 	}
 	result := LoginResult{
-		AccountUserID:   accountUser.AccountUserID,
-		Accounts: []LoginAccountResult{},
+		AccountUserID: accountUser.AccountUserID,
+		Accounts:      []LoginAccountResult{},
 	}
 	for _, relationship := range accountUser.Relationships {
 		result.Accounts = append(result.Accounts, LoginAccountResult{
@@ -98,22 +98,12 @@ func (p *persistenceLayer) ChangePassword(userID, currentPassword, changedPasswo
 		return fmt.Errorf("persistence: current password did not match: %w", err)
 	}
 
-	keyFromCurrentPassword, keyErr := keys.DeriveKey(currentPassword, accountUser.Salt)
-	if keyErr != nil {
-		return keyErr
-	}
-
-	keyFromChangedPassword, keyErr := keys.DeriveKey(changedPassword, accountUser.Salt)
-	if keyErr != nil {
-		return keyErr
-	}
-
 	newPasswordHash, hashErr := keys.HashString(changedPassword)
 	if hashErr != nil {
 		return fmt.Errorf("persistence: error hashing new password: %w", hashErr)
 	}
-
 	accountUser.HashedPassword = newPasswordHash.Marshal()
+
 	txn, err := p.dal.Transaction()
 	if err != nil {
 		return fmt.Errorf("persistence: error creating transaction: %w", err)
@@ -123,18 +113,22 @@ func (p *persistenceLayer) ChangePassword(userID, currentPassword, changedPasswo
 		return fmt.Errorf("persistence: error updating password for user: %w", err)
 	}
 
+	keyFromCurrentPassword, keyErr := keys.DeriveKey(currentPassword, accountUser.Salt)
+	if keyErr != nil {
+		txn.Rollback()
+		return fmt.Errorf("persistence: error deriving key from password: %w", keyErr)
+	}
+
 	for _, relationship := range accountUser.Relationships {
-		decryptedKey, decryptionErr := keys.DecryptWith(keyFromCurrentPassword, relationship.PasswordEncryptedKeyEncryptionKey)
-		if decryptionErr != nil {
+		decryptedKey, decryptErr := keys.DecryptWith(keyFromCurrentPassword, relationship.PasswordEncryptedKeyEncryptionKey)
+		if decryptErr != nil {
 			txn.Rollback()
-			return decryptionErr
+			return fmt.Errorf("persistence: error decrypting key using password: %w", decryptErr)
 		}
-		reencryptedKey, reencryptionErr := keys.EncryptWith(keyFromChangedPassword, decryptedKey)
-		if reencryptionErr != nil {
+		if err := relationship.addPasswordEncryptedKey(decryptedKey, accountUser.Salt, changedPassword); err != nil {
 			txn.Rollback()
-			return reencryptionErr
+			return fmt.Errorf("persistence: error updating password encrypted key: %w", err)
 		}
-		relationship.PasswordEncryptedKeyEncryptionKey = reencryptedKey.Marshal()
 		if err := txn.UpdateAccountUserRelationship(&relationship); err != nil {
 			txn.Rollback()
 			return fmt.Errorf("persistence: error updating keys on relationship: %w", err)
@@ -157,11 +151,6 @@ func (p *persistenceLayer) ResetPassword(emailAddress, password string, oneTimeK
 		return fmt.Errorf("persistence: error looking up account user: %w", err)
 	}
 
-	passwordDerivedKey, deriveErr := keys.DeriveKey(password, accountUser.Salt)
-	if deriveErr != nil {
-		return fmt.Errorf("persistence: error deriving key from password: %w", deriveErr)
-	}
-
 	relationships, err := p.dal.FindAccountUserRelationships(
 		FindAccountUserRelationshipsQueryByAccountUserID(accountUser.AccountUserID),
 	)
@@ -179,13 +168,12 @@ func (p *persistenceLayer) ResetPassword(emailAddress, password string, oneTimeK
 			txn.Rollback()
 			return fmt.Errorf("persistence: error decrypting key encryption key: %w", decryptionErr)
 		}
-		passwordEncryptedKey, encryptionErr := keys.EncryptWith(passwordDerivedKey, keyEncryptionKey)
-		if encryptionErr != nil {
+		if err := relationship.addPasswordEncryptedKey(keyEncryptionKey, accountUser.Salt, password); err != nil {
 			txn.Rollback()
-			return fmt.Errorf("persistence: error re-encrypting key encryption key: %w", encryptionErr)
+			return fmt.Errorf("persistence: error adding password encrypted key to relationship: %w", err)
 		}
-		relationship.PasswordEncryptedKeyEncryptionKey = passwordEncryptedKey.Marshal()
 		relationship.OneTimeEncryptedKeyEncryptionKey = ""
+
 		if err := txn.UpdateAccountUserRelationship(&relationship); err != nil {
 			txn.Rollback()
 			return fmt.Errorf("persistence: error updating keys on relationship: %w", err)
@@ -224,11 +212,6 @@ func (p *persistenceLayer) ChangeEmail(userID, emailAddress, password string) er
 		return fmt.Errorf("persistence: error deriving key from password: %w", keyErr)
 	}
 
-	emailDerivedKey, deriveKeyErr := keys.DeriveKey(emailAddress, accountUser.Salt)
-	if deriveKeyErr != nil {
-		return fmt.Errorf("persistence: error deriving key from email address: %w", deriveKeyErr)
-	}
-
 	hashedEmail, hashErr := keys.HashString(emailAddress)
 	if hashErr != nil {
 		return fmt.Errorf("persistence: error hashing updated email address: %w", hashErr)
@@ -249,12 +232,10 @@ func (p *persistenceLayer) ChangeEmail(userID, emailAddress, password string) er
 			txn.Rollback()
 			return decryptionErr
 		}
-		reencryptedKey, reencryptionErr := keys.EncryptWith(emailDerivedKey, decryptedKey)
-		if reencryptionErr != nil {
+		if err := relationship.addEmailEncryptedKey(decryptedKey, accountUser.Salt, emailAddress); err != nil {
 			txn.Rollback()
-			return reencryptionErr
+			return fmt.Errorf("persistence: error adding email key to relationship: %w", err)
 		}
-		relationship.EmailEncryptedKeyEncryptionKey = reencryptedKey.Marshal()
 		if err := txn.UpdateAccountUserRelationship(&relationship); err != nil {
 			txn.Rollback()
 			return fmt.Errorf("persistence: error updating keys on relationship: %w", err)
@@ -281,6 +262,7 @@ func (p *persistenceLayer) GenerateOneTimeKey(emailAddress string) ([]byte, erro
 	if deriveErr != nil {
 		return nil, fmt.Errorf("error deriving key from email address: %w", deriveErr)
 	}
+
 	oneTimeKey, _ := keys.GenerateRandomValue(keys.DefaultEncryptionKeySize)
 	oneTimeKeyBytes, _ := base64.StdEncoding.DecodeString(oneTimeKey)
 
@@ -294,12 +276,10 @@ func (p *persistenceLayer) GenerateOneTimeKey(emailAddress string) ([]byte, erro
 			txn.Rollback()
 			return nil, fmt.Errorf("persistence: error decrypting email encrypted key: %w", decryptErr)
 		}
-		oneTimeEncryptedKey, encryptErr := keys.EncryptWith(oneTimeKeyBytes, decryptedKey)
-		if encryptErr != nil {
+		if err := relationship.addOneTimeEncryptedKey(decryptedKey, oneTimeKeyBytes); err != nil {
 			txn.Rollback()
-			return nil, fmt.Errorf("persistence: error encrypting key with one time key: %w", encryptErr)
+			return nil, fmt.Errorf("persistence: erro adding one time key to relationship: %w", err)
 		}
-		relationship.OneTimeEncryptedKeyEncryptionKey = oneTimeEncryptedKey.Marshal()
 		if err := txn.UpdateAccountUserRelationship(&relationship); err != nil {
 			txn.Rollback()
 			return nil, fmt.Errorf("persistence: error updating relationship record: %w", err)
@@ -323,17 +303,17 @@ func findAccountUser(available []AccountUser, email string) (*AccountUser, error
 				match <- a
 			}
 			wg.Done()
-		} (accountUser)
+		}(accountUser)
 	}
-	go func () {
+	go func() {
 		wg.Wait()
 		allDone <- true
-	} ()
+	}()
 
 	select {
 	case accountUser := <-match:
 		return &accountUser, nil
-	case <-allDone :
+	case <-allDone:
 		return nil, fmt.Errorf("persistence: no account user found for %s", email)
 	}
 }
