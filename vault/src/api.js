@@ -1,3 +1,4 @@
+var path = require('path')
 var handleFetchResponse = require('offen/fetch-response')
 
 exports.getAccount = getAccountWith(window.location.origin + '/api/accounts')
@@ -249,9 +250,13 @@ exports.inviteUser = inviteUserWith(window.location.origin + '/api/invite')
 exports.inviteUserWith = inviteUserWith
 
 function inviteUserWith (inviteUrl) {
-  return function (emailAddress, password, urlTemplate) {
+  return function (emailAddress, password, urlTemplate, accountId) {
+    var url = new window.URL(inviteUrl)
+    if (accountId) {
+      url.pathname = path.join(url.pathname, accountId)
+    }
     return window
-      .fetch(inviteUrl, {
+      .fetch(url, {
         method: 'POST',
         credentials: 'include',
         body: JSON.stringify({

@@ -89,6 +89,24 @@ func (rt *router) postInviteUser(c *gin.Context) {
 			).Pipe(c)
 			return
 		}
+	} else {
+		joinURL := strings.Replace(req.URLTemplate, "{token}", signedCredentials, -1)
+		joinURL = strings.Replace(joinURL, "{userId}", "addition", -1)
+		emailBody, bodyErr := mailer.RenderMessage(mailer.MessageExistingUserInvite, map[string]string{"url": joinURL})
+		if bodyErr != nil {
+			newJSONError(
+				fmt.Errorf("router: error rendering email message: %v", err),
+				http.StatusInternalServerError,
+			).Pipe(c)
+			return
+		}
+		if err := rt.mailer.Send(rt.config.SMTP.Sender, req.EmailAddress, "You have been added to accounts on Offen", emailBody); err != nil {
+			newJSONError(
+				fmt.Errorf("error sending email message: %v", err),
+				http.StatusInternalServerError,
+			).Pipe(c)
+			return
+		}
 	}
 	c.Status(http.StatusNoContent)
 }
