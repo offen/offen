@@ -3,14 +3,12 @@ var vault = require('offen/vault')
 module.exports = store
 
 function store (state, emitter) {
-  emitter.on('offen:invite-user', function (emailAddress, onSuccessMessage, onFailureMessage) {
+  emitter.on('offen:invite-user', function (payload, onSuccessMessage, onFailureMessage) {
     vault(process.env.VAULT_HOST || '/vault/')
       .then(function (postMessage) {
         return postMessage({
           type: 'INVITE_USER',
-          payload: {
-            emailAddress: emailAddress
-          }
+          payload: payload
         })
       })
       .then(function (response) {

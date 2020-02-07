@@ -105,7 +105,11 @@ function view (state, emit) {
     var formData = new window.FormData(e.currentTarget)
     emit(
       'offen:invite-user',
-      formData.get('email-address'),
+      {
+        emailAddress: formData.get('email-address'),
+        password: formData.get('password'),
+        urlTemplate: window.location.origin + '/reset-password/{token}/'
+      },
       __('An invite email has been sent.'),
       __('There was an error inviting the user, please try again.')
     )
@@ -116,8 +120,12 @@ function view (state, emit) {
       <h4 class="f5 normal mt0 mb3">${__('Invite someone')}</h4>
       <form class="mw6 center" onsubmit="${handleInvite}">
         <label class="b lh-copy">
-          ${__('Email Address')}
+          ${__('Email Address to invite')}
           ${state.cache(Input, 'console/invite-user', { type: 'email', name: 'email-address' }).render()}
+        </label>
+        <label class="b lh-copy">
+          ${__('Your Password')}
+          ${state.cache(Input, 'console/invite-password', { type: 'password', name: 'password' }).render()}
         </label>
         <input class="pointer w-100 w-auto-ns f5 link dim bn ph3 pv2 mb3 dib br1 white bg-mid-gray" type="submit" value="${__('Invite User')}">
       </form>

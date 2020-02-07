@@ -12,7 +12,7 @@ import (
 func (rt *router) getAccount(c *gin.Context) {
 	accountID := c.Param("accountID")
 
-	accountUser, ok := c.Value("contextKeyAuth").(persistence.LoginResult)
+	accountUser, ok := c.Value(contextKeyAuth).(persistence.LoginResult)
 	if !ok {
 		newJSONError(
 			errors.New("router: could not find account user object in request context"),

@@ -122,30 +122,11 @@ func bootstrapAccounts(config *BootstrapConfig) ([]Account, []AccountUser, []Acc
 	relationshipCreations := []AccountUserRelationship{}
 
 	for _, accountUser := range config.AccountUsers {
-		accountUserID, idErr := uuid.NewV4()
-		if idErr != nil {
-			return nil, nil, nil, idErr
+		user, err := newAccountUser(accountUser.Email, accountUser.Password)
+		if err != nil {
+			return nil, nil, nil, err
 		}
-		hashedPw, hashedPwErr := keys.HashString(accountUser.Password)
-		if hashedPwErr != nil {
-			return nil, nil, nil, hashedPwErr
-		}
-		hashedEmail, hashedEmailErr := keys.HashString(accountUser.Email)
-		if hashedEmailErr != nil {
-			return nil, nil, nil, hashedEmailErr
-		}
-		salt, saltErr := keys.GenerateRandomValue(8)
-		if saltErr != nil {
-			return nil, nil, nil, saltErr
-		}
-
-		user := AccountUser{
-			AccountUserID:  accountUserID.String(),
-			Salt:           salt,
-			HashedPassword: hashedPw.Marshal(),
-			HashedEmail:    hashedEmail.Marshal(),
-		}
-		accountUserCreations = append(accountUserCreations, user)
+		accountUserCreations = append(accountUserCreations, *user)
 
 		for _, accountID := range accountUser.Accounts {
 			var encryptionKey []byte
@@ -159,7 +140,7 @@ func bootstrapAccounts(config *BootstrapConfig) ([]Account, []AccountUser, []Acc
 				return nil, nil, nil, fmt.Errorf("account with id %s not found", accountID)
 			}
 
-			passwordDerivedKey, passwordDerivedKeyErr := keys.DeriveKey(accountUser.Password, salt)
+			passwordDerivedKey, passwordDerivedKeyErr := keys.DeriveKey(accountUser.Password, user.Salt)
 			if passwordDerivedKeyErr != nil {
 				return nil, nil, nil, passwordDerivedKeyErr
 			}
@@ -168,7 +149,7 @@ func bootstrapAccounts(config *BootstrapConfig) ([]Account, []AccountUser, []Acc
 				return nil, nil, nil, encryptionErr
 			}
 
-			emailDerivedKey, emailDerivedKeyErr := keys.DeriveKey(accountUser.Email, salt)
+			emailDerivedKey, emailDerivedKeyErr := keys.DeriveKey(accountUser.Email, user.Salt)
 			if emailDerivedKeyErr != nil {
 				return nil, nil, nil, emailDerivedKeyErr
 			}
@@ -183,7 +164,7 @@ func bootstrapAccounts(config *BootstrapConfig) ([]Account, []AccountUser, []Acc
 			}
 			r := AccountUserRelationship{
 				RelationshipID:                    relationshipID.String(),
-				AccountUserID:                     accountUserID.String(),
+				AccountUserID:                     user.AccountUserID,
 				AccountID:                         accountID,
 				PasswordEncryptedKeyEncryptionKey: encryptedPasswordDerivedKey.Marshal(),
 				EmailEncryptedKeyEncryptionKey:    encryptedEmailDerivedKey.Marshal(),
@@ -196,4 +177,29 @@ func bootstrapAccounts(config *BootstrapConfig) ([]Account, []AccountUser, []Acc
 		accounts = append(accounts, creation.account)
 	}
 	return accounts, accountUserCreations, relationshipCreations, nil
+}
+
+func newAccountUser(email, password string) (*AccountUser, error) {
+	accountUserID, idErr := uuid.NewV4()
+	if idErr != nil {
+		return nil, idErr
+	}
+	hashedPw, hashedPwErr := keys.HashString(password)
+	if hashedPwErr != nil {
+		return nil, hashedPwErr
+	}
+	hashedEmail, hashedEmailErr := keys.HashString(email)
+	if hashedEmailErr != nil {
+		return nil, hashedEmailErr
+	}
+	salt, saltErr := keys.GenerateRandomValue(keys.DefaultSaltLength)
+	if saltErr != nil {
+		return nil, saltErr
+	}
+	return &AccountUser{
+		AccountUserID:  accountUserID.String(),
+		Salt:           salt,
+		HashedPassword: hashedPw.Marshal(),
+		HashedEmail:    hashedEmail.Marshal(),
+	}, nil
 }

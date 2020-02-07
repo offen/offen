@@ -245,7 +245,7 @@ exports.handleInviteUserWith = handleInviteUserWith
 
 function handleInviteUserWith (api) {
   return proxyThunk(function (payload) {
-    return api.inviteUser(payload.emailAddress)
+    return api.inviteUser(payload.emailAddress, payload.password, payload.urlTemplate)
   })
 }
 

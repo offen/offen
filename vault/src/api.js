@@ -249,13 +249,15 @@ exports.inviteUser = inviteUserWith(window.location.origin + '/api/invite')
 exports.inviteUserWith = inviteUserWith
 
 function inviteUserWith (inviteUrl) {
-  return function (emailAddress) {
+  return function (emailAddress, password, urlTemplate) {
     return window
       .fetch(inviteUrl, {
         method: 'POST',
         credentials: 'include',
         body: JSON.stringify({
-          emailAddress: emailAddress
+          emailAddress: emailAddress,
+          password: password,
+          urlTemplate: urlTemplate
         })
       })
       .then(handleFetchResponse)

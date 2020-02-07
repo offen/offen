@@ -4,6 +4,7 @@ package keys
 const (
 	RSAKeyLength             = 4096
 	DefaultSecretLength      = 16
+	DefaultSaltLength        = 8
 	DefaultEncryptionKeySize = 32
 	DefaultPasswordHashSize  = 32
 )
