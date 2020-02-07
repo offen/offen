@@ -117,14 +117,14 @@ function view (state, emit) {
 
   var invite = html`
     <div class="w-100 pa3 mb2 br0 br2-ns bg-black-05">
-      <h4 class="f5 normal mt0 mb3">${__('Invite someone')}</h4>
+      <h4 class="f5 normal mt0 mb3">${__('Invite a user to all accounts')}</h4>
       <form class="mw6 center" onsubmit="${handleInvite}">
         <label class="b lh-copy">
-          ${__('Email Address to invite')}
+          ${__('Email Address to send invite to')}
           ${state.cache(Input, 'console/invite-user', { type: 'email', name: 'email-address' }).render()}
         </label>
         <label class="b lh-copy">
-          ${__('Your Password')}
+          ${__('Confirm with your Password')}
           ${state.cache(Input, 'console/invite-password', { type: 'password', name: 'password' }).render()}
         </label>
         <input class="pointer w-100 w-auto-ns f5 link dim bn ph3 pv2 mb3 dib br1 white bg-mid-gray" type="submit" value="${__('Invite User')}">
