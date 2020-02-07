@@ -17,8 +17,8 @@ function store (state, emitter) {
       .then(function (response) {
         if (response.type === 'LOGIN_SUCCESS') {
           state.authenticatedUser = response.payload
-          var firstAccount = state.authenticatedUser.accounts[0].accountId
           if (credentials) {
+            var firstAccount = state.authenticatedUser.accounts[0].accountId
             emitter.emit(state.events.PUSHSTATE, '/auditorium/' + firstAccount)
           }
           return
@@ -156,7 +156,7 @@ function store (state, emitter) {
         if (response.type === 'LOGOUT_SUCCESS') {
           Object.assign(state, {
             authenticatedUser: null,
-            flash: onSuccessMessage
+            flash: state.flash || onSuccessMessage
           })
           emitter.emit(state.events.PUSHSTATE, '/login/')
         } else if (response.type === 'LOGOUT_FAILURE') {

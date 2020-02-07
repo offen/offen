@@ -38,6 +38,7 @@ register('FORGOT_PASSWORD', middleware.sameOrigin, callHandler(handler.handleFor
 register('RESET_PASSWORD', middleware.sameOrigin, callHandler(handler.handleResetPassword))
 register('INVITE_USER', middleware.sameOrigin, callHandler(handler.handleInviteUser))
 register('JOIN', middleware.sameOrigin, callHandler(handler.handleJoin))
+register('CREATE_ACCOUNT', middleware.sameOrigin, callHandler(handler.handleCreateAccount))
 
 module.exports = register
 

@@ -132,6 +132,47 @@ function view (state, emit) {
     </div>
   `
 
+  function handleCreateAccount (e) {
+    e.preventDefault()
+    var formData = new window.FormData(e.currentTarget)
+    var accountName = formData.get('account-name')
+    emit(
+      'offen:create-account',
+      {
+        accountName: accountName,
+        emailAddress: formData.get('email-address'),
+        password: formData.get('password')
+      },
+      null,
+      __('There was an error creating the account, please try again.'),
+      function (state, emitter) {
+        state.flash = __('Log in again to use the account "%s"', accountName)
+        emitter.emit('offen:logout')
+      }
+    )
+  }
+
+  var createAccount = html`
+    <div class="w-100 pa3 mb2 br0 br2-ns bg-black-05" id="invite-multiple">
+      <h4 class="f5 normal mt0 mb3">${__('Create new Account')}</h4>
+      <form class="mw6 center" onsubmit="${handleCreateAccount}">
+        <label class="b lh-copy">
+          ${__('Name')}
+          ${state.cache(Input, 'console/create-account-name', { name: 'account-name', required: true }).render()}
+        </label>
+        <label class="b lh-copy">
+          ${__('Your Email')}
+          ${state.cache(Input, 'console/create-account-email', { type: 'email', name: 'email-address', required: true }).render()}
+        </label>
+        <label class="b lh-copy">
+          ${__('Your Password')}
+          ${state.cache(Input, 'console/create-account-password', { type: 'password', name: 'password', required: true }).render()}
+        </label>
+        <input class="pointer w-100 w-auto-ns f5 link dim bn ph3 pv2 mb3 dib br1 white bg-mid-gray" type="submit" value="${__('Create')}">
+      </form>
+    </div>
+  `
+
   function handleLogout () {
     emit(
       'offen:logout',
@@ -155,6 +196,7 @@ function view (state, emit) {
     ${changeEmailForm}
     ${changePasswordForm}
     ${invite}
+    ${createAccount}
     ${logout}
   `
 }

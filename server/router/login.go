@@ -67,7 +67,7 @@ func (rt *router) postLogin(c *gin.Context) {
 }
 
 func (rt *router) getLogin(c *gin.Context) {
-	accountUser, ok := c.Value(contextKeyAuth).(persistence.LoginResult)
+	result, ok := c.Value(contextKeyAuth).(persistence.LoginResult)
 	if !ok {
 		authCookie, _ := rt.authCookie("", c.GetBool(contextKeySecureContext))
 		http.SetCookie(c.Writer, authCookie)
@@ -77,7 +77,7 @@ func (rt *router) getLogin(c *gin.Context) {
 		).Pipe(c)
 		return
 	}
-	c.JSON(http.StatusOK, map[string]string{"accountUserId": accountUser.AccountUserID})
+	c.JSON(http.StatusOK, result)
 }
 
 type changePasswordRequest struct {

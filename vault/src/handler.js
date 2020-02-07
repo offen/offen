@@ -181,7 +181,8 @@ function handleLoginWith (api, get, set) {
             }
             return storedResponse
           })
-      }).then(function (response) {
+      })
+      .then(function (response) {
         return {
           type: 'LOGIN_SUCCESS',
           payload: response
@@ -255,6 +256,15 @@ exports.handleJoinWith = handleJoinWith
 function handleJoinWith (api) {
   return proxyThunk(function (payload) {
     return api.join(payload.emailAddress, payload.password, payload.token)
+  })
+}
+
+exports.handleCreateAccount = handleCreateAccountWith(api)
+exports.handleCreateAccountWith = handleCreateAccountWith
+
+function handleCreateAccountWith (api) {
+  return proxyThunk(function (payload) {
+    return api.createAccount(payload.accountName, payload.emailAddress, payload.password)
   })
 }
 

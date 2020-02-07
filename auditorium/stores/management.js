@@ -69,6 +69,42 @@ function store (state, emitter) {
         emitter.emit(state.events.RENDER)
       })
   })
+
+  emitter.on('offen:create-account', function (payload, onSuccessMessage, onFailureMessage, callback) {
+    vault(process.env.VAULT_HOST || '/vault/')
+      .then(function (postMessage) {
+        var message = {
+          type: 'CREATE_ACCOUNT',
+          payload: payload
+        }
+        return postMessage(message)
+      })
+      .then(function (response) {
+        switch (response.type) {
+          case 'CREATE_ACCOUNT_SUCCESS':
+            state.flash = onSuccessMessage
+            return
+          case 'CREATE_ACCOUNT_FAILURE':
+            state.flash = onFailureMessage
+            return
+          default:
+            throw new Error('Received unknown response type: ' + response.type)
+        }
+      })
+      .catch(function (err) {
+        state.error = {
+          message: err.message,
+          stack: err.originalStack || err.stack
+        }
+      })
+      .then(function () {
+        if (callback) {
+          callback(state, emitter)
+        } else {
+          emitter.emit(state.events.RENDER)
+        }
+      })
+  })
 }
 
 store.storeName = 'management'

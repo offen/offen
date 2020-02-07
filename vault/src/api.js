@@ -287,3 +287,22 @@ function joinWith (joinUrl) {
       .then(handleFetchResponse)
   }
 }
+
+exports.createAccount = createAccountWith(window.location.origin + '/api/accounts')
+exports.createAccountWith = createAccountWith
+
+function createAccountWith (createUrl) {
+  return function (accountName, emailAddress, password) {
+    return window
+      .fetch(createUrl, {
+        method: 'POST',
+        credentials: 'include',
+        body: JSON.stringify({
+          accountName: accountName,
+          emailAddress: emailAddress,
+          password: password
+        })
+      })
+      .then(handleFetchResponse)
+  }
+}

@@ -46,3 +46,28 @@ func (rt *router) getAccount(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, result)
 }
+
+type createAccountRequest struct {
+	AccountName  string `json:"accountName"`
+	EmailAddress string `json:"emailAddress"`
+	Password     string `json:"password"`
+}
+
+func (rt *router) postAccount(c *gin.Context) {
+	var req createAccountRequest
+	if err := c.BindJSON(&req); err != nil {
+		newJSONError(
+			fmt.Errorf("router: error decoding response body: %w", err),
+			http.StatusBadRequest,
+		).Pipe(c)
+		return
+	}
+	if err := rt.db.CreateAccount(req.AccountName, req.EmailAddress, req.Password); err != nil {
+		newJSONError(
+			fmt.Errorf("router: error creating account %s: %w", req.AccountName, err),
+			http.StatusInternalServerError,
+		).Pipe(c)
+		return
+	}
+	c.JSON(http.StatusCreated, nil)
+}
