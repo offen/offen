@@ -244,3 +244,20 @@ function purgeWith (purgeUrl) {
       .then(handleFetchResponse)
   }
 }
+
+exports.inviteUser = inviteUserWith(window.location.origin + '/api/invite')
+exports.inviteUserWith = inviteUserWith
+
+function inviteUserWith (inviteUrl) {
+  return function (emailAddress) {
+    return window
+      .fetch(inviteUrl, {
+        method: 'POST',
+        credentials: 'include',
+        body: JSON.stringify({
+          emailAddress: emailAddress
+        })
+      })
+      .then(handleFetchResponse)
+  }
+}

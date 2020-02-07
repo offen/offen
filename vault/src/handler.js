@@ -240,6 +240,15 @@ function handleResetPasswordWith (api) {
   })
 }
 
+exports.handleInviteUser = handleInviteUserWith(api)
+exports.handleInviteUserWith = handleInviteUserWith
+
+function handleInviteUserWith (api) {
+  return proxyThunk(function (payload) {
+    return api.inviteUser(payload.emailAddress)
+  })
+}
+
 // proxyThunk can be used to create a handler that simply calls through
 // to an api method without needing any further logic other than signalling
 // success or failure
