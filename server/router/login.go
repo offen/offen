@@ -187,7 +187,7 @@ func (rt *router) postForgotPassword(c *gin.Context) {
 	}
 
 	resetURL := strings.Replace(req.URLTemplate, "{token}", signedCredentials, -1)
-	emailBody, bodyErr := mailer.RenderForgotPasswordMessage(map[string]string{"url": resetURL})
+	emailBody, bodyErr := mailer.RenderMessage(mailer.MessageForgotPassword, map[string]string{"url": resetURL})
 	if bodyErr != nil {
 		newJSONError(
 			fmt.Errorf("router: error rendering email message: %v", err),

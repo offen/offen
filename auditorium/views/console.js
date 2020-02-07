@@ -108,7 +108,7 @@ function view (state, emit) {
       {
         emailAddress: formData.get('email-address'),
         password: formData.get('password'),
-        urlTemplate: window.location.origin + '/reset-password/{token}/'
+        urlTemplate: window.location.origin + '/join/{userId}/{token}/'
       },
       __('An invite email has been sent.'),
       __('There was an error inviting the user, please try again.')

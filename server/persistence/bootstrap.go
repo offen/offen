@@ -142,10 +142,6 @@ func newAccountUser(email, password string) (*AccountUser, error) {
 	if idErr != nil {
 		return nil, idErr
 	}
-	hashedPw, hashedPwErr := keys.HashString(password)
-	if hashedPwErr != nil {
-		return nil, hashedPwErr
-	}
 	hashedEmail, hashedEmailErr := keys.HashString(email)
 	if hashedEmailErr != nil {
 		return nil, hashedEmailErr
@@ -154,12 +150,21 @@ func newAccountUser(email, password string) (*AccountUser, error) {
 	if saltErr != nil {
 		return nil, saltErr
 	}
-	return &AccountUser{
-		AccountUserID:  accountUserID.String(),
-		Salt:           salt,
-		HashedPassword: hashedPw.Marshal(),
-		HashedEmail:    hashedEmail.Marshal(),
-	}, nil
+	a := &AccountUser{
+		AccountUserID: accountUserID.String(),
+		Salt:          salt,
+		HashedEmail:   hashedEmail.Marshal(),
+	}
+
+	if password != "" {
+		hashedPw, hashedPwErr := keys.HashString(password)
+		if hashedPwErr != nil {
+			return nil, hashedPwErr
+		}
+		a.HashedPassword = hashedPw.Marshal()
+	}
+
+	return a, nil
 }
 
 func newAccount(name, accountID string) (*Account, []byte, error) {

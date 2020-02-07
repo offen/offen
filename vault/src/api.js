@@ -263,3 +263,22 @@ function inviteUserWith (inviteUrl) {
       .then(handleFetchResponse)
   }
 }
+
+exports.join = joinWith(window.location.origin + '/api/join')
+exports.joinWith = joinWith
+
+function joinWith (joinUrl) {
+  return function (emailAddress, password, token) {
+    return window
+      .fetch(joinUrl, {
+        method: 'POST',
+        credentials: 'include',
+        body: JSON.stringify({
+          emailAddress: emailAddress,
+          password: password,
+          token: token
+        })
+      })
+      .then(handleFetchResponse)
+  }
+}

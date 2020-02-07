@@ -249,6 +249,15 @@ function handleInviteUserWith (api) {
   })
 }
 
+exports.handleJoin = handleJoinWith(api)
+exports.handleJoinWith = handleJoinWith
+
+function handleJoinWith (api) {
+  return proxyThunk(function (payload) {
+    return api.join(payload.emailAddress, payload.password, payload.token)
+  })
+}
+
 // proxyThunk can be used to create a handler that simply calls through
 // to an api method without needing any further logic other than signalling
 // success or failure

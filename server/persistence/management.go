@@ -1,7 +1,6 @@
 package persistence
 
 import (
-	"encoding/base64"
 	"fmt"
 
 	"github.com/offen/offen/server/keys"
@@ -49,10 +48,6 @@ func (p *persistenceLayer) InviteUser(inviteeEmail, providerAccountUserID, provi
 		return result, fmt.Errorf("persistence: error deriving key from email address: %w", deriveKeyErr)
 	}
 
-	oneTimeKey, _ := keys.GenerateRandomValue(keys.DefaultEncryptionKeySize)
-	oneTimeKeyBytes, _ := base64.StdEncoding.DecodeString(oneTimeKey)
-	result.OneTimeSecret = oneTimeKeyBytes
-
 	var eligibleRelationships []AccountUserRelationship
 outer:
 	for _, relationship := range provider.Relationships {
@@ -66,6 +61,7 @@ outer:
 		if accountID == "" || relationship.AccountID == accountID {
 			// with no filter given, the invitee inherits all relationships from
 			// the provider
+			result.AccountIDs = append(result.AccountIDs, relationship.AccountID)
 			eligibleRelationships = append(eligibleRelationships, relationship)
 		}
 	}
@@ -75,7 +71,7 @@ outer:
 		return result, fmt.Errorf("persistence: error creating transaction: %w", err)
 	}
 
-	// we copy over all all eligibile relationships of the provider to the invitee
+	// we copy over all all eligible relationships of the provider to the invitee
 	for _, providerRelationship := range eligibleRelationships {
 		inviteeRelationship, err := newAccountUserRelationship(invitedAccountUser.AccountUserID, providerRelationship.AccountID)
 		if err != nil {
@@ -89,11 +85,6 @@ outer:
 			return result, fmt.Errorf("persistence: error decrypting email encrypted key: %w", decryptErr)
 		}
 
-		if err := inviteeRelationship.addOneTimeEncryptedKey(decryptedKey, oneTimeKeyBytes); err != nil {
-			txn.Rollback()
-			return result, fmt.Errorf("persistence: error adding one time key: %w", err)
-		}
-
 		if err := inviteeRelationship.addEmailEncryptedKey(decryptedKey, invitedAccountUser.Salt, inviteeEmail); err != nil {
 			txn.Rollback()
 			return result, fmt.Errorf("persistence: error adding email encrypted key: %w", err)
@@ -104,7 +95,66 @@ outer:
 		}
 	}
 	if err := txn.Commit(); err != nil {
-		return result, fmt.Errorf("persistence: error comitting transaction: %w", err)
+		return result, fmt.Errorf("persistence: error committing transaction: %w", err)
 	}
 	return result, nil
+}
+
+func (p *persistenceLayer) Join(emailAddress, password string) error {
+	accountUsers, err := p.dal.FindAccountUsers(FindAccountUsersQueryAllAccountUsers{true})
+	if err != nil {
+		return fmt.Errorf("persistence: error looking up account users: %w", err)
+	}
+	match, err := findAccountUser(accountUsers, emailAddress)
+	if err != nil {
+		return fmt.Errorf("persistence: could not find user with email %s: %w", emailAddress, err)
+	}
+
+	if match.HashedPassword != "" {
+		if err := keys.CompareString(password, match.HashedPassword); err != nil {
+			return fmt.Errorf("persistence: passwords did not match: %w", err)
+		}
+	} else {
+		cipher, err := keys.HashString(password)
+		if err != nil {
+			return fmt.Errorf("persistence: hashing given password: %w", err)
+		}
+		match.HashedPassword = cipher.Marshal()
+		if err := p.dal.UpdateAccountUser(match); err != nil {
+			return fmt.Errorf("persistence: failed to update account user: %w", err)
+		}
+	}
+
+	emailDerivedKey, deriveErr := keys.DeriveKey(emailAddress, match.Salt)
+	if deriveErr != nil {
+		return fmt.Errorf("persistence: error deriving key from email: %w", deriveErr)
+	}
+
+	txn, err := p.dal.Transaction()
+	if err != nil {
+		return fmt.Errorf("persistence: error creating transaction: %w", err)
+	}
+
+	for _, relationship := range match.Relationships {
+		key, keyErr := keys.DecryptWith(emailDerivedKey, relationship.EmailEncryptedKeyEncryptionKey)
+		if keyErr != nil {
+			return fmt.Errorf("persistence: error decrypting email encrypted key: %w", keyErr)
+		}
+
+		if err := relationship.addPasswordEncryptedKey(key, match.Salt, password); err != nil {
+			txn.Rollback()
+			return fmt.Errorf("persistence: error adding password encrypted key: %w", err)
+		}
+		if err := txn.UpdateAccountUserRelationship(&relationship); err != nil {
+			txn.Rollback()
+			return fmt.Errorf("persistence: error persisting account user relationship: %w", err)
+		}
+	}
+
+	if err := txn.Commit(); err != nil {
+		txn.Rollback()
+		return fmt.Errorf("persistence: error committing transaction: %w", err)
+	}
+
+	return nil
 }

@@ -198,6 +198,7 @@ func New(opts ...Config) http.Handler {
 		api.POST("/reset-password", rt.postResetPassword)
 		api.POST("/invite/:accountID", accountAuth, rt.postInviteUser)
 		api.POST("/invite", accountAuth, rt.postInviteUser)
+		api.POST("/join", rt.postJoin)
 
 		api.GET("/events", userCookie, rt.getEvents)
 		api.POST("/events/anonymous", rt.postEvents)

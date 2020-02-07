@@ -37,6 +37,7 @@ register('CHANGE_CREDENTIALS', middleware.sameOrigin, callHandler(handler.handle
 register('FORGOT_PASSWORD', middleware.sameOrigin, callHandler(handler.handleForgotPassword))
 register('RESET_PASSWORD', middleware.sameOrigin, callHandler(handler.handleResetPassword))
 register('INVITE_USER', middleware.sameOrigin, callHandler(handler.handleInviteUser))
+register('JOIN', middleware.sameOrigin, callHandler(handler.handleJoin))
 
 module.exports = register
 

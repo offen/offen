@@ -33,6 +33,42 @@ function store (state, emitter) {
         emitter.emit(state.events.RENDER)
       })
   })
+
+  emitter.on('offen:join', function (update, onSuccessMessage, onFailureMessage) {
+    vault(process.env.VAULT_HOST || '/vault/')
+      .then(function (postMessage) {
+        var queryRequest = {
+          type: 'JOIN',
+          payload: update
+        }
+        return postMessage(queryRequest)
+      })
+      .then(function (response) {
+        switch (response.type) {
+          case 'JOIN_SUCCESS':
+            Object.assign(state, {
+              authenticatedUser: null,
+              flash: onSuccessMessage
+            })
+            emitter.emit(state.events.PUSHSTATE, '/login/')
+            return
+          case 'JOIN_FAILURE':
+            state.flash = onFailureMessage
+            return
+          default:
+            throw new Error('Received unknown response type: ' + response.type)
+        }
+      })
+      .catch(function (err) {
+        state.error = {
+          message: err.message,
+          stack: err.originalStack || err.stack
+        }
+      })
+      .then(function () {
+        emitter.emit(state.events.RENDER)
+      })
+  })
 }
 
 store.storeName = 'management'
