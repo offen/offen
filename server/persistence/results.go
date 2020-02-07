@@ -43,8 +43,8 @@ type LoginResult struct {
 
 // InviteUserResult is a successful invitation of a user
 type InviteUserResult struct {
-	UserExists bool
-	AccountIDs []string
+	UserExistsWithPassword bool
+	AccountIDs             []string
 }
 
 // CanAccessAccount checks whether the login result is allowed to access the

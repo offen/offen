@@ -116,7 +116,7 @@ function view (state, emit) {
   }
 
   var invite = html`
-    <div class="w-100 pa3 mb2 br0 br2-ns bg-black-05">
+    <div class="w-100 pa3 mb2 br0 br2-ns bg-black-05" id="invite-multiple">
       <h4 class="f5 normal mt0 mb3">${__('Invite a user to all accounts')}</h4>
       <form class="mw6 center" onsubmit="${handleInvite}">
         <label class="b lh-copy">

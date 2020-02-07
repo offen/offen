@@ -17,7 +17,9 @@ func (p *persistenceLayer) InviteUser(inviteeEmail, providerAccountUserID, provi
 			return result, fmt.Errorf("persistence: error looking up account users: %w", err)
 		}
 		if match, err := findAccountUser(accountUsers, inviteeEmail); err == nil {
-			result.UserExists = true
+			if match.HashedPassword != "" {
+				result.UserExistsWithPassword = true
+			}
 			invitedAccountUser = match
 		} else {
 			newAccountUserRecord, err := newAccountUser(inviteeEmail, "")

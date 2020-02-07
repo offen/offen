@@ -96,6 +96,9 @@ func HashString(pw string) (*VersionedCipher, error) {
 
 // CompareString compares a string with a stored hash
 func CompareString(password, cipher string) error {
+	if cipher == "" {
+		return errors.New("keys: cannot compare against an empty cipher")
+	}
 	v, err := unmarshalVersionedCipher(cipher)
 	if err != nil {
 		return fmt.Errorf("keys: error parsing versioned cipher: %w", err)
