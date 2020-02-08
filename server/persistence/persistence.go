@@ -21,7 +21,7 @@ type Service interface {
 	ChangeEmail(userID, emailAddress, password string) error
 	GenerateOneTimeKey(emailAddress string) ([]byte, error)
 	ResetPassword(emailAddress, password string, oneTimeKey []byte) error
-	InviteUser(inviteeEmailAddress, providerAccountUserID, providerPassword, accountID string) (InviteUserResult, error)
+	InviteUser(inviteeEmailAddress, providerEmailAddress, providerPassword, accountID string) (InviteUserResult, error)
 	Join(emailAddress, password string) error
 	Expire(retention time.Duration) (int, error)
 	Bootstrap(data BootstrapConfig) error

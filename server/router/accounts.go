@@ -62,6 +62,31 @@ func (rt *router) postAccount(c *gin.Context) {
 		).Pipe(c)
 		return
 	}
+	accountUser, ok := c.Value(contextKeyAuth).(persistence.LoginResult)
+	if !ok {
+		newJSONError(
+			errors.New("router: could not find account user object in request context"),
+			http.StatusNotFound,
+		).Pipe(c)
+		return
+	}
+	accountInRequest, err := rt.db.Login(req.EmailAddress, req.Password)
+	if err != nil {
+		newJSONError(
+			fmt.Errorf("router: error validating given credentials: %w", err),
+			http.StatusUnauthorized,
+		).Pipe(c)
+		return
+	}
+	// the given credentials might be valid, but belong to a different user
+	// than the one who is calling this
+	if accountInRequest.AccountUserID != accountUser.AccountUserID {
+		newJSONError(
+			fmt.Errorf("router: given credentials belong to user other than requester with id %s", accountUser.AccountUserID),
+			http.StatusBadRequest,
+		).Pipe(c)
+		return
+	}
 	if err := rt.db.CreateAccount(req.AccountName, req.EmailAddress, req.Password); err != nil {
 		newJSONError(
 			fmt.Errorf("router: error creating account %s: %w", req.AccountName, err),

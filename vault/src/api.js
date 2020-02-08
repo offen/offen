@@ -250,7 +250,7 @@ exports.inviteUser = inviteUserWith(window.location.origin + '/api/invite')
 exports.inviteUserWith = inviteUserWith
 
 function inviteUserWith (inviteUrl) {
-  return function (emailAddress, password, urlTemplate, accountId) {
+  return function (invitee, emailAddress, password, urlTemplate, accountId) {
     var url = new window.URL(inviteUrl)
     if (accountId) {
       url.pathname = path.join(url.pathname, accountId)
@@ -260,6 +260,7 @@ function inviteUserWith (inviteUrl) {
         method: 'POST',
         credentials: 'include',
         body: JSON.stringify({
+          invitee: invitee,
           emailAddress: emailAddress,
           password: password,
           urlTemplate: urlTemplate

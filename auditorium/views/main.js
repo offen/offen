@@ -31,6 +31,7 @@ function view (state, emit) {
     emit(
       'offen:invite-user',
       {
+        invitee: formData.get('invitee'),
         emailAddress: formData.get('email-address'),
         password: formData.get('password'),
         urlTemplate: window.location.origin + '/join/{userId}/{token}/',
@@ -296,12 +297,20 @@ function view (state, emit) {
         <form class="mw6 center" onsubmit="${handleInvite}">
           <label class="b lh-copy">
             ${__('Email Address to send invite to')}
-            ${state.cache(Input, 'main/invite-user', { type: 'email', name: 'email-address' }).render()}
+            ${state.cache(Input, 'main/invite-user-invitee', { type: 'email', name: 'invitee' }).render()}
           </label>
-          <label class="b lh-copy">
-            ${__('Confirm with your Password')}
-            ${state.cache(Input, 'main/invite-password', { type: 'password', name: 'password' }).render()}
-          </label>
+          <hr>
+          <div id="invite-single-credentials">
+            <h5>You need to Confirm this action with your credentials</h5>
+            <label class="b lh-copy" id="invite-single-email">
+              ${__('Your Email Address')}
+              ${state.cache(Input, 'main/invite-user-email', { type: 'email', name: 'email-address' }).render()}
+            </label>
+            <label class="b lh-copy" id="invite-single-password">
+              ${__('Confirm with your Password')}
+              ${state.cache(Input, 'main/invite-user-password', { type: 'password', name: 'password' }).render()}
+            </label>
+          </div>
           <input class="pointer w-100 w-auto-ns f5 link dim bn ph3 pv2 mb3 dib br1 white bg-mid-gray" type="submit" value="${__('Invite User')}">
         </form>
       </div>

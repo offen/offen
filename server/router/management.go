@@ -12,9 +12,10 @@ import (
 )
 
 type inviteUserRequest struct {
-	EmailAddress     string `json:"emailAddress"`
-	ProviderPassword string `json:"password"`
-	URLTemplate      string `json:"urlTemplate"`
+	InviteeEmailAddress  string `json:"invitee"`
+	ProviderEmailAddress string `json:"emailAddress"`
+	ProviderPassword     string `json:"password"`
+	URLTemplate          string `json:"urlTemplate"`
 }
 
 type invitationCredentials struct {
@@ -52,7 +53,27 @@ func (rt *router) postInviteUser(c *gin.Context) {
 		}
 	}
 
-	result, err := rt.db.InviteUser(req.EmailAddress, accountUser.AccountUserID, req.ProviderPassword, c.Param("accountID"))
+	// the given credentials might not be valid
+	accountInRequest, err := rt.db.Login(req.ProviderEmailAddress, req.ProviderPassword)
+	if err != nil {
+		newJSONError(
+			fmt.Errorf("router: error validating given credentials: %w", err),
+			http.StatusUnauthorized,
+		).Pipe(c)
+		return
+	}
+
+	// the given credentials might be valid, but belong to a different user
+	// than the one who is calling this
+	if accountInRequest.AccountUserID != accountUser.AccountUserID {
+		newJSONError(
+			fmt.Errorf("router: given credentials belong to user other than requester with id %s", accountUser.AccountUserID),
+			http.StatusBadRequest,
+		).Pipe(c)
+		return
+	}
+
+	result, err := rt.db.InviteUser(req.InviteeEmailAddress, req.ProviderEmailAddress, req.ProviderPassword, c.Param("accountID"))
 	if err != nil {
 		newJSONError(
 			fmt.Errorf("router: error inviting user: %w", err),
@@ -63,7 +84,7 @@ func (rt *router) postInviteUser(c *gin.Context) {
 
 	signedCredentials, signErr := rt.cookieSigner.MaxAge(7*24*60*60).Encode("credentials", invitationCredentials{
 		AccountIDs:   result.AccountIDs,
-		EmailAddress: req.EmailAddress,
+		EmailAddress: req.InviteeEmailAddress,
 	})
 	if signErr != nil {
 		rt.logError(signErr, "error signing token")
@@ -93,7 +114,7 @@ func (rt *router) postInviteUser(c *gin.Context) {
 		).Pipe(c)
 		return
 	}
-	if err := rt.mailer.Send(rt.config.SMTP.Sender, req.EmailAddress, subject, emailBody); err != nil {
+	if err := rt.mailer.Send(rt.config.SMTP.Sender, req.InviteeEmailAddress, subject, emailBody); err != nil {
 		newJSONError(
 			fmt.Errorf("router: error sending email message: %v", err),
 			http.StatusInternalServerError,

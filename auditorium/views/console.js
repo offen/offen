@@ -106,6 +106,7 @@ function view (state, emit) {
     emit(
       'offen:invite-user',
       {
+        invitee: formData.get('invitee'),
         emailAddress: formData.get('email-address'),
         password: formData.get('password'),
         urlTemplate: window.location.origin + '/join/{userId}/{token}/'
@@ -121,12 +122,20 @@ function view (state, emit) {
       <form class="mw6 center" onsubmit="${handleInvite}">
         <label class="b lh-copy">
           ${__('Email Address to send invite to')}
-          ${state.cache(Input, 'console/invite-user', { type: 'email', name: 'email-address' }).render()}
+          ${state.cache(Input, 'console/invite-user-invitee', { type: 'email', name: 'invitee' }).render()}
         </label>
-        <label class="b lh-copy">
-          ${__('Confirm with your Password')}
-          ${state.cache(Input, 'console/invite-password', { type: 'password', name: 'password' }).render()}
-        </label>
+        <hr>
+        <div id="invite-multiple-credentials">
+          <h5>${__('You need to Confirm this action with your credentials')}</h5>
+          <label class="b lh-copy">
+            ${__('Your Email')}
+            ${state.cache(Input, 'main/invite-user-email', { type: 'email', name: 'email-address' }).render()}
+          </label>
+          <label class="b lh-copy">
+            ${__('Your Password')}
+            ${state.cache(Input, 'main/invite-user-password', { type: 'password', name: 'password' }).render()}
+          </label>
+        </div>
         <input class="pointer w-100 w-auto-ns f5 link dim bn ph3 pv2 mb3 dib br1 white bg-mid-gray" type="submit" value="${__('Invite User')}">
       </form>
     </div>
@@ -157,9 +166,11 @@ function view (state, emit) {
       <h4 class="f5 normal mt0 mb3">${__('Create new Account')}</h4>
       <form class="mw6 center" onsubmit="${handleCreateAccount}">
         <label class="b lh-copy">
-          ${__('Name')}
+          ${__('Account Name')}
           ${state.cache(Input, 'console/create-account-name', { name: 'account-name', required: true }).render()}
         </label>
+        <hr>
+        <h5>${__('You need to Confirm this action with your credentials')}</h5>
         <label class="b lh-copy">
           ${__('Your Email')}
           ${state.cache(Input, 'console/create-account-email', { type: 'email', name: 'email-address', required: true }).render()}
@@ -168,7 +179,7 @@ function view (state, emit) {
           ${__('Your Password')}
           ${state.cache(Input, 'console/create-account-password', { type: 'password', name: 'password', required: true }).render()}
         </label>
-        <input class="pointer w-100 w-auto-ns f5 link dim bn ph3 pv2 mb3 dib br1 white bg-mid-gray" type="submit" value="${__('Create')}">
+        <input class="pointer w-100 w-auto-ns f5 link dim bn ph3 pv2 mb3 dib br1 white bg-mid-gray" type="submit" value="${__('Create Account')}">
       </form>
     </div>
   `

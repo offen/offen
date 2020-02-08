@@ -6,42 +6,39 @@ import (
 	"github.com/offen/offen/server/keys"
 )
 
-func (p *persistenceLayer) InviteUser(inviteeEmail, providerAccountUserID, providerPassword, accountID string) (InviteUserResult, error) {
+func (p *persistenceLayer) InviteUser(inviteeEmailAddress, providerEmailAddress, providerPassword, accountID string) (InviteUserResult, error) {
 	var result InviteUserResult
 	var invitedAccountUser *AccountUser
-	{
-		// First, we need to check whether the given address is already associated
-		// with an existing account.
-		accountUsers, err := p.dal.FindAccountUsers(FindAccountUsersQueryAllAccountUsers{true})
-		if err != nil {
-			return result, fmt.Errorf("persistence: error looking up account users: %w", err)
-		}
-		if match, err := findAccountUser(accountUsers, inviteeEmail); err == nil {
-			if match.HashedPassword != "" {
-				result.UserExistsWithPassword = true
-			}
-			invitedAccountUser = match
-		} else {
-			newAccountUserRecord, err := newAccountUser(inviteeEmail, "")
-			if err != nil {
-				return result, fmt.Errorf("persistence: error creating new account user for invitee: %w", err)
-			}
-			invitedAccountUser = newAccountUserRecord
-			if err := p.dal.CreateAccountUser(invitedAccountUser); err != nil {
-				return result, fmt.Errorf("persistence: error persisting new account user for invitee: %w", err)
-			}
-		}
+
+	accountUsers, err := p.dal.FindAccountUsers(FindAccountUsersQueryAllAccountUsers{true})
+	if err != nil {
+		return result, fmt.Errorf("persistence: error looking up account users: %w", err)
 	}
 
-	provider, findErr := p.dal.FindAccountUser(FindAccountUserQueryByAccountUserIDIncludeRelationships(providerAccountUserID))
+	// First, we need to check if the provider has given valid credentials
+	provider, findErr := findAccountUser(accountUsers, providerEmailAddress)
 	if findErr != nil {
 		return result, fmt.Errorf("persistence: error looking up account user: %w", findErr)
 	}
+	if err := keys.CompareString(providerPassword, provider.HashedPassword); err != nil {
+		return result, fmt.Errorf("persistence: error comparing passwords: %w", err)
+	}
 
-	{
-		// We do not know if the given password is actually correct yet
-		if err := keys.CompareString(providerPassword, provider.HashedPassword); err != nil {
-			return result, fmt.Errorf("persistence: error comparing passwords: %w", err)
+	// Next, we need to check whether the given address is already associated
+	// with an existing account.
+	if match, err := findAccountUser(accountUsers, inviteeEmailAddress); err == nil {
+		if match.HashedPassword != "" {
+			result.UserExistsWithPassword = true
+		}
+		invitedAccountUser = match
+	} else {
+		newAccountUserRecord, err := newAccountUser(inviteeEmailAddress, "")
+		if err != nil {
+			return result, fmt.Errorf("persistence: error creating new account user for invitee: %w", err)
+		}
+		invitedAccountUser = newAccountUserRecord
+		if err := p.dal.CreateAccountUser(invitedAccountUser); err != nil {
+			return result, fmt.Errorf("persistence: error persisting new account user for invitee: %w", err)
 		}
 	}
 
@@ -87,7 +84,7 @@ outer:
 			return result, fmt.Errorf("persistence: error decrypting email encrypted key: %w", decryptErr)
 		}
 
-		if err := inviteeRelationship.addEmailEncryptedKey(decryptedKey, invitedAccountUser.Salt, inviteeEmail); err != nil {
+		if err := inviteeRelationship.addEmailEncryptedKey(decryptedKey, invitedAccountUser.Salt, inviteeEmailAddress); err != nil {
 			txn.Rollback()
 			return result, fmt.Errorf("persistence: error adding email encrypted key: %w", err)
 		}
