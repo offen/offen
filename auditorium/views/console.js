@@ -117,25 +117,23 @@ function view (state, emit) {
   }
 
   var invite = html`
-    <div class="w-100 pa3 mb2 br0 br2-ns bg-black-05" id="invite-multiple">
-      <h4 class="f5 normal mt0 mb3">${__('Invite a user to all accounts')}</h4>
+    <div class="w-100 pa3 mb2 br0 br2-ns bg-black-05">
+      <h4 class="f5 normal mt0 mb3">${__('Invite someone to all accounts')}</h4>
       <form class="mw6 center" onsubmit="${handleInvite}">
         <label class="b lh-copy">
           ${__('Email Address to send invite to')}
           ${state.cache(Input, 'console/invite-user-invitee', { type: 'email', name: 'invitee' }).render()}
         </label>
         <hr>
-        <div id="invite-multiple-credentials">
-          <h5>${__('You need to Confirm this action with your credentials')}</h5>
-          <label class="b lh-copy">
-            ${__('Your Email')}
-            ${state.cache(Input, 'main/invite-user-email', { type: 'email', name: 'email-address' }).render()}
-          </label>
-          <label class="b lh-copy">
-            ${__('Your Password')}
-            ${state.cache(Input, 'main/invite-user-password', { type: 'password', name: 'password' }).render()}
-          </label>
-        </div>
+        <h5>${__('You need to confirm this action with your credentials')}</h5>
+        <label class="b lh-copy">
+          ${__('Your Email')}
+          ${state.cache(Input, 'console/invite-user-email', { type: 'email', name: 'email-address' }).render()}
+        </label>
+        <label class="b lh-copy">
+          ${__('Your Password')}
+          ${state.cache(Input, 'console/invite-user-password', { type: 'password', name: 'password' }).render()}
+        </label>
         <input class="pointer w-100 w-auto-ns f5 link dim bn ph3 pv2 mb3 dib br1 white bg-mid-gray" type="submit" value="${__('Invite User')}">
       </form>
     </div>
@@ -170,7 +168,7 @@ function view (state, emit) {
           ${state.cache(Input, 'console/create-account-name', { name: 'account-name', required: true }).render()}
         </label>
         <hr>
-        <h5>${__('You need to Confirm this action with your credentials')}</h5>
+        <h5>${__('You need to confirm this action with your credentials')}</h5>
         <label class="b lh-copy">
           ${__('Your Email')}
           ${state.cache(Input, 'console/create-account-email', { type: 'email', name: 'email-address', required: true }).render()}

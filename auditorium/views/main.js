@@ -292,25 +292,23 @@ function view (state, emit) {
   var invite = null
   if (isOperator) {
     invite = html`
-      <div class="w-100 pa3 mb2 br0 br2-ns bg-black-05" id="invite-single">
-        <h4 class="f5 normal mt0 mb3">${__('Invite a user to this account')}</h4>
+      <div class="w-100 pa3 mb2 br0 br2-ns bg-black-05">
+        <h4 class="f5 normal mt0 mb3">${__('Invite someone to the "%s" account', state.model.account.name)}</h4>
         <form class="mw6 center" onsubmit="${handleInvite}">
           <label class="b lh-copy">
             ${__('Email Address to send invite to')}
             ${state.cache(Input, 'main/invite-user-invitee', { type: 'email', name: 'invitee' }).render()}
           </label>
           <hr>
-          <div id="invite-single-credentials">
-            <h5>You need to Confirm this action with your credentials</h5>
-            <label class="b lh-copy" id="invite-single-email">
-              ${__('Your Email Address')}
-              ${state.cache(Input, 'main/invite-user-email', { type: 'email', name: 'email-address' }).render()}
-            </label>
-            <label class="b lh-copy" id="invite-single-password">
-              ${__('Confirm with your Password')}
-              ${state.cache(Input, 'main/invite-user-password', { type: 'password', name: 'password' }).render()}
-            </label>
-          </div>
+          <h5>You need to confirm this action with your credentials</h5>
+          <label class="b lh-copy" id="invite-single-email">
+            ${__('Your Email Address')}
+            ${state.cache(Input, 'main/invite-user-email', { type: 'email', name: 'email-address' }).render()}
+          </label>
+          <label class="b lh-copy" id="invite-single-password">
+            ${__('Confirm with your Password')}
+            ${state.cache(Input, 'main/invite-user-password', { type: 'password', name: 'password' }).render()}
+          </label>
           <input class="pointer w-100 w-auto-ns f5 link dim bn ph3 pv2 mb3 dib br1 white bg-mid-gray" type="submit" value="${__('Invite User')}">
         </form>
       </div>
