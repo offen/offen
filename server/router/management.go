@@ -99,11 +99,17 @@ func (rt *router) postInviteUser(c *gin.Context) {
 	var subject string
 	if result.UserExistsWithPassword {
 		joinURL = strings.Replace(joinURL, "{userId}", "addition", -1)
-		emailBody, bodyErr = mailer.RenderMessage(mailer.MessageExistingUserInvite, map[string]string{"url": joinURL})
+		emailBody, bodyErr = mailer.RenderMessage(
+			mailer.MessageExistingUserInvite,
+			map[string]interface{}{"url": joinURL, "count": len(result.AccountIDs)},
+		)
 		subject = "You have been added to additional accounts on Offen"
 	} else {
 		joinURL = strings.Replace(joinURL, "{userId}", "new", -1)
-		emailBody, bodyErr = mailer.RenderMessage(mailer.MessageNewUserInvite, map[string]string{"url": joinURL})
+		emailBody, bodyErr = mailer.RenderMessage(
+			mailer.MessageNewUserInvite,
+			map[string]interface{}{"url": joinURL},
+		)
 		subject = "You have been invited to join Offen"
 	}
 
