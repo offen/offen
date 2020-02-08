@@ -181,7 +181,8 @@ function handleLoginWith (api, get, set) {
             }
             return storedResponse
           })
-      }).then(function (response) {
+      })
+      .then(function (response) {
         return {
           type: 'LOGIN_SUCCESS',
           payload: response
@@ -237,6 +238,33 @@ exports.handleResetPasswordWith = handleResetPasswordWith
 function handleResetPasswordWith (api) {
   return proxyThunk(function (payload) {
     return api.resetPassword(payload.emailAddress, payload.password, payload.token)
+  })
+}
+
+exports.handleInviteUser = handleInviteUserWith(api)
+exports.handleInviteUserWith = handleInviteUserWith
+
+function handleInviteUserWith (api) {
+  return proxyThunk(function (payload) {
+    return api.inviteUser(payload.invitee, payload.emailAddress, payload.password, payload.urlTemplate, payload.accountId)
+  })
+}
+
+exports.handleJoin = handleJoinWith(api)
+exports.handleJoinWith = handleJoinWith
+
+function handleJoinWith (api) {
+  return proxyThunk(function (payload) {
+    return api.join(payload.emailAddress, payload.password, payload.token)
+  })
+}
+
+exports.handleCreateAccount = handleCreateAccountWith(api)
+exports.handleCreateAccountWith = handleCreateAccountWith
+
+function handleCreateAccountWith (api) {
+  return proxyThunk(function (payload) {
+    return api.createAccount(payload.accountName, payload.emailAddress, payload.password)
   })
 }
 

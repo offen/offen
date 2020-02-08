@@ -25,7 +25,7 @@ function view (state, emit) {
   }
   var form = html`
     <div class="w-100 pa3 mt4 mb2 br0 br2-ns bg-black-05">
-      <h4 class="f5 normal mt0 mb3">Reset password</h4>
+      <h4 class="f5 normal mt0 mb3">${__('Reset password')}</h4>
       <form class="mw6 center" onsubmit=${handleSubmit}>
         <label class="b lh-copy">
           ${__('Email address')}

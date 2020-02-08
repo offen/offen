@@ -4,6 +4,7 @@ var _ = require('underscore')
 
 var BarChart = require('./../components/bar-chart')
 var Table = require('./../components/table')
+var Input = require('./../components/input')
 
 module.exports = view
 
@@ -22,6 +23,23 @@ function view (state, emit) {
 
   function handlePurge () {
     emit('offen:purge', __('Your usage data has been deleted.'))
+  }
+
+  function handleInvite (e) {
+    e.preventDefault()
+    var formData = new window.FormData(e.currentTarget)
+    emit(
+      'offen:invite-user',
+      {
+        invitee: formData.get('invitee'),
+        emailAddress: formData.get('email-address'),
+        password: formData.get('password'),
+        urlTemplate: window.location.origin + '/join/{userId}/{token}/',
+        accountId: state.params.accountId
+      },
+      __('An invite email has been sent.'),
+      __('There was an error inviting the user, please try again.')
+    )
   }
 
   var isOperator = !!(state.params && state.params.accountId)
@@ -271,6 +289,32 @@ function view (state, emit) {
     `
     : null
 
+  var invite = null
+  if (isOperator) {
+    invite = html`
+      <div class="w-100 pa3 mb2 br0 br2-ns bg-black-05">
+        <h4 class="f5 normal mt0 mb3">${__('Invite someone to the "%s" account', state.model.account.name)}</h4>
+        <form class="mw6 center" onsubmit="${handleInvite}">
+          <label class="b lh-copy">
+            ${__('Email Address to send invite to')}
+            ${state.cache(Input, 'main/invite-user-invitee', { type: 'email', name: 'invitee' }).render()}
+          </label>
+          <hr>
+          <h5>You need to confirm this action with your credentials</h5>
+          <label class="b lh-copy" id="invite-single-email">
+            ${__('Your Email Address')}
+            ${state.cache(Input, 'main/invite-user-email', { type: 'email', name: 'email-address' }).render()}
+          </label>
+          <label class="b lh-copy" id="invite-single-password">
+            ${__('Confirm with your Password')}
+            ${state.cache(Input, 'main/invite-user-password', { type: 'password', name: 'password' }).render()}
+          </label>
+          <input class="pointer w-100 w-auto-ns f5 link dim bn ph3 pv2 mb3 dib br1 white bg-mid-gray" type="submit" value="${__('Invite User')}">
+        </form>
+      </div>
+    `
+  }
+
   // TODO: add properly styled loading overlay
   return html`
       <div>
@@ -282,6 +326,7 @@ function view (state, emit) {
           ${urlTables}
           ${retention}
           ${goSettings}
+          ${invite}
         </div>
         ${state.stale ? html`<div class="fixed top-0 right-0 bottom-0 left-0 bg-white o-40"></div>` : null}
       </div>

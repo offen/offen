@@ -9,11 +9,11 @@ func TestBootstrapAccounts(t *testing.T) {
 	config := BootstrapConfig{
 		Accounts: []BootstrapAccount{
 			{
-				AccountID: "account-a",
+				AccountID: "235e2949-3ecb-4c2c-9edb-ee99b7431cb3",
 				Name:      "a account",
 			},
 			{
-				AccountID: "account-b",
+				AccountID: "9d2c215d-e1f2-4118-a53e-d83f0d64219b",
 				Name:      "b account",
 			},
 		},
@@ -21,12 +21,12 @@ func TestBootstrapAccounts(t *testing.T) {
 			{
 				Email:    "a@offen.dev",
 				Password: "foobarbaz",
-				Accounts: []string{"account-a", "account-b"},
+				Accounts: []string{"235e2949-3ecb-4c2c-9edb-ee99b7431cb3", "9d2c215d-e1f2-4118-a53e-d83f0d64219b"},
 			},
 			{
 				Email:    "b@offen.dev",
 				Password: "foobarbaz",
-				Accounts: []string{"account-b"},
+				Accounts: []string{"9d2c215d-e1f2-4118-a53e-d83f0d64219b"},
 			},
 		},
 	}

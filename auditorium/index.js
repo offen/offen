@@ -5,9 +5,11 @@ var dataStore = require('./stores/data')
 var authStore = require('./stores/auth')
 var consentStore = require('./stores/consent')
 var navigationStore = require('./stores/navigation')
+var managementStore = require('./stores/management')
 var indexView = require('./views/index')
 var mainView = require('./views/main')
 var loginView = require('./views/login')
+var joinView = require('./views/join')
 var forgotPasswordView = require('./views/forgot-password')
 var resetPasswordView = require('./views/reset-password')
 var consoleView = require('./views/console')
@@ -37,6 +39,7 @@ app.use(dataStore)
 app.use(authStore)
 app.use(consentStore)
 app.use(navigationStore)
+app.use(managementStore)
 
 function decorateWithDefaults (view, title, headline) {
   var wrapper = _.compose(withPreviousRoute(), withLayout(headline), withError(), withTitle(title))
@@ -45,27 +48,31 @@ function decorateWithDefaults (view, title, headline) {
 
 app.route(
   '/auditorium/:accountId',
-  decorateWithDefaults(withAuthentication()(withModel()(mainView)), __('Offen Auditorium'))
+  decorateWithDefaults(withAuthentication()(withModel()(mainView)), __('Auditorium | Offen'))
 )
 app.route(
   '/auditorium',
-  decorateWithDefaults(withConsentStatus(true)(withModel()(mainView)), __('Offen Auditorium'))
+  decorateWithDefaults(withConsentStatus(true)(withModel()(mainView)), __('Auditorium | Offen'))
 )
 app.route(
   '/console',
-  decorateWithDefaults(withAuthentication()(consoleView), __('Offen console'))
+  decorateWithDefaults(withAuthentication()(consoleView), __('Console | Offen'))
 )
 app.route(
   '/login',
-  decorateWithDefaults(loginView, __('Offen login'))
+  decorateWithDefaults(loginView, __('Login | Offen'))
 )
 app.route(
   '/reset-password/:token',
-  decorateWithDefaults(resetPasswordView, __('Offen reset password'))
+  decorateWithDefaults(resetPasswordView, __('Reset Password | Offen'))
 )
 app.route(
   '/reset-password',
-  decorateWithDefaults(forgotPasswordView, __('Offen forgot password'))
+  decorateWithDefaults(forgotPasswordView, __('Forgot Password | Offen'))
+)
+app.route(
+  '/join/:userId/:token',
+  decorateWithDefaults(joinView, __('Join | Offen'))
 )
 app.route(
   '/',
@@ -73,7 +80,7 @@ app.route(
 )
 app.route(
   '*',
-  decorateWithDefaults(notFoundView, __('Not found'))
+  decorateWithDefaults(notFoundView, __('Not found | Offen'))
 )
 
 module.exports = app.mount(host)

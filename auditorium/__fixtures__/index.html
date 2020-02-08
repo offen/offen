@@ -58,6 +58,24 @@
           }
         })
       }
+      if (event.data.type === 'INVITE_USER') {
+        event.ports[0].postMessage({
+          type: 'INVITE_USER_SUCCESS',
+          payload: {}
+        })
+      }
+      if (event.data.type === 'JOIN') {
+        event.ports[0].postMessage({
+          type: 'JOIN_SUCCESS',
+          payload: {}
+        })
+      }
+      if (event.data.type === 'CREATE_ACCOUNT') {
+        event.ports[0].postMessage({
+          type: 'CREATE_ACCOUNT_SUCCESS',
+          payload: {}
+        })
+      }
     })
   </script>
 </body>

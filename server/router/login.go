@@ -67,7 +67,7 @@ func (rt *router) postLogin(c *gin.Context) {
 }
 
 func (rt *router) getLogin(c *gin.Context) {
-	accountUser, ok := c.Value(contextKeyAuth).(persistence.LoginResult)
+	result, ok := c.Value(contextKeyAuth).(persistence.LoginResult)
 	if !ok {
 		authCookie, _ := rt.authCookie("", c.GetBool(contextKeySecureContext))
 		http.SetCookie(c.Writer, authCookie)
@@ -77,7 +77,7 @@ func (rt *router) getLogin(c *gin.Context) {
 		).Pipe(c)
 		return
 	}
-	c.JSON(http.StatusOK, map[string]string{"accountUserId": accountUser.AccountUserID})
+	c.JSON(http.StatusOK, result)
 }
 
 type changePasswordRequest struct {
@@ -187,7 +187,7 @@ func (rt *router) postForgotPassword(c *gin.Context) {
 	}
 
 	resetURL := strings.Replace(req.URLTemplate, "{token}", signedCredentials, -1)
-	emailBody, bodyErr := mailer.RenderForgotPasswordMessage(map[string]string{"url": resetURL})
+	emailBody, bodyErr := mailer.RenderMessage(mailer.MessageForgotPassword, map[string]string{"url": resetURL})
 	if bodyErr != nil {
 		newJSONError(
 			fmt.Errorf("router: error rendering email message: %v", err),

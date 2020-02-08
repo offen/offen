@@ -12,7 +12,7 @@ describe('views/main.js', function () {
   })
 
   describe('mainView', function () {
-    it('renders 8 sections for operators', function () {
+    it('renders 9 sections for operators', function () {
       app.state.model = {
         pageviews: [
           { date: '12.12.2019', pageviews: 12 }
@@ -46,7 +46,7 @@ describe('views/main.js', function () {
 
       var headlines = result.querySelectorAll('h4')
       assert(headlines)
-      assert.strictEqual(headlines.length, 8)
+      assert.strictEqual(headlines.length, 9)
 
       var chart = result.querySelector('.chart')
       assert(chart)

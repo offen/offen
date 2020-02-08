@@ -86,6 +86,9 @@ const (
 
 // HashString hashed the given string using argon2
 func HashString(pw string) (*VersionedCipher, error) {
+	if pw == "" {
+		return nil, errors.New("keys: cannot hash an empty string")
+	}
 	salt, saltErr := GenerateRandomBytes(DefaultSecretLength)
 	if saltErr != nil {
 		return nil, fmt.Errorf("keys: error generating random salt for password hash: %w", saltErr)
@@ -96,6 +99,9 @@ func HashString(pw string) (*VersionedCipher, error) {
 
 // CompareString compares a string with a stored hash
 func CompareString(password, cipher string) error {
+	if cipher == "" {
+		return errors.New("keys: cannot compare against an empty cipher")
+	}
 	v, err := unmarshalVersionedCipher(cipher)
 	if err != nil {
 		return fmt.Errorf("keys: error parsing versioned cipher: %w", err)

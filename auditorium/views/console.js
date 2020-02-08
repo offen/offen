@@ -46,7 +46,7 @@ function view (state, emit) {
 
   var changeEmailForm = html`
     <div class="w-100 pa3 mb2 br0 br2-ns bg-black-05">
-      <h4 class="f5 normal mt0 mb3">Change email address</h4>
+      <h4 class="f5 normal mt0 mb3">${__('Change email address')}</h4>
       <form class="mw6 center" onsubmit="${handleChangeEmail}">
         <label class="b lh-copy">
           ${__('New email address')}
@@ -81,7 +81,7 @@ function view (state, emit) {
 
   var changePasswordForm = html`
     <div class="w-100 pa3 mb2 br0 br2-ns bg-black-05">
-      <h4 class="f5 normal mt0 mb3">Change password</h4>
+      <h4 class="f5 normal mt0 mb3">${__('Change password')}</h4>
       <form class="mw6 center" onsubmit="${handleChangePassword}">
         <label class="b lh-copy">
           ${__('Current password')}
@@ -96,6 +96,88 @@ function view (state, emit) {
           ${state.cache(Input, 'console/change-password-repeat', { type: 'password', name: 'repeat' }).render()}
         </label>
         <input class="pointer w-100 w-auto-ns f5 link dim bn ph3 pv2 mb3 dib br1 white bg-mid-gray" type="submit" value="${__('Change password')}">
+      </form>
+    </div>
+  `
+
+  function handleInvite (e) {
+    e.preventDefault()
+    var formData = new window.FormData(e.currentTarget)
+    emit(
+      'offen:invite-user',
+      {
+        invitee: formData.get('invitee'),
+        emailAddress: formData.get('email-address'),
+        password: formData.get('password'),
+        urlTemplate: window.location.origin + '/join/{userId}/{token}/'
+      },
+      __('An invite email has been sent.'),
+      __('There was an error inviting the user, please try again.')
+    )
+  }
+
+  var invite = html`
+    <div class="w-100 pa3 mb2 br0 br2-ns bg-black-05">
+      <h4 class="f5 normal mt0 mb3">${__('Invite someone to all accounts')}</h4>
+      <form class="mw6 center" onsubmit="${handleInvite}">
+        <label class="b lh-copy">
+          ${__('Email Address to send invite to')}
+          ${state.cache(Input, 'console/invite-user-invitee', { type: 'email', name: 'invitee' }).render()}
+        </label>
+        <hr>
+        <h5>${__('You need to confirm this action with your credentials')}</h5>
+        <label class="b lh-copy">
+          ${__('Your Email')}
+          ${state.cache(Input, 'console/invite-user-email', { type: 'email', name: 'email-address' }).render()}
+        </label>
+        <label class="b lh-copy">
+          ${__('Your Password')}
+          ${state.cache(Input, 'console/invite-user-password', { type: 'password', name: 'password' }).render()}
+        </label>
+        <input class="pointer w-100 w-auto-ns f5 link dim bn ph3 pv2 mb3 dib br1 white bg-mid-gray" type="submit" value="${__('Invite User')}">
+      </form>
+    </div>
+  `
+
+  function handleCreateAccount (e) {
+    e.preventDefault()
+    var formData = new window.FormData(e.currentTarget)
+    var accountName = formData.get('account-name')
+    emit(
+      'offen:create-account',
+      {
+        accountName: accountName,
+        emailAddress: formData.get('email-address'),
+        password: formData.get('password')
+      },
+      null,
+      __('There was an error creating the account, please try again.'),
+      function (state, emitter) {
+        state.flash = __('Log in again to use the account "%s"', accountName)
+        emitter.emit('offen:logout')
+      }
+    )
+  }
+
+  var createAccount = html`
+    <div class="w-100 pa3 mb2 br0 br2-ns bg-black-05" id="invite-multiple">
+      <h4 class="f5 normal mt0 mb3">${__('Create new Account')}</h4>
+      <form class="mw6 center" onsubmit="${handleCreateAccount}">
+        <label class="b lh-copy">
+          ${__('Account Name')}
+          ${state.cache(Input, 'console/create-account-name', { name: 'account-name', required: true }).render()}
+        </label>
+        <hr>
+        <h5>${__('You need to confirm this action with your credentials')}</h5>
+        <label class="b lh-copy">
+          ${__('Your Email')}
+          ${state.cache(Input, 'console/create-account-email', { type: 'email', name: 'email-address', required: true }).render()}
+        </label>
+        <label class="b lh-copy">
+          ${__('Your Password')}
+          ${state.cache(Input, 'console/create-account-password', { type: 'password', name: 'password', required: true }).render()}
+        </label>
+        <input class="pointer w-100 w-auto-ns f5 link dim bn ph3 pv2 mb3 dib br1 white bg-mid-gray" type="submit" value="${__('Create Account')}">
       </form>
     </div>
   `
@@ -122,6 +204,8 @@ function view (state, emit) {
     ${chooseAccount}
     ${changeEmailForm}
     ${changePasswordForm}
+    ${invite}
+    ${createAccount}
     ${logout}
   `
 }

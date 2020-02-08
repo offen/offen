@@ -183,6 +183,7 @@ func New(opts ...Config) http.Handler {
 		api.POST("/exchange", rt.postUserSecret)
 
 		api.GET("/accounts/:accountID", accountAuth, rt.getAccount)
+		api.POST("/accounts", accountAuth, rt.postAccount)
 
 		api.POST("/deleted/user", userCookie, rt.getDeletedEvents)
 		api.POST("/deleted", rt.getDeletedEvents)
@@ -196,6 +197,9 @@ func New(opts ...Config) http.Handler {
 		api.POST("/change-email", accountAuth, rt.postChangeEmail)
 		api.POST("/forgot-password", rt.postForgotPassword)
 		api.POST("/reset-password", rt.postResetPassword)
+		api.POST("/invite/:accountID", accountAuth, rt.postInviteUser)
+		api.POST("/invite", accountAuth, rt.postInviteUser)
+		api.POST("/join", rt.postJoin)
 
 		api.GET("/events", userCookie, rt.getEvents)
 		api.POST("/events/anonymous", rt.postEvents)
