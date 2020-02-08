@@ -5,6 +5,7 @@ var Input = require('./../components/input')
 module.exports = view
 
 function view (state, emit) {
+  var userExists = state.params.userId !== 'new'
   function handleSubmit (e) {
     e.preventDefault()
     var formData = new window.FormData(e.currentTarget)
@@ -19,13 +20,13 @@ function view (state, emit) {
         password: formData.get('password'),
         token: formData.get('token')
       },
-      __('You can now log in.'),
+      userExists ? __('Log in again to access all accounts.') : __('You can now log in.'),
       __('Could not handle your request, please try again.')
     )
   }
   var form = html`
     <div class="w-100 pa3 mt4 mb2 br0 br2-ns bg-black-05">
-      <h4 class="f5 normal mt0 mb3">${__('Join Offen')}</h4>
+      <h4 class="f5 normal mt0 mb3">${userExists ? __('Accept invite') : __('Join Offen')}</h4>
       <form class="mw6 center" onsubmit=${handleSubmit}>
         <label class="b lh-copy">
           ${__('Email address')}
@@ -35,13 +36,13 @@ function view (state, emit) {
           ${__('Password')}
           ${state.cache(Input, 'join/password', { name: 'password', type: 'password', required: true }).render()}
         </label>
-        ${state.params.userId === 'new' ? html`
+        ${!userExists ? html`
             <label class="b lh-copy">
               ${__('Repeat password')}
               ${state.cache(Input, 'join/repeat', { name: 'repeat-password', type: 'password', required: true }).render()}
             </label>
           ` : null}
-        <input class="pointer w-100 w-auto-ns f5 link dim bn ph3 pv2 mb3 dib br1 white bg-mid-gray" type="submit" value="${__('Accept invitation')}">
+        <input class="pointer w-100 w-auto-ns f5 link dim bn ph3 pv2 mb3 dib br1 white bg-mid-gray" type="submit" value="${__('Accept invite')}">
         <input type="hidden" name="token" value=${state.params.token}>
       </form>
     </div>
