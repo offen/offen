@@ -15,21 +15,23 @@ function store (state, emitter) {
         return postMessage(queryRequest)
       })
       .then(function (response) {
-        if (response.type === 'LOGIN_SUCCESS') {
-          state.authenticatedUser = response.payload
-          if (credentials) {
-            var firstAccount = state.authenticatedUser.accounts[0].accountId
-            emitter.emit(state.events.PUSHSTATE, '/auditorium/' + firstAccount)
-          }
-          return
-        } else if (response.type === 'LOGIN_FAILURE') {
-          state.flash = onFailureMessage
-          if (!credentials) {
-            emitter.emit(state.events.PUSHSTATE, '/login/')
-          }
-          return
+        switch (response.type) {
+          case 'LOGIN_SUCCESS':
+            state.authenticatedUser = response.payload
+            if (credentials) {
+              var firstAccount = state.authenticatedUser.accounts[0].accountId
+              emitter.emit(state.events.PUSHSTATE, '/auditorium/' + firstAccount)
+            }
+            return
+          case 'LOGIN_FAILURE':
+            state.flash = onFailureMessage
+            if (!credentials) {
+              emitter.emit(state.events.PUSHSTATE, '/login/')
+            }
+            return
+          default:
+            throw new Error('Received unknown response type: ' + response.type)
         }
-        throw new Error('Received unknown response type: ' + response.type)
       })
       .catch(function (err) {
         state.error = {
@@ -52,18 +54,18 @@ function store (state, emitter) {
         return postMessage(queryRequest)
       })
       .then(function (response) {
-        if (response.type === 'CHANGE_CREDENTIALS_SUCCESS') {
-          Object.assign(state, {
-            authenticatedUser: null,
-            flash: onSuccessMessage
-          })
-          emitter.emit(state.events.PUSHSTATE, '/login/')
-          return
-        } else if (response.type === 'CHANGE_CREDENTIALS_FAILURE') {
-          state.flash = onFailureMessage
-          return
+        switch (response.type) {
+          case 'CHANGE_CREDENTIALS_SUCCESS':
+            state.authenticatedUser = null
+            state.flash = onSuccessMessage
+            emitter.emit(state.events.PUSHSTATE, '/login/')
+            return
+          case 'CHANGE_CREDENTIALS_FAILURE':
+            state.flash = onFailureMessage
+            return
+          default:
+            throw new Error('Received unknown response type: ' + response.type)
         }
-        throw new Error('Received unknown response type: ' + response.type)
       })
       .catch(function (err) {
         state.error = {
@@ -86,17 +88,17 @@ function store (state, emitter) {
         return postMessage(queryRequest)
       })
       .then(function (response) {
-        if (response.type === 'FORGOT_PASSWORD_SUCCESS') {
-          Object.assign(state, {
-            authenticatedUser: null,
-            flash: onSuccessMessage
-          })
-          return
-        } else if (response.type === 'FORGOT_PASSWORD_FAILURE') {
-          state.flash = onFailureMessage
-          return
+        switch (response.type) {
+          case 'FORGOT_PASSWORD_SUCCESS':
+            state.authenticatedUser = null
+            state.flash = onSuccessMessage
+            return
+          case 'FORGOT_PASSWORD_FAILURE':
+            state.flash = onFailureMessage
+            return
+          default:
+            throw new Error('Received unknown response type: ' + response.type)
         }
-        throw new Error('Received unknown response type: ' + response.type)
       })
       .catch(function (err) {
         state.error = {
@@ -119,18 +121,18 @@ function store (state, emitter) {
         return postMessage(queryRequest)
       })
       .then(function (response) {
-        if (response.type === 'RESET_PASSWORD_SUCCESS') {
-          Object.assign(state, {
-            authenticatedUser: null,
-            flash: onSuccessMessage
-          })
-          emitter.emit(state.events.PUSHSTATE, '/login/')
-          return
-        } else if (response.type === 'RESET_PASSWORD_FAILURE') {
-          state.flash = onFailureMessage
-          return
+        switch (response.type) {
+          case 'RESET_PASSWORD_SUCCESS':
+            state.authenticatedUser = null
+            state.flash = onSuccessMessage
+            emitter.emit(state.events.PUSHSTATE, '/login/')
+            return
+          case 'RESET_PASSWORD_FAILURE':
+            state.flash = onFailureMessage
+            return
+          default:
+            throw new Error('Received unknown response type: ' + response.type)
         }
-        throw new Error('Received unknown response type: ' + response.type)
       })
       .catch(function (err) {
         state.error = {
@@ -153,14 +155,19 @@ function store (state, emitter) {
         return postMessage(queryRequest)
       })
       .then(function (response) {
-        if (response.type === 'LOGOUT_SUCCESS') {
-          Object.assign(state, {
-            authenticatedUser: null,
-            flash: state.flash || onSuccessMessage
-          })
-          emitter.emit(state.events.PUSHSTATE, '/login/')
-        } else if (response.type === 'LOGOUT_FAILURE') {
-          state.flash = onFailureMessage
+        switch (response.type) {
+          case 'LOGOUT_SUCCESS':
+            Object.assign(state, {
+              authenticatedUser: null,
+              flash: state.flash || onSuccessMessage
+            })
+            emitter.emit(state.events.PUSHSTATE, '/login/')
+            return
+          case 'LOGOUT_FAILURE':
+            state.flash = onFailureMessage
+            return
+          default:
+            throw new Error('Received unknown response type: ' + response.type)
         }
       })
       .catch(function (err) {

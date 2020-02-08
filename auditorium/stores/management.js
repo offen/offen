@@ -46,17 +46,15 @@ function store (state, emitter) {
       .then(function (response) {
         switch (response.type) {
           case 'JOIN_SUCCESS':
-            Object.assign(state, {
-              authenticatedUser: null,
-              flash: onSuccessMessage
-            })
+            state.authenticatedUser = null
+            state.flash = onSuccessMessage
             emitter.emit(state.events.PUSHSTATE, '/login/')
             return
           case 'JOIN_FAILURE':
             state.flash = onFailureMessage
             return
           default:
-            throw new Error('Received unknown response type: ' + response.type)
+            throw new Error('Unhandled response of type "' + response.type + '"')
         }
       })
       .catch(function (err) {
@@ -82,13 +80,14 @@ function store (state, emitter) {
       .then(function (response) {
         switch (response.type) {
           case 'CREATE_ACCOUNT_SUCCESS':
+            state.authenticatedUser = null
             state.flash = onSuccessMessage
             return
           case 'CREATE_ACCOUNT_FAILURE':
             state.flash = onFailureMessage
             return
           default:
-            throw new Error('Received unknown response type: ' + response.type)
+            throw new Error('Unhandled response of type "' + response.type + '"')
         }
       })
       .catch(function (err) {
