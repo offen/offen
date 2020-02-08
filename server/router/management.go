@@ -18,11 +18,6 @@ type inviteUserRequest struct {
 	URLTemplate          string `json:"urlTemplate"`
 }
 
-type invitationCredentials struct {
-	EmailAddress string
-	AccountIDs   []string
-}
-
 func (rt *router) postInviteUser(c *gin.Context) {
 	var req inviteUserRequest
 	if err := c.BindJSON(&req); err != nil {
@@ -82,10 +77,7 @@ func (rt *router) postInviteUser(c *gin.Context) {
 		return
 	}
 
-	signedCredentials, signErr := rt.cookieSigner.MaxAge(7*24*60*60).Encode("credentials", invitationCredentials{
-		AccountIDs:   result.AccountIDs,
-		EmailAddress: req.InviteeEmailAddress,
-	})
+	signedCredentials, signErr := rt.cookieSigner.MaxAge(7*24*60*60).Encode("credentials", req.InviteeEmailAddress)
 	if signErr != nil {
 		rt.logError(signErr, "error signing token")
 		c.Status(http.StatusNoContent)
@@ -145,15 +137,15 @@ func (rt *router) postJoin(c *gin.Context) {
 		).Pipe(c)
 		return
 	}
-	var credentials invitationCredentials
-	if err := rt.cookieSigner.Decode("credentials", req.Token, &credentials); err != nil {
+	var email string
+	if err := rt.cookieSigner.Decode("credentials", req.Token, &email); err != nil {
 		newJSONError(
 			fmt.Errorf("error decoding signed token: %w", err),
 			http.StatusBadRequest,
 		).Pipe(c)
 		return
 	}
-	if credentials.EmailAddress != req.EmailAddress {
+	if email != req.EmailAddress {
 		newJSONError(
 			errors.New("given email address did not match token"),
 			http.StatusBadRequest,
