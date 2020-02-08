@@ -10,12 +10,7 @@ import (
 )
 
 func (p *persistenceLayer) Login(email, password string) (LoginResult, error) {
-	accountUsers, err := p.dal.FindAccountUsers(FindAccountUsersQueryAllAccountUsers{})
-	if err != nil {
-		return LoginResult{}, fmt.Errorf("persistence: error looking up account users: %w", err)
-	}
-
-	accountUser, err := findAccountUser(accountUsers, email)
+	accountUser, err := p.findAccountUser(email, true)
 	if err != nil {
 		return LoginResult{}, fmt.Errorf("persistence: error looking up account user: %w", err)
 	}
@@ -29,15 +24,8 @@ func (p *persistenceLayer) Login(email, password string) (LoginResult, error) {
 		return LoginResult{}, fmt.Errorf("persistence: error deriving key from password: %w", pwDerivedKeyErr)
 	}
 
-	relationships, err := p.dal.FindAccountUserRelationships(
-		FindAccountUserRelationshipsQueryByAccountUserID(accountUser.AccountUserID),
-	)
-	if err != nil {
-		return LoginResult{}, fmt.Errorf("persistence: error retrieving account to user relationships: %w", err)
-	}
-
 	var results []LoginAccountResult
-	for _, relationship := range relationships {
+	for _, relationship := range accountUser.Relationships {
 		decryptedKey, decryptedKeyErr := keys.DecryptWith(pwDerivedKey, relationship.PasswordEncryptedKeyEncryptionKey)
 		if decryptedKeyErr != nil {
 			return LoginResult{}, fmt.Errorf("persistence: failed decrypting key encryption key for account %s: %w", relationship.AccountID, decryptedKeyErr)
@@ -141,28 +129,16 @@ func (p *persistenceLayer) ChangePassword(userID, currentPassword, changedPasswo
 }
 
 func (p *persistenceLayer) ResetPassword(emailAddress, password string, oneTimeKey []byte) error {
-	accountUsers, err := p.dal.FindAccountUsers(FindAccountUsersQueryAllAccountUsers{})
-	if err != nil {
-		return fmt.Errorf("persistence: error looking up account users: %w", err)
-	}
-
-	accountUser, err := findAccountUser(accountUsers, emailAddress)
+	accountUser, err := p.findAccountUser(emailAddress, true)
 	if err != nil {
 		return fmt.Errorf("persistence: error looking up account user: %w", err)
-	}
-
-	relationships, err := p.dal.FindAccountUserRelationships(
-		FindAccountUserRelationshipsQueryByAccountUserID(accountUser.AccountUserID),
-	)
-	if err != nil {
-		return fmt.Errorf("persistence: error looking up relationships: %w", err)
 	}
 
 	txn, err := p.dal.Transaction()
 	if err != nil {
 		return fmt.Errorf("persistence: error creating transaction: %w", err)
 	}
-	for _, relationship := range relationships {
+	for _, relationship := range accountUser.Relationships {
 		keyEncryptionKey, decryptionErr := keys.DecryptWith(oneTimeKey, relationship.OneTimeEncryptedKeyEncryptionKey)
 		if decryptionErr != nil {
 			txn.Rollback()
@@ -248,12 +224,7 @@ func (p *persistenceLayer) ChangeEmail(userID, emailAddress, password string) er
 }
 
 func (p *persistenceLayer) GenerateOneTimeKey(emailAddress string) ([]byte, error) {
-	accountUsers, err := p.dal.FindAccountUsers(FindAccountUsersQueryAllAccountUsers{true})
-	if err != nil {
-		return nil, fmt.Errorf("persistence: error looking up account users: %w", err)
-	}
-
-	accountUser, err := findAccountUser(accountUsers, emailAddress)
+	accountUser, err := p.findAccountUser(emailAddress, true)
 	if err != nil {
 		return nil, fmt.Errorf("persistence: error looking up account user: %w", err)
 	}
@@ -291,7 +262,19 @@ func (p *persistenceLayer) GenerateOneTimeKey(emailAddress string) ([]byte, erro
 	return oneTimeKeyBytes, nil
 }
 
-func findAccountUser(available []AccountUser, email string) (*AccountUser, error) {
+func (p *persistenceLayer) findAccountUser(emailAddress string, includeRelationships bool) (*AccountUser, error) {
+	accountUsers, err := p.dal.FindAccountUsers(FindAccountUsersQueryAllAccountUsers{IncludeRelationships: includeRelationships})
+	if err != nil {
+		return nil, fmt.Errorf("persistence: error looking up account users: %w", err)
+	}
+	match, err := selectAccountUser(accountUsers, emailAddress)
+	if err != nil {
+		return nil, fmt.Errorf("persistence: could not find user with email %s: %w", emailAddress, err)
+	}
+	return match, nil
+}
+
+func selectAccountUser(available []AccountUser, email string) (*AccountUser, error) {
 	match := make(chan AccountUser)
 	allDone := make(chan bool)
 	wg := sync.WaitGroup{}

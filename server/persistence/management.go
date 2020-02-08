@@ -16,7 +16,7 @@ func (p *persistenceLayer) InviteUser(inviteeEmailAddress, providerEmailAddress,
 	}
 
 	// First, we need to check if the provider has given valid credentials
-	provider, findErr := findAccountUser(accountUsers, providerEmailAddress)
+	provider, findErr := selectAccountUser(accountUsers, providerEmailAddress)
 	if findErr != nil {
 		return result, fmt.Errorf("persistence: error looking up account user: %w", findErr)
 	}
@@ -26,7 +26,7 @@ func (p *persistenceLayer) InviteUser(inviteeEmailAddress, providerEmailAddress,
 
 	// Next, we need to check whether the given address is already associated
 	// with an existing account.
-	if match, err := findAccountUser(accountUsers, inviteeEmailAddress); err == nil {
+	if match, err := selectAccountUser(accountUsers, inviteeEmailAddress); err == nil {
 		if match.HashedPassword != "" {
 			result.UserExistsWithPassword = true
 		}
@@ -100,11 +100,7 @@ outer:
 }
 
 func (p *persistenceLayer) Join(emailAddress, password string) error {
-	accountUsers, err := p.dal.FindAccountUsers(FindAccountUsersQueryAllAccountUsers{true})
-	if err != nil {
-		return fmt.Errorf("persistence: error looking up account users: %w", err)
-	}
-	match, err := findAccountUser(accountUsers, emailAddress)
+	match, err := p.findAccountUser(emailAddress, true)
 	if err != nil {
 		return fmt.Errorf("persistence: could not find user with email %s: %w", emailAddress, err)
 	}

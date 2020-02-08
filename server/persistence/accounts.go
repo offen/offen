@@ -152,7 +152,7 @@ func (p *persistenceLayer) CreateAccount(name, emailAddress, password string) er
 	if err != nil {
 		return fmt.Errorf("persistence: error looking up account users: %w", err)
 	}
-	match, err := findAccountUser(accountUsers, emailAddress)
+	match, err := selectAccountUser(accountUsers, emailAddress)
 	if err != nil {
 		return fmt.Errorf("persistence: error looking up account user %s: %w", emailAddress, err)
 	}
