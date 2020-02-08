@@ -103,11 +103,20 @@ function view (state, emit) {
   function handleInvite (e) {
     e.preventDefault()
     var formData = new window.FormData(e.currentTarget)
+    var invitee = formData.get('invitee')
+    var emailAddress = formData.get('email-address')
+
+    if (invitee === emailAddress) {
+      state.flash = __('You cannot invite yourself')
+      emit(state.events.RENDER)
+      return
+    }
+
     emit(
       'offen:invite-user',
       {
-        invitee: formData.get('invitee'),
-        emailAddress: formData.get('email-address'),
+        invitee: invitee,
+        emailAddress: emailAddress,
         password: formData.get('password'),
         urlTemplate: window.location.origin + '/join/{userId}/{token}/'
       },
@@ -153,8 +162,14 @@ function view (state, emit) {
       null,
       __('There was an error creating the account, please try again.'),
       function (state, emitter) {
-        state.flash = __('Log in again to use the account "%s"', accountName)
-        emitter.emit('offen:logout')
+        if (state.authenticatedUser === null) {
+          // this means creating the account has been successful
+          state.flash = __('Log in again to use the account "%s"', accountName)
+          emitter.emit('offen:logout')
+        } else {
+          state.flash = __('There was an error creating the account, please try again.')
+          emitter.emit(state.events.RENDER)
+        }
       }
     )
   }

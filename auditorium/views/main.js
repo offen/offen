@@ -28,11 +28,20 @@ function view (state, emit) {
   function handleInvite (e) {
     e.preventDefault()
     var formData = new window.FormData(e.currentTarget)
+    var invitee = formData.get('invitee')
+    var emailAddress = formData.get('email-address')
+
+    if (invitee === emailAddress) {
+      state.flash = __('You cannot invite yourself')
+      emit(state.events.RENDER)
+      return
+    }
+
     emit(
       'offen:invite-user',
       {
-        invitee: formData.get('invitee'),
-        emailAddress: formData.get('email-address'),
+        invitee: invitee,
+        emailAddress: emailAddress,
         password: formData.get('password'),
         urlTemplate: window.location.origin + '/join/{userId}/{token}/',
         accountId: state.params.accountId
