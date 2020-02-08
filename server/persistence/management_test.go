@@ -2,10 +2,213 @@ package persistence
 
 import (
 	"errors"
+	"reflect"
 	"testing"
 
 	"github.com/offen/offen/server/keys"
 )
+
+type mockInviteUserDatabase struct {
+	DataAccessLayer
+	findAcccountUsersResult []AccountUser
+	findAccountUsersErr     error
+	createAccountUserErr    error
+	createRelationshipErr   error
+	commitErr               error
+	transactionErr          error
+}
+
+func (m *mockInviteUserDatabase) FindAccountUsers(interface{}) ([]AccountUser, error) {
+	return m.findAcccountUsersResult, m.findAccountUsersErr
+}
+
+func (m *mockInviteUserDatabase) CreateAccountUser(*AccountUser) error {
+	return m.createAccountUserErr
+}
+
+func (m *mockInviteUserDatabase) CreateAccountUserRelationship(*AccountUserRelationship) error {
+	return m.createRelationshipErr
+}
+
+func (m *mockInviteUserDatabase) Commit() error {
+	return m.commitErr
+}
+
+func (m *mockInviteUserDatabase) Rollback() error {
+	return nil
+}
+
+func (m *mockInviteUserDatabase) Transaction() (Transaction, error) {
+	return m, m.transactionErr
+}
+
+func TestPersistenceLayer_InviteUser(t *testing.T) {
+	tests := []struct {
+		name           string
+		dal            *mockInviteUserDatabase
+		invitee        string
+		email          string
+		password       string
+		accountID      string
+		expectedResult InviteUserResult
+		expectErr      bool
+	}{
+		{
+			"bad account users lookup",
+			&mockInviteUserDatabase{
+				findAccountUsersErr: errors.New("did not work"),
+			},
+			"invitee@offen.dev",
+			"develop@offen.dev",
+			"develop",
+			"",
+			InviteUserResult{},
+			true,
+		},
+		{
+			"unknown provider",
+			&mockInviteUserDatabase{
+				findAcccountUsersResult: []AccountUser{
+					(func() AccountUser {
+						a, _ := newAccountUser("hioffen@offen.dev", "develop")
+						return *a
+					})(),
+				},
+			},
+			"invitee@offen.dev",
+			"develop@offen.dev",
+			"develop",
+			"",
+			InviteUserResult{},
+			true,
+		},
+		{
+			"bad provider password",
+			&mockInviteUserDatabase{
+				findAcccountUsersResult: []AccountUser{
+					(func() AccountUser {
+						a, _ := newAccountUser("develop@offen.dev", "d3v3lop")
+						return *a
+					})(),
+				},
+			},
+			"invitee@offen.dev",
+			"develop@offen.dev",
+			"develop",
+			"",
+			InviteUserResult{},
+			true,
+		},
+		{
+			"error creating invitee user",
+			&mockInviteUserDatabase{
+				findAcccountUsersResult: []AccountUser{
+					(func() AccountUser {
+						a, _ := newAccountUser("develop@offen.dev", "develop")
+						return *a
+					})(),
+				},
+				createAccountUserErr: errors.New("did not work"),
+			},
+			"invitee@offen.dev",
+			"develop@offen.dev",
+			"develop",
+			"",
+			InviteUserResult{},
+			true,
+		},
+		{
+			"ok - user exists",
+			&mockInviteUserDatabase{
+				findAcccountUsersResult: []AccountUser{
+					(func() AccountUser {
+						a, _ := newAccountUser("develop@offen.dev", "develop")
+
+						emailDerivedKey, _ := keys.DeriveKey("develop@offen.dev", a.Salt)
+						passwordDerivedKey, _ := keys.DeriveKey("develop", a.Salt)
+
+						key := []byte("key")
+						e, _ := keys.EncryptWith(emailDerivedKey, key)
+						p, _ := keys.EncryptWith(passwordDerivedKey, key)
+
+						a.Relationships = []AccountUserRelationship{
+							{
+								AccountID:                         "account-id",
+								AccountUserID:                     a.AccountUserID,
+								EmailEncryptedKeyEncryptionKey:    e.Marshal(),
+								PasswordEncryptedKeyEncryptionKey: p.Marshal(),
+							},
+						}
+						return *a
+					})(),
+					(func() AccountUser {
+						a, _ := newAccountUser("invitee@offen.dev", "develop")
+						return *a
+					})(),
+				},
+			},
+			"invitee@offen.dev",
+			"develop@offen.dev",
+			"develop",
+			"account-id",
+			InviteUserResult{
+				UserExistsWithPassword: true,
+				AccountIDs:             []string{"account-id"},
+			},
+			false,
+		},
+		{
+			"ok - user is created",
+			&mockInviteUserDatabase{
+				findAcccountUsersResult: []AccountUser{
+					(func() AccountUser {
+						a, _ := newAccountUser("develop@offen.dev", "develop")
+
+						emailDerivedKey, _ := keys.DeriveKey("develop@offen.dev", a.Salt)
+						passwordDerivedKey, _ := keys.DeriveKey("develop", a.Salt)
+
+						key := []byte("key")
+						e, _ := keys.EncryptWith(emailDerivedKey, key)
+						p, _ := keys.EncryptWith(passwordDerivedKey, key)
+
+						a.Relationships = []AccountUserRelationship{
+							{
+								AccountID:                         "account-id",
+								AccountUserID:                     a.AccountUserID,
+								EmailEncryptedKeyEncryptionKey:    e.Marshal(),
+								PasswordEncryptedKeyEncryptionKey: p.Marshal(),
+							},
+						}
+						return *a
+					})(),
+				},
+			},
+			"invitee@offen.dev",
+			"develop@offen.dev",
+			"develop",
+			"account-id",
+			InviteUserResult{
+				UserExistsWithPassword: false,
+				AccountIDs:             []string{"account-id"},
+			},
+			false,
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			p := persistenceLayer{test.dal}
+			result, err := p.InviteUser(test.invitee, test.email, test.password, test.accountID)
+
+			if test.expectErr != (err != nil) {
+				t.Errorf("Unexpected error value %v", err)
+			}
+
+			if !reflect.DeepEqual(test.expectedResult, result) {
+				t.Errorf("Expected %v, got %v", test.expectedResult, result)
+			}
+		})
+	}
+}
 
 type mockJoinDatabase struct {
 	DataAccessLayer
