@@ -86,6 +86,9 @@ const (
 
 // HashString hashed the given string using argon2
 func HashString(pw string) (*VersionedCipher, error) {
+	if pw == "" {
+		return nil, errors.New("keys: cannot hash an empty string")
+	}
 	salt, saltErr := GenerateRandomBytes(DefaultSecretLength)
 	if saltErr != nil {
 		return nil, fmt.Errorf("keys: error generating random salt for password hash: %w", saltErr)
