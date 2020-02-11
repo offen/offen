@@ -1,86 +1,84 @@
-var choo = require('choo')
-var _ = require('underscore')
+/** @jsx h */
+const { render, h } = require('preact')
+const { useRef } = require('preact/hooks')
+const Router = require('preact-router')
+const { createStore, applyMiddleware, combineReducers } = require('redux')
+const { Provider } = require('react-redux')
+const thunk = require('redux-thunk').default
+const vault = require('offen/vault')
 
-var dataStore = require('./stores/data')
-var authStore = require('./stores/auth')
-var consentStore = require('./stores/consent')
-var navigationStore = require('./stores/navigation')
-var managementStore = require('./stores/management')
-var indexView = require('./views/index')
-var mainView = require('./views/main')
-var loginView = require('./views/login')
-var joinView = require('./views/join')
-var forgotPasswordView = require('./views/forgot-password')
-var resetPasswordView = require('./views/reset-password')
-var consoleView = require('./views/console')
-var notFoundView = require('./views/404')
-var withAuthentication = require('./views/decorators/with-authentication')
-var withTitle = require('./views/decorators/with-title')
-var withModel = require('./views/decorators/with-model')
-var withConsentStatus = require('./views/decorators/with-consent-status')
-var withError = require('./views/decorators/with-error')
-var withLayout = require('./views/decorators/with-layout')
-var withPreviousRoute = require('./views/decorators/with-previous-route')
+const Layout = require('./src/views/components/shared/layout')
+const IndexView = require('./src/views/index')
+const LoginView = require('./src/views/login')
+const Auditorium = require('./src/views/auditorium')
+const ConsoleView = require('./src/views/console')
+const NotFoundView = require('./src/views/404')
+const JoinView = require('./src/views/join')
+const ForgotPasswordView = require('./src/views/forgot-password')
+const ResetPasswordView = require('./src/views/reset-password')
+const consentStatusReducer = require('./src/reducers/consent-status')
+const globalErrorReducer = require('./src/reducers/global-error')
+const authenticatedUserReducer = require('./src/reducers/authenticated-user')
+const flashReducer = require('./src/reducers/flash')
+const modelReducer = require('./src/reducers/model')
+const redirectMiddleware = require('./src/middleware/redirect')
+const navigation = require('./src/action-creators/navigation')
 
-if (!window.URL || !window.URLSearchParams) {
-  require('url-polyfill')
-}
+const vaultInstance = vault(process.env.VAULT_HOST || '/vault/')
 
-var app = choo()
+const middlewares = [
+  thunk.withExtraArgument(
+    msg => vaultInstance.then(postMessage => postMessage(msg))
+  ),
+  redirectMiddleware
+]
 
 if (process.env.NODE_ENV !== 'production') {
-  app.use(require('choo-devtools')())
+  const { logger } = require('redux-logger')
+  middlewares.push(logger)
 }
 
-var host = document.createElement('div')
-document.querySelector('#app-host').appendChild(host)
+const store = createStore(
+  combineReducers({
+    globalError: globalErrorReducer,
+    consentStatus: consentStatusReducer,
+    authenticatedUser: authenticatedUserReducer,
+    flash: flashReducer,
+    model: modelReducer
+  }),
+  applyMiddleware(
+    ...middlewares
+  )
+)
 
-app.use(dataStore)
-app.use(authStore)
-app.use(consentStore)
-app.use(navigationStore)
-app.use(managementStore)
+const App = () => {
+  const previousPath = useRef(null)
+  const handleRouteChange = (e) => {
+    window.scrollTo(0, 0)
+    if (previousPath.current !== e.current.props.path) {
+      store.dispatch(navigation.navigate(e))
+    }
+    previousPath.current = e.current.props.path
+  }
 
-function decorateWithDefaults (view, title, headline) {
-  var wrapper = _.compose(withPreviousRoute(), withLayout(headline), withError(), withTitle(title))
-  return wrapper(view)
+  return (
+    <Provider store={store}>
+      <Layout>
+        <Router onChange={handleRouteChange}>
+          <IndexView path='/' />
+          <LoginView path='/login/' />
+          <Auditorium.UserView path='/auditorium/' />
+          <Auditorium.OperatorView path='/auditorium/:accountId' isOperator />
+          <ConsoleView path='/console/' />
+          <ForgotPasswordView path='/forgot-password/' />
+          <ResetPasswordView path='/reset-password/:token' />
+          <JoinView path='/join/new/:token' />
+          <JoinView path='/join/addition/:token' isAddition />
+          <NotFoundView default />
+        </Router>
+      </Layout>
+    </Provider>
+  )
 }
 
-app.route(
-  '/auditorium/:accountId',
-  decorateWithDefaults(withAuthentication()(withModel()(mainView)), __('Auditorium | Offen'))
-)
-app.route(
-  '/auditorium',
-  decorateWithDefaults(withConsentStatus(true)(withModel()(mainView)), __('Auditorium | Offen'))
-)
-app.route(
-  '/console',
-  decorateWithDefaults(withAuthentication()(consoleView), __('Console | Offen'))
-)
-app.route(
-  '/login',
-  decorateWithDefaults(loginView, __('Login | Offen'))
-)
-app.route(
-  '/reset-password/:token',
-  decorateWithDefaults(resetPasswordView, __('Reset Password | Offen'))
-)
-app.route(
-  '/reset-password',
-  decorateWithDefaults(forgotPasswordView, __('Forgot Password | Offen'))
-)
-app.route(
-  '/join/:userId/:token',
-  decorateWithDefaults(joinView, __('Join | Offen'))
-)
-app.route(
-  '/',
-  decorateWithDefaults(withConsentStatus()(indexView), __('Offen'), __('Offen'))
-)
-app.route(
-  '*',
-  decorateWithDefaults(notFoundView, __('Not found | Offen'))
-)
-
-module.exports = app.mount(host)
+render(<App />, document.querySelector('#app-host'))
