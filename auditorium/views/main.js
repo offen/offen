@@ -367,7 +367,7 @@ function retentionSquare (value) {
     <div title="${formatNumber(value, 100)}%">
       <div
         style="opacity: ${value !== 0 ? (value * 0.75 + 0.25) : 1}"
-        class="${value !== 0 ? 'bg-dark-green' : 'bg-light-gray'} h3 w-100"
+        class="${value !== 0 ? 'bg-dark-green' : 'bg-near-white'} h3 w-100"
       >
       </div>
     </div>
