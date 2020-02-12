@@ -324,11 +324,18 @@ function view (state, emit) {
     `
   }
 
+  var scrolltest = html`
+    <div class="">
+      <p>TEMP7</p>
+    </div>
+  `
+
   // TODO: add properly styled loading overlay
   return html`
       <div>
         ${accountHeader}
         <div id="main">
+          ${scrolltest}
           ${rowRangeManage}
           ${live}
           ${rowUsersSessionsChart}
