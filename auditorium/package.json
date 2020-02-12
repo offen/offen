@@ -4,7 +4,7 @@
   "private": true,
   "main": "index.js",
   "scripts": {
-    "start": "budo index.js --pushstate --port $PORT --poll=200",
+    "start": "budo index.js --pushstate --port $PORT -- --poll",
     "test": "npm run server & (VAULT_HOST=http://localhost:9876 npm run mochify; status=$?; kill $(lsof -t -i:9876); exit $status)",
     "mochify": "mochify --chrome $(which google-chrome) --allow-chrome-as-root {,**}/*.test.js",
     "server": "http-server __fixtures__ -p 9876 -s",
@@ -21,7 +21,8 @@
     "offen": "file:./../packages",
     "plotly.js-basic-dist": "^1.51.2",
     "underscore": "^1.9.1",
-    "url-polyfill": "^1.1.7"
+    "url-polyfill": "^1.1.7",
+    "watchify": "^3.11.1"
   },
   "devDependencies": {
     "browserify": "^16.2.3",

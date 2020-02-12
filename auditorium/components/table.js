@@ -28,11 +28,11 @@ Table.prototype.createElement = function (tableSets, onEmptyMessage) {
   var rows = Array.isArray(selected.rows) && selected.rows.length
     ? selected.rows.map(function (row) {
       return html`
-        <tr>
-          <td class="pv2 bt b--black-10">
+        <tr class="striped--near-white">
+          <td class="truncate pv2 ph1">
             ${row.key}
           </td>
-          <td class="pv2 bt b--black-10">
+          <td class="pv2 ph1">
             ${row.count}
           </td>
         </tr>
@@ -59,17 +59,17 @@ Table.prototype.createElement = function (tableSets, onEmptyMessage) {
   })
 
   return html`
-    <div>
+    <div class="nowrap overflow-x-auto">
       <div>
         ${headlines}
       </div>
-      <table class="w-100 collapse mb3 dt--fixed">
+      <table class="collapse dt--fixed mb3">
         <thead>
           <tr>
-            <th class="tl pv2 b">
+            <th class="w-70 tl b pv2 ph1">
               ${selected.col1Label}
             </th>
-            <th class="tl pv2 b">
+            <th class="w-30 tl b pv2 ph1">
               ${selected.col2Label}
             </th>
           </tr>
