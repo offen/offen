@@ -21,7 +21,8 @@
     "offen": "file:./../packages",
     "plotly.js-basic-dist": "^1.51.2",
     "underscore": "^1.9.1",
-    "url-polyfill": "^1.1.7"
+    "url-polyfill": "^1.1.7",
+    "watchify": "^3.11.1"
   },
   "devDependencies": {
     "browserify": "^16.2.3",
