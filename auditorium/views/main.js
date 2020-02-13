@@ -132,12 +132,12 @@ function view (state, emit) {
       .map(function (account) {
         var buttonClass = null
         if (account.accountId === state.params.accountId) {
-          buttonClass = 'b link bb bw2 ph3 pv2 mr2 mb1 dib br1 mid-gray bg-white-50'
+          buttonClass = 'b link dim dib bt bw2 b--mid-gray ph2 pv2 mid-gray mb2'
         } else {
-          buttonClass = 'link dim bn ph3 pv2 mr2 mb1 dib br1 white bg-mid-gray'
+          buttonClass = 'link dim dib ph2 pv2 mid-gray mt1 mb2'
         }
         return html`
-          <li>
+          <li class="bt b--moon-gray">
             <a href="/auditorium/${account.accountId}/" class="${buttonClass}">
               ${account.accountName}
             </a>
@@ -145,8 +145,11 @@ function view (state, emit) {
         `
       })
     manage = html`
-      <h4 class ="f5 normal mt0 mb3">Choose account</h4>
-      <ul class="flex flex-wrap list pl0 mt0 mb3">
+      <div class="flex justify-between">
+        <h4 class ="f5 normal mt0 mb3">Choose account</h4>
+        <a role="button" class="label-toggle label-toggle--rotate"></a>
+      </div>
+      <ul class="flex flex-wrap list pa0 ma0 mb3">
         ${availableAccounts}
       </ul>
     `
