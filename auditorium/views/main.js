@@ -4,6 +4,7 @@ var _ = require('underscore')
 
 var BarChart = require('./../components/bar-chart')
 var Table = require('./../components/table')
+var Table2 = require('./../components/table2')
 var Input = require('./../components/input')
 
 module.exports = view
@@ -99,7 +100,7 @@ function view (state, emit) {
       url += '?' + new window.URLSearchParams(Object.assign(foreign, range.query))
     }
     var anchorRange = html`
-      <a href="${url}" class="link dim dib ph2 pv2 dark-green mt1 mb2">
+      <a href="${url}" class="link dim dib pv2 dark-green mt1 mb2 mr3">
         ${range.display}
       </a>
     `
@@ -107,7 +108,7 @@ function view (state, emit) {
       <li class="bt b--light-gray">
         ${activeRange
     ? html`
-      <a href="${url}" class="b link dim dib bt bw2 b--dark-green ph2 pv2 mb2 dark-green">
+      <a href="${url}" class="b link dim dib bt bw2 b--dark-green pv2 mb2 mr3 dark-green">
         ${range.display}
       </a>
     `
@@ -132,9 +133,9 @@ function view (state, emit) {
       .map(function (account) {
         var buttonClass = null
         if (account.accountId === state.params.accountId) {
-          buttonClass = 'b link dim dib bt bw2 b--mid-gray ph2 pv2 mid-gray mb2'
+          buttonClass = 'b link dim dib bt bw2 b--mid-gray pv2 mb2 mr3 mid-gray'
         } else {
-          buttonClass = 'link dim dib ph2 pv2 mid-gray mt1 mb2'
+          buttonClass = 'link dim dib pv2 mt1 mb2 mr3 mid-gray'
         }
         return html`
           <li class="bt b--moon-gray">
@@ -189,13 +190,13 @@ function view (state, emit) {
       <div class="flex flex-column w-100 bt ba-ns b--black-10 br0 br2-ns pa3 mb2-ns mr2-ns bg-white">
         <div class="flex flex-column flex-row-ns">
           <div class="w-100 w-30-m w-20-l bn br-ns b--light-gray mr4">
-            <h4 class="f4 normal ma0 mb3">
+            <h4 class="f4 normal ma0 mb4">
               ${__('Real time')}
             </h4>
             ${keyMetric('Unique users', state.model.liveUsers)}
           </div>
-          <div class="w-100 w-70-m w-80-l bt b--light-gray bn-ns">
-            ${state.cache(Table, 'main/live-table').render([tableData], __('No data available for this view'))}
+          <div class="w-100 w-70-m w-80-l bt bn-ns b--light-gray">
+            ${state.cache(Table2, 'main/live-table').render([tableData], __('No data available for this view'))}
           </div>
         </div>
       </div>
@@ -209,7 +210,7 @@ function view (state, emit) {
   }
 
   var chart = html`
-    <div class="w-100 w-75-m w-80-ns pa3 mb2 mr2-ns bt bb ba-ns br0 br2-ns b--black-10 bg-white flex flex-column">
+    <div class="flex flex-column w-100 w-75-m w-80-ns bt ba-ns b--black-10 br0 br2-ns pa3 mb2-ns mr2-ns bg-white ">
       <h4 class="f4 normal mt0 mb3">
         ${__('Page views and %s', isOperator ? __('visitors') : __('accounts'))}
       </h4>
@@ -221,23 +222,23 @@ function view (state, emit) {
     ? state.model.uniqueUsers
     : state.model.uniqueAccounts
   var entityName = isOperator
-    ? __('Users')
-    : __('Accounts')
+    ? __('users')
+    : __('accounts')
 
   var uniqueSessions = state.model.uniqueSessions
   var keyMetrics = html`
-    <div class="w-100 w-25-m w-20-ns pa3 mb2 bt bb ba-ns br0 br2-ns b--black-10 bg-white">
-      <h4 class ="f4 normal mt0 mb3 mb4-ns">Key metrics</h4>
+    <div class="w-100 w-25-m w-20-ns bt ba-ns br0 br2-ns b--black-10 pa3 mb2-ns bg-white">
+      <h4 class ="f4 normal mt0 mb3">Key metrics</h4>
       <div class="flex flex-wrap">
         ${keyMetric(__('Unique %s', entityName), formatCount(uniqueEntities))}
-        ${keyMetric(__('Unique Sessions'), formatCount(uniqueSessions))}
-        <hr class="mt0 mb3 w-100 bb bw1 b--black-10">
-        ${state.model.avgPageDepth ? keyMetric(__('Avg. Page Depth'), formatNumber(state.model.avgPageDepth)) : null}
-        ${keyMetric(__('Bounce Rate'), `${formatNumber(state.model.bounceRate, 100)}%`)}
+        ${keyMetric(__('Unique sessions'), formatCount(uniqueSessions))}
+        <hr style="border: 0; height: 1px;" class="w-100 mt0 mb3 bg-light-gray">
+        ${state.model.avgPageDepth ? keyMetric(__('Avg. page depth'), formatNumber(state.model.avgPageDepth)) : null}
+        ${keyMetric(__('Bounce rate'), `${formatNumber(state.model.bounceRate, 100)}%`)}
         ${isOperator && state.model.loss ? keyMetric(__('Plus'), `${formatNumber(state.model.loss, 100)}%`) : null}
-        <hr class="mt0 mb3 w-100 bb bw1 b--black-10">
-        ${keyMetric(__('Mobile Users'), `${formatNumber(state.model.mobileShare, 100)}%`)}
-        ${state.model.avgPageload ? keyMetric(__('Avg. Page Load time'), formatDuration(state.model.avgPageload)) : null}
+        <hr style="border: 0; height: 1px;" class="w-100 mt0 mb3 bg-light-gray">
+        ${keyMetric(__('Mobile users'), `${formatNumber(state.model.mobileShare, 100)}%`)}
+        ${state.model.avgPageload ? keyMetric(__('Avg. page load time'), formatDuration(state.model.avgPageload)) : null}
       </div>
     </div>
   `
@@ -250,32 +251,30 @@ function view (state, emit) {
   `
 
   var pagesTableData = [
-    { headline: __('Top pages'), col1Label: __('URL'), col2Label: __('Pageviews'), rows: state.model.pages }
+    { headline: __('General'), col1Label: __('URL'), col2Label: __('Pageviews'), rows: state.model.pages }
   ]
   var referrersTableData = [
-    { headline: __('Top referrers'), col1Label: __('Host'), col2Label: __('Pageviews'), rows: state.model.referrers },
-    { headline: __('Top campaigns'), col1Label: __('Campaign'), col2Label: __('Pageviews'), rows: state.model.campaigns },
-    { headline: __('Top sources'), col1Label: __('Source'), col2Label: __('Pageviews'), rows: state.model.sources }
+    { headline: __('Referrers'), col1Label: __('Host'), col2Label: __('Pageviews'), rows: state.model.referrers },
+    { headline: __('Campaigns'), col1Label: __('Campaign'), col2Label: __('Pageviews'), rows: state.model.campaigns },
+    { headline: __('Sources'), col1Label: __('Source'), col2Label: __('Pageviews'), rows: state.model.sources }
   ]
   var landingExitTableData = [
     { headline: __('Landing pages'), col1Label: __('URL'), col2Label: __('Landings'), rows: state.model.landingPages },
     { headline: __('Exit pages'), col1Label: __('URL'), col2Label: __('Exits'), rows: state.model.exitPages }
   ]
   var urlTables = html`
-    <div class="w-100 pa3 mb2 bt bb ba-ns br0 br2-ns b--black-10 bg-white">
+
+    <div class="w-100 bt ba-ns br0 br2-ns b--black-10 pa3 mb2-ns bg-white">
+      <h4 class ="f4 normal mt0 mb3">Top pages</h4>
       ${state.cache(Table, 'main/pages-table').render(pagesTableData, __('No data available for this view'))}
-    </div>
-    <div class="w-100 pa3 mb2 bt bb ba-ns br0 br2-ns b--black-10 bg-white">
       ${state.cache(Table, 'main/referrers-table').render(referrersTableData, __('No data available for this view'))}
-    </div>
-    <div class="w-100 pa3 mb2 bt bb ba-ns br0 br2-ns b--black-10 bg-white">
       ${state.cache(Table, 'main/landing-exit-table').render(landingExitTableData, __('No data available for this view'))}
     </div>
   `
 
   var retention = html`
     <div class="w-100 pa3 mb2 bt bb ba-ns br0 br2-ns b--black-10 bg-white">
-      <h4 class ="f4 normal mt0 mb3 mb4-ns">Weekly retention</h4>
+      <h4 class ="f4 normal mt0 mb3">Weekly retention</h4>
       ${retentionTable(state.model.retentionMatrix)}
     </div>
   `
@@ -398,7 +397,7 @@ function retentionTable (matrix) {
     `
   })
   return html`
-    <table class="w-100 collapse mb3 dt--fixed">
+    <table class="w-100 collapse mb4 dt--fixed">
       <thead>
         <tr>
           <td></td>

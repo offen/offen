@@ -1,25 +1,25 @@
 var html = require('choo/html')
 var Component = require('choo/component')
 
-module.exports = Table
+module.exports = Table2
 
-function Table (id, state) {
+function Table2 (id, state) {
   Component.call(this)
   this.selected = state.components[id] = 0
 }
 
-Table.prototype = Object.create(Component.prototype)
+Table2.prototype = Object.create(Component.prototype)
 
-Table.prototype.update = function (update) {
+Table2.prototype.update = function (update) {
   return true
 }
 
-Table.prototype.toggle = function (index) {
+Table2.prototype.toggle = function (index) {
   this.selected = index
   this.rerender()
 }
 
-Table.prototype.createElement = function (tableSets, onEmptyMessage) {
+Table2.prototype.createElement = function (tableSets, onEmptyMessage) {
   var self = this
   if (!Array.isArray(tableSets)) {
     tableSets = [tableSets]
@@ -64,7 +64,7 @@ Table.prototype.createElement = function (tableSets, onEmptyMessage) {
 
   return html`
     <div>
-      <div class="nowrap overflow-x-auto bt b--light-gray mb4">
+      <div class="nowrap overflow-x-auto mb4">
         <div>
           ${headlines}
         </div>
