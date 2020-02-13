@@ -99,15 +99,15 @@ function view (state, emit) {
       url += '?' + new window.URLSearchParams(Object.assign(foreign, range.query))
     }
     var anchorRange = html`
-      <a href="${url}" class="link dim bn ph3 pv2 mr2 mb1 dib br1 white bg-dark-green">
+      <a href="${url}" class="link dim dib ph2 pv2 dark-green mt1 mb2">
         ${range.display}
       </a>
     `
     return html`
-      <li class="mb1">
+      <li class="bt b--moon-gray">
         ${activeRange
     ? html`
-      <a href="${url}" class="f5 b link bb bw2 ph3 pv2 mr2 mb1 dib br1 dark-green bg-black-05">
+      <a href="${url}" class="b link dim dib bt bw2 b--dark-green ph2 pv2 mb2 dark-green">
         ${range.display}
       </a>
     `
@@ -118,8 +118,8 @@ function view (state, emit) {
   })
 
   var rangeSelector = html`
-    <h4 class ="f5 normal mt0 mb3">${__('Show data from the last')}</h4>
-    <ul class="flex flex-wrap list pl0 mt0 mb3">${ranges}</ul>
+    <h4 class ="f4 normal mt0 mb3">${__('Show data from the last')}</h4>
+    <ul class="flex flex-wrap list pa0 ma0 mb3">${ranges}</ul>
   `
 
   var manage = null
@@ -145,9 +145,9 @@ function view (state, emit) {
         `
       })
     manage = html`
-      <div class="flex justify-between">
-        <h4 class ="f5 normal mt0 mb3">Choose account</h4>
-        <a role="button" class="label-toggle label-toggle--rotate"></a>
+      <div class="flex flex-wrap justify-between">
+        <h4 class ="f4 normal mt0 mb3">Choose account</h4>
+        <a role="button" class="dib dn-ns label-toggle label-toggle--rotate"></a>
       </div>
       <ul class="flex flex-wrap list pa0 ma0 mb3">
         ${availableAccounts}
@@ -163,7 +163,7 @@ function view (state, emit) {
       `
     }
     manage = html`
-      <h4 class ="f5 normal mt0 mb3">${__('Manage data')}</h4>
+      <h4 class ="f4 normal mt0 mb3">${__('Manage data')}</h4>
       ${deleteButton}
       <button class="pointer w-100-ns f5 link dim bn ph3 pv2 mb3 dib br1 white bg-mid-gray" data-role="consent" onclick=${handleConsent}>
         ${userHasOptedIn ? raw(__('Opt out and delete my <strong>usage data</strong>')) : __('Opt in')}
@@ -173,10 +173,10 @@ function view (state, emit) {
 
   var rowRangeManage = html`
     <div class="flex flex-column flex-row-ns mt4">
-      <div class="w-100 w-30-ns pa3 mb2 mr2-ns br0 br2-ns bg-black-05">
+      <div class="w-100 w-40-ns pa3 mb2 mr2-ns br0 br2-ns bg-black-05">
         ${manage}
       </div>
-      <div class="w-100 w-70-ns pa3 mb2 bt bb ba-ns br0 br2-ns b--black-10 bg-white">
+      <div class="w-100 w-60-ns pa3 mb2 bt bb ba-ns br0 br2-ns b--black-10 bg-white">
         ${rangeSelector}
       </div>
     </div>
@@ -189,7 +189,7 @@ function view (state, emit) {
       <div class="w-100 pa3 mb2 mr2-ns bt bb ba-ns br0 br2-ns b--black-10 bg-white flex flex-column">
         <div class="flex flex-column flex-row-ns">
           <div class="w-100 w-30-ns">
-            <h4 class="f5 normal mt0 mb3">
+            <h4 class="f4 normal mt0 mb3">
               ${__('Right now')}
             </h4>
             ${keyMetric('Unique users', state.model.liveUsers)}
@@ -210,7 +210,7 @@ function view (state, emit) {
 
   var chart = html`
     <div class="w-100 w-75-m w-80-ns pa3 mb2 mr2-ns bt bb ba-ns br0 br2-ns b--black-10 bg-white flex flex-column">
-      <h4 class="f5 normal mt0 mb3">
+      <h4 class="f4 normal mt0 mb3">
         ${__('Page views and %s', isOperator ? __('visitors') : __('accounts'))}
       </h4>
       ${state.cache(BarChart, 'main/bar-chart').render(chartData)}
@@ -227,7 +227,7 @@ function view (state, emit) {
   var uniqueSessions = state.model.uniqueSessions
   var keyMetrics = html`
     <div class="w-100 w-25-m w-20-ns pa3 mb2 bt bb ba-ns br0 br2-ns b--black-10 bg-white">
-      <h4 class ="f5 normal mt0 mb3 mb4-ns">Key metrics</h4>
+      <h4 class ="f4 normal mt0 mb3 mb4-ns">Key metrics</h4>
       <div class="flex flex-wrap">
         ${keyMetric(__('Unique %s', entityName), formatCount(uniqueEntities))}
         ${keyMetric(__('Unique Sessions'), formatCount(uniqueSessions))}
@@ -275,7 +275,7 @@ function view (state, emit) {
 
   var retention = html`
     <div class="w-100 pa3 mb2 bt bb ba-ns br0 br2-ns b--black-10 bg-white">
-      <h4 class ="f5 normal mt0 mb3 mb4-ns">Weekly retention</h4>
+      <h4 class ="f4 normal mt0 mb3 mb4-ns">Weekly retention</h4>
       ${retentionTable(state.model.retentionMatrix)}
     </div>
   `
@@ -283,7 +283,7 @@ function view (state, emit) {
     ? html`
       <div class="flex flex-column flex-row-ns mt4">
         <div class="w-100 w-20-ns pa3 mb2 mr2-ns br0 br2-ns bg-black-05">
-          <h4 class ="f5 normal mt0 mb3">
+          <h4 class ="f4 normal mt0 mb3">
             ${__('Admin console')}
           </h4>
           <div class="flex items-center">
@@ -293,7 +293,7 @@ function view (state, emit) {
           </div>
         </div>
         <div class="w-100 w-80-ns pa3 mb2 br0 br2-ns bg-black-05">
-          <h4 class="f5 mb3 mt0">${__('No data showing up?')}</h4>
+          <h4 class="f4 mb3 mt0">${__('No data showing up?')}</h4>
           <p>${raw(__('To use Offen with the account <strong>%s</strong> on your website, embed the following script on each page you want to appear in your statistics:', state.model.account.name))}</p>
           <pre class="pre">${raw(`&lt;script async src="${window.location.origin}/script.js" data-account-id="${state.model.account.accountId}"&gt;&lt;/script&gt;`)}</pre>
         </div>
@@ -305,7 +305,7 @@ function view (state, emit) {
   if (isOperator) {
     invite = html`
       <div class="w-100 pa3 mb2 br0 br2-ns bg-black-05">
-        <h4 class="f5 normal mt0 mb3">${__('Invite someone to the "%s" account', state.model.account.name)}</h4>
+        <h4 class="f4 normal mt0 mb3">${__('Invite someone to the "%s" account', state.model.account.name)}</h4>
         <form class="mw6 center" onsubmit="${handleInvite}">
           <label class="b lh-copy">
             ${__('Email Address to send invite to')}
