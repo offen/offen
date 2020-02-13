@@ -104,7 +104,7 @@ function view (state, emit) {
       </a>
     `
     return html`
-      <li class="bt b--moon-gray">
+      <li class="bt b--light-gray">
         ${activeRange
     ? html`
       <a href="${url}" class="b link dim dib bt bw2 b--dark-green ph2 pv2 mb2 dark-green">
@@ -173,10 +173,10 @@ function view (state, emit) {
 
   var rowRangeManage = html`
     <div class="flex flex-column flex-row-ns mt4">
-      <div class="w-100 w-40-ns pa3 mb2 mr2-ns br0 br2-ns bg-black-05">
+      <div class="w-100 w-40-ns br0 br2-ns pa3 mb2 mr2-ns bg-black-05">
         ${manage}
       </div>
-      <div class="w-100 w-60-ns pa3 mb2 bt bb ba-ns br0 br2-ns b--black-10 bg-white">
+      <div class="w-100 w-60-ns bt ba-ns b--black-10 br0 br2-ns pa3 mb2-ns bg-white">
         ${rangeSelector}
       </div>
     </div>
@@ -184,17 +184,17 @@ function view (state, emit) {
 
   var live = null
   if (isOperator) {
-    var tableData = { headline: __('Currently active pages'), col1Label: __('URL'), col2Label: __('Visitors'), rows: state.model.livePages }
+    var tableData = { headline: __('Active pages'), col1Label: __('URL'), col2Label: __('Visitors'), rows: state.model.livePages }
     live = html`
-      <div class="w-100 pa3 mb2 mr2-ns bt bb ba-ns br0 br2-ns b--black-10 bg-white flex flex-column">
+      <div class="flex flex-column w-100 bt ba-ns b--black-10 br0 br2-ns pa3 mb2-ns mr2-ns bg-white">
         <div class="flex flex-column flex-row-ns">
-          <div class="w-100 w-30-ns">
-            <h4 class="f4 normal mt0 mb3">
-              ${__('Right now')}
+          <div class="w-100 w-30-m w-20-l bn br-ns b--light-gray mr4">
+            <h4 class="f4 normal ma0 mb3">
+              ${__('Real time')}
             </h4>
             ${keyMetric('Unique users', state.model.liveUsers)}
           </div>
-          <div class="w-100 w-70-ns">
+          <div class="w-100 w-70-m w-80-l bt b--light-gray bn-ns">
             ${state.cache(Table, 'main/live-table').render([tableData], __('No data available for this view'))}
           </div>
         </div>
@@ -355,7 +355,7 @@ function view (state, emit) {
 
 function keyMetric (name, value) {
   return html`
-      <div class="w-50 w-100-ns mb3 mb4-ns">
+      <div class="w-50 w-100-ns mb4">
         <p class="mv0 f2">${value}</p>
         <p class="mv0 normal">${name}</p>
       </div>
