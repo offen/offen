@@ -38,9 +38,24 @@ Table.prototype.createElement = function (tableSets, onEmptyMessage) {
         </tr>
       `
     })
-    : html`<tr><td colspan="2">${onEmptyMessage}</td></tr>`
+    : html`<tr><td class="pl1 moon-gray" colspan="2">${onEmptyMessage}</td></tr>`
 
   var headlines = tableSets.map(function (set, index) {
+    var css = ['f5', 'normal', 'mv3', 'dib', 'mr3']
+    var onclick = null
+    if (tableSets.length > 1) {
+      css.push('pointer')
+      onclick = self.toggle.bind(self, index)
+    }
+    var attrs = { class: css.join(' '), onclick: onclick }
+    return html`
+      <a role="button" ${attrs}>
+        ${set.headline}
+      </a>
+    `
+  })
+
+  var headlines_menu = tableSets.map(function (set, index) {
     var css = ['f5', 'normal', 'mt0', 'mb3', 'dib', 'mr3']
     var onclick = null
     if (tableSets.length > 1) {
@@ -59,17 +74,17 @@ Table.prototype.createElement = function (tableSets, onEmptyMessage) {
   })
 
   return html`
-    <div class="nowrap overflow-x-auto">
+    <div class="nowrap overflow-x-auto mt2-ns mb4">
       <div>
         ${headlines}
       </div>
-      <table class="collapse dt--fixed mb3">
+      <table class="collapse dt--fixed">
         <thead>
           <tr>
-            <th class="w-70 tl b pv2 ph1">
+            <th class="w-70 normal tl pv2 ph1 moon-gray">
               ${selected.col1Label}
             </th>
-            <th class="w-30 tl b pv2 ph1">
+            <th class="w-30 normal tl pv2 ph1 moon-gray">
               ${selected.col2Label}
             </th>
           </tr>
