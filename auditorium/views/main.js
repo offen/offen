@@ -281,14 +281,31 @@ function view (state, emit) {
 
   var embedCode = isOperator
     ? html`
-      <div class="flex flex-column flex-row-ns mt4">
-        <div class="w-100 w-100-ns pa3 mb2 br0 br2-ns bg-black-05">
+      <div class="flex flex-column flex-row-ns mt2">
+        <div class="w-100 br0 br2-ns pa3 mb2 bg-black-05">
           <div class="flex flex-wrap justify-between">
             <h4 class="f4 normal mt0 mb3">${__('Embed code')}</h4>
             <a role="button" class="dib dn-ns label-toggle label-toggle--rotate"></a>
           </div>
-          <p>${raw(__('To use Offen with the account <strong>%s</strong> on your website, embed the following script on each page you want to appear in your statistics:', state.model.account.name))}</p>
-          <pre class="pre">${raw(`&lt;script async src="${window.location.origin}/script.js" data-account-id="${state.model.account.accountId}"&gt;&lt;/script&gt;`)}</pre>
+          <div class="mw6 center mb4">
+            <p class="ma0 mb3">
+              ${raw(__('To use Offen with the account <strong>%s</strong> on your website, embed the following script on each page you want to appear in your statistics.', state.model.account.name))}
+            </p>
+            <div class="flex flex-column flex-row-ns">
+              <div class="w-100 w-70-ns overflow-hidden br1 ba b--moon-gray">
+                <div class="h2 overflow-y-hidden overflow-x-scroll bg-light-yellow " style="margin-bottom: -50px; padding-bottom: 50px; box-sizing: content-box;">
+                  <p class="nowrap ma0 ph2 pt2">
+                    ${raw(`&lt;script async src="${window.location.origin}/script.js" data-account-id="${state.model.account.accountId}"&gt;&lt;/script&gt;`)}
+                  </p>
+                </div>
+              </div>
+              <div class="w-100 w-30-ns ml3-ns mt3 mt0-ns">
+                <a href="#" class="w-100 f5 tc link dim bn dib br1 ph3 pv2 white bg-mid-gray">
+                  ${__('Copy code')}
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     `
@@ -298,7 +315,7 @@ function view (state, emit) {
   if (isOperator) {
     invite = html`
       <div class="w-100 pa3 mb2 br0 br2-ns bg-black-05">
-        <h4 class="f4 normal mt0 mb3">${__('Invite someone to the "%s" account', state.model.account.name)}</h4>
+        <h4 class="f4 normal mt0 mb3">${raw(__('Invite to account <strong>%s</strong>', state.model.account.name))}</h4>
         <form class="mw6 center" onsubmit="${handleInvite}">
           <label class="b lh-copy">
             ${__('Email Address to send invite to')}
