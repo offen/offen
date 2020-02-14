@@ -36,7 +36,7 @@ function withLayout (headline) {
               </p>
             </div>
             <div>
-              <a href="https://www.offen.dev/" class="normal link underline dim moon-gray" target="_blank">www.offen.dev</a>
+              <a href="https://www.offen.dev/" class="normal link dim moon-gray" target="_blank">www.offen.dev</a>
             </div>
           </div>
         </div>
