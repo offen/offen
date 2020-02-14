@@ -267,8 +267,8 @@ function view (state, emit) {
     <div class="w-100 bt ba-ns br0 br2-ns b--black-10 pa3 mb2-ns bg-white">
       <h4 class ="f4 normal mt0 mb3">Top pages</h4>
       ${state.cache(Table, 'main/pages-table').render(pagesTableData, __('No data available for this view'))}
-      ${state.cache(Table, 'main/referrers-table').render(referrersTableData, __('No data available for this view'))}
       ${state.cache(Table, 'main/landing-exit-table').render(landingExitTableData, __('No data available for this view'))}
+      ${state.cache(Table, 'main/referrers-table').render(referrersTableData, __('No data available for this view'))}
     </div>
   `
 
@@ -278,21 +278,15 @@ function view (state, emit) {
       ${retentionTable(state.model.retentionMatrix)}
     </div>
   `
-  var goSettings = isOperator
+
+  var embedCode = isOperator
     ? html`
       <div class="flex flex-column flex-row-ns mt4">
-        <div class="w-100 w-20-ns pa3 mb2 mr2-ns br0 br2-ns bg-black-05">
-          <h4 class ="f4 normal mt0 mb3">
-            ${__('Admin console')}
-          </h4>
-          <div class="flex items-center">
-            <a href="/console/" class="w-100-ns f5 tc link dim bn ph3 pv2 mr1 mb2 dib br1 white bg-mid-gray">
-              ${__('Settings')}
-            </a>
+        <div class="w-100 w-100-ns pa3 mb2 br0 br2-ns bg-black-05">
+          <div class="flex flex-wrap justify-between">
+            <h4 class="f4 normal mt0 mb3">${__('Embed code')}</h4>
+            <a role="button" class="dib dn-ns label-toggle label-toggle--rotate"></a>
           </div>
-        </div>
-        <div class="w-100 w-80-ns pa3 mb2 br0 br2-ns bg-black-05">
-          <h4 class="f4 mb3 mt0">${__('No data showing up?')}</h4>
           <p>${raw(__('To use Offen with the account <strong>%s</strong> on your website, embed the following script on each page you want to appear in your statistics:', state.model.account.name))}</p>
           <pre class="pre">${raw(`&lt;script async src="${window.location.origin}/script.js" data-account-id="${state.model.account.accountId}"&gt;&lt;/script&gt;`)}</pre>
         </div>
@@ -326,6 +320,23 @@ function view (state, emit) {
     `
   }
 
+  var goSettings = isOperator
+    ? html`
+      <div class="flex flex-column flex-row-ns mt4">
+        <div class="w-100 w-100-ns pa3 mb2 mr2-ns br0 br2-ns bg-black-05">
+          <h4 class ="f4 normal mt0 mb3">
+            ${__('Admin console')}
+          </h4>
+          <div class="flex items-center">
+            <a href="/console/" class="w-100-ns f5 tc link dim bn ph3 pv2 mr1 mb2 dib br1 white bg-mid-gray">
+              ${__('Settings')}
+            </a>
+          </div>
+        </div>
+      </div>
+    `
+    : null
+
   /*
   var scrolltest = html`
     <div class="">
@@ -344,8 +355,10 @@ function view (state, emit) {
           ${rowUsersSessionsChart}
           ${urlTables}
           ${retention}
-          ${goSettings}
+          ${embedCode}
           ${invite}
+          ${goSettings}
+
         </div>
         ${state.stale ? html`<div class="fixed top-0 right-0 bottom-0 left-0 bg-white o-40"></div>` : null}
       </div>
