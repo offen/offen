@@ -183,26 +183,6 @@ function view (state, emit) {
     </div>
   `
 
-  var live = null
-  if (isOperator) {
-    var tableData = { headline: __('Active pages'), col1Label: __('URL'), col2Label: __('Visitors'), rows: state.model.livePages }
-    live = html`
-      <div class="flex flex-column w-100 bt ba-ns b--black-10 br0 br2-ns pa3 mb2-ns mr2-ns bg-white">
-        <div class="flex flex-column flex-row-ns">
-          <div class="w-100 w-30-m w-20-l bn br-ns b--light-gray mr4">
-            <h4 class="f4 normal ma0 mb4">
-              ${__('Real time')}
-            </h4>
-            ${keyMetric('Unique users', state.model.liveUsers)}
-          </div>
-          <div class="w-100 w-70-m w-80-l bt bn-ns b--light-gray">
-            ${state.cache(Table2, 'main/live-table').render([tableData], __('No data available for this view'))}
-          </div>
-        </div>
-      </div>
-    `
-  }
-
   var chartData = {
     data: state.model.pageviews,
     isOperator: isOperator,
@@ -210,7 +190,7 @@ function view (state, emit) {
   }
 
   var chart = html`
-    <div class="flex flex-column w-100 w-75-m w-80-ns bt ba-ns b--black-10 br0 br2-ns pa3 mb2-ns mr2-ns bg-white ">
+    <div class="flex flex-column w-100 w-70-m w-75-l bt ba-ns b--black-10 br0 br2-ns pa3 mb2-ns mr2-ns bg-white ">
       <h4 class="f4 normal mt0 mb3">
         ${__('Page views and %s', isOperator ? __('visitors') : __('accounts'))}
       </h4>
@@ -227,18 +207,18 @@ function view (state, emit) {
 
   var uniqueSessions = state.model.uniqueSessions
   var keyMetrics = html`
-    <div class="w-100 w-25-m w-20-ns bt ba-ns br0 br2-ns b--black-10 pa3 mb2-ns bg-white">
+    <div class="w-100 w-30-m w-25-l bt ba-ns br0 br2-ns b--black-10 pa3 mb2-ns bg-white">
       <h4 class ="f4 normal mt0 mb3">Key metrics</h4>
       <div class="flex flex-wrap">
         ${keyMetric(__('Unique %s', entityName), formatCount(uniqueEntities))}
         ${keyMetric(__('Unique sessions'), formatCount(uniqueSessions))}
         <hr style="border: 0; height: 1px;" class="w-100 mt0 mb3 bg-light-gray">
-        ${state.model.avgPageDepth ? keyMetric(__('Avg. page depth'), formatNumber(state.model.avgPageDepth)) : null}
-        ${keyMetric(__('Bounce rate'), `${formatNumber(state.model.bounceRate, 100)}%`)}
-        ${isOperator && state.model.loss ? keyMetric(__('Plus'), `${formatNumber(state.model.loss, 100)}%`) : null}
+        ${state.model.avgPageDepth ? keyMetricSmall(__('Avg. page depth'), formatNumber(state.model.avgPageDepth)) : null}
+        ${keyMetricSmall(__('Bounce rate'), `${formatNumber(state.model.bounceRate, 100)} %`)}
+        ${isOperator && state.model.loss ? keyMetricSmall(__('Plus'), `${formatNumber(state.model.loss, 100)} %`) : null}
         <hr style="border: 0; height: 1px;" class="w-100 mt0 mb3 bg-light-gray">
-        ${keyMetric(__('Mobile users'), `${formatNumber(state.model.mobileShare, 100)}%`)}
-        ${state.model.avgPageload ? keyMetric(__('Avg. page load time'), formatDuration(state.model.avgPageload)) : null}
+        ${keyMetricSmall(__('Mobile users'), `${formatNumber(state.model.mobileShare, 100)} %`)}
+        ${state.model.avgPageload ? keyMetricSmall(__('Avg. page load time'), formatDuration(state.model.avgPageload)) : null}
       </div>
     </div>
   `
@@ -273,11 +253,31 @@ function view (state, emit) {
   `
 
   var retention = html`
-    <div class="w-100 pa3 mb2 bt bb ba-ns br0 br2-ns b--black-10 bg-white">
+    <div class="w-100 pa3 bt ba-ns br0 br2-ns b--black-10 mb2-ns bg-white">
       <h4 class ="f4 normal mt0 mb3">Weekly retention</h4>
       ${retentionTable(state.model.retentionMatrix)}
     </div>
   `
+
+    var live = null
+    if (isOperator) {
+      var tableData = { headline: __('Active pages'), col1Label: __('URL'), col2Label: __('Visitors'), rows: state.model.livePages }
+      live = html`
+        <div class="flex flex-column w-100 bb bt ba-ns b--black-10 br0 br2-ns pa3 mb2-ns mr2-ns bg-white">
+          <div class="flex flex-column flex-row-ns">
+            <div class="w-100 w-30-m w-20-l bn br-ns b--light-gray mr4">
+              <h4 class="f4 normal ma0 mb4">
+                ${__('Real time')}
+              </h4>
+              ${keyMetric('Active users on site', state.model.liveUsers)}
+            </div>
+            <div class="w-100 w-70-m w-80-l bt bn-ns b--light-gray">
+              ${state.cache(Table2, 'main/live-table').render([tableData], __('No data available for this view'))}
+            </div>
+          </div>
+        </div>
+      `
+    }
 
   var embedCode = isOperator
     ? html`
@@ -373,10 +373,10 @@ function view (state, emit) {
         ${accountHeader}
         <div id="main">
           ${rowRangeManage}
-          ${live}
           ${rowUsersSessionsChart}
           ${urlTables}
           ${retention}
+          ${live}
           ${embedCode}
           ${invite}
           ${goSettings}
@@ -391,6 +391,15 @@ function keyMetric (name, value) {
   return html`
       <div class="w-50 w-100-ns mb4">
         <p class="mv0 f2">${value}</p>
+        <p class="mv0 normal">${name}</p>
+      </div>
+    `
+}
+
+function keyMetricSmall (name, value) {
+  return html`
+      <div class="w-50 w-100-ns mb4">
+        <p class="mv0 f3">${value}</p>
         <p class="mv0 normal">${name}</p>
       </div>
     `
@@ -450,7 +459,7 @@ function formatDuration (valueInMs) {
   if (valueInMs >= 1000) {
     return formatNumber(valueInMs / 1000, 1, 2) + __('s')
   }
-  return Math.round(valueInMs) + __('ms')
+  return Math.round(valueInMs) + __(' ms')
 }
 
 function formatCount (count) {
