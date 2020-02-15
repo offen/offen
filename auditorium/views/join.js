@@ -26,18 +26,18 @@ function view (state, emit) {
   }
   var form = html`
     <div class="w-100 pa3 mt4 mb2 br0 br2-ns bg-black-05">
-      <h4 class="f5 normal mt0 mb3">${userExists ? __('Accept invite') : __('Join Offen')}</h4>
+      <h4 class="f4 normal mt0 mb3">${userExists ? __('Accept invite') : __('Join Offen')}</h4>
       <form class="mw6 center" onsubmit=${handleSubmit}>
-        <label class="b lh-copy">
+        <label class="lh-copy">
           ${__('Email address')}
           ${state.cache(Input, 'join/email', { name: 'email-address', required: true, autofocus: true }).render()}
         </label>
-        <label class="b lh-copy">
+        <label class="lh-copy">
           ${__('Password')}
           ${state.cache(Input, 'join/password', { name: 'password', type: 'password', required: true }).render()}
         </label>
         ${!userExists ? html`
-            <label class="b lh-copy">
+            <label class="lh-copy">
               ${__('Repeat password')}
               ${state.cache(Input, 'join/repeat', { name: 'repeat-password', type: 'password', required: true }).render()}
             </label>

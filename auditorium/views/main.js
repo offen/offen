@@ -158,30 +158,56 @@ function view (state, emit) {
     var deleteButton = null
     if (userHasOptedIn) {
       deleteButton = html`
-        <button class="pointer w-100-ns f5 link dim bn ph3 pv2 mr1 mb2 dib br1 white bg-mid-gray" data-role="purge" onclick="${handlePurge}">
-          ${raw(__('Delete my <strong>usage data</strong>'))}
+        <p class="ma0 mb3">
+          ${raw(__('Delete only my <strong>usage data</strong>'))}
+        </p>
+        <button class="pointer w-100 w-auto-ns f5 link dim bn ph3 pv2 mr1 dib br1 white bg-mid-gray" data-role="purge" onclick="${handlePurge}">
+          ${raw(__('<strong>Delete</strong>'))}
         </button>
       `
     }
     manage = html`
-      <h4 class ="f4 normal mt0 mb3">${__('Manage data')}</h4>
-      ${deleteButton}
-      <button class="pointer w-100-ns f5 link dim bn ph3 pv2 mb3 dib br1 white bg-mid-gray" data-role="consent" onclick=${handleConsent}>
-        ${userHasOptedIn ? raw(__('Opt out and delete my <strong>usage data</strong>')) : __('Opt in')}
-      </button>
+      <h4 class="f4 normal mt0 mb3">${__('Privacy')}</h4>
+      <div class="flex flex-column flex-row-ns">
+        <div class="w-100 w-50-m w-40-l bn br-ns b--moon-gray mb4 mb0-ns mr0 mr4-ns">
+          ${deleteButton}
+        </div>
+        <div class="w-100 w-50-m w-60-l bt bn-ns b--moon-gray mb4">
+          <p class="ma0 mt3 mt0-ns mb3">
+            ${userHasOptedIn ? raw(__('Opt out and delete my <strong>usage data</strong>')) : raw(__('Opt in and grant access to your <strong>usage data</strong>'))}
+          </p>
+          <button class="pointer w-100 w-auto-ns f5 link dim bn ph3 pv2 dib br1 white bg-mid-gray" data-role="consent" onclick=${handleConsent}>
+            ${userHasOptedIn ? __('Opt out and delete') : __('Opt in')}
+          </button>
+        </div>
+      </div>
     `
   }
 
-  var rowRangeManage = html`
-    <div class="flex flex-column flex-row-ns mt4">
-      <div class="w-100 w-40-ns br0 br2-ns pa3 mb2 mr2-ns bg-black-05">
-        ${manage}
+  if (isOperator) {
+    var rowRangeManage = html`
+      <div class="flex flex-column flex-row-ns mt4">
+        <div class="w-100 w-40-ns br0 br2-ns pa3 mb2 mr2-ns bg-black-05">
+          ${manage}
+        </div>
+        <div class="w-100 w-60-ns bt ba-ns b--black-10 br0 br2-ns pa3 mb2-ns bg-white">
+          ${rangeSelector}
+        </div>
       </div>
-      <div class="w-100 w-60-ns bt ba-ns b--black-10 br0 br2-ns pa3 mb2-ns bg-white">
-        ${rangeSelector}
+    `
+  } else {
+    var rowRangeManage = html`
+      <div class="flex flex-column mt4">
+        <div class="w-100 br0 br2-ns pa3 mb2 mr2-ns bg-black-05">
+          ${manage}
+        </div>
+        <div class="w-100 bt ba-ns b--black-10 br0 br2-ns pa3 mb2-ns bg-white">
+          ${rangeSelector}
+        </div>
       </div>
-    </div>
-  `
+    `
+
+  }
 
   var chartData = {
     data: state.model.pageviews,
@@ -317,14 +343,14 @@ function view (state, emit) {
         </div>
         <form class="mw6 center mb4" onsubmit="${handleInvite}">
           <p class="ma0 mb3">
-          ${raw(__('Share your Offen account <strong>%s</strong> via email invitation. Invited users can only view data but not modify your account.', state.model.account.name))}
+          ${raw(__('Share your Offen account <strong>%s</strong> via email invitation. Invited users can view data and modify your account.', state.model.account.name))}
           </p>
           <label class="lh-copy">
             ${__('Email address to send invite to')}
             ${state.cache(Input, 'main/invite-user-invitee', { type: 'email', name: 'invitee' }).render()}
           </label>
-          <hr style="border: 0; height: 1px;" class="w-100 mt0 mt3 mb2 bg-moon-gray">
-          <h5 class="f5 normal ma0 mb3 silver">Confirm with your credentials</h5>
+          <hr style="border: 0; height: 1px;" class="w-100 mt3 mb2 bg-moon-gray">
+          <h5 class="f5 normal ma0 mb3 silver">${__('Confirm with your credentials')}</h5>
           <label class="lh-copy" id="invite-single-email">
             ${__('Your email address')}
             ${state.cache(Input, 'main/invite-user-email', { type: 'email', name: 'email-address' }).render()}
@@ -349,11 +375,11 @@ function view (state, emit) {
         <div class="mw6 center mb4">
           <div class="flex flex-column flex-row-ns justify-between">
             <div class="flex flex-column flex-row-ns w-100 w-auto-ns">
-              <a href="/console/" class="w-100 w-auto-ns f5 tc link dim bn dib br1 ph3 pv2 mr0 mr2-ns mb3 mb0-ns white bg-mid-gray">
-                ${__('Manage accounts')}
-              </a>
-              <a href="/console/" class="w-100 w-auto-ns f5 tc link dim bn dib br1 ph3 pv2 mb4 mb0-ns white bg-mid-gray">
+              <a href="/console#share-all-accounts" class="w-100 w-auto-ns f5 tc link dim bn dib br1 ph3 pv2 mr0 mr2-ns mb3 mb0-ns white bg-mid-gray">
                 ${__('Share all accounts')}
+              </a>
+              <a href="/console#create-new-account" class="w-100 w-auto-ns f5 tc link dim bn dib br1 ph3 pv2 mb4 mb0-ns white bg-mid-gray">
+                ${__('Manage accounts')}
               </a>
             </div>
             <div class="w-100 w-auto-ns tr-ns">
