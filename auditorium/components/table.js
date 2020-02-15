@@ -19,7 +19,7 @@ Table.prototype.toggle = function (index) {
   this.rerender()
 }
 
-Table.prototype.createElement = function (tableSets, onEmptyMessage) {
+Table.prototype.createElement = function (tableSets, onEmptyMessage, removeBorder) {
   var self = this
   if (!Array.isArray(tableSets)) {
     tableSets = [tableSets]
@@ -41,6 +41,9 @@ Table.prototype.createElement = function (tableSets, onEmptyMessage) {
     : html`<tr><td class="pl1 moon-gray" colspan="2">${onEmptyMessage}</td></tr>`
 
   var headlines = tableSets.map(function (set, index) {
+    if (!set.headline) {
+      return null
+    }
     if (tableSets.length > 1) {
       var css = ['f5', 'normal', 'link', 'dim', 'dib', 'pt2', 'pb3', 'mr3', 'dark-green']
     } else {
@@ -61,13 +64,16 @@ Table.prototype.createElement = function (tableSets, onEmptyMessage) {
       </a>
     `
   })
+    .filter(Boolean)
 
+  var wrapperClass = 'nowrap overflow-x-auto mb4'
+  if (!removeBorder) {
+    wrapperClass += ' bt b--light-gray'
+  }
   return html`
     <div>
-      <div class="nowrap overflow-x-auto bt b--light-gray mb4">
-        <div>
-          ${headlines}
-        </div>
+      <div class="${wrapperClass}">
+        ${headlines.length ? html`<div>${headlines}</div>` : null}
         <table class="collapse dt--fixed mb2">
           <thead>
             <tr>

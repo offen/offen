@@ -4,7 +4,6 @@ var _ = require('underscore')
 
 var BarChart = require('./../components/bar-chart')
 var Table = require('./../components/table')
-var Table2 = require('./../components/table2')
 var Input = require('./../components/input')
 
 module.exports = view
@@ -257,7 +256,7 @@ function view (state, emit) {
   `
 
   var pagesTableData = [
-    { headline: __('General'), col1Label: __('URL'), col2Label: __('Pageviews'), rows: state.model.pages }
+    { headline: null, col1Label: __('URL'), col2Label: __('Pageviews'), rows: state.model.pages }
   ]
   var referrersTableData = [
     { headline: __('Referrers'), col1Label: __('Host'), col2Label: __('Pageviews'), rows: state.model.referrers },
@@ -298,7 +297,7 @@ function view (state, emit) {
               ${keyMetric('Active users on site', state.model.liveUsers)}
             </div>
             <div class="w-100 w-70-m w-80-l bt bn-ns b--light-gray">
-              ${state.cache(Table2, 'main/live-table').render([tableData], __('No data available for this view'))}
+              ${state.cache(Table, 'main/live-table').render([tableData], __('No data available for this view'), true)}
             </div>
           </div>
         </div>
