@@ -44,18 +44,19 @@ Table.prototype.createElement = function (tableSets, onEmptyMessage, removeBorde
     if (!set.headline) {
       return null
     }
+    if (tableSets.length === 1) {
+      var css = ['f5', 'normal', 'dib', 'pv3']
+    }
     if (tableSets.length > 1) {
       var css = ['f5', 'normal', 'link', 'dim', 'dib', 'pt2', 'pb3', 'mr3', 'dark-green']
-    } else {
-      var css = ['f5', 'normal', 'dib', 'pv3']
     }
     var onclick = null
     if (tableSets.length > 1) {
       css.push('pointer')
       onclick = self.toggle.bind(self, index)
     }
-    if (index === self.selected && tableSets.length != 1) {
-     css.push('b', 'bt', 'bw2', 'b--dark-green')
+    if (index === self.selected && tableSets.length !== 1) {
+      css.push('b', 'bt', 'bw2', 'b--dark-green')
     }
     var attrs = { class: css.join(' '), onclick: onclick }
     return html`

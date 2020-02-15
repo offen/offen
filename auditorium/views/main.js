@@ -222,7 +222,6 @@ function view (state, emit) {
       ${manage}
     </div>
     `
-
   }
 
   var chartData = {
