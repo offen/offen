@@ -13,8 +13,8 @@ function view (state, emit) {
     })
     .map(function (account) {
       return html`
-        <li class="bt b--moon-gray">
-          <a href="/auditorium/${account.accountId}/" class="link dim dib pv2 mt1 mb2 mr3 mid-gray">
+        <li class="flex-grow-1 bt b--moon-gray">
+          <a href="/auditorium/${account.accountId}/" class="b link dim dib pv2 mt1 mb2 mr3 mid-gray">
            ${account.accountName}</a>
         </li>
       `
@@ -29,6 +29,7 @@ function view (state, emit) {
     <div class="mw6 center mb4">
       <ul class="flex flex-wrap list pl0 mt0 mb3">
         ${availableAccounts}
+        <div style="flex-grow: 20;" class="bt b--moon-gray"></div>
       </ul>
     </div>
   `
@@ -142,7 +143,7 @@ function view (state, emit) {
       </div>
       <form class="mw6 center mb4" onsubmit="${handleInvite}">
         <p class="ma0 mb3">
-        ${__('Share your Offen accounts via email invitation. Invited users can view data and modify your accounts.')}
+        ${__('Share your Offen accounts via email invitation. Invited users have full access to shared accounts.')}
         </p>
         <label class="lh-copy">
           ${__('Email Address to send invite to')}

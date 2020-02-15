@@ -104,7 +104,7 @@ function view (state, emit) {
       </a>
     `
     return html`
-      <li class="bt b--light-gray">
+      <li class="flex-grow-1 bt b--light-gray">
         ${activeRange
     ? html`
       <a href="${url}" class="b link dim dib bt bw2 b--dark-green pv2 mb2 mr3 dark-green">
@@ -118,8 +118,13 @@ function view (state, emit) {
   })
 
   var rangeSelector = html`
-    <h4 class ="f4 normal mt0 mb3">${__('Show data from the last')}</h4>
-    <ul class="flex flex-wrap list pa0 ma0 mb3">${ranges}</ul>
+    <div class="w-100 bt ba-ns b--black-10 br0 br2-ns pa3 mb2-ns bg-white">
+      <h4 class ="f4 normal mt0 mb3">${__('Show data from the last')}</h4>
+      <ul class="flex flex-wrap list pa0 ma0 mb3">
+        ${ranges}
+        <div style="flex-grow: 20;" class="bt b--light-gray"></div>
+      </ul>
+    </div>
   `
 
   var manage = null
@@ -137,7 +142,7 @@ function view (state, emit) {
           buttonClass = 'link dim dib pv2 mt1 mb2 mr3 mid-gray'
         }
         return html`
-          <li class="bt b--moon-gray">
+          <li class="flex-grow-1 bt b--moon-gray">
             <a href="/auditorium/${account.accountId}/" class="${buttonClass}">
               ${account.accountName}
             </a>
@@ -151,6 +156,7 @@ function view (state, emit) {
       </div>
       <ul class="flex flex-wrap list pa0 ma0 mb3">
         ${availableAccounts}
+        <div style="flex-grow: 20;" class="bt b--moon-gray"></div>
       </ul>
     `
   } else {
@@ -158,26 +164,42 @@ function view (state, emit) {
     if (userHasOptedIn) {
       deleteButton = html`
         <p class="ma0 mb3">
-          ${raw(__('Delete only my <strong>usage data</strong>'))}
+          ${raw(__('Stay opted in, only delete <strong>usage data</strong>'))}
         </p>
-        <button class="pointer w-100 w-auto-ns f5 link dim bn ph3 pv2 mr1 dib br1 white bg-mid-gray" data-role="purge" onclick="${handlePurge}">
-          ${raw(__('<strong>Delete</strong>'))}
+        <button class="pointer w-100 w-auto-ns f5 link dim bn dib br1 ph3 pv2 mr1 mb4 white bg-mid-gray" data-role="purge" onclick="${handlePurge}">
+          ${__('Delete')}
         </button>
       `
     }
     manage = html`
-      <h4 class="f4 normal mt0 mb3">${__('Privacy')}</h4>
       <div class="flex flex-column flex-row-ns">
-        <div class="w-100 w-50-m w-40-l bn br-ns b--moon-gray mb4 mb0-ns mr0 mr4-ns">
+        <div class="w-100 w-auto-m w-40-l bn br-ns b--moon-gray mb0-ns pr0 pr4-ns mr0 mr4-ns">
+          <h4 class="f4 normal mt0 mb3">${__('Privacy')}</h4>
+          <p class="ma0 mb3">
+            ${userHasOptedIn ? raw(__('Opt out and delete <strong>usage data</strong>')) : raw(__('Opt in and grant access to your <strong>usage data</strong>'))}
+          </p>
+          <button class="pointer w-100 w-auto-ns f5 link dim bn ph3 pv2 dib br1 mb4 white bg-mid-gray" data-role="consent" onclick=${handleConsent}>
+            ${userHasOptedIn ? __('Opt out') : __('Opt in')}
+          </button>
+        </div>
+        <div class="w-100 w-auto-m w-60-l bt bn-ns b--moon-gray pt3 pt4-ns mt2">
           ${deleteButton}
         </div>
-        <div class="w-100 w-50-m w-60-l bt bn-ns b--moon-gray mb4">
-          <p class="ma0 mt3 mt0-ns mb3">
-            ${userHasOptedIn ? raw(__('Opt out and delete my <strong>usage data</strong>')) : raw(__('Opt in and grant access to your <strong>usage data</strong>'))}
-          </p>
-          <button class="pointer w-100 w-auto-ns f5 link dim bn ph3 pv2 dib br1 white bg-mid-gray" data-role="consent" onclick=${handleConsent}>
-            ${userHasOptedIn ? __('Opt out and delete') : __('Opt in')}
-          </button>
+      </div>
+    `
+  }
+
+  var live = null
+  if (isOperator) {
+    var tableData = { headline: __('Active pages'), col1Label: __('URL'), col2Label: __('Visitors'), rows: state.model.livePages }
+    live = html`
+      <div class="flex flex-column flex-row-ns">
+        <div class="w-100 w-30-ns bn br-ns b--light-gray pr2 mr4">
+          <h4 class="f4 normal ma0 mb4">${__('Real time')}</h4>
+          ${keyMetric('Active users on site', state.model.liveUsers)}
+        </div>
+        <div class="w-100 w-70-ns bt bn-ns b--light-gray mt1">
+          ${state.cache(Table, 'main/live-table').render([tableData], __('No data available for this view'), true)}
         </div>
       </div>
     `
@@ -185,25 +207,20 @@ function view (state, emit) {
 
   if (isOperator) {
     var rowRangeManage = html`
-      <div class="flex flex-column flex-row-ns mt4">
-        <div class="w-100 w-40-ns br0 br2-ns pa3 mb2 mr2-ns bg-black-05">
+      <div class="flex flex-column flex-row-l mt4">
+        <div class="w-100 w-30-l br0 br2-ns pa3 mb2 mr2-ns bg-black-05">
           ${manage}
         </div>
-        <div class="w-100 w-60-ns bt ba-ns b--black-10 br0 br2-ns pa3 mb2-ns bg-white">
-          ${rangeSelector}
+        <div class="w-100 w-70-l bt ba-ns b--black-10 br0 br2-ns pa3 mb2-ns bg-white">
+          ${live}
         </div>
       </div>
     `
   } else {
     var rowRangeManage = html`
-      <div class="flex flex-column mt4">
-        <div class="w-100 br0 br2-ns pa3 mb2 mr2-ns bg-black-05">
-          ${manage}
-        </div>
-        <div class="w-100 bt ba-ns b--black-10 br0 br2-ns pa3 mb2-ns bg-white">
-          ${rangeSelector}
-        </div>
-      </div>
+    <div class="w-100 br0 br2-ns pa3 mb2 mr2-ns mt4 bg-black-05">
+      ${manage}
+    </div>
     `
 
   }
@@ -270,7 +287,7 @@ function view (state, emit) {
   var urlTables = html`
 
     <div class="w-100 bt ba-ns br0 br2-ns b--black-10 pa3 mb2-ns bg-white">
-      <h4 class ="f4 normal mt0 mb3">Top pages</h4>
+      <h4 class ="f4 normal mt0 mb4">Top pages</h4>
       ${state.cache(Table, 'main/pages-table').render(pagesTableData, __('No data available for this view'))}
       ${state.cache(Table, 'main/landing-exit-table').render(landingExitTableData, __('No data available for this view'))}
       ${state.cache(Table, 'main/referrers-table').render(referrersTableData, __('No data available for this view'))}
@@ -278,31 +295,11 @@ function view (state, emit) {
   `
 
   var retention = html`
-    <div class="w-100 pa3 bt ba-ns br0 br2-ns b--black-10 mb2-ns bg-white">
+    <div class="w-100 pa3 bt bb ba-ns br0 br2-ns b--black-10 mb2-ns bg-white">
       <h4 class ="f4 normal mt0 mb3">Weekly retention</h4>
       ${retentionTable(state.model.retentionMatrix)}
     </div>
   `
-
-    var live = null
-    if (isOperator) {
-      var tableData = { headline: __('Active pages'), col1Label: __('URL'), col2Label: __('Visitors'), rows: state.model.livePages }
-      live = html`
-        <div class="flex flex-column w-100 bb bt ba-ns b--black-10 br0 br2-ns pa3 mb2-ns mr2-ns bg-white">
-          <div class="flex flex-column flex-row-ns">
-            <div class="w-100 w-30-m w-20-l bn br-ns b--light-gray mr4">
-              <h4 class="f4 normal ma0 mb4">
-                ${__('Real time')}
-              </h4>
-              ${keyMetric('Active users on site', state.model.liveUsers)}
-            </div>
-            <div class="w-100 w-70-m w-80-l bt bn-ns b--light-gray">
-              ${state.cache(Table, 'main/live-table').render([tableData], __('No data available for this view'), true)}
-            </div>
-          </div>
-        </div>
-      `
-    }
 
   var embedCode = isOperator
     ? html`
@@ -316,12 +313,10 @@ function view (state, emit) {
             <p class="ma0 mb3">
               ${raw(__('To use Offen with the account <strong>%s</strong> on your website, embed the following script on each page you want to appear in your statistics.', state.model.account.name))}
             </p>
-            <div class="w-100 overflow-hidden br1 ba b--moon-gray">
-              <div class="h2 overflow-y-hidden overflow-x-scroll bg-light-yellow " style="margin-bottom: -50px; padding-bottom: 50px; box-sizing: content-box;">
-                <p class="nowrap ma0 ph2 pt2">
-                  ${raw(`&lt;script async src="${window.location.origin}/script.js" data-account-id="${state.model.account.accountId}"&gt;&lt;/script&gt;`)}
-                </p>
-              </div>
+            <div class="w-100 br1 ba b--moon-gray ph2 pv2 bg-light-yellow">
+              <p class="ma0" style="font-family: monospace; font-size: 16px; font-style: normal; font-variant: normal; font-weight: 400; line-height: 16px; word-break: break-all;">
+                ${raw(`&lt;script async src="${window.location.origin}/script.js" data-account-id="${state.model.account.accountId}"&gt;&lt;/script&gt;`)}
+              </p>
             </div>
             <a href="#" class="pointer w-100 w-auto-ns f5 tc link dim bn dib br1 ph3 pv2 mt3 white bg-mid-gray">
               ${__('Copy code')}
@@ -342,7 +337,7 @@ function view (state, emit) {
         </div>
         <form class="mw6 center mb4" onsubmit="${handleInvite}">
           <p class="ma0 mb3">
-          ${raw(__('Share your Offen account <strong>%s</strong> via email invitation. Invited users can view data and modify your account.', state.model.account.name))}
+          ${raw(__('Share your Offen account <strong>%s</strong> via email invitation. Invited users have full access to a shared account.', state.model.account.name))}
           </p>
           <label class="lh-copy">
             ${__('Email address to send invite to')}
@@ -372,21 +367,12 @@ function view (state, emit) {
           <a role="button" class="dib label-toggle label-toggle--rotate"></a>
         </div>
         <div class="mw6 center mb4">
-          <div class="flex flex-column flex-row-ns justify-between">
-            <div class="flex flex-column flex-row-ns w-100 w-auto-ns">
-              <a href="/console#share-all-accounts" class="w-100 w-auto-ns f5 tc link dim bn dib br1 ph3 pv2 mr0 mr2-ns mb3 mb0-ns white bg-mid-gray">
-                ${__('Share all accounts')}
-              </a>
-              <a href="/console#create-new-account" class="w-100 w-auto-ns f5 tc link dim bn dib br1 ph3 pv2 mb4 mb0-ns white bg-mid-gray">
-                ${__('Manage accounts')}
-              </a>
-            </div>
-            <div class="w-100 w-auto-ns tr-ns">
-              <a href="/console/" class="w-100 w-auto-ns f5 tc link dim bn dib br1 ph3 pv2 white bg-silver">
-                ${__('Logout')}
-              </a>
-            </div>
-          </div>
+          <p class="ma0 mb3">
+            ${__('Share all accounts, create a new one, change your email address and password, log out from Offen')}
+          </p>
+          <a href="/console/" class="w-100 w-auto-ns f5 tc link dim bn dib br1 ph3 pv2 mr0 mr2-ns mb3 mb0-ns white bg-mid-gray">
+            ${__('Open admin console')}
+          </a>
         </div>
       </div>
     `
@@ -398,14 +384,13 @@ function view (state, emit) {
         ${accountHeader}
         <div id="main">
           ${rowRangeManage}
+          ${rangeSelector}
           ${rowUsersSessionsChart}
           ${urlTables}
           ${retention}
-          ${live}
           ${embedCode}
           ${invite}
           ${goSettings}
-
         </div>
         ${state.stale ? html`<div class="fixed top-0 right-0 bottom-0 left-0 bg-white o-40"></div>` : null}
       </div>
