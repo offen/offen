@@ -20,9 +20,9 @@ function view (state, emit) {
   }
   var form = html`
     <div class="w-100 pa3 mt4 mb2 br0 br2-ns bg-black-05">
-      <h4 class="f5 normal mt0 mb3">Request link to reset password</h4>
+      <h4 class="f4 normal mt0 mb3">Request link to reset password</h4>
       <form class="mw6 center" onsubmit=${handleSubmit}>
-        <label class="b lh-copy">
+        <label class="lh-copy">
           ${__('Email address')}
           ${state.cache(Input, 'forgot-password/email', { name: 'email-address', required: true, autofocus: true }).render()}
         </label>

@@ -99,15 +99,15 @@ function view (state, emit) {
       url += '?' + new window.URLSearchParams(Object.assign(foreign, range.query))
     }
     var anchorRange = html`
-      <a href="${url}" class="link dim bn ph3 pv2 mr2 mb1 dib br1 white bg-dark-green">
+      <a href="${url}" class="link dim dib pv2 dark-green mt1 mb2 mr3">
         ${range.display}
       </a>
     `
     return html`
-      <li class="mb1">
+      <li class="pr3 bt b--light-gray">
         ${activeRange
     ? html`
-      <a href="${url}" class="f5 b link bb bw2 ph3 pv2 mr2 mb1 dib br1 dark-green bg-black-05">
+      <a href="${url}" class="b link dim dib bt bw2 b--dark-green pv2 mb2 mr3 dark-green">
         ${range.display}
       </a>
     `
@@ -118,8 +118,12 @@ function view (state, emit) {
   })
 
   var rangeSelector = html`
-    <h4 class ="f5 normal mt0 mb3">${__('Show data from the last')}</h4>
-    <ul class="flex flex-wrap list pl0 mt0 mb3">${ranges}</ul>
+    <div class="w-100 bt ba-ns b--black-10 br0 br2-ns pa3 mb2-ns bg-white">
+      <h4 class ="f4 normal mt0 mb3">${__('Show data from the last')}</h4>
+      <ul class="flex flex-wrap list pa0 ma0 mb3">
+        ${ranges}
+      </ul>
+    </div>
   `
 
   var manage = null
@@ -132,12 +136,12 @@ function view (state, emit) {
       .map(function (account) {
         var buttonClass = null
         if (account.accountId === state.params.accountId) {
-          buttonClass = 'b link bb bw2 ph3 pv2 mr2 mb1 dib br1 mid-gray bg-white-50'
+          buttonClass = 'b link dim dib bt bw2 b--mid-gray pv2 mb2 mr3 mid-gray'
         } else {
-          buttonClass = 'link dim bn ph3 pv2 mr2 mb1 dib br1 white bg-mid-gray'
+          buttonClass = 'link dim dib pv2 mt1 mb2 mr3 mid-gray'
         }
         return html`
-          <li>
+          <li class="pr1 bt b--moon-gray">
             <a href="/auditorium/${account.accountId}/" class="${buttonClass}">
               ${account.accountName}
             </a>
@@ -145,8 +149,11 @@ function view (state, emit) {
         `
       })
     manage = html`
-      <h4 class ="f5 normal mt0 mb3">Choose account</h4>
-      <ul class="flex flex-wrap list pl0 mt0 mb3">
+      <div class="flex justify-between">
+        <h4 class ="f4 normal mt0 mb3">Choose account</h4>
+        <a role="button" class="dib dn-ns label-toggle label-toggle--rotate"></a>
+      </div>
+      <ul class="flex flex-wrap list pa0 ma0 mb3">
         ${availableAccounts}
       </ul>
     `
@@ -154,47 +161,64 @@ function view (state, emit) {
     var deleteButton = null
     if (userHasOptedIn) {
       deleteButton = html`
-        <button class="pointer w-100-ns f5 link dim bn ph3 pv2 mr1 mb2 dib br1 white bg-mid-gray" data-role="purge" onclick="${handlePurge}">
-          ${raw(__('Delete my <strong>usage data</strong>'))}
+        <p class="ma0 mb3">
+          ${raw(__('Stay opted in, only delete <strong>usage data</strong>'))}
+        </p>
+        <button class="pointer w-100 w-auto-ns f5 link dim bn dib br1 ph3 pv2 mr1 mb4 white bg-mid-gray" data-role="purge" onclick="${handlePurge}">
+          ${__('Delete')}
         </button>
       `
     }
     manage = html`
-      <h4 class ="f5 normal mt0 mb3">${__('Manage data')}</h4>
-      ${deleteButton}
-      <button class="pointer w-100-ns f5 link dim bn ph3 pv2 mb3 dib br1 white bg-mid-gray" data-role="consent" onclick=${handleConsent}>
-        ${userHasOptedIn ? raw(__('Opt out and delete my <strong>usage data</strong>')) : __('Opt in')}
-      </button>
+      <div class="flex flex-column flex-row-ns">
+        <div class="w-100 w-auto-m w-40-l bn br-ns b--moon-gray mb0-ns pr0 pr4-ns mr0 mr4-ns">
+          <h4 class="f4 normal mt0 mb3">${__('Privacy')}</h4>
+          <p class="ma0 mb3">
+            ${userHasOptedIn ? raw(__('Opt out and delete <strong>usage data</strong>')) : raw(__('Opt in and grant access to your <strong>usage data</strong>'))}
+          </p>
+          <button class="pointer w-100 w-auto-ns f5 link dim bn ph3 pv2 dib br1 mb4 white bg-mid-gray" data-role="consent" onclick=${handleConsent}>
+            ${userHasOptedIn ? __('Opt out') : __('Opt in')}
+          </button>
+        </div>
+        <div class="w-100 w-auto-m w-60-l bt bn-ns b--moon-gray pt3 pt4-ns mt2">
+          ${deleteButton}
+        </div>
+      </div>
     `
   }
 
-  var rowRangeManage = html`
-    <div class="flex flex-column flex-row-ns mt4">
-      <div class="w-100 w-30-ns pa3 mb2 mr2-ns br0 br2-ns bg-black-05">
-        ${manage}
-      </div>
-      <div class="w-100 w-70-ns pa3 mb2 bt bb ba-ns br0 br2-ns b--black-10 bg-white">
-        ${rangeSelector}
-      </div>
-    </div>
-  `
-
   var live = null
   if (isOperator) {
-    var tableData = { headline: __('Currently active pages'), col1Label: __('URL'), col2Label: __('Visitors'), rows: state.model.livePages }
+    var tableData = { headline: __('Active pages'), col1Label: __('URL'), col2Label: __('Visitors'), rows: state.model.livePages }
     live = html`
-      <div class="w-100 pa3 mb2 mr2-ns bt bb ba-ns br0 br2-ns b--black-10 bg-white flex flex-column">
-        <div class="flex flex-column flex-row-ns">
-          <div class="w-100 w-30-ns">
-            <h4 class="f5 normal mt0 mb3">
-              ${__('Right now')}
-            </h4>
-            ${keyMetric('Unique users', state.model.liveUsers)}
-          </div>
-          <div class="w-100 w-70-ns">
-            ${state.cache(Table, 'main/live-table').render([tableData], __('No data available for this view'))}
-          </div>
+      <div class="flex flex-column flex-row-ns">
+        <div class="w-100 w-30-ns bn br-ns b--light-gray pr2 mr4">
+          <h4 class="f4 normal ma0 mb4">${__('Real time')}</h4>
+          ${keyMetric('Active users on site', state.model.liveUsers)}
         </div>
+        <div class="w-100 w-70-ns bt bn-ns b--light-gray mt1">
+          ${state.cache(Table, 'main/live-table').render([tableData], __('No data available for this view'), true)}
+        </div>
+      </div>
+    `
+  }
+
+  var rowRangeManage = null
+  if (isOperator) {
+    rowRangeManage = html`
+      <div class="flex flex-column flex-row-l mt4">
+        <div class="w-100 w-30-l br0 br2-ns pa3 mb2 mr2-ns bg-black-05">
+          ${manage}
+        </div>
+        <div class="w-100 w-70-l bt ba-ns b--black-10 br0 br2-ns pa3 mb2-ns bg-white">
+          ${live}
+        </div>
+      </div>
+    `
+  } else {
+    rowRangeManage = html`
+      <div class="w-100 br0 br2-ns pa3 mb2 mr2-ns mt4 bg-black-05">
+        ${manage}
       </div>
     `
   }
@@ -206,8 +230,8 @@ function view (state, emit) {
   }
 
   var chart = html`
-    <div class="w-100 w-75-m w-80-ns pa3 mb2 mr2-ns bt bb ba-ns br0 br2-ns b--black-10 bg-white flex flex-column">
-      <h4 class="f5 normal mt0 mb3">
+    <div class="flex flex-column w-100 w-70-m w-75-l bt ba-ns b--black-10 br0 br2-ns pa3 mb2-ns mr2-ns bg-white ">
+      <h4 class="f4 normal mt0 mb3">
         ${__('Page views and %s', isOperator ? __('visitors') : __('accounts'))}
       </h4>
       ${state.cache(BarChart, 'main/bar-chart').render(chartData)}
@@ -218,23 +242,23 @@ function view (state, emit) {
     ? state.model.uniqueUsers
     : state.model.uniqueAccounts
   var entityName = isOperator
-    ? __('Users')
-    : __('Accounts')
+    ? __('users')
+    : __('accounts')
 
   var uniqueSessions = state.model.uniqueSessions
   var keyMetrics = html`
-    <div class="w-100 w-25-m w-20-ns pa3 mb2 bt bb ba-ns br0 br2-ns b--black-10 bg-white">
-      <h4 class ="f5 normal mt0 mb3 mb4-ns">Key metrics</h4>
+    <div class="w-100 w-30-m w-25-l bt ba-ns br0 br2-ns b--black-10 pa3 mb2-ns bg-white">
+      <h4 class ="f4 normal mt0 mb3">Key metrics</h4>
       <div class="flex flex-wrap">
         ${keyMetric(__('Unique %s', entityName), formatCount(uniqueEntities))}
-        ${keyMetric(__('Unique Sessions'), formatCount(uniqueSessions))}
-        <hr class="mt0 mb3 w-100 bb bw1 b--black-10">
-        ${state.model.avgPageDepth ? keyMetric(__('Avg. Page Depth'), formatNumber(state.model.avgPageDepth)) : null}
-        ${keyMetric(__('Bounce Rate'), `${formatNumber(state.model.bounceRate, 100)}%`)}
-        ${isOperator && state.model.loss ? keyMetric(__('Plus'), `${formatNumber(state.model.loss, 100)}%`) : null}
-        <hr class="mt0 mb3 w-100 bb bw1 b--black-10">
-        ${keyMetric(__('Mobile Users'), `${formatNumber(state.model.mobileShare, 100)}%`)}
-        ${state.model.avgPageload ? keyMetric(__('Avg. Page Load time'), formatDuration(state.model.avgPageload)) : null}
+        ${keyMetric(__('Unique sessions'), formatCount(uniqueSessions))}
+        <hr class="w-100 mt0 mb3 bt light-gray">
+        ${state.model.avgPageDepth ? keyMetricSmall(__('Avg. page depth'), formatNumber(state.model.avgPageDepth)) : null}
+        ${keyMetricSmall(__('Bounce rate'), `${formatNumber(state.model.bounceRate, 100)} %`)}
+        ${isOperator && state.model.loss ? keyMetricSmall(__('Plus'), `${formatNumber(state.model.loss, 100)} %`) : null}
+        <hr class="w-100 mt0 mb3 bt light-gray">
+        ${keyMetricSmall(__('Mobile users'), `${formatNumber(state.model.mobileShare, 100)} %`)}
+        ${state.model.avgPageload ? keyMetricSmall(__('Avg. page load time'), formatDuration(state.model.avgPageload)) : null}
       </div>
     </div>
   `
@@ -247,52 +271,55 @@ function view (state, emit) {
   `
 
   var pagesTableData = [
-    { headline: __('Top pages'), col1Label: __('URL'), col2Label: __('Pageviews'), rows: state.model.pages }
+    { headline: null, col1Label: __('URL'), col2Label: __('Pageviews'), rows: state.model.pages }
   ]
   var referrersTableData = [
-    { headline: __('Top referrers'), col1Label: __('Host'), col2Label: __('Pageviews'), rows: state.model.referrers },
-    { headline: __('Top campaigns'), col1Label: __('Campaign'), col2Label: __('Pageviews'), rows: state.model.campaigns },
-    { headline: __('Top sources'), col1Label: __('Source'), col2Label: __('Pageviews'), rows: state.model.sources }
+    { headline: __('Referrers'), col1Label: __('Host'), col2Label: __('Pageviews'), rows: state.model.referrers },
+    { headline: __('Campaigns'), col1Label: __('Campaign'), col2Label: __('Pageviews'), rows: state.model.campaigns },
+    { headline: __('Sources'), col1Label: __('Source'), col2Label: __('Pageviews'), rows: state.model.sources }
   ]
   var landingExitTableData = [
     { headline: __('Landing pages'), col1Label: __('URL'), col2Label: __('Landings'), rows: state.model.landingPages },
     { headline: __('Exit pages'), col1Label: __('URL'), col2Label: __('Exits'), rows: state.model.exitPages }
   ]
   var urlTables = html`
-    <div class="w-100 pa3 mb2 bt bb ba-ns br0 br2-ns b--black-10 bg-white">
+
+    <div class="w-100 bt ba-ns br0 br2-ns b--black-10 pa3 mb2-ns bg-white">
+      <h4 class ="f4 normal mt0 mb4">Top pages</h4>
       ${state.cache(Table, 'main/pages-table').render(pagesTableData, __('No data available for this view'))}
-    </div>
-    <div class="w-100 pa3 mb2 bt bb ba-ns br0 br2-ns b--black-10 bg-white">
-      ${state.cache(Table, 'main/referrers-table').render(referrersTableData, __('No data available for this view'))}
-    </div>
-    <div class="w-100 pa3 mb2 bt bb ba-ns br0 br2-ns b--black-10 bg-white">
       ${state.cache(Table, 'main/landing-exit-table').render(landingExitTableData, __('No data available for this view'))}
+      ${state.cache(Table, 'main/referrers-table').render(referrersTableData, __('No data available for this view'))}
     </div>
   `
 
   var retention = html`
-    <div class="w-100 pa3 mb2 bt bb ba-ns br0 br2-ns b--black-10 bg-white">
-      <h4 class ="f5 normal mt0 mb3 mb4-ns">Weekly retention</h4>
+    <div class="w-100 pa3 bt bb ba-ns br0 br2-ns b--black-10 mb2-ns bg-white">
+      <h4 class ="f4 normal mt0 mb3">Weekly retention</h4>
       ${retentionTable(state.model.retentionMatrix)}
     </div>
   `
-  var goSettings = isOperator
+
+  var embedCode = isOperator
     ? html`
-      <div class="flex flex-column flex-row-ns mt4">
-        <div class="w-100 w-20-ns pa3 mb2 mr2-ns br0 br2-ns bg-black-05">
-          <h4 class ="f5 normal mt0 mb3">
-            ${__('Admin console')}
-          </h4>
-          <div class="flex items-center">
-            <a href="/console/" class="w-100-ns f5 tc link dim bn ph3 pv2 mr1 mb2 dib br1 white bg-mid-gray">
-              ${__('Settings')}
-            </a>
+      <div class="flex flex-column flex-row-ns mt2">
+        <div class="w-100 br0 br2-ns pa3 mb2 bg-black-05">
+          <div class="flex flex-wrap justify-between">
+            <h4 class="f4 normal mt0 mb3">${__('Embed code')}</h4>
+            <a role="button" class="dib label-toggle label-toggle--rotate"></a>
           </div>
-        </div>
-        <div class="w-100 w-80-ns pa3 mb2 br0 br2-ns bg-black-05">
-          <h4 class="f5 mb3 mt0">${__('No data showing up?')}</h4>
-          <p>${raw(__('To use Offen with the account <strong>%s</strong> on your website, embed the following script on each page you want to appear in your statistics:', state.model.account.name))}</p>
-          <pre class="pre">${raw(`&lt;script async src="${window.location.origin}/script.js" data-account-id="${state.model.account.accountId}"&gt;&lt;/script&gt;`)}</pre>
+          <div class="mw6 center mb4">
+            <p class="ma0 mb3">
+              ${raw(__('To use Offen with the account <strong>%s</strong> on your website, embed the following script on each page you want to appear in your statistics.', state.model.account.name))}
+            </p>
+            <div class="w-100 br1 ba b--moon-gray ph2 pv2 bg-light-yellow">
+              <code class="ma0 lh-solid word-wrap">
+                ${raw(`&lt;script async src="${window.location.origin}/script.js" data-account-id="${state.model.account.accountId}"&gt;&lt;/script&gt;`)}
+              </code>
+            </div>
+            <button class="pointer w-100 w-auto-ns f5 tc link dim bn dib br1 ph3 pv2 mt3 white bg-mid-gray">
+              ${__('Copy code')}
+            </button>
+          </div>
         </div>
       </div>
     `
@@ -302,27 +329,52 @@ function view (state, emit) {
   if (isOperator) {
     invite = html`
       <div class="w-100 pa3 mb2 br0 br2-ns bg-black-05">
-        <h4 class="f5 normal mt0 mb3">${__('Invite someone to the "%s" account', state.model.account.name)}</h4>
-        <form class="mw6 center" onsubmit="${handleInvite}">
-          <label class="b lh-copy">
-            ${__('Email Address to send invite to')}
+        <div class="flex justify-between">
+          <h4 class="f4 normal mt0 mb3">${__('Share account')}</h4>
+          <a role="button" class="dib label-toggle label-toggle--rotate"></a>
+        </div>
+        <form class="mw6 center mb4" onsubmit="${handleInvite}">
+          <p class="ma0 mb3">
+          ${raw(__('Share your Offen account <strong>%s</strong> via email invitation. Invited users have full access to a shared account.', state.model.account.name))}
+          </p>
+          <label class="lh-copy">
+            ${__('Email address to send invite to')}
             ${state.cache(Input, 'main/invite-user-invitee', { type: 'email', name: 'invitee' }).render()}
           </label>
-          <hr>
-          <h5>You need to confirm this action with your credentials</h5>
-          <label class="b lh-copy" id="invite-single-email">
-            ${__('Your Email Address')}
+          <hr class="w-100 mt3 mb2 bt moon-gray">
+          <h5 class="f5 normal ma0 mb3 silver">${__('Confirm with your credentials')}</h5>
+          <label class="lh-copy" id="invite-single-email">
+            ${__('Your email address')}
             ${state.cache(Input, 'main/invite-user-email', { type: 'email', name: 'email-address' }).render()}
           </label>
-          <label class="b lh-copy" id="invite-single-password">
-            ${__('Confirm with your Password')}
+          <label class="lh-copy" id="invite-single-password">
+            ${__('Your password')}
             ${state.cache(Input, 'main/invite-user-password', { type: 'password', name: 'password' }).render()}
           </label>
-          <input class="pointer w-100 w-auto-ns f5 link dim bn ph3 pv2 mb3 dib br1 white bg-mid-gray" type="submit" value="${__('Invite User')}">
+          <input class="pointer w-100 w-auto-ns f5 link dim bn dib br1 ph3 pv2 white bg-mid-gray" type="submit" value="${__('Invite user')}">
         </form>
       </div>
     `
   }
+
+  var goSettings = isOperator
+    ? html`
+      <div class="w-100 w-100-ns br0 br2-ns pa3 mt2 bg-black-05">
+        <div class="flex justify-between">
+          <h4 class ="f4 normal mt0 mb3">${__('Admin console')}</h4>
+          <a role="button" class="dib label-toggle label-toggle--rotate"></a>
+        </div>
+        <div class="mw6 center mb4">
+          <p class="ma0 mb3">
+            ${__('Share all accounts, create a new one, change your email address and password, log out from Offen')}
+          </p>
+          <a href="/console/" class="w-100 w-auto-ns f5 tc link dim bn dib br1 ph3 pv2 mr0 mr2-ns mb3 mb0-ns white bg-mid-gray">
+            ${__('Open admin console')}
+          </a>
+        </div>
+      </div>
+    `
+    : null
 
   // TODO: add properly styled loading overlay
   return html`
@@ -330,12 +382,13 @@ function view (state, emit) {
         ${accountHeader}
         <div id="main">
           ${rowRangeManage}
-          ${live}
+          ${rangeSelector}
           ${rowUsersSessionsChart}
           ${urlTables}
           ${retention}
-          ${goSettings}
+          ${embedCode}
           ${invite}
+          ${goSettings}
         </div>
         ${state.stale ? html`<div class="fixed top-0 right-0 bottom-0 left-0 bg-white o-40"></div>` : null}
       </div>
@@ -344,8 +397,17 @@ function view (state, emit) {
 
 function keyMetric (name, value) {
   return html`
-      <div class="w-50 w-100-ns mb3 mb4-ns">
+      <div class="w-50 w-100-ns mb4">
         <p class="mv0 f2">${value}</p>
+        <p class="mv0 normal">${name}</p>
+      </div>
+    `
+}
+
+function keyMetricSmall (name, value) {
+  return html`
+      <div class="w-50 w-100-ns mb4">
+        <p class="mv0 f3">${value}</p>
         <p class="mv0 normal">${name}</p>
       </div>
     `
@@ -359,7 +421,7 @@ function retentionSquare (value) {
     <div title="${formatNumber(value, 100)}%">
       <div
         style="opacity: ${value !== 0 ? (value * 0.75 + 0.25) : 1}"
-        class="${value !== 0 ? 'bg-dark-green' : 'bg-light-gray'} h3 w-100"
+        class="${value !== 0 ? 'bg-dark-green' : 'bg-near-white'} h3 w-100"
       >
       </div>
     </div>
@@ -387,7 +449,7 @@ function retentionTable (matrix) {
     `
   })
   return html`
-    <table class="w-100 collapse mb3 dt--fixed">
+    <table class="w-100 collapse mb4 dt--fixed">
       <thead>
         <tr>
           <td></td>
@@ -405,7 +467,7 @@ function formatDuration (valueInMs) {
   if (valueInMs >= 1000) {
     return formatNumber(valueInMs / 1000, 1, 2) + __('s')
   }
-  return Math.round(valueInMs) + __('ms')
+  return Math.round(valueInMs) + __(' ms')
 }
 
 function formatCount (count) {

@@ -15,7 +15,7 @@ function withLayout (headline) {
               <a href="/" class="dim">
                 <img src="/offen-icon-black.svg" alt="Offen logo" width="37" height="40" class="ma0 mt1 mr3">
               </a>
-              <h1 class="f2 normal ma0 mt1">${headline || __('Offen Auditorium')}</h1>
+              <h1 class="nowrap overflow-hidden f2 normal ma0 mt1">${headline || __('Offen Auditorium')}</h1>
             </div>
           </div>
           <div class="mw8 center ph0 ph3-ns pb4">
@@ -36,7 +36,7 @@ function withLayout (headline) {
               </p>
             </div>
             <div>
-              <a href="https://www.offen.dev/" class="normal link underline dim moon-gray" target="_blank">www.offen.dev</a>
+              <a href="https://www.offen.dev/" class="normal link dim moon-gray" target="_blank">www.offen.dev</a>
             </div>
           </div>
         </div>

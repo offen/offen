@@ -19,7 +19,7 @@ Table.prototype.toggle = function (index) {
   this.rerender()
 }
 
-Table.prototype.createElement = function (tableSets, onEmptyMessage) {
+Table.prototype.createElement = function (tableSets, onEmptyMessage, removeBorder) {
   var self = this
   if (!Array.isArray(tableSets)) {
     tableSets = [tableSets]
@@ -28,27 +28,36 @@ Table.prototype.createElement = function (tableSets, onEmptyMessage) {
   var rows = Array.isArray(selected.rows) && selected.rows.length
     ? selected.rows.map(function (row) {
       return html`
-        <tr>
-          <td class="pv2 bt b--black-10">
+        <tr class="striped--near-white">
+          <td class="truncate pv2 ph1">
             ${row.key}
           </td>
-          <td class="pv2 bt b--black-10">
+          <td class="pv2 ph1">
             ${row.count}
           </td>
         </tr>
       `
     })
-    : html`<tr><td colspan="2">${onEmptyMessage}</td></tr>`
+    : html`<tr><td class="pl1 moon-gray" colspan="2">${onEmptyMessage}</td></tr>`
 
   var headlines = tableSets.map(function (set, index) {
-    var css = ['f5', 'normal', 'mt0', 'mb3', 'dib', 'mr3']
+    if (!set.headline) {
+      return null
+    }
+    var css = []
+    if (tableSets.length === 1) {
+      css = ['f5', 'normal', 'dib', 'pv3']
+    }
+    if (tableSets.length > 1) {
+      css = ['f5', 'normal', 'link', 'dim', 'dib', 'pt2', 'pb3', 'mr3', 'dark-green']
+    }
     var onclick = null
     if (tableSets.length > 1) {
       css.push('pointer')
       onclick = self.toggle.bind(self, index)
     }
-    if (index === self.selected) {
-      css.push('b')
+    if (index === self.selected && tableSets.length !== 1) {
+      css.push('b', 'bt', 'bw2', 'b--dark-green')
     }
     var attrs = { class: css.join(' '), onclick: onclick }
     return html`
@@ -57,27 +66,32 @@ Table.prototype.createElement = function (tableSets, onEmptyMessage) {
       </a>
     `
   })
+    .filter(Boolean)
 
+  var wrapperClass = 'nowrap overflow-x-auto mb4'
+  if (!removeBorder) {
+    wrapperClass += ' bt b--light-gray'
+  }
   return html`
     <div>
-      <div>
-        ${headlines}
+      <div class="${wrapperClass}">
+        ${headlines.length ? html`<div>${headlines}</div>` : null}
+        <table class="collapse dt--fixed mb2">
+          <thead>
+            <tr>
+              <th class="w-70 normal tl pv2 ph1 moon-gray">
+                ${selected.col1Label}
+              </th>
+              <th class="w-30 normal tl pv2 ph1 moon-gray">
+                ${selected.col2Label}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows}
+          </tbody>
+        </table>
       </div>
-      <table class="w-100 collapse mb3 dt--fixed">
-        <thead>
-          <tr>
-            <th class="tl pv2 b">
-              ${selected.col1Label}
-            </th>
-            <th class="tl pv2 b">
-              ${selected.col2Label}
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          ${rows}
-        </tbody>
-      </table>
     </div>
   `
 }
