@@ -1,10 +1,12 @@
 const errors = require('./errors')
 
-exports.query = (data, authenticatedUser, softFailureMessage) => (dispatch, getState, postMessage) => {
-  dispatch({
-    type: 'QUERY_REQUEST',
-    payload: null
-  })
+exports.query = (data, authenticatedUser, softFailureMessage, inBackground) => (dispatch, getState, postMessage) => {
+  if (!inBackground) {
+    dispatch({
+      type: 'QUERY_REQUEST',
+      payload: null
+    })
+  }
 
   const payload = data
     ? { query: data, authenticatedUser: authenticatedUser }

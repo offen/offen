@@ -37,7 +37,7 @@ const AuditoriumView = (props) => {
     )
     useEffect(function scheduleAutoRefresh () {
       const tick = window.setInterval(() => {
-        handleQuery({ accountId, range, resolution }, authenticatedUser, softFailure)
+        handleQuery({ accountId, range, resolution }, authenticatedUser, softFailure, true)
       }, 15000)
       return function cancelAutoRefresh () {
         window.clearInterval(tick)
