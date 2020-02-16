@@ -68,7 +68,7 @@ const AuditoriumView = (props) => {
     <Fragment>
       <Header
         isOperator={isOperator}
-        accountName={authenticatedUser ? model.result.account.name : null}
+        accountName={(isOperator && authenticatedUser) ? model.result.account.name : null}
       />
       {isOperator
         ? (
