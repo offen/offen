@@ -16,13 +16,14 @@ const URLTables = require('./components/auditorium/url-tables')
 const EmbedCode = require('./components/auditorium/embed-code')
 const Invite = require('./components/auditorium/invite')
 const GoSettings = require('./components/auditorium/go-settings')
+const LoadingOverlay = require('./components/auditorium/loading-overlay')
 const model = require('./../action-creators/model')
 const consent = require('./../action-creators/consent-status')
 const errors = require('./../action-creators/errors')
 const management = require('./../action-creators/management')
 
 const AuditoriumView = (props) => {
-  const { matches, authenticatedUser, model, isOperator, consentStatus } = props
+  const { matches, authenticatedUser, model, isOperator, consentStatus, stale } = props
   const { handlePurge, handleQuery, expressConsent, getConsentStatus, handleInvite, handleValidationError } = props
   const { accountId, range, resolution } = matches
 
@@ -66,6 +67,7 @@ const AuditoriumView = (props) => {
 
   return (
     <Fragment>
+      {stale ? <LoadingOverlay /> : null}
       <Header
         isOperator={isOperator}
         accountName={(isOperator && authenticatedUser) ? model.result.account.name : null}
@@ -121,7 +123,8 @@ const AuditoriumView = (props) => {
 const mapStateToProps = (state) => ({
   consentStatus: state.consentStatus,
   authenticatedUser: state.authenticatedUser,
-  model: state.model
+  model: state.model,
+  stale: state.stale
 })
 
 const mapDispatchToProps = {

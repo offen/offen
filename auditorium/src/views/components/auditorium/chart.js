@@ -1,11 +1,13 @@
 /** @jsx h */
 const { h } = require('preact')
+const { memo } = require('preact/compat')
 const Plotly = require('plotly.js-basic-dist')
 const createPlotlyComponent = require('react-plotly.js/factory').default
 const isFirstDayOfMonth = require('date-fns/is_first_day_of_month')
 const isWeekend = require('date-fns/is_weekend')
 const getISOWeek = require('date-fns/get_iso_week')
 const getHours = require('date-fns/get_hours')
+const _ = require('underscore')
 
 const Plot = createPlotlyComponent(Plotly)
 
@@ -112,4 +114,9 @@ const Chart = (props) => {
   )
 }
 
-module.exports = Chart
+module.exports = memo(
+  Chart,
+  (prevProps, nextProps) => {
+    return _.isEqual(prevProps, nextProps)
+  }
+)

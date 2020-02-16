@@ -20,6 +20,7 @@ const consentStatusReducer = require('./src/reducers/consent-status')
 const globalErrorReducer = require('./src/reducers/global-error')
 const authenticatedUserReducer = require('./src/reducers/authenticated-user')
 const flashReducer = require('./src/reducers/flash')
+const staleReducer = require('./src/reducers/stale')
 const modelReducer = require('./src/reducers/model')
 const redirectMiddleware = require('./src/middleware/redirect')
 const navigation = require('./src/action-creators/navigation')
@@ -44,7 +45,8 @@ const store = createStore(
     consentStatus: consentStatusReducer,
     authenticatedUser: authenticatedUserReducer,
     flash: flashReducer,
-    model: modelReducer
+    model: modelReducer,
+    stale: staleReducer
   }),
   applyMiddleware(
     ...middlewares
@@ -54,9 +56,9 @@ const store = createStore(
 const App = () => {
   const previousPath = useRef(null)
   const handleRouteChange = (e) => {
-    window.scrollTo(0, 0)
     if (previousPath.current !== e.current.props.path) {
       store.dispatch(navigation.navigate(e))
+      window.scrollTo(0, 0)
     }
     previousPath.current = e.current.props.path
   }
