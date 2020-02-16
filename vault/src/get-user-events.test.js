@@ -48,13 +48,15 @@ describe('src/get-user-events', function () {
       }
       var mockApi = {
         getDeletedEvents: sinon.stub().resolves({ eventIds: ['a'] }),
-        getEvents: sinon.stub().resolves({ events: {
-          'account-a': [{
-            eventId: 'z',
-            accountId: 'account-a',
-            payload: encryptedPayload
-          }]
-        } })
+        getEvents: sinon.stub().resolves({
+          events: {
+            'account-a': [{
+              eventId: 'z',
+              accountId: 'account-a',
+              payload: encryptedPayload
+            }]
+          }
+        })
       }
       var getUserEvents = getUserEventsWith(mockQueries, mockApi)
       return getUserEvents()
