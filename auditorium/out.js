@@ -1,1 +1,0 @@
-console.error("Error: Cannot find module 'envify' from '/offen/auditorium'");

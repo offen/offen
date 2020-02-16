@@ -13,7 +13,7 @@ function view (state, emit) {
     })
     .map(function (account) {
       return html`
-        <li class="flex-grow-1 bt b--moon-gray">
+        <li class="pr1 bt b--moon-gray">
           <a href="/auditorium/${account.accountId}/" class="b link dim dib pv2 mt1 mb2 mr3 mid-gray">
            ${account.accountName}</a>
         </li>
@@ -29,7 +29,6 @@ function view (state, emit) {
     <div class="mw6 center mb4">
       <ul class="flex flex-wrap list pl0 mt0 mb3">
         ${availableAccounts}
-        <div style="flex-grow: 20;" class="bt b--moon-gray"></div>
       </ul>
     </div>
   `
@@ -149,7 +148,7 @@ function view (state, emit) {
           ${__('Email Address to send invite to')}
           ${state.cache(Input, 'console/invite-user-invitee', { type: 'email', name: 'invitee' }).render()}
         </label>
-        <hr style="border: 0; height: 1px;" class="w-100 mt3 mb3 bg-moon-gray">
+        <hr class="w-100 mt3 mb3 bt moon-gray">
         <h5 class="f5 normal ma0 mb3 silver">${__('Confirm with your credentials')}</h5>
         <label class="lh-copy">
           ${__('Your Email')}
@@ -201,7 +200,7 @@ function view (state, emit) {
           ${__('Account Name')}
           ${state.cache(Input, 'console/create-account-name', { name: 'account-name', required: true }).render()}
         </label>
-        <hr style="border: 0; height: 1px;" class="w-100 mt3 mb3 bg-moon-gray">
+        <hr class="w-100 mt3 mb3 bt moon-gray">
         <h5 class="f5 normal ma0 mb3 silver">${__('Confirm with your credentials')}</h5>
         <label class="lh-copy">
           ${__('Your Email')}

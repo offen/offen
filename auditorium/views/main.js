@@ -104,7 +104,7 @@ function view (state, emit) {
       </a>
     `
     return html`
-      <li class="flex-grow-1 bt b--light-gray">
+      <li class="pr3 bt b--light-gray">
         ${activeRange
     ? html`
       <a href="${url}" class="b link dim dib bt bw2 b--dark-green pv2 mb2 mr3 dark-green">
@@ -122,7 +122,6 @@ function view (state, emit) {
       <h4 class ="f4 normal mt0 mb3">${__('Show data from the last')}</h4>
       <ul class="flex flex-wrap list pa0 ma0 mb3">
         ${ranges}
-        <div style="flex-grow: 20;" class="bt b--light-gray"></div>
       </ul>
     </div>
   `
@@ -142,7 +141,7 @@ function view (state, emit) {
           buttonClass = 'link dim dib pv2 mt1 mb2 mr3 mid-gray'
         }
         return html`
-          <li class="flex-grow-1 bt b--moon-gray">
+          <li class="pr1 bt b--moon-gray">
             <a href="/auditorium/${account.accountId}/" class="${buttonClass}">
               ${account.accountName}
             </a>
@@ -156,7 +155,6 @@ function view (state, emit) {
       </div>
       <ul class="flex flex-wrap list pa0 ma0 mb3">
         ${availableAccounts}
-        <div style="flex-grow: 20;" class="bt b--moon-gray"></div>
       </ul>
     `
   } else {
@@ -205,8 +203,9 @@ function view (state, emit) {
     `
   }
 
+  var rowRangeManage = null
   if (isOperator) {
-    var rowRangeManage = html`
+    rowRangeManage = html`
       <div class="flex flex-column flex-row-l mt4">
         <div class="w-100 w-30-l br0 br2-ns pa3 mb2 mr2-ns bg-black-05">
           ${manage}
@@ -217,10 +216,10 @@ function view (state, emit) {
       </div>
     `
   } else {
-    var rowRangeManage = html`
-    <div class="w-100 br0 br2-ns pa3 mb2 mr2-ns mt4 bg-black-05">
-      ${manage}
-    </div>
+    rowRangeManage = html`
+      <div class="w-100 br0 br2-ns pa3 mb2 mr2-ns mt4 bg-black-05">
+        ${manage}
+      </div>
     `
   }
 
@@ -253,11 +252,11 @@ function view (state, emit) {
       <div class="flex flex-wrap">
         ${keyMetric(__('Unique %s', entityName), formatCount(uniqueEntities))}
         ${keyMetric(__('Unique sessions'), formatCount(uniqueSessions))}
-        <hr style="border: 0; height: 1px;" class="w-100 mt0 mb3 bg-light-gray">
+        <hr class="w-100 mt0 mb3 bt light-gray">
         ${state.model.avgPageDepth ? keyMetricSmall(__('Avg. page depth'), formatNumber(state.model.avgPageDepth)) : null}
         ${keyMetricSmall(__('Bounce rate'), `${formatNumber(state.model.bounceRate, 100)} %`)}
         ${isOperator && state.model.loss ? keyMetricSmall(__('Plus'), `${formatNumber(state.model.loss, 100)} %`) : null}
-        <hr style="border: 0; height: 1px;" class="w-100 mt0 mb3 bg-light-gray">
+        <hr class="w-100 mt0 mb3 bt light-gray">
         ${keyMetricSmall(__('Mobile users'), `${formatNumber(state.model.mobileShare, 100)} %`)}
         ${state.model.avgPageload ? keyMetricSmall(__('Avg. page load time'), formatDuration(state.model.avgPageload)) : null}
       </div>
@@ -313,13 +312,13 @@ function view (state, emit) {
               ${raw(__('To use Offen with the account <strong>%s</strong> on your website, embed the following script on each page you want to appear in your statistics.', state.model.account.name))}
             </p>
             <div class="w-100 br1 ba b--moon-gray ph2 pv2 bg-light-yellow">
-              <p class="ma0" style="font-family: monospace; font-size: 16px; font-style: normal; font-variant: normal; font-weight: 400; line-height: 16px; word-break: break-all;">
+              <code class="ma0 lh-solid word-wrap">
                 ${raw(`&lt;script async src="${window.location.origin}/script.js" data-account-id="${state.model.account.accountId}"&gt;&lt;/script&gt;`)}
-              </p>
+              </code>
             </div>
-            <a href="#" class="pointer w-100 w-auto-ns f5 tc link dim bn dib br1 ph3 pv2 mt3 white bg-mid-gray">
+            <button class="pointer w-100 w-auto-ns f5 tc link dim bn dib br1 ph3 pv2 mt3 white bg-mid-gray">
               ${__('Copy code')}
-            </a>
+            </button>
           </div>
         </div>
       </div>
@@ -342,7 +341,7 @@ function view (state, emit) {
             ${__('Email address to send invite to')}
             ${state.cache(Input, 'main/invite-user-invitee', { type: 'email', name: 'invitee' }).render()}
           </label>
-          <hr style="border: 0; height: 1px;" class="w-100 mt3 mb2 bg-moon-gray">
+          <hr class="w-100 mt3 mb2 bt moon-gray">
           <h5 class="f5 normal ma0 mb3 silver">${__('Confirm with your credentials')}</h5>
           <label class="lh-copy" id="invite-single-email">
             ${__('Your email address')}

@@ -44,11 +44,12 @@ Table.prototype.createElement = function (tableSets, onEmptyMessage, removeBorde
     if (!set.headline) {
       return null
     }
+    var css = []
     if (tableSets.length === 1) {
-      var css = ['f5', 'normal', 'dib', 'pv3']
+      css = ['f5', 'normal', 'dib', 'pv3']
     }
     if (tableSets.length > 1) {
-      var css = ['f5', 'normal', 'link', 'dim', 'dib', 'pt2', 'pb3', 'mr3', 'dark-green']
+      css = ['f5', 'normal', 'link', 'dim', 'dib', 'pt2', 'pb3', 'mr3', 'dark-green']
     }
     var onclick = null
     if (tableSets.length > 1) {
