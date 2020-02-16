@@ -6,6 +6,7 @@ const { createStore, applyMiddleware, combineReducers } = require('redux')
 const { Provider } = require('react-redux')
 const thunk = require('redux-thunk').default
 const vault = require('offen/vault')
+const sf = require('sheetify')
 
 const Layout = require('./src/views/components/shared/layout')
 const IndexView = require('./src/views/index')
@@ -24,6 +25,11 @@ const staleReducer = require('./src/reducers/stale')
 const modelReducer = require('./src/reducers/model')
 const redirectMiddleware = require('./src/middleware/redirect')
 const navigation = require('./src/action-creators/navigation')
+
+sf('./styles/word-break.css')
+sf('./styles/dim-fix.css')
+sf('./styles/grow-list.css')
+sf('./styles/label-toggle.css')
 
 const vaultInstance = vault(process.env.VAULT_HOST || '/vault/')
 

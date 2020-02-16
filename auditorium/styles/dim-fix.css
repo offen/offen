@@ -1,0 +1,4 @@
+.dim:focus {
+  transition: none;
+  opacity: 1;
+}
