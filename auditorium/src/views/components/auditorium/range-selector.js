@@ -11,7 +11,9 @@ const RangeSelector = (props) => {
     { display: __('6 weeks'), query: { range: '6', resolution: 'weeks' } },
     { display: __('12 weeks'), query: { range: '12', resolution: 'weeks' } },
     { display: __('6 months'), query: { range: '6', resolution: 'months' } }
-  ].map(function (range, index) {
+  ]
+
+  const items = ranges.map(function (range, index) {
     let url = window.location.pathname
     const current = _.pick(matches, ['range', 'resolution'])
     const activeRange = _.isEqual(current, range.query || {})
@@ -43,8 +45,8 @@ const RangeSelector = (props) => {
       <h4 class='f4 normal mt0 mb3'>
         {__('Show data from the last')}
       </h4>
-      <ul class='flex flex-wrap list pa0 ma0 mb3'>
-        {ranges}
+      <ul class='flex flex-wrap list pa0 ma0 mb3 grow-list b--light-gray'>
+        {items}
       </ul>
     </div>
   )

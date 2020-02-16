@@ -109,6 +109,11 @@ const Chart = (props) => {
         data={data}
         layout={layout}
         config={config}
+        style={{
+          width: '100%',
+          height: '100%'
+        }}
+        useResizeHandler
       />
     </div>
   )

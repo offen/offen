@@ -31,60 +31,64 @@ const RowMetrics = (props) => {
           {__('Key metrics')}
         </h4>
         <div class='flex flex-wrap'>
-          <KeyMetric
-            name={__('Unique %s', entityName)}
-            value={uniqueEntities}
-            formatAs='count'
-          />
-          <KeyMetric
-            name={__('Unique sessions')}
-            value={model.result.uniqueSessions}
-            formatAs='count'
-          />
-          <hr class='w-100 mt0 mb3 bt light-gray' />
-          {model.result.avgPageDepth
-            ? (
-              <KeyMetric
-                name={__('Avg. page depth')}
-                value={model.result.avgPageDepth}
-                formatAs='number'
-                small
-              />
-            )
-            : null}
-          <KeyMetric
-            name={__('Bounce rate')}
-            value={model.result.bounceRate}
-            formatAs='percentage'
-            small
-          />
-          {isOperator && model.result.loss
-            ? (
-              <KeyMetric
-                name={__('Plus')}
-                value={model.result.avgPageDepth}
-                formatAs='percentage'
-                small
-              />
-            )
-            : null}
-          <hr class='w-100 mt0 mb3 bt light-gray' />
-          <KeyMetric
-            name={__('Mobile users')}
-            value={model.result.mobileShare}
-            formatAs='percentage'
-            small
-          />
-          {model.result.avgPageload
-            ? (
-              <KeyMetric
-                name={__('Avg. page load time')}
-                value={model.result.avgPageload}
-                formatAs='duration'
-                small
-              />
-            )
-            : null}
+          <div class='w-100 mb3 bb b--light-gray'>
+            <KeyMetric
+              name={__('Unique %s', entityName)}
+              value={uniqueEntities}
+              formatAs='count'
+            />
+            <KeyMetric
+              name={__('Unique sessions')}
+              value={model.result.uniqueSessions}
+              formatAs='count'
+            />
+          </div>
+          <div class='w-100 mb3 bb b--light-gray'>
+            {model.result.avgPageDepth
+              ? (
+                <KeyMetric
+                  name={__('Avg. page depth')}
+                  value={model.result.avgPageDepth}
+                  formatAs='number'
+                  small
+                />
+              )
+              : null}
+            <KeyMetric
+              name={__('Bounce rate')}
+              value={model.result.bounceRate}
+              formatAs='percentage'
+              small
+            />
+            {isOperator && model.result.loss
+              ? (
+                <KeyMetric
+                  name={__('Plus')}
+                  value={model.result.avgPageDepth}
+                  formatAs='percentage'
+                  small
+                />
+              )
+              : null}
+          </div>
+          <div>
+            <KeyMetric
+              name={__('Mobile users')}
+              value={model.result.mobileShare}
+              formatAs='percentage'
+              small
+            />
+            {model.result.avgPageload
+              ? (
+                <KeyMetric
+                  name={__('Avg. page load time')}
+                  value={model.result.avgPageload}
+                  formatAs='duration'
+                  small
+                />
+              )
+              : null}
+          </div>
         </div>
       </div>
     </div>

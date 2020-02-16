@@ -25,6 +25,19 @@
  .word-nowrap-l { word-break: keep-all; }
 }
 
+.grow-list li {
+  flex-grow: 1;
+}
+
+.grow-list::after {
+  content: '';
+  display: inline-block;
+  border-color: inherit;
+  border-width: 1px 0 0 0;
+  border-style: solid;
+  flex-grow: 99999;
+}
+
 .dim:focus {
   transition: none;
   opacity: 1;
@@ -50,4 +63,3 @@
   transform: rotate(-45deg);
   margin-top: 0.4em;
 }
-

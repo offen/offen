@@ -7,7 +7,7 @@ const withAuth = require('./components/hoc/with-auth')
 const withTitle = require('./components/hoc/with-title')
 const Loading = require('./components/shared/loading')
 const Header = require('./components/auditorium/header')
-const RowRangeManage = require('./components/auditorium/row-range-manage')
+const RowAccountsLive = require('./components/auditorium/row-accounts-live')
 const RangeSelector = require('./components/auditorium/range-selector')
 const RowMetrics = require('./components/auditorium/row-metrics')
 const Privacy = require('./components/auditorium/privacy')
@@ -74,7 +74,7 @@ const AuditoriumView = (props) => {
       />
       {isOperator
         ? (
-          <RowRangeManage
+          <RowAccountsLive
             authenticatedUser={authenticatedUser}
             accountId={accountId}
             model={model}

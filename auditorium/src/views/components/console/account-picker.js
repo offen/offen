@@ -27,7 +27,7 @@ const AccountPicker = (props) => {
         <h4 class='f4 normal mt0 mb3'>
           {__('Open account')}
         </h4>
-        <ul class='flex flex-wrap list pl0 mt0 mb3'>
+        <ul class='flex flex-wrap list pl0 mt0 mb3 grow-list b--moon-gray'>
           {availableAccounts}
         </ul>
       </div>

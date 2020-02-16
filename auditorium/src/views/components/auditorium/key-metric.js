@@ -13,7 +13,9 @@ const KeyMetric = (props) => {
           {value}
         </Format>
       </p>
-      <p class='mv0 normal'>{name}</p>
+      <p class='mv0 normal'>
+        {name}
+      </p>
     </div>
   )
 }

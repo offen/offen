@@ -4,7 +4,7 @@ const { h, Fragment } = require('preact')
 const KeyMetric = require('./key-metric')
 const Tables = require('./tables')
 
-const RowRangeManage = (props) => {
+const RowAccountsLive = (props) => {
   const { authenticatedUser, accountId, model } = props
   const availableAccounts = authenticatedUser.accounts
     .slice()
@@ -19,14 +19,17 @@ const RowRangeManage = (props) => {
         buttonClass = 'link dim dib pv2 mt1 mb2 mr3 mid-gray'
       }
       return (
-        <li key={index} class='pr1 bt b--moon-gray'>
+        <li
+          key={index}
+          class='pr1 bt b--moon-gray'
+        >
           <a href={`/auditorium/${account.accountId}/`} class={buttonClass}>
             {account.accountName}
           </a>
         </li>
       )
     })
-  const manage = (
+  const accounts = (
     <Fragment>
       <div class='flex justify-between'>
         <h4 class='f4 normal mt0 mb3'>
@@ -34,7 +37,7 @@ const RowRangeManage = (props) => {
         </h4>
         <a role='button' class='dib dn-ns label-toggle label-toggle--rotate' />
       </div>
-      <ul class='flex flex-wrap list pa0 ma0 mb3'>
+      <ul class='flex flex-wrap list pa0 ma0 mb3 grow-list b--moon-gray'>
         {availableAccounts}
       </ul>
     </Fragment>
@@ -69,7 +72,7 @@ const RowRangeManage = (props) => {
   return (
     <div class='flex flex-column flex-row-l mt4'>
       <div class='w-100 w-30-l br0 br2-ns pa3 mb2 mr2-ns bg-black-05'>
-        {manage}
+        {accounts}
       </div>
       <div class='w-100 w-70-l bt ba-ns b--black-10 br0 br2-ns pa3 mb2-ns bg-white'>
         {live}
@@ -78,4 +81,4 @@ const RowRangeManage = (props) => {
   )
 }
 
-module.exports = RowRangeManage
+module.exports = RowAccountsLive
