@@ -1,6 +1,9 @@
 /** @jsx h */
 const { h } = require('preact')
 
+const LabeledInput = require('./../shared/labeled-input')
+const SubmitButton = require('./../shared/submit-button')
+
 const CreateAccount = (props) => {
   function handleSubmit (e) {
     e.preventDefault()
@@ -23,41 +26,33 @@ const CreateAccount = (props) => {
         {__('Create new Account')}
       </h4>
       <form class='mw6 center mb4' onsubmit={handleSubmit}>
-        <label class='lh-copy'>
+        <LabeledInput
+          name='account-name'
+          required
+        >
           {__('Account Name')}
-          <input
-            class='w-100 pa2 mb3 input-reset ba b--black-10 bg-white'
-            name='account-name'
-            required
-          />
-        </label>
+        </LabeledInput>
         <hr />
         <h5>
           {__('You need to confirm this action with your credentials')}
         </h5>
-        <label class='lh-copy'>
+        <LabeledInput
+          type='email'
+          name='email-address'
+          required
+        >
           {__('Your Email')}
-          <input
-            class='w-100 pa2 mb3 input-reset ba b--black-10 bg-white'
-            type='email'
-            name='email-address'
-            required
-          />
-        </label>
-        <label class='lh-copy'>
+        </LabeledInput>
+        <LabeledInput
+          type='password'
+          name='password'
+          required
+        >
           {__('Your Password')}
-          <input
-            class='w-100 pa2 mb3 input-reset ba b--black-10 bg-white'
-            type='password'
-            name='password'
-            required
-          />
-        </label>
-        <input
-          class='pointer w-100 w-auto-ns f5 link dim bn ph3 pv2 mb3 dib br1 white bg-mid-gray'
-          type='submit'
-          value={__('Create Account')}
-        />
+        </LabeledInput>
+        <SubmitButton>
+          {__('Create Account')}
+        </SubmitButton>
       </form>
     </div>
   )

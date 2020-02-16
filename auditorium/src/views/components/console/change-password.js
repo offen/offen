@@ -1,6 +1,9 @@
 /** @jsx h */
 const { h } = require('preact')
 
+const LabeledInput = require('./../shared/labeled-input')
+const SubmitButton = require('./../shared/submit-button')
+
 const ChangePassword = (props) => {
   function handleSubmit (e) {
     e.preventDefault()
@@ -27,38 +30,30 @@ const ChangePassword = (props) => {
         {__('Change password')}
       </h4>
       <form class='mw6 center mb4' onsubmit={handleSubmit}>
-        <label class='lh-copy'>
+        <LabeledInput
+          type='password'
+          name='current'
+          required
+        >
           {__('Current password')}
-          <input
-            class='w-100 pa2 mb3 input-reset ba b--black-10 bg-white'
-            type='password'
-            name='current'
-            required
-          />
-        </label>
-        <label class='lh-copy'>
+        </LabeledInput>
+        <LabeledInput
+          type='password'
+          name='changed'
+          required
+        >
           {__('New password')}
-          <input
-            class='w-100 pa2 mb3 input-reset ba b--black-10 bg-white'
-            type='password'
-            name='changed'
-            required
-          />
-        </label>
-        <label class='lh-copy'>
+        </LabeledInput>
+        <LabeledInput
+          type='password'
+          name='repeat'
+          required
+        >
           {__('Repeat new password')}
-          <input
-            class='w-100 pa2 mb3 input-reset ba b--black-10 bg-white'
-            type='password'
-            name='repeat'
-            required
-          />
-        </label>
-        <input
-          class='pointer w-100 w-auto-ns f5 link dim bn ph3 pv2 mb3 dib br1 white bg-mid-gray'
-          type='submit'
-          value={__('Change password')}
-        />
+        </LabeledInput>
+        <SubmitButton>
+          {__('Change password')}
+        </SubmitButton>
       </form>
     </div>
   )

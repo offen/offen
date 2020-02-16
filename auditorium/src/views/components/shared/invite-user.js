@@ -1,6 +1,9 @@
 /** @jsx h */
 const { h } = require('preact')
 
+const LabeledInput = require('./labeled-input')
+const SubmitButton = require('./submit-button')
+
 const InviteUser = (props) => {
   const { headline, subline, accountId, onValidationError, onInvite } = props
   function handleSubmit (e) {
@@ -48,38 +51,34 @@ const InviteUser = (props) => {
             />
           )
           : null}
-        <label class='lh-copy'>
+        <LabeledInput
+          type='email'
+          name='invitee'
+          required
+        >
           {__('Email address to send invite to')}
-          <input
-            class='w-100 pa2 mb3 input-reset ba b--black-10 bg-white'
-            type='email'
-            name='invitee'
-            required
-          />
-        </label>
+        </LabeledInput>
         <hr class='w-100 mt3 mb2 bt moon-gray' />
         <h5 class='f5 normal ma0 mb3 silver'>
           {__('Confirm with your credentials')}
         </h5>
-        <label class='lh-copy' id='invite-single-email'>
+        <LabeledInput
+          type='email'
+          name='email-address'
+          required
+        >
           {__('Your email address')}
-          <input
-            class='w-100 pa2 mb3 input-reset ba b--black-10 bg-white'
-            type='email'
-            name='email-address'
-            required
-          />
-        </label>
-        <label class='lh-copy' id='invite-single-password'>
+        </LabeledInput>
+        <LabeledInput
+          type='password'
+          name='password'
+          required
+        >
           {__('Your password')}
-          <input
-            class='w-100 pa2 mb3 input-reset ba b--black-10 bg-white'
-            type='password'
-            name='password'
-            required
-          />
-        </label>
-        <input class='pointer w-100 w-auto-ns f5 link dim bn dib br1 ph3 pv2 white bg-mid-gray' type='submit' value={__('Invite user')} />
+        </LabeledInput>
+        <SubmitButton>
+          {__('Invite user')}
+        </SubmitButton>
       </form>
     </div>
   )

@@ -4,6 +4,8 @@ const { connect } = require('react-redux')
 
 const management = require('./../action-creators/management')
 const errors = require('./../action-creators/errors')
+const LabeledInput = require('./components/shared/labeled-input')
+const SubmitButton = require('./components/shared/submit-button')
 
 const JoinView = (props) => {
   const isAddition = props.isAddition
@@ -30,40 +32,32 @@ const JoinView = (props) => {
     <div class='w-100 pa3 mt4 mb2 br0 br2-ns bg-black-05'>
       <h4 class='f5 normal mt0 mb3'>{isAddition ? __('Accept invite') : __('Join Offen')}</h4>
       <form class='mw6 center' onsubmit={handleSubmit}>
-        <label class='b lh-copy'>
+        <LabeledInput
+          name='email-address'
+          required
+          autoFocus
+        >
           {__('Email address')}
-          <input
-            name='email-address'
-            class='w-100 pa2 mb3 input-reset ba b--black-10 bg-white'
-            required
-            autoFocus
-          />
-        </label>
-        <label class='b lh-copy'>
+        </LabeledInput>
+        <LabeledInput
+          name='password'
+          type='password'
+          required
+        >
           {__('Password')}
-          <input
-            name='password'
-            class='w-100 pa2 mb3 input-reset ba b--black-10 bg-white'
+        </LabeledInput>
+        {!isAddition ? (
+          <LabeledInput
+            name='repeat-password'
             type='password'
             required
-          />
-        </label>
-        {!isAddition ? (
-          <label class='b lh-copy'>
+          >
             {__('Repeat password')}
-            <input
-              name='repeat-password'
-              class='w-100 pa2 mb3 input-reset ba b--black-10 bg-white'
-              type='password'
-              required
-            />
-          </label>
+          </LabeledInput>
         ) : null}
-        <input
-          class='pointer w-100 w-auto-ns f5 link dim bn ph3 pv2 mb3 dib br1 white bg-mid-gray'
-          type='submit'
-          value={__('Accept invite')}
-        />
+        <SubmitButton>
+          {__('Accept invite')}
+        </SubmitButton>
         <input type='hidden' name='token' value={props.token} />
       </form>
     </div>

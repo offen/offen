@@ -3,6 +3,8 @@ const { h } = require('preact')
 const { connect } = require('react-redux')
 
 const authentication = require('./../action-creators/authentication')
+const LabeledInput = require('./components/shared/labeled-input')
+const SubmitButton = require('./components/shared/submit-button')
 
 const ForgotPasswordView = (props) => {
   const handleSubmit = (e) => {
@@ -24,21 +26,17 @@ const ForgotPasswordView = (props) => {
         {__('Request link to reset password')}
       </h4>
       <form class='mw6 center' onsubmit={handleSubmit}>
-        <label class='lh-copy'>
+        <LabeledInput
+          class='w-100 pa2 mb3 input-reset ba b--black-10 bg-white'
+          name='email-address'
+          type='email'
+          required
+        >
           {__('Email address')}
-          <input
-            class='w-100 pa2 mb3 input-reset ba b--black-10 bg-white'
-            name='email-address'
-            type='email'
-            required
-            autoFocus
-          />
-        </label>
-        <input
-          class='pointer w-100 w-auto-ns f5 link dim bn ph3 pv2 mb3 dib br1 white bg-mid-gray'
-          type='submit'
-          value={__('Send Email')}
-        />
+        </LabeledInput>
+        <SubmitButton>
+          {__('Send Email')}
+        </SubmitButton>
       </form>
     </div>
   )

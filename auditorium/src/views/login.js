@@ -3,6 +3,8 @@ const { h } = require('preact')
 const { connect } = require('react-redux')
 
 const authentication = require('./../action-creators/authentication')
+const LabeledInput = require('./components/shared/labeled-input')
+const SubmitButton = require('./components/shared/submit-button')
 
 const LoginView = (props) => {
   function handleSubmit (e) {
@@ -21,30 +23,23 @@ const LoginView = (props) => {
         {__('Log in as operator')}
       </h4>
       <form class='mw6 center' onsubmit={handleSubmit}>
-        <label class='lh-copy'>
+        <LabeledInput
+          type='email'
+          name='username'
+          required
+        >
           {__('Email address')}
-          <input
-            class='w-100 pa2 mb3 input-reset ba b--black-10 bg-white'
-            type='email'
-            name='username'
-            required
-            autoFocus
-          />
-        </label>
-        <label class='lh-copy'>
+        </LabeledInput>
+        <LabeledInput
+          type='password'
+          name='password'
+          required
+        >
           {__('Password')}
-          <input
-            class='w-100 pa2 mb3 input-reset ba b--black-10 bg-white'
-            type='password'
-            name='password'
-            required
-          />
-        </label>
-        <input
-          class='pointer w-100 w4-ns f5 link dim bn ph3 pv2 mb3 dib br1 white bg-mid-gray'
-          type='submit'
-          value={__('Log in')}
-        />
+        </LabeledInput>
+        <SubmitButton>
+          {__('Log in')}
+        </SubmitButton>
         <div class='mb3'>
           <a class='normal link dim dark-green' href='/forgot-password/'>
             {__('Forgot password?')}
