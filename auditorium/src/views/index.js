@@ -7,6 +7,7 @@ const Loading = require('./components/shared/loading')
 const ConsentStatus = require('./components/index/consent-status')
 const HeaderCard = require('./components/index/header-card')
 const MainCard = require('./components/index/main-card')
+const OperatorLogin = require('./components/index/operator-login')
 const withTitle = require('./components/hoc/with-title')
 const consent = require('./../action-creators/consent-status')
 
@@ -40,6 +41,7 @@ const IndexView = (props) => {
       <MainCard
         consentStatus={consentStatus}
       />
+      <OperatorLogin />
     </Fragment>
   )
 }
