@@ -185,6 +185,10 @@ function getDefaultStatsWith (getDatabase) {
         return stats.retention.apply(stats, chunks)
       })
 
+    var empty = table.count().then(function (count) {
+      return count === 0
+    })
+
     return Promise
       .all([
         uniqueUsers,
@@ -204,7 +208,8 @@ function getDefaultStatsWith (getDatabase) {
         liveUsers,
         campaigns,
         sources,
-        retentionMatrix
+        retentionMatrix,
+        empty
       ])
       .then(function (results) {
         return {
@@ -226,6 +231,7 @@ function getDefaultStatsWith (getDatabase) {
           campaigns: results[15],
           sources: results[16],
           retentionMatrix: results[17],
+          empty: results[18],
           resolution: resolution,
           range: range
         }
