@@ -16,7 +16,13 @@ module.exports = (state = null, action) => {
     case 'RESET_PASSWORD_FAILURE':
     case 'QUERY_FAILURE':
       return action.payload && action.payload.flash
+    case 'AUTHENTICATION_SUCCESS':
+    case 'QUERY_SUCCESS':
+      return null
     case 'NAVIGATE':
+      if (action.payload && action.payload.persistFlash) {
+        return state
+      }
       return null
     default:
       return state

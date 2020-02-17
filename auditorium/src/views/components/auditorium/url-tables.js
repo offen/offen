@@ -6,7 +6,7 @@ const Tables = require('./tables')
 const URLTable = (props) => {
   const { model } = props
   return (
-    <div class='w-100 bt ba-ns br0 br2-ns b--black-10 pa3 mb2-ns bg-white'>
+    <div class='flex-auto pa3 bg-white'>
       <h4 class='f4 normal mt0 mb4'>
         {__('Top pages')}
       </h4>

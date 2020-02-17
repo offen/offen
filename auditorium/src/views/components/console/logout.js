@@ -9,7 +9,7 @@ const Logout = (props) => {
     )
   }
   return (
-    <div class='w-100 pa3 mb2 br0 br2-ns bg-black-05'>
+    <div class='bg-black-05 pa3'>
       <div class='mw6 center mb4'>
         <div class='w-100 w-auto-ns tr-ns mt3'>
           <button

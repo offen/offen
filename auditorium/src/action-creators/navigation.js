@@ -1,4 +1,4 @@
-exports.navigate = (url) => ({
+exports.navigate = (url, persistFlash) => ({
   type: 'NAVIGATE',
-  payload: url
+  payload: { url, persistFlash }
 })

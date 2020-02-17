@@ -8,7 +8,6 @@ const thunk = require('redux-thunk').default
 const vault = require('offen/vault')
 const sf = require('sheetify')
 
-const Layout = require('./src/views/components/shared/layout')
 const IndexView = require('./src/views/index')
 const LoginView = require('./src/views/login')
 const Auditorium = require('./src/views/auditorium')
@@ -63,7 +62,7 @@ const App = () => {
   const previousPath = useRef(null)
   const handleRouteChange = (e) => {
     if (previousPath.current !== e.current.props.path) {
-      store.dispatch(navigation.navigate(e))
+      store.dispatch(navigation.navigate(e.url, e.current.props.persistFlash))
       window.scrollTo(0, 0)
     }
     previousPath.current = e.current.props.path
@@ -71,20 +70,18 @@ const App = () => {
 
   return (
     <Provider store={store}>
-      <Layout>
-        <Router onChange={handleRouteChange}>
-          <IndexView path='/' />
-          <LoginView path='/login/' />
-          <Auditorium.UserView path='/auditorium/' />
-          <Auditorium.OperatorView path='/auditorium/:accountId' isOperator />
-          <ConsoleView path='/console/' />
-          <ForgotPasswordView path='/forgot-password/' />
-          <ResetPasswordView path='/reset-password/:token' />
-          <JoinView path='/join/new/:token' />
-          <JoinView path='/join/addition/:token' isAddition />
-          <NotFoundView default />
-        </Router>
-      </Layout>
+      <Router onChange={handleRouteChange}>
+        <IndexView path='/' />
+        <LoginView path='/login/' persistFlash />
+        <Auditorium.UserView path='/auditorium/' />
+        <Auditorium.OperatorView path='/auditorium/:accountId' isOperator />
+        <ConsoleView path='/console/' />
+        <ForgotPasswordView path='/forgot-password/' />
+        <ResetPasswordView path='/reset-password/:token' />
+        <JoinView path='/join/new/:token' />
+        <JoinView path='/join/addition/:token' isAddition />
+        <NotFoundView default />
+      </Router>
     </Provider>
   )
 }

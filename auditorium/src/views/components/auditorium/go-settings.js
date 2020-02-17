@@ -1,21 +1,21 @@
 /** @jsx h */
 const { h } = require('preact')
 
-const Collapsible = require('./../shared/collapsible')
+const Collapsible = require('./../_shared/collapsible')
 const classnames = require('classnames')
 
 const GoSettings = (props) => {
   return (
-    <div class='w-100 w-100-ns br0 br2-ns pa3 mt2 bg-black-05'>
+    <div class='pa3 bg-black-05 flex-auto'>
       <Collapsible
-        headline={(props) => {
-          const { isCollapsed } = props
+        header={(props) => {
+          const { isCollapsed, handleToggle } = props
           return (
-            <div class='flex justify-between pointer'>
+            <div class='flex justify-between pointer' onclick={handleToggle}>
               <h4 class='f4 normal ma0'>
                 {__('Admin console')}
               </h4>
-              <a role='button' class={classnames('dib', 'label-toggle', isCollapsed ? null : 'label-toggle--rotate')} />
+              <a role='button' class={classnames('dib', 'label-toggle', isCollapsed ? 'label-toggle--rotate' : null)} />
             </div>
           )
         }}

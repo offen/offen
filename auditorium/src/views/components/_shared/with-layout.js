@@ -2,6 +2,8 @@
 const { h, Fragment } = require('preact')
 const { connect } = require('react-redux')
 
+const HighlightBox = require('./highlight-box')
+
 const Layout = (props) => (
   <div class='f5 roboto dark-gray'>
     <div class='w-100 h3 bg-black-05'>
@@ -19,18 +21,16 @@ const Layout = (props) => (
             {props.flash}
           </p>
         ) : null}
-      <div id='wrapped-view'>
-        {props.error
-          ? (
-            <Fragment>
-              <p class='error dib pa2 br2 ma0 mt3 ml3 ml0-ns mr3 mr0-ns bg-light-yellow'>
-                {__('An error occured: %s', props.error.message)}
-              </p>
-              <pre>{props.error.stack}</pre>
-            </Fragment>
-          )
-          : props.children}
-      </div>
+      {props.error
+        ? (
+          <Fragment>
+            <HighlightBox>
+              {__('An error occured: %s', props.error.message)}
+            </HighlightBox>
+            <pre>{props.error.stack}</pre>
+          </Fragment>
+        )
+        : props.children}
     </div>
     <div class='mw8 center flex flex-column flex-row-ns justify-between ph3 pb5 moon-gray'>
       <div>
@@ -48,9 +48,22 @@ const Layout = (props) => (
   </div>
 )
 
-const mapStateToProps = (state) => ({
-  flash: state.flash,
-  error: state.globalError
-})
+const withLayout = () => (OriginalComponent) => {
+  const WrappedComponent = (props) => {
+    const { error, flash, ...otherProps } = props
+    return (
+      <Layout error={error} flash={flash}>
+        <OriginalComponent {...otherProps} />
+      </Layout>
+    )
+  }
 
-module.exports = connect(mapStateToProps)(Layout)
+  const mapStateToProps = (state) => ({
+    error: state.globalError,
+    flash: state.flash
+  })
+
+  return connect(mapStateToProps)(WrappedComponent)
+}
+
+module.exports = withLayout

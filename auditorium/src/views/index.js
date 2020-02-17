@@ -3,12 +3,13 @@ const { h, Fragment } = require('preact')
 const { useEffect } = require('preact/hooks')
 const { connect } = require('react-redux')
 
-const Loading = require('./components/shared/loading')
-const ConsentStatus = require('./components/index/consent-status')
+const HighlightBox = require('./components/_shared/highlight-box')
+const ConsentStatusDisplay = require('./components/index/consent-status-display')
 const HeaderCard = require('./components/index/header-card')
 const MainCard = require('./components/index/main-card')
 const OperatorLogin = require('./components/index/operator-login')
-const withTitle = require('./components/hoc/with-title')
+const withTitle = require('./components/_shared/with-title')
+const withLayout = require('./components/_shared/with-layout')
 const consent = require('./../action-creators/consent-status')
 
 const IndexView = (props) => {
@@ -18,9 +19,9 @@ const IndexView = (props) => {
 
   if (!props.consentStatus) {
     return (
-      <Loading>
+      <HighlightBox>
         {__('Checking your consent status ...')}
-      </Loading>
+      </HighlightBox>
     )
   }
 
@@ -29,19 +30,25 @@ const IndexView = (props) => {
 
   return (
     <Fragment>
-      <ConsentStatus
+      <ConsentStatusDisplay
         allowsCookies={allowsCookies}
         consentStatus={consentStatus}
       />
-      <HeaderCard
-        allowsCookies={allowsCookies}
-        consentStatus={consentStatus}
-        expressConsent={props.expressConsent}
-      />
-      <MainCard
-        consentStatus={consentStatus}
-      />
-      <OperatorLogin />
+      <div class='w-100 mt4 mb2 bt bb ba-ns br0 br2-ns b--black-10'>
+        <HeaderCard
+          allowsCookies={allowsCookies}
+          consentStatus={consentStatus}
+          expressConsent={props.expressConsent}
+        />
+      </div>
+      <div class='w-100 mb2 br0 br2-ns'>
+        <MainCard
+          consentStatus={consentStatus}
+        />
+      </div>
+      <div class='w-100 br0 br2-ns'>
+        <OperatorLogin />
+      </div>
     </Fragment>
   )
 }
@@ -55,4 +62,10 @@ const mapStateToProps = (state) => ({
   consentStatus: state.consentStatus
 })
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(withTitle('Offen')(IndexView))
+module.exports = connect(mapStateToProps, mapDispatchToProps)(
+  withLayout()(
+    withTitle('Offen')(
+      IndexView
+    )
+  )
+)

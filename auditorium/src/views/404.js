@@ -1,12 +1,18 @@
 /** @jsx h */
 const { h } = require('preact')
 
-const withTitle = require('./components/hoc/with-title')
+const withTitle = require('./components/_shared/with-title')
+const withLayout = require('./components/_shared/with-layout')
+const HighlightBox = require('./components/_shared/highlight-box')
 
 const NotFoundView = () => (
-  <p class='dib pa2 br2 ma0 mt3 ml3 ml0-ns mr3 mr0-ns bg-light-yellow'>
+  <HighlightBox>
     {__('Not found...')}
-  </p>
+  </HighlightBox>
 )
 
-module.exports = withTitle('Not Found | Offen')(NotFoundView)
+module.exports = withLayout()(
+  withTitle('Not Found | Offen')(
+    NotFoundView
+  )
+)

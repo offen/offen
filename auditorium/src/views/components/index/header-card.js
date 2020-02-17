@@ -56,7 +56,7 @@ module.exports = (props) => {
     )
   }
   return (
-    <div class='flex flex-column flex-row-ns items-center w-100 ph3 ph4-ns pv4 mt4 mb2 bt bb ba-ns br0 br2-ns b--black-10 bg-white'>
+    <div class='ph3 ph4-ns pv4 bg-white flex flex-column flex-row-ns items-center'>
       {content}
     </div>
   )

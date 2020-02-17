@@ -1,8 +1,8 @@
 /** @jsx h */
 const { h } = require('preact')
 
-const LabeledInput = require('./../shared/labeled-input')
-const SubmitButton = require('./../shared/submit-button')
+const LabeledInput = require('./../_shared/labeled-input')
+const SubmitButton = require('./../_shared/submit-button')
 
 const ChangePassword = (props) => {
   function handleSubmit (e) {
@@ -25,7 +25,7 @@ const ChangePassword = (props) => {
   }
 
   return (
-    <div class='w-100 pa3 mb2 br0 br2-ns bg-black-05'>
+    <div class='pa3 bg-black-05'>
       <h4 class='f4 normal mt0 mb3'>
         {__('Change password')}
       </h4>

@@ -2,7 +2,7 @@
 const { h } = require('preact')
 const { connect } = require('react-redux')
 
-const Loading = require('./../shared/loading')
+const HighlightBox = require('./../_shared/highlight-box')
 const authentication = require('./../../../action-creators/authentication')
 
 const withAuth = (redirectTo) => (OriginalComponent) => {
@@ -13,16 +13,18 @@ const withAuth = (redirectTo) => (OriginalComponent) => {
         __('Please log in using your credentials.')
       )
       return (
-        <Loading>
+        <HighlightBox error={props.error} flash={props.flash}>
           {__('Checking authentication...')}
-        </Loading>
+        </HighlightBox>
       )
     }
     return <OriginalComponent {...props} />
   }
 
   const mapStateToProps = (state) => ({
-    authenticatedUser: state.authenticatedUser
+    authenticatedUser: state.authenticatedUser,
+    error: state.globalError,
+    flash: state.flash
   })
 
   const mapDispatchToProps = {

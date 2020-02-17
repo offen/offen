@@ -47,7 +47,7 @@ const RetentionTable = (props) => {
   })
 
   return (
-    <div class='w-100 pa3 bt bb ba-ns br0 br2-ns b--black-10 mb2-ns bg-white'>
+    <div class='pa3 bg-white flex-auto'>
       <h4 class='f4 normal mt0 mb3'>
         {__('Weekly retention')}
       </h4>

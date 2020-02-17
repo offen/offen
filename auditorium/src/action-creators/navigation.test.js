@@ -5,10 +5,10 @@ const navigation = require('./navigation')
 describe('src/action-creators/navigation.js', function () {
   describe('navigate(url)', function () {
     it('creates a navigation action', function () {
-      const action = navigation.navigate('/foo')
+      const action = navigation.navigate('/foo', true)
       assert.deepStrictEqual(action, {
         type: 'NAVIGATE',
-        payload: '/foo'
+        payload: { url: '/foo', persistFlash: true }
       })
     })
   })

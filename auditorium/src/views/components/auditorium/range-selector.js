@@ -41,7 +41,7 @@ const RangeSelector = (props) => {
   })
 
   return (
-    <div class='w-100 bt ba-ns b--black-10 br0 br2-ns pa3 mb2-ns bg-white'>
+    <div class='pa3 bg-white flex-auto'>
       <h4 class='f4 normal mt0 mb3'>
         {__('Show data from the last')}
       </h4>

@@ -1,15 +1,15 @@
 /** @jsx h */
 const { h } = require('preact')
 
-const InviteUser = require('./../shared/invite-user')
+const Share = require('./../_shared/share')
 
-const Invite = (props) => {
+const ShareAccounts = (props) => {
   return (
-    <InviteUser
+    <Share
       {...props}
       headline={__('Invite someone to all accounts')}
     />
   )
 }
 
-module.exports = Invite
+module.exports = ShareAccounts

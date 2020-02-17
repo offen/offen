@@ -6,8 +6,8 @@ const LabeledInput = require('./labeled-input')
 const SubmitButton = require('./submit-button')
 const Collapsible = require('./collapsible')
 
-const InviteUser = (props) => {
-  const { headline, subline, accountId, onValidationError, onInvite, collapsible } = props
+const Share = (props) => {
+  const { headline, subline, accountId, onValidationError, onShare, collapsible } = props
   function handleSubmit (e) {
     e.preventDefault()
     var formData = new window.FormData(e.currentTarget)
@@ -21,7 +21,7 @@ const InviteUser = (props) => {
       return
     }
 
-    onInvite(
+    onShare(
       {
         invitee: invitee,
         emailAddress: emailAddress,
@@ -34,23 +34,23 @@ const InviteUser = (props) => {
     )
   }
 
-  const header = (props) => {
-    const { isCollapsed } = props
+  const renderHeader = (props = {}) => {
+    const { isCollapsed, handleToggle } = props
     return (
-      <div class={classnames('flex', 'justify-between', { pointer: collapsible })}>
+      <div onclick={handleToggle} class={classnames('flex', 'justify-between', { pointer: collapsible })}>
         <h4 class='f4 normal ma0'>
           {headline}
         </h4>
         {collapsible
-          ? (<a role='button' class={classnames('dib', 'label-toggle', isCollapsed ? null : 'label-toggle--rotate')} />)
+          ? (<a role='button' class={classnames('dib', 'label-toggle', isCollapsed ? 'label-toggle--rotate' : null)} />)
           : null}
       </div>
     )
   }
 
-  const body = (props) => {
+  const renderBody = (props = {}) => {
     return (
-      <form class='mw6 center mb4 mt3' onsubmit={handleSubmit}>
+      <form class='mw6 center pb4 pt3' onsubmit={handleSubmit}>
         {subline
           ? (
             <p
@@ -93,17 +93,17 @@ const InviteUser = (props) => {
     )
   }
   return (
-    <div class='w-100 pa3 mb2 br0 br2-ns bg-black-05'>
+    <div class='pa3 bg-black-05 flex-auto'>
       {collapsible
-        ? <Collapsible headline={header} body={body} />
+        ? <Collapsible header={renderHeader} body={renderBody} />
         : (
           <Fragment>
-            {header({})}
-            {body({})}
+            {renderHeader()}
+            {renderBody()}
           </Fragment>
         )}
     </div>
   )
 }
 
-module.exports = InviteUser
+module.exports = Share

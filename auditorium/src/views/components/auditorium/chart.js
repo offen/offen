@@ -12,7 +12,8 @@ const _ = require('underscore')
 const Plot = createPlotlyComponent(Plotly)
 
 const Chart = (props) => {
-  const { pageviews, isOperator, resolution } = props
+  const { model, isOperator, resolution } = props
+  const { pageviews } = model.result
   const x = pageviews.map(function (item) {
     return item.date
   })
@@ -104,17 +105,22 @@ const Chart = (props) => {
   }
 
   return (
-    <div class='mb4 chart flex-auto'>
-      <Plot
-        data={data}
-        layout={layout}
-        config={config}
-        style={{
-          width: '100%',
-          height: '100%'
-        }}
-        useResizeHandler
-      />
+    <div class='flex flex-column flex-auto pa3 bg-white'>
+      <h4 class='f4 normal mt0 mb3'>
+        {__('Page views and %s', isOperator ? __('visitors') : __('accounts'))}
+      </h4>
+      <div class='mb4 chart flex-auto'>
+        <Plot
+          data={data}
+          layout={layout}
+          config={config}
+          style={{
+            width: '100%',
+            height: '100%'
+          }}
+          useResizeHandler
+        />
+      </div>
     </div>
   )
 }

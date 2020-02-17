@@ -6,7 +6,7 @@ const AccountPicker = require('./../_shared/account-picker')
 module.exports = (props) => {
   return (
     <AccountPicker
-      headline={__('Open account')}
+      headline={__('Choose account')}
       {...props}
     />
   )

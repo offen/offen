@@ -4,32 +4,29 @@ const { h } = require('preact')
 const LabeledInput = require('./../_shared/labeled-input')
 const SubmitButton = require('./../_shared/submit-button')
 
-const ChangeEmail = (props) => {
+const Form = (props) => {
   function handleSubmit (e) {
     e.preventDefault()
     var formData = new window.FormData(e.currentTarget)
-    props.onChangeEmail(
-      {
-        password: formData.get('password'),
-        emailAddress: formData.get('email-address')
-      },
-      __('Please log in again, using your updated email.'),
-      __('Could not change email. Try again.')
+    props.onLogin(
+      formData.get('username'),
+      formData.get('password'),
+      __('Could not log in using the given credentials. Try again.')
     )
   }
 
   return (
     <div class='pa3 bg-black-05'>
       <h4 class='f4 normal mt0 mb3'>
-        {__('Change email address')}
+        {__('Log in as operator')}
       </h4>
-      <form class='mw6 center mb4' onsubmit={handleSubmit}>
+      <form class='mw6 center' onsubmit={handleSubmit}>
         <LabeledInput
           type='email'
-          name='email-address'
+          name='username'
           required
         >
-          {__('New email address')}
+          {__('Email address')}
         </LabeledInput>
         <LabeledInput
           type='password'
@@ -39,11 +36,16 @@ const ChangeEmail = (props) => {
           {__('Password')}
         </LabeledInput>
         <SubmitButton>
-          {__('Change email address')}
+          {__('Log in')}
         </SubmitButton>
+        <div class='mb3'>
+          <a class='normal link dim dark-green' href='/forgot-password/'>
+            {__('Forgot password?')}
+          </a>
+        </div>
       </form>
     </div>
   )
 }
 
-module.exports = ChangeEmail
+module.exports = Form

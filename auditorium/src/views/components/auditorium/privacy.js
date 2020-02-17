@@ -35,7 +35,7 @@ const Privacy = (props) => {
   }
 
   return (
-    <div class='w-100 br0 br2-ns pa3 mb2 mr2-ns mt4 bg-black-05'>
+    <div class='pa3 bg-black-05 flex-auto'>
       <div class='flex flex-column flex-row-ns'>
         <div class='w-100 w-auto-m w-40-l bn br-ns b--moon-gray mb0-ns pr0 pr4-ns mr0 mr4-ns'>
           <h4 class='f4 normal mt0 mb3'>
