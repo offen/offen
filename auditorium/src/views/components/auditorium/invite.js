@@ -8,6 +8,7 @@ const Invite = (props) => {
   return (
     <InviteUser
       {...props}
+      collapsible
       headline={__('Share account')}
       subline={__('Share your Offen account <strong>%s</strong> via email invitation. Invited users have full access to a shared account.', model.result.account.name)}
     />

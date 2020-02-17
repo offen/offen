@@ -1,11 +1,13 @@
 /** @jsx h */
-const { h } = require('preact')
+const { h, Fragment } = require('preact')
+const classnames = require('classnames')
 
 const LabeledInput = require('./labeled-input')
 const SubmitButton = require('./submit-button')
+const Collapsible = require('./collapsible')
 
 const InviteUser = (props) => {
-  const { headline, subline, accountId, onValidationError, onInvite } = props
+  const { headline, subline, accountId, onValidationError, onInvite, collapsible } = props
   function handleSubmit (e) {
     e.preventDefault()
     var formData = new window.FormData(e.currentTarget)
@@ -32,15 +34,23 @@ const InviteUser = (props) => {
     )
   }
 
-  return (
-    <div class='w-100 pa3 mb2 br0 br2-ns bg-black-05'>
-      <div class='flex justify-between'>
-        <h4 class='f4 normal mt0 mb3'>
+  const header = (props) => {
+    const { isCollapsed } = props
+    return (
+      <div class={classnames('flex', 'justify-between', { pointer: collapsible })}>
+        <h4 class='f4 normal ma0'>
           {headline}
         </h4>
-        <a role='button' class='dib label-toggle label-toggle--rotate' />
+        {collapsible
+          ? (<a role='button' class={classnames('dib', 'label-toggle', isCollapsed ? null : 'label-toggle--rotate')} />)
+          : null}
       </div>
-      <form class='mw6 center mb4' onsubmit={handleSubmit}>
+    )
+  }
+
+  const body = (props) => {
+    return (
+      <form class='mw6 center mb4 mt3' onsubmit={handleSubmit}>
         {subline
           ? (
             <p
@@ -80,6 +90,18 @@ const InviteUser = (props) => {
           {__('Invite user')}
         </SubmitButton>
       </form>
+    )
+  }
+  return (
+    <div class='w-100 pa3 mb2 br0 br2-ns bg-black-05'>
+      {collapsible
+        ? <Collapsible headline={header} body={body} />
+        : (
+          <Fragment>
+            {header({})}
+            {body({})}
+          </Fragment>
+        )}
     </div>
   )
 }
