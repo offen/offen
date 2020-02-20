@@ -1,10 +1,11 @@
 /** @jsx h */
 const { h } = require('preact')
+const { forwardRef } = require('preact/compat')
 
 const LabeledInput = require('./../_shared/labeled-input')
 const SubmitButton = require('./../_shared/submit-button')
 
-const Form = (props) => {
+const Form = forwardRef((props, ref) => {
   const handleSubmit = (e) => {
     e.preventDefault()
     var formData = new window.FormData(e.currentTarget)
@@ -28,6 +29,7 @@ const Form = (props) => {
           class='w-100 pa2 mb3 input-reset ba b--black-10 bg-white'
           name='email-address'
           type='email'
+          ref={ref}
           required
         >
           {__('Email address')}
@@ -38,6 +40,6 @@ const Form = (props) => {
       </form>
     </div>
   )
-}
+})
 
 module.exports = Form

@@ -1,10 +1,11 @@
 /** @jsx h */
 const { h } = require('preact')
+const { forwardRef } = require('preact/compat')
 
 const LabeledInput = require('./../_shared/labeled-input')
 const SubmitButton = require('./../_shared/submit-button')
 
-const Form = (props) => {
+const Form = forwardRef((props, ref) => {
   const isAddition = props.isAddition
 
   function handleSubmit (e) {
@@ -32,7 +33,7 @@ const Form = (props) => {
         <LabeledInput
           name='email-address'
           required
-          autoFocus
+          ref={ref}
         >
           {__('Email address')}
         </LabeledInput>
@@ -59,6 +60,6 @@ const Form = (props) => {
       </form>
     </div>
   )
-}
+})
 
 module.exports = Form

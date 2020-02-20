@@ -6,8 +6,10 @@ const management = require('./../action-creators/management')
 const errors = require('./../action-creators/errors')
 const Form = require('./components/join/form')
 const withLayout = require('./components/_shared/with-layout')
+const useAutofocus = require('./components/_shared/use-autofocus')
 
 const JoinView = (props) => {
+  const autofocus = useAutofocus()
   const { isAddition, handleJoin, handleValidationError } = props
   return (
     <div class='w-100 mt4 mb2 br0 br2-ns pa3'>
@@ -15,6 +17,7 @@ const JoinView = (props) => {
         onJoin={handleJoin}
         onValidationError={handleValidationError}
         isAddition={isAddition}
+        ref={autofocus}
       />
     </div>
   )
