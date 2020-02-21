@@ -1,12 +1,16 @@
 /** @jsx h */
-const { h } = require('preact')
+const { h, Fragment } = require('preact')
 const { useState } = require('preact/hooks')
 const classnames = require('classnames')
 
 const Table = (props) => {
-  const { rows, onEmptyMessage = __('No data available for this view.') } = props
+  const { rows, onEmptyMessage = __('No data available for this view.'), limit = 10 } = props
+  const [showAll, setShowAll] = useState(false)
+
+  const hasMore = Array.isArray(rows) && rows.length > limit
+
   var tBody = Array.isArray(rows) && rows.length
-    ? rows.map(function (row, index) {
+    ? rows.slice(0, showAll ? rows.length : limit).map(function (row, index) {
       return (
         <tr key={index} class='striped--near-white'>
           <td class='truncate pv2 ph1'>
@@ -27,21 +31,48 @@ const Table = (props) => {
     )
 
   return (
-    <table class='collapse dt--fixed mb2'>
-      <thead>
-        <tr>
-          <th class='w-70 normal tl pv2 ph1 moon-gray'>
-            {props.columnNames[0]}
-          </th>
-          <th class='w-30 normal tl pv2 ph1 moon-gray'>
-            {props.columnNames[1]}
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        {tBody}
-      </tbody>
-    </table>
+    <Fragment>
+      <table class='collapse dt--fixed mb2'>
+        <thead>
+          <tr>
+            <th class='w-70 normal tl pv2 ph1 moon-gray'>
+              {props.columnNames[0]}
+            </th>
+            <th class='w-30 normal tl pv2 ph1 moon-gray'>
+              {props.columnNames[1]}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {tBody}
+        </tbody>
+      </table>
+      {(() => {
+        if (!hasMore) {
+          return null
+        }
+        if (showAll) {
+          return (
+            <a
+              data-role='button'
+              class='normal link dim dark-green pointer'
+              onclick={() => setShowAll(false)}
+            >
+              {__('Show top %d only', limit)}
+            </a>
+          )
+        }
+        return (
+          <a
+            data-role='button'
+            class='normal link dim dark-green pointer'
+            onclick={() => setShowAll(true)}
+          >
+            {__('Show all entries')}
+          </a>
+        )
+      })()}
+    </Fragment>
   )
 }
 
@@ -82,7 +113,7 @@ const Container = (props) => {
   })
     .filter(Boolean)
 
-  var wrapperClass = ['nowrap', 'overflow-x-auto', 'mb4']
+  var wrapperClass = ['nowrap', 'overflow-x-auto', 'overflow-y-hidden', 'mb4']
   if (!removeBorder) {
     wrapperClass.push('bt', 'b--light-gray')
   }

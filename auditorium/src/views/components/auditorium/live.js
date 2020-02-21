@@ -24,6 +24,7 @@ const Live = (props) => {
             removeBorder
           >
             <Tables.Table
+              limit={5}
               headline={__('Active pages')}
               columnNames={[__('URL'), __('Visitors')]}
               rows={model.livePages}
