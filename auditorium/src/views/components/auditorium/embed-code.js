@@ -27,20 +27,20 @@ const EmbedCode = (props) => {
       <p
         class='ma0 mb3'
         dangerouslySetInnerHTML={{
-          __html: __('To use Offen with the account <strong>%s</strong> on your website, embed the following script on each page you want to appear in your statistics.', model.result.account.name)
+          __html: __('To use Offen with the account <strong>%s</strong> on your website, embed the following script on each page you want to appear in your statistics.', model.account.name)
         }}
       />
       <div class='w-100 br1 ba b--moon-gray ph2 pv2 bg-light-yellow'>
         <code
           class='ma0 lh-solid word-wrap'
           dangerouslySetInnerHTML={{
-            __html: `&lt;script async src="${window.location.origin}/script.js" data-account-id="${model.result.account.accountId}"&gt;&lt;/script&gt;`
+            __html: `&lt;script async src="${window.location.origin}/script.js" data-account-id="${model.account.accountId}"&gt;&lt;/script&gt;`
           }}
         />
       </div>
       <CopyToClipboard
         text={
-         `<script async src="${window.location.origin}/script.js" data-account-id="${model.result.account.accountId}"></script>`
+         `<script async src="${window.location.origin}/script.js" data-account-id="${model.account.accountId}"></script>`
         }
       >
         <button class='pointer w-100 w-auto-ns f5 tc link dim bn dib br1 ph3 pv2 mt3 white bg-mid-gray'>

@@ -19,7 +19,7 @@ exports.query = (data, authenticatedUser, softFailureMessage, inBackground) => (
     .then((response) => {
       dispatch({
         type: 'QUERY_SUCCESS',
-        payload: response.payload
+        payload: response.payload.result
       })
     })
     .catch((err) => {

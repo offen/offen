@@ -7,8 +7,8 @@ const RowMetrics = (props) => {
   const { isOperator, model } = props
 
   const uniqueEntities = isOperator
-    ? model.result.uniqueUsers
-    : model.result.uniqueAccounts
+    ? model.uniqueUsers
+    : model.uniqueAccounts
   const entityName = isOperator
     ? __('users')
     : __('accounts')
@@ -27,16 +27,16 @@ const RowMetrics = (props) => {
           />
           <KeyMetric
             name={__('Unique sessions')}
-            value={model.result.uniqueSessions}
+            value={model.uniqueSessions}
             formatAs='count'
           />
         </div>
         <div class='w-100 mb3 bb b--light-gray'>
-          {model.result.avgPageDepth
+          {model.avgPageDepth
             ? (
               <KeyMetric
                 name={__('Avg. page depth')}
-                value={model.result.avgPageDepth}
+                value={model.avgPageDepth}
                 formatAs='number'
                 small
               />
@@ -44,15 +44,15 @@ const RowMetrics = (props) => {
             : null}
           <KeyMetric
             name={__('Bounce rate')}
-            value={model.result.bounceRate}
+            value={model.bounceRate}
             formatAs='percentage'
             small
           />
-          {isOperator && model.result.loss
+          {isOperator && model.loss
             ? (
               <KeyMetric
                 name={__('Plus')}
-                value={model.result.avgPageDepth}
+                value={model.avgPageDepth}
                 formatAs='percentage'
                 small
               />
@@ -62,15 +62,15 @@ const RowMetrics = (props) => {
         <div>
           <KeyMetric
             name={__('Mobile users')}
-            value={model.result.mobileShare}
+            value={model.mobileShare}
             formatAs='percentage'
             small
           />
-          {model.result.avgPageload
+          {model.avgPageload
             ? (
               <KeyMetric
                 name={__('Avg. page load time')}
-                value={model.result.avgPageload}
+                value={model.avgPageload}
                 formatAs='duration'
                 small
               />

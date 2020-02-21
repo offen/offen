@@ -8,11 +8,11 @@ const withLayout = require('./components/_shared/with-layout')
 const useAutofocus = require('./components/_shared/use-autofocus')
 
 const ForgotPasswordView = (props) => {
-  const autofocus = useAutofocus()
+  const autofocusRef = useAutofocus()
   return (
     <div class='w-100 mt4 mb2 br0 br2-ns'>
       <Form
-        ref={autofocus}
+        ref={autofocusRef}
         onForgotPassword={props.handleForgotPassword}
       />
     </div>

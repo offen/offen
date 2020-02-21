@@ -13,7 +13,7 @@ const Plot = createPlotlyComponent(Plotly)
 
 const Chart = (props) => {
   const { model, isOperator, resolution } = props
-  const { pageviews } = model.result
+  const { pageviews } = model
   const x = pageviews.map(function (item) {
     return item.date
   })

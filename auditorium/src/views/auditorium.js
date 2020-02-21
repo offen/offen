@@ -73,7 +73,7 @@ const AuditoriumView = (props) => {
       {stale ? <LoadingOverlay /> : null}
       <Header
         isOperator={isOperator}
-        accountName={(isOperator && authenticatedUser) ? model.result.account.name : null}
+        accountName={(isOperator && authenticatedUser) ? model.account.name : null}
       />
       <div class='flex flex-column flex-row-l mt4'>
         {isOperator
@@ -85,7 +85,7 @@ const AuditoriumView = (props) => {
                   selectedId={accountId}
                 />
               </div>
-              {!model.result.empty
+              {!model.empty
                 ? (
                   <div class='w-70-l w-100 flex bt ba-ns br0 br2-ns mb2-ns b--black-10'>
                     <Live model={model} />
@@ -143,7 +143,7 @@ const AuditoriumView = (props) => {
       {isOperator
         ? (
           <Fragment>
-            {!model.result.empty
+            {!model.empty
               ? (
                 <div class='flex flex-column flex-row-l'>
                   <div class='w-100 flex br0 br2-ns mb2'>
@@ -160,7 +160,7 @@ const AuditoriumView = (props) => {
                 <Share
                   onValidationError={handleValidationError}
                   onShare={handleInvite}
-                  accountName={model.result.account.name}
+                  accountName={model.account.name}
                   accountId={accountId}
                 />
               </div>

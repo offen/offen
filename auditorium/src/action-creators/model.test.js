@@ -9,7 +9,7 @@ describe('src/action-creators/model.js', function () {
   describe('query()', function () {
     it('handles successful responses', function () {
       const mockPostMessage = sinon.stub()
-      mockPostMessage.resolves({ type: 'QUERY_SUCCESS', payload: 'fake model' })
+      mockPostMessage.resolves({ type: 'QUERY_SUCCESS', payload: { result: 'fake model' } })
       const mockStore = configureMockStore([thunk.withExtraArgument(mockPostMessage)])
       const store = mockStore({})
 

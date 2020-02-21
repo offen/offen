@@ -14,7 +14,7 @@ const Live = (props) => {
             {__('Real time')}
           </h4>
           <KeyMetric
-            value={model.result.liveUsers}
+            value={model.liveUsers}
             name={__('Active users on site')}
             formatAs='count'
           />
@@ -26,7 +26,7 @@ const Live = (props) => {
             <Tables.Table
               headline={__('Active pages')}
               columnNames={[__('URL'), __('Visitors')]}
-              rows={model.result.livePages}
+              rows={model.livePages}
             />
           </Tables.Container>
         </div>

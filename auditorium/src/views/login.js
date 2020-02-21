@@ -8,12 +8,12 @@ const useAutofocus = require('./components/_shared/use-autofocus')
 const Form = require('./components/login/form')
 
 const LoginView = (props) => {
-  const autofocus = useAutofocus()
+  const autofocusRef = useAutofocus()
   return (
     <div class='w-100 mt4 mb2 br0 br2-ns'>
       <Form
         onLogin={props.handleLogin}
-        ref={autofocus}
+        ref={autofocusRef}
       />
     </div>
   )

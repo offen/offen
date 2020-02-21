@@ -22,7 +22,7 @@ const RetentionSquare = (props) => {
 
 const RetentionTable = (props) => {
   const { model } = props
-  const matrix = model.result.retentionMatrix
+  const matrix = model.retentionMatrix
   const rows = matrix.map(function (row, index) {
     var elements = row.slice()
     while (elements.length < matrix[0].length) {

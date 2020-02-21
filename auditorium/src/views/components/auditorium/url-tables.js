@@ -13,36 +13,36 @@ const URLTable = (props) => {
       <Tables.Container>
         <Tables.Table
           columnNames={[__('URL'), __('Pageviews')]}
-          rows={model.result.pages}
+          rows={model.pages}
         />
       </Tables.Container>
       <Tables.Container>
         <Tables.Table
           headline={__('Referrers')}
           columnNames={[__('Host'), __('Pageviews')]}
-          rows={model.result.referrers}
+          rows={model.referrers}
         />
         <Tables.Table
           headline={__('Campaigns')}
           columnNames={[__('Campaign'), __('Pageviews')]}
-          rows={model.result.campaigns}
+          rows={model.campaigns}
         />
         <Tables.Table
           headline={__('Sources')}
           columnNames={[__('Source'), __('Pageviews')]}
-          rows={model.result.sources}
+          rows={model.sources}
         />
       </Tables.Container>
       <Tables.Container>
         <Tables.Table
           headline={__('Landing Pages')}
           columnNames={[__('URL'), __('Landings')]}
-          rows={model.result.landingPages}
+          rows={model.landingPages}
         />
         <Tables.Table
           headline={__('Exit Pages')}
           columnNames={[__('URL'), __('Exits')]}
-          rows={model.result.exitPages}
+          rows={model.exitPages}
         />
       </Tables.Container>
     </div>

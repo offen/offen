@@ -8,12 +8,12 @@ const useAutofocus = require('./components/_shared/use-autofocus')
 const Form = require('./components/reset-password/form')
 
 const ResetPasswordView = (props) => {
-  const autofocus = useAutofocus()
+  const autofocusRef = useAutofocus()
   return (
     <div class='w-100 mt4 mb2 br0 br2-ns'>
       <Form
         onResetPassword={props.handleResetPassword}
-        ref={autofocus}
+        ref={autofocusRef}
       />
     </div>
   )
