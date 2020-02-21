@@ -23,15 +23,9 @@ Go is currently at version 1.13 and all code can expect all features present in 
 
 ## JavaScript
 
-Offen tries to keep its build setup simple, which is why transpilers like [babel][] are not part of the build pipeline. In turn this means, Offen uses ES5 syntax only (with the exception of [nanohtml][] template strings, see section below) so older browsers do not choke on the bundle and can fall back gracefully. Another reason for not using ES6+ syntax is keeping the codebase readable for non-technical people who are interested in what Offen is doing under the hood.
-
 Code is following the [Standard JS][standard] styleguide which is enforced in CI. Unit tests are being run using [mochify.js][mochify] which means you can access a native and up-to-date DOM API in your tests.
 
 [babel]: https://babeljs.io/
 [standard]: https://standardjs.com/
 [mochify]: https://github.com/mantoni/mochify.js
 [nanohtml]: https://github.com/choojs/nanohtml
-
-### Tagged template literals and nanohmtml
-
-An exception to the ES5-only rule is the use of tagged template literals when interacting with [nanohtml][]. This code, however, will be compiled away into ES5 by its browserify transform, so the client will never receive these template literals in any way.
