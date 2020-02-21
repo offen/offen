@@ -1,0 +1,12 @@
+.grow-list li {
+  flex-grow: 1;
+}
+
+.grow-list::after {
+  content: '';
+  display: inline-block;
+  border-color: inherit;
+  border-width: 1px 0 0 0;
+  border-style: solid;
+  flex-grow: 99999;
+}
