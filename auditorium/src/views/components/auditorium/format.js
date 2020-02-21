@@ -13,7 +13,7 @@ const Format = (props) => {
       value = formatCount(source)
       break
     case 'percentage':
-      value = formatCount(source) + ' %'
+      value = formatNumber(source, 100, 1) + ' %'
       break
     default:
       value = formatNumber(source, factor, digits)
