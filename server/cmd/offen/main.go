@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bufio"
 	"context"
 	"encoding/base64"
 	"errors"
@@ -29,6 +28,7 @@ import (
 	"github.com/phayes/freeport"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/acme/autocert"
+	"golang.org/x/crypto/ssh/terminal"
 	yaml "gopkg.in/yaml.v2"
 )
 
@@ -279,35 +279,32 @@ func main() {
 		logger.Info("Gracefully shut down server")
 	case "setup":
 		var (
-			accountID         = setupCmd.String("forceid", "", "force usage of given valid UUID as account ID")
-			accountName       = setupCmd.String("name", "", "the account name")
-			email             = setupCmd.String("email", "", "the email address used for login")
-			password          = setupCmd.String("password", "", "the password used for login")
-			passwordFromStdin = setupCmd.Bool("stdin-password", false, "read password from stdin")
-			source            = setupCmd.String("source", "", "a configuration file")
-			envFile           = setupCmd.String("envfile", "", "the env file to use")
-			populateMissing   = setupCmd.Bool("populate", false, "in case required secrets are missing from the configuration, create and persist them in the target env file")
+			accountID       = setupCmd.String("forceid", "", "force usage of given valid UUID as account ID")
+			accountName     = setupCmd.String("name", "", "the account name")
+			email           = setupCmd.String("email", "", "the email address used for login")
+			password        = setupCmd.String("password", "", "the password used for login")
+			source          = setupCmd.String("source", "", "a configuration file")
+			envFile         = setupCmd.String("envfile", "", "the env file to use")
+			populateMissing = setupCmd.Bool("populate", false, "in case required secrets are missing from the configuration, create and persist them in the target env file")
 		)
 		setupCmd.Parse(flags)
 
 		pw := *password
-		if *passwordFromStdin {
-			sc := bufio.NewScanner(os.Stdin)
+		if *source == "" && pw == "" {
 			received := make(chan bool, 2)
 			go func() {
 				select {
 				case <-received:
 					return
 				case <-time.Tick(time.Second / 10):
-					logger.Info("You can now enter your password (this will be displayed in clear text):")
+					logger.Info("You can now enter your password (input is not displayed):")
 				}
 			}()
-			for sc.Scan() {
-				received <- true
-				close(received)
-				pw = sc.Text()
-				break
+			input, inputErr := terminal.ReadPassword(int(os.Stdin.Fd()))
+			if inputErr != nil {
+				logger.WithError(inputErr).Fatal("Error reading password")
 			}
+			pw = string(input)
 		}
 
 		cfg := mustConfig(*populateMissing, *envFile)
