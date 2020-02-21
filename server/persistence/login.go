@@ -3,7 +3,6 @@ package persistence
 import (
 	"encoding/base64"
 	"fmt"
-	"sync"
 
 	"github.com/lestrrat-go/jwx/jwk"
 	"github.com/offen/offen/server/keys"
@@ -275,28 +274,11 @@ func (p *persistenceLayer) findAccountUser(emailAddress string, includeRelations
 }
 
 func selectAccountUser(available []AccountUser, email string) (*AccountUser, error) {
-	match := make(chan AccountUser)
-	allDone := make(chan bool)
-	wg := sync.WaitGroup{}
-
+	// TODO: run this concurrently without leaking goroutines
 	for _, accountUser := range available {
-		wg.Add(1)
-		go func(a AccountUser) {
-			if err := keys.CompareString(email, a.HashedEmail); err == nil {
-				match <- a
-			}
-			wg.Done()
-		}(accountUser)
+		if err := keys.CompareString(email, accountUser.HashedEmail); err == nil {
+			return &accountUser, nil
+		}
 	}
-	go func() {
-		wg.Wait()
-		allDone <- true
-	}()
-
-	select {
-	case accountUser := <-match:
-		return &accountUser, nil
-	case <-allDone:
-		return nil, fmt.Errorf("persistence: no account user found for %s", email)
-	}
+	return nil, fmt.Errorf("persistence: no account user found for %s", email)
 }
