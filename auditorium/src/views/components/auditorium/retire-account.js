@@ -4,7 +4,7 @@ const { h } = require('preact')
 const Collapsible = require('./../_shared/collapsible')
 const classnames = require('classnames')
 
-const GoSettings = (props) => {
+const RetireAccount = (props) => {
   const { account } = props
   const handleClick = () => {
     props.onRetire(
@@ -50,4 +50,4 @@ const GoSettings = (props) => {
   )
 }
 
-module.exports = GoSettings
+module.exports = RetireAccount

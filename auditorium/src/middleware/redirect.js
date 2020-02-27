@@ -4,7 +4,7 @@ module.exports = (store) => (next) => (action) => {
   switch (action.type) {
     case 'LOGIN_SUCCESS':
       next(action)
-      if (!action.payload.accounts) {
+      if (!Array.isArray(action.payload.accounts) || !action.payload.accounts.length) {
         route('/console/')
         return
       }
