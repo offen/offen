@@ -49,7 +49,7 @@ exports.purge = () => (dispatch, getState, postMessage) => {
     .then((response) => {
       dispatch({
         type: 'PURGE_SUCCESS',
-        payload: response.payload
+        payload: response.payload.result
       })
     })
     .catch((err) => dispatch(errors.unrecoverable(err)))
