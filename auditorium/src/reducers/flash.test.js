@@ -156,5 +156,25 @@ describe('src/reducers/flash.js', function () {
       })
       assert.strictEqual(next, 'msg')
     })
+
+    it('handles RETIRE_ACCOUNT_SUCCESS', function () {
+      const next = flash(null, {
+        type: 'RETIRE_ACCOUNT_SUCCESS',
+        payload: {
+          flash: 'msg'
+        }
+      })
+      assert.strictEqual(next, 'msg')
+    })
+
+    it('handles RETIRE_ACCOUNT_FAILURE', function () {
+      const next = flash(null, {
+        type: 'RETIRE_ACCOUNT_FAILURE',
+        payload: {
+          flash: 'msg'
+        }
+      })
+      assert.strictEqual(next, 'msg')
+    })
   })
 })

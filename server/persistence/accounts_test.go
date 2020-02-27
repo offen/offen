@@ -224,15 +224,17 @@ func TestPersistenceLayer_AssociateUserSecret(t *testing.T) {
 
 type mockRetireAccountDatabase struct {
 	DataAccessLayer
-	result error
+	updateErr error
+	deleteErr error
+	txnErr    error
 }
 
 func (m *mockRetireAccountDatabase) UpdateAccount(interface{}) error {
-	return m.result
+	return m.updateErr
 }
 
 func (m *mockRetireAccountDatabase) DeleteAccountUserRelationships(interface{}) error {
-	return m.result
+	return m.deleteErr
 }
 
 func (m *mockRetireAccountDatabase) Commit() error {
@@ -244,7 +246,7 @@ func (m *mockRetireAccountDatabase) Rollback() error {
 }
 
 func (m *mockRetireAccountDatabase) Transaction() (Transaction, error) {
-	return m, nil
+	return m, m.txnErr
 }
 
 func TestPersistenceLayer_RetireAccount(t *testing.T) {
@@ -254,9 +256,23 @@ func TestPersistenceLayer_RetireAccount(t *testing.T) {
 		expectError bool
 	}{
 		{
-			"error",
+			"update error",
 			&mockRetireAccountDatabase{
-				result: errors.New("did not work"),
+				updateErr: errors.New("did not work"),
+			},
+			true,
+		},
+		{
+			"delete error",
+			&mockRetireAccountDatabase{
+				deleteErr: errors.New("did not work"),
+			},
+			true,
+		},
+		{
+			"transaction error",
+			&mockRetireAccountDatabase{
+				txnErr: errors.New("did not work"),
 			},
 			true,
 		},
