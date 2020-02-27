@@ -224,17 +224,22 @@ func TestPersistenceLayer_AssociateUserSecret(t *testing.T) {
 
 type mockRetireAccountDatabase struct {
 	DataAccessLayer
-	updateErr error
-	deleteErr error
-	txnErr    error
+	updateErr         error
+	deleteErr         error
+	txnErr            error
+	findAccountResult Account
+	findAccountErr    error
 }
 
-func (m *mockRetireAccountDatabase) UpdateAccount(interface{}) error {
+func (m *mockRetireAccountDatabase) UpdateAccount(*Account) error {
 	return m.updateErr
 }
 
 func (m *mockRetireAccountDatabase) DeleteAccountUserRelationships(interface{}) error {
 	return m.deleteErr
+}
+func (m *mockRetireAccountDatabase) FindAccount(interface{}) (Account, error) {
+	return m.findAccountResult, m.findAccountErr
 }
 
 func (m *mockRetireAccountDatabase) Commit() error {

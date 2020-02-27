@@ -15,24 +15,12 @@ func (r *relationalDAL) CreateAccount(a *persistence.Account) error {
 	return nil
 }
 
-func (r *relationalDAL) UpdateAccount(q interface{}) error {
-	switch query := q.(type) {
-	case persistence.RetireAccountQueryByID:
-		var account Account
-		if err := r.db.Find(&account, "account_id = ? AND retired = false", query).Error; err != nil {
-			if gorm.IsRecordNotFoundError(err) {
-				return persistence.ErrUnknownAccount("relational: no matching account found")
-			}
-			return fmt.Errorf("relational: error looking up account %s: %w", query, err)
-		}
-		account.Retired = true
-		if err := r.db.Save(&account).Error; err != nil {
-			return fmt.Errorf("relational: error retiring account: %w", err)
-		}
-		return nil
-	default:
-		return persistence.ErrBadQuery
+func (r *relationalDAL) UpdateAccount(a *persistence.Account) error {
+	local := importAccount(a)
+	if err := r.db.Save(&local).Error; err != nil {
+		return fmt.Errorf("relational: error saving account: %w", err)
 	}
+	return nil
 }
 
 func (r *relationalDAL) FindAccount(q interface{}) (persistence.Account, error) {

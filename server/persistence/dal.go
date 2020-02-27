@@ -11,7 +11,7 @@ type DataAccessLayer interface {
 	FindSecret(interface{}) (Secret, error)
 	DeleteSecret(interface{}) error
 	CreateAccount(*Account) error
-	UpdateAccount(interface{}) error
+	UpdateAccount(*Account) error
 	FindAccount(interface{}) (Account, error)
 	FindAccounts(interface{}) ([]Account, error)
 	CreateAccountUser(*AccountUser) error

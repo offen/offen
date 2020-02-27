@@ -54,40 +54,10 @@ func TestRelationalDAL_UpdateAccount(t *testing.T) {
 	tests := []struct {
 		name        string
 		setup       dbAccess
-		arg         interface{}
+		arg         *persistence.Account
 		expectError bool
 		assertion   dbAccess
 	}{
-		{
-			"bad arg",
-			noop,
-			89,
-			true,
-			noop,
-		},
-		{
-			"account not found",
-			func(db *gorm.DB) error {
-				return db.Create(&Account{
-					AccountID: "account-b",
-				}).Error
-			},
-			persistence.RetireAccountQueryByID("account-a"),
-			true,
-			noop,
-		},
-		{
-			"already retired",
-			func(db *gorm.DB) error {
-				return db.Create(&Account{
-					AccountID: "account-a",
-					Retired:   true,
-				}).Error
-			},
-			persistence.RetireAccountQueryByID("account-a"),
-			true,
-			noop,
-		},
 		{
 			"ok",
 			func(db *gorm.DB) error {
@@ -103,7 +73,10 @@ func TestRelationalDAL_UpdateAccount(t *testing.T) {
 				}
 				return nil
 			},
-			persistence.RetireAccountQueryByID("account-a"),
+			&persistence.Account{
+				AccountID: "account-a",
+				Retired:   true,
+			},
 			false,
 			func(db *gorm.DB) error {
 				{
