@@ -70,7 +70,7 @@ describe('src/action-creators/model.js', function () {
   describe('purge()', function () {
     it('handles successful responses', function () {
       const mockPostMessage = sinon.stub()
-      mockPostMessage.resolves({ type: 'PURGE_SUCCESS', payload: null })
+      mockPostMessage.resolves({ type: 'PURGE_SUCCESS', payload: { result: null } })
       const mockStore = configureMockStore([thunk.withExtraArgument(mockPostMessage)])
       const store = mockStore({})
 
