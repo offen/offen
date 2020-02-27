@@ -37,7 +37,7 @@ const GoSettings = (props) => {
                 {__('This action cannot be undone.')}
               </p>
               <button
-                class='w-100 w-auto-ns f5 tc link dim bn dib br1 ph3 pv2 mr0 mr2-ns mb3 mb0-ns white bg-mid-gray'
+                class='pointer w-100 w-auto-ns f5 tc link dim bn dib br1 ph3 pv2 mr0 mr2-ns mb3 mb0-ns white bg-mid-gray'
                 onclick={handleClick}
               >
                 {__('Retire account')}

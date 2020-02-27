@@ -14,6 +14,18 @@ func (r *relationalDAL) CreateAccountUserRelationship(a *persistence.AccountUser
 	return nil
 }
 
+func (r *relationalDAL) DeleteAccountUserRelationships(q interface{}) error {
+	switch query := q.(type) {
+	case persistence.DeleteAccountUserRelationshipsQueryByAccountID:
+		if err := r.db.Where("account_id = ?", query).Delete(&AccountUserRelationship{}).Error; err != nil {
+			return fmt.Errorf("relational: error deleting relationships for account %s: %w", query, err)
+		}
+		return nil
+	default:
+		return persistence.ErrBadQuery
+	}
+}
+
 func (r *relationalDAL) FindAccountUserRelationships(q interface{}) ([]persistence.AccountUserRelationship, error) {
 	var relationships []AccountUserRelationship
 	switch query := q.(type) {

@@ -50,7 +50,7 @@ func TestRelationalDAL_CreateAccount(t *testing.T) {
 	}
 }
 
-func TestRelationalDAL_RetireAccount(t *testing.T) {
+func TestRelationalDAL_UpdateAccount(t *testing.T) {
 	tests := []struct {
 		name        string
 		setup       dbAccess
@@ -140,7 +140,7 @@ func TestRelationalDAL_RetireAccount(t *testing.T) {
 				t.Fatalf("Error setting up test: %v", err)
 			}
 
-			err := dal.RetireAccount(test.arg)
+			err := dal.UpdateAccount(test.arg)
 
 			if test.expectError != (err != nil) {
 				t.Errorf("Unexpected error value: %v", err)

@@ -15,7 +15,7 @@ func (r *relationalDAL) CreateAccount(a *persistence.Account) error {
 	return nil
 }
 
-func (r *relationalDAL) RetireAccount(q interface{}) error {
+func (r *relationalDAL) UpdateAccount(q interface{}) error {
 	switch query := q.(type) {
 	case persistence.RetireAccountQueryByID:
 		var account Account

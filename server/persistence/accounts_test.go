@@ -227,8 +227,24 @@ type mockRetireAccountDatabase struct {
 	result error
 }
 
-func (m *mockRetireAccountDatabase) RetireAccount(interface{}) error {
+func (m *mockRetireAccountDatabase) UpdateAccount(interface{}) error {
 	return m.result
+}
+
+func (m *mockRetireAccountDatabase) DeleteAccountUserRelationships(interface{}) error {
+	return m.result
+}
+
+func (m *mockRetireAccountDatabase) Commit() error {
+	return nil
+}
+
+func (m *mockRetireAccountDatabase) Rollback() error {
+	return nil
+}
+
+func (m *mockRetireAccountDatabase) Transaction() (Transaction, error) {
+	return m, nil
 }
 
 func TestPersistenceLayer_RetireAccount(t *testing.T) {

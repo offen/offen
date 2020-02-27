@@ -11,7 +11,7 @@ type DataAccessLayer interface {
 	FindSecret(interface{}) (Secret, error)
 	DeleteSecret(interface{}) error
 	CreateAccount(*Account) error
-	RetireAccount(interface{}) error
+	UpdateAccount(interface{}) error
 	FindAccount(interface{}) (Account, error)
 	FindAccounts(interface{}) ([]Account, error)
 	CreateAccountUser(*AccountUser) error
@@ -21,6 +21,7 @@ type DataAccessLayer interface {
 	CreateAccountUserRelationship(*AccountUserRelationship) error
 	UpdateAccountUserRelationship(*AccountUserRelationship) error
 	FindAccountUserRelationships(interface{}) ([]AccountUserRelationship, error)
+	DeleteAccountUserRelationships(interface{}) error
 	Transaction() (Transaction, error)
 	ApplyMigrations() error
 	DropAll() error
@@ -89,6 +90,10 @@ type FindAccountUserQueryByAccountUserIDIncludeRelationships string
 // FindAccountUserRelationshipsQueryByAccountUserID requests all relationships for the user
 // with the given account user ID.
 type FindAccountUserRelationshipsQueryByAccountUserID string
+
+// DeleteAccountUserRelationshipsQueryByAccountID requests deletion of all relationships
+// with the given account id.
+type DeleteAccountUserRelationshipsQueryByAccountID string
 
 // FindAccountUsersQueryAllAccountUsers requests all account users.
 type FindAccountUsersQueryAllAccountUsers struct {
