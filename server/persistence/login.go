@@ -41,6 +41,10 @@ func (p *persistenceLayer) Login(email, password string) (LoginResult, error) {
 			return LoginResult{}, fmt.Errorf(`persistence: error looking up account with id "%s": %w`, relationship.AccountID, err)
 		}
 
+		if account.Retired {
+			continue
+		}
+
 		result := LoginAccountResult{
 			AccountName:      account.Name,
 			AccountID:        relationship.AccountID,

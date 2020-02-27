@@ -4,6 +4,10 @@ module.exports = (store) => (next) => (action) => {
   switch (action.type) {
     case 'LOGIN_SUCCESS':
       next(action)
+      if (!action.payload.accounts) {
+        route('/console/')
+        return
+      }
       route(`/auditorium/${action.payload.accounts[0].accountId}`)
       return
     case 'AUTHENTICATION_FAILURE':
