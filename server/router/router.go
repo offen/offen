@@ -183,6 +183,7 @@ func New(opts ...Config) http.Handler {
 		api.POST("/exchange", rt.postUserSecret)
 
 		api.GET("/accounts/:accountID", accountAuth, rt.getAccount)
+		api.DELETE("/accounts/:accountID", accountAuth, rt.deleteAccount)
 		api.POST("/accounts", accountAuth, rt.postAccount)
 
 		api.POST("/deleted/user", userCookie, rt.getDeletedEvents)

@@ -204,3 +204,11 @@ func (p *persistenceLayer) CreateAccount(name, emailAddress, password string) er
 
 	return nil
 }
+
+func (p *persistenceLayer) RetireAccount(accountID string) error {
+	err := p.dal.RetireAccount(RetireAccountQueryByID(accountID))
+	if err != nil {
+		return fmt.Errorf("persistence: error retiring account %s: %w", accountID, err)
+	}
+	return nil
+}

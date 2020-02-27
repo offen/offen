@@ -11,6 +11,7 @@ type DataAccessLayer interface {
 	FindSecret(interface{}) (Secret, error)
 	DeleteSecret(interface{}) error
 	CreateAccount(*Account) error
+	RetireAccount(interface{}) error
 	FindAccount(interface{}) (Account, error)
 	FindAccounts(interface{}) ([]Account, error)
 	CreateAccountUser(*AccountUser) error
@@ -93,6 +94,9 @@ type FindAccountUserRelationshipsQueryByAccountUserID string
 type FindAccountUsersQueryAllAccountUsers struct {
 	IncludeRelationships bool
 }
+
+// RetireAccountQueryByID requests the account of the given id to be retired.
+type RetireAccountQueryByID string
 
 // Transaction is a data access layer that does not persist data until commit
 // is called. In case rollback is called before, the underlying database will

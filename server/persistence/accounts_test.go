@@ -221,3 +221,42 @@ func TestPersistenceLayer_AssociateUserSecret(t *testing.T) {
 		})
 	}
 }
+
+type mockRetireAccountDatabase struct {
+	DataAccessLayer
+	result error
+}
+
+func (m *mockRetireAccountDatabase) RetireAccount(interface{}) error {
+	return m.result
+}
+
+func TestPersistenceLayer_RetireAccount(t *testing.T) {
+	tests := []struct {
+		name        string
+		db          *mockRetireAccountDatabase
+		expectError bool
+	}{
+		{
+			"error",
+			&mockRetireAccountDatabase{
+				result: errors.New("did not work"),
+			},
+			true,
+		},
+		{
+			"ok",
+			&mockRetireAccountDatabase{},
+			false,
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			p := persistenceLayer{test.db}
+			err := p.RetireAccount("account-a")
+			if test.expectError != (err != nil) {
+				t.Errorf("Unexpected error value: %v", err)
+			}
+		})
+	}
+}
