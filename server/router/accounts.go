@@ -31,7 +31,8 @@ func (rt *router) getAccount(c *gin.Context) {
 
 	result, err := rt.db.GetAccount(accountID, true, c.Query("since"))
 	if err != nil {
-		if _, ok := err.(persistence.ErrUnknownAccount); ok {
+		var errUnknown persistence.ErrUnknownAccount
+		if errors.As(err, &errUnknown) {
 			newJSONError(
 				fmt.Errorf("router: account %s not found", accountID),
 				http.StatusNotFound,
@@ -45,6 +46,45 @@ func (rt *router) getAccount(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, result)
+}
+
+func (rt *router) deleteAccount(c *gin.Context) {
+	accountID := c.Param("accountID")
+
+	accountUser, ok := c.Value(contextKeyAuth).(persistence.LoginResult)
+	if !ok {
+		newJSONError(
+			errors.New("router: could not find account user object in request context"),
+			http.StatusNotFound,
+		).Pipe(c)
+		return
+	}
+
+	if ok := accountUser.CanAccessAccount(accountID); !ok {
+		newJSONError(
+			fmt.Errorf("router: account user does not have permissions to access account %s", accountID),
+			http.StatusForbidden,
+		).Pipe(c)
+		return
+	}
+
+	err := rt.db.RetireAccount(accountID)
+	if err != nil {
+		var errUnknown persistence.ErrUnknownAccount
+		if errors.As(err, &errUnknown) {
+			newJSONError(
+				fmt.Errorf("router: account %s not found", accountID),
+				http.StatusNotFound,
+			).Pipe(c)
+			return
+		}
+		newJSONError(
+			fmt.Errorf("router: error deleting account: %w", err),
+			http.StatusInternalServerError,
+		).Pipe(c)
+		return
+	}
+	c.JSON(http.StatusNoContent, nil)
 }
 
 type createAccountRequest struct {

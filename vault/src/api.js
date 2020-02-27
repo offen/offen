@@ -307,3 +307,17 @@ function createAccountWith (createUrl) {
       .then(handleFetchResponse)
   }
 }
+
+exports.retireAccount = retireAccountWith(window.location.origin + '/api/accounts')
+exports.retireAccountWith = retireAccountWith
+
+function retireAccountWith (deleteUrl) {
+  return function (accountId) {
+    return window
+      .fetch(deleteUrl + '/' + accountId, {
+        method: 'DELETE',
+        credentials: 'include'
+      })
+      .then(handleFetchResponse)
+  }
+}

@@ -27,12 +27,16 @@ const ConsoleView = (props) => {
           accounts={props.authenticatedUser.accounts}
         />
       </div>
-      <div class='w-100 br0 br2-ns mb2'>
-        <ShareAccounts
-          onShare={props.handleInvite}
-          onValidationError={props.handleValidationError}
-        />
-      </div>
+      {Array.isArray(props.authenticatedUser.accounts) && props.authenticatedUser.accounts.length
+        ? (
+          <div class='w-100 br0 br2-ns mb2'>
+            <ShareAccounts
+              onShare={props.handleInvite}
+              onValidationError={props.handleValidationError}
+            />
+          </div>
+        )
+        : null}
       <div class='w-100 br0 br2-ns mb2'>
         <CreateAccount
           onCreateAccount={props.handleCreateAccount}

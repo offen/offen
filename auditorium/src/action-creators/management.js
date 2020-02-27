@@ -104,3 +104,38 @@ exports.createAccount = (payload, onSuccessMessage, onFailureMessage) => (dispat
     })
     .catch((err) => dispatch(errors.unrecoverable(err)))
 }
+
+exports.retireAccount = (payload, onSuccessMessage, onFailureMessage) => (dispatch, getState, postMessage) => {
+  dispatch({
+    type: 'RETIRE_ACCOUNT_REQUEST',
+    payload: null
+  })
+
+  return postMessage({
+    type: 'RETIRE_ACCOUNT',
+    payload: payload
+  })
+    .then(function (response) {
+      switch (response.type) {
+        case 'RETIRE_ACCOUNT_SUCCESS':
+          dispatch({
+            type: 'RETIRE_ACCOUNT_SUCCESS',
+            payload: {
+              flash: onSuccessMessage
+            }
+          })
+          return
+        case 'RETIRE_ACCOUNT_FAILURE':
+          dispatch({
+            type: 'RETIRE_ACCOUNT_FAILURE',
+            payload: {
+              flash: onFailureMessage
+            }
+          })
+          return
+        default:
+          throw new Error('Unhandled response of type "' + response.type + '"')
+      }
+    })
+    .catch((err) => dispatch(errors.unrecoverable(err)))
+}

@@ -268,6 +268,15 @@ function handleCreateAccountWith (api) {
   })
 }
 
+exports.handleRetireAccount = handleRetireAccountWith(api)
+exports.handleRetireAccountWith = handleRetireAccountWith
+
+function handleRetireAccountWith (api) {
+  return proxyThunk(function (payload) {
+    return api.retireAccount(payload.accountId)
+  })
+}
+
 // proxyThunk can be used to create a handler that simply calls through
 // to an api method without needing any further logic other than signalling
 // success or failure

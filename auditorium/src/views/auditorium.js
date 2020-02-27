@@ -19,6 +19,7 @@ const Share = require('./components/auditorium/share')
 const GoSettings = require('./components/auditorium/go-settings')
 const LoadingOverlay = require('./components/auditorium/loading-overlay')
 const AccountPicker = require('./components/auditorium/account-picker')
+const RetireAccount = require('./components/auditorium/retire-account')
 const Live = require('./components/auditorium/live')
 const model = require('./../action-creators/model')
 const consent = require('./../action-creators/consent-status')
@@ -27,7 +28,7 @@ const management = require('./../action-creators/management')
 
 const AuditoriumView = (props) => {
   const { matches, authenticatedUser, model, isOperator, consentStatus, stale } = props
-  const { handlePurge, handleQuery, expressConsent, getConsentStatus, handleInvite, handleValidationError } = props
+  const { handlePurge, handleQuery, expressConsent, getConsentStatus, handleInvite, handleValidationError, handleRetire } = props
   const { accountId, range, resolution } = matches
 
   useEffect(function fetchData () {
@@ -166,6 +167,14 @@ const AuditoriumView = (props) => {
               </div>
             </div>
             <div class='flex flex-column flex-row-l'>
+              <div class='w-100 flex br0 br2-ns mb2'>
+                <RetireAccount
+                  account={model.account}
+                  onRetire={handleRetire}
+                />
+              </div>
+            </div>
+            <div class='flex flex-column flex-row-l'>
               <div class='w-100 flex br0 br2-ns'>
                 <GoSettings />
               </div>
@@ -190,7 +199,8 @@ const mapDispatchToProps = {
   getConsentStatus: consent.get,
   expressConsent: consent.express,
   handleValidationError: errors.formValidation,
-  handleInvite: management.inviteUser
+  handleInvite: management.inviteUser,
+  handleRetire: management.retireAccount
 }
 
 const ConnectedAuditoriumView = connect(mapStateToProps, mapDispatchToProps)(AuditoriumView)

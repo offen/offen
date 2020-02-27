@@ -1,6 +1,7 @@
 package relational
 
 import (
+	"errors"
 	"fmt"
 	"reflect"
 	"testing"
@@ -44,6 +45,82 @@ func TestRelationalDAL_CreateAccount(t *testing.T) {
 
 			if err := test.assertion(db); err != nil {
 				t.Errorf("Assertion error when validating database content: %v", err)
+			}
+		})
+	}
+}
+
+func TestRelationalDAL_UpdateAccount(t *testing.T) {
+	tests := []struct {
+		name        string
+		setup       dbAccess
+		arg         *persistence.Account
+		expectError bool
+		assertion   dbAccess
+	}{
+		{
+			"ok",
+			func(db *gorm.DB) error {
+				if err := db.Create(&Account{
+					AccountID: "account-a",
+				}).Error; err != nil {
+					return err
+				}
+				if err := db.Create(&Account{
+					AccountID: "account-b",
+				}).Error; err != nil {
+					return err
+				}
+				return nil
+			},
+			&persistence.Account{
+				AccountID: "account-a",
+				Retired:   true,
+			},
+			false,
+			func(db *gorm.DB) error {
+				{
+
+					var account Account
+					if err := db.Find(&account, "account_id = ?", "account-a").Error; err != nil {
+						return err
+					}
+					if account.Retired != true {
+						return errors.New("expected account to update")
+					}
+				}
+				{
+					var account Account
+					if err := db.Find(&account, "account_id = ?", "account-b").Error; err != nil {
+						return err
+					}
+					if account.Retired != false {
+						return errors.New("unexpected side effect when updating")
+					}
+
+				}
+				return nil
+			},
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			db, closeDB := createTestDatabase()
+			defer closeDB()
+			dal := NewRelationalDAL(db)
+
+			if err := test.setup(db); err != nil {
+				t.Fatalf("Error setting up test: %v", err)
+			}
+
+			err := dal.UpdateAccount(test.arg)
+
+			if test.expectError != (err != nil) {
+				t.Errorf("Unexpected error value: %v", err)
+			}
+
+			if err := test.assertion(db); err != nil {
+				t.Errorf("Unexpected assertion error: %v", err)
 			}
 		})
 	}

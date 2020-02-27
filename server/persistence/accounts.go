@@ -204,3 +204,31 @@ func (p *persistenceLayer) CreateAccount(name, emailAddress, password string) er
 
 	return nil
 }
+
+func (p *persistenceLayer) RetireAccount(accountID string) error {
+	account, lookupErr := p.dal.FindAccount(FindAccountQueryByID(accountID))
+	if lookupErr != nil {
+		return fmt.Errorf("persistence: error looking up account to retire: %w", lookupErr)
+	}
+	if account.Retired {
+		return ErrUnknownAccount(fmt.Sprintf("persistence: account %s already retired", accountID))
+	}
+	txn, txnErr := p.dal.Transaction()
+	if txnErr != nil {
+		return fmt.Errorf("persistence: error creating transaction: %w", txnErr)
+	}
+	account.Retired = true
+	if err := txn.UpdateAccount(&account); err != nil {
+		txn.Rollback()
+		return fmt.Errorf("persistence: error retiring account %s: %w", accountID, err)
+	}
+	if err := txn.DeleteAccountUserRelationships(DeleteAccountUserRelationshipsQueryByAccountID(accountID)); err != nil {
+		txn.Rollback()
+		return fmt.Errorf("persistence: error deleting account user relationships for retired account %s: %w", accountID, err)
+	}
+	if err := txn.Commit(); err != nil {
+		txn.Rollback()
+		return fmt.Errorf("persistence: error committing account retiring: %w", err)
+	}
+	return nil
+}
