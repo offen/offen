@@ -11,6 +11,7 @@ module.exports = (store) => (next) => (action) => {
     case 'RESET_PASSWORD_SUCCESS':
     case 'CHANGE_CREDENTIALS_SUCCESS':
     case 'CREATE_ACCOUNT_SUCCESS':
+    case 'RETIRE_ACCOUNT_SUCCESS':
     case 'JOIN_SUCCESS':
       next(action)
       route('/login/')

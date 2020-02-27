@@ -15,7 +15,11 @@ module.exports = (state = null, action) => {
     case 'RESET_PASSWORD_SUCCESS':
     case 'RESET_PASSWORD_FAILURE':
     case 'QUERY_FAILURE':
-      return action.payload && action.payload.flash
+    case 'RETIRE_ACCOUNT_FAILURE':
+      if (action.payload && action.payload.flash) {
+        return action.payload.flash
+      }
+      return state
     case 'AUTHENTICATION_SUCCESS':
     case 'QUERY_SUCCESS':
       return null

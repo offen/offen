@@ -20,6 +20,9 @@ func (r *relationalDAL) RetireAccount(q interface{}) error {
 	case persistence.RetireAccountQueryByID:
 		var account Account
 		if err := r.db.Find(&account, "account_id = ? AND retired = false", query).Error; err != nil {
+			if gorm.IsRecordNotFoundError(err) {
+				return persistence.ErrUnknownAccount("relational: no matching account found")
+			}
 			return fmt.Errorf("relational: error looking up account %s: %w", query, err)
 		}
 		account.Retired = true

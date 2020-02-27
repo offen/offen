@@ -31,7 +31,8 @@ func (rt *router) getAccount(c *gin.Context) {
 
 	result, err := rt.db.GetAccount(accountID, true, c.Query("since"))
 	if err != nil {
-		if _, ok := err.(persistence.ErrUnknownAccount); ok {
+		var errUnknown persistence.ErrUnknownAccount
+		if errors.As(err, &errUnknown) {
 			newJSONError(
 				fmt.Errorf("router: account %s not found", accountID),
 				http.StatusNotFound,
@@ -69,7 +70,8 @@ func (rt *router) deleteAccount(c *gin.Context) {
 
 	err := rt.db.RetireAccount(accountID)
 	if err != nil {
-		if _, ok := err.(persistence.ErrUnknownAccount); ok {
+		var errUnknown persistence.ErrUnknownAccount
+		if errors.As(err, &errUnknown) {
 			newJSONError(
 				fmt.Errorf("router: account %s not found", accountID),
 				http.StatusNotFound,
