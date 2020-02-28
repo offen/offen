@@ -176,5 +176,35 @@ describe('src/reducers/flash.js', function () {
       })
       assert.strictEqual(next, 'msg')
     })
+
+    it('handles SETUP_SUCCESS', function () {
+      const next = flash(null, {
+        type: 'SETUP_SUCCESS',
+        payload: {
+          flash: 'msg'
+        }
+      })
+      assert.strictEqual(next, 'msg')
+    })
+
+    it('handles SETUP_FAILURE', function () {
+      const next = flash(null, {
+        type: 'SETUP_FAILURE',
+        payload: {
+          flash: 'msg'
+        }
+      })
+      assert.strictEqual(next, 'msg')
+    })
+
+    it('handles SETUP_STATUS_HASDATA', function () {
+      const next = flash(null, {
+        type: 'SETUP_STATUS_HASDATA',
+        payload: {
+          flash: 'msg'
+        }
+      })
+      assert.strictEqual(next, 'msg')
+    })
   })
 })

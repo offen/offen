@@ -17,8 +17,13 @@ module.exports = (store) => (next) => (action) => {
     case 'CREATE_ACCOUNT_SUCCESS':
     case 'RETIRE_ACCOUNT_SUCCESS':
     case 'JOIN_SUCCESS':
+    case 'SETUP_SUCCESS':
       next(action)
       route('/login/')
+      return
+    case 'SETUP_STATUS_HASDATA':
+      next(action)
+      route('/')
       return
     default:
       next(action)

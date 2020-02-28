@@ -25,6 +25,7 @@ type DataAccessLayer interface {
 	Transaction() (Transaction, error)
 	ApplyMigrations() error
 	DropAll() error
+	ProbeEmpty() bool
 	Ping() error
 }
 

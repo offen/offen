@@ -9,6 +9,7 @@ const LabeledInput = forwardRef((props, ref) => {
       {children}
       <input
         class='w-100 pa2 mb3 input-reset ba b--black-10 bg-white'
+        type='text'
         ref={ref}
         {...otherProps}
       />

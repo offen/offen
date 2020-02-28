@@ -5,6 +5,22 @@ import (
 	"testing"
 )
 
+type mockProbeDatabase struct {
+	DataAccessLayer
+	result bool
+}
+
+func (m *mockProbeDatabase) ProbeEmpty() bool {
+	return m.result
+}
+
+func TestProbeEmpty(t *testing.T) {
+	p := persistenceLayer{&mockProbeDatabase{result: true}}
+	result := p.ProbeEmpty()
+	if result != true {
+		t.Errorf("Expected true, got %v", result)
+	}
+}
 func TestBootstrapAccounts(t *testing.T) {
 	config := BootstrapConfig{
 		Accounts: []BootstrapAccount{

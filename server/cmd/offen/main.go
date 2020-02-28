@@ -285,6 +285,7 @@ func main() {
 			password        = setupCmd.String("password", "", "the password used for login")
 			source          = setupCmd.String("source", "", "a configuration file")
 			envFile         = setupCmd.String("envfile", "", "the env file to use")
+			force           = setupCmd.Bool("force", false, "allow setup to delete existing data")
 			populateMissing = setupCmd.Bool("populate", false, "in case required secrets are missing from the configuration, create and persist them in the target env file")
 		)
 		setupCmd.Parse(flags)
@@ -353,6 +354,7 @@ func main() {
 				persistence.BootstrapAccount{Name: *accountName, AccountID: *accountID},
 			)
 		}
+		conf.Force = *force
 
 		gormDB, dbErr := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString.String())
 		gormDB.LogMode(cfg.App.Development)

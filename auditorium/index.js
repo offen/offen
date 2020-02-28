@@ -10,6 +10,7 @@ const sf = require('sheetify')
 
 const IndexView = require('./src/views/index')
 const LoginView = require('./src/views/login')
+const SetupView = require('./src/views/setup')
 const Auditorium = require('./src/views/auditorium')
 const ConsoleView = require('./src/views/console')
 const NotFoundView = require('./src/views/404')
@@ -18,6 +19,7 @@ const ForgotPasswordView = require('./src/views/forgot-password')
 const ResetPasswordView = require('./src/views/reset-password')
 const consentStatusReducer = require('./src/reducers/consent-status')
 const globalErrorReducer = require('./src/reducers/global-error')
+const setupStatusReducer = require('./src/reducers/setup-status')
 const authenticatedUserReducer = require('./src/reducers/authenticated-user')
 const flashReducer = require('./src/reducers/flash')
 const staleReducer = require('./src/reducers/stale')
@@ -52,7 +54,8 @@ const store = createStore(
     authenticatedUser: authenticatedUserReducer,
     flash: flashReducer,
     model: modelReducer,
-    stale: staleReducer
+    stale: staleReducer,
+    setupStatus: setupStatusReducer
   }),
   applyMiddleware(
     ...middlewares
@@ -73,11 +76,12 @@ const App = () => {
   return (
     <Provider store={store}>
       <Router onChange={handleRouteChange}>
-        <IndexView path='/' />
+        <IndexView path='/' persistFlash />
         <LoginView path='/login/' persistFlash />
         <Auditorium.UserView path='/auditorium/' />
         <Auditorium.OperatorView path='/auditorium/:accountId' isOperator />
         <ConsoleView path='/console/' />
+        <SetupView path='/setup/' />
         <ForgotPasswordView path='/forgot-password/' />
         <ResetPasswordView path='/reset-password/:token' />
         <JoinView path='/join/new/:token' />

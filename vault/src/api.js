@@ -321,3 +321,36 @@ function retireAccountWith (deleteUrl) {
       .then(handleFetchResponse)
   }
 }
+
+exports.setup = setupWith(window.location.origin + '/api/setup')
+exports.setupWith = setupWith
+
+function setupWith (setupUrl) {
+  return function (accountName, emailAddress, password) {
+    return window
+      .fetch(setupUrl, {
+        method: 'POST',
+        credentials: 'include',
+        body: JSON.stringify({
+          accountName: accountName,
+          emailAddress: emailAddress,
+          password: password
+        })
+      })
+      .then(handleFetchResponse)
+  }
+}
+
+exports.setupStatus = setupStatusWith(window.location.origin + '/api/setup')
+exports.setupStatusWith = setupStatusWith
+
+function setupStatusWith (setupUrl) {
+  return function (accountName, emailAddress, password) {
+    return window
+      .fetch(setupUrl, {
+        method: 'GET',
+        credentials: 'include'
+      })
+      .then(handleFetchResponse)
+  }
+}
