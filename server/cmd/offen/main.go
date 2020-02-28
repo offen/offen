@@ -417,6 +417,9 @@ func main() {
 		db, err := persistence.New(
 			relational.NewRelationalDAL(gormDB),
 		)
+		if err != nil {
+			logger.WithError(err).Fatalf("Error setting up database")
+		}
 
 		affected, err := db.Expire(config.EventRetention)
 		if err != nil {
