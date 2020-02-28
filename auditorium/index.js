@@ -10,6 +10,7 @@ const sf = require('sheetify')
 
 const IndexView = require('./src/views/index')
 const LoginView = require('./src/views/login')
+const SetupView = require('./src/views/setup')
 const Auditorium = require('./src/views/auditorium')
 const ConsoleView = require('./src/views/console')
 const NotFoundView = require('./src/views/404')
@@ -78,6 +79,7 @@ const App = () => {
         <Auditorium.UserView path='/auditorium/' />
         <Auditorium.OperatorView path='/auditorium/:accountId' isOperator />
         <ConsoleView path='/console/' />
+        <SetupView path='/setup/' />
         <ForgotPasswordView path='/forgot-password/' />
         <ResetPasswordView path='/reset-password/:token' />
         <JoinView path='/join/new/:token' />

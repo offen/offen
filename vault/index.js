@@ -40,6 +40,7 @@ register('INVITE_USER', middleware.sameOrigin, callHandler(handler.handleInviteU
 register('JOIN', middleware.sameOrigin, callHandler(handler.handleJoin))
 register('CREATE_ACCOUNT', middleware.sameOrigin, callHandler(handler.handleCreateAccount))
 register('RETIRE_ACCOUNT', middleware.sameOrigin, callHandler(handler.handleRetireAccount))
+register('SETUP', middleware.sameOrigin, callHandler(handler.handleSetup))
 
 module.exports = register
 

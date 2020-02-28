@@ -17,6 +17,8 @@ module.exports = (state = null, action) => {
     case 'QUERY_FAILURE':
     case 'RETIRE_ACCOUNT_SUCCESS':
     case 'RETIRE_ACCOUNT_FAILURE':
+    case 'SETUP_SUCCESS':
+    case 'SETUP_FAILURE':
       if (action.payload && action.payload.flash) {
         return action.payload.flash
       }
