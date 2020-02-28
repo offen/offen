@@ -9,6 +9,11 @@ import (
 	"github.com/offen/offen/server/keys"
 )
 
+// ProbeEmpty checks whether the connected database is empty
+func (p *persistenceLayer) ProbeEmpty() bool {
+	return p.dal.ProbeEmpty()
+}
+
 // BootstrapConfig contains data about accounts and account users that is used
 // to seed an application database from scratch.
 type BootstrapConfig struct {
