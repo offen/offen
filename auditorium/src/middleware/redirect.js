@@ -21,6 +21,10 @@ module.exports = (store) => (next) => (action) => {
       next(action)
       route('/login/')
       return
+    case 'SETUP_STATUS_HASDATA':
+      next(action)
+      route('/')
+      return
     default:
       next(action)
   }

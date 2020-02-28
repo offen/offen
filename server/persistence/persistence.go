@@ -26,6 +26,7 @@ type Service interface {
 	Join(emailAddress, password string) error
 	Expire(retention time.Duration) (int, error)
 	Bootstrap(data BootstrapConfig) error
+	ProbeEmpty() bool
 	CheckHealth() error
 	Migrate() error
 }

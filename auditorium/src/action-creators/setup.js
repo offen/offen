@@ -33,3 +33,35 @@ exports.setup = (payload, onSuccessMessage, onFailureMessage) => (dispatch, getS
     })
     .catch((err) => dispatch(errors.unrecoverable(err)))
 }
+
+exports.status = (onFailureMessage) => (dispatch, getState, postMessage) => {
+  dispatch({
+    type: 'SETUP_STATUS_REQUEST',
+    payload: null
+  })
+  return postMessage({
+    type: 'SETUP_STATUS',
+    payload: null
+  })
+    .then((response) => {
+      switch (response.type) {
+        case 'SETUP_STATUS_EMPTY':
+          dispatch({
+            type: 'SETUP_STATUS_EMPTY',
+            payload: null
+          })
+          return
+        case 'SETUP_STATUS_HASDATA':
+          dispatch({
+            type: 'SETUP_STATUS_HASDATA',
+            payload: {
+              flash: onFailureMessage
+            }
+          })
+          return
+        default:
+          throw new Error('Unhandled response of type "' + response.type + '"')
+      }
+    })
+    .catch((err) => dispatch(errors.unrecoverable(err)))
+}

@@ -340,3 +340,17 @@ function setupWith (setupUrl) {
       .then(handleFetchResponse)
   }
 }
+
+exports.setupStatus = setupStatusWith(window.location.origin + '/api/setup')
+exports.setupStatusWith = setupStatusWith
+
+function setupStatusWith (setupUrl) {
+  return function (accountName, emailAddress, password) {
+    return window
+      .fetch(setupUrl, {
+        method: 'GET',
+        credentials: 'include'
+      })
+      .then(handleFetchResponse)
+  }
+}

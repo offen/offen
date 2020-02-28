@@ -286,6 +286,27 @@ function handleSetupWith (api) {
   })
 }
 
+exports.handleSetupStatus = handleSetupStatusWith(api)
+exports.handleSetupStatusWith = handleSetupStatusWith
+
+function handleSetupStatusWith (api) {
+  return function () {
+    return api.setupStatus()
+      .then(function () {
+        return {
+          type: 'SETUP_STATUS_EMPTY',
+          payload: null
+        }
+      })
+      .catch(function () {
+        return {
+          type: 'SETUP_STATUS_HASDATA',
+          payload: null
+        }
+      })
+  }
+}
+
 // proxyThunk can be used to create a handler that simply calls through
 // to an api method without needing any further logic other than signalling
 // success or failure

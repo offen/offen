@@ -15,6 +15,13 @@ type setupRequest struct {
 	Password     string `json:"password"`
 }
 
+func (rt *router) getSetup(c *gin.Context) {
+	if !rt.db.ProbeEmpty() {
+		c.JSON(http.StatusForbidden, nil)
+	}
+	c.JSON(http.StatusNoContent, nil)
+}
+
 func (rt *router) postSetup(c *gin.Context) {
 	var req setupRequest
 	if err := c.BindJSON(&req); err != nil {
