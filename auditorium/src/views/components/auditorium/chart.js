@@ -128,6 +128,8 @@ const Chart = (props) => {
 module.exports = memo(
   Chart,
   (prevProps, nextProps) => {
-    return _.isEqual(prevProps, nextProps)
+    const prevPageviews = prevProps.model.pageviews.map((p) => _.omit(p, 'date'))
+    const nextPageviews = nextProps.model.pageviews.map((p) => _.omit(p, 'date'))
+    return _.isEqual(prevPageviews, nextPageviews)
   }
 )
