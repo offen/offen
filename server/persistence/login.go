@@ -184,6 +184,11 @@ func (p *persistenceLayer) ChangeEmail(userID, emailAddress, password string) er
 		return fmt.Errorf("persistence: current password did not match: %w", err)
 	}
 
+	existing, _ := p.findAccountUser(emailAddress, false)
+	if existing != nil && existing.AccountUserID != userID {
+		return fmt.Errorf("persistence: given email %s is already in use", emailAddress)
+	}
+
 	keyFromCurrentPassword, keyErr := keys.DeriveKey(password, accountUser.Salt)
 	if keyErr != nil {
 		return fmt.Errorf("persistence: error deriving key from password: %w", keyErr)

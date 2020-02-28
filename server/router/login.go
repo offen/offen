@@ -139,7 +139,7 @@ func (rt *router) postChangeEmail(c *gin.Context) {
 	if err := rt.db.ChangeEmail(accountUser.AccountUserID, req.EmailAddress, req.Password); err != nil {
 		newJSONError(
 			fmt.Errorf("router: error changing email address: %v", err),
-			http.StatusInternalServerError,
+			http.StatusBadRequest,
 		).Pipe(c)
 		return
 	}
