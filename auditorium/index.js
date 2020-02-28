@@ -1,6 +1,6 @@
 /** @jsx h */
 const { render, h } = require('preact')
-const { useRef } = require('preact/hooks')
+const { useRef, useErrorBoundary } = require('preact/hooks')
 const Router = require('preact-router')
 const { createStore, applyMiddleware, combineReducers } = require('redux')
 const { Provider } = require('react-redux')
@@ -24,6 +24,7 @@ const staleReducer = require('./src/reducers/stale')
 const modelReducer = require('./src/reducers/model')
 const redirectMiddleware = require('./src/middleware/redirect')
 const navigation = require('./src/action-creators/navigation')
+const errors = require('./src/action-creators/errors')
 
 sf('./styles/word-break.css')
 sf('./styles/dim-fix.css')
@@ -59,6 +60,7 @@ const store = createStore(
 )
 
 const App = () => {
+  useErrorBoundary((err) => store.dispatch(errors.unrecoverable(err)))
   const previousPath = useRef(null)
   const handleRouteChange = (e) => {
     if (previousPath.current !== e.current.props.path) {
