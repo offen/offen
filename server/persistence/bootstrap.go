@@ -12,9 +12,9 @@ import (
 // BootstrapConfig contains data about accounts and account users that is used
 // to seed an application database from scratch.
 type BootstrapConfig struct {
-	Accounts      []BootstrapAccount     `yaml:"accounts"`
-	AccountUsers  []BootstrapAccountUser `yaml:"account_users"`
-	AllowDeletion bool
+	Accounts     []BootstrapAccount     `yaml:"accounts"`
+	AccountUsers []BootstrapAccountUser `yaml:"account_users"`
+	Force        bool
 }
 
 // BootstrapAccount contains the information needed for creating an account at
@@ -40,7 +40,7 @@ type accountCreation struct {
 // Bootstrap seeds a blank database with the given account and user
 // data. This is likely only ever used in development.
 func (p *persistenceLayer) Bootstrap(config BootstrapConfig) error {
-	if !config.AllowDeletion {
+	if !config.Force {
 		if !p.dal.ProbeEmpty() {
 			return errors.New("persistence: action would overwrite existing data - not allowed")
 		}
