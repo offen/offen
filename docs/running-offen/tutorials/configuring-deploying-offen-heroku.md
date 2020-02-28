@@ -69,15 +69,9 @@ You are now ready to press the "Deploy app" button. Building the application can
 
 ## Creating an Account
 
-The final step for your installation is now to create an account that you can use to collect usage data and log in. To do so, use the "Run console" (Available under "More") feature in the Heroku UI for your newly created app. r
+The final step for your installation is now to create an account that you can use to collect usage data and log in. To do so, head to `/setup/` on your newly installed instance by clicking the "View app" button once installation has finished.
 
-Create an account by providing the following data for your account to the command:
-
-```
-setup -email me@mysite.com -name my-site -stdin-password
-```
-
-After entering this, you will be prompted for a password. Once entered the account will be created an you are now able to use your instance.
+Create a first account and a user by filling and submitting the form. You can always create more accounts and add users later.
 
 ### Test the Setup
 {: .no_toc }
