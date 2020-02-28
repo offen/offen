@@ -1,6 +1,6 @@
 /** @jsx h */
 const { h, Fragment } = require('preact')
-const { useEffect } = require('preact/hooks')
+const { useEffect, useState } = require('preact/hooks')
 const { connect } = require('react-redux')
 
 const withAuth = require('./components/_shared/with-auth')
@@ -30,23 +30,42 @@ const AuditoriumView = (props) => {
   const { matches, authenticatedUser, model, isOperator, consentStatus, stale } = props
   const { handlePurge, handleQuery, expressConsent, getConsentStatus, handleInvite, handleValidationError, handleRetire } = props
   const { accountId, range, resolution } = matches
+  const [focus, setFocus] = useState(true)
 
   useEffect(function fetchData () {
     handleQuery({ accountId, range, resolution }, authenticatedUser)
-  }, [accountId, range, resolution])
+  }, [accountId, range, resolution, focus])
 
   if (isOperator) {
     const softFailure = __(
       'This view failed to update automatically, data may be out of date. Check your network connection if the problem persists.'
     )
     useEffect(function scheduleAutoRefresh () {
+      if (!focus) {
+        return null
+      }
       const tick = window.setInterval(() => {
         handleQuery({ accountId, range, resolution }, authenticatedUser, softFailure, true)
       }, 15000)
       return function cancelAutoRefresh () {
         window.clearInterval(tick)
       }
-    }, [accountId, range, resolution])
+    }, [accountId, range, resolution, focus])
+
+    useEffect(function detectFocusChange () {
+      function focus () {
+        setFocus(true)
+      }
+      function blur () {
+        setFocus(false)
+      }
+      window.addEventListener('focus', focus)
+      window.addEventListener('blur', blur)
+      return function unbind () {
+        window.removeEventListener('focus', focus)
+        window.removeEventListener('blur', blur)
+      }
+    })
   } else {
     useEffect(function fetchConsentStatus () {
       getConsentStatus()
