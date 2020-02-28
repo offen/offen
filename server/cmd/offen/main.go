@@ -353,6 +353,7 @@ func main() {
 				persistence.BootstrapAccount{Name: *accountName, AccountID: *accountID},
 			)
 		}
+		conf.AllowDeletion = true
 
 		gormDB, dbErr := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString.String())
 		gormDB.LogMode(cfg.App.Development)
