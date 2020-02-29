@@ -6,13 +6,23 @@ description: "Depending on who you are and what you want to do, we have dedicate
 permalink: /
 ---
 
-Welcome to Offen Docs. Depending on who you are and what you want to do, we have a few guides for you:
+Offen is a fair alternative to common web analytic tools. It allows website operators to pay respect to your users while gaining insight into their behavior. Welcome to our Docs.
 
-## Running Offen
-I run a website and would like to run Offen to collect usage statistics. Have a look at our [guide to running Offen](/running-offen/).
+---
 
-## Using Offen
-I am a user or operator and would like to understand how to use Offen. Have a look at our [guide to using Offen](/using-offen/).
+### I run a website and need to collect usage statistics.
 
-## Developing Offen
-I am a developer and would like to work on Offen. Have a look at our [guide to developing Offen](/developing-offen/).
+[How to run Offen](/running-offen/){: .btn .btn-green }
+{: .mb-8 }
+
+---
+
+### I want to manage the usage data that has been collected from me.
+
+[User guide](/using-offen/){: .btn .btn-green }
+{: .mb-8 }
+
+### I want to contribute as a developer.
+
+[Developer guide](/developing-offen/){: .btn .btn-green }
+{: .mb-8 }
