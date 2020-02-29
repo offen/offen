@@ -110,7 +110,6 @@ exports.retireAccount = (payload, onSuccessMessage, onFailureMessage) => (dispat
     type: 'RETIRE_ACCOUNT_REQUEST',
     payload: null
   })
-
   return postMessage({
     type: 'RETIRE_ACCOUNT',
     payload: payload

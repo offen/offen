@@ -29,8 +29,12 @@ const InitialScreen = (props) => {
 const ConfirmScreen = (props) => {
   const [inputValue, setInputValue] = useState(null)
   const { onConfirm, onCancel, account, isDisabled } = props
+  function handleSubmit (e) {
+    e.preventDefault()
+    onConfirm()
+  }
   return (
-    <Fragment>
+    <form onsubmit={handleSubmit}>
       <p class='ma0 mb1'>
         {__('To permanently retire the account, type its name "%s" into the form below:', account.name)}
       </p>
@@ -39,7 +43,6 @@ const ConfirmScreen = (props) => {
         oninput={(e) => setInputValue(e.target.value)}
       />
       <SubmitButton
-        onclick={onConfirm}
         disabledCopy={inputValue !== account.name ? __('Confirm') : null}
         disabled={isDisabled || inputValue !== account.name}
       >
@@ -49,10 +52,11 @@ const ConfirmScreen = (props) => {
         onclick={onCancel}
         disabledCopy={__('Cancel')}
         disabled={isDisabled}
+        type='button'
       >
         {__('Cancel')}
       </SubmitButton>
-    </Fragment>
+    </form>
   )
 }
 

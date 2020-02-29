@@ -8,7 +8,7 @@ module.exports = (store) => (next) => (action) => {
         route('/console/')
         return
       }
-      route(`/auditorium/${action.payload.accounts[0].accountId}`)
+      route(`/auditorium/${action.payload.accounts[0].accountId}/`)
       return
     case 'AUTHENTICATION_FAILURE':
     case 'LOGOUT_SUCCESS':
