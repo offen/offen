@@ -7,6 +7,7 @@ permalink: /
 ---
 
 Offen is a fair alternative to common web analytic tools. It allows website operators to pay respect to their users while gaining insight into their behavior. Welcome to our Docs.
+{: .text-grey-dk-000 }
 
 ---
 
