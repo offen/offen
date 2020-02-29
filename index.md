@@ -19,10 +19,10 @@ Offen is a fair alternative to common web analytic tools. It allows website oper
 
 ### I want to manage the usage data that has been collected from me.
 
-[User guide](/using-offen/){: .btn .btn-green }
+[User guide](/using-offen/){: .btn }
 {: .mb-8 }
 
 ### I want to contribute as a developer.
 
-[Developer guide](/developing-offen/){: .btn .btn-green }
+[Developer guide](/developing-offen/){: .btn }
 {: .mb-8 }
