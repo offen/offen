@@ -6,7 +6,7 @@ description: "Welcome to the documentation page for Offen, the transparent web a
 permalink: /
 ---
 
-Offen is a fair alternative to common web analytic tools. It allows website operators to pay respect to your users while gaining insight into their behavior. Welcome to our Docs.
+Offen is a fair alternative to common web analytic tools. It allows website operators to pay respect to their users while gaining insight into their behavior. Welcome to our Docs.
 
 ---
 
