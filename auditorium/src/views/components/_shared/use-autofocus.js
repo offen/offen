@@ -3,7 +3,9 @@ const { useRef, useEffect } = require('preact/hooks')
 const useAutofocus = () => {
   const autofocus = useRef(null)
   useEffect(() => {
-    autofocus.current.focus()
+    if (autofocus.current) {
+      autofocus.current.focus()
+    }
   }, [autofocus])
   return autofocus
 }

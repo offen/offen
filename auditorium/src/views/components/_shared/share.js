@@ -6,20 +6,20 @@ const classnames = require('classnames')
 const LabeledInput = require('./labeled-input')
 const SubmitButton = require('./submit-button')
 const Collapsible = require('./collapsible')
+const MultiStepForm = require('./multi-step-form')
 
 const Share = (props) => {
   const { headline, subline, accountId, onValidationError, onShare, collapsible } = props
   const [isDisabled, setIsDisabled] = useState(false)
-  function handleSubmit (e) {
-    e.preventDefault()
-    var formData = new window.FormData(e.currentTarget)
-    var invitee = formData.get('invitee')
-    var emailAddress = formData.get('email-address')
+  function handleSubmit (formData, resetForm) {
+    var invitee = formData.invitee
+    var emailAddress = formData['email-address']
 
     if (invitee === emailAddress) {
       onValidationError(
         new Error(__('You cannot invite yourself'))
       )
+      resetForm()
       return
     }
     setIsDisabled(true)
@@ -27,25 +27,36 @@ const Share = (props) => {
       {
         invitee: invitee,
         emailAddress: emailAddress,
-        password: formData.get('password'),
+        password: formData.password,
         urlTemplate: window.location.origin + '/join/{userId}/{token}/',
         accountId: accountId
       },
       __('An invite email has been sent.'),
       __('There was an error inviting the user, please try again.')
     )
-      .then(() => setIsDisabled(false))
+      .then(() => {
+        setIsDisabled(false)
+        resetForm()
+      })
   }
 
   const renderHeader = (props = {}) => {
     const { isCollapsed, handleToggle } = props
     return (
-      <div onclick={handleToggle} class={classnames('flex', 'justify-between', { pointer: collapsible })}>
+      <div
+        onclick={handleToggle}
+        class={classnames('flex', 'justify-between', { pointer: collapsible })}
+      >
         <h4 class='f4 normal ma0'>
           {headline}
         </h4>
         {collapsible
-          ? (<a role='button' class={classnames('dib', 'label-toggle', isCollapsed ? 'label-toggle--rotate' : null)} />)
+          ? (
+            <a
+              role='button'
+              class={classnames('dib', 'label-toggle', isCollapsed ? 'label-toggle--rotate' : null)}
+            />
+          )
           : null}
       </div>
     )
@@ -53,49 +64,79 @@ const Share = (props) => {
 
   const renderBody = (props = {}) => {
     return (
-      <form class='mw6 center pb4 pt3' onsubmit={handleSubmit}>
-        {subline
-          ? (
-            <p
-              class='ma0 mb3'
-              dangerouslySetInnerHTML={{
-                __html: subline
-              }}
-            />
-          )
-          : null}
-        <LabeledInput
-          type='email'
-          name='invitee'
-          required
-          disabled={isDisabled}
-        >
-          {__('Email address to send invite to')}
-        </LabeledInput>
-        <hr class='w-100 mt3 mb2 bt moon-gray' />
-        <h5 class='f5 normal ma0 mb3 silver'>
-          {__('Confirm with your credentials')}
-        </h5>
-        <LabeledInput
-          type='email'
-          name='email-address'
-          required
-          disabled={isDisabled}
-        >
-          {__('Your email address')}
-        </LabeledInput>
-        <LabeledInput
-          type='password'
-          name='password'
-          required
-          disabled={isDisabled}
-        >
-          {__('Your password')}
-        </LabeledInput>
-        <SubmitButton disabled={isDisabled}>
-          {__('Invite user')}
-        </SubmitButton>
-      </form>
+      <MultiStepForm
+        class='mw6 center pb4 pt3'
+        onsubmit={handleSubmit}
+        steps={[
+          (props) => {
+            return (
+              <Fragment>
+                {subline
+                  ? (
+                    <p
+                      class='ma0 mb3'
+                      dangerouslySetInnerHTML={{
+                        __html: subline
+                      }}
+                    />
+                  )
+                  : null}
+                <LabeledInput
+                  type='email'
+                  name='invitee'
+                  required
+                  disabled={isDisabled}
+                >
+                  {__('Email address to send invite to')}
+                </LabeledInput>
+                <SubmitButton
+                  disabled={isDisabled}
+                >
+                  {__('Invite user')}
+                </SubmitButton>
+              </Fragment>
+            )
+          },
+          (props, autoFocusRef) => {
+            return (
+              <Fragment>
+                <h5 class='f5 normal ma0 mb3 silver'>
+                  {__('Confirm with your credentials')}
+                </h5>
+                <LabeledInput
+                  type='email'
+                  name='email-address'
+                  required
+                  ref={autoFocusRef}
+                  disabled={isDisabled}
+                >
+                  {__('Your email address')}
+                </LabeledInput>
+                <LabeledInput
+                  type='password'
+                  name='password'
+                  required
+                  disabled={isDisabled}
+                >
+                  {__('Your password')}
+                </LabeledInput>
+                <SubmitButton
+                  disabled={isDisabled}
+                >
+                  {__('Confirm')}
+                </SubmitButton>
+                <SubmitButton
+                  disabled={isDisabled}
+                  disabledCopy={__('Cancel')}
+                  onClick={props.onCancel}
+                >
+                  {__('Cancel')}
+                </SubmitButton>
+              </Fragment>
+            )
+          }
+        ]}
+      />
     )
   }
   return (
