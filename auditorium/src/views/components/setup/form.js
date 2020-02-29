@@ -1,12 +1,14 @@
 /** @jsx h */
 const { h } = require('preact')
 const { forwardRef } = require('preact/compat')
+const { useState } = require('preact/hooks')
 
 const LabeledInput = require('./../_shared/labeled-input')
 const SubmitButton = require('./../_shared/submit-button')
 
 const Form = forwardRef((props, ref) => {
-  const handleSubmit = (e) => {
+  const [isDisabled, setIsDisabled] = useState(false)
+  function handleSubmit (e) {
     e.preventDefault()
     var formData = new window.FormData(e.currentTarget)
 
@@ -16,7 +18,7 @@ const Form = forwardRef((props, ref) => {
       )
       return
     }
-
+    setIsDisabled(true)
     props.onSetup(
       {
         emailAddress: formData.get('email-address'),
@@ -26,6 +28,7 @@ const Form = forwardRef((props, ref) => {
       __('You can now log in using the provided credentials.'),
       __('Could not handle your request, please try again.')
     )
+      .then(() => setIsDisabled(false))
   }
 
   return (
@@ -38,6 +41,7 @@ const Form = forwardRef((props, ref) => {
           name='account-name'
           ref={ref}
           required
+          disabled={isDisabled}
         >
           {__('The account name')}
         </LabeledInput>
@@ -45,6 +49,7 @@ const Form = forwardRef((props, ref) => {
           name='email-address'
           type='email'
           required
+          disabled={isDisabled}
         >
           {__('Your email address')}
         </LabeledInput>
@@ -52,6 +57,7 @@ const Form = forwardRef((props, ref) => {
           name='password'
           type='password'
           required
+          disabled={isDisabled}
         >
           {__('Your password')}
         </LabeledInput>
@@ -59,10 +65,11 @@ const Form = forwardRef((props, ref) => {
           name='password-repeat'
           type='password'
           required
+          disabled={isDisabled}
         >
           {__('Repeat password')}
         </LabeledInput>
-        <SubmitButton>
+        <SubmitButton disabled={isDisabled}>
           {__('Setup instance')}
         </SubmitButton>
       </form>

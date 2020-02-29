@@ -1,13 +1,16 @@
 /** @jsx h */
 const { h } = require('preact')
+const { useState } = require('preact/hooks')
 
 const LabeledInput = require('./../_shared/labeled-input')
 const SubmitButton = require('./../_shared/submit-button')
 
 const ChangeEmail = (props) => {
+  const [isDisabled, setIsDisabled] = useState(false)
   function handleSubmit (e) {
     e.preventDefault()
     var formData = new window.FormData(e.currentTarget)
+    setIsDisabled(true)
     props.onChangeEmail(
       {
         password: formData.get('password'),
@@ -16,6 +19,7 @@ const ChangeEmail = (props) => {
       __('Please log in again, using your updated email.'),
       __('Could not change email. Try again.')
     )
+      .then(() => setIsDisabled(false))
   }
 
   return (
@@ -28,6 +32,7 @@ const ChangeEmail = (props) => {
           type='email'
           name='email-address'
           required
+          disabled={isDisabled}
         >
           {__('New email address')}
         </LabeledInput>
@@ -35,10 +40,11 @@ const ChangeEmail = (props) => {
           type='password'
           name='password'
           required
+          disabled={isDisabled}
         >
           {__('Password')}
         </LabeledInput>
-        <SubmitButton>
+        <SubmitButton disabled={isDisabled}>
           {__('Change email address')}
         </SubmitButton>
       </form>

@@ -1,19 +1,23 @@
 /** @jsx h */
 const { h } = require('preact')
 const { forwardRef } = require('preact/compat')
+const { useState } = require('preact/hooks')
 
 const LabeledInput = require('./../_shared/labeled-input')
 const SubmitButton = require('./../_shared/submit-button')
 
 const Form = forwardRef((props, ref) => {
-  const handleSubmit = (e) => {
+  const [isDisabled, setIsDisabled] = useState(false)
+  function handleSubmit (e) {
     e.preventDefault()
     var formData = new window.FormData(e.currentTarget)
+    setIsDisabled(true)
     props.onResetPassword({
       emailAddress: formData.get('email-address'),
       password: formData.get('password'),
       token: formData.get('token')
     })
+      .then(() => setIsDisabled(false))
   }
   return (
     <div class='bg-black-05 pa3'>
@@ -26,6 +30,7 @@ const Form = forwardRef((props, ref) => {
           type='email'
           required
           ref={ref}
+          disabled={isDisabled}
         >
           {__('Email address')}
         </LabeledInput>
@@ -34,6 +39,7 @@ const Form = forwardRef((props, ref) => {
           name='password'
           type='password'
           required
+          disabled={isDisabled}
         >
           {__('New password')}
         </LabeledInput>
@@ -41,10 +47,11 @@ const Form = forwardRef((props, ref) => {
           name='password-repeat'
           type='password'
           required
+          disabled={isDisabled}
         >
           {__('Repeat new password')}
         </LabeledInput>
-        <SubmitButton>
+        <SubmitButton disabled={isDisabled}>
           {__('Reset Password')}
         </SubmitButton>
         <input type='hidden' name='token' value={props.token} />

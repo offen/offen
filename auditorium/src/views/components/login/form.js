@@ -1,19 +1,23 @@
 /** @jsx h */
 const { h } = require('preact')
 const { forwardRef } = require('preact/compat')
+const { useState } = require('preact/hooks')
 
 const LabeledInput = require('./../_shared/labeled-input')
 const SubmitButton = require('./../_shared/submit-button')
 
 const Form = forwardRef((props, ref) => {
+  const [isDisabled, setIsDisabled] = useState(false)
   function handleSubmit (e) {
     e.preventDefault()
     var formData = new window.FormData(e.currentTarget)
+    setIsDisabled(true)
     props.onLogin(
       formData.get('username'),
       formData.get('password'),
       __('Could not log in using the given credentials. Try again.')
     )
+      .then(() => setIsDisabled(false))
   }
 
   return (
@@ -27,6 +31,7 @@ const Form = forwardRef((props, ref) => {
           name='username'
           ref={ref}
           required
+          disabled={isDisabled}
         >
           {__('Email address')}
         </LabeledInput>
@@ -34,10 +39,11 @@ const Form = forwardRef((props, ref) => {
           type='password'
           name='password'
           required
+          disabled={isDisabled}
         >
           {__('Password')}
         </LabeledInput>
-        <SubmitButton>
+        <SubmitButton disabled={isDisabled}>
           {__('Log in')}
         </SubmitButton>
         <div class='mb3'>

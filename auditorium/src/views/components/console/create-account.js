@@ -1,14 +1,17 @@
 /** @jsx h */
 const { h } = require('preact')
+const { useState } = require('preact/hooks')
 
 const LabeledInput = require('./../_shared/labeled-input')
 const SubmitButton = require('./../_shared/submit-button')
 
 const CreateAccount = (props) => {
+  const [isDisabled, setIsDisabled] = useState(false)
   function handleSubmit (e) {
     e.preventDefault()
     var formData = new window.FormData(e.currentTarget)
     var accountName = formData.get('account-name')
+    setIsDisabled(true)
     props.onCreateAccount(
       {
         accountName: accountName,
@@ -18,6 +21,7 @@ const CreateAccount = (props) => {
       __('Log in again to use the newly created account.'),
       __('There was an error creating the account, please try again.')
     )
+      .then(() => setIsDisabled(false))
   }
 
   return (
@@ -29,6 +33,7 @@ const CreateAccount = (props) => {
         <LabeledInput
           name='account-name'
           required
+          disabled={isDisabled}
         >
           {__('Account Name')}
         </LabeledInput>
@@ -40,6 +45,7 @@ const CreateAccount = (props) => {
           type='email'
           name='email-address'
           required
+          disabled={isDisabled}
         >
           {__('Your Email')}
         </LabeledInput>
@@ -47,10 +53,11 @@ const CreateAccount = (props) => {
           type='password'
           name='password'
           required
+          disabled={isDisabled}
         >
           {__('Your Password')}
         </LabeledInput>
-        <SubmitButton>
+        <SubmitButton disabled={isDisabled}>
           {__('Create Account')}
         </SubmitButton>
       </form>

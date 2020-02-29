@@ -1,17 +1,21 @@
 /** @jsx h */
 const { h } = require('preact')
+const { useState } = require('preact/hooks')
 
 const Collapsible = require('./../_shared/collapsible')
 const classnames = require('classnames')
 
 const RetireAccount = (props) => {
   const { account } = props
-  const handleClick = () => {
+  const [isDisabled, setIsDisabled] = useState(false)
+  function handleClick () {
+    setIsDisabled(true)
     props.onRetire(
       { accountId: account.accountId },
       __('The account has been retired successfully. Log in again to continue.'),
       __('There was an error retiring the account, please try again.')
     )
+      .then(() => setIsDisabled(false))
   }
   return (
     <div class='pa3 bg-black-05 flex-auto'>
@@ -39,6 +43,7 @@ const RetireAccount = (props) => {
               <button
                 class='pointer w-100 w-auto-ns f5 tc link dim bn dib br1 ph3 pv2 mr0 mr2-ns mb3 mb0-ns white bg-mid-gray'
                 onclick={handleClick}
+                disabled={isDisabled}
               >
                 {__('Retire account')}
               </button>

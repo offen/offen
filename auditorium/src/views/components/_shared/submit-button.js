@@ -7,7 +7,7 @@ const SubmitButton = (props) => {
     <input
       class='pointer w-100 w-auto-ns f5 link dim bn ph3 pv2 mb3 dib br1 white bg-mid-gray'
       type='submit'
-      value={children}
+      value={props.disabled ? (props.disabledCopy || __('One moment...')) : children}
       {...otherProps}
     />
   )
