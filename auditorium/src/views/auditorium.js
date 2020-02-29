@@ -168,6 +168,7 @@ const AuditoriumView = (props) => {
                 <div class='flex flex-column flex-row-l'>
                   <div class='w-100 flex br0 br2-ns mb2'>
                     <EmbedCode
+                      key={`embed-${accountId}`}
                       model={model}
                       collapsible
                     />
@@ -178,6 +179,7 @@ const AuditoriumView = (props) => {
             <div class='flex flex-column flex-row-l'>
               <div class='w-100 flex br0 br2-ns mb2'>
                 <Share
+                  key={`share-${accountId}`}
                   onValidationError={handleValidationError}
                   onShare={handleInvite}
                   accountName={model.account.name}
@@ -188,6 +190,7 @@ const AuditoriumView = (props) => {
             <div class='flex flex-column flex-row-l'>
               <div class='w-100 flex br0 br2-ns mb2'>
                 <RetireAccount
+                  key={`retire-${accountId}`}
                   account={model.account}
                   onRetire={handleRetire}
                 />
