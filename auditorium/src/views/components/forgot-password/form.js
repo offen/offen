@@ -1,14 +1,17 @@
 /** @jsx h */
 const { h } = require('preact')
 const { forwardRef } = require('preact/compat')
+const { useState } = require('preact/hooks')
 
 const LabeledInput = require('./../_shared/labeled-input')
 const SubmitButton = require('./../_shared/submit-button')
 
 const Form = forwardRef((props, ref) => {
-  const handleSubmit = (e) => {
+  const [isDisabled, setIsDisabled] = useState(false)
+  function handleSubmit (e) {
     e.preventDefault()
     var formData = new window.FormData(e.currentTarget)
+    setIsDisabled(true)
     props.onForgotPassword(
       {
         emailAddress: formData.get('email-address'),
@@ -17,6 +20,7 @@ const Form = forwardRef((props, ref) => {
       __('Check your inbox and follow the instructions in the email.'),
       __('Could not handle your request, please try again.')
     )
+      .then(() => setIsDisabled(false))
   }
 
   return (
@@ -31,10 +35,11 @@ const Form = forwardRef((props, ref) => {
           type='email'
           ref={ref}
           required
+          disabled={isDisabled}
         >
           {__('Email address')}
         </LabeledInput>
-        <SubmitButton>
+        <SubmitButton disabled={isDisabled}>
           {__('Send Email')}
         </SubmitButton>
       </form>

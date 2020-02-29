@@ -1,11 +1,13 @@
 /** @jsx h */
 const { h } = require('preact')
 const { forwardRef } = require('preact/compat')
+const { useState } = require('preact/hooks')
 
 const LabeledInput = require('./../_shared/labeled-input')
 const SubmitButton = require('./../_shared/submit-button')
 
 const Form = forwardRef((props, ref) => {
+  const [isDisabled, setIsDisabled] = useState(false)
   const isAddition = props.isAddition
 
   function handleSubmit (e) {
@@ -14,6 +16,7 @@ const Form = forwardRef((props, ref) => {
     if (!isAddition && formData.get('password') !== formData.get('repeat-password')) {
       return props.onValidationError(new Error(__('Passwords did not match')))
     }
+    setIsDisabled(true)
     props.onJoin(
       {
         emailAddress: formData.get('email-address'),
@@ -25,6 +28,7 @@ const Form = forwardRef((props, ref) => {
         : __('Your account has been set up, you can now log in.'),
       __('Could not handle your request, please try again.')
     )
+      .then(() => setIsDisabled(false))
   }
   return (
     <div class='w-100 sbg-black-05'>
@@ -34,6 +38,7 @@ const Form = forwardRef((props, ref) => {
           name='email-address'
           required
           ref={ref}
+          disabled={isDisabled}
         >
           {__('Email address')}
         </LabeledInput>
@@ -41,6 +46,7 @@ const Form = forwardRef((props, ref) => {
           name='password'
           type='password'
           required
+          disabled={isDisabled}
         >
           {__('Password')}
         </LabeledInput>
@@ -49,11 +55,12 @@ const Form = forwardRef((props, ref) => {
             name='repeat-password'
             type='password'
             required
+            disabled={isDisabled}
           >
             {__('Repeat password')}
           </LabeledInput>
         ) : null}
-        <SubmitButton>
+        <SubmitButton disabled={isDisabled}>
           {__('Accept invite')}
         </SubmitButton>
         <input type='hidden' name='token' value={props.token} />

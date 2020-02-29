@@ -20,6 +20,7 @@ module.exports = (state = null, action) => {
     case 'SETUP_SUCCESS':
     case 'SETUP_FAILURE':
     case 'SETUP_STATUS_HASDATA':
+    case 'LOGOUT_SUCCESS':
       if (action.payload && action.payload.flash) {
         return action.payload.flash
       }

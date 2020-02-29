@@ -1,10 +1,12 @@
 /** @jsx h */
 const { h } = require('preact')
+const { useState } = require('preact/hooks')
 
 const LabeledInput = require('./../_shared/labeled-input')
 const SubmitButton = require('./../_shared/submit-button')
 
 const ChangePassword = (props) => {
+  const [isDisabled, setIsDisabled] = useState(false)
   function handleSubmit (e) {
     e.preventDefault()
     var formData = new window.FormData(e.currentTarget)
@@ -14,6 +16,7 @@ const ChangePassword = (props) => {
       )
       return
     }
+    setIsDisabled(true)
     props.onChangePassword(
       {
         currentPassword: formData.get('current'),
@@ -22,6 +25,7 @@ const ChangePassword = (props) => {
       __('Please log in again, using your new password.'),
       __('Could not change passwords. Try again.')
     )
+      .then(() => setIsDisabled(false))
   }
 
   return (
@@ -34,6 +38,7 @@ const ChangePassword = (props) => {
           type='password'
           name='current'
           required
+          disabled={isDisabled}
         >
           {__('Current password')}
         </LabeledInput>
@@ -41,6 +46,7 @@ const ChangePassword = (props) => {
           type='password'
           name='changed'
           required
+          disabled={isDisabled}
         >
           {__('New password')}
         </LabeledInput>
@@ -48,10 +54,11 @@ const ChangePassword = (props) => {
           type='password'
           name='repeat'
           required
+          disabled={isDisabled}
         >
           {__('Repeat new password')}
         </LabeledInput>
-        <SubmitButton>
+        <SubmitButton disabled={isDisabled}>
           {__('Change password')}
         </SubmitButton>
       </form>

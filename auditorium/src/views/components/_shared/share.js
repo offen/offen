@@ -1,5 +1,6 @@
 /** @jsx h */
 const { h, Fragment } = require('preact')
+const { useState } = require('preact/hooks')
 const classnames = require('classnames')
 
 const LabeledInput = require('./labeled-input')
@@ -8,6 +9,7 @@ const Collapsible = require('./collapsible')
 
 const Share = (props) => {
   const { headline, subline, accountId, onValidationError, onShare, collapsible } = props
+  const [isDisabled, setIsDisabled] = useState(false)
   function handleSubmit (e) {
     e.preventDefault()
     var formData = new window.FormData(e.currentTarget)
@@ -20,7 +22,7 @@ const Share = (props) => {
       )
       return
     }
-
+    setIsDisabled(true)
     onShare(
       {
         invitee: invitee,
@@ -32,6 +34,7 @@ const Share = (props) => {
       __('An invite email has been sent.'),
       __('There was an error inviting the user, please try again.')
     )
+      .then(() => setIsDisabled(false))
   }
 
   const renderHeader = (props = {}) => {
@@ -65,6 +68,7 @@ const Share = (props) => {
           type='email'
           name='invitee'
           required
+          disabled={isDisabled}
         >
           {__('Email address to send invite to')}
         </LabeledInput>
@@ -76,6 +80,7 @@ const Share = (props) => {
           type='email'
           name='email-address'
           required
+          disabled={isDisabled}
         >
           {__('Your email address')}
         </LabeledInput>
@@ -83,10 +88,11 @@ const Share = (props) => {
           type='password'
           name='password'
           required
+          disabled={isDisabled}
         >
           {__('Your password')}
         </LabeledInput>
-        <SubmitButton>
+        <SubmitButton disabled={isDisabled}>
           {__('Invite user')}
         </SubmitButton>
       </form>
