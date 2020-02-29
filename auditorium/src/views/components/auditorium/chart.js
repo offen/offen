@@ -79,6 +79,7 @@ const Chart = (props) => {
   ]
 
   const layout = {
+    dragmode: false,
     autosize: true,
     yaxis: {
       fixedrange: true,
