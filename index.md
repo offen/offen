@@ -6,26 +6,13 @@ description: "Depending on who you are and what you want to do, we have dedicate
 permalink: /
 ---
 
-# Transparent web analytics for everyone
+Welcome to Offen Docs. Depending on who you are and what you want to do, we have a few guides for you:
 
-If you are interested in what Offen is, why we are building it or want to get in touch, have a look at [our homepage][homepage].
+## Running Offen
+I run a website and would like to run Offen to collect usage statistics. Have a look at our [guide to running Offen](/running-offen/).
 
-[homepage]: https://www.offen.dev
+## Using Offen
+I am a user or operator and would like to understand how to use Offen. Have a look at our [guide to using Offen](/using-offen/).
 
----
-
-Welcome to the __Offen Docs__!
-
-Depending on who you are and what you want to do, we have a few guides for you:
-
-## I run a website and would like to run Offen to collect usage statistics
-
-Have a look at our [guide to running Offen](/running-offen/).
-
-## I am a user or operator and would like to understand how to use Offen
-
-Have a look at our [guide to using Offen](/using-offen/).
-
-## I am a developer and would like to work on Offen
-
-Have a look at our [guide to developing Offen](/developing-offen/).
+## Developing Offen
+I am a developer and would like to work on Offen. Have a look at our [guide to developing Offen](/developing-offen/).
