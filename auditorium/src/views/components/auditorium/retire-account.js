@@ -1,18 +1,70 @@
 /** @jsx h */
-const { h } = require('preact')
+const { h, Fragment } = require('preact')
 const { useState } = require('preact/hooks')
 
 const Collapsible = require('./../_shared/collapsible')
+const LabeledInput = require('./../_shared/labeled-input')
+const SubmitButton = require('./../_shared/submit-button')
 const classnames = require('classnames')
+
+const InitialScreen = (props) => {
+  const { onClick, account } = props
+  return (
+    <Fragment>
+      <p class='ma0 mb1'>
+        {__('If you retire the account "%s", it will not appear in your statistics anymore. Users will be able to access and manage their data for the account for another 6 months until data expires.', account.name)}
+      </p>
+      <p class='ma0 mb3'>
+        {__('This action cannot be undone.')}
+      </p>
+      <SubmitButton
+        onclick={onClick}
+      >
+        {__('Retire account')}
+      </SubmitButton>
+    </Fragment>
+  )
+}
+
+const ConfirmScreen = (props) => {
+  const [inputValue, setInputValue] = useState(null)
+  const { onConfirm, onCancel, account, isDisabled } = props
+  return (
+    <Fragment>
+      <p class='ma0 mb1'>
+        {__('To permanently retire the account, type its name "%s" into the form below:', account.name)}
+      </p>
+      <LabeledInput
+        required
+        oninput={(e) => setInputValue(e.target.value)}
+      />
+      <SubmitButton
+        onclick={onConfirm}
+        disabledCopy={inputValue !== account.name ? __('Confirm') : null}
+        disabled={isDisabled || inputValue !== account.name}
+      >
+        {__('Confirm')}
+      </SubmitButton>
+      <SubmitButton
+        onclick={onCancel}
+        disabledCopy={__('Cancel')}
+        disabled={isDisabled}
+      >
+        {__('Cancel')}
+      </SubmitButton>
+    </Fragment>
+  )
+}
 
 const RetireAccount = (props) => {
   const { account } = props
   const [isDisabled, setIsDisabled] = useState(false)
+  const [isConfirmStep, setIsConfirmStep] = useState(false)
   function handleClick () {
     setIsDisabled(true)
     props.onRetire(
       { accountId: account.accountId },
-      __('The account has been retired successfully. Log in again to continue.'),
+      __('The account "%s" has been retired successfully. Log in again to continue.', account.name),
       __('There was an error retiring the account, please try again.')
     )
       .then(() => setIsDisabled(false))
@@ -34,20 +86,28 @@ const RetireAccount = (props) => {
         body={(props) => {
           return (
             <div class='mw6 center mb4 mt3'>
-              <p class='ma0 mb1'>
-                {__('If you retire the account "%s", it will not appear in your statistics anymore. Users will be able to access and manage their data for the account for another 6 months until data expires.', account.name)}
-              </p>
-              <p class='ma0 mb3'>
-                {__('This action cannot be undone.')}
-              </p>
-              <button
-                class='pointer w-100 w-auto-ns f5 tc link dim bn dib br1 ph3 pv2 mr0 mr2-ns mb3 mb0-ns white bg-mid-gray'
-                onclick={handleClick}
-                disabled={isDisabled}
-              >
-                {__('Retire account')}
-              </button>
+              {(() => {
+                if (isConfirmStep) {
+                  return (
+                    <ConfirmScreen
+                      {...props}
+                      account={account}
+                      isDisabled={isDisabled}
+                      onConfirm={handleClick}
+                      onCancel={() => setIsConfirmStep(false)}
+                    />
+                  )
+                }
+                return (
+                  <InitialScreen
+                    {...props}
+                    account={account}
+                    onClick={() => setIsConfirmStep(true)}
+                  />
+                )
+              })()}
             </div>
+
           )
         }}
       />
