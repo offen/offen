@@ -34,7 +34,7 @@ const AuditoriumView = (props) => {
 
   useEffect(function fetchData () {
     handleQuery({ accountId, range, resolution }, authenticatedUser)
-  }, [accountId, range, resolution, focus])
+  }, [accountId, range, resolution])
 
   if (isOperator) {
     const softFailure = __(
