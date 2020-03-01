@@ -22,7 +22,7 @@ const Privacy = (props) => {
   if (userHasOptedIn) {
     deleteButton = (
       <Fragment>
-        <div class="bl-ns b--moon-gray pl4-ns">
+        <div class='bl-ns b--moon-gray pl4-ns'>
           <p
             class='ma0 mb3'
             dangerouslySetInnerHTML={{
