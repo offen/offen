@@ -2,30 +2,27 @@
 layout: page
 title: Home
 nav_order: 1
-description: "Depending on who you are and what you want to do, we have dedicated guides for you and your usecase."
+description: "Welcome to the documentation site for Offen, the transparent web analytic tool. Featuring guides for operators, users and developers."
 permalink: /
 ---
 
-# Transparent web analytics for everyone
-
-If you are interested in what Offen is, why we are building it or want to get in touch, have a look at [our homepage][homepage].
-
-[homepage]: https://www.offen.dev
+Offen is a fair alternative to common web analytic tools. It allows website operators to pay respect to their users while gaining insight into their behavior. Welcome to our Docs.
+{: .text-grey-dk-000 }
 
 ---
 
-Welcome to the __Offen Docs__!
+### I run a website and need to collect usage statistics.
 
-Depending on who you are and what you want to do, we have a few guides for you:
+[How to run Offen](/running-offen/){: .btn .btn-green }
+{: .mb-8 }
 
-## I run a website and would like to run Offen to collect usage statistics
 
-Have a look at our [guide to running Offen](/running-offen/).
+### I want to manage the usage data that has been collected from me.
 
-## I am a user or operator and would like to understand how to use Offen
+[User guide](/using-offen/){: .btn .btn-green }
+{: .mb-8 }
 
-Have a look at our [guide to using Offen](/using-offen/).
+### I want to contribute as a developer.
 
-## I am a developer and would like to work on Offen
-
-Have a look at our [guide to developing Offen](/developing-offen/).
+[Developer guide](/developing-offen/){: .btn  .btn-green }
+{: .mb-8 }
