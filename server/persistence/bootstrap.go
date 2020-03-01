@@ -180,6 +180,9 @@ func newAccountUser(email, password string) (*AccountUser, error) {
 }
 
 func newAccount(name, accountID string) (*Account, []byte, error) {
+	if name == "" {
+		return nil, nil, fmt.Errorf("persistence: cannot create an account with an empty name")
+	}
 	if accountID == "" {
 		randomID, err := uuid.NewV4()
 		if err != nil {

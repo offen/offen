@@ -127,7 +127,7 @@ func (rt *router) postAccount(c *gin.Context) {
 		).Pipe(c)
 		return
 	}
-	if err := rt.db.CreateAccount(req.AccountName, req.EmailAddress, req.Password); err != nil {
+	if err := rt.db.CreateAccount(rt.sanitizer.Sanitize(req.AccountName), req.EmailAddress, req.Password); err != nil {
 		newJSONError(
 			fmt.Errorf("router: error creating account %s: %w", req.AccountName, err),
 			http.StatusInternalServerError,

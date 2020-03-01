@@ -11,6 +11,7 @@ import (
 	"github.com/gin-contrib/location"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/securecookie"
+	"github.com/microcosm-cc/bluemonday"
 	"github.com/offen/offen/server/config"
 	"github.com/offen/offen/server/mailer"
 	"github.com/offen/offen/server/persistence"
@@ -25,6 +26,7 @@ type router struct {
 	cookieSigner *securecookie.SecureCookie
 	template     *template.Template
 	config       *config.Config
+	sanitizer    *bluemonday.Policy
 }
 
 func (rt *router) logError(err error, message string) {
@@ -141,6 +143,7 @@ func New(opts ...Config) http.Handler {
 		opt(&rt)
 	}
 
+	rt.sanitizer = bluemonday.StrictPolicy()
 	rt.cookieSigner = securecookie.New(rt.config.Secrets.CookieExchange.Bytes(), nil)
 
 	optin := optinMiddleware(optinKey, optinValue)

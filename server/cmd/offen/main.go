@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-
 	"net/http"
 	"os"
 	"os/signal"
@@ -18,6 +17,7 @@ import (
 
 	uuid "github.com/gofrs/uuid"
 	"github.com/jinzhu/gorm"
+	"github.com/microcosm-cc/bluemonday"
 	"github.com/offen/offen/server/config"
 	"github.com/offen/offen/server/keys"
 	"github.com/offen/offen/server/locales"
@@ -289,6 +289,7 @@ func main() {
 			populateMissing = setupCmd.Bool("populate", false, "in case required secrets are missing from the configuration, create and persist them in the target env file")
 		)
 		setupCmd.Parse(flags)
+		sanitizer := bluemonday.StrictPolicy()
 
 		pw := *password
 		if *source == "" && pw == "" {
@@ -319,11 +320,16 @@ func main() {
 			if err := yaml.Unmarshal(read, &conf); err != nil {
 				logger.WithError(err).Fatalf("Error parsing content of given source file %s", *source)
 			}
+			for idx, account := range conf.Accounts {
+				conf.Accounts[idx].Name = sanitizer.Sanitize(account.Name)
+			}
 		} else {
-			if *email == "" || pw == "" || *accountName == "" {
+			sanitizedAccountName := sanitizer.Sanitize(*accountName)
+			if *email == "" || pw == "" || sanitizedAccountName == "" {
 				logger.Fatal("Missing required parameters to create initial account, use the -help flag for reference on parameters")
 			}
 			logger.Infof("Using command line arguments to create seed account user and account")
+
 			if *accountID == "" {
 				if cfg.App.RootAccount != "" {
 					// in case configuration knows about a root id, bootstrap
@@ -337,7 +343,7 @@ func main() {
 					*accountID = randomID.String()
 				}
 			} else {
-				logger.Warnf("Using -forceid to set the ID of account %s to %s", *accountName, *accountID)
+				logger.Warnf("Using -forceid to set the ID of account %s to %s", sanitizedAccountName, *accountID)
 				logger.Warn("If this is not intentional, please run this command again without forcing an ID")
 			}
 
@@ -351,7 +357,7 @@ func main() {
 			)
 			conf.Accounts = append(
 				conf.Accounts,
-				persistence.BootstrapAccount{Name: *accountName, AccountID: *accountID},
+				persistence.BootstrapAccount{Name: sanitizedAccountName, AccountID: *accountID},
 			)
 		}
 		conf.Force = *force
