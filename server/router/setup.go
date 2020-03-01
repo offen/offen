@@ -44,7 +44,7 @@ func (rt *router) postSetup(c *gin.Context) {
 	if err := rt.db.Bootstrap(persistence.BootstrapConfig{
 		Accounts: []persistence.BootstrapAccount{
 			{
-				Name:      req.AccountName,
+				Name:      rt.sanitizer.Sanitize(req.AccountName),
 				AccountID: accountID.String(),
 			},
 		},
