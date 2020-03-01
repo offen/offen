@@ -9,4 +9,4 @@ RUN bundle install
 
 COPY . /repo
 RUN bundle exec just-the-docs rake search:init
-RUN bundle exec jekyll build
+RUN JEKYLL_ENV=production bundle exec jekyll build

@@ -1,3 +1,7 @@
+{% if jekyll.environment == "production" && site.offen_account_id %}
+  <script async src="https://analytics.offen.dev/script.js" data-account-id="{{ site.offen_account_id }}"></script>
+{% endif %}
+
 <link rel="preload" href="/assets/fonts/roboto-v20-latin-regular.woff2" as="font">
 <link rel="preload" href="/assets/fonts/roboto-v20-latin-700.woff2" as="font">
 <style type="text/css">
