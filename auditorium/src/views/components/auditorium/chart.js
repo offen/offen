@@ -17,10 +17,16 @@ const Chart = (props) => {
   const x = pageviews.map(function (item) {
     return item.date
   })
-  const y = pageviews.map(function (item) {
+  const yVisitors = pageviews.map(function (item) {
     return isOperator
       ? item.visitors
       : item.accounts
+  })
+  const yPageviews = pageviews.map(function (item, index) {
+    return item.pageviews - yVisitors[index]
+  })
+  const yTotal = yVisitors.map(function (item, index) {
+    return item + yPageviews[index]
   })
   const text = x.map(function (value, index) {
     const date = new Date(value)
@@ -44,7 +50,7 @@ const Chart = (props) => {
     {
       type: 'bar',
       x: x,
-      y: y,
+      y: yVisitors,
       hoverinfo: 'y',
       marker: {
         color: x.map(function (date) {
@@ -59,9 +65,7 @@ const Chart = (props) => {
     {
       type: 'bar',
       x: x,
-      y: pageviews.map(function (item, index) {
-        return item.pageviews - y[index]
-      }),
+      y: yPageviews,
       text: pageviews.map(function (item) {
         return item.pageviews
       }),
@@ -84,7 +88,9 @@ const Chart = (props) => {
     yaxis: {
       fixedrange: true,
       dtick: 1,
-      nticks: 5,
+      // this is needed to ensure plotly does not display decimal ticks
+      // on very low pageview counts
+      nticks: Math.min(5, (Math.max.apply(Math, yTotal) + 1)),
       automargin: true,
       autotick: true,
       tick0: 0
@@ -111,16 +117,22 @@ const Chart = (props) => {
         {__('Page views and %s', isOperator ? __('visitors') : __('accounts'))}
       </h4>
       <div class='mb4 chart flex-auto'>
-        <Plot
-          data={data}
-          layout={layout}
-          config={config}
-          style={{
-            width: '100%',
-            height: '100%'
-          }}
-          useResizeHandler
-        />
+        {yTotal.some((v) => v > 0)
+          ? (
+            <Plot
+              data={data}
+              layout={layout}
+              config={config}
+              style={{
+                width: '100%',
+                height: '100%'
+              }}
+              useResizeHandler
+            />
+          )
+          : (
+            <h4>{__("We don't have any data to display for the selected time range.")}</h4>
+          )}
       </div>
     </div>
   )
