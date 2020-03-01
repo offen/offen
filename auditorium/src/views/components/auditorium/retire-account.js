@@ -14,8 +14,8 @@ const InitialScreen = (props) => {
       <p class='ma0 mb1'>
         {__('If you retire the account "%s", it will not appear in your statistics anymore. Users will be able to access and manage their data for the account for another 6 months until data expires.', account.name)}
       </p>
-      <p class='ma0 mb3'>
-        {__('This action cannot be undone.')}
+      <p class='ma0 mb3 orange'>
+        {__('Danger zone! This action cannot be undone.')}
       </p>
       <SubmitButton
         onclick={onClick}

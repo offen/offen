@@ -42,7 +42,7 @@ const Layout = (props) => (
         <p class='ma0 mb2' dangerouslySetInnerHTML={{ __html: __('Transparent web analytics<br>for everyone') }} />
       </div>
       <div>
-        <a href='https://www.offen.dev/' class='normal link underline dim moon-gray' target='_blank' rel='noopener noreferrer'>
+        <a href='https://www.offen.dev/' class='normal link dim moon-gray' target='_blank' rel='noopener noreferrer'>
           www.offen.dev
         </a>
       </div>

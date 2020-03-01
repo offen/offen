@@ -110,7 +110,7 @@ function bannerView (consentGiven, collapsed, handleCollapse, handleAllow, handl
         ${raw(__('Thanks a lot for your help. To manage the usage data this website has collected from you, <a class="normal link underline dim dark-gray" target="_blank" rel="noopener" href="%s">open the Auditorium.</a>', '/auditorium/'))}
       </p>
       <div class="w-100 flex">
-        <button class="db w-40 center pointer tc dim bn ph3 pv2 dib br1 white bg-dark-gray" onclick="${handleClose}">
+        <button class="db w-40 center pointer tc dim bn ph3 pv2 dib br1 white bg-mid-gray" onclick="${handleClose}">
           ${__('Continue')}
         </button>
       </div>
@@ -135,12 +135,12 @@ function bannerView (consentGiven, collapsed, handleCollapse, handleAllow, handl
       ` : null}
       <div class="flex">
         <div class="w-50 mr2">
-          <button class="w-100 pointer tc dim bn ph3 pv2 dib br1 white bg-dark-gray" onclick=${handleAllow}>
+          <button class="w-100 pointer tc dim bn ph3 pv2 dib br1 white bg-mid-gray" onclick=${handleAllow}>
             ${__('Yes Please')}
           </button>
         </div>
         <div class="w-50 ml2">
-          <button class="w-100 pointer tc dim bn ph3 pv2 dib br1 white bg-dark-gray" onclick=${handleDeny}>
+          <button class="w-100 pointer tc dim bn ph3 pv2 dib br1 white bg-mid-gray" onclick=${handleDeny}>
             ${__('I Do Not Allow')}
           </button>
         </div>
