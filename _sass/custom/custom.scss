@@ -127,21 +127,3 @@ $link-color: #137752;
 //lg: $content-width + $nav-width,
 //xl: 1400px
 //);
-
-li a:link,
-li a:visited,
-li a:hover,
-li a:active,
-p a:link,
-p a:visited,
-p a:hover,
-p a:active {
-	background-image: none !important;
-}
-.site-logo {
-	display: flex;
-	align-items: center;
-}
-.site-logo p {
-	margin: 0 0 0 .4em;
-}
