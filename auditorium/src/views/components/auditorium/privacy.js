@@ -7,11 +7,6 @@ const Privacy = (props) => {
   function handleConsent () {
     const nextStatus = userHasOptedIn ? 'deny' : 'allow'
     props.onConsent(nextStatus)
-      .then(() => {
-        if (nextStatus === 'deny') {
-          return props.onPurge()
-        }
-      })
   }
 
   function handlePurge () {
