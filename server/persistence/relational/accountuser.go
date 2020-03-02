@@ -45,7 +45,11 @@ func (r *relationalDAL) FindAccountUsers(q interface{}) ([]persistence.AccountUs
 	case persistence.FindAccountUsersQueryAllAccountUsers:
 		db := r.db
 		if query.IncludeRelationships {
-			db = db.Preload("Relationships")
+			if query.IncludeInvitations {
+				db = db.Preload("Relationships")
+			} else {
+				db = db.Preload("Relationships", "password_encrypted_key_encryption_key <> ?", "")
+			}
 		}
 		if err := db.Find(&accountUsers).Error; err != nil {
 			return nil, fmt.Errorf("relational: error looking up account users: %w", err)

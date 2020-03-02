@@ -269,9 +269,10 @@ func TestRelationalDAL_FindAccountUsers(t *testing.T) {
 					return fmt.Errorf("error inserting fixture: %w", err)
 				}
 				if err := db.Create(&AccountUserRelationship{
-					RelationshipID: "relationship-a",
-					AccountUserID:  "account-user-a",
-					AccountID:      "account-a",
+					RelationshipID:                    "relationship-a",
+					AccountUserID:                     "account-user-a",
+					AccountID:                         "account-a",
+					PasswordEncryptedKeyEncryptionKey: "something",
 				}).Error; err != nil {
 					return fmt.Errorf("error inserting fixture: %w", err)
 				}
@@ -281,7 +282,7 @@ func TestRelationalDAL_FindAccountUsers(t *testing.T) {
 			false,
 			[]persistence.AccountUser{
 				{AccountUserID: "account-user-a", Relationships: []persistence.AccountUserRelationship{
-					{RelationshipID: "relationship-a", AccountUserID: "account-user-a", AccountID: "account-a"},
+					{RelationshipID: "relationship-a", AccountUserID: "account-user-a", AccountID: "account-a", PasswordEncryptedKeyEncryptionKey: "something"},
 				}},
 			},
 		},

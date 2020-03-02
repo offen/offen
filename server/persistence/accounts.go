@@ -148,7 +148,7 @@ func (p *persistenceLayer) AssociateUserSecret(accountID, userID, encryptedUserS
 }
 
 func (p *persistenceLayer) CreateAccount(name, emailAddress, password string) error {
-	accountUsers, err := p.dal.FindAccountUsers(FindAccountUsersQueryAllAccountUsers{true})
+	accountUsers, err := p.dal.FindAccountUsers(FindAccountUsersQueryAllAccountUsers{true, false})
 	if err != nil {
 		return fmt.Errorf("persistence: error looking up account users: %w", err)
 	}
