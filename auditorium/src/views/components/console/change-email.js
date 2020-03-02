@@ -27,6 +27,9 @@ const ChangeEmail = (props) => {
       <h4 class='f4 normal mt0 mb3'>
         {__('Change email address')}
       </h4>
+      <p>
+        {__('Warning: Changing your email address will invalidate all pending account invites for your user.')}
+      </p>
       <form class='mw6 center mb4' onsubmit={handleSubmit}>
         <LabeledInput
           type='email'

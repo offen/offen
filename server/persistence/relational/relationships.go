@@ -21,6 +21,11 @@ func (r *relationalDAL) DeleteAccountUserRelationships(q interface{}) error {
 			return fmt.Errorf("relational: error deleting relationships for account %s: %w", query, err)
 		}
 		return nil
+	case persistence.DeleteAccountUserRelationshipQueryByRelationshipID:
+		if err := r.db.Where("relationship_id = ?", query).Delete(&AccountUserRelationship{}).Error; err != nil {
+			return fmt.Errorf("relational: error deleting relationship %s: %w", query, err)
+		}
+		return nil
 	default:
 		return persistence.ErrBadQuery
 	}

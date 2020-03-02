@@ -109,6 +109,13 @@ func (p *persistenceLayer) ChangePassword(userID, currentPassword, changedPasswo
 	}
 
 	for _, relationship := range accountUser.Relationships {
+		if relationship.PasswordEncryptedKeyEncryptionKey == "" {
+			if err := txn.DeleteAccountUserRelationships(DeleteAccountUserRelationshipQueryByRelationshipID(relationship.RelationshipID)); err != nil {
+				txn.Rollback()
+				return fmt.Errorf("persistence: error purging pending invitation: %w", err)
+			}
+			continue
+		}
 		decryptedKey, decryptErr := keys.DecryptWith(keyFromCurrentPassword, relationship.PasswordEncryptedKeyEncryptionKey)
 		if decryptErr != nil {
 			txn.Rollback()
@@ -140,6 +147,13 @@ func (p *persistenceLayer) ResetPassword(emailAddress, password string, oneTimeK
 		return fmt.Errorf("persistence: error creating transaction: %w", err)
 	}
 	for _, relationship := range accountUser.Relationships {
+		if relationship.PasswordEncryptedKeyEncryptionKey == "" {
+			if err := txn.DeleteAccountUserRelationships(DeleteAccountUserRelationshipQueryByRelationshipID(relationship.RelationshipID)); err != nil {
+				txn.Rollback()
+				return fmt.Errorf("persistence: error purging pending invitation: %w", err)
+			}
+			continue
+		}
 		keyEncryptionKey, decryptionErr := keys.DecryptWith(oneTimeKey, relationship.OneTimeEncryptedKeyEncryptionKey)
 		if decryptionErr != nil {
 			txn.Rollback()
@@ -209,6 +223,13 @@ func (p *persistenceLayer) ChangeEmail(userID, emailAddress, password string) er
 		return fmt.Errorf("persistence: error updating hashed email on account user: %w", err)
 	}
 	for _, relationship := range accountUser.Relationships {
+		if relationship.PasswordEncryptedKeyEncryptionKey == "" {
+			if err := txn.DeleteAccountUserRelationships(DeleteAccountUserRelationshipQueryByRelationshipID(relationship.RelationshipID)); err != nil {
+				txn.Rollback()
+				return fmt.Errorf("persistence: error purging pending invitation: %w", err)
+			}
+			continue
+		}
 		decryptedKey, decryptionErr := keys.DecryptWith(keyFromCurrentPassword, relationship.PasswordEncryptedKeyEncryptionKey)
 		if decryptionErr != nil {
 			txn.Rollback()

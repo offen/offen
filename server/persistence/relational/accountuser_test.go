@@ -75,9 +75,10 @@ func TestRelationalDAL_FindAccountUser(t *testing.T) {
 					return fmt.Errorf("error saving fixture data: %v", err)
 				}
 				if err := db.Save(&AccountUserRelationship{
-					AccountUserID:  "user-id",
-					AccountID:      "account-id",
-					RelationshipID: "relationship-id",
+					AccountUserID:                     "user-id",
+					AccountID:                         "account-id",
+					RelationshipID:                    "relationship-id",
+					PasswordEncryptedKeyEncryptionKey: "key",
 				}).Error; err != nil {
 					return fmt.Errorf("error saving fixture data: %v", err)
 				}
@@ -89,9 +90,10 @@ func TestRelationalDAL_FindAccountUser(t *testing.T) {
 				HashedEmail:   "xyz123",
 				Relationships: []persistence.AccountUserRelationship{
 					{
-						AccountUserID:  "user-id",
-						AccountID:      "account-id",
-						RelationshipID: "relationship-id",
+						AccountUserID:                     "user-id",
+						AccountID:                         "account-id",
+						RelationshipID:                    "relationship-id",
+						PasswordEncryptedKeyEncryptionKey: "key",
 					},
 				},
 			},
