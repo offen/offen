@@ -31,8 +31,10 @@ const Form = forwardRef((props, ref) => {
       .then(() => setIsDisabled(false))
   }
   return (
-    <div class='w-100 sbg-black-05'>
-      <h4 class='f5 normal mt0 mb3'>{isAddition ? __('Accept invite') : __('Join Offen')}</h4>
+    <div class='pa3 bg-black-05'>
+      <h4 class='f4 normal mt0 mb3'>
+        {isAddition ? __('Accept invite') : __('Join Offen')}
+      </h4>
       <form class='mw6 center' onsubmit={handleSubmit}>
         <LabeledInput
           name='email-address'
