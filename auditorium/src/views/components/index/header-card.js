@@ -45,10 +45,10 @@ module.exports = (props) => {
           </p>
         </div>
         <div class='w-100 w-40-ns tc mt2 mt0-ns'>
-          <button class='pointer f5 tc link dim bn ph3 pv2 dib br1 mr3 white bg-dark-gray' onclick={() => props.expressConsent('allow')}>
+          <button class='pointer f5 tc link dim bn ph3 pv2 dib br1 mr3 white bg-mid-gray' onclick={() => props.expressConsent('allow')}>
             {__('Yes Please')}
           </button>
-          <button disabled={!noStatusYet} class={`f5 tc link dim bn ph3 pv2 dib br1 white ${noStatusYet ? 'bg-dark-gray pointer' : 'bg-light-gray'}`} onclick={() => props.expressConsent('deny')}>
+          <button disabled={!noStatusYet} class={`f5 tc link dim bn ph3 pv2 dib br1 white ${noStatusYet ? 'bg-mid-gray pointer' : 'bg-light-gray'}`} onclick={() => props.expressConsent('deny')}>
             {__('I Do Not Allow')}
           </button>
         </div>

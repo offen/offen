@@ -11,7 +11,7 @@ module.exports = (props) => {
         </p>
         <p
           class='mt0 mb4'
-          dangerouslySetInnerHTML={{ __html: __('Go to the <a href="%s" class="%s">Auditorium.</a>', '/auditorium/', 'normal link underline dim dark-gray') }}
+          dangerouslySetInnerHTML={{ __html: __('Go to the <a href="%s" class="%s">Auditorium.</a>', '/auditorium/', 'link dim dark-green') }}
         />
       </Fragment>
     )
@@ -23,7 +23,7 @@ module.exports = (props) => {
         </p>
         <p
           class='mt0 mb4'
-          dangerouslySetInnerHTML={{ __html: __('For data to be collected you need to opt in first. You can do this in the <a href="%s" class="%s">consent banner.</a>', '#consentBanner', 'normal link underline dim dark-gray') }}
+          dangerouslySetInnerHTML={{ __html: __('For data to be collected you need to opt in first. You can do this in the <a href="%s" class="%s">consent banner.</a>', '#consentBanner', 'link dim dark-green') }}
         />
       </Fragment>
     )
@@ -73,7 +73,7 @@ module.exports = (props) => {
           </p>
           <p
             class='mt0 mb1'
-            dangerouslySetInnerHTML={{ __html: __('Only then you will be assigned a user and a session ID using a cookie. Learn more about cookies <a href="https://en.wikipedia.org/wiki/HTTP_cookie" class="%s" target="_blank">here.</a>', 'normal link underline dim dark-gray') }}
+            dangerouslySetInnerHTML={{ __html: __('Only then you will be assigned a user and a session ID using a cookie. Learn more about cookies <a href="https://en.wikipedia.org/wiki/HTTP_cookie" class="%s" target="_blank">here.</a>', 'link dim dark-green') }}
           />
           <p class='mt0 mb4'>
             {__('Offen handles these IDs in an unrecognizable form. Operators can identify you only within one website.')}

@@ -17,7 +17,7 @@ const Logout = (props) => {
       <div class='mw6 center mb4'>
         <div class='w-100 w-auto-ns tr-ns mt3'>
           <button
-            class='pointer w-100 w-auto-ns f5 tc link dim bn dib br1 ph3 pv2 white bg-silver'
+            class='pointer w-100 w-auto-ns f5 tc link dim bn dib br1 ph3 pv2 white bg-mid-gray'
             onclick={handleClick}
             disabled={isDisabled}
           >

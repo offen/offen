@@ -1,5 +1,5 @@
 /** @jsx h */
-const { h, Fragment } = require('preact')
+const { h } = require('preact')
 
 const Privacy = (props) => {
   const { userHasOptedIn } = props
@@ -16,7 +16,7 @@ const Privacy = (props) => {
   let deleteButton = null
   if (userHasOptedIn) {
     deleteButton = (
-      <Fragment>
+      <div class='bl-ns b--moon-gray pl4-ns'>
         <p
           class='ma0 mb3'
           dangerouslySetInnerHTML={{
@@ -30,14 +30,14 @@ const Privacy = (props) => {
         >
           {__('Delete')}
         </button>
-      </Fragment>
+      </div>
     )
   }
 
   return (
     <div class='pa3 bg-black-05 flex-auto'>
       <div class='flex flex-column flex-row-ns'>
-        <div class='w-100 w-auto-m w-40-l bn br-ns b--moon-gray mb0-ns pr0 pr4-ns mr0 mr4-ns'>
+        <div class='w-100 w-auto-m w-40-l mb0-ns pr0 pr4-ns mr0 mr4-ns'>
           <h4 class='f4 normal mt0 mb3'>
             {__('Privacy')}
           </h4>
@@ -57,7 +57,7 @@ const Privacy = (props) => {
             {userHasOptedIn ? __('Opt out') : __('Opt in')}
           </button>
         </div>
-        <div class='w-100 w-auto-m w-60-l bt bn-ns b--moon-gray pt3 pt4-ns mt2'>
+        <div class='w-100 w-auto-m w-60-l pt4-ns mt2-ns'>
           {deleteButton}
         </div>
       </div>
