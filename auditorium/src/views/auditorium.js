@@ -32,10 +32,6 @@ const AuditoriumView = (props) => {
   const { accountId, range, resolution } = matches
   const [focus, setFocus] = useState(true)
 
-  useEffect(function fetchData () {
-    handleQuery({ accountId, range, resolution }, authenticatedUser)
-  }, [accountId, range, resolution])
-
   if (isOperator) {
     const softFailure = __(
       'This view failed to update automatically, data may be out of date. Check your network connection if the problem persists.'
@@ -72,18 +68,24 @@ const AuditoriumView = (props) => {
     }, [])
   }
 
-  if (!model) {
-    return (
-      <HighlightBox>
-        {__('Fetching and decrypting the latest data...')}
-      </HighlightBox>
-    )
-  }
-
   if (!isOperator && !consentStatus) {
     return (
       <HighlightBox>
         {__('Checking your consent status ...')}
+      </HighlightBox>
+    )
+  }
+
+  // it's important to keep this hook below the first check so that it does
+  // not create a race condition between consentStatus and events
+  useEffect(function fetchData () {
+    handleQuery({ accountId, range, resolution }, authenticatedUser)
+  }, [accountId, range, resolution, consentStatus])
+
+  if (!model) {
+    return (
+      <HighlightBox>
+        {__('Fetching and decrypting the latest data...')}
       </HighlightBox>
     )
   }
