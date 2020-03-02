@@ -75,9 +75,10 @@ func TestRelationalDAL_FindAccountUser(t *testing.T) {
 					return fmt.Errorf("error saving fixture data: %v", err)
 				}
 				if err := db.Save(&AccountUserRelationship{
-					AccountUserID:  "user-id",
-					AccountID:      "account-id",
-					RelationshipID: "relationship-id",
+					AccountUserID:                     "user-id",
+					AccountID:                         "account-id",
+					RelationshipID:                    "relationship-id",
+					PasswordEncryptedKeyEncryptionKey: "key",
 				}).Error; err != nil {
 					return fmt.Errorf("error saving fixture data: %v", err)
 				}
@@ -89,9 +90,10 @@ func TestRelationalDAL_FindAccountUser(t *testing.T) {
 				HashedEmail:   "xyz123",
 				Relationships: []persistence.AccountUserRelationship{
 					{
-						AccountUserID:  "user-id",
-						AccountID:      "account-id",
-						RelationshipID: "relationship-id",
+						AccountUserID:                     "user-id",
+						AccountID:                         "account-id",
+						RelationshipID:                    "relationship-id",
+						PasswordEncryptedKeyEncryptionKey: "key",
 					},
 				},
 			},
@@ -269,9 +271,10 @@ func TestRelationalDAL_FindAccountUsers(t *testing.T) {
 					return fmt.Errorf("error inserting fixture: %w", err)
 				}
 				if err := db.Create(&AccountUserRelationship{
-					RelationshipID: "relationship-a",
-					AccountUserID:  "account-user-a",
-					AccountID:      "account-a",
+					RelationshipID:                    "relationship-a",
+					AccountUserID:                     "account-user-a",
+					AccountID:                         "account-a",
+					PasswordEncryptedKeyEncryptionKey: "something",
 				}).Error; err != nil {
 					return fmt.Errorf("error inserting fixture: %w", err)
 				}
@@ -281,7 +284,7 @@ func TestRelationalDAL_FindAccountUsers(t *testing.T) {
 			false,
 			[]persistence.AccountUser{
 				{AccountUserID: "account-user-a", Relationships: []persistence.AccountUserRelationship{
-					{RelationshipID: "relationship-a", AccountUserID: "account-user-a", AccountID: "account-a"},
+					{RelationshipID: "relationship-a", AccountUserID: "account-user-a", AccountID: "account-a", PasswordEncryptedKeyEncryptionKey: "something"},
 				}},
 			},
 		},

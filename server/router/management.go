@@ -77,6 +77,14 @@ func (rt *router) postInviteUser(c *gin.Context) {
 		return
 	}
 
+	if len(result.AccountIDs) == 0 {
+		newJSONError(
+			fmt.Errorf("router: user already has access to all requested accounts"),
+			http.StatusBadRequest,
+		).Pipe(c)
+		return
+	}
+
 	signedCredentials, signErr := rt.cookieSigner.MaxAge(7*24*60*60).Encode("credentials", req.InviteeEmailAddress)
 	if signErr != nil {
 		rt.logError(signErr, "error signing token")

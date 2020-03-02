@@ -96,9 +96,14 @@ type FindAccountUserRelationshipsQueryByAccountUserID string
 // with the given account id.
 type DeleteAccountUserRelationshipsQueryByAccountID string
 
+// DeleteAccountUserRelationshipQueryByRelationshipID requests deletion of all relationships
+// with the given relationship id.
+type DeleteAccountUserRelationshipQueryByRelationshipID string
+
 // FindAccountUsersQueryAllAccountUsers requests all account users.
 type FindAccountUsersQueryAllAccountUsers struct {
 	IncludeRelationships bool
+	IncludeInvitations   bool
 }
 
 // RetireAccountQueryByID requests the account of the given id to be retired.

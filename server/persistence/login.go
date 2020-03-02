@@ -11,7 +11,7 @@ import (
 )
 
 func (p *persistenceLayer) Login(email, password string) (LoginResult, error) {
-	accountUser, err := p.findAccountUser(email, true)
+	accountUser, err := p.findAccountUser(email, true, false)
 	if err != nil {
 		return LoginResult{}, fmt.Errorf("persistence: error looking up account user: %w", err)
 	}
@@ -109,6 +109,13 @@ func (p *persistenceLayer) ChangePassword(userID, currentPassword, changedPasswo
 	}
 
 	for _, relationship := range accountUser.Relationships {
+		if relationship.PasswordEncryptedKeyEncryptionKey == "" {
+			if err := txn.DeleteAccountUserRelationships(DeleteAccountUserRelationshipQueryByRelationshipID(relationship.RelationshipID)); err != nil {
+				txn.Rollback()
+				return fmt.Errorf("persistence: error purging pending invitation: %w", err)
+			}
+			continue
+		}
 		decryptedKey, decryptErr := keys.DecryptWith(keyFromCurrentPassword, relationship.PasswordEncryptedKeyEncryptionKey)
 		if decryptErr != nil {
 			txn.Rollback()
@@ -130,7 +137,7 @@ func (p *persistenceLayer) ChangePassword(userID, currentPassword, changedPasswo
 }
 
 func (p *persistenceLayer) ResetPassword(emailAddress, password string, oneTimeKey []byte) error {
-	accountUser, err := p.findAccountUser(emailAddress, true)
+	accountUser, err := p.findAccountUser(emailAddress, true, false)
 	if err != nil {
 		return fmt.Errorf("persistence: error looking up account user: %w", err)
 	}
@@ -140,6 +147,13 @@ func (p *persistenceLayer) ResetPassword(emailAddress, password string, oneTimeK
 		return fmt.Errorf("persistence: error creating transaction: %w", err)
 	}
 	for _, relationship := range accountUser.Relationships {
+		if relationship.PasswordEncryptedKeyEncryptionKey == "" {
+			if err := txn.DeleteAccountUserRelationships(DeleteAccountUserRelationshipQueryByRelationshipID(relationship.RelationshipID)); err != nil {
+				txn.Rollback()
+				return fmt.Errorf("persistence: error purging pending invitation: %w", err)
+			}
+			continue
+		}
 		keyEncryptionKey, decryptionErr := keys.DecryptWith(oneTimeKey, relationship.OneTimeEncryptedKeyEncryptionKey)
 		if decryptionErr != nil {
 			txn.Rollback()
@@ -184,7 +198,7 @@ func (p *persistenceLayer) ChangeEmail(userID, emailAddress, password string) er
 		return fmt.Errorf("persistence: current password did not match: %w", err)
 	}
 
-	existing, _ := p.findAccountUser(emailAddress, false)
+	existing, _ := p.findAccountUser(emailAddress, false, false)
 	if existing != nil && existing.AccountUserID != userID {
 		return fmt.Errorf("persistence: given email %s is already in use", emailAddress)
 	}
@@ -209,6 +223,13 @@ func (p *persistenceLayer) ChangeEmail(userID, emailAddress, password string) er
 		return fmt.Errorf("persistence: error updating hashed email on account user: %w", err)
 	}
 	for _, relationship := range accountUser.Relationships {
+		if relationship.PasswordEncryptedKeyEncryptionKey == "" {
+			if err := txn.DeleteAccountUserRelationships(DeleteAccountUserRelationshipQueryByRelationshipID(relationship.RelationshipID)); err != nil {
+				txn.Rollback()
+				return fmt.Errorf("persistence: error purging pending invitation: %w", err)
+			}
+			continue
+		}
 		decryptedKey, decryptionErr := keys.DecryptWith(keyFromCurrentPassword, relationship.PasswordEncryptedKeyEncryptionKey)
 		if decryptionErr != nil {
 			txn.Rollback()
@@ -230,7 +251,7 @@ func (p *persistenceLayer) ChangeEmail(userID, emailAddress, password string) er
 }
 
 func (p *persistenceLayer) GenerateOneTimeKey(emailAddress string) ([]byte, error) {
-	accountUser, err := p.findAccountUser(emailAddress, true)
+	accountUser, err := p.findAccountUser(emailAddress, true, false)
 	if err != nil {
 		return nil, fmt.Errorf("persistence: error looking up account user: %w", err)
 	}
@@ -268,8 +289,11 @@ func (p *persistenceLayer) GenerateOneTimeKey(emailAddress string) ([]byte, erro
 	return oneTimeKeyBytes, nil
 }
 
-func (p *persistenceLayer) findAccountUser(emailAddress string, includeRelationships bool) (*AccountUser, error) {
-	accountUsers, err := p.dal.FindAccountUsers(FindAccountUsersQueryAllAccountUsers{IncludeRelationships: includeRelationships})
+func (p *persistenceLayer) findAccountUser(emailAddress string, includeRelationships, IncludeInvitations bool) (*AccountUser, error) {
+	accountUsers, err := p.dal.FindAccountUsers(FindAccountUsersQueryAllAccountUsers{
+		IncludeRelationships: includeRelationships,
+		IncludeInvitations:   IncludeInvitations,
+	})
 	if err != nil {
 		return nil, fmt.Errorf("persistence: error looking up account users: %w", err)
 	}

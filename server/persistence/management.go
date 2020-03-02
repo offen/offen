@@ -10,7 +10,7 @@ func (p *persistenceLayer) InviteUser(inviteeEmailAddress, providerEmailAddress,
 	var result InviteUserResult
 	var invitedAccountUser *AccountUser
 
-	accountUsers, err := p.dal.FindAccountUsers(FindAccountUsersQueryAllAccountUsers{true})
+	accountUsers, err := p.dal.FindAccountUsers(FindAccountUsersQueryAllAccountUsers{true, true})
 	if err != nil {
 		return result, fmt.Errorf("persistence: error looking up account users: %w", err)
 	}
@@ -50,6 +50,11 @@ func (p *persistenceLayer) InviteUser(inviteeEmailAddress, providerEmailAddress,
 	var eligibleRelationships []AccountUserRelationship
 outer:
 	for _, relationship := range provider.Relationships {
+		if relationship.PasswordEncryptedKeyEncryptionKey == "" {
+			// the provider might have pending invitations which we do not
+			// want to copy over
+			continue
+		}
 		for _, existingRelationship := range invitedAccountUser.Relationships {
 			if relationship.AccountID == existingRelationship.AccountID {
 				// this makes sure no existing relationship for the accountID
@@ -100,7 +105,7 @@ outer:
 }
 
 func (p *persistenceLayer) Join(emailAddress, password string) error {
-	match, err := p.findAccountUser(emailAddress, true)
+	match, err := p.findAccountUser(emailAddress, true, true)
 	if err != nil {
 		return fmt.Errorf("persistence: could not find user with email %s: %w", emailAddress, err)
 	}
