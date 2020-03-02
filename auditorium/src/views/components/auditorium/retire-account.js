@@ -12,7 +12,7 @@ const InitialScreen = (props) => {
   return (
     <Fragment>
       <p class='ma0 mb1'
-      dangerouslySetInnerHTML={{ __html: __('If you retire the account <strong>%s,</strong> it will not appear in your statistics anymore. Users will be able to access and manage their data for the account for another 6 months until data expires.', account.name) }}
+        dangerouslySetInnerHTML={{ __html: __('If you retire the account <strong>%s,</strong> it will not appear in your statistics anymore. Users will be able to access and manage their data for the account for another 6 months until data expires.', account.name) }}
       />
       <p class='ma0 mb3 orange'>
         {__('Danger zone! This action cannot be undone.')}

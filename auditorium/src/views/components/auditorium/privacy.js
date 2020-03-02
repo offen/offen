@@ -21,23 +21,21 @@ const Privacy = (props) => {
   let deleteButton = null
   if (userHasOptedIn) {
     deleteButton = (
-      <Fragment>
-        <div class='bl-ns b--moon-gray pl4-ns'>
-          <p
-            class='ma0 mb3'
-            dangerouslySetInnerHTML={{
-              __html: __('Stay opted in, only delete <strong>usage data</strong>')
-            }}
-          />
-          <button
-            class='pointer w-100 w-auto-ns f5 link dim bn dib br1 ph3 pv2 mr1 mb4 white bg-mid-gray'
-            data-role='purge'
-            onclick={handlePurge}
-          >
-            {__('Delete')}
-          </button>
-        </div>
-      </Fragment>
+      <div class='bl-ns b--moon-gray pl4-ns'>
+        <p
+          class='ma0 mb3'
+          dangerouslySetInnerHTML={{
+            __html: __('Stay opted in, only delete <strong>usage data</strong>')
+          }}
+        />
+        <button
+          class='pointer w-100 w-auto-ns f5 link dim bn dib br1 ph3 pv2 mr1 mb4 white bg-mid-gray'
+          data-role='purge'
+          onclick={handlePurge}
+        >
+          {__('Delete')}
+        </button>
+      </div>
     )
   }
 
