@@ -1,5 +1,5 @@
 /** @jsx h */
-const { h, Fragment } = require('preact')
+const { h } = require('preact')
 
 const Privacy = (props) => {
   const { userHasOptedIn } = props
