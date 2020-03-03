@@ -30,6 +30,14 @@ var buckets = [
   {
     re: /(www\.)?baidu\.com($|\/)/,
     name: 'Baidu'
+  },
+  {
+    re: /(www\.)?linkedin\.com($|\/)/,
+    name: 'LinkedIn'
+  },
+  {
+    re: /t\.co($|\/)/,
+    name: 'Twitter'
   }
 ]
 
