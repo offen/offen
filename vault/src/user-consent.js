@@ -136,12 +136,12 @@ function bannerView (consentGiven, collapsed, handleCollapse, handleAllow, handl
       <div class="flex">
         <div class="w-50 mr2">
           <button class="w-100 pointer tc dim bn ph3 pv2 dib br1 white bg-mid-gray" onclick=${handleAllow}>
-            ${__('Yes Please')}
+            ${__('Yes please')}
           </button>
         </div>
         <div class="w-50 ml2">
           <button class="w-100 pointer tc dim bn ph3 pv2 dib br1 white bg-mid-gray" onclick=${handleDeny}>
-            ${__('I Do Not Allow')}
+            ${__('I do not allow')}
           </button>
         </div>
       </div>

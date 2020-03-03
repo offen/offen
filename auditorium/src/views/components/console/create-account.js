@@ -28,7 +28,7 @@ const CreateAccount = (props) => {
   return (
     <div class='pa3 bg-black-05'>
       <h4 class='f4 normal mt0 mb3'>
-        {__('Create new Account')}
+        {__('Create new account')}
       </h4>
       <MultiStepForm
         class='mw6 center mb4'
@@ -42,10 +42,10 @@ const CreateAccount = (props) => {
                   required
                   disabled={isDisabled}
                 >
-                  {__('Account Name')}
+                  {__('Account name')}
                 </LabeledInput>
                 <SubmitButton disabled={isDisabled}>
-                  {__('Create Account')}
+                  {__('Create account')}
                 </SubmitButton>
               </Fragment>
             )
@@ -63,7 +63,7 @@ const CreateAccount = (props) => {
                   required
                   disabled={isDisabled}
                 >
-                  {__('Your Email')}
+                  {__('Your email')}
                 </LabeledInput>
                 <LabeledInput
                   type='password'
@@ -71,7 +71,7 @@ const CreateAccount = (props) => {
                   required
                   disabled={isDisabled}
                 >
-                  {__('Your Password')}
+                  {__('Your password')}
                 </LabeledInput>
                 <SubmitButton disabled={isDisabled}>
                   {__('Confirm')}

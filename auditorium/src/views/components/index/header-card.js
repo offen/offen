@@ -46,10 +46,10 @@ module.exports = (props) => {
         </div>
         <div class='w-100 w-40-ns tc mt2 mt0-ns'>
           <button class='pointer f5 tc link dim bn ph3 pv2 dib br1 mr3 white bg-mid-gray' onclick={() => props.expressConsent('allow')}>
-            {__('Yes Please')}
+            {__('Yes please')}
           </button>
           <button disabled={!noStatusYet} class={`f5 tc link dim bn ph3 pv2 dib br1 white ${noStatusYet ? 'bg-mid-gray pointer' : 'bg-light-gray'}`} onclick={() => props.expressConsent('deny')}>
-            {__('I Do Not Allow')}
+            {__('I do not allow')}
           </button>
         </div>
       </Fragment>
