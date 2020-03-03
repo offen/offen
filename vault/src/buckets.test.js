@@ -24,7 +24,12 @@ describe('src/buckets.js', function () {
         'duckduckgone.com',
         'www.baidu.com',
         'baidu.com/search',
-        'baidu.complete.com'
+        'baidu.complete.com',
+        't.co.uk',
+        't.co/123',
+        'linkedin.com/business-proposal',
+        'www.linkedin.com',
+        'linkedin.community/malware-download'
       ]
       var mapped = referrers.map(mapToBuckets)
       assert.deepStrictEqual(mapped, [
@@ -46,7 +51,12 @@ describe('src/buckets.js', function () {
         'duckduckgone.com',
         'Baidu',
         'Baidu',
-        'baidu.complete.com'
+        'baidu.complete.com',
+        't.co.uk',
+        'Twitter',
+        'LinkedIn',
+        'LinkedIn',
+        'linkedin.community/malware-download'
       ])
     })
   })
