@@ -19,7 +19,7 @@ type Service interface {
 	Login(email, password string) (LoginResult, error)
 	LookupAccountUser(userID string) (LoginResult, error)
 	ChangePassword(userID, currentPassword, changedPassword string) error
-	ChangeEmail(userID, emailAddress, password string) error
+	ChangeEmail(userID, emailAddress, emailCurrent, password string) error
 	GenerateOneTimeKey(emailAddress string) ([]byte, error)
 	ResetPassword(emailAddress, password string, oneTimeKey []byte) error
 	InviteUser(inviteeEmailAddress, providerEmailAddress, providerPassword, accountID string) (InviteUserResult, error)

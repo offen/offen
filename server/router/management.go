@@ -77,7 +77,9 @@ func (rt *router) postInviteUser(c *gin.Context) {
 		return
 	}
 
-	if len(result.AccountIDs) == 0 {
+	// the user might have access to all accounts already in which case we
+	// do not want to send a confusing email
+	if len(result.AccountNames) == 0 {
 		newJSONError(
 			fmt.Errorf("router: user already has access to all requested accounts"),
 			http.StatusBadRequest,
@@ -85,27 +87,23 @@ func (rt *router) postInviteUser(c *gin.Context) {
 		return
 	}
 
-	signedCredentials, signErr := rt.cookieSigner.MaxAge(7*24*60*60).Encode("credentials", req.InviteeEmailAddress)
-	if signErr != nil {
-		rt.logError(signErr, "error signing token")
-		c.Status(http.StatusNoContent)
-		return
-	}
-
-	joinURL := strings.Replace(req.URLTemplate, "{token}", signedCredentials, -1)
-
 	var emailBody string
 	var bodyErr error
 	var subject string
 	if result.UserExistsWithPassword {
-		joinURL = strings.Replace(joinURL, "{userId}", "addition", -1)
 		emailBody, bodyErr = mailer.RenderMessage(
 			mailer.MessageExistingUserInvite,
-			map[string]interface{}{"url": joinURL, "count": len(result.AccountIDs)},
+			map[string]interface{}{"accountNames": result.AccountNames},
 		)
 		subject = "You have been added to additional accounts on Offen"
 	} else {
-		joinURL = strings.Replace(joinURL, "{userId}", "new", -1)
+		signedCredentials, signErr := rt.cookieSigner.MaxAge(7*24*60*60).Encode("credentials", req.InviteeEmailAddress)
+		if signErr != nil {
+			rt.logError(signErr, "error signing token")
+			c.Status(http.StatusNoContent)
+			return
+		}
+		joinURL := strings.Replace(req.URLTemplate, "{token}", signedCredentials, -1)
 		emailBody, bodyErr = mailer.RenderMessage(
 			mailer.MessageNewUserInvite,
 			map[string]interface{}{"url": joinURL},

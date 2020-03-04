@@ -28,7 +28,7 @@ const Share = (props) => {
         invitee: invitee,
         emailAddress: emailAddress,
         password: formData.password,
-        urlTemplate: window.location.origin + '/join/{userId}/{token}/',
+        urlTemplate: window.location.origin + '/join/{token}/',
         accountId: accountId
       },
       __('An invite email has been sent.'),

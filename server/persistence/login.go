@@ -3,6 +3,7 @@ package persistence
 import (
 	"context"
 	"encoding/base64"
+	"errors"
 	"fmt"
 	"sync"
 
@@ -11,7 +12,7 @@ import (
 )
 
 func (p *persistenceLayer) Login(email, password string) (LoginResult, error) {
-	accountUser, err := p.findAccountUser(email, true, false)
+	accountUser, err := p.findAccountUser(email, true, true)
 	if err != nil {
 		return LoginResult{}, fmt.Errorf("persistence: error looking up account user: %w", err)
 	}
@@ -25,11 +26,34 @@ func (p *persistenceLayer) Login(email, password string) (LoginResult, error) {
 		return LoginResult{}, fmt.Errorf("persistence: error deriving key from password: %w", pwDerivedKeyErr)
 	}
 
+	// the account user logging in might have pending invitations which we can
+	// populate with proper password encrypted keys now
+	for idx, relationship := range accountUser.Relationships {
+		if relationship.PasswordEncryptedKeyEncryptionKey != "" {
+			continue
+		}
+		emailDerivedKey, emailDerivedKeyErr := keys.DeriveKey(email, accountUser.Salt)
+		if emailDerivedKeyErr != nil {
+			return LoginResult{}, fmt.Errorf("persistence: error deriving key from email: %w", emailDerivedKeyErr)
+		}
+		key, keyErr := keys.DecryptWith(emailDerivedKey, relationship.EmailEncryptedKeyEncryptionKey)
+		if keyErr != nil {
+			return LoginResult{}, fmt.Errorf("persistence: error decryption email encrypted key: %w", keyErr)
+		}
+		if err := relationship.addPasswordEncryptedKey(key, accountUser.Salt, password); err != nil {
+			return LoginResult{}, fmt.Errorf("persistence: error encrypting key for pending invitation: %w", err)
+		}
+		if err := p.dal.UpdateAccountUserRelationship(&relationship); err != nil {
+			return LoginResult{}, fmt.Errorf("persistence: error accepting pending invitation: %w", err)
+		}
+		accountUser.Relationships[idx] = relationship
+	}
+
 	var results []LoginAccountResult
 	for _, relationship := range accountUser.Relationships {
 		decryptedKey, decryptedKeyErr := keys.DecryptWith(pwDerivedKey, relationship.PasswordEncryptedKeyEncryptionKey)
 		if decryptedKeyErr != nil {
-			return LoginResult{}, fmt.Errorf("persistence: failed decrypting key encryption key for account %s: %w", relationship.AccountID, decryptedKeyErr)
+			return LoginResult{}, fmt.Errorf(`persistence: failed decrypting key encryption key for account "%s": %w`, relationship.AccountID, decryptedKeyErr)
 		}
 		k, kErr := jwk.New(decryptedKey)
 		if kErr != nil {
@@ -109,13 +133,6 @@ func (p *persistenceLayer) ChangePassword(userID, currentPassword, changedPasswo
 	}
 
 	for _, relationship := range accountUser.Relationships {
-		if relationship.PasswordEncryptedKeyEncryptionKey == "" {
-			if err := txn.DeleteAccountUserRelationships(DeleteAccountUserRelationshipQueryByRelationshipID(relationship.RelationshipID)); err != nil {
-				txn.Rollback()
-				return fmt.Errorf("persistence: error purging pending invitation: %w", err)
-			}
-			continue
-		}
 		decryptedKey, decryptErr := keys.DecryptWith(keyFromCurrentPassword, relationship.PasswordEncryptedKeyEncryptionKey)
 		if decryptErr != nil {
 			txn.Rollback()
@@ -147,13 +164,6 @@ func (p *persistenceLayer) ResetPassword(emailAddress, password string, oneTimeK
 		return fmt.Errorf("persistence: error creating transaction: %w", err)
 	}
 	for _, relationship := range accountUser.Relationships {
-		if relationship.PasswordEncryptedKeyEncryptionKey == "" {
-			if err := txn.DeleteAccountUserRelationships(DeleteAccountUserRelationshipQueryByRelationshipID(relationship.RelationshipID)); err != nil {
-				txn.Rollback()
-				return fmt.Errorf("persistence: error purging pending invitation: %w", err)
-			}
-			continue
-		}
 		keyEncryptionKey, decryptionErr := keys.DecryptWith(oneTimeKey, relationship.OneTimeEncryptedKeyEncryptionKey)
 		if decryptionErr != nil {
 			txn.Rollback()
@@ -186,29 +196,35 @@ func (p *persistenceLayer) ResetPassword(emailAddress, password string, oneTimeK
 	return nil
 }
 
-func (p *persistenceLayer) ChangeEmail(userID, emailAddress, password string) error {
-	accountUser, err := p.dal.FindAccountUser(
-		FindAccountUserQueryByAccountUserIDIncludeRelationships(userID),
-	)
+func (p *persistenceLayer) ChangeEmail(userID, newEmailAddress, currentEmailAddress, password string) error {
+	accountUser, err := p.findAccountUser(currentEmailAddress, true, true)
 	if err != nil {
 		return fmt.Errorf("persistence: error looking up account user: %w", err)
 	}
 
+	if accountUser.AccountUserID != userID {
+		return errors.New("persistence: current email did not match requester credentials")
+	}
+
 	if err := keys.CompareString(password, accountUser.HashedPassword); err != nil {
-		return fmt.Errorf("persistence: current password did not match: %w", err)
+		return fmt.Errorf("persistence: passwords did not match: %w", err)
 	}
 
-	existing, _ := p.findAccountUser(emailAddress, false, false)
+	if err := keys.CompareString(currentEmailAddress, accountUser.HashedEmail); err != nil {
+		return fmt.Errorf("persistence: current email did not match: %w", err)
+	}
+
+	existing, _ := p.findAccountUser(newEmailAddress, false, false)
 	if existing != nil && existing.AccountUserID != userID {
-		return fmt.Errorf("persistence: given email %s is already in use", emailAddress)
+		return fmt.Errorf("persistence: given email %s is already in use", newEmailAddress)
 	}
 
-	keyFromCurrentPassword, keyErr := keys.DeriveKey(password, accountUser.Salt)
+	keyFromCurrentEmail, keyErr := keys.DeriveKey(currentEmailAddress, accountUser.Salt)
 	if keyErr != nil {
-		return fmt.Errorf("persistence: error deriving key from password: %w", keyErr)
+		return fmt.Errorf("persistence: error deriving key from email: %w", keyErr)
 	}
 
-	hashedEmail, hashErr := keys.HashString(emailAddress)
+	hashedEmail, hashErr := keys.HashString(newEmailAddress)
 	if hashErr != nil {
 		return fmt.Errorf("persistence: error hashing updated email address: %w", hashErr)
 	}
@@ -218,24 +234,17 @@ func (p *persistenceLayer) ChangeEmail(userID, emailAddress, password string) er
 	if err != nil {
 		return fmt.Errorf("persistence: error creating transaction: %w", err)
 	}
-	if err := txn.UpdateAccountUser(&accountUser); err != nil {
+	if err := txn.UpdateAccountUser(accountUser); err != nil {
 		txn.Rollback()
 		return fmt.Errorf("persistence: error updating hashed email on account user: %w", err)
 	}
 	for _, relationship := range accountUser.Relationships {
-		if relationship.PasswordEncryptedKeyEncryptionKey == "" {
-			if err := txn.DeleteAccountUserRelationships(DeleteAccountUserRelationshipQueryByRelationshipID(relationship.RelationshipID)); err != nil {
-				txn.Rollback()
-				return fmt.Errorf("persistence: error purging pending invitation: %w", err)
-			}
-			continue
-		}
-		decryptedKey, decryptionErr := keys.DecryptWith(keyFromCurrentPassword, relationship.PasswordEncryptedKeyEncryptionKey)
+		decryptedKey, decryptionErr := keys.DecryptWith(keyFromCurrentEmail, relationship.EmailEncryptedKeyEncryptionKey)
 		if decryptionErr != nil {
 			txn.Rollback()
 			return decryptionErr
 		}
-		if err := relationship.addEmailEncryptedKey(decryptedKey, accountUser.Salt, emailAddress); err != nil {
+		if err := relationship.addEmailEncryptedKey(decryptedKey, accountUser.Salt, newEmailAddress); err != nil {
 			txn.Rollback()
 			return fmt.Errorf("persistence: error adding email key to relationship: %w", err)
 		}

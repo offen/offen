@@ -42,6 +42,10 @@ func (m *mockInviteUserDatabase) Transaction() (Transaction, error) {
 	return m, m.transactionErr
 }
 
+func (m *mockInviteUserDatabase) FindAccount(interface{}) (Account, error) {
+	return Account{Name: "account-name", AccountID: "account-id"}, nil
+}
+
 func TestPersistenceLayer_InviteUser(t *testing.T) {
 	tests := []struct {
 		name           string
@@ -153,7 +157,7 @@ func TestPersistenceLayer_InviteUser(t *testing.T) {
 			"account-id",
 			InviteUserResult{
 				UserExistsWithPassword: true,
-				AccountIDs:             []string{"account-id"},
+				AccountNames:           []string{"account-name"},
 			},
 			false,
 		},
@@ -189,7 +193,7 @@ func TestPersistenceLayer_InviteUser(t *testing.T) {
 			"account-id",
 			InviteUserResult{
 				UserExistsWithPassword: false,
-				AccountIDs:             []string{"account-id"},
+				AccountNames:           []string{"account-name"},
 			},
 			false,
 		},
@@ -354,7 +358,7 @@ func TestPersistenceLayer_Join(t *testing.T) {
 			true,
 		},
 		{
-			"ok - existing user",
+			"not ok - existing user",
 			&mockJoinDatabase{
 				findAccountUsersResult: []AccountUser{
 					(func() AccountUser {
@@ -377,7 +381,7 @@ func TestPersistenceLayer_Join(t *testing.T) {
 			},
 			"foo@bar.com",
 			"secret",
-			false,
+			true,
 		},
 		{
 			"ok - new user",

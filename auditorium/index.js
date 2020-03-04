@@ -84,8 +84,7 @@ const App = () => {
         <SetupView path='/setup/' />
         <ForgotPasswordView path='/forgot-password/' />
         <ResetPasswordView path='/reset-password/:token' />
-        <JoinView path='/join/new/:token' />
-        <JoinView path='/join/addition/:token' isAddition />
+        <JoinView path='/join/:token' />
         <NotFoundView default />
       </Router>
     </Provider>

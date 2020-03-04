@@ -18,7 +18,7 @@ func (r *relationalDAL) FindAccountUser(q interface{}) (persistence.AccountUser,
 	var accountUser AccountUser
 	switch query := q.(type) {
 	case persistence.FindAccountUserQueryByAccountUserIDIncludeRelationships:
-		if err := r.db.Preload("Relationships").Where("account_user_id = ?", string(query)).First(&accountUser).Error; err != nil {
+		if err := r.db.Preload("Relationships", "password_encrypted_key_encryption_key <> ?", "").Where("account_user_id = ?", string(query)).First(&accountUser).Error; err != nil {
 			return accountUser.export(), fmt.Errorf("relational: error looking up account user by user id: %w", err)
 		}
 		return accountUser.export(), nil
