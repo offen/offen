@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/gofrs/uuid"
+	"github.com/offen/offen/server/keys"
 )
 
 func (p *persistenceLayer) GetAccount(accountID string, includeEvents bool, eventsSince string) (AccountResult, error) {
@@ -142,6 +143,92 @@ func (p *persistenceLayer) AssociateUserSecret(accountID, userID, encryptedUserS
 		EncryptedSecret: encryptedUserSecret,
 	}); err != nil {
 		return fmt.Errorf("persistence: error creating user: %w", err)
+	}
+	return nil
+}
+
+func (p *persistenceLayer) CreateAccount(name, emailAddress, password string) error {
+	accountUsers, err := p.dal.FindAccountUsers(FindAccountUsersQueryAllAccountUsers{true, false})
+	if err != nil {
+		return fmt.Errorf("persistence: error looking up account users: %w", err)
+	}
+	match, err := selectAccountUser(accountUsers, emailAddress)
+	if err != nil {
+		return fmt.Errorf("persistence: error looking up account user %s: %w", emailAddress, err)
+	}
+
+	if err := keys.CompareString(password, match.HashedPassword); err != nil {
+		return fmt.Errorf("persistence: passwords did not match: %w", err)
+	}
+
+	allAccounts, allAccountsErr := p.dal.FindAccounts(FindAccountsQueryAllAccounts{})
+	if allAccountsErr != nil {
+		return fmt.Errorf("persistence: error looking up all existing accounts: %w", err)
+	}
+	for _, account := range allAccounts {
+		if account.Name == name {
+			return fmt.Errorf("persistence: account named %s already exists", name)
+		}
+	}
+
+	account, key, err := newAccount(name, "")
+	if err != nil {
+		return fmt.Errorf("persistence: error creating account: %w", err)
+	}
+	relationship, err := newAccountUserRelationship(match.AccountUserID, account.AccountID)
+	if err != nil {
+		return fmt.Errorf("persistence: error creating relationship: %w", err)
+	}
+	if err := relationship.addEmailEncryptedKey(key, match.Salt, emailAddress); err != nil {
+		return fmt.Errorf("persistence: error adding email encrypted key: %w", err)
+	}
+	if err := relationship.addPasswordEncryptedKey(key, match.Salt, password); err != nil {
+		return fmt.Errorf("persistence: error adding password encrypted key: %w", err)
+	}
+
+	txn, err := p.dal.Transaction()
+	if err != nil {
+		return fmt.Errorf("persistence: error creating transaction: %w", err)
+	}
+	if err := txn.CreateAccount(account); err != nil {
+		txn.Rollback()
+		return fmt.Errorf("persistence: error persisting account: %w", err)
+	}
+	if err := txn.CreateAccountUserRelationship(relationship); err != nil {
+		txn.Rollback()
+		return fmt.Errorf("persistence: error persisting relationship: %w", err)
+	}
+	if err := txn.Commit(); err != nil {
+		return fmt.Errorf("persistence: error committing transaction: %w", err)
+	}
+
+	return nil
+}
+
+func (p *persistenceLayer) RetireAccount(accountID string) error {
+	account, lookupErr := p.dal.FindAccount(FindAccountQueryByID(accountID))
+	if lookupErr != nil {
+		return fmt.Errorf("persistence: error looking up account to retire: %w", lookupErr)
+	}
+	if account.Retired {
+		return ErrUnknownAccount(fmt.Sprintf("persistence: account %s already retired", accountID))
+	}
+	txn, txnErr := p.dal.Transaction()
+	if txnErr != nil {
+		return fmt.Errorf("persistence: error creating transaction: %w", txnErr)
+	}
+	account.Retired = true
+	if err := txn.UpdateAccount(&account); err != nil {
+		txn.Rollback()
+		return fmt.Errorf("persistence: error retiring account %s: %w", accountID, err)
+	}
+	if err := txn.DeleteAccountUserRelationships(DeleteAccountUserRelationshipsQueryByAccountID(accountID)); err != nil {
+		txn.Rollback()
+		return fmt.Errorf("persistence: error deleting account user relationships for retired account %s: %w", accountID, err)
+	}
+	if err := txn.Commit(); err != nil {
+		txn.Rollback()
+		return fmt.Errorf("persistence: error committing account retiring: %w", err)
 	}
 	return nil
 }

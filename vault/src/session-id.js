@@ -1,5 +1,7 @@
 var uuid = require('uuid/v4')
 
+var cookies = require('./cookie-tools')
+
 module.exports = getSessionId
 
 function getSessionId (accountId) {
@@ -9,20 +11,8 @@ function getSessionId (accountId) {
   var sessionId
   try {
     var lookupKey = 'session-' + accountId
-    var matches = document.cookie.split(';')
-      .map(function (chunk) {
-        return chunk.trim().split('=')
-      })
-      .filter(function (pair) {
-        return pair[0] === lookupKey
-      })
-      .map(function (pair) {
-        return pair[1]
-      })
-    sessionId = matches.length
-      ? matches[0]
-      : null
-
+    var cookieData = cookies.parse(document.cookie)
+    sessionId = cookieData[lookupKey] || null
     if (!sessionId) {
       sessionId = uuid()
       document.cookie = [lookupKey, sessionId].join('=') + '; SameSite=Lax'

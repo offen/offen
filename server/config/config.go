@@ -5,18 +5,25 @@ import (
 	"fmt"
 	"os"
 	"path"
-	"reflect"
 	"runtime"
+	"time"
 
 	"github.com/joho/godotenv"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/offen/offen/server/keys"
 	"github.com/offen/offen/server/mailer"
 	"github.com/offen/offen/server/mailer/localmailer"
+	"github.com/offen/offen/server/mailer/sendmailmailer"
 	"github.com/offen/offen/server/mailer/smtpmailer"
 )
 
 const envFileName = "offen.env"
+
+var (
+	// EventRetention defines the duration for which events are expected to
+	//  be kept before expired.
+	EventRetention = time.Hour * 24 * 6 * 31
+)
 
 // ErrPopulatedMissing can be returned by New to signal that missing values
 // have been populated and persisted.
@@ -25,24 +32,22 @@ var ErrPopulatedMissing = errors.New("populated missing secrets")
 // Revision will be set by ldflags on build time
 var Revision string
 
-// IsDefaultDatabase checks whether the database connection string matches
-// the default value.
-func (c *Config) IsDefaultDatabase() bool {
-	field, _ := reflect.TypeOf(c.Database).FieldByName("ConnectionString")
-	return c.Database.ConnectionString.RawString() == field.Tag.Get("default")
-}
-
-// SMTPConfigured returns true if all required SMTP credentials are set
+// SMTPConfigured returns true if a SMTP Host is configured
 func (c *Config) SMTPConfigured() bool {
-	return c.SMTP.User != "" && c.SMTP.Host != "" && c.SMTP.Password != ""
+	return c.SMTP.Host != ""
 }
 
-// NewMailer returns the appropriate mailer to use with the given config.
+// NewMailer returns a new mailer that is suitable for the given config.
+// In development, mail content will be printed to stdout. In production,
+// SMTP is preferred and falls back to sendmail if no SMTP credentials are given.
 func (c *Config) NewMailer() mailer.Mailer {
-	if !c.SMTPConfigured() {
+	if c.App.Development {
 		return localmailer.New()
 	}
-	return smtpmailer.New(c.SMTP.Host, c.SMTP.User, c.SMTP.Password, c.SMTP.Port)
+	if c.SMTPConfigured() {
+		return smtpmailer.New(c.SMTP.Host, c.SMTP.User, c.SMTP.Password, c.SMTP.Port)
+	}
+	return sendmailmailer.New()
 }
 
 func walkConfigurationCascade() (string, error) {
@@ -131,12 +136,29 @@ func New(populateMissing bool, override string) (*Config, error) {
 		return &c, fmt.Errorf("config: error processing configuration: %w", err)
 	}
 
+	// some deploy targets have custom overrides for creating the
+	// runtime configuration
+	switch c.App.DeployTarget {
+	case DeployTargetHeroku:
+		if err := applyHerokuSpecificOverrides(&c); err != nil {
+			return &c, fmt.Errorf("config: error applying deploy target specific rules: %w", err)
+		}
+	}
+
+	if c.Secrets.CookieExchange.IsZero() {
+		cookieSecret, cookieSecretErr := keys.GenerateRandomBytes(keys.DefaultSecretLength)
+		if cookieSecretErr != nil {
+			return &c, fmt.Errorf("config: error creating cookie secret: %w", cookieSecretErr)
+		}
+		c.Secrets.CookieExchange = Bytes(cookieSecret)
+	}
+
 	if err != nil && populateMissing {
 		if envFile == "" {
 			return nil, errors.New("config: unable to find env file to persist settings as no env file could be found")
 		}
 		update := map[string]string{}
-		for _, key := range []string{"OFFEN_SECRETS_EMAILSALT", "OFFEN_SECRETS_COOKIEEXCHANGE"} {
+		for _, key := range []string{"OFFEN_SECRETS_COOKIEEXCHANGE"} {
 			secret, err := keys.GenerateRandomValue(keys.DefaultSecretLength)
 			update[key] = secret
 			if err != nil {

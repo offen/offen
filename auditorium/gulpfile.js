@@ -52,6 +52,7 @@ function makeScriptTask (dest, locale) {
         return transform
       })
     })
+      .transform('aliasify', { global: true })
 
     return b
       .exclude('plotly.js-basic-dist')

@@ -1,6 +1,8 @@
 var html = require('nanohtml')
 var raw = require('nanohtml/raw')
 
+var cookies = require('./cookie-tools')
+
 var ALLOW = 'allow'
 var DENY = 'deny'
 var COOKIE_NAME = 'consent'
@@ -108,7 +110,7 @@ function bannerView (consentGiven, collapsed, handleCollapse, handleAllow, handl
         ${raw(__('Thanks a lot for your help. To manage the usage data this website has collected from you, <a class="normal link underline dim dark-gray" target="_blank" rel="noopener" href="%s">open the Auditorium.</a>', '/auditorium/'))}
       </p>
       <div class="w-100 flex">
-        <button class="db w-40 center pointer tc dim bn ph3 pv2 dib br1 white bg-dark-gray" onclick="${handleClose}">
+        <button class="db w-40 center pointer tc dim bn ph3 pv2 dib br1 white bg-mid-gray" onclick="${handleClose}">
           ${__('Continue')}
         </button>
       </div>
@@ -133,13 +135,13 @@ function bannerView (consentGiven, collapsed, handleCollapse, handleAllow, handl
       ` : null}
       <div class="flex">
         <div class="w-50 mr2">
-          <button class="w-100 pointer tc dim bn ph3 pv2 dib br1 white bg-dark-gray" onclick=${handleAllow}>
-            ${__('Yes Please')}
+          <button class="w-100 pointer tc dim bn ph3 pv2 dib br1 white bg-mid-gray" onclick=${handleAllow}>
+            ${__('Yes please')}
           </button>
         </div>
         <div class="w-50 ml2">
-          <button class="w-100 pointer tc dim bn ph3 pv2 dib br1 white bg-dark-gray" onclick=${handleDeny}>
-            ${__('I Do Not Allow')}
+          <button class="w-100 pointer tc dim bn ph3 pv2 dib br1 white bg-mid-gray" onclick=${handleDeny}>
+            ${__('I do not allow')}
           </button>
         </div>
       </div>
@@ -259,24 +261,11 @@ function setConsentStatus (status) {
   var cookie = {
     consent: status,
     expires: expires.toUTCString(),
+    // it is important not to lock this cookie down to `/vault` as the
+    // server checks for it before accepting events
     path: '/',
     SameSite: isLocalhost ? 'Lax' : 'None',
     Secure: !isLocalhost
   }
-  document.cookie = serialize(cookie)
-}
-
-function serialize (obj) {
-  return Object.keys(obj)
-    .map(function (key) {
-      if (obj[key] === true) {
-        return key
-      }
-      if (obj[key] === false) {
-        return null
-      }
-      return [key, '=', obj[key]].join('')
-    })
-    .filter(Boolean)
-    .join(';')
+  document.cookie = cookies.serialize(cookie)
 }

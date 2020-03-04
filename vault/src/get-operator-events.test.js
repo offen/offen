@@ -78,9 +78,10 @@ describe('src/get-operator-events', function () {
         var getOperatorEvents = getOperatorEventsWith(mockQueries, mockApi)
         return getOperatorEvents(
           { accountId: 'account-a' },
-          { accounts: [
-            { accountId: 'account-a', keyEncryptionKey: keyEncryptionJWK }
-          ]
+          {
+            accounts: [
+              { accountId: 'account-a', keyEncryptionKey: keyEncryptionJWK }
+            ]
           }
         )
           .then(function (result) {
@@ -227,9 +228,10 @@ describe('src/get-operator-events', function () {
         var getOperatorEvents = getOperatorEventsWith(mockQueries, mockApi)
         return getOperatorEvents(
           { accountId: 'account-a' },
-          { accounts: [
-            { accountId: 'account-a', keyEncryptionKey: keyEncryptionJWK }
-          ]
+          {
+            accounts: [
+              { accountId: 'account-a', keyEncryptionKey: keyEncryptionJWK }
+            ]
           }
         )
           .then(function (result) {

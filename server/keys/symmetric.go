@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"crypto/aes"
 	"crypto/cipher"
-	"crypto/sha256"
+	"crypto/rand"
 	"encoding/base64"
 	"errors"
 	"fmt"
@@ -12,14 +12,15 @@ import (
 	"golang.org/x/crypto/argon2"
 )
 
-// GenerateEncryptionKey generates a slice of bytes of the given size that is
+// GenerateRandomBytes generates a slice of bytes of the given size that is
 // supposed to be used as a symmetric key.
-func GenerateEncryptionKey(size int) ([]byte, error) {
-	key, err := randomBytes(size)
+func GenerateRandomBytes(size int) ([]byte, error) {
+	b := make([]byte, size)
+	_, err := rand.Read(b)
 	if err != nil {
-		return nil, fmt.Errorf("keys: error generating encryption key: %v", err)
+		return nil, fmt.Errorf("keys: error reading random bytes: %w", err)
 	}
-	return key, nil
+	return b, nil
 }
 
 const (
@@ -33,19 +34,19 @@ const (
 func EncryptWith(key, value []byte) (*VersionedCipher, error) {
 	block, err := aes.NewCipher(key)
 	if err != nil {
-		return nil, fmt.Errorf("keys: error generating block from key: %v", err)
+		return nil, fmt.Errorf("keys: error generating block from key: %w", err)
 	}
 
 	aesgcm, err := cipher.NewGCM(block)
 	if err != nil {
-		return nil, fmt.Errorf("keys: error creating GCM from block: %v", err)
+		return nil, fmt.Errorf("keys: error creating GCM from block: %w", err)
 	}
 
 	// Never use more than 2^32 random nonces with a given key because of the
 	// risk of a repeat.
-	nonce, nonceErr := randomBytes(aesgcm.NonceSize())
+	nonce, nonceErr := GenerateRandomBytes(aesgcm.NonceSize())
 	if nonceErr != nil {
-		return nil, fmt.Errorf("keys: error generating nonce for encryption: %v", nonceErr)
+		return nil, fmt.Errorf("keys: error generating nonce for encryption: %w", nonceErr)
 	}
 	ciphertext := aesgcm.Seal(nil, nonce, value, nil)
 	return newVersionedCipher(ciphertext, aesGCMAlgo).addNonce(nonce), nil
@@ -75,8 +76,7 @@ func DeriveKey(value, encodedSalt string) ([]byte, error) {
 	if saltErr != nil {
 		return nil, fmt.Errorf("keys: error decoding salt into bytes: %w", saltErr)
 	}
-
-	key := argon2.Key([]byte(value), salt, 1, 64*1024, 4, DefaultEncryptionKeySize)
+	key := defaultArgon2Hash([]byte(value), salt, DefaultEncryptionKeySize)
 	return key, nil
 }
 
@@ -84,26 +84,31 @@ const (
 	passwordAlgoArgon2 = 1
 )
 
-// HashPassword hashed the given password using argon2
-func HashPassword(pw string) (*VersionedCipher, error) {
-	salt, saltErr := randomBytes(DefaultSecretLength)
+// HashString hashed the given string using argon2
+func HashString(pw string) (*VersionedCipher, error) {
+	if pw == "" {
+		return nil, errors.New("keys: cannot hash an empty string")
+	}
+	salt, saltErr := GenerateRandomBytes(DefaultSecretLength)
 	if saltErr != nil {
 		return nil, fmt.Errorf("keys: error generating random salt for password hash: %w", saltErr)
 	}
-
-	hash := argon2.Key([]byte(pw), salt, 1, 64*1024, 4, DefaultPasswordHashSize)
+	hash := defaultArgon2Hash([]byte(pw), salt, DefaultPasswordHashSize)
 	return newVersionedCipher(hash, passwordAlgoArgon2).addNonce(salt), nil
 }
 
-// ComparePassword compares a password with a stored hash
-func ComparePassword(password, cipher string) error {
+// CompareString compares a string with a stored hash
+func CompareString(password, cipher string) error {
+	if cipher == "" {
+		return errors.New("keys: cannot compare against an empty cipher")
+	}
 	v, err := unmarshalVersionedCipher(cipher)
 	if err != nil {
 		return fmt.Errorf("keys: error parsing versioned cipher: %w", err)
 	}
 	switch v.algoVersion {
 	case passwordAlgoArgon2:
-		hash := argon2.Key([]byte(password), v.nonce, 1, 64*1024, 4, DefaultPasswordHashSize)
+		hash := defaultArgon2Hash([]byte(password), v.nonce, DefaultPasswordHashSize)
 		if bytes.Compare(hash, v.cipher) != 0 {
 			return errors.New("keys: could not match passwords")
 		}
@@ -113,9 +118,6 @@ func ComparePassword(password, cipher string) error {
 	}
 }
 
-// HashEmail hashed the given string value using the given salt. It is not
-// intended to be used with passwords as it is supposed to be a cheap operation.
-func HashEmail(email string, salt []byte) (string, error) {
-	result := sha256.Sum256(append([]byte(email), salt...))
-	return base64.StdEncoding.EncodeToString(result[:]), nil
+func defaultArgon2Hash(val, salt []byte, size uint32) []byte {
+	return argon2.IDKey(val, salt, 1, 64*1024, 4, size)
 }

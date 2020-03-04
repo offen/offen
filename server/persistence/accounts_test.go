@@ -221,3 +221,79 @@ func TestPersistenceLayer_AssociateUserSecret(t *testing.T) {
 		})
 	}
 }
+
+type mockRetireAccountDatabase struct {
+	DataAccessLayer
+	updateErr         error
+	deleteErr         error
+	txnErr            error
+	findAccountResult Account
+	findAccountErr    error
+}
+
+func (m *mockRetireAccountDatabase) UpdateAccount(*Account) error {
+	return m.updateErr
+}
+
+func (m *mockRetireAccountDatabase) DeleteAccountUserRelationships(interface{}) error {
+	return m.deleteErr
+}
+func (m *mockRetireAccountDatabase) FindAccount(interface{}) (Account, error) {
+	return m.findAccountResult, m.findAccountErr
+}
+
+func (m *mockRetireAccountDatabase) Commit() error {
+	return nil
+}
+
+func (m *mockRetireAccountDatabase) Rollback() error {
+	return nil
+}
+
+func (m *mockRetireAccountDatabase) Transaction() (Transaction, error) {
+	return m, m.txnErr
+}
+
+func TestPersistenceLayer_RetireAccount(t *testing.T) {
+	tests := []struct {
+		name        string
+		db          *mockRetireAccountDatabase
+		expectError bool
+	}{
+		{
+			"update error",
+			&mockRetireAccountDatabase{
+				updateErr: errors.New("did not work"),
+			},
+			true,
+		},
+		{
+			"delete error",
+			&mockRetireAccountDatabase{
+				deleteErr: errors.New("did not work"),
+			},
+			true,
+		},
+		{
+			"transaction error",
+			&mockRetireAccountDatabase{
+				txnErr: errors.New("did not work"),
+			},
+			true,
+		},
+		{
+			"ok",
+			&mockRetireAccountDatabase{},
+			false,
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			p := persistenceLayer{test.db}
+			err := p.RetireAccount("account-a")
+			if test.expectError != (err != nil) {
+				t.Errorf("Unexpected error value: %v", err)
+			}
+		})
+	}
+}

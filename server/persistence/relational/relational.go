@@ -34,17 +34,32 @@ func (r *relationalDAL) Transaction() (persistence.Transaction, error) {
 	return &transaction{&dal}, nil
 }
 
+var knownTables = []interface{}{
+	&Event{},
+	&Account{},
+	&Secret{},
+	&AccountUser{},
+	&AccountUserRelationship{},
+}
+
+func (r *relationalDAL) ProbeEmpty() bool {
+	for _, table := range knownTables {
+		var count int
+		if err := r.db.Model(table).Count(&count).Error; err != nil {
+			return false
+		}
+		if count != 0 {
+			return false
+		}
+	}
+	return true
+}
+
 func (r *relationalDAL) ApplyMigrations() error {
 	m := gormigrate.New(r.db, gormigrate.DefaultOptions, []*gormigrate.Migration{})
 
 	m.InitSchema(func(db *gorm.DB) error {
-		return db.AutoMigrate(
-			&Event{},
-			&Account{},
-			&Secret{},
-			&AccountUser{},
-			&AccountUserRelationship{},
-		).Error
+		return db.AutoMigrate(knownTables...).Error
 	})
 
 	return m.Migrate()

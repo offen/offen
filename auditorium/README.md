@@ -1,8 +1,9 @@
 # auditorium
 
-The `auditorium` is the application supplied to users to view and manage their data. The application is currently built using [choo][] and [tachyons][].
+The `auditorium` is the application supplied to users to view and manage their data. The application is currently built using [preact][], [redux][] and [tachyons][].
 
-[choo]: https://github.com/choojs/choo
+[preact]: https://preactjs.com/
+[redux]: https://redux.js.org/
 [tachyons]: https://tachyons.io/
 
 ---

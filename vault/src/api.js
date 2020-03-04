@@ -1,3 +1,4 @@
+var path = require('path')
 var handleFetchResponse = require('offen/fetch-response')
 
 exports.getAccount = getAccountWith(window.location.origin + '/api/accounts')
@@ -142,6 +143,20 @@ function loginWith (loginUrl) {
   }
 }
 
+exports.logout = logoutWith(window.location.origin + '/api/logout')
+exports.logoutWith = logoutWith
+
+function logoutWith (logoutUrl) {
+  return function () {
+    return window
+      .fetch(logoutUrl, {
+        method: 'POST',
+        credentials: 'include'
+      })
+      .then(handleFetchResponse)
+  }
+}
+
 exports.changePassword = changePasswordWith(window.location.origin + '/api/change-password')
 exports.changePasswordWith = changePasswordWith
 
@@ -225,6 +240,115 @@ function purgeWith (purgeUrl) {
     return window
       .fetch(url, {
         method: 'POST',
+        credentials: 'include'
+      })
+      .then(handleFetchResponse)
+  }
+}
+
+exports.inviteUser = inviteUserWith(window.location.origin + '/api/invite')
+exports.inviteUserWith = inviteUserWith
+
+function inviteUserWith (inviteUrl) {
+  return function (invitee, emailAddress, password, urlTemplate, accountId) {
+    var url = new window.URL(inviteUrl)
+    if (accountId) {
+      url.pathname = path.join(url.pathname, accountId)
+    }
+    return window
+      .fetch(url, {
+        method: 'POST',
+        credentials: 'include',
+        body: JSON.stringify({
+          invitee: invitee,
+          emailAddress: emailAddress,
+          password: password,
+          urlTemplate: urlTemplate
+        })
+      })
+      .then(handleFetchResponse)
+  }
+}
+
+exports.join = joinWith(window.location.origin + '/api/join')
+exports.joinWith = joinWith
+
+function joinWith (joinUrl) {
+  return function (emailAddress, password, token) {
+    return window
+      .fetch(joinUrl, {
+        method: 'POST',
+        credentials: 'include',
+        body: JSON.stringify({
+          emailAddress: emailAddress,
+          password: password,
+          token: token
+        })
+      })
+      .then(handleFetchResponse)
+  }
+}
+
+exports.createAccount = createAccountWith(window.location.origin + '/api/accounts')
+exports.createAccountWith = createAccountWith
+
+function createAccountWith (createUrl) {
+  return function (accountName, emailAddress, password) {
+    return window
+      .fetch(createUrl, {
+        method: 'POST',
+        credentials: 'include',
+        body: JSON.stringify({
+          accountName: accountName,
+          emailAddress: emailAddress,
+          password: password
+        })
+      })
+      .then(handleFetchResponse)
+  }
+}
+
+exports.retireAccount = retireAccountWith(window.location.origin + '/api/accounts')
+exports.retireAccountWith = retireAccountWith
+
+function retireAccountWith (deleteUrl) {
+  return function (accountId) {
+    return window
+      .fetch(deleteUrl + '/' + accountId, {
+        method: 'DELETE',
+        credentials: 'include'
+      })
+      .then(handleFetchResponse)
+  }
+}
+
+exports.setup = setupWith(window.location.origin + '/api/setup')
+exports.setupWith = setupWith
+
+function setupWith (setupUrl) {
+  return function (accountName, emailAddress, password) {
+    return window
+      .fetch(setupUrl, {
+        method: 'POST',
+        credentials: 'include',
+        body: JSON.stringify({
+          accountName: accountName,
+          emailAddress: emailAddress,
+          password: password
+        })
+      })
+      .then(handleFetchResponse)
+  }
+}
+
+exports.setupStatus = setupStatusWith(window.location.origin + '/api/setup')
+exports.setupStatusWith = setupStatusWith
+
+function setupStatusWith (setupUrl) {
+  return function (accountName, emailAddress, password) {
+    return window
+      .fetch(setupUrl, {
+        method: 'GET',
         credentials: 'include'
       })
       .then(handleFetchResponse)

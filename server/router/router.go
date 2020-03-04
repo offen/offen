@@ -11,6 +11,7 @@ import (
 	"github.com/gin-contrib/location"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/securecookie"
+	"github.com/microcosm-cc/bluemonday"
 	"github.com/offen/offen/server/config"
 	"github.com/offen/offen/server/mailer"
 	"github.com/offen/offen/server/persistence"
@@ -25,6 +26,7 @@ type router struct {
 	cookieSigner *securecookie.SecureCookie
 	template     *template.Template
 	config       *config.Config
+	sanitizer    *bluemonday.Policy
 }
 
 func (rt *router) logError(err error, message string) {
@@ -56,10 +58,10 @@ func (rt *router) userCookie(userID string, secure bool) *http.Cookie {
 		HttpOnly: true,
 		Secure:   secure,
 		SameSite: sameSite,
-		Path:     "/",
+		Path:     "/api",
 	}
 	if userID != "" {
-		c.Expires = time.Now().Add(rt.config.App.EventRetentionPeriod)
+		c.Expires = time.Now().Add(config.EventRetention)
 	}
 	return c
 }
@@ -70,6 +72,7 @@ func (rt *router) authCookie(userID string, secure bool) (*http.Cookie, error) {
 		HttpOnly: true,
 		SameSite: http.SameSiteLaxMode,
 		Secure:   secure,
+		Path:     "/api",
 	}
 	if userID == "" {
 		c.Expires = time.Unix(0, 0)
@@ -123,6 +126,13 @@ func WithFS(fs http.FileSystem) Config {
 	}
 }
 
+// WithMailer attaches a mailer for sending transactional email
+func WithMailer(m mailer.Mailer) Config {
+	return func(r *router) {
+		r.mailer = m
+	}
+}
+
 // New creates a new application router that reads and writes data
 // to the given database implementation. In the context of the application
 // this expects to be the only top level router in charge of handling all
@@ -133,8 +143,8 @@ func New(opts ...Config) http.Handler {
 		opt(&rt)
 	}
 
+	rt.sanitizer = bluemonday.StrictPolicy()
 	rt.cookieSigner = securecookie.New(rt.config.Secrets.CookieExchange.Bytes(), nil)
-	rt.mailer = rt.config.NewMailer()
 
 	optin := optinMiddleware(optinKey, optinValue)
 	userCookie := userCookieMiddleware(cookieKey, contextKeyCookie)
@@ -176,6 +186,8 @@ func New(opts ...Config) http.Handler {
 		api.POST("/exchange", rt.postUserSecret)
 
 		api.GET("/accounts/:accountID", accountAuth, rt.getAccount)
+		api.DELETE("/accounts/:accountID", accountAuth, rt.deleteAccount)
+		api.POST("/accounts", accountAuth, rt.postAccount)
 
 		api.POST("/deleted/user", userCookie, rt.getDeletedEvents)
 		api.POST("/deleted", rt.getDeletedEvents)
@@ -183,11 +195,17 @@ func New(opts ...Config) http.Handler {
 
 		api.GET("/login", accountAuth, rt.getLogin)
 		api.POST("/login", rt.postLogin)
+		api.POST("/logout", rt.postLogout)
 
 		api.POST("/change-password", accountAuth, rt.postChangePassword)
 		api.POST("/change-email", accountAuth, rt.postChangeEmail)
 		api.POST("/forgot-password", rt.postForgotPassword)
 		api.POST("/reset-password", rt.postResetPassword)
+		api.POST("/invite/:accountID", accountAuth, rt.postInviteUser)
+		api.POST("/invite", accountAuth, rt.postInviteUser)
+		api.POST("/join", rt.postJoin)
+		api.GET("/setup", rt.getSetup)
+		api.POST("/setup", rt.postSetup)
 
 		api.GET("/events", userCookie, rt.getEvents)
 		api.POST("/events/anonymous", rt.postEvents)

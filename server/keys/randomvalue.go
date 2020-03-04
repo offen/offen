@@ -1,9 +1,7 @@
 package keys
 
 import (
-	"crypto/rand"
 	"encoding/base64"
-	"fmt"
 )
 
 // StringEncoder can encode a byte slice into a printable string.
@@ -11,17 +9,8 @@ type StringEncoder interface {
 	EncodeToString([]byte) string
 }
 
-func randomBytes(length int) ([]byte, error) {
-	b := make([]byte, length)
-	_, err := rand.Read(b)
-	if err != nil {
-		return nil, fmt.Errorf("keys: error reading random bytes: %w", err)
-	}
-	return b, nil
-}
-
 func randomBytesWithEncoding(length int, e StringEncoder) (string, error) {
-	b, err := randomBytes(length)
+	b, err := GenerateRandomBytes(length)
 	if err != nil {
 		return "", err
 	}

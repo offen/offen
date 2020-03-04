@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bufio"
 	"context"
 	"encoding/base64"
 	"errors"
@@ -17,8 +16,8 @@ import (
 	"time"
 
 	uuid "github.com/gofrs/uuid"
-	"github.com/jasonlvhit/gocron"
 	"github.com/jinzhu/gorm"
+	"github.com/microcosm-cc/bluemonday"
 	"github.com/offen/offen/server/config"
 	"github.com/offen/offen/server/keys"
 	"github.com/offen/offen/server/locales"
@@ -29,6 +28,7 @@ import (
 	"github.com/phayes/freeport"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/acme/autocert"
+	"golang.org/x/crypto/ssh/terminal"
 	yaml "gopkg.in/yaml.v2"
 )
 
@@ -82,7 +82,6 @@ func main() {
 		cfg.Database.Dialect = config.Dialect("sqlite3")
 		cfg.Database.ConnectionString = ":memory:"
 		cfg.Secrets.CookieExchange = mustSecret(16)
-		cfg.Secrets.EmailSalt = mustSecret(16)
 
 		if *port == 0 {
 			freePort, portErr := freeport.GetFreePort()
@@ -107,7 +106,6 @@ func main() {
 
 		db, err := persistence.New(
 			relational.NewRelationalDAL(gormDB),
-			persistence.WithEmailSalt(cfg.Secrets.EmailSalt.Bytes()),
 		)
 		if err != nil {
 			logger.WithError(err).Fatal("Unable to create persistence layer")
@@ -123,7 +121,7 @@ func main() {
 			AccountUsers: []persistence.BootstrapAccountUser{
 				{Email: "demo@offen.dev", Password: "demo", Accounts: []string{cfg.App.RootAccount}},
 			},
-		}, cfg.Secrets.EmailSalt.Bytes()); err != nil {
+		}); err != nil {
 			logger.WithError(err).Fatal("Error bootstrapping database")
 		}
 
@@ -147,6 +145,7 @@ func main() {
 				router.WithTemplate(tpl),
 				router.WithConfig(cfg),
 				router.WithFS(fs),
+				router.WithMailer(cfg.NewMailer()),
 			),
 		}
 		go func() {
@@ -185,7 +184,6 @@ func main() {
 
 		db, err := persistence.New(
 			relational.NewRelationalDAL(gormDB),
-			persistence.WithEmailSalt(cfg.Secrets.EmailSalt.Bytes()),
 		)
 		if err != nil {
 			logger.WithError(err).Fatal("Unable to create persistence layer")
@@ -217,6 +215,7 @@ func main() {
 				router.WithTemplate(tpl),
 				router.WithConfig(cfg),
 				router.WithFS(fs),
+				router.WithMailer(cfg.NewMailer()),
 			),
 		}
 		go func() {
@@ -225,10 +224,10 @@ func main() {
 				if err != nil && err != http.ErrServerClosed {
 					logger.WithError(err).Fatal("Error binding server to network")
 				}
-			} else if cfg.Server.AutoTLS != "" {
+			} else if len(cfg.Server.AutoTLS) != 0 {
 				m := autocert.Manager{
 					Prompt:     autocert.AcceptTOS,
-					HostPolicy: autocert.HostWhitelist(cfg.Server.AutoTLS),
+					HostPolicy: autocert.HostWhitelist(cfg.Server.AutoTLS...),
 					Cache:      autocert.DirCache(cfg.Server.CertificateCache),
 				}
 				go http.ListenAndServe(":http", m.HTTPHandler(nil))
@@ -241,26 +240,30 @@ func main() {
 				}
 			}
 		}()
-		if cfg.Server.AutoTLS != "" {
+		if len(cfg.Server.AutoTLS) != 0 {
 			logger.Info("Server now listening on port 80 and 443 using AutoTLS")
 		} else {
 			logger.Infof("Server now listening on port %d", cfg.Server.Port)
 		}
 
 		if cfg.App.SingleNode {
-			scheduler := gocron.NewScheduler()
-			scheduler.Every(1).Hours().Do(func() {
-				affected, err := db.Expire(cfg.App.EventRetentionPeriod)
-				if err != nil {
-					logger.WithError(err).Errorf("Error pruning expired events")
-					return
-				}
-				logger.WithField("removed", affected).Info("Cron successfully pruned expired events")
-			})
+			hourlyJob := time.Tick(time.Hour)
+			runOnInit := make(chan bool)
 			go func() {
-				scheduler.RunAll()
-				scheduler.Start()
+				for {
+					select {
+					case <-hourlyJob:
+					case <-runOnInit:
+					}
+					affected, err := db.Expire(config.EventRetention)
+					if err != nil {
+						logger.WithError(err).Errorf("Error pruning expired events")
+						return
+					}
+					logger.WithField("removed", affected).Info("Cron successfully pruned expired events")
+				}
 			}()
+			runOnInit <- true
 		}
 
 		quit := make(chan os.Signal)
@@ -276,35 +279,34 @@ func main() {
 		logger.Info("Gracefully shut down server")
 	case "setup":
 		var (
-			accountID         = setupCmd.String("forceid", "", "force usage of given valid UUID as account ID")
-			accountName       = setupCmd.String("name", "", "the account name")
-			email             = setupCmd.String("email", "", "the email address used for login")
-			password          = setupCmd.String("password", "", "the password used for login")
-			passwordFromStdin = setupCmd.Bool("stdin-password", false, "read password from stdin")
-			source            = setupCmd.String("source", "", "a configuration file")
-			envFile           = setupCmd.String("envfile", "", "the env file to use")
-			populateMissing   = setupCmd.Bool("populate", false, "in case required secrets are missing from the configuration, create and persist them in the target env file")
+			accountID       = setupCmd.String("forceid", "", "force usage of given valid UUID as account ID")
+			accountName     = setupCmd.String("name", "", "the account name")
+			email           = setupCmd.String("email", "", "the email address used for login")
+			password        = setupCmd.String("password", "", "the password used for login")
+			source          = setupCmd.String("source", "", "a configuration file")
+			envFile         = setupCmd.String("envfile", "", "the env file to use")
+			force           = setupCmd.Bool("force", false, "allow setup to delete existing data")
+			populateMissing = setupCmd.Bool("populate", false, "in case required secrets are missing from the configuration, create and persist them in the target env file")
 		)
 		setupCmd.Parse(flags)
+		sanitizer := bluemonday.StrictPolicy()
 
 		pw := *password
-		if *passwordFromStdin {
-			sc := bufio.NewScanner(os.Stdin)
+		if *source == "" && pw == "" {
 			received := make(chan bool, 2)
 			go func() {
 				select {
 				case <-received:
 					return
 				case <-time.Tick(time.Second / 10):
-					logger.Info("You can now enter your password (this will be displayed in clear text):")
+					logger.Info("You can now enter your password (input is not displayed):")
 				}
 			}()
-			for sc.Scan() {
-				received <- true
-				close(received)
-				pw = sc.Text()
-				break
+			input, inputErr := terminal.ReadPassword(int(os.Stdin.Fd()))
+			if inputErr != nil {
+				logger.WithError(inputErr).Fatal("Error reading password")
 			}
+			pw = string(input)
 		}
 
 		cfg := mustConfig(*populateMissing, *envFile)
@@ -318,11 +320,16 @@ func main() {
 			if err := yaml.Unmarshal(read, &conf); err != nil {
 				logger.WithError(err).Fatalf("Error parsing content of given source file %s", *source)
 			}
+			for idx, account := range conf.Accounts {
+				conf.Accounts[idx].Name = sanitizer.Sanitize(account.Name)
+			}
 		} else {
-			if *email == "" || pw == "" || *accountName == "" {
+			sanitizedAccountName := sanitizer.Sanitize(*accountName)
+			if *email == "" || pw == "" || sanitizedAccountName == "" {
 				logger.Fatal("Missing required parameters to create initial account, use the -help flag for reference on parameters")
 			}
 			logger.Infof("Using command line arguments to create seed account user and account")
+
 			if *accountID == "" {
 				if cfg.App.RootAccount != "" {
 					// in case configuration knows about a root id, bootstrap
@@ -336,7 +343,7 @@ func main() {
 					*accountID = randomID.String()
 				}
 			} else {
-				logger.Warnf("Using -forceid to set the ID of account %s to %s", *accountName, *accountID)
+				logger.Warnf("Using -forceid to set the ID of account %s to %s", sanitizedAccountName, *accountID)
 				logger.Warn("If this is not intentional, please run this command again without forcing an ID")
 			}
 
@@ -350,9 +357,10 @@ func main() {
 			)
 			conf.Accounts = append(
 				conf.Accounts,
-				persistence.BootstrapAccount{Name: *accountName, AccountID: *accountID},
+				persistence.BootstrapAccount{Name: sanitizedAccountName, AccountID: *accountID},
 			)
 		}
+		conf.Force = *force
 
 		gormDB, dbErr := gorm.Open(cfg.Database.Dialect.String(), cfg.Database.ConnectionString.String())
 		gormDB.LogMode(cfg.App.Development)
@@ -370,7 +378,7 @@ func main() {
 			logger.WithError(err).Fatal("Error applying database migrations")
 		}
 
-		if err := db.Bootstrap(conf, cfg.Secrets.EmailSalt.Bytes()); err != nil {
+		if err := db.Bootstrap(conf); err != nil {
 			logger.WithError(err).Fatal("Error bootstrapping database")
 		}
 		if *source == "" {
@@ -417,8 +425,11 @@ func main() {
 		db, err := persistence.New(
 			relational.NewRelationalDAL(gormDB),
 		)
+		if err != nil {
+			logger.WithError(err).Fatalf("Error setting up database")
+		}
 
-		affected, err := db.Expire(cfg.App.EventRetentionPeriod)
+		affected, err := db.Expire(config.EventRetention)
 		if err != nil {
 			logger.WithError(err).Fatalf("Error pruning expired events")
 		}

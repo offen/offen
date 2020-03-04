@@ -133,6 +133,28 @@ function handlePurgeWith (api, queries, getUserEvents, getOperatorEvents) {
   }
 }
 
+exports.handleLogout = handleLogoutWith(api)
+exports.handleLogoutWith = handleLogoutWith
+
+function handleLogoutWith (api) {
+  return function () {
+    return api.logout()
+      .then(function () {
+        return {
+          type: 'LOGOUT_SUCCESS',
+          payload: null
+        }
+      }, function (err) {
+        return {
+          type: 'LOGOUT_FAILURE',
+          payload: {
+            message: err.message
+          }
+        }
+      })
+  }
+}
+
 exports.handleLogin = handleLoginWith(api, getFromSessionStorage, setInSessionStorage)
 exports.handleLoginWith = handleLoginWith
 
@@ -159,7 +181,8 @@ function handleLoginWith (api, get, set) {
             }
             return storedResponse
           })
-      }).then(function (response) {
+      })
+      .then(function (response) {
         return {
           type: 'LOGIN_SUCCESS',
           payload: response
@@ -216,6 +239,72 @@ function handleResetPasswordWith (api) {
   return proxyThunk(function (payload) {
     return api.resetPassword(payload.emailAddress, payload.password, payload.token)
   })
+}
+
+exports.handleInviteUser = handleInviteUserWith(api)
+exports.handleInviteUserWith = handleInviteUserWith
+
+function handleInviteUserWith (api) {
+  return proxyThunk(function (payload) {
+    return api.inviteUser(payload.invitee, payload.emailAddress, payload.password, payload.urlTemplate, payload.accountId)
+  })
+}
+
+exports.handleJoin = handleJoinWith(api)
+exports.handleJoinWith = handleJoinWith
+
+function handleJoinWith (api) {
+  return proxyThunk(function (payload) {
+    return api.join(payload.emailAddress, payload.password, payload.token)
+  })
+}
+
+exports.handleCreateAccount = handleCreateAccountWith(api)
+exports.handleCreateAccountWith = handleCreateAccountWith
+
+function handleCreateAccountWith (api) {
+  return proxyThunk(function (payload) {
+    return api.createAccount(payload.accountName, payload.emailAddress, payload.password)
+  })
+}
+
+exports.handleRetireAccount = handleRetireAccountWith(api)
+exports.handleRetireAccountWith = handleRetireAccountWith
+
+function handleRetireAccountWith (api) {
+  return proxyThunk(function (payload) {
+    return api.retireAccount(payload.accountId)
+  })
+}
+
+exports.handleSetup = handleSetupWith(api)
+exports.handleSetupWith = handleSetupWith
+
+function handleSetupWith (api) {
+  return proxyThunk(function (payload) {
+    return api.setup(payload.accountName, payload.emailAddress, payload.password)
+  })
+}
+
+exports.handleSetupStatus = handleSetupStatusWith(api)
+exports.handleSetupStatusWith = handleSetupStatusWith
+
+function handleSetupStatusWith (api) {
+  return function () {
+    return api.setupStatus()
+      .then(function () {
+        return {
+          type: 'SETUP_STATUS_EMPTY',
+          payload: null
+        }
+      })
+      .catch(function () {
+        return {
+          type: 'SETUP_STATUS_HASDATA',
+          payload: null
+        }
+      })
+  }
 }
 
 // proxyThunk can be used to create a handler that simply calls through

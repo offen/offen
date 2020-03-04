@@ -32,9 +32,16 @@ register('CONSENT_STATUS', middleware.sameOrigin, callHandler(handler.handleCons
 register('EXPRESS_CONSENT', middleware.sameOrigin, callHandler(handler.handleExpressConsent))
 register('PURGE', middleware.sameOrigin, callHandler(handler.handlePurge))
 register('LOGIN', middleware.sameOrigin, callHandler(handler.handleLogin))
+register('LOGOUT', middleware.sameOrigin, callHandler(handler.handleLogout))
 register('CHANGE_CREDENTIALS', middleware.sameOrigin, callHandler(handler.handleChangeCredentials))
 register('FORGOT_PASSWORD', middleware.sameOrigin, callHandler(handler.handleForgotPassword))
 register('RESET_PASSWORD', middleware.sameOrigin, callHandler(handler.handleResetPassword))
+register('INVITE_USER', middleware.sameOrigin, callHandler(handler.handleInviteUser))
+register('JOIN', middleware.sameOrigin, callHandler(handler.handleJoin))
+register('CREATE_ACCOUNT', middleware.sameOrigin, callHandler(handler.handleCreateAccount))
+register('RETIRE_ACCOUNT', middleware.sameOrigin, callHandler(handler.handleRetireAccount))
+register('SETUP_STATUS', middleware.sameOrigin, callHandler(handler.handleSetupStatus))
+register('SETUP', middleware.sameOrigin, callHandler(handler.handleSetup))
 
 module.exports = register
 

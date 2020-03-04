@@ -11,17 +11,21 @@ type DataAccessLayer interface {
 	FindSecret(interface{}) (Secret, error)
 	DeleteSecret(interface{}) error
 	CreateAccount(*Account) error
+	UpdateAccount(*Account) error
 	FindAccount(interface{}) (Account, error)
 	FindAccounts(interface{}) ([]Account, error)
 	CreateAccountUser(*AccountUser) error
 	FindAccountUser(interface{}) (AccountUser, error)
+	FindAccountUsers(interface{}) ([]AccountUser, error)
 	UpdateAccountUser(*AccountUser) error
 	CreateAccountUserRelationship(*AccountUserRelationship) error
 	UpdateAccountUserRelationship(*AccountUserRelationship) error
 	FindAccountUserRelationships(interface{}) ([]AccountUserRelationship, error)
+	DeleteAccountUserRelationships(interface{}) error
 	Transaction() (Transaction, error)
 	ApplyMigrations() error
 	DropAll() error
+	ProbeEmpty() bool
 	Ping() error
 }
 
@@ -80,14 +84,6 @@ type FindAccountQueryIncludeEvents struct {
 // FindAccountsQueryAllAccounts requests all known accounts to be returned.
 type FindAccountsQueryAllAccounts struct{}
 
-// FindAccountUserQueryByHashedEmail requests the account user with the given
-// hashed email.
-type FindAccountUserQueryByHashedEmail string
-
-// FindAccountUserQueryByHashedEmailIncludeRelationships requests the account user with the given
-// hashed email and all of its relationships.
-type FindAccountUserQueryByHashedEmailIncludeRelationships string
-
 // FindAccountUserQueryByAccountUserIDIncludeRelationships requests the account user of
 // the given id and all of its relationships.
 type FindAccountUserQueryByAccountUserIDIncludeRelationships string
@@ -95,6 +91,23 @@ type FindAccountUserQueryByAccountUserIDIncludeRelationships string
 // FindAccountUserRelationshipsQueryByAccountUserID requests all relationships for the user
 // with the given account user ID.
 type FindAccountUserRelationshipsQueryByAccountUserID string
+
+// DeleteAccountUserRelationshipsQueryByAccountID requests deletion of all relationships
+// with the given account id.
+type DeleteAccountUserRelationshipsQueryByAccountID string
+
+// DeleteAccountUserRelationshipQueryByRelationshipID requests deletion of all relationships
+// with the given relationship id.
+type DeleteAccountUserRelationshipQueryByRelationshipID string
+
+// FindAccountUsersQueryAllAccountUsers requests all account users.
+type FindAccountUsersQueryAllAccountUsers struct {
+	IncludeRelationships bool
+	IncludeInvitations   bool
+}
+
+// RetireAccountQueryByID requests the account of the given id to be retired.
+type RetireAccountQueryByID string
 
 // Transaction is a data access layer that does not persist data until commit
 // is called. In case rollback is called before, the underlying database will

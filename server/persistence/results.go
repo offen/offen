@@ -41,6 +41,12 @@ type LoginResult struct {
 	Accounts      []LoginAccountResult `json:"accounts"`
 }
 
+// InviteUserResult is a successful invitation of a user
+type InviteUserResult struct {
+	UserExistsWithPassword bool
+	AccountIDs             []string
+}
+
 // CanAccessAccount checks whether the login result is allowed to access the
 // account of the given identifier.
 func (l *LoginResult) CanAccessAccount(accountID string) bool {

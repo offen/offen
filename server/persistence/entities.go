@@ -8,6 +8,7 @@ import (
 	"time"
 
 	jwk "github.com/lestrrat-go/jwx/jwk"
+	"github.com/offen/offen/server/keys"
 )
 
 // Event is any analytics event that will be stored in the database. It is
@@ -48,6 +49,41 @@ type AccountUserRelationship struct {
 	PasswordEncryptedKeyEncryptionKey string
 	EmailEncryptedKeyEncryptionKey    string
 	OneTimeEncryptedKeyEncryptionKey  string
+}
+
+func (a *AccountUserRelationship) addOneTimeEncryptedKey(encryptionKey, oneTimeKey []byte) error {
+	oneTimeEncryptedKey, encryptErr := keys.EncryptWith(oneTimeKey, encryptionKey)
+	if encryptErr != nil {
+		return fmt.Errorf("persistence: error adding one time key to relationship %w", encryptErr)
+	}
+	a.OneTimeEncryptedKeyEncryptionKey = oneTimeEncryptedKey.Marshal()
+	return nil
+}
+
+func (a *AccountUserRelationship) addEmailEncryptedKey(encryptionKey []byte, salt, emailAddress string) error {
+	emailDerivedKey, deriveErr := keys.DeriveKey(emailAddress, salt)
+	if deriveErr != nil {
+		return fmt.Errorf("persistence: error deriving key from email: %w", deriveErr)
+	}
+	emailEncryptedKey, encryptErr := keys.EncryptWith(emailDerivedKey, encryptionKey)
+	if encryptErr != nil {
+		return fmt.Errorf("persistence: error encrypting email derived key: %w", encryptErr)
+	}
+	a.EmailEncryptedKeyEncryptionKey = emailEncryptedKey.Marshal()
+	return nil
+}
+
+func (a *AccountUserRelationship) addPasswordEncryptedKey(encryptionKey []byte, salt, password string) error {
+	passwordDerivedKey, deriveErr := keys.DeriveKey(password, salt)
+	if deriveErr != nil {
+		return fmt.Errorf("persistence: error deriving key from password: %w", deriveErr)
+	}
+	passwordEncryptedKey, encryptErr := keys.EncryptWith(passwordDerivedKey, encryptionKey)
+	if encryptErr != nil {
+		return fmt.Errorf("persistence: error encrypting key with password derived key: %w", encryptErr)
+	}
+	a.PasswordEncryptedKeyEncryptionKey = passwordEncryptedKey.Marshal()
+	return nil
 }
 
 // Account stores information about an account.

@@ -10,7 +10,15 @@ import (
 func (r *relationalDAL) CreateAccount(a *persistence.Account) error {
 	local := importAccount(a)
 	if err := r.db.Create(&local).Error; err != nil {
-		return fmt.Errorf("relational: error creating account")
+		return fmt.Errorf("relational: error creating account: %w", err)
+	}
+	return nil
+}
+
+func (r *relationalDAL) UpdateAccount(a *persistence.Account) error {
+	local := importAccount(a)
+	if err := r.db.Save(&local).Error; err != nil {
+		return fmt.Errorf("relational: error saving account: %w", err)
 	}
 	return nil
 }

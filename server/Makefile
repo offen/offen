@@ -8,7 +8,7 @@ install:
 	@go mod download
 
 setup:
-	@go run cmd/offen/main.go setup -source bootstrap.yml
+	@go run cmd/offen/main.go setup -force -source bootstrap.yml
 	@echo ""
 	@echo "You can now log into the development backend using the following credentials:"
 	@echo ""

@@ -11,6 +11,8 @@ type Service interface {
 	Insert(userID, accountID, payload string) error
 	Query(Query) (map[string][]EventResult, error)
 	GetAccount(accountID string, events bool, eventsSince string) (AccountResult, error)
+	CreateAccount(name, creatorEmailAddress, creatorPassword string) error
+	RetireAccount(accountID string) error
 	GetDeletedEvents(ids []string, userID string) ([]string, error)
 	AssociateUserSecret(accountID, userID, encryptedUserSecret string) error
 	Purge(userID string) error
@@ -20,15 +22,17 @@ type Service interface {
 	ChangeEmail(userID, emailAddress, password string) error
 	GenerateOneTimeKey(emailAddress string) ([]byte, error)
 	ResetPassword(emailAddress, password string, oneTimeKey []byte) error
+	InviteUser(inviteeEmailAddress, providerEmailAddress, providerPassword, accountID string) (InviteUserResult, error)
+	Join(emailAddress, password string) error
 	Expire(retention time.Duration) (int, error)
-	Bootstrap(data BootstrapConfig, salt []byte) error
+	Bootstrap(data BootstrapConfig) error
+	ProbeEmpty() bool
 	CheckHealth() error
 	Migrate() error
 }
 
 type persistenceLayer struct {
-	dal       DataAccessLayer
-	emailSalt []byte
+	dal DataAccessLayer
 }
 
 // New creates a persistence service that connects to any database using
@@ -43,10 +47,3 @@ func New(dal DataAccessLayer, configs ...Config) (Service, error) {
 
 // Config is a function that adds a configuration option to the constructor
 type Config func(*persistenceLayer)
-
-// WithEmailSalt sets the salt value that is used for hashing email addresses
-func WithEmailSalt(b []byte) Config {
-	return func(r *persistenceLayer) {
-		r.emailSalt = b
-	}
-}
