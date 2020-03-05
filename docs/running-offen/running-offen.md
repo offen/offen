@@ -35,6 +35,6 @@ You can do the same using our official Docker image:
 docker run --rm -it -p 9876:9876 offen/offen:latest demo -port 9876
 ```
 
-Head to `http://localhost:9876` and start your testing.
+Head to `http://localhost:9876` and start your testing. You can log in using the account `demo@offen.dev` and password `demo`.
 
 
