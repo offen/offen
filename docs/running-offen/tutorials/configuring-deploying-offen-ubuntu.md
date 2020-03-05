@@ -139,7 +139,6 @@ Now that we have defined the database location, Offen lets you setup a new insta
 sudo offen setup \
   -email me@mysite.com \ # the email used for login
   -name mysite \ # your account name, this will not be displayed to users
-  -stdin-password \ # this will prompt for you password
   -populate # this will automatically create required secrets for you
 ```
 

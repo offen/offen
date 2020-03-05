@@ -41,23 +41,15 @@ Usage of setup:
         in case required secrets are missing from the configuration, create and persist them in the target env file
   -source string
         the configuration file
-  -stdin-password
-        read password from stdin
 ```
 
 In case the current runtime configuration is missing required secrets, you can use the `-populate` flag and the command will generate the missing values and store them on the system so that they get picked up when the application is run the next time.
 
-If you do not want to supply your root account's password in plaintext, you can use `-stdin-password` and either pipe your password:
-
-```sh
-cat pass.txt | ./offen setup -stdin-password ...
-```
-
-or have the command prompt for it:
+If you do not want to supply your root account's password in plaintext, omit the `-password` flag and the command will prompt for it before creating anything:
 
 ```
-$ ./offen setup -email you@domain.com -name test -stdin-password
-INFO[0000] You can now enter your password:  
+$ ./offen setup -email you@domain.com -name test
+INFO[0000] You can now enter your password (input is not displayed):
 ```
 
 ### `offen secret`
