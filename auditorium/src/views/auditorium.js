@@ -105,6 +105,8 @@ const AuditoriumView = (props) => {
                 <AccountPicker
                   accounts={authenticatedUser.accounts}
                   selectedId={accountId}
+                  range={range}
+                  resolution={resolution}
                 />
               </div>
               {!model.empty
@@ -133,7 +135,8 @@ const AuditoriumView = (props) => {
       <div class='flex flex-column flex-row-l'>
         <div class='w-100 flex bt ba-ns b--black-10 br0 br2-ns mb2-ns'>
           <RangeSelector
-            matches={matches}
+            resolution={resolution}
+            range={range}
           />
         </div>
       </div>
