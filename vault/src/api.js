@@ -214,13 +214,14 @@ exports.changeEmail = changeEmailWith(window.location.origin + '/api/change-emai
 exports.changeEmailWith = changeEmailWith
 
 function changeEmailWith (loginUrl) {
-  return function (emailAddress, password) {
+  return function (emailAddress, emailCurrent, password) {
     return window
       .fetch(loginUrl, {
         method: 'POST',
         credentials: 'include',
         body: JSON.stringify({
           emailAddress: emailAddress,
+          emailCurrent: emailCurrent,
           password: password
         })
       })

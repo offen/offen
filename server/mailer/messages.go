@@ -27,11 +27,11 @@ missed this deadline, request a new invite.
 var MessageExistingUserInvite MessageTemplate = `
 Hi!
 
-You have been added to {{ .count }} new accounts in Offen.
-To accept this invite, visit the following link:
+You have been added to the following new accounts in Offen:
 
-{{ .url }}
+{{ range .accountNames }}
+- {{ . }}
+{{ end }}
 
-The link is valid for 7 days after this email has been sent. In case you have
-missed this deadline, request a new invite.
+You automatically gain access to these accounts the next time you log in.
 `

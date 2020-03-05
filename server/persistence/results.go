@@ -35,16 +35,16 @@ type AccountResult struct {
 	Created             time.Time             `json:"created,omitempty"`
 }
 
+// InviteUserResult is a successful invitation of a user
+type InviteUserResult struct {
+	UserExistsWithPassword bool
+	AccountNames           []string
+}
+
 // LoginResult is a successful account user authentication response.
 type LoginResult struct {
 	AccountUserID string               `json:"accountUserId"`
 	Accounts      []LoginAccountResult `json:"accounts"`
-}
-
-// InviteUserResult is a successful invitation of a user
-type InviteUserResult struct {
-	UserExistsWithPassword bool
-	AccountIDs             []string
 }
 
 // CanAccessAccount checks whether the login result is allowed to access the

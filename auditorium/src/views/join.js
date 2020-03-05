@@ -10,13 +10,12 @@ const useAutofocus = require('./components/_shared/use-autofocus')
 
 const JoinView = (props) => {
   const autofocusRef = useAutofocus()
-  const { isAddition, handleJoin, handleValidationError, token } = props
+  const { handleJoin, handleValidationError, token } = props
   return (
     <div class='w-100 mt4 mb2 br0 br2-ns'>
       <Form
         onJoin={handleJoin}
         onValidationError={handleValidationError}
-        isAddition={isAddition}
         ref={autofocusRef}
         token={token}
       />

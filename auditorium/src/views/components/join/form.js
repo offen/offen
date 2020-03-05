@@ -8,12 +8,11 @@ const SubmitButton = require('./../_shared/submit-button')
 
 const Form = forwardRef((props, ref) => {
   const [isDisabled, setIsDisabled] = useState(false)
-  const isAddition = props.isAddition
 
   function handleSubmit (e) {
     e.preventDefault()
     var formData = new window.FormData(e.currentTarget)
-    if (!isAddition && formData.get('password') !== formData.get('repeat-password')) {
+    if (formData.get('password') !== formData.get('repeat-password')) {
       return props.onValidationError(new Error(__('Passwords did not match')))
     }
     setIsDisabled(true)
@@ -23,9 +22,7 @@ const Form = forwardRef((props, ref) => {
         password: formData.get('password'),
         token: formData.get('token')
       },
-      isAddition
-        ? __('Log in again to access all accounts.')
-        : __('Your account has been set up, you can now log in.'),
+      __('Your account has been set up, you can now log in.'),
       __('Could not handle your request, please try again.')
     )
       .then(() => setIsDisabled(false))
@@ -33,7 +30,7 @@ const Form = forwardRef((props, ref) => {
   return (
     <div class='pa3 bg-black-05'>
       <h4 class='f4 normal mt0 mb3'>
-        {isAddition ? __('Accept invite') : __('Join Offen')}
+        {__('Join Offen')}
       </h4>
       <form class='mw6 center' onsubmit={handleSubmit}>
         <LabeledInput
@@ -52,16 +49,14 @@ const Form = forwardRef((props, ref) => {
         >
           {__('Password')}
         </LabeledInput>
-        {!isAddition ? (
-          <LabeledInput
-            name='repeat-password'
-            type='password'
-            required
-            disabled={isDisabled}
-          >
-            {__('Repeat password')}
-          </LabeledInput>
-        ) : null}
+        <LabeledInput
+          name='repeat-password'
+          type='password'
+          required
+          disabled={isDisabled}
+        >
+          {__('Repeat password')}
+        </LabeledInput>
         <SubmitButton disabled={isDisabled}>
           {__('Accept invite')}
         </SubmitButton>

@@ -214,9 +214,9 @@ function handleChangeCredentialsWith (api) {
       doRequest = function () {
         return api.changePassword(payload.currentPassword, payload.changedPassword)
       }
-    } else if (payload.emailAddress && payload.password) {
+    } else if (payload.emailCurrent && payload.emailAddress && payload.password) {
       doRequest = function () {
-        return api.changeEmail(payload.emailAddress, payload.password)
+        return api.changeEmail(payload.emailAddress, payload.emailCurrent, payload.password)
       }
     }
     return doRequest()
