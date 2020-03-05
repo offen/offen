@@ -181,11 +181,15 @@ jobs:
 
   build:
     docker:
-      - image: circleci/golang:1.13
+      - image: circleci/python:3.7
     working_directory: ~/offen
     steps:
       - checkout
       - setup_remote_docker
+      - run:
+          name: Install deployment dependencies
+          command: |
+            sudo pip install -q awscli --upgrade
       - run:
           name: Build application Docker image and binary
           command: |
@@ -209,9 +213,9 @@ jobs:
 
             mkdir -p /tmp/artifacts
             cd ./bin && md5sum * > checksums.txt && cp ~/offen/LICENSE . && cp ~/offen/README.md . && tar -czvf /tmp/artifacts/offen-$DOCKER_IMAGE_TAG.tar.gz $(ls -A)
+            aws s3 cp /tmp/artifacts/offen-$DOCKER_IMAGE_TAG.tar.gz s3://offen/binaries/offen-$DOCKER_IMAGE_TAG.tar.gz
 
             echo "$DOCKER_ACCESSTOKEN" | docker login --username $DOCKER_USER --password-stdin
-
             docker push offen/offen:$DOCKER_IMAGE_TAG
       - store_artifacts:
           path: /tmp/artifacts
