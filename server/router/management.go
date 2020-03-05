@@ -11,15 +11,15 @@ import (
 	"github.com/offen/offen/server/persistence"
 )
 
-type inviteUserRequest struct {
+type shareAccountRequest struct {
 	InviteeEmailAddress  string `json:"invitee"`
 	ProviderEmailAddress string `json:"emailAddress"`
 	ProviderPassword     string `json:"password"`
 	URLTemplate          string `json:"urlTemplate"`
 }
 
-func (rt *router) postInviteUser(c *gin.Context) {
-	var req inviteUserRequest
+func (rt *router) postShareAccount(c *gin.Context) {
+	var req shareAccountRequest
 	if err := c.BindJSON(&req); err != nil {
 		newJSONError(
 			fmt.Errorf("router: error decoding response body: %w", err),
@@ -68,7 +68,7 @@ func (rt *router) postInviteUser(c *gin.Context) {
 		return
 	}
 
-	result, err := rt.db.InviteUser(req.InviteeEmailAddress, req.ProviderEmailAddress, req.ProviderPassword, c.Param("accountID"))
+	result, err := rt.db.ShareAccount(req.InviteeEmailAddress, req.ProviderEmailAddress, req.ProviderPassword, c.Param("accountID"))
 	if err != nil {
 		newJSONError(
 			fmt.Errorf("router: error inviting user: %w", err),

@@ -28,7 +28,7 @@ const management = require('./../action-creators/management')
 
 const AuditoriumView = (props) => {
   const { matches, authenticatedUser, model, isOperator, consentStatus, stale } = props
-  const { handlePurge, handleQuery, expressConsent, getConsentStatus, handleInvite, handleValidationError, handleRetire } = props
+  const { handlePurge, handleQuery, expressConsent, getConsentStatus, handleShare, handleValidationError, handleRetire } = props
   const { accountId, range, resolution } = matches
   const [focus, setFocus] = useState(true)
 
@@ -186,7 +186,7 @@ const AuditoriumView = (props) => {
                 <Share
                   key={`share-${accountId}`}
                   onValidationError={handleValidationError}
-                  onShare={handleInvite}
+                  onShare={handleShare}
                   accountName={model.account.name}
                   accountId={accountId}
                 />
@@ -226,7 +226,7 @@ const mapDispatchToProps = {
   getConsentStatus: consent.get,
   expressConsent: consent.express,
   handleValidationError: errors.formValidation,
-  handleInvite: management.inviteUser,
+  handleShare: management.shareAccount,
   handleRetire: management.retireAccount
 }
 

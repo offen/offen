@@ -241,12 +241,12 @@ function handleResetPasswordWith (api) {
   })
 }
 
-exports.handleInviteUser = handleInviteUserWith(api)
-exports.handleInviteUserWith = handleInviteUserWith
+exports.handleShareAccount = handleShareAccountWith(api)
+exports.handleShareAccountWith = handleShareAccountWith
 
-function handleInviteUserWith (api) {
+function handleShareAccountWith (api) {
   return proxyThunk(function (payload) {
-    return api.inviteUser(payload.invitee, payload.emailAddress, payload.password, payload.urlTemplate, payload.accountId)
+    return api.shareAccount(payload.invitee, payload.emailAddress, payload.password, payload.urlTemplate, payload.accountId)
   })
 }
 

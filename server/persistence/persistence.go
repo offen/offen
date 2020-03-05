@@ -22,7 +22,7 @@ type Service interface {
 	ChangeEmail(userID, emailAddress, emailCurrent, password string) error
 	GenerateOneTimeKey(emailAddress string) ([]byte, error)
 	ResetPassword(emailAddress, password string, oneTimeKey []byte) error
-	InviteUser(inviteeEmailAddress, providerEmailAddress, providerPassword, accountID string) (InviteUserResult, error)
+	ShareAccount(inviteeEmailAddress, providerEmailAddress, providerPassword, accountID string) (ShareAccountResult, error)
 	Join(emailAddress, password string) error
 	Expire(retention time.Duration) (int, error)
 	Bootstrap(data BootstrapConfig) error

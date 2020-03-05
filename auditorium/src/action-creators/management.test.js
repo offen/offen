@@ -6,30 +6,30 @@ const thunk = require('redux-thunk').default
 const management = require('./management')
 
 describe('src/action-creators/management.js', function () {
-  describe('inviteUser(payload, onSuccessMessage, onFailureMessage)', function () {
+  describe('shareAccount(payload, onSuccessMessage, onFailureMessage)', function () {
     it('handles successful responses', function () {
       const mockPostMessage = sinon.stub()
-      mockPostMessage.resolves({ type: 'INVITE_USER_SUCCESS', payload: null })
+      mockPostMessage.resolves({ type: 'SHARE_ACCOUNT_SUCCESS', payload: null })
       const mockStore = configureMockStore([thunk.withExtraArgument(mockPostMessage)])
       const store = mockStore({})
-      return store.dispatch(management.inviteUser('user-data', 'on-success', 'on-failure'))
+      return store.dispatch(management.shareAccount('user-data', 'on-success', 'on-failure'))
         .then(function () {
           const actions = store.getActions()
           assert.strictEqual(actions.length, 2)
 
           assert(mockPostMessage.calledOnce)
           assert(mockPostMessage.calledWith({
-            type: 'INVITE_USER',
+            type: 'SHARE_ACCOUNT',
             payload: 'user-data'
           }))
 
           assert.deepStrictEqual(actions[0], {
-            type: 'INVITE_USER_REQUEST',
+            type: 'SHARE_ACCOUNT_REQUEST',
             payload: null
           })
 
           assert.deepStrictEqual(actions[1], {
-            type: 'INVITE_USER_SUCCESS',
+            type: 'SHARE_ACCOUNT_SUCCESS',
             payload: {
               flash: 'on-success'
             }
@@ -39,27 +39,27 @@ describe('src/action-creators/management.js', function () {
 
     it('handles unsuccessful responses', function () {
       const mockPostMessage = sinon.stub()
-      mockPostMessage.resolves({ type: 'INVITE_USER_FAILURE', payload: null })
+      mockPostMessage.resolves({ type: 'SHARE_ACCOUNT_FAILURE', payload: null })
       const mockStore = configureMockStore([thunk.withExtraArgument(mockPostMessage)])
       const store = mockStore({})
-      return store.dispatch(management.inviteUser('user-data', 'on-success', 'on-failure'))
+      return store.dispatch(management.shareAccount('user-data', 'on-success', 'on-failure'))
         .then(function () {
           const actions = store.getActions()
           assert.strictEqual(actions.length, 2)
 
           assert(mockPostMessage.calledOnce)
           assert(mockPostMessage.calledWith({
-            type: 'INVITE_USER',
+            type: 'SHARE_ACCOUNT',
             payload: 'user-data'
           }))
 
           assert.deepStrictEqual(actions[0], {
-            type: 'INVITE_USER_REQUEST',
+            type: 'SHARE_ACCOUNT_REQUEST',
             payload: null
           })
 
           assert.deepStrictEqual(actions[1], {
-            type: 'INVITE_USER_FAILURE',
+            type: 'SHARE_ACCOUNT_FAILURE',
             payload: {
               flash: 'on-failure'
             }
@@ -73,19 +73,19 @@ describe('src/action-creators/management.js', function () {
       const mockStore = configureMockStore([thunk.withExtraArgument(mockPostMessage)])
       const store = mockStore({})
 
-      return store.dispatch(management.inviteUser('user-data', 'on-success', 'on-failure'))
+      return store.dispatch(management.shareAccount('user-data', 'on-success', 'on-failure'))
         .then(function () {
           const actions = store.getActions()
           assert.strictEqual(actions.length, 2)
 
           assert(mockPostMessage.calledOnce)
           assert(mockPostMessage.calledWith({
-            type: 'INVITE_USER',
+            type: 'SHARE_ACCOUNT',
             payload: 'user-data'
           }))
 
           assert.deepStrictEqual(actions[0], {
-            type: 'INVITE_USER_REQUEST',
+            type: 'SHARE_ACCOUNT_REQUEST',
             payload: null
           })
 
@@ -99,19 +99,19 @@ describe('src/action-creators/management.js', function () {
       const mockStore = configureMockStore([thunk.withExtraArgument(mockPostMessage)])
       const store = mockStore({})
 
-      return store.dispatch(management.inviteUser('user-data', 'on-success', 'on-failure'))
+      return store.dispatch(management.shareAccount('user-data', 'on-success', 'on-failure'))
         .then(function () {
           const actions = store.getActions()
           assert.strictEqual(actions.length, 2)
 
           assert(mockPostMessage.calledOnce)
           assert(mockPostMessage.calledWith({
-            type: 'INVITE_USER',
+            type: 'SHARE_ACCOUNT',
             payload: 'user-data'
           }))
 
           assert.deepStrictEqual(actions[0], {
-            type: 'INVITE_USER_REQUEST',
+            type: 'SHARE_ACCOUNT_REQUEST',
             payload: null
           })
 

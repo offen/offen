@@ -31,7 +31,7 @@ const ConsoleView = (props) => {
         ? (
           <div class='w-100 br0 br2-ns mb2'>
             <ShareAccounts
-              onShare={props.handleInvite}
+              onShare={props.handleShare}
               onValidationError={props.handleValidationError}
             />
           </div>
@@ -69,7 +69,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
   handleChangeEmail: authentication.changeCredentials,
   handleChangePassword: authentication.changeCredentials,
-  handleInvite: management.inviteUser,
+  handleShare: management.handleShare,
   handleLogout: authentication.logout,
   handleCreateAccount: management.createAccount,
   handleValidationError: errors.formValidation
