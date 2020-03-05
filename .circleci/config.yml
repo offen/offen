@@ -190,12 +190,12 @@ jobs:
           name: Build application Docker image and binary
           command: |
             if [ -z "$CIRCLE_TAG" ]; then
-              if [ "${CIRCLE_BRANCH}" == "master" ]; then
-                echo "Skipping build for master with no tags."
-                exit 0
-              fi
               export OFFEN_GIT_REVISION=$(git rev-parse --short HEAD)
-              export DOCKER_IMAGE_TAG="latest"
+              if [ "${CIRCLE_BRANCH}" == "master" ]; then
+                export DOCKER_IMAGE_TAG="stable"
+              else
+                export DOCKER_IMAGE_TAG="latest"
+              fi
             else
               export OFFEN_GIT_REVISION=$CIRCLE_TAG
               export DOCKER_IMAGE_TAG=$CIRCLE_TAG
@@ -212,10 +212,6 @@ jobs:
 
             echo "$DOCKER_ACCESSTOKEN" | docker login --username $DOCKER_USER --password-stdin
 
-            if [ ! -z "$CIRCLE_TAG" ] && [ "${CIRCLE_BRANCH}" == "master" ]; then
-              docker tag offen/offen:$DOCKER_IMAGE_TAG offen/offen:stable
-              docker push offen/offen:stable
-            fi
             docker push offen/offen:$DOCKER_IMAGE_TAG
       - store_artifacts:
           path: /tmp/artifacts
@@ -250,4 +246,6 @@ workflows:
             tags:
               only: /^v.*/ # tagged release from master branch
             branches:
-              only: development # "latest" release from development branch
+              only:
+                - development
+                - master
