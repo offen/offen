@@ -35,8 +35,8 @@ type AccountResult struct {
 	Created             time.Time             `json:"created,omitempty"`
 }
 
-// InviteUserResult is a successful invitation of a user
-type InviteUserResult struct {
+// ShareAccountResult is a successful invitation of a user
+type ShareAccountResult struct {
 	UserExistsWithPassword bool
 	AccountNames           []string
 }

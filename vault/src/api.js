@@ -247,10 +247,10 @@ function purgeWith (purgeUrl) {
   }
 }
 
-exports.inviteUser = inviteUserWith(window.location.origin + '/api/invite')
-exports.inviteUserWith = inviteUserWith
+exports.shareAccount = shareAccountWith(window.location.origin + '/api/share-account')
+exports.shareAccountWith = shareAccountWith
 
-function inviteUserWith (inviteUrl) {
+function shareAccountWith (inviteUrl) {
   return function (invitee, emailAddress, password, urlTemplate, accountId) {
     var url = new window.URL(inviteUrl)
     if (accountId) {

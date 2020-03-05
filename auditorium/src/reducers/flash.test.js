@@ -27,9 +27,9 @@ describe('src/reducers/flash.js', function () {
       assert.strictEqual(next, 'msg')
     })
 
-    it('handles INVITE_USER_SUCCESS', function () {
+    it('handles SHARE_ACCOUNT_SUCCESS', function () {
       const next = flash(null, {
-        type: 'INVITE_USER_SUCCESS',
+        type: 'SHARE_ACCOUNT_SUCCESS',
         payload: {
           flash: 'msg'
         }
@@ -37,9 +37,9 @@ describe('src/reducers/flash.js', function () {
       assert.strictEqual(next, 'msg')
     })
 
-    it('handles INVITE_USER_FAILURE', function () {
+    it('handles SHARE_ACCOUNT_FAILURE', function () {
       const next = flash(null, {
-        type: 'INVITE_USER_FAILURE',
+        type: 'SHARE_ACCOUNT_FAILURE',
         payload: {
           flash: 'msg'
         }

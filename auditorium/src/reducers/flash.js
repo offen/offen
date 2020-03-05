@@ -1,8 +1,8 @@
 module.exports = (state = null, action) => {
   switch (action.type) {
     case 'AUTHENTICATION_FAILURE':
-    case 'INVITE_USER_SUCCESS':
-    case 'INVITE_USER_FAILURE':
+    case 'SHARE_ACCOUNT_SUCCESS':
+    case 'SHARE_ACCOUNT_FAILURE':
     case 'JOIN_SUCCESS':
     case 'JOIN_FAILURE':
     case 'CREATE_ACCOUNT_SUCCESS':

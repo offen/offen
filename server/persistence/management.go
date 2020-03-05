@@ -6,8 +6,8 @@ import (
 	"github.com/offen/offen/server/keys"
 )
 
-func (p *persistenceLayer) InviteUser(inviteeEmailAddress, providerEmailAddress, providerPassword, accountID string) (InviteUserResult, error) {
-	var result InviteUserResult
+func (p *persistenceLayer) ShareAccount(inviteeEmailAddress, providerEmailAddress, providerPassword, accountID string) (ShareAccountResult, error) {
+	var result ShareAccountResult
 	var invitedAccountUser *AccountUser
 
 	accountUsers, err := p.dal.FindAccountUsers(FindAccountUsersQueryAllAccountUsers{true, false})
