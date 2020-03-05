@@ -6,7 +6,11 @@ const classnames = require('classnames')
 const Collapsible = require('./../_shared/collapsible')
 
 const EmbedCode = (props) => {
-  const { model, collapsible } = props
+  const { model, collapsible, onCopy } = props
+
+  function handleCopy () {
+    onCopy(__('Successfully copied embed code to clipboard.'))
+  }
 
   const renderHeader = (props = {}) => {
     const { handleToggle = null, isCollapsed } = props
@@ -39,6 +43,7 @@ const EmbedCode = (props) => {
         />
       </div>
       <CopyToClipboard
+        onCopy={handleCopy}
         text={
          `<script async src="${window.location.origin}/script.js" data-account-id="${model.account.accountId}"></script>`
         }

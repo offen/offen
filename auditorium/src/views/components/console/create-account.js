@@ -16,7 +16,7 @@ const CreateAccount = (props) => {
         emailAddress: formData['email-address'],
         password: formData.password
       },
-      __('Log in again to use the newly created account.'),
+      __('Log in again to use the newly created account <strong>"%s"</strong>.', formData['account-name']),
       __('There was an error creating the account, please try again.')
     )
       .then(() => {

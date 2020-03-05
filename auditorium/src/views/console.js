@@ -69,7 +69,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
   handleChangeEmail: authentication.changeCredentials,
   handleChangePassword: authentication.changeCredentials,
-  handleShare: management.handleShare,
+  handleShare: management.shareAccount,
   handleLogout: authentication.logout,
   handleCreateAccount: management.createAccount,
   handleValidationError: errors.formValidation
