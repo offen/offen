@@ -5,7 +5,6 @@
 
 /** @jsx h */
 const { h } = require('preact')
-const _ = require('underscore')
 
 const RangeSelector = (props) => {
   const { resolution, range: currentRange } = props
@@ -20,7 +19,7 @@ const RangeSelector = (props) => {
 
   const items = ranges.map(function (range, index) {
     let url = window.location.pathname
-    const activeRange = _.isEqual({ range: currentRange, resolution }, range.query || {})
+    const activeRange = JSON.stringify({ range: currentRange, resolution }) === JSON.stringify(range.query || {})
     if (range.query) {
       url += '?' + new window.URLSearchParams(range.query)
     }
