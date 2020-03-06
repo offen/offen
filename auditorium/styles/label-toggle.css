@@ -1,3 +1,8 @@
+/**
+ * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 .label-toggle::after {
   border-style: solid;
   border-width: 0.15em 0.15em 0 0;

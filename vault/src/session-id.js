@@ -1,3 +1,8 @@
+/**
+ * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 var uuid = require('uuid/v4')
 
 var cookies = require('./cookie-tools')

@@ -1,3 +1,8 @@
+/**
+ * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 var assert = require('assert')
 var subDays = require('date-fns/sub_days')
 var Unibabel = require('unibabel').Unibabel

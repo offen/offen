@@ -1,3 +1,8 @@
+/**
+ * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /** @jsx h */
 const { render, h } = require('preact')
 const { useRef, useErrorBoundary } = require('preact/hooks')
