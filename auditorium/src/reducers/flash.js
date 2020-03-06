@@ -1,4 +1,4 @@
-module.exports = (state = null, action) => {
+module.exports = (state = [], action) => {
   switch (action.type) {
     case 'AUTHENTICATION_FAILURE':
     case 'SHARE_ACCOUNT_SUCCESS':
@@ -21,18 +21,24 @@ module.exports = (state = null, action) => {
     case 'SETUP_FAILURE':
     case 'SETUP_STATUS_HASDATA':
     case 'LOGOUT_SUCCESS':
+    case 'LOGOUT_FAILURE':
+    case 'COPY_SUCCESS':
       if (action.payload && action.payload.flash) {
-        return action.payload.flash
+        return [
+          {
+            content: action.payload.flash,
+            id: action.payload.flashId
+          },
+          ...state
+        ]
       }
       return state
-    case 'AUTHENTICATION_SUCCESS':
-    case 'QUERY_SUCCESS':
-      return null
-    case 'NAVIGATE':
-      if (action.payload && action.payload.persistFlash) {
-        return state
-      }
-      return null
+    case 'LOGIN_SUCCESS':
+      return []
+    case 'EXPIRE_FLASH':
+      return state.filter((message) => {
+        return message.id !== action.payload.flashId
+      })
     default:
       return state
   }

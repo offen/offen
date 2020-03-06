@@ -1,5 +1,12 @@
 const errors = require('./errors')
 
+exports.handleCopy = (message) => ({
+  type: 'COPY_SUCCESS',
+  payload: {
+    flash: message
+  }
+})
+
 exports.shareAccount = (payload, onSuccessMessage, onFailureMessage) => (dispatch, getState, postMessage) => {
   dispatch({
     type: 'SHARE_ACCOUNT_REQUEST',

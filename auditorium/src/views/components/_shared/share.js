@@ -31,7 +31,7 @@ const Share = (props) => {
         urlTemplate: window.location.origin + '/join/{token}/',
         accountId: accountId
       },
-      __('An invite email has been sent.'),
+      __('An invite email has been sent to <strong>%s</strong>.', invitee),
       __('There was an error inviting the user, please try again.')
     )
       .then(() => {
