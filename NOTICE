@@ -4,7 +4,14 @@ Copyright 2020 - Offen Authors <hioffen@posteo.de>
 This product includes software developed at
 Offen (https://www.offen.dev/).
 
+---
+
 Offen bundles TACHYONS v4.11.2, Copyright 2014 mrmrs,
+located at /server/public/tachyons.min.css,
+which is available under a "MIT" license.
+For details, see https://opensource.org/licenses/MIT
+
+Offen bundles normalize.css v8.0.0, Copyright Nicolas Gallagher and Jonathan Neal 2011,
 located at /server/public/tachyons.min.css,
 which is available under a "MIT" license.
 For details, see https://opensource.org/licenses/MIT
