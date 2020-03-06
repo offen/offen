@@ -1,3 +1,8 @@
+/**
+ * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 var api = require('./api')
 var queries = require('./queries')
 var relayEvent = require('./relay-event')

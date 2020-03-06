@@ -1,3 +1,8 @@
+/**
+ * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 const errors = require('./errors')
 
 exports.login = (username, password, onFailureMessage) => (dispatch, getState, postMessage) => {

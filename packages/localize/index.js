@@ -1,3 +1,8 @@
+/**
+ * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 var path = require('path')
 var through = require('through2')
 var jscodeshift = require('jscodeshift')

@@ -1,3 +1,8 @@
+/**
+ * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 var Unibabel = require('unibabel').Unibabel
 var jwkToPem = require('jwk-to-pem')
 var forge = require('node-forge')
