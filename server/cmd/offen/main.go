@@ -61,6 +61,7 @@ func main() {
 	debugCmd := flag.NewFlagSet("debug", flag.ExitOnError)
 
 	subcommand := "serve"
+	isAliasCommand := false
 	var flags []string
 	if len(os.Args) > 1 {
 		subcommand = os.Args[1]
@@ -69,12 +70,26 @@ func main() {
 	if strings.HasPrefix(subcommand, "-") {
 		subcommand = "serve"
 		flags = os.Args[1:]
+		isAliasCommand = true
 	}
 
 	switch subcommand {
 	case "demo":
+		demoCmd.Usage = func() {
+			fmt.Fprint(
+				flag.CommandLine.Output(), `
+"demo" starts a one-off Offen instance that you can use for testing the software.
+You can use the username "demo@offen.dev" with password "demo" to log in.
+
+By default, a random available port will be picked for running the server.
+If you need to override this, pass a value to -port.
+
+Usage of "demo":
+`)
+			demoCmd.PrintDefaults()
+		}
 		var (
-			port = demoCmd.Int("port", 0, "the port to bind to")
+			port = demoCmd.Int("port", 0, "the port to bind to (defaults to a random available port)")
 		)
 		demoCmd.Parse(flags)
 
@@ -170,6 +185,46 @@ func main() {
 
 		logger.Info("Gracefully shut down server")
 	case "serve":
+		serveCmd.Usage = func() {
+			if isAliasCommand {
+				fmt.Fprint(
+					flag.CommandLine.Output(), `
+"offen" makes the following subcommands available:
+
+- "serve" runs the application (this will also run when not providing a subcommand)
+- "setup" can be used to setup a new instance
+- "secret" can be used to generate runtime secrets
+- "demo" starts an ephemeral instance for testing
+- "expire" prunes expired events from the database
+- "migrate" applies pending database migrations
+- "debug" prints the currently applied configuration values
+
+Refer to the -help content of each subcommand for information about how to use
+them. Further documentation is available at
+https://docs.offen.dev/running-offen/using-the-command/
+`)
+				return
+			}
+			fmt.Fprint(
+				flag.CommandLine.Output(), `
+"serve" starts the Offen instance and listens to the configured ports.
+Configuration is sourced either from the envfile given to -envfile or a file
+called offen.env in the default lookup hierarchy (this applies to Linux and
+Darwin only):
+
+- In the current working directory
+- In ~/.config
+- In $XDG_CONFIG_HOME
+- In /etc/offen
+
+In case no envfile is found or given, the environment variables already set are
+used. More documentation about configuration Offen can be found at:
+https://docs.offen.dev/running-offen/configuring-the-application/
+
+Usage of "serve":
+`)
+			serveCmd.PrintDefaults()
+		}
 		var (
 			envFile = serveCmd.String("envfile", "", "the env file to use")
 		)
@@ -278,10 +333,32 @@ func main() {
 
 		logger.Info("Gracefully shut down server")
 	case "setup":
+		setupCmd.Usage = func() {
+			fmt.Fprint(
+				flag.CommandLine.Output(), `
+"setup" is used to populate a fresh Offen instance with user(s) and account(s).
+In the most basic case, you are likely going to create a single user and an
+account and then will use the UI to add more users create additional accounts.
+
+A basic example for setting up a new instance looks like:
+
+$ ./offen setup -name "My New Account" -email me@mydomain.org -populate
+
+The command will then prompt for a password to use. Passing -populate will
+create potentially missing secrets in your envfile. Do not pass the flag if you
+want to do this yourself.
+
+If you do not want to use the CLI, you can also create an initial account and
+user by visting "/setup/" in your browser while the Offen instance is running.
+
+Usage of "setup":
+`)
+			setupCmd.PrintDefaults()
+		}
 		var (
-			accountID       = setupCmd.String("forceid", "", "force usage of given valid UUID as account ID")
 			accountName     = setupCmd.String("name", "", "the account name")
 			email           = setupCmd.String("email", "", "the email address used for login")
+			accountID       = setupCmd.String("forceid", "", "force usage of given valid UUID as account ID")
 			password        = setupCmd.String("password", "", "the password used for login")
 			source          = setupCmd.String("source", "", "a configuration file")
 			envFile         = setupCmd.String("envfile", "", "the env file to use")
@@ -387,6 +464,17 @@ func main() {
 			logger.Infof("Successfully bootstrapped database from data in %s", *source)
 		}
 	case "migrate":
+		migrateCmd.Usage = func() {
+			fmt.Fprint(
+				flag.CommandLine.Output(), `
+"migrate" applies all pending database migrations to the connected database.
+Only run this command when you run Offen as a horizontally scaling service.
+The default installation will handle this routine by itself.
+
+Usage of "migrate":
+`)
+			migrateCmd.PrintDefaults()
+		}
 		var (
 			envFile = migrateCmd.String("envfile", "", "the env file to use")
 		)
@@ -410,6 +498,17 @@ func main() {
 		}
 		logger.Info("Successfully ran database migrations")
 	case "expire":
+		expireCmd.Usage = func() {
+			fmt.Fprint(
+				flag.CommandLine.Output(), `
+"expire" prunes all events older than 6 months (4464 hours) from the connected
+database. Only run this command when you run Offen as a horizontally scaling
+service. The default installation will handle this routine by itself.
+
+Usage of "expire":
+`)
+			expireCmd.PrintDefaults()
+		}
 		var (
 			envFile = expireCmd.String("envfile", "", "the env file to use")
 		)
@@ -435,6 +534,17 @@ func main() {
 		}
 		logger.WithField("removed", affected).Info("Successfully expired events")
 	case "debug":
+		debugCmd.Usage = func() {
+			fmt.Fprint(
+				flag.CommandLine.Output(), `
+"debug" prints the runtime configuration resolved from the current working
+directory.
+
+Usage of "debug":
+`)
+			debugCmd.PrintDefaults()
+		}
+
 		var (
 			envFile = debugCmd.String("envfile", "", "the env file to use")
 		)
@@ -442,6 +552,18 @@ func main() {
 		cfg := mustConfig(false, *envFile)
 		logger.WithField("config", fmt.Sprintf("%+v", cfg)).Info("Current configuration values")
 	case "secret":
+		secretCmd.Usage = func() {
+			fmt.Fprint(
+				flag.CommandLine.Output(), `
+"secret" can be used to generate Base64-encoded random secrets for signing
+cookies or similar. The default length of 16 is a good default value for
+generating a value to use as OFFEN_SECRETS_COOKIEEXCHANGE.
+
+Usage of "secret":
+`)
+			secretCmd.PrintDefaults()
+		}
+
 		var (
 			length = secretCmd.Int("length", keys.DefaultSecretLength, "the length in bytes")
 			count  = secretCmd.Int("count", 1, "the number of secrets to generate")
