@@ -25,10 +25,10 @@ This tutorial walks you through the steps needed to setup and deploy a standalon
 
 ## Pulling the Docker Image
 
-The official Docker image is available as [`offen/offen`][docker-hub] on Docker Hub. The most recent official release is tagged as `v0.1.0-alpha.2`:
+The official Docker image is available as [`offen/offen`][docker-hub] on Docker Hub. The most recent official release is tagged as `v0.1.0-alpha.3`:
 
 ```sh
-docker pull offen/offen:v0.1.0-alpha.2
+docker pull offen/offen:v0.1.0-alpha.3
 ```
 
 If you are feeling adventurous, or require features that are not yet available in a release you can also use the `latest` tag which represents the latest state of development. Be aware though that these versions might be unstable.
@@ -84,7 +84,7 @@ docker run -it --rm \
   -v /home/you/offen/cache:/var/www/.cache \
   --mount type=bind,src=/home/you/offen/offen.env,dst=/root/offen.env \
   --mount type=bind,src=/home/you/offen/offen.db,dst=/root/offen.db \
-  offen/offen:v0.1.0-alpha.2 setup \
+  offen/offen:v0.1.0-alpha.3 setup \
   -email me@mysite.com \ # the email used for login
   -name mysite \ # your account name, this will not be displayed to users
   -populate # this will automatically create required secrets for you
@@ -165,7 +165,7 @@ docker run -d \
   -v /home/you/offen/cache:/var/www/.cache \
   --mount type=bind,src=/home/you/offen/offen.env,dst=/root/offen.env \
   --mount type=bind,src=/home/you/offen/offen.db,dst=/root/offen.db \
-  offen/offen:v0.1.0-alpha.2
+  offen/offen:v0.1.0-alpha.3
 ```
 
 Once the application has started, you can use `docker ps` to check if it's up and running:
@@ -173,7 +173,7 @@ Once the application has started, you can use `docker ps` to check if it's up an
 ```
 $ docker ps
 CONTAINER ID        IMAGE                        COMMAND                  CREATED             STATUS              PORTS                    NAMES
-70653aca75b4        offen/offen:v0.1.0-alpha.2   "offen"                  5 minutes ago       Up 5 minutes        80/tcp, 443/tcp          offen
+70653aca75b4        offen/offen:v0.1.0-alpha.3   "offen"                  5 minutes ago       Up 5 minutes        80/tcp, 443/tcp          offen
 ```
 
 Your instance is now ready to use. Once you have setup DNS to point at your host system, you can head to `https://offen.mysite.com/login` and login to your account.
