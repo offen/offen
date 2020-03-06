@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Requirements for Installing Offen
-nav_order: 1
+nav_order: 2
 description: "Considerations for installing Offen in an production environment."
 permalink: /running-offen/installation-requirements/
 parent: Running Offen

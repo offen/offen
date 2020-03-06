@@ -11,7 +11,7 @@ permalink: /running-offen/
 
 ## Downloads
 
-Offen is distributed as a single binary file, and is currently built for Linux, Windows and MacOS. You can [download the latest release][repo-releases] from our GitHub repository or from <https://get.offen.dev>.
+Offen is distributed as a single binary file, and is currently built for Linux, Windows and MacOS. You can [download the most recent release][repo-releases] from our GitHub repository or from <https://get.offen.dev>.
 
 [repo-releases]: https://github.com/offen/offen/releases
 
