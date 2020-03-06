@@ -330,6 +330,45 @@ function retention (/* ...events */) {
   return result
 }
 
+// `newUsers` calculates the percentage of new visitors in the given range
+// as compared to the list of all known events
+exports.newUsers = consumeAsync(newUsers)
+
+function newUsers (events, allEvents) {
+  var oldestEventIdInRange = _.chain(events)
+    .pluck('eventId')
+    .sortBy()
+    .head()
+    .value()
+
+  var usersBeforeRange = _.chain(allEvents)
+    .filter(function (event) {
+      return event.eventId < oldestEventIdInRange
+    })
+    .pluck('secretId')
+    .compact()
+    .uniq()
+    .value()
+
+  var usersInRange = _.chain(events)
+    .pluck('secretId')
+    .compact()
+    .uniq()
+    .value()
+
+  if (usersInRange.length === 0) {
+    return 0
+  }
+
+  var newUsers = _.chain(usersInRange)
+    .filter(function (secretId) {
+      return !_.contains(usersBeforeRange, secretId)
+    })
+    .value()
+
+  return newUsers.length / usersInRange.length
+}
+
 exports.pageviews = consumeAsync(countKeys('secretId', false))
 // `visitors` is the number of unique users for the given
 //  set of events.

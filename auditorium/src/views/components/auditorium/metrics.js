@@ -36,22 +36,26 @@ const RowMetrics = (props) => {
         />
       </div>
       <div class='flex flex-wrap mb3 bb b--light-gray'>
-        {model.avgPageDepth
-          ? (
-            <KeyMetric
-              name={__('Avg. page depth')}
-              value={model.avgPageDepth}
-              formatAs='number'
-              small
-            />
-          )
-          : null}
+        <KeyMetric
+          name={__('Avg. page depth')}
+          value={model.avgPageDepth}
+          formatAs='number'
+          small
+        />
         <KeyMetric
           name={__('Bounce rate')}
           value={model.bounceRate}
           formatAs='percentage'
           small
         />
+        {isOperator ? (
+          <KeyMetric
+            name={__('New users')}
+            value={model.newUsers}
+            formatAs='percentage'
+            small
+          />
+        ) : null}
         {isOperator && model.loss
           ? (
             <KeyMetric
@@ -70,16 +74,12 @@ const RowMetrics = (props) => {
           formatAs='percentage'
           small
         />
-        {model.avgPageload
-          ? (
-            <KeyMetric
-              name={__('Avg. page load time')}
-              value={model.avgPageload}
-              formatAs='duration'
-              small
-            />
-          )
-          : null}
+        <KeyMetric
+          name={__('Avg. page load time')}
+          value={model.avgPageload}
+          formatAs='duration'
+          small
+        />
       </div>
     </div>
   )

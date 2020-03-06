@@ -79,6 +79,7 @@ function getDefaultStatsWith (getDatabase) {
     var now = (query && query.now) || new Date()
     var lowerBound = startOf[resolution](subtract[resolution](now, range - 1)).toJSON()
     var upperBound = endOf[resolution](now).toJSON()
+    var allEvents = table.toArray()
     var eventsInBounds = table
       .where('timestamp')
       .between(lowerBound, upperBound)
@@ -171,6 +172,8 @@ function getDefaultStatsWith (getDatabase) {
     var exitPages = stats.exitPages(decryptedEvents)
     var mobileShare = stats.mobileShare(decryptedEvents)
 
+    var newUsers = stats.newUsers(eventsInBounds, allEvents)
+
     var realtime = decryptions[1]
     var livePages = stats.activePages(realtime)
     var liveUsers = stats.visitors(realtime)
@@ -214,7 +217,8 @@ function getDefaultStatsWith (getDatabase) {
         campaigns,
         sources,
         retentionMatrix,
-        empty
+        empty,
+        newUsers
       ])
       .then(function (results) {
         return {
@@ -237,6 +241,7 @@ function getDefaultStatsWith (getDatabase) {
           sources: results[16],
           retentionMatrix: results[17],
           empty: results[18],
+          newUsers: results[19],
           resolution: resolution,
           range: range
         }
