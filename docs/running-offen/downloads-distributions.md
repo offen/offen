@@ -8,30 +8,40 @@ parent: Running Offen
 ---
 
 # Downloads and Distributions
+{: .no_toc }
 
 Offen is currently distributed in two ways: packaged as a __single binary file__ for Linux, MacOS and Windows or as a __Docker image__.
 
 ---
+
+## Table of Contents
+{: .no_toc }
+
+1. TOC
+{:toc}
 
 ## Release channels
 
 Both for binaries and Docker images you can use one of these channels to pick your download:
 
 ### Tagged releases
+{: .no_toc }
 
 In case you want to deploy Offen, this channel is what you are most likely going to use. When ready, we cut official releases and tag them with a version identifier (e.g. `v0.1.0`). These releases are immutable and will never change, so both a download and the Docker image are guaranteed to provide the exact same build every time.
 
 ### Stable channel
+{: .no_toc }
 
 The `stable` channel gives you the most recent build from the `master` branch of our repository. These are usually stable and ready to use. Be aware that there is not necessarily an upgrade path in between `stable` versions.
 
 ### Latest channel
+{: .no_toc }
 
 The `latest` channel gives you the most recent build from the `development` branch of our repository. This is likely to contain things that are not production ready or bring other kinds of caveats. __You probably should not use this__ unless you are participating in the development of Offen.
 
 ---
 
-## Downloading the binary file
+## Downloading binary files
 
 Binary files can be downloaded from our [GitHub repository][repo-releases] or using `get.offen.dev`.
 

@@ -8,10 +8,19 @@ parent: Running Offen
 ---
 
 # Using the `offen` command
+{: .no_toc }
 
 Offen is distributed as a single binary `offen` that you can download and deploy to basically any environment. Alternatively [offen/offen][] is available on Docker Hub and wraps the same command that is described here.
 
 [offen/offen]: https://hub.docker.com/r/offen/offen
+
+---
+
+## Table of Contents
+{: .no_toc }
+
+1. TOC
+{:toc}
 
 ## Starting the application
 
@@ -77,8 +86,9 @@ Running `offen version` prints information about the git revision the binary has
 ---
 
 ## When run as a horizontally scaling service
+{: .no_toc }
 
-These commands are only relevant when you plan to run offen as a horizontally scaling service, i.e. you might have multiple instances of the application writing to and reading from the same database.
+The following commands are only relevant when you plan to run offen as a horizontally scaling service, i.e. you might have multiple instances of the application writing to and reading from the same database.
 
 ### `offen migrate`
 

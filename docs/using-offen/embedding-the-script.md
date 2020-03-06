@@ -1,10 +1,10 @@
 ---
 layout: default
 title: Embedding The Offen Script
-nav_order: 5
+nav_order: 2
 description: "How to add the Offen script to your webpage."
-permalink: /running-offen/embedding-the-script/
-parent: Running Offen
+permalink: /using-offen/embedding-the-script/
+parent: Using Offen
 ---
 
 # Embedding the Offen script

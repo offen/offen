@@ -8,8 +8,17 @@ parent: Running Offen
 ---
 
 # Requirements for Installing Offen
+{: .no_toc }
 
 In case you want to use Offen for collecting usage data in a production setup or similar, there are a few requirements to consider.
+
+---
+
+## Table of Contents
+{: .no_toc }
+
+1. TOC
+{:toc}
 
 ## Running the application as a service
 
