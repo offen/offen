@@ -2,7 +2,7 @@
 layout: default
 title: Metrics Explained
 parent: Using Offen
-nav_order: 1
+nav_order: 2
 description: "Explanations of the key metrics displayed in Offen."
 permalink: /using-offen/metrics-explained/
 ---

@@ -133,7 +133,7 @@ OFFEN_SMTP_PORT="587"
 __Heads Up__
 {: .label .label-red }
 
-Offen will run without these values being set and try to fall back to a local `sendmail` install, yet please be aware that if you rely on any of the above features email delivery will be __very unreliable if not configured correctly__. You can always add this at a later time though.
+Offen will run without these values being set and try to fall back to a local `sendmail` install, yet please be aware that if you rely on any of the above features email delivery will be __unreliable if not configured correctly__. You can always add this at a later time though.
 
 ---
 

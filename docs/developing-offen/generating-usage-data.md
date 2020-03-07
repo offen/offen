@@ -9,5 +9,5 @@ parent: Developing Offen
 
 # Generating Usage Data for Development
 
-As all usage data is encrypted and bound to user keys it is not possible to script the generation of seed data used for development. In the default development setup, a dummy site served at <http://localhost:8081> deploys the Offen script using the "develop" account that is available using the development login. This means you can manually create usage data by simply visiting and navigating this page.
+As all usage data is encrypted and bound to user keys it is not possible to script the generation of seed data used for development. In the default development setup, a dummy site served at <http://localhost:8081> deploys the Offen script using the "develop" account that is available using the development login. This means you can manually create usage data by visiting and navigating this page.
 

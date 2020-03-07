@@ -59,7 +59,7 @@ __Using SSL for your site will be benefitial regarding lots of other aspects as 
 
 ## Choosing a datastore
 
-Offen is expecting a relational datastore to be available for it to store event and account data. By default it will use a SQLite database that is simply stored on the host system.
+Offen is expecting a relational datastore to be available for it to store event and account data. By default it will use a SQLite database that is stored on the host system.
 
 In case you want to scale Offen or need more performance you might want to use a MySQL or Postgres database instead. See the configuration section below for how to configure dialect and database location.
 
@@ -75,4 +75,4 @@ See the configuration section for information on how to run Offen behind a rever
 
 Offen can email you a link to reset your account's password in case you forgot it. The recommended way of doing so is configuring Offen with SMTP credentials (you might well be able to use your default mail setup here).
 
-In case you do not configure this, Offen falls back to a local `sendmail` installation if found, yet it is very likely that these messages will never arrive at all due to system restrictions or third parties bouncing email sent using that channel.
+In case you do not configure this, Offen falls back to a local `sendmail` installation if found, yet it is likely that these messages will never arrive at all due to system restrictions or third parties bouncing email sent using that channel.
