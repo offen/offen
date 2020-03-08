@@ -10,7 +10,7 @@ parent: Running Offen
 # Downloads and Distributions
 {: .no_toc }
 
-Offen is currently distributed in two ways: packaged as a __single binary file__ for Linux, MacOS and Windows or as a __Docker image__.
+Offen is currently distributed in two ways: packaged as a __single binary file__ for Linux, MacOS and Windows or as a __Docker image__. The most recent release [is available here][most-recent], Docker images are hosted on [Docker Hub][docker-hub].
 
 ---
 
@@ -43,7 +43,7 @@ The `latest` channel gives you the most recent build from the `development` bran
 
 ## Downloading binary files
 
-Binary files can be downloaded from our [GitHub repository][repo-releases] or using `get.offen.dev`.
+Binary files can be downloaded from our [GitHub repository][repo-releases] or using `get.offen.dev`. The most recent release [is available here][most-recent].
 
 Downloading `https://get.offen.dev` will give you a tarball containing the most recent tagged release. If you specify a version or channel like `https://get.offen.dev/v0.1.0-alpha.3` you will download that specific version.
 
@@ -64,6 +64,7 @@ __Heads Up__
 The archive file currently contains the binaries __for all supported operating systems__, so no matter which OS you are targeting, you will always download the same file.
 
 [repo-releases]: https://github.com/offen/offen/releases
+[most-recent]: https://get.offen.dev
 
 ## Pulling the Docker image
 
