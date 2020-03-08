@@ -59,6 +59,7 @@ const Share = (props) => {
           ? (
             <a
               role='button'
+              aria-label={__('Toggle display of account sharing')}
               class={classnames('dib', 'label-toggle', isCollapsed ? 'label-toggle--rotate' : null)}
             />
           )

@@ -24,7 +24,11 @@ const EmbedCode = (props) => {
         <h4 class='f4 normal ma0'>{__('Embed code')}</h4>
         {collapsible
           ? (
-            <a role='button' class={classnames('dib', 'label-toggle', !isCollapsed ? null : 'label-toggle--rotate')} />
+            <a
+              class={classnames('dib', 'label-toggle', !isCollapsed ? null : 'label-toggle--rotate')}
+              aria-label={__('Toggle display of Embed Code')}
+              role='button'
+            />
           )
           : null}
       </div>
