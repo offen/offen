@@ -89,7 +89,11 @@ const RetireAccount = (props) => {
               <h4 class='f4 normal ma0'>
                 {__('Retire account')}
               </h4>
-              <a role='button' class={classnames('dib', 'label-toggle', isCollapsed ? 'label-toggle--rotate' : null)} />
+              <a
+                class={classnames('dib', 'label-toggle', isCollapsed ? 'label-toggle--rotate' : null)}
+                aria-label={__('Toggle display of Retire Account block')}
+                role='button'
+              />
             </div>
           )
         }}
