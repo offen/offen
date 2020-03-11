@@ -38,7 +38,7 @@ function decryptSymmetricWith (jwk) {
         })
         op.update(forge.util.createBuffer(body))
         if (op.finish()) {
-          return JSON.parse(op.output.data)
+          return JSON.parse(forge.util.decodeUtf8(op.output.data))
         }
         throw new Error('Unable to finish decipher.')
       }
@@ -60,7 +60,8 @@ function encryptSymmetricWith (jwk) {
           iv: nonce,
           tagLength: 128
         })
-        op.update(forge.util.createBuffer(JSON.stringify(unencryptedValue)))
+        var serialized = forge.util.encodeUtf8(JSON.stringify(unencryptedValue))
+        op.update(forge.util.createBuffer(serialized, 'utf-8'))
         if (op.finish()) {
           var result = cipher.serialize(
             // web crypto simply appends the authentication tag to the ciphertext
@@ -91,7 +92,7 @@ function decryptAsymmetricWith (privateJwk) {
         var data = privateKey.decrypt(chunks.cipher, 'RSA-OAEP', {
           md: forge.md.sha256.create()
         })
-        return JSON.parse(data)
+        return JSON.parse(forge.util.decodeUtf8(data))
       }
       default:
         throw new Error('Unknown asymmetric algo version "' + chunks.algoVersion + '"')
@@ -105,7 +106,7 @@ function encryptAsymmetricWith (publicJwk) {
   return asyncify(function (unencryptedValue) {
     var publicPEM = importPublicKey(publicJwk)
     var publicKey = forge.pki.publicKeyFromPem(publicPEM)
-    var enc = publicKey.encrypt(JSON.stringify(unencryptedValue), 'RSA-OAEP', {
+    var enc = publicKey.encrypt(forge.util.encodeUtf8(JSON.stringify(unencryptedValue)), 'RSA-OAEP', {
       md: forge.md.sha256.create()
     })
     var result = cipher.serialize(
