@@ -16,6 +16,12 @@ const _ = require('underscore')
 
 const Plot = createPlotlyComponent(Plotly)
 
+const tickColorFade = '#CCCCCC'
+const barColorVisitors = '#137752'
+const barColorVisitorsFade = '#19A974'
+const barColorViews = '#19A974'
+const barColorViewsFade = '#9EEBCF'
+
 const Chart = (props) => {
   const { model, isOperator, resolution } = props
   const { pageviews } = model
@@ -47,6 +53,9 @@ const Chart = (props) => {
         if (index === 0 || isFirstDayOfMonth(date)) {
           result = date.toLocaleDateString(process.env.LOCALE, { month: 'short' }) + ' ' + result
         }
+        if (isWeekend(date)) {
+          return `<span style="font-weight: bold; color: ${tickColorFade}">${result}</span>`
+        }
         return result
     }
   })
@@ -60,9 +69,9 @@ const Chart = (props) => {
       marker: {
         color: x.map(function (date) {
           if (resolution !== 'days') {
-            return '#137752'
+            return barColorVisitors
           }
-          return isWeekend(date) ? '#19A974' : '#137752'
+          return isWeekend(date) ? barColorVisitorsFade : barColorVisitors
         })
       },
       name: isOperator ? 'Visitors' : 'Accounts'
@@ -78,9 +87,9 @@ const Chart = (props) => {
       marker: {
         color: x.map(function (date) {
           if (resolution !== 'days') {
-            return '#19A974'
+            return barColorViews
           }
-          return isWeekend(date) ? '#9eebcf' : '#19A974'
+          return isWeekend(date) ? barColorViewsFade : barColorViews
         })
       },
       name: 'Pageviews'
