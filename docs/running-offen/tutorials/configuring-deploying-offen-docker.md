@@ -21,19 +21,6 @@ This tutorial walks you through the steps needed to setup and deploy a standalon
 1. TOC
 {:toc}
 
----
-
-## Pulling the Docker Image
-
-The official Docker image is available as [`offen/offen`][docker-hub] on Docker Hub. The most recent official release is tagged as `v0.1.0-alpha.3`:
-
-```sh
-docker pull offen/offen:v0.1.0-alpha.3
-```
-
-If you are feeling adventurous, or require features that are not yet available in a release you can also use the `latest` tag which represents the latest state of development. Be aware though that these versions might be unstable.
-
-[docker-hub]: https://hub.docker.com/r/offen/offen
 
 ---
 
@@ -51,43 +38,30 @@ Keeping these files available at any time is required for running the applicatio
 
 ---
 
-This tutorial assumes you are on Linux, so we create a `~/offen` directory in which we will store our data. You can use basically any other location though, so feel free to change this.
-
-In your `~/offen` directory, create a `cache` directory, which will be used for caching SSL certificates:
+This tutorial assumes you are on Linux, so we create a `~/.offen` directory in which we will store all data. In your `~/.offen` directory, create a `cache` directory, which will be used for caching SSL certificates, a `data` directory which will be used for storing the database and an empty file called offen.env:
 
 ```
-~/offen
-└── cache
-```
-
----
-
-## Creating a Configuration and Database File
-
-Offen can source configuration from environment variables as well as configuration files. In this tutorial we will use a configuration file called `offen.env` and a database file called `offen.db` which you can create as empty files in your data directory:
-
-```
-~/offen
+~/.offen
 ├── cache
+└── data
 └── offen.env
-└── offen.db
 ```
 
 ---
 
 ## Running the `setup` Command
 
-Now that we have defined the database location, Offen lets you setup a new instance using the `setup` command:
+Now that we have defined the database location, Offen lets you setup a new instance using the `setup` command. The value provided to the `email` flag will be your login, `name` is the name of the first account to be created. The password for your login will be requested in a prompt. Passing `-populate` will create required secrets in the `offen.env` file.
 
 ```
 docker run -it --rm \
-  -v /home/you/offen/cache:/var/www/.cache \
-  --mount type=bind,src=/home/you/offen/offen.env,dst=/root/offen.env \
-  --mount type=bind,src=/home/you/offen/offen.db,dst=/root/offen.db \
+  -v ~/.offen/cache:/var/www/.cache \
+  -v ~/.offen/data:/var/opt/offen \
+  --mount type=bind,src=/home/you/.offen/offen.env,dst=/root/offen.env \
   offen/offen:v0.1.0-alpha.3 setup \
-  -email me@mysite.com \ # the email used for login
-  -name mysite \ # your account name, this will not be displayed to users
-  -populate # this will automatically create required secrets for you
+  -email me@mysite.com \
+  -name mysite \
+  -populate
 ```
 
 When finished, the command has created an account for you, using the given name and credentials.
@@ -97,6 +71,15 @@ Your `offen.env` file will now look something like this:
 ```
 OFFEN_SECRETS_COOKIEEXCHANGE="uNrZP7r5fY3sfS35tbzR9w==" # do not use this secret in production
 ```
+
+---
+
+__Heads Up__
+{: .label .label-red }
+
+The official Docker image is available as [`offen/offen`][docker-hub] on Docker Hub. The most recent official release is tagged as `v0.1.0-alpha.3` (which is also what the above command is using). If you are feeling adventurous, or require features that are not yet available in a release you can also use the `latest` tag which represents the latest state of development. Be aware though that these versions might be unstable.
+
+[docker-hub]: https://hub.docker.com/r/offen/offen
 
 ---
 
@@ -156,15 +139,15 @@ If all of this is populated with the values you expect, you're ready to use Offe
 
 ## Starting the Application
 
-To start Offen use the main `offen` command:
+To start Offen use the Docker image's default command:
 
 ```
 docker run -d \
   -p 80:80 -p 443:443 \
-  --name offen
-  -v /home/you/offen/cache:/var/www/.cache \
-  --mount type=bind,src=/home/you/offen/offen.env,dst=/root/offen.env \
-  --mount type=bind,src=/home/you/offen/offen.db,dst=/root/offen.db \
+  --name offen \
+  -v ~/.offen/cache:/var/www/.cache \
+  -v ~/.offen/data:/var/opt/offen \
+  --mount type=bind,src=/home/you/.offen/offen.env,dst=/root/offen.env \
   offen/offen:v0.1.0-alpha.3
 ```
 

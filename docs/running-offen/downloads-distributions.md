@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Downloads and Distributions
-nav_order: 1
+nav_order: 2
 description: "Where and how to download Offen or install it from other sources."
 permalink: /running-offen/downloads-distributions/
 parent: Running Offen

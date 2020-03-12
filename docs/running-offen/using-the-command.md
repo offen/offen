@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Using The offen Command
-nav_order: 3
+nav_order: 4
 description: "Explaining subcommands and flags for the offen command."
 permalink: /running-offen/using-the-command/
 parent: Running Offen

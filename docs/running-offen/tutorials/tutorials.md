@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "Installation Tutorials"
-nav_order: 6
+nav_order: 1
 description: "Step by step tutorials on how to configure and deploy Offen."
 permalink: /running-offen/tutorials/
 parent: Running Offen
