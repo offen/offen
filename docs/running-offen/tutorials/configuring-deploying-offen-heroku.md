@@ -15,6 +15,12 @@ This tutorial walks you through the steps needed to setup and deploy a single-no
 
 __All resources created in this tutorial are free of charge__. You might want to upgrade some of them to another plan with costs when running Offen in production though. A single Hobby Dyno ($7 at the time of writing) should be enough to handle most traffic scenarios and will give you managed SSL for a custom domain.
 
+<span class="label label-green">Note</span>
+If you get stuck or need help, [file an issue][gh-issues], [tweet (@hioffen)][twitter] or [email][email].
+
+[gh-issues]: https://github.com/offen/offen/issues
+[twitter]: https://twitter.com/hioffen
+[email]: mailto:hioffen@posteo.de
 [heroku]: https://www.heroku.com/
 
 ---

@@ -13,6 +13,13 @@ grand_parent: Running Offen
 
 This tutorial walks you through the steps needed to setup and deploy a standalone, single-node Offen instance that is using a local SQLite file as its database backend. `systemd` is used for managing the Offen service.
 
+<span class="label label-green">Note</span>
+If you get stuck or need help, [file an issue][gh-issues], [tweet (@hioffen)][twitter] or [email][email].
+
+[gh-issues]: https://github.com/offen/offen/issues
+[twitter]: https://twitter.com/hioffen
+[email]: mailto:hioffen@posteo.de
+
 ---
 
 ## Table of Contents
