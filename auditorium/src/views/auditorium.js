@@ -34,7 +34,7 @@ const management = require('./../action-creators/management')
 const AuditoriumView = (props) => {
   const { matches, authenticatedUser, model, isOperator, consentStatus, stale } = props
   const { handlePurge, handleQuery, expressConsent, getConsentStatus, handleShare, handleValidationError, handleRetire, handleCopy } = props
-  const { accountId, range, resolution = 'days' } = matches
+  const { accountId, range, resolution } = matches
   const [focus, setFocus] = useState(true)
 
   if (isOperator) {
