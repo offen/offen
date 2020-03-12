@@ -59,7 +59,9 @@ This tutorial assumes you are on Linux, so we create a `~/.offen` directory in w
 
 ## Running the `setup` Command
 
-Now that we have defined the database location, Offen lets you setup a new instance using the `setup` command. The value provided to the `email` flag will be your login, `name` is the name of the first account to be created. The password for your login will be requested in a prompt. Passing `-populate` will create required secrets in the `offen.env` file.
+Offen lets you setup a new instance using the `setup` command.
+
+The value provided to the `email` flag will be your login, `name` is the name of the first account to be created. The password for your login will be requested in a prompt. Passing `-populate` will create required secrets in the `offen.env` file.
 
 ```
 docker run -it --rm \
