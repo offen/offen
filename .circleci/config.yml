@@ -3,7 +3,7 @@ version: 2
 jobs:
   server:
     docker:
-      - image: circleci/golang:1.13
+      - image: circleci/golang:1.14
         environment:
           OFFEN_APP_EVENTRETENTIONPERIOD: 4464h
           OFFEN_DATABASE_DIALECT: postgres
