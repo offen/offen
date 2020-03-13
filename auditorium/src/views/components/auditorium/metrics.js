@@ -69,9 +69,9 @@ const RowMetrics = (props) => {
       </div>
       <div class='flex flex-wrap'>
         <KeyMetric
-          name={__('Mobile users')}
+          name={isOperator ? __('Mobile users') : __('Mobile user')}
           value={model.mobileShare}
-          formatAs='percentage'
+          formatAs={isOperator ? 'percentage' : 'boolean'}
           small
         />
         <KeyMetric
