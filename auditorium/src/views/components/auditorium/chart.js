@@ -130,7 +130,8 @@ const Chart = (props) => {
       <h4 class='f4 normal mt0 mb3'>
         {__('Page views and %s', isOperator ? __('visitors') : __('accounts'))}
       </h4>
-      <div class='mb4 chart flex-auto'>
+      {/* plotly sometimes is unable to assign a proper height to the svg unless we set its default height as min-height */}
+      <div class='mb4 chart flex-auto' style={{ minHeight: 450 }}>
         {yTotal.some((v) => v > 0)
           ? (
             <Plot
