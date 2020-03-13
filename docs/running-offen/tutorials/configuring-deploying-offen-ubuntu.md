@@ -45,7 +45,7 @@ sudo mkdir -p /opt/offen
 Untar the archive you downloaded and look for the binary called `offen-linux-amd64`. Put this file in a subdirectory of `/opt/offen` that specifies its version. This example is using the `v0.1.0-alpha.3` release:
 
 ```
-mkdir offen-download && cd offen-download
+mkdir -p /tmp/offen-download && cd /tmp/offen-download
 curl -L https://get.offen.dev | tar -xvz
 md5sum -c checksums.txt # check that your download contains the expected files
 sudo mkdir -p /opt/offen/v0.1.0-alpha.3
@@ -61,46 +61,6 @@ $ which offen
 $ offen version
 INFO[0000] Current build created using                   revision=v0.1.0-alpha.3
 ```
-
----
-
-### Detour: Updating the Version in Use
-{: .no_toc }
-
-To update to a new version of Offen, download the contents of the newest release into a new directory in `/opt/offen` and update the symlink in `/usr/bin`:
-
-```
-curl -L https://get.offen.dev | tar -xvz
-md5sum -c checksums.txt # check that your download contains the expected files
-sudo mkdir -p /opt/offen/v0.1.0-alpha.4
-sudo cp offen-linux-amd64 /opt/offen/v0.1.0-alpha.4
-sudo ln -s /opt/offen/v0.1.0-alpha.4/offen-linux-amd64 /usr/bin/offen
-```
-
-Confirm that this worked by having `offen` print its version:
-
-```
-$ offen version
-INFO[0000] Current build created using                   revision=v0.1.0-alpha.4
-```
-
-You can now restart your service to pick up the changes:
-
-```
-sudo systemctl restart offen
-```
-
----
-
-__Heads Up__
-{: .label .label-red }
-
-At the moment __Offen is alpha stage software__. We are working hard to keep things stable for our users, but at the moment we cannot guarantee upgrade compatibility. Check the changelogs carefully to see if you can actually upgrade to a new release before replacing your running version.
-
-You can read more about our approach to versioning in [this blog post][versioning-blog].
-
-[releases]: https://github.com/offen/offen/releases
-[versioning-blog]: https://www.offen.dev/blog/untold-roads-versioning-early-stage-software/
 
 ---
 
@@ -133,7 +93,7 @@ sudo mkdir -p /var/www/.cache
 In your `/etc` directory create an `offen` directory and populate it with an empty file called `offen.env`. This will hold your application configuration.
 
 ```
-sudo mkdir -p /etc/offen
+sudo mkdir -p /etc/offen && sudo touch /etc/offen/offen.env
 ```
 
 ---
@@ -178,10 +138,11 @@ Offen needs to send transactional email for the following features:
 - Inviting a new user to an account
 - Resetting your password in case you forgot it
 
-To enable this, you can add SMTP credentials, namely __Host, User, Password and Port__ to the `offen.env` file:
+To enable this, you can add SMTP credentials, namely __Host, Sender, User, Password and Port__ to the `offen.env` file:
 
 ```
 OFFEN_SMTP_HOST="smtp.mysite.com"
+OFFEN_SMTP_SENDER="offen@mysite.com"
 OFFEN_SMTP_USER="me"
 OFFEN_SMTP_PASSWORD="my-password"
 OFFEN_SMTP_PORT="587"
@@ -218,6 +179,12 @@ If all of this is populated with the values you expect, you're ready to use Offe
 If you want to expose Offen to the internet, you need some other process to supervise it and restart it on failure or reboot. This tutorial uses `systemd` to do so for it ubiquity, but if you prefer any other tool to handle this for you it should work just as fine.
 
 First, create a service definiton in `/etc/systemd/system/offen.service`:
+
+```sh
+sudo touch /etc/systemd/system/offen.service
+```
+
+and populate it with the following content:
 
 ```
 [Unit]
@@ -278,3 +245,40 @@ If you want to uninstall the service from your system, stop and disable the `off
 sudo systemctl stop offen
 sudo systemctl disable offen
 ```
+
+## Updating the Version in Use
+
+To update to a new version of Offen, download the contents of the newest release into a new directory in `/opt/offen` and update the symlink in `/usr/bin`:
+
+```
+curl -L https://get.offen.dev | tar -xvz
+md5sum -c checksums.txt # check that your download contains the expected files
+sudo mkdir -p /opt/offen/v0.1.0-alpha.4
+sudo cp offen-linux-amd64 /opt/offen/v0.1.0-alpha.4
+sudo ln -s /opt/offen/v0.1.0-alpha.4/offen-linux-amd64 /usr/bin/offen
+```
+
+Confirm that this worked by having `offen` print its version:
+
+```
+$ offen version
+INFO[0000] Current build created using                   revision=v0.1.0-alpha.4
+```
+
+You can now restart your service to pick up the changes:
+
+```
+sudo systemctl restart offen
+```
+
+---
+
+__Heads Up__
+{: .label .label-red }
+
+At the moment __Offen is alpha stage software__. We are working hard to keep things stable for our users, but at the moment we cannot guarantee upgrade compatibility. Check the changelogs carefully to see if you can actually upgrade to a new release before replacing your running version.
+
+You can read more about our approach to versioning in [this blog post][versioning-blog].
+
+[releases]: https://github.com/offen/offen/releases
+[versioning-blog]: https://www.offen.dev/blog/untold-roads-versioning-early-stage-software/
