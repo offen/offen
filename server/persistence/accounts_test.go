@@ -60,12 +60,9 @@ func TestPersistenceLayer_GetAccount(t *testing.T) {
 			true,
 			[]assertion{
 				func(q interface{}) error {
-					if query, ok := q.(FindAccountQueryIncludeEvents); ok {
-						if query.Since != "" {
-							return fmt.Errorf("unexpected since parameter %v", query.Since)
-						}
-						if query.AccountID != "account-id" {
-							return fmt.Errorf("unexpected account id parameter %v", query.AccountID)
+					if query, ok := q.(FindAccountQueryActiveByID); ok {
+						if string(query) != "account-id" {
+							return fmt.Errorf("unexpected account id %v", query)
 						}
 						return nil
 					}
@@ -150,12 +147,9 @@ func TestPersistenceLayer_GetAccount(t *testing.T) {
 			false,
 			[]assertion{
 				func(q interface{}) error {
-					if query, ok := q.(FindAccountQueryIncludeEvents); ok {
-						if query.Since != "since" {
-							return fmt.Errorf("unexpected since parameter %v", query.Since)
-						}
-						if query.AccountID != "account-id" {
-							return fmt.Errorf("unexpected account id parameter %v", query.AccountID)
+					if query, ok := q.(FindAccountQueryActiveByID); ok {
+						if string(query) != "account-id" {
+							return fmt.Errorf("unexpected account id %v", query)
 						}
 						return nil
 					}

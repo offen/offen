@@ -12,13 +12,20 @@ import (
 )
 
 func (p *persistenceLayer) GetAccount(accountID string, includeEvents bool, eventsSince string) (AccountResult, error) {
-	account, err := p.dal.FindAccount(FindAccountQueryIncludeEvents{
-		AccountID: accountID,
-		Since:     eventsSince,
-	})
+	var account Account
+	var err error
+	if includeEvents {
+		account, err = p.dal.FindAccount(FindAccountQueryIncludeEvents{
+			AccountID: accountID,
+			Since:     eventsSince,
+		})
+	} else {
+		account, err = p.dal.FindAccount(FindAccountQueryActiveByID(accountID))
+	}
 	if err != nil {
 		return AccountResult{}, fmt.Errorf("persistence: error looking up account data: %w", err)
 	}
+
 	result := AccountResult{
 		AccountID: account.AccountID,
 		Name:      account.Name,
@@ -61,7 +68,7 @@ func (p *persistenceLayer) GetAccount(accountID string, includeEvents bool, even
 }
 
 func (p *persistenceLayer) AssociateUserSecret(accountID, userID, encryptedUserSecret string) error {
-	account, err := p.dal.FindAccount(FindAccountQueryByID(accountID))
+	account, err := p.dal.FindAccount(FindAccountQueryActiveByID(accountID))
 	if err != nil {
 		return fmt.Errorf(`persistence: error looking up account with id "%s": %w`, accountID, err)
 	}
