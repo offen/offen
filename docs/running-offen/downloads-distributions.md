@@ -45,15 +45,15 @@ The `latest` channel gives you the most recent build from the `development` bran
 
 Binary files can be downloaded from our [GitHub repository][repo-releases] or using `get.offen.dev`. The most recent release [is available here][most-recent].
 
-Downloading `https://get.offen.dev` will give you a tarball containing the most recent tagged release. If you specify a version or channel like `https://get.offen.dev/v0.1.0-alpha.3` you will download that specific version.
+Downloading `https://get.offen.dev` will give you a tarball containing the most recent tagged release. If you specify a version or channel like `https://get.offen.dev/v0.1.0-alpha.4` you will download that specific version.
 
 ```sh
 # most recent release
 curl -L https://get.offen.dev
 # most recent build from the latest channel
 curl -L https://get.offen.dev/latest
-# build for v0.1.0-alpha.3
-curl -L https://get.offen.dev/v0.1.0-alpha.3
+# build for v0.1.0-alpha.4
+curl -L https://get.offen.dev/v0.1.0-alpha.4
 ```
 
 ---
@@ -71,8 +71,8 @@ The archive file currently contains the binaries __for all supported operating s
 Docker images are available as `offen/offen` on [Docker Hub][docker-hub]. Tagged releases are available under the respective tag (e.g. `offen/offen:v0.1.0`). The `stable` and `latest` channel are available as image tags as well.
 
 ```sh
-# v0.1.0-alpha.3 release
-docker pull offen/offen:v0.1.0-alpha.3
+# v0.1.0-alpha.4 release
+docker pull offen/offen:v0.1.0-alpha.4
 # latest channel
 docker pull offen/offen:latest
 ```

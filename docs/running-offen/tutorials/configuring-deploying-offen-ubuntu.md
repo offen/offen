@@ -42,15 +42,15 @@ Start by creating the `/opt/offen` directory:
 sudo mkdir -p /opt/offen
 ```
 
-Untar the archive you downloaded and look for the binary called `offen-linux-amd64`. Put this file in a subdirectory of `/opt/offen` that specifies its version. This example is using the `v0.1.0-alpha.3` release:
+Untar the archive you downloaded and look for the binary called `offen-linux-amd64`. Put this file in a subdirectory of `/opt/offen` that specifies its version. This example is using the `v0.1.0-alpha.4` release:
 
 ```
 mkdir -p /tmp/offen-download && cd /tmp/offen-download
 curl -L https://get.offen.dev | tar -xvz
 md5sum -c checksums.txt # check that your download contains the expected files
-sudo mkdir -p /opt/offen/v0.1.0-alpha.3
-sudo cp offen-linux-amd64 /opt/offen/v0.1.0-alpha.3
-sudo ln -s /opt/offen/v0.1.0-alpha.3/offen-linux-amd64 /usr/bin/offen
+sudo mkdir -p /opt/offen/v0.1.0-alpha.4
+sudo cp offen-linux-amd64 /opt/offen/v0.1.0-alpha.4
+sudo ln -s /opt/offen/v0.1.0-alpha.4/offen-linux-amd64 /usr/bin/offen
 ```
 
 You can confirm that your installation is working as expected like this:
@@ -59,7 +59,7 @@ You can confirm that your installation is working as expected like this:
 $ which offen
 /usr/bin/offen
 $ offen version
-INFO[0000] Current build created using                   revision=v0.1.0-alpha.3
+INFO[0000] Current build created using                   revision=v0.1.0-alpha.4
 ```
 
 ---
@@ -253,16 +253,16 @@ To update to a new version of Offen, download the contents of the newest release
 ```
 curl -L https://get.offen.dev | tar -xvz
 md5sum -c checksums.txt # check that your download contains the expected files
-sudo mkdir -p /opt/offen/v0.1.0-alpha.4
-sudo cp offen-linux-amd64 /opt/offen/v0.1.0-alpha.4
-sudo ln -s /opt/offen/v0.1.0-alpha.4/offen-linux-amd64 /usr/bin/offen
+sudo mkdir -p /opt/offen/v0.1.0-alpha.12
+sudo cp offen-linux-amd64 /opt/offen/v0.1.0-alpha.12
+sudo ln -s /opt/offen/v0.1.0-alpha.12/offen-linux-amd64 /usr/bin/offen
 ```
 
 Confirm that this worked by having `offen` print its version:
 
 ```
 $ offen version
-INFO[0000] Current build created using                   revision=v0.1.0-alpha.4
+INFO[0000] Current build created using                   revision=v0.1.0-alpha.12
 ```
 
 You can now restart your service to pick up the changes:
