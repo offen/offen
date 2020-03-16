@@ -1,3 +1,8 @@
+/**
+ * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 var assert = require('assert')
 
 var stats = require('./stats')
@@ -352,6 +357,36 @@ describe('src/stats.js', function () {
       return stats.exitPages([])
         .then(function (result) {
           assert.deepStrictEqual(result, [])
+        })
+    })
+  })
+
+  describe('stats.newUsers(events, allEvents)', function () {
+    it('calculates the number of new users in a range compared to all events', function () {
+      return stats.newUsers(
+        [
+          { eventId: 'e-03', secretId: 's-01' },
+          { eventId: 'e-04', secretId: 's-99' },
+          { eventId: 'e-05', secretId: 's-99' },
+          { eventId: 'e-06', secretId: 's-01' }
+        ],
+        [
+          { eventId: 'e-01', secretId: 's-99' },
+          { eventId: 'e-02', secretId: 's-00' },
+          { eventId: 'e-03', secretId: 's-01' },
+          { eventId: 'e-04', secretId: 's-99' },
+          { eventId: 'e-05', secretId: 's-99' },
+          { eventId: 'e-06', secretId: 's-01' }
+        ]
+      )
+        .then(function (result) {
+          assert.strictEqual(result, 0.5)
+        })
+    })
+    it('returns zero when given no events', function () {
+      return stats.newUsers([], [])
+        .then(function (result) {
+          assert.strictEqual(result, 0)
         })
     })
   })

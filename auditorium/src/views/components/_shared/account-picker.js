@@ -1,8 +1,13 @@
+/**
+ * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /** @jsx h */
 const { h } = require('preact')
 
 const AccountPicker = (props) => {
-  const { accounts, selectedId, headline } = props
+  const { accounts, selectedId, headline, range, resolution } = props
 
   let body = null
   if (!Array.isArray(accounts) || !accounts.length) {
@@ -23,9 +28,14 @@ const AccountPicker = (props) => {
           buttonClass = 'b link dim dib bt bw2 b--mid-gray pv2 mb2 mr3 mid-gray'
         }
 
+        let query = null
+        if (range || resolution) {
+          query = new window.URLSearchParams({ range, resolution })
+        }
+
         return (
           <li class='bt b--moon-gray' key={idx}>
-            <a href={`/auditorium/${account.accountId}/`} class={buttonClass}>
+            <a href={`/auditorium/${account.accountId}/${query ? `?${query}` : ''}`} class={buttonClass}>
               {account.accountName}
             </a>
           </li>

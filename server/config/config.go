@@ -1,3 +1,6 @@
+// Copyright 2020 - Offen Authors <hioffen@posteo.de>
+// SPDX-License-Identifier: Apache-2.0
+
 package config
 
 import (
@@ -103,6 +106,11 @@ func persistSettings(update map[string]string, envFile string) error {
 	return nil
 }
 
+type autopopulatedValue struct {
+	key     string
+	isEmpty func() bool
+}
+
 // New returns a new runtime configuration
 func New(populateMissing bool, override string) (*Config, error) {
 	var c Config
@@ -132,37 +140,26 @@ func New(populateMissing bool, override string) (*Config, error) {
 	}
 
 	err := envconfig.Process("offen", &c)
-	if err != nil && !populateMissing {
+	if err != nil {
 		return &c, fmt.Errorf("config: error processing configuration: %w", err)
 	}
 
-	// some deploy targets have custom overrides for creating the
-	// runtime configuration
-	switch c.App.DeployTarget {
-	case DeployTargetHeroku:
-		if err := applyHerokuSpecificOverrides(&c); err != nil {
-			return &c, fmt.Errorf("config: error applying deploy target specific rules: %w", err)
-		}
-	}
-
-	if c.Secrets.CookieExchange.IsZero() {
-		cookieSecret, cookieSecretErr := keys.GenerateRandomBytes(keys.DefaultSecretLength)
-		if cookieSecretErr != nil {
-			return &c, fmt.Errorf("config: error creating cookie secret: %w", cookieSecretErr)
-		}
-		c.Secrets.CookieExchange = Bytes(cookieSecret)
-	}
-
-	if err != nil && populateMissing {
+	if populateMissing {
 		if envFile == "" {
 			return nil, errors.New("config: unable to find env file to persist settings as no env file could be found")
 		}
 		update := map[string]string{}
-		for _, key := range []string{"OFFEN_SECRETS_COOKIEEXCHANGE"} {
+		for _, val := range []autopopulatedValue{
+			{"OFFEN_SECRETS_COOKIEEXCHANGE", c.Secrets.CookieExchange.IsZero},
+		} {
+			if !val.isEmpty() {
+				fmt.Println("val not empty, skipping")
+				continue
+			}
 			secret, err := keys.GenerateRandomValue(keys.DefaultSecretLength)
-			update[key] = secret
+			update[val.key] = secret
 			if err != nil {
-				return nil, fmt.Errorf("config: error creating secret for use as %s: %w", key, err)
+				return nil, fmt.Errorf("config: error creating secret for use as %s: %w", val.key, err)
 			}
 		}
 
@@ -175,6 +172,23 @@ func New(populateMissing bool, override string) (*Config, error) {
 			err = ErrPopulatedMissing
 		}
 		return result, err
+	}
+
+	if c.Secrets.CookieExchange.IsZero() {
+		cookieSecret, cookieSecretErr := keys.GenerateRandomBytes(keys.DefaultSecretLength)
+		if cookieSecretErr != nil {
+			return &c, fmt.Errorf("config: error creating cookie one-off secret: %w", cookieSecretErr)
+		}
+		c.Secrets.CookieExchange = Bytes(cookieSecret)
+	}
+
+	// some deploy targets have custom overrides for creating the
+	// runtime configuration
+	switch c.App.DeployTarget {
+	case DeployTargetHeroku:
+		if err := applyHerokuSpecificOverrides(&c); err != nil {
+			return &c, fmt.Errorf("config: error applying deploy target specific rules: %w", err)
+		}
 	}
 
 	return &c, nil

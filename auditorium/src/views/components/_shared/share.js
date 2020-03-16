@@ -1,3 +1,8 @@
+/**
+ * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /** @jsx h */
 const { h, Fragment } = require('preact')
 const { useState } = require('preact/hooks')
@@ -28,10 +33,10 @@ const Share = (props) => {
         invitee: invitee,
         emailAddress: emailAddress,
         password: formData.password,
-        urlTemplate: window.location.origin + '/join/{userId}/{token}/',
+        urlTemplate: window.location.origin + '/join/{token}/',
         accountId: accountId
       },
-      __('An invite email has been sent.'),
+      __('An invite email has been sent to <strong>%s</strong>.', invitee),
       __('There was an error inviting the user, please try again.')
     )
       .then(() => {
@@ -54,6 +59,7 @@ const Share = (props) => {
           ? (
             <a
               role='button'
+              aria-label={__('Toggle display of account sharing')}
               class={classnames('dib', 'label-toggle', isCollapsed ? 'label-toggle--rotate' : null)}
             />
           )

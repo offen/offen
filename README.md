@@ -18,7 +18,7 @@ If you're curious, give it a test drive right now:
 docker run --rm -it -p 9876:9876 offen/offen:latest demo -port 9876
 ```
 
-This creates ephemeral one-off installation running on `http://localhost:9876`.
+This creates ephemeral one-off installation running on `http://localhost:9876`. There, you can log in using the account `demo@offen.dev` and password `demo`.
 
 ---
 

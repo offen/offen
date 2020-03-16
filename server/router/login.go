@@ -1,3 +1,6 @@
+// Copyright 2020 - Offen Authors <hioffen@posteo.de>
+// SPDX-License-Identifier: Apache-2.0
+
 package router
 
 import (
@@ -116,6 +119,7 @@ func (rt *router) postChangePassword(c *gin.Context) {
 
 type changeEmailRequest struct {
 	EmailAddress string `json:"emailAddress"`
+	EmailCurrent string `json:"emailCurrent"`
 	Password     string `json:"password"`
 }
 
@@ -136,7 +140,7 @@ func (rt *router) postChangeEmail(c *gin.Context) {
 		).Pipe(c)
 		return
 	}
-	if err := rt.db.ChangeEmail(accountUser.AccountUserID, req.EmailAddress, req.Password); err != nil {
+	if err := rt.db.ChangeEmail(accountUser.AccountUserID, req.EmailAddress, req.EmailCurrent, req.Password); err != nil {
 		newJSONError(
 			fmt.Errorf("router: error changing email address: %v", err),
 			http.StatusBadRequest,

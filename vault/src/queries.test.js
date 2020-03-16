@@ -1,3 +1,8 @@
+/**
+ * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 var assert = require('assert')
 var subDays = require('date-fns/sub_days')
 var Unibabel = require('unibabel').Unibabel
@@ -55,7 +60,7 @@ describe('src/queries.js', function () {
                 'referrers', 'pages', 'pageviews', 'bounceRate', 'loss',
                 'avgPageload', 'avgPageDepth', 'landingPages', 'exitPages',
                 'mobileShare', 'livePages', 'liveUsers', 'campaigns',
-                'sources', 'retentionMatrix', 'empty', 'resolution', 'range'
+                'sources', 'retentionMatrix', 'empty', 'newUsers', 'resolution', 'range'
               ]
             )
             assert.strictEqual(data.uniqueUsers, 0)
@@ -320,7 +325,7 @@ describe('src/queries.js', function () {
                 'referrers', 'pages', 'pageviews', 'bounceRate', 'loss',
                 'avgPageload', 'avgPageDepth', 'landingPages', 'exitPages',
                 'mobileShare', 'livePages', 'liveUsers', 'campaigns',
-                'sources', 'retentionMatrix', 'empty', 'resolution', 'range'
+                'sources', 'retentionMatrix', 'empty', 'newUsers', 'resolution', 'range'
               ]
             )
 
@@ -371,7 +376,7 @@ describe('src/queries.js', function () {
                 'referrers', 'pages', 'pageviews', 'bounceRate', 'loss',
                 'avgPageload', 'avgPageDepth', 'landingPages', 'exitPages',
                 'mobileShare', 'livePages', 'liveUsers', 'campaigns',
-                'sources', 'retentionMatrix', 'empty', 'resolution', 'range'
+                'sources', 'retentionMatrix', 'empty', 'newUsers', 'resolution', 'range'
               ]
             )
 
@@ -415,7 +420,7 @@ describe('src/queries.js', function () {
                 'referrers', 'pages', 'pageviews', 'bounceRate', 'loss',
                 'avgPageload', 'avgPageDepth', 'landingPages', 'exitPages',
                 'mobileShare', 'livePages', 'liveUsers', 'campaigns',
-                'sources', 'retentionMatrix', 'empty', 'resolution', 'range'
+                'sources', 'retentionMatrix', 'empty', 'newUsers', 'resolution', 'range'
               ]
             )
 

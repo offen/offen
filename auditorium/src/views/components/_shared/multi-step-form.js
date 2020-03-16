@@ -1,10 +1,15 @@
+/**
+ * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /** @jsx h */
 const { h } = require('preact')
 const { useState, useRef, useEffect } = require('preact/hooks')
 const { forwardRef } = require('preact/compat')
 
 const MultiStepForm = (props) => {
-  const { onsubmit, children, ...otherProps } = props
+  const { onsubmit, children, steps, ...otherProps } = props
 
   const autofocusRef = useRef(null)
   const [step, setStep] = useState(0)
@@ -29,14 +34,14 @@ const MultiStepForm = (props) => {
       values[key] = value
     })
     Object.assign(formData.current, values)
-    if (step < props.steps.length - 1) {
+    if (step < steps.length - 1) {
       setStep(step + 1)
     } else {
       onsubmit(formData.current, handleCancel)
     }
   }
 
-  const current = forwardRef(props.steps[step])({
+  const current = forwardRef(steps[step])({
     onCancel: handleCancel,
     ref: autofocusRef
   })

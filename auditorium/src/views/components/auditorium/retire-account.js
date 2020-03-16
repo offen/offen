@@ -1,3 +1,8 @@
+/**
+ * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /** @jsx h */
 const { h, Fragment } = require('preact')
 const { useState } = require('preact/hooks')
@@ -84,7 +89,11 @@ const RetireAccount = (props) => {
               <h4 class='f4 normal ma0'>
                 {__('Retire account')}
               </h4>
-              <a role='button' class={classnames('dib', 'label-toggle', isCollapsed ? 'label-toggle--rotate' : null)} />
+              <a
+                class={classnames('dib', 'label-toggle', isCollapsed ? 'label-toggle--rotate' : null)}
+                aria-label={__('Toggle display of Retire Account block')}
+                role='button'
+              />
             </div>
           )
         }}

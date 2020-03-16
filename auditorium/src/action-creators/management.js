@@ -1,28 +1,40 @@
+/**
+ * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 const errors = require('./errors')
 
-exports.inviteUser = (payload, onSuccessMessage, onFailureMessage) => (dispatch, getState, postMessage) => {
+exports.handleCopy = (message) => ({
+  type: 'COPY_SUCCESS',
+  payload: {
+    flash: message
+  }
+})
+
+exports.shareAccount = (payload, onSuccessMessage, onFailureMessage) => (dispatch, getState, postMessage) => {
   dispatch({
-    type: 'INVITE_USER_REQUEST',
+    type: 'SHARE_ACCOUNT_REQUEST',
     payload: null
   })
 
   return postMessage({
-    type: 'INVITE_USER',
+    type: 'SHARE_ACCOUNT',
     payload: payload
   })
     .then((response) => {
       switch (response.type) {
-        case 'INVITE_USER_SUCCESS':
+        case 'SHARE_ACCOUNT_SUCCESS':
           dispatch({
-            type: 'INVITE_USER_SUCCESS',
+            type: 'SHARE_ACCOUNT_SUCCESS',
             payload: {
               flash: onSuccessMessage
             }
           })
           return
-        case 'INVITE_USER_FAILURE':
+        case 'SHARE_ACCOUNT_FAILURE':
           dispatch({
-            type: 'INVITE_USER_FAILURE',
+            type: 'SHARE_ACCOUNT_FAILURE',
             payload: {
               flash: onFailureMessage
             }

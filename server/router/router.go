@@ -1,3 +1,6 @@
+// Copyright 2020 - Offen Authors <hioffen@posteo.de>
+// SPDX-License-Identifier: Apache-2.0
+
 package router
 
 import (
@@ -201,8 +204,8 @@ func New(opts ...Config) http.Handler {
 		api.POST("/change-email", accountAuth, rt.postChangeEmail)
 		api.POST("/forgot-password", rt.postForgotPassword)
 		api.POST("/reset-password", rt.postResetPassword)
-		api.POST("/invite/:accountID", accountAuth, rt.postInviteUser)
-		api.POST("/invite", accountAuth, rt.postInviteUser)
+		api.POST("/share-account/:accountID", accountAuth, rt.postShareAccount)
+		api.POST("/share-account", accountAuth, rt.postShareAccount)
 		api.POST("/join", rt.postJoin)
 		api.GET("/setup", rt.getSetup)
 		api.POST("/setup", rt.postSetup)

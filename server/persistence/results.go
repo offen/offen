@@ -1,3 +1,6 @@
+// Copyright 2020 - Offen Authors <hioffen@posteo.de>
+// SPDX-License-Identifier: Apache-2.0
+
 package persistence
 
 import "time"
@@ -35,16 +38,16 @@ type AccountResult struct {
 	Created             time.Time             `json:"created,omitempty"`
 }
 
+// ShareAccountResult is a successful invitation of a user
+type ShareAccountResult struct {
+	UserExistsWithPassword bool
+	AccountNames           []string
+}
+
 // LoginResult is a successful account user authentication response.
 type LoginResult struct {
 	AccountUserID string               `json:"accountUserId"`
 	Accounts      []LoginAccountResult `json:"accounts"`
-}
-
-// InviteUserResult is a successful invitation of a user
-type InviteUserResult struct {
-	UserExistsWithPassword bool
-	AccountIDs             []string
 }
 
 // CanAccessAccount checks whether the login result is allowed to access the

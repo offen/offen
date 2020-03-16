@@ -46,7 +46,7 @@ RUN cp -a /code/deps/node_modules /code/vault/
 ENV NODE_ENV production
 RUN npm run build
 
-FROM golang:1.13 as statik
+FROM golang:1.14 as statik
 
 WORKDIR /code/server
 COPY ./server /code/server
@@ -59,7 +59,7 @@ RUN go get github.com/rakyll/statik
 RUN statik -dest public -src public
 RUN statik -dest locales -src locales
 
-FROM karalabe/xgo-1.13.x as compiler
+FROM techknowlogick/xgo:go-1.14.x as compiler
 
 ARG rev
 ENV GIT_REVISION=$rev

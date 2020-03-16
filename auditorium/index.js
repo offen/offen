@@ -1,3 +1,8 @@
+/**
+ * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /** @jsx h */
 const { render, h } = require('preact')
 const { useRef, useErrorBoundary } = require('preact/hooks')
@@ -25,6 +30,7 @@ const flashReducer = require('./src/reducers/flash')
 const staleReducer = require('./src/reducers/stale')
 const modelReducer = require('./src/reducers/model')
 const redirectMiddleware = require('./src/middleware/redirect')
+const flashMessagesMiddleware = require('./src/middleware/flash-messages')
 const navigation = require('./src/action-creators/navigation')
 const errors = require('./src/action-creators/errors')
 
@@ -39,7 +45,8 @@ const middlewares = [
   thunk.withExtraArgument(
     msg => vaultInstance.then(postMessage => postMessage(msg))
   ),
-  redirectMiddleware
+  redirectMiddleware,
+  flashMessagesMiddleware
 ]
 
 if (process.env.NODE_ENV !== 'production') {
@@ -67,7 +74,7 @@ const App = () => {
   const previousPath = useRef(null)
   const handleRouteChange = (e) => {
     if (previousPath.current !== e.current.props.path) {
-      store.dispatch(navigation.navigate(e.url, e.current.props.persistFlash))
+      store.dispatch(navigation.navigate(e.url))
       window.scrollTo(0, 0)
     }
     previousPath.current = e.current.props.path
@@ -76,16 +83,15 @@ const App = () => {
   return (
     <Provider store={store}>
       <Router onChange={handleRouteChange}>
-        <IndexView path='/' persistFlash />
-        <LoginView path='/login/' persistFlash />
+        <IndexView path='/' />
+        <LoginView path='/login/' />
         <Auditorium.UserView path='/auditorium/' />
         <Auditorium.OperatorView path='/auditorium/:accountId' isOperator />
         <ConsoleView path='/console/' />
         <SetupView path='/setup/' />
         <ForgotPasswordView path='/forgot-password/' />
         <ResetPasswordView path='/reset-password/:token' />
-        <JoinView path='/join/new/:token' />
-        <JoinView path='/join/addition/:token' isAddition />
+        <JoinView path='/join/:token' />
         <NotFoundView default />
       </Router>
     </Provider>

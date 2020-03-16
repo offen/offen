@@ -1,3 +1,8 @@
+/**
+ * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 const errors = require('./errors')
 
 exports.login = (username, password, onFailureMessage) => (dispatch, getState, postMessage) => {
@@ -42,7 +47,7 @@ exports.login = (username, password, onFailureMessage) => (dispatch, getState, p
     .catch((err) => dispatch(errors.unrecoverable(err)))
 }
 
-exports.logout = (onFailureMessage) => (dispatch, getState, postMessage) => {
+exports.logout = (onSuccessMessage, onFailureMessage) => (dispatch, getState, postMessage) => {
   dispatch({
     type: 'LOGOUT_REQUEST',
     payload: null
@@ -57,7 +62,9 @@ exports.logout = (onFailureMessage) => (dispatch, getState, postMessage) => {
         case 'LOGOUT_SUCCESS':
           dispatch({
             type: 'LOGOUT_SUCCESS',
-            payload: null
+            payload: {
+              flash: onSuccessMessage
+            }
           })
           return
         case 'LOGOUT_FAILURE':

@@ -1,3 +1,8 @@
+/**
+ * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /** @jsx h */
 const { h } = require('preact')
 const { memo } = require('preact/compat')
@@ -11,8 +16,14 @@ const _ = require('underscore')
 
 const Plot = createPlotlyComponent(Plotly)
 
+const tickColorFade = '#CCCCCC'
+const barColorVisitors = '#137752'
+const barColorVisitorsFade = '#19A974'
+const barColorViews = '#19A974'
+const barColorViewsFade = '#9EEBCF'
+
 const Chart = (props) => {
-  const { model, isOperator, resolution } = props
+  const { model, isOperator, resolution = 'days' } = props
   const { pageviews } = model
   const x = pageviews.map(function (item) {
     return item.date
@@ -42,6 +53,9 @@ const Chart = (props) => {
         if (index === 0 || isFirstDayOfMonth(date)) {
           result = date.toLocaleDateString(process.env.LOCALE, { month: 'short' }) + ' ' + result
         }
+        if (isWeekend(date)) {
+          return `<span style="font-weight: bold; color: ${tickColorFade}">${result}</span>`
+        }
         return result
     }
   })
@@ -55,9 +69,9 @@ const Chart = (props) => {
       marker: {
         color: x.map(function (date) {
           if (resolution !== 'days') {
-            return '#137752'
+            return barColorVisitors
           }
-          return isWeekend(date) ? '#19A974' : '#137752'
+          return isWeekend(date) ? barColorVisitorsFade : barColorVisitors
         })
       },
       name: isOperator ? 'Visitors' : 'Accounts'
@@ -73,9 +87,9 @@ const Chart = (props) => {
       marker: {
         color: x.map(function (date) {
           if (resolution !== 'days') {
-            return '#19A974'
+            return barColorViews
           }
-          return isWeekend(date) ? '#9eebcf' : '#19A974'
+          return isWeekend(date) ? barColorViewsFade : barColorViews
         })
       },
       name: 'Pageviews'
@@ -116,7 +130,8 @@ const Chart = (props) => {
       <h4 class='f4 normal mt0 mb3'>
         {__('Page views and %s', isOperator ? __('visitors') : __('accounts'))}
       </h4>
-      <div class='mb4 chart flex-auto'>
+      {/* plotly sometimes is unable to assign a proper height to the svg unless we set its default height as min-height */}
+      <div class='mb4 chart flex-auto' style={{ minHeight: 450 }}>
         {yTotal.some((v) => v > 0)
           ? (
             <Plot

@@ -1,3 +1,8 @@
+/**
+ * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /** @jsx h */
 const { h } = require('preact')
 const { forwardRef } = require('preact/compat')
@@ -24,9 +29,6 @@ const Form = forwardRef((props, ref) => {
       <h4 class='f4 normal mt0 mb3'>
         {__('Reset password')}
       </h4>
-      <p>
-        {__('Warning: Resetting your password will invalidate all pending account invites for your user.')}
-      </p>
       <form class='mw6 center' onsubmit={handleSubmit}>
         <LabeledInput
           name='email-address'

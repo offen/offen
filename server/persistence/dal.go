@@ -1,3 +1,6 @@
+// Copyright 2020 - Offen Authors <hioffen@posteo.de>
+// SPDX-License-Identifier: Apache-2.0
+
 package persistence
 
 // DataAccessLayer provides a database agnostic interface for storing data. All
@@ -95,10 +98,6 @@ type FindAccountUserRelationshipsQueryByAccountUserID string
 // DeleteAccountUserRelationshipsQueryByAccountID requests deletion of all relationships
 // with the given account id.
 type DeleteAccountUserRelationshipsQueryByAccountID string
-
-// DeleteAccountUserRelationshipQueryByRelationshipID requests deletion of all relationships
-// with the given relationship id.
-type DeleteAccountUserRelationshipQueryByRelationshipID string
 
 // FindAccountUsersQueryAllAccountUsers requests all account users.
 type FindAccountUsersQueryAllAccountUsers struct {

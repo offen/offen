@@ -1,3 +1,8 @@
+/**
+ * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 var assert = require('assert')
 
 var webCrypto = require('./web-crypto')
@@ -27,13 +32,13 @@ function enqueueCryptoTests (crypto, src) {
           .createSymmetricKey()
           .then(function (_jwk) {
             jwk = _jwk
-            return crypto.encryptSymmetricWith(jwk)('alice and bob')
+            return crypto.encryptSymmetricWith(jwk)('alice – bob ✔️')
           })
           .then(function (cipher) {
             return crypto.decryptSymmetricWith(jwk)(cipher)
           })
           .then(function (result) {
-            assert.strictEqual(result, 'alice and bob')
+            assert.strictEqual(result, 'alice – bob ✔️')
           })
       })
     })
@@ -58,12 +63,12 @@ function enqueueCryptoTests (crypto, src) {
       }
 
       it('encrypts and decrypts string values', function () {
-        return crypto.encryptAsymmetricWith(publicJWK)('alice and bob')
+        return crypto.encryptAsymmetricWith(publicJWK)('alice – bob ✔️')
           .then(function (cipher) {
             return crypto.decryptAsymmetricWith(privateJWK)(cipher)
           })
           .then(function (result) {
-            assert.strictEqual(result, 'alice and bob')
+            assert.strictEqual(result, 'alice – bob ✔️')
           })
       })
     })

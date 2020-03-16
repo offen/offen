@@ -1,3 +1,6 @@
+// Copyright 2020 - Offen Authors <hioffen@posteo.de>
+// SPDX-License-Identifier: Apache-2.0
+
 package router
 
 import (
@@ -11,15 +14,15 @@ import (
 	"github.com/offen/offen/server/persistence"
 )
 
-type inviteUserRequest struct {
+type shareAccountRequest struct {
 	InviteeEmailAddress  string `json:"invitee"`
 	ProviderEmailAddress string `json:"emailAddress"`
 	ProviderPassword     string `json:"password"`
 	URLTemplate          string `json:"urlTemplate"`
 }
 
-func (rt *router) postInviteUser(c *gin.Context) {
-	var req inviteUserRequest
+func (rt *router) postShareAccount(c *gin.Context) {
+	var req shareAccountRequest
 	if err := c.BindJSON(&req); err != nil {
 		newJSONError(
 			fmt.Errorf("router: error decoding response body: %w", err),
@@ -68,7 +71,7 @@ func (rt *router) postInviteUser(c *gin.Context) {
 		return
 	}
 
-	result, err := rt.db.InviteUser(req.InviteeEmailAddress, req.ProviderEmailAddress, req.ProviderPassword, c.Param("accountID"))
+	result, err := rt.db.ShareAccount(req.InviteeEmailAddress, req.ProviderEmailAddress, req.ProviderPassword, c.Param("accountID"))
 	if err != nil {
 		newJSONError(
 			fmt.Errorf("router: error inviting user: %w", err),
@@ -77,7 +80,9 @@ func (rt *router) postInviteUser(c *gin.Context) {
 		return
 	}
 
-	if len(result.AccountIDs) == 0 {
+	// the user might have access to all accounts already in which case we
+	// do not want to send a confusing email
+	if len(result.AccountNames) == 0 {
 		newJSONError(
 			fmt.Errorf("router: user already has access to all requested accounts"),
 			http.StatusBadRequest,
@@ -85,27 +90,23 @@ func (rt *router) postInviteUser(c *gin.Context) {
 		return
 	}
 
-	signedCredentials, signErr := rt.cookieSigner.MaxAge(7*24*60*60).Encode("credentials", req.InviteeEmailAddress)
-	if signErr != nil {
-		rt.logError(signErr, "error signing token")
-		c.Status(http.StatusNoContent)
-		return
-	}
-
-	joinURL := strings.Replace(req.URLTemplate, "{token}", signedCredentials, -1)
-
 	var emailBody string
 	var bodyErr error
 	var subject string
 	if result.UserExistsWithPassword {
-		joinURL = strings.Replace(joinURL, "{userId}", "addition", -1)
 		emailBody, bodyErr = mailer.RenderMessage(
 			mailer.MessageExistingUserInvite,
-			map[string]interface{}{"url": joinURL, "count": len(result.AccountIDs)},
+			map[string]interface{}{"accountNames": result.AccountNames},
 		)
 		subject = "You have been added to additional accounts on Offen"
 	} else {
-		joinURL = strings.Replace(joinURL, "{userId}", "new", -1)
+		signedCredentials, signErr := rt.cookieSigner.MaxAge(7*24*60*60).Encode("credentials", req.InviteeEmailAddress)
+		if signErr != nil {
+			rt.logError(signErr, "error signing token")
+			c.Status(http.StatusNoContent)
+			return
+		}
+		joinURL := strings.Replace(req.URLTemplate, "{token}", signedCredentials, -1)
 		emailBody, bodyErr = mailer.RenderMessage(
 			mailer.MessageNewUserInvite,
 			map[string]interface{}{"url": joinURL},

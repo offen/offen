@@ -1,3 +1,6 @@
+// Copyright 2020 - Offen Authors <hioffen@posteo.de>
+// SPDX-License-Identifier: Apache-2.0
+
 package persistence
 
 import (
@@ -6,11 +9,11 @@ import (
 	"github.com/offen/offen/server/keys"
 )
 
-func (p *persistenceLayer) InviteUser(inviteeEmailAddress, providerEmailAddress, providerPassword, accountID string) (InviteUserResult, error) {
-	var result InviteUserResult
+func (p *persistenceLayer) ShareAccount(inviteeEmailAddress, providerEmailAddress, providerPassword, accountID string) (ShareAccountResult, error) {
+	var result ShareAccountResult
 	var invitedAccountUser *AccountUser
 
-	accountUsers, err := p.dal.FindAccountUsers(FindAccountUsersQueryAllAccountUsers{true, true})
+	accountUsers, err := p.dal.FindAccountUsers(FindAccountUsersQueryAllAccountUsers{true, false})
 	if err != nil {
 		return result, fmt.Errorf("persistence: error looking up account users: %w", err)
 	}
@@ -50,11 +53,6 @@ func (p *persistenceLayer) InviteUser(inviteeEmailAddress, providerEmailAddress,
 	var eligibleRelationships []AccountUserRelationship
 outer:
 	for _, relationship := range provider.Relationships {
-		if relationship.PasswordEncryptedKeyEncryptionKey == "" {
-			// the provider might have pending invitations which we do not
-			// want to copy over
-			continue
-		}
 		for _, existingRelationship := range invitedAccountUser.Relationships {
 			if relationship.AccountID == existingRelationship.AccountID {
 				// this makes sure no existing relationship for the accountID
@@ -65,7 +63,11 @@ outer:
 		if accountID == "" || relationship.AccountID == accountID {
 			// with no filter given, the invitee inherits all relationships from
 			// the provider
-			result.AccountIDs = append(result.AccountIDs, relationship.AccountID)
+			account, accountErr := p.dal.FindAccount(FindAccountQueryByID(relationship.AccountID))
+			if accountErr != nil {
+				return result, fmt.Errorf("persistence: error looking up account info for relationship %s: %w", relationship.RelationshipID, err)
+			}
+			result.AccountNames = append(result.AccountNames, account.Name)
 			eligibleRelationships = append(eligibleRelationships, relationship)
 		}
 	}
@@ -111,28 +113,28 @@ func (p *persistenceLayer) Join(emailAddress, password string) error {
 	}
 
 	if match.HashedPassword != "" {
-		if err := keys.CompareString(password, match.HashedPassword); err != nil {
-			return fmt.Errorf("persistence: passwords did not match: %w", err)
-		}
-	} else {
-		cipher, err := keys.HashString(password)
-		if err != nil {
-			return fmt.Errorf("persistence: hashing given password: %w", err)
-		}
-		match.HashedPassword = cipher.Marshal()
-		if err := p.dal.UpdateAccountUser(match); err != nil {
-			return fmt.Errorf("persistence: failed to update account user: %w", err)
-		}
+		return fmt.Errorf("persistence: user with email %s has already joined before", emailAddress)
+	}
+
+	cipher, err := keys.HashString(password)
+	if err != nil {
+		return fmt.Errorf("persistence: hashing given password: %w", err)
+	}
+	match.HashedPassword = cipher.Marshal()
+
+	txn, err := p.dal.Transaction()
+	if err != nil {
+		return fmt.Errorf("persistence: error creating transaction: %w", err)
+	}
+
+	if err := txn.UpdateAccountUser(match); err != nil {
+		txn.Rollback()
+		return fmt.Errorf("persistence: failed to update account user: %w", err)
 	}
 
 	emailDerivedKey, deriveErr := keys.DeriveKey(emailAddress, match.Salt)
 	if deriveErr != nil {
 		return fmt.Errorf("persistence: error deriving key from email: %w", deriveErr)
-	}
-
-	txn, err := p.dal.Transaction()
-	if err != nil {
-		return fmt.Errorf("persistence: error creating transaction: %w", err)
 	}
 
 	for _, relationship := range match.Relationships {

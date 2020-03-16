@@ -1,9 +1,13 @@
+/**
+ * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /** @jsx h */
 const { h } = require('preact')
-const _ = require('underscore')
 
 const RangeSelector = (props) => {
-  const { matches } = props
+  const { resolution, range: currentRange } = props
   const ranges = [
     { display: __('24 hours'), query: { range: '24', resolution: 'hours' } },
     { display: __('7 days'), query: null },
@@ -15,11 +19,9 @@ const RangeSelector = (props) => {
 
   const items = ranges.map(function (range, index) {
     let url = window.location.pathname
-    const current = _.pick(matches, ['range', 'resolution'])
-    const activeRange = _.isEqual(current, range.query || {})
-    const foreign = _.omit(matches, ['range', 'resolution', 'accountId'])
-    if (range.query || Object.keys(foreign).length) {
-      url += '?' + new window.URLSearchParams(Object.assign(foreign, range.query))
+    const activeRange = JSON.stringify({ range: currentRange, resolution }) === JSON.stringify(range.query || {})
+    if (range.query) {
+      url += '?' + new window.URLSearchParams(range.query)
     }
     var anchorRange = (
       <a href={url} class='link dim dib pv2 dark-green mt1 mb2 mr3'>

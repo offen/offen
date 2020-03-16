@@ -1,3 +1,8 @@
+/**
+ * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 var api = require('./api')
 var queries = require('./queries')
 var relayEvent = require('./relay-event')
@@ -214,9 +219,9 @@ function handleChangeCredentialsWith (api) {
       doRequest = function () {
         return api.changePassword(payload.currentPassword, payload.changedPassword)
       }
-    } else if (payload.emailAddress && payload.password) {
+    } else if (payload.emailCurrent && payload.emailAddress && payload.password) {
       doRequest = function () {
-        return api.changeEmail(payload.emailAddress, payload.password)
+        return api.changeEmail(payload.emailAddress, payload.emailCurrent, payload.password)
       }
     }
     return doRequest()
@@ -241,12 +246,12 @@ function handleResetPasswordWith (api) {
   })
 }
 
-exports.handleInviteUser = handleInviteUserWith(api)
-exports.handleInviteUserWith = handleInviteUserWith
+exports.handleShareAccount = handleShareAccountWith(api)
+exports.handleShareAccountWith = handleShareAccountWith
 
-function handleInviteUserWith (api) {
+function handleShareAccountWith (api) {
   return proxyThunk(function (payload) {
-    return api.inviteUser(payload.invitee, payload.emailAddress, payload.password, payload.urlTemplate, payload.accountId)
+    return api.shareAccount(payload.invitee, payload.emailAddress, payload.password, payload.urlTemplate, payload.accountId)
   })
 }
 

@@ -1,8 +1,14 @@
+/**
+ * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /** @jsx h */
 const { h, Fragment } = require('preact')
 const { connect } = require('react-redux')
 
 const HighlightBox = require('./highlight-box')
+const flash = require('./../../../action-creators/flash')
 
 const Layout = (props) => (
   <div class='f5 roboto dark-gray'>
@@ -15,14 +21,6 @@ const Layout = (props) => (
       </div>
     </div>
     <div class='mw8 center ph0 ph3-ns pb4'>
-      {props.flash
-        ? (
-          <div>
-            <p class='dib pa2 br2 ma0 mt3 ml3 ml0-ns mr3 mr0-ns bg-light-yellow'>
-              {props.flash}
-            </p>
-          </div>
-        ) : null}
       {props.error
         ? (
           <Fragment>
@@ -37,24 +35,41 @@ const Layout = (props) => (
     <div class='mw8 center flex flex-column flex-row-ns justify-between ph3 pb5 moon-gray'>
       <div>
         <p class='b ma0 mb1'>
-          Offen
+        Offen
         </p>
         <p class='ma0 mb2' dangerouslySetInnerHTML={{ __html: __('Transparent web analytics<br>for everyone') }} />
       </div>
       <div>
         <a href='https://www.offen.dev/' class='normal link dim moon-gray' target='_blank' rel='noopener noreferrer'>
-          www.offen.dev
+        www.offen.dev
         </a>
       </div>
     </div>
+    {props.flash.length
+      ? (
+        <div class='fixed bottom-0 bottom-2-ns w-100 ph4-ns'>
+          {props.flash.map((message) => (
+            <p
+              key={message.id}
+              class='pointer mw6 mv0 mt3-ns center ph3 pv4 bg-light-yellow shadow-1-ns b--black-10 bt bn-ns flex items-center'
+              onclick={() => props.handleExpire(message.id)}
+            >
+              <img src='/offen-icon-black.svg' alt='Offen logo' height='30' class='ma0 mr3' />
+              <span
+                dangerouslySetInnerHTML={{ __html: message.content }}
+              />
+            </p>
+          ))}
+        </div>
+      ) : null}
   </div>
 )
 
 const withLayout = () => (OriginalComponent) => {
   const WrappedComponent = (props) => {
-    const { error, flash, ...otherProps } = props
+    const { error, flash, handleExpire, ...otherProps } = props
     return (
-      <Layout error={error} flash={flash}>
+      <Layout error={error} flash={flash} handleExpire={handleExpire}>
         <OriginalComponent {...otherProps} />
       </Layout>
     )
@@ -65,7 +80,11 @@ const withLayout = () => (OriginalComponent) => {
     flash: state.flash
   })
 
-  return connect(mapStateToProps)(WrappedComponent)
+  const mapDispatchToProps = {
+    handleExpire: flash.expire
+  }
+
+  return connect(mapStateToProps, mapDispatchToProps)(WrappedComponent)
 }
 
 module.exports = withLayout

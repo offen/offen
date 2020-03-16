@@ -1,10 +1,17 @@
+/**
+ * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /** @jsx h */
 const { h, Fragment } = require('preact')
 const { useState } = require('preact/hooks')
 const classnames = require('classnames')
 
+const Format = require('./format')
+
 const Table = (props) => {
-  const { rows, onEmptyMessage = __('No data available for this view.'), limit = 10 } = props
+  const { rows, onEmptyMessage = __('No data available for this view.'), limit = 10, formatAs = 'count' } = props
   const [showAll, setShowAll] = useState(false)
 
   const hasMore = Array.isArray(rows) && rows.length > limit
@@ -17,7 +24,9 @@ const Table = (props) => {
             {row.key}
           </td>
           <td class='pv2 ph1'>
-            {row.count}
+            <Format formatAs={formatAs}>
+              {row.count}
+            </Format>
           </td>
         </tr>
       )

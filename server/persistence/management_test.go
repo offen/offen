@@ -1,3 +1,6 @@
+// Copyright 2020 - Offen Authors <hioffen@posteo.de>
+// SPDX-License-Identifier: Apache-2.0
+
 package persistence
 
 import (
@@ -8,7 +11,7 @@ import (
 	"github.com/offen/offen/server/keys"
 )
 
-type mockInviteUserDatabase struct {
+type mockShareAccountDatabase struct {
 	DataAccessLayer
 	findAcccountUsersResult []AccountUser
 	findAccountUsersErr     error
@@ -18,56 +21,60 @@ type mockInviteUserDatabase struct {
 	transactionErr          error
 }
 
-func (m *mockInviteUserDatabase) FindAccountUsers(interface{}) ([]AccountUser, error) {
+func (m *mockShareAccountDatabase) FindAccountUsers(interface{}) ([]AccountUser, error) {
 	return m.findAcccountUsersResult, m.findAccountUsersErr
 }
 
-func (m *mockInviteUserDatabase) CreateAccountUser(*AccountUser) error {
+func (m *mockShareAccountDatabase) CreateAccountUser(*AccountUser) error {
 	return m.createAccountUserErr
 }
 
-func (m *mockInviteUserDatabase) CreateAccountUserRelationship(*AccountUserRelationship) error {
+func (m *mockShareAccountDatabase) CreateAccountUserRelationship(*AccountUserRelationship) error {
 	return m.createRelationshipErr
 }
 
-func (m *mockInviteUserDatabase) Commit() error {
+func (m *mockShareAccountDatabase) Commit() error {
 	return m.commitErr
 }
 
-func (m *mockInviteUserDatabase) Rollback() error {
+func (m *mockShareAccountDatabase) Rollback() error {
 	return nil
 }
 
-func (m *mockInviteUserDatabase) Transaction() (Transaction, error) {
+func (m *mockShareAccountDatabase) Transaction() (Transaction, error) {
 	return m, m.transactionErr
 }
 
-func TestPersistenceLayer_InviteUser(t *testing.T) {
+func (m *mockShareAccountDatabase) FindAccount(interface{}) (Account, error) {
+	return Account{Name: "account-name", AccountID: "account-id"}, nil
+}
+
+func TestPersistenceLayer_ShareAccount(t *testing.T) {
 	tests := []struct {
 		name           string
-		dal            *mockInviteUserDatabase
+		dal            *mockShareAccountDatabase
 		invitee        string
 		email          string
 		password       string
 		accountID      string
-		expectedResult InviteUserResult
+		expectedResult ShareAccountResult
 		expectErr      bool
 	}{
 		{
 			"bad account users lookup",
-			&mockInviteUserDatabase{
+			&mockShareAccountDatabase{
 				findAccountUsersErr: errors.New("did not work"),
 			},
 			"invitee@offen.dev",
 			"develop@offen.dev",
 			"develop",
 			"",
-			InviteUserResult{},
+			ShareAccountResult{},
 			true,
 		},
 		{
 			"unknown provider",
-			&mockInviteUserDatabase{
+			&mockShareAccountDatabase{
 				findAcccountUsersResult: []AccountUser{
 					(func() AccountUser {
 						a, _ := newAccountUser("hioffen@offen.dev", "develop")
@@ -79,12 +86,12 @@ func TestPersistenceLayer_InviteUser(t *testing.T) {
 			"develop@offen.dev",
 			"develop",
 			"",
-			InviteUserResult{},
+			ShareAccountResult{},
 			true,
 		},
 		{
 			"bad provider password",
-			&mockInviteUserDatabase{
+			&mockShareAccountDatabase{
 				findAcccountUsersResult: []AccountUser{
 					(func() AccountUser {
 						a, _ := newAccountUser("develop@offen.dev", "d3v3lop")
@@ -96,12 +103,12 @@ func TestPersistenceLayer_InviteUser(t *testing.T) {
 			"develop@offen.dev",
 			"develop",
 			"",
-			InviteUserResult{},
+			ShareAccountResult{},
 			true,
 		},
 		{
 			"error creating invitee user",
-			&mockInviteUserDatabase{
+			&mockShareAccountDatabase{
 				findAcccountUsersResult: []AccountUser{
 					(func() AccountUser {
 						a, _ := newAccountUser("develop@offen.dev", "develop")
@@ -114,12 +121,12 @@ func TestPersistenceLayer_InviteUser(t *testing.T) {
 			"develop@offen.dev",
 			"develop",
 			"",
-			InviteUserResult{},
+			ShareAccountResult{},
 			true,
 		},
 		{
 			"ok - user exists",
-			&mockInviteUserDatabase{
+			&mockShareAccountDatabase{
 				findAcccountUsersResult: []AccountUser{
 					(func() AccountUser {
 						a, _ := newAccountUser("develop@offen.dev", "develop")
@@ -151,15 +158,15 @@ func TestPersistenceLayer_InviteUser(t *testing.T) {
 			"develop@offen.dev",
 			"develop",
 			"account-id",
-			InviteUserResult{
+			ShareAccountResult{
 				UserExistsWithPassword: true,
-				AccountIDs:             []string{"account-id"},
+				AccountNames:           []string{"account-name"},
 			},
 			false,
 		},
 		{
 			"ok - user is created",
-			&mockInviteUserDatabase{
+			&mockShareAccountDatabase{
 				findAcccountUsersResult: []AccountUser{
 					(func() AccountUser {
 						a, _ := newAccountUser("develop@offen.dev", "develop")
@@ -187,9 +194,9 @@ func TestPersistenceLayer_InviteUser(t *testing.T) {
 			"develop@offen.dev",
 			"develop",
 			"account-id",
-			InviteUserResult{
+			ShareAccountResult{
 				UserExistsWithPassword: false,
-				AccountIDs:             []string{"account-id"},
+				AccountNames:           []string{"account-name"},
 			},
 			false,
 		},
@@ -197,7 +204,7 @@ func TestPersistenceLayer_InviteUser(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			p := persistenceLayer{test.dal}
-			result, err := p.InviteUser(test.invitee, test.email, test.password, test.accountID)
+			result, err := p.ShareAccount(test.invitee, test.email, test.password, test.accountID)
 
 			if test.expectErr != (err != nil) {
 				t.Errorf("Unexpected error value %v", err)
@@ -354,7 +361,7 @@ func TestPersistenceLayer_Join(t *testing.T) {
 			true,
 		},
 		{
-			"ok - existing user",
+			"not ok - existing user",
 			&mockJoinDatabase{
 				findAccountUsersResult: []AccountUser{
 					(func() AccountUser {
@@ -377,7 +384,7 @@ func TestPersistenceLayer_Join(t *testing.T) {
 			},
 			"foo@bar.com",
 			"secret",
-			false,
+			true,
 		},
 		{
 			"ok - new user",

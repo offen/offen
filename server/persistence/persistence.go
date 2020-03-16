@@ -1,3 +1,6 @@
+// Copyright 2020 - Offen Authors <hioffen@posteo.de>
+// SPDX-License-Identifier: Apache-2.0
+
 package persistence
 
 import (
@@ -19,10 +22,10 @@ type Service interface {
 	Login(email, password string) (LoginResult, error)
 	LookupAccountUser(userID string) (LoginResult, error)
 	ChangePassword(userID, currentPassword, changedPassword string) error
-	ChangeEmail(userID, emailAddress, password string) error
+	ChangeEmail(userID, emailAddress, emailCurrent, password string) error
 	GenerateOneTimeKey(emailAddress string) ([]byte, error)
 	ResetPassword(emailAddress, password string, oneTimeKey []byte) error
-	InviteUser(inviteeEmailAddress, providerEmailAddress, providerPassword, accountID string) (InviteUserResult, error)
+	ShareAccount(inviteeEmailAddress, providerEmailAddress, providerPassword, accountID string) (ShareAccountResult, error)
 	Join(emailAddress, password string) error
 	Expire(retention time.Duration) (int, error)
 	Bootstrap(data BootstrapConfig) error

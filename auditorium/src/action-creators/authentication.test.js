@@ -1,3 +1,8 @@
+/**
+ * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 const assert = require('assert')
 const sinon = require('sinon')
 const configureMockStore = require('redux-mock-store').default
@@ -234,7 +239,7 @@ describe('src/action-creators/authentication.js', function () {
       const mockStore = configureMockStore([thunk.withExtraArgument(mockPostMessage)])
       const store = mockStore({})
 
-      return store.dispatch(authentication.logout('nope'))
+      return store.dispatch(authentication.logout('yup', 'nope'))
         .then(function () {
           const actions = store.getActions()
           assert.strictEqual(actions.length, 2)
@@ -246,7 +251,9 @@ describe('src/action-creators/authentication.js', function () {
 
           assert.deepStrictEqual(actions[1], {
             type: 'LOGOUT_SUCCESS',
-            payload: null
+            payload: {
+              flash: 'yup'
+            }
           })
 
           assert(mockPostMessage.calledOnce)
@@ -266,7 +273,7 @@ describe('src/action-creators/authentication.js', function () {
       const mockStore = configureMockStore([thunk.withExtraArgument(mockPostMessage)])
       const store = mockStore({})
 
-      return store.dispatch(authentication.logout('nope'))
+      return store.dispatch(authentication.logout('yup', 'nope'))
         .then(function () {
           const actions = store.getActions()
           assert.strictEqual(actions.length, 2)
@@ -299,7 +306,7 @@ describe('src/action-creators/authentication.js', function () {
       const mockStore = configureMockStore([thunk.withExtraArgument(mockPostMessage)])
       const store = mockStore({})
 
-      return store.dispatch(authentication.logout('nope'))
+      return store.dispatch(authentication.logout('yup', 'nope'))
         .then(function () {
           const actions = store.getActions()
           assert.strictEqual(actions.length, 2)
@@ -325,7 +332,7 @@ describe('src/action-creators/authentication.js', function () {
       const mockStore = configureMockStore([thunk.withExtraArgument(mockPostMessage)])
       const store = mockStore({})
 
-      return store.dispatch(authentication.logout('nope'))
+      return store.dispatch(authentication.logout('yup', 'nope'))
         .then(function () {
           const actions = store.getActions()
           assert.strictEqual(actions.length, 2)

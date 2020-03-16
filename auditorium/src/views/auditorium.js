@@ -1,3 +1,8 @@
+/**
+ * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /** @jsx h */
 const { h, Fragment } = require('preact')
 const { useEffect, useState } = require('preact/hooks')
@@ -28,7 +33,7 @@ const management = require('./../action-creators/management')
 
 const AuditoriumView = (props) => {
   const { matches, authenticatedUser, model, isOperator, consentStatus, stale } = props
-  const { handlePurge, handleQuery, expressConsent, getConsentStatus, handleInvite, handleValidationError, handleRetire } = props
+  const { handlePurge, handleQuery, expressConsent, getConsentStatus, handleShare, handleValidationError, handleRetire, handleCopy } = props
   const { accountId, range, resolution } = matches
   const [focus, setFocus] = useState(true)
 
@@ -105,6 +110,8 @@ const AuditoriumView = (props) => {
                 <AccountPicker
                   accounts={authenticatedUser.accounts}
                   selectedId={accountId}
+                  range={range}
+                  resolution={resolution}
                 />
               </div>
               {!model.empty
@@ -115,7 +122,7 @@ const AuditoriumView = (props) => {
                 )
                 : (
                   <div class='w-70-l w-100 flex br0 br2-ns mb2'>
-                    <EmbedCode model={model} expand />
+                    <EmbedCode model={model} onCopy={handleCopy} />
                   </div>
                 )}
             </Fragment>
@@ -133,7 +140,8 @@ const AuditoriumView = (props) => {
       <div class='flex flex-column flex-row-l'>
         <div class='w-100 flex bt ba-ns b--black-10 br0 br2-ns mb2-ns'>
           <RangeSelector
-            matches={matches}
+            resolution={resolution}
+            range={range}
           />
         </div>
       </div>
@@ -172,6 +180,7 @@ const AuditoriumView = (props) => {
                     <EmbedCode
                       key={`embed-${accountId}`}
                       model={model}
+                      onCopy={handleCopy}
                       collapsible
                     />
                   </div>
@@ -183,7 +192,7 @@ const AuditoriumView = (props) => {
                 <Share
                   key={`share-${accountId}`}
                   onValidationError={handleValidationError}
-                  onShare={handleInvite}
+                  onShare={handleShare}
                   accountName={model.account.name}
                   accountId={accountId}
                 />
@@ -223,8 +232,9 @@ const mapDispatchToProps = {
   getConsentStatus: consent.get,
   expressConsent: consent.express,
   handleValidationError: errors.formValidation,
-  handleInvite: management.inviteUser,
-  handleRetire: management.retireAccount
+  handleShare: management.shareAccount,
+  handleRetire: management.retireAccount,
+  handleCopy: management.handleCopy
 }
 
 const ConnectedAuditoriumView = connect(mapStateToProps, mapDispatchToProps)(AuditoriumView)

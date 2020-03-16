@@ -1,3 +1,8 @@
+/**
+ * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /** @jsx h */
 const { h } = require('preact')
 
@@ -15,7 +20,11 @@ const GoSettings = (props) => {
               <h4 class='f4 normal ma0'>
                 {__('Admin console')}
               </h4>
-              <a role='button' class={classnames('dib', 'label-toggle', isCollapsed ? 'label-toggle--rotate' : null)} />
+              <a
+                role='button'
+                aria-label={__('Toggle display of Admin Console Navigation')}
+                class={classnames('dib', 'label-toggle', isCollapsed ? 'label-toggle--rotate' : null)}
+              />
             </div>
           )
         }}

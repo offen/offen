@@ -1,3 +1,8 @@
+/**
+ * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /** @jsx h */
 const { h, Fragment } = require('preact')
 const { CopyToClipboard } = require('react-copy-to-clipboard')
@@ -6,7 +11,11 @@ const classnames = require('classnames')
 const Collapsible = require('./../_shared/collapsible')
 
 const EmbedCode = (props) => {
-  const { model, collapsible } = props
+  const { model, collapsible, onCopy } = props
+
+  function handleCopy () {
+    onCopy(__('Successfully copied embed code to clipboard.'))
+  }
 
   const renderHeader = (props = {}) => {
     const { handleToggle = null, isCollapsed } = props
@@ -15,7 +24,11 @@ const EmbedCode = (props) => {
         <h4 class='f4 normal ma0'>{__('Embed code')}</h4>
         {collapsible
           ? (
-            <a role='button' class={classnames('dib', 'label-toggle', !isCollapsed ? null : 'label-toggle--rotate')} />
+            <a
+              class={classnames('dib', 'label-toggle', !isCollapsed ? null : 'label-toggle--rotate')}
+              aria-label={__('Toggle display of Embed Code')}
+              role='button'
+            />
           )
           : null}
       </div>
@@ -39,6 +52,7 @@ const EmbedCode = (props) => {
         />
       </div>
       <CopyToClipboard
+        onCopy={handleCopy}
         text={
          `<script async src="${window.location.origin}/script.js" data-account-id="${model.account.accountId}"></script>`
         }

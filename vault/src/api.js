@@ -1,3 +1,8 @@
+/**
+ * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 var path = require('path')
 var handleFetchResponse = require('offen/fetch-response')
 
@@ -214,13 +219,14 @@ exports.changeEmail = changeEmailWith(window.location.origin + '/api/change-emai
 exports.changeEmailWith = changeEmailWith
 
 function changeEmailWith (loginUrl) {
-  return function (emailAddress, password) {
+  return function (emailAddress, emailCurrent, password) {
     return window
       .fetch(loginUrl, {
         method: 'POST',
         credentials: 'include',
         body: JSON.stringify({
           emailAddress: emailAddress,
+          emailCurrent: emailCurrent,
           password: password
         })
       })
@@ -246,10 +252,10 @@ function purgeWith (purgeUrl) {
   }
 }
 
-exports.inviteUser = inviteUserWith(window.location.origin + '/api/invite')
-exports.inviteUserWith = inviteUserWith
+exports.shareAccount = shareAccountWith(window.location.origin + '/api/share-account')
+exports.shareAccountWith = shareAccountWith
 
-function inviteUserWith (inviteUrl) {
+function shareAccountWith (inviteUrl) {
   return function (invitee, emailAddress, password, urlTemplate, accountId) {
     var url = new window.URL(inviteUrl)
     if (accountId) {

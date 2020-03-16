@@ -1,3 +1,8 @@
+/**
+ * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 /** @jsx h */
 const { h, Fragment } = require('preact')
 
@@ -6,6 +11,9 @@ const Format = (props) => {
   const source = Number.isFinite(children) ? children : 0
   let value = null
   switch (formatAs) {
+    case 'boolean':
+      value = source === 0 ? __('No') : __('Yes')
+      break
     case 'duration':
       value = formatDuration(source)
       break
