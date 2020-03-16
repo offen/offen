@@ -87,6 +87,7 @@ const AuditoriumView = (props) => {
       <div class='flex flex-column flex-row-ns'>
         <div class='w-100 flex bt ba-ns br0 br2-ns b--black-10 mb2-ns'>
           <Metrics
+            arrangement='horizontal'
             isOperator={false}
             model={model}
           />
