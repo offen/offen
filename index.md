@@ -17,11 +17,6 @@ Offen is a fair alternative to common web analytic tools. It allows website oper
 {: .mb-8 }
 
 
-### I want to manage the usage data that has been collected from me.
-
-[User guide](/using-offen/){: .btn .btn-green }
-{: .mb-8 }
-
 ### I want to contribute as a developer.
 
 [Developer guide](/developing-offen/){: .btn  .btn-green }
