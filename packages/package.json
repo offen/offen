@@ -15,13 +15,12 @@
     "envify": "^4.1.0",
     "glob": "^7.1.5",
     "jscodeshift": "^0.6.4",
-    "minimist": "^1.2.0",
     "pofile": "^1.1.0",
     "through2": "^3.0.1",
     "touch": "^3.1.0"
   },
   "devDependencies": {
-    "dependency-check": "^3.3.0",
+    "dependency-check": "^3.4.0",
     "fetch-mock": "^7.3.3",
     "http-server": "^0.12.1",
     "mochify": "^6.2.0",

@@ -8,7 +8,7 @@
     "test": "npm run server & (VAULT_HOST=http://localhost:9876 npm run mochify; status=$?; kill $(lsof -t -i:9876); exit $status)",
     "mochify": "mochify --chrome $(which google-chrome) --allow-chrome-as-root {,**}/*.test.js",
     "server": "http-server __fixtures__ -p 9876 -s",
-    "pretest": "dependency-check package.json",
+    "pretest": "dependency-check package.json --unused --no-dev",
     "posttest": "standard",
     "fix": "standard --fix",
     "build": "gulp",
@@ -22,7 +22,7 @@
   "devDependencies": {
     "browserify": "^16.2.3",
     "budo": "^11.6.3",
-    "dependency-check": "^3.3.0",
+    "dependency-check": "^4.1.0",
     "envify": "^4.1.0",
     "gulp": "^4.0.2",
     "gulp-append-prepend": "^1.0.8",
