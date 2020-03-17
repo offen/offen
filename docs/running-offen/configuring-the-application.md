@@ -22,6 +22,7 @@ The main interface to configuring Offen at runtime is using your systems environ
 1. TOC
 {:toc}
 
+---
 
 ## Lookup order
 
@@ -215,4 +216,3 @@ In case you want to run Offen as a horizontally scaling service, you can set thi
 Defaults to `false`.
 
 If set to `true` the application assumes it is running in development mode, which will add verbose logging and disable production specific optimizations.
-

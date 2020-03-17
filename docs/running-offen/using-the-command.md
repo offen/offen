@@ -22,6 +22,8 @@ Offen is distributed as a single binary `offen` that you can download and deploy
 1. TOC
 {:toc}
 
+---
+
 ## Starting the application
 
 Running `offen` without any arguments starts the actual application, listening to the port you configured. When deploying the application and exposing it to the internet, this will be the command you will be using.

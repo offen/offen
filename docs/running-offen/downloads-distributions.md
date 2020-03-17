@@ -20,6 +20,8 @@ Offen is currently distributed in two ways: packaged as a __single binary file__
 1. TOC
 {:toc}
 
+---
+
 ## Release channels
 
 Both for binaries and Docker images you can use one of these channels to pick your download:

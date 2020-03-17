@@ -20,6 +20,8 @@ In case you want to use Offen for collecting usage data in a production setup or
 1. TOC
 {:toc}
 
+---
+
 ## Running the application as a service
 
 Offen is a single binary that binds to a TCP port and listens for incoming traffic. This means that in a production setup you will need to ensure the process is always running and restarts on failure or system restart.
