@@ -11,7 +11,7 @@ Offen is a fair alternative to common web analytic tools. It allows website oper
 
 ---
 
-### I run a website and need to collect usage statistics.
+### I run a website and want to collect usage statistics.
 
 [How to run Offen](/running-offen/){: .btn .btn-green }
 {: .mb-8 }
