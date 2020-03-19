@@ -9,6 +9,7 @@ const classnames = require('classnames')
 
 const Format = require('./format')
 const RelativeTime = require('./relative-time')
+const ExplainerIcon = require('./explainer-icon')
 
 const RetentionSquare = (props) => {
   const { children } = props
@@ -26,7 +27,7 @@ const RetentionSquare = (props) => {
 }
 
 const RetentionTable = (props) => {
-  const { model } = props
+  const { model, showExplainer } = props
   const matrix = model.retentionMatrix
   const rows = matrix.map(function (row, index) {
     var elements = row.slice()
@@ -55,6 +56,7 @@ const RetentionTable = (props) => {
     <div class='pa3 bg-white flex-auto'>
       <h4 class='f4 normal mt0 mb3'>
         {__('Weekly retention')}
+        {showExplainer ? <ExplainerIcon marginLeft /> : null}
       </h4>
       <table class='w-100 collapse mb4 dt--fixed'>
         <thead>

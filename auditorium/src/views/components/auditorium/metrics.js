@@ -7,9 +7,10 @@
 const { h } = require('preact')
 
 const KeyMetric = require('./key-metric')
+const ExplainerIcon = require('./explainer-icon')
 
 const Metrics = (props) => {
-  const { isOperator, model, arrangement } = props
+  const { isOperator, model, arrangement, showExplainer } = props
 
   const uniqueEntities = isOperator
     ? model.uniqueUsers
@@ -21,6 +22,7 @@ const Metrics = (props) => {
   const headline = (
     <h4 class='f4 normal mt0 mb3'>
       {__('Key metrics')}
+      {showExplainer ? <ExplainerIcon marginLeft /> : null}
     </h4>
   )
   const metricUniqueEntities = (

@@ -6,8 +6,10 @@
 /** @jsx h */
 const { h } = require('preact')
 
+const ExplainerIcon = require('./explainer-icon')
+
 const RangeSelector = (props) => {
-  const { resolution, range: currentRange } = props
+  const { resolution, range: currentRange, showExplainer } = props
   const ranges = [
     { display: __('24 hours'), query: { range: '24', resolution: 'hours' } },
     { display: __('7 days'), query: null },
@@ -46,6 +48,7 @@ const RangeSelector = (props) => {
     <div class='pa3 bg-white flex-auto'>
       <h4 class='f4 normal mt0 mb3'>
         {__('Show data from the last')}
+        {showExplainer ? <ExplainerIcon marginLeft /> : null}
       </h4>
       <ul class='flex flex-wrap list pa0 ma0 mb3 grow-list b--light-gray'>
         {items}

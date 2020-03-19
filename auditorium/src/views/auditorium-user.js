@@ -80,6 +80,7 @@ const AuditoriumView = (props) => {
           <RangeSelector
             resolution={resolution}
             range={range}
+            showExplainer
           />
         </div>
       </div>
@@ -89,6 +90,7 @@ const AuditoriumView = (props) => {
             model={model}
             isOperator={false}
             resolution={resolution}
+            showExplainer
           />
         </div>
       </div>
@@ -98,17 +100,24 @@ const AuditoriumView = (props) => {
             arrangement='horizontal'
             isOperator={false}
             model={model}
+            showExplainer
           />
         </div>
       </div>
       <div class='flex flex-column flex-row-l'>
         <div class='w-100 flex bt ba-ns br0 br2-ns b--black-10 mb2-ns'>
-          <URLTables model={model} />
+          <URLTables
+            model={model}
+            showExplainer
+          />
         </div>
       </div>
       <div class='flex flex-column flex-row-l mb2'>
         <div class='w-100 flex bt bb ba-ns br0 br2-ns b--black-10 mb2-ns'>
-          <RetentionChart model={model} />
+          <RetentionChart
+            model={model}
+            showExplainer
+          />
         </div>
       </div>
       <div class='flex flex-column flex-row-l mb2'>

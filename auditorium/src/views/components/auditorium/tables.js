@@ -9,6 +9,7 @@ const { useState } = require('preact/hooks')
 const classnames = require('classnames')
 
 const Format = require('./format')
+const ExplainerIcon = require('./explainer-icon')
 
 const Table = (props) => {
   const { rows, onEmptyMessage = __('No data available for this view.'), limit = 10, formatAs = 'count' } = props
@@ -88,7 +89,7 @@ const Table = (props) => {
 exports.Table = Table
 
 const Container = (props) => {
-  const { removeBorder, children } = props
+  const { removeBorder, children, showExplainer } = props
   const [selectedTab, setSelectedTab] = useState(0)
   const tableSets = Array.isArray(children)
     ? children
@@ -117,6 +118,7 @@ const Container = (props) => {
     return (
       <a key={index} role='button' class={classnames(css)} onclick={handleClick}>
         {set.props.headline}
+        {showExplainer && index === selectedTab ? <ExplainerIcon marginLeft /> : null}
       </a>
     )
   })

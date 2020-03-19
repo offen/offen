@@ -14,6 +14,8 @@ const getISOWeek = require('date-fns/get_iso_week')
 const getHours = require('date-fns/get_hours')
 const _ = require('underscore')
 
+const ExplainerIcon = require('./explainer-icon')
+
 const Plot = createPlotlyComponent(Plotly)
 
 const tickColorFade = '#CCCCCC'
@@ -23,7 +25,7 @@ const barColorViews = '#19A974'
 const barColorViewsFade = '#9EEBCF'
 
 const Chart = (props) => {
-  const { model, isOperator, resolution = 'days' } = props
+  const { model, isOperator, showExplainer, resolution = 'days' } = props
   const { pageviews } = model
   const x = pageviews.map(function (item) {
     return item.date
@@ -129,6 +131,7 @@ const Chart = (props) => {
     <div class='flex flex-column flex-auto pa3 bg-white'>
       <h4 class='f4 normal mt0 mb3'>
         {__('Page views and %s', isOperator ? __('visitors') : __('accounts'))}
+        {showExplainer ? <ExplainerIcon marginLeft /> : null}
       </h4>
       {/* plotly sometimes is unable to assign a proper height to the svg unless we set its default height as min-height */}
       <div class='mb4 chart flex-auto' style={{ minHeight: 450 }}>
