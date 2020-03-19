@@ -12,12 +12,15 @@ const withTitle = require('./components/_shared/with-title')
 const withLayout = require('./components/_shared/with-layout')
 const HighlightBox = require('./components/_shared/highlight-box')
 const Header = require('./components/auditorium/header')
+const ExplainerHeader = require('./components/auditorium/explainer-header')
 const RangeSelector = require('./components/auditorium/range-selector')
 const Metrics = require('./components/auditorium/metrics')
 const Chart = require('./components/auditorium/chart')
 const Privacy = require('./components/auditorium/privacy')
 const RetentionChart = require('./components/auditorium/retention-chart')
 const URLTables = require('./components/auditorium/url-tables')
+const BasicTerms = require('./components/auditorium/basic-terms')
+const FrequentlyAskedQuestions = require('./components/auditorium/frequently-asked-questions')
 const model = require('./../action-creators/model')
 const consent = require('./../action-creators/consent-status')
 
@@ -69,6 +72,11 @@ const AuditoriumView = (props) => {
       </div>
       <div class='flex flex-column flex-row-l'>
         <div class='w-100 flex bt ba-ns b--black-10 br0 br2-ns mb2-ns'>
+          <ExplainerHeader />
+        </div>
+      </div>
+      <div class='flex flex-column flex-row-l'>
+        <div class='w-100 flex bt ba-ns b--black-10 br0 br2-ns mb2-ns'>
           <RangeSelector
             resolution={resolution}
             range={range}
@@ -101,6 +109,16 @@ const AuditoriumView = (props) => {
       <div class='flex flex-column flex-row-l mb2'>
         <div class='w-100 flex bt bb ba-ns br0 br2-ns b--black-10 mb2-ns'>
           <RetentionChart model={model} />
+        </div>
+      </div>
+      <div class='flex flex-column flex-row-l mb2'>
+        <div class='w-100 flex bt bb ba-ns br0 br2-ns b--black-10 mb2-ns'>
+          <BasicTerms />
+        </div>
+      </div>
+      <div class='flex flex-column flex-row-l mb2'>
+        <div class='w-100 flex bt bb ba-ns br0 br2-ns b--black-10 mb2-ns'>
+          <FrequentlyAskedQuestions />
         </div>
       </div>
     </Fragment>
