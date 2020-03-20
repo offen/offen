@@ -61,7 +61,10 @@ const AuditoriumView = (props) => {
     return {
       showExplainer: true,
       explainerActive: activeExplainer === key,
-      onExplain: () => setActiveExplainer(activeExplainer !== key ? key : null)
+      onExplain: (e) => {
+        e.stopPropagation()
+        setActiveExplainer(activeExplainer !== key ? key : null)
+      }
     }
   }
 
@@ -111,6 +114,7 @@ const AuditoriumView = (props) => {
             isOperator={false}
             model={model}
             showExplainer
+            explainerProps={explainerProps}
             {...explainerProps('metrics')}
           />
         </div>
