@@ -118,7 +118,7 @@ const Container = (props) => {
     return (
       <a key={index} role='button' class={classnames(css)} onclick={handleClick}>
         {set.props.headline}
-        {showExplainer && index === selectedTab ? <ExplainerIcon marginLeft /> : null}
+        {showExplainer && index === selectedTab ? <ExplainerIcon marginLeft marginRight /> : null}
       </a>
     )
   })
