@@ -8,7 +8,7 @@ const { h } = require('preact')
 const classnames = require('classnames')
 
 module.exports = (props) => {
-  const { marginRight, marginLeft, invert } = props
+  const { marginRight, marginLeft, invert, ...otherProps } = props
   return (
     <span
       class={
@@ -21,6 +21,7 @@ module.exports = (props) => {
             ml2: marginLeft
           })
       }
+      {...otherProps}
     >
       <span>
         <svg width='19' height='20' viewBox='0 0 19 20' fill='none' xmlns='http://www.w3.org/2000/svg'>

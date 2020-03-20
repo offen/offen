@@ -5,7 +5,7 @@
 
 /** @jsx h */
 const { h, Fragment } = require('preact')
-const { useEffect } = require('preact/hooks')
+const { useEffect, useState } = require('preact/hooks')
 const { connect } = require('react-redux')
 
 const withTitle = require('./components/_shared/with-title')
@@ -55,6 +55,16 @@ const AuditoriumView = (props) => {
     )
   }
 
+  const [activeExplainer, setActiveExplainer] = useState(null)
+
+  function explainerProps (key) {
+    return {
+      showExplainer: true,
+      explainerActive: activeExplainer === key,
+      onExplain: () => setActiveExplainer(activeExplainer !== key ? key : null)
+    }
+  }
+
   return (
     <Fragment>
       <Header
@@ -80,7 +90,7 @@ const AuditoriumView = (props) => {
           <RangeSelector
             resolution={resolution}
             range={range}
-            showExplainer
+            {...explainerProps('range-selector')}
           />
         </div>
       </div>
@@ -90,7 +100,7 @@ const AuditoriumView = (props) => {
             model={model}
             isOperator={false}
             resolution={resolution}
-            showExplainer
+            {...explainerProps('chart')}
           />
         </div>
       </div>
@@ -101,6 +111,7 @@ const AuditoriumView = (props) => {
             isOperator={false}
             model={model}
             showExplainer
+            {...explainerProps('metrics')}
           />
         </div>
       </div>
@@ -109,6 +120,7 @@ const AuditoriumView = (props) => {
           <URLTables
             model={model}
             showExplainer
+            {...explainerProps('url-tables')}
           />
         </div>
       </div>
@@ -117,6 +129,7 @@ const AuditoriumView = (props) => {
           <RetentionChart
             model={model}
             showExplainer
+            {...explainerProps('retention')}
           />
         </div>
       </div>

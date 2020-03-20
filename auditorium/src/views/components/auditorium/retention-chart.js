@@ -27,7 +27,7 @@ const RetentionSquare = (props) => {
 }
 
 const RetentionTable = (props) => {
-  const { model, showExplainer } = props
+  const { model, showExplainer, explainerActive, onExplain } = props
   const matrix = model.retentionMatrix
   const rows = matrix.map(function (row, index) {
     var elements = row.slice()
@@ -54,11 +54,22 @@ const RetentionTable = (props) => {
 
   return (
     <div class='pa3 bg-white flex-auto'>
-      <h4 class='f4 normal mt0 mb3'>
-        {__('Weekly retention')}
-        {showExplainer ? <ExplainerIcon marginLeft /> : null}
-      </h4>
-      <table class='w-100 collapse mb4 dt--fixed'>
+      <div
+        class={classnames('pa1', 'ma-1', explainerActive ? 'bg-light-yellow' : null)}
+      >
+        <h4 class='f4 normal ma0'>
+          {__('Weekly retention')}
+          {showExplainer ? <ExplainerIcon invert={explainerActive} marginLeft onclick={onExplain} /> : null}
+        </h4>
+        {explainerActive
+          ? (
+            <p class='ma0 pv2'>
+              {__('Some text to explain what\'s going on here')}
+            </p>
+          )
+          : null}
+      </div>
+      <table class='w-100 collapse mt3 mb4 dt--fixed'>
         <thead>
           <tr>
             <td />

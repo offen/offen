@@ -5,12 +5,13 @@
 
 /** @jsx h */
 const { h } = require('preact')
+const classnames = require('classnames')
 
 const KeyMetric = require('./key-metric')
 const ExplainerIcon = require('./explainer-icon')
 
 const Metrics = (props) => {
-  const { isOperator, model, arrangement, showExplainer } = props
+  const { isOperator, model, arrangement, showExplainer, onExplain, explainerActive } = props
 
   const uniqueEntities = isOperator
     ? model.uniqueUsers
@@ -20,10 +21,21 @@ const Metrics = (props) => {
     : __('accounts')
 
   const headline = (
-    <h4 class='f4 normal mt0 mb3'>
-      {__('Key metrics')}
-      {showExplainer ? <ExplainerIcon marginLeft /> : null}
-    </h4>
+    <div
+      class={classnames('pa1', 'ma-1', explainerActive ? 'bg-light-yellow' : null)}
+    >
+      <h4 class='f4 normal ma0'>
+        {__('Key metrics')}
+        {showExplainer ? <ExplainerIcon invert={explainerActive} onclick={onExplain} marginLeft /> : null}
+      </h4>
+      {explainerActive
+        ? (
+          <p class='ma0 pv2'>
+            {__('Some text to explain what\'s going on here')}
+          </p>
+        )
+        : null}
+    </div>
   )
   const metricUniqueEntities = (
     <KeyMetric
@@ -97,7 +109,7 @@ const Metrics = (props) => {
     return (
       <div class='pa3 bg-white flex-auto'>
         {headline}
-        <div class='flex flex-wrap mb3 bb b--light-gray'>
+        <div class='flex flex-wrap mv3 bb b--light-gray'>
           <div class='mb4 mr4'>
             {metricUniqueEntities}
           </div>
@@ -125,7 +137,7 @@ const Metrics = (props) => {
   return (
     <div class='pa3 bg-white flex-auto'>
       {headline}
-      <div class='flex flex-wrap mb3 bb b--light-gray'>
+      <div class='flex flex-wrap mv3 bb b--light-gray'>
         <div class='w-50 w-100-ns mb4'>
           {metricUniqueEntities}
         </div>

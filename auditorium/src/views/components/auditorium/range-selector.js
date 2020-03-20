@@ -5,11 +5,12 @@
 
 /** @jsx h */
 const { h } = require('preact')
+const classnames = require('classnames')
 
 const ExplainerIcon = require('./explainer-icon')
 
 const RangeSelector = (props) => {
-  const { resolution, range: currentRange, showExplainer } = props
+  const { resolution, range: currentRange, showExplainer, onExplain, explainerActive } = props
   const ranges = [
     { display: __('24 hours'), query: { range: '24', resolution: 'hours' } },
     { display: __('7 days'), query: null },
@@ -46,11 +47,30 @@ const RangeSelector = (props) => {
 
   return (
     <div class='pa3 bg-white flex-auto'>
-      <h4 class='f4 normal mt0 mb3'>
-        {__('Show data from the last')}
-        {showExplainer ? <ExplainerIcon marginLeft /> : null}
-      </h4>
-      <ul class='flex flex-wrap list pa0 ma0 mb3 grow-list b--light-gray'>
+      <div
+        class={classnames('pa1', 'ma-1', explainerActive ? 'bg-light-yellow' : null)}
+      >
+        <h4 class='f4 normal ma0'>
+          {__('Show data from the last')}
+          {showExplainer
+            ? (
+              <ExplainerIcon
+                onclick={onExplain}
+                invert={explainerActive}
+                marginLeft
+              />
+            )
+            : null}
+        </h4>
+        {explainerActive
+          ? (
+            <p class='ma0 pv2'>
+              {__('Some text to explain what\'s going on here')}
+            </p>
+          )
+          : null}
+      </div>
+      <ul class='flex flex-wrap list pa0 mh0 mt3 mb3 grow-list b--light-gray'>
         {items}
       </ul>
     </div>
