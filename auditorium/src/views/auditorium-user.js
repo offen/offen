@@ -61,8 +61,11 @@ const AuditoriumView = (props) => {
     return {
       showExplainer: true,
       explainerActive: activeExplainer === key,
+      activeExplainer: activeExplainer,
       onExplain: (e) => {
-        e.stopPropagation()
+        if (e) {
+          e.stopPropagation()
+        }
         setActiveExplainer(activeExplainer !== key ? key : null)
       }
     }
@@ -124,6 +127,7 @@ const AuditoriumView = (props) => {
           <URLTables
             model={model}
             showExplainer
+            explainerProps={explainerProps}
             {...explainerProps('url-tables')}
           />
         </div>

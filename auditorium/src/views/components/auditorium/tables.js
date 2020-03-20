@@ -5,11 +5,25 @@
 
 /** @jsx h */
 const { h, Fragment } = require('preact')
-const { useState } = require('preact/hooks')
+const { useState, useEffect } = require('preact/hooks')
 const classnames = require('classnames')
 
 const Format = require('./format')
 const ExplainerIcon = require('./explainer-icon')
+
+const ExplainerContent = (props) => {
+  const { explainerActive, children } = props
+  if (!explainerActive) {
+    return null
+  }
+  return (
+    <div class='bg-light-yellow w-100 pa1'>
+      <p class='ma0 pv2'>
+        {children}
+      </p>
+    </div>
+  )
+}
 
 const Table = (props) => {
   const { rows, onEmptyMessage = __('No data available for this view.'), limit = 10, formatAs = 'count' } = props
@@ -89,11 +103,20 @@ const Table = (props) => {
 exports.Table = Table
 
 const Container = (props) => {
-  const { removeBorder, children, showExplainer } = props
+  const { removeBorder, children, showExplainer, explainerProps, groupName } = props
   const [selectedTab, setSelectedTab] = useState(0)
   const tableSets = Array.isArray(children)
     ? children
     : [children]
+
+  useEffect(function unsetExplainerOnTab () {
+    if (explainerProps) {
+      const { activeExplainer, onExplain } = explainerProps(null)
+      if (activeExplainer && activeExplainer.indexOf(`table/${groupName}/`) === 0) {
+        onExplain()
+      }
+    }
+  }, [selectedTab, groupName])
 
   const headlines = tableSets.map(function (set, index) {
     if (!set.props.headline) {
@@ -115,10 +138,20 @@ const Container = (props) => {
     if (index === selectedTab && tableSets.length !== 1) {
       css.push('b', 'bt', 'bw2', 'b--dark-green')
     }
+
+    let extra = {}
+    if (showExplainer && explainerProps) {
+      extra = explainerProps(`table/${groupName}/${set.props.headline}`)
+    }
+
+    if (extra.explainerActive) {
+      css.push('bg-light-yellow')
+    }
+
     return (
       <a key={index} role='button' class={classnames(css)} onclick={handleClick}>
         {set.props.headline}
-        {showExplainer && index === selectedTab ? <ExplainerIcon marginLeft marginRight /> : null}
+        {showExplainer && index === selectedTab ? <ExplainerIcon onclick={extra.onExplain} invert={extra.explainerActive} marginLeft marginRight /> : null}
       </a>
     )
   })
@@ -135,6 +168,17 @@ const Container = (props) => {
         {headlines.length
           ? (<div>{headlines}</div>)
           : null}
+        {(() => {
+          if (!showExplainer && !tableSets[selectedTab].props.explainer) {
+            return null
+          }
+          const props = explainerProps(`table/${groupName}/${tableSets[selectedTab].props.headline}`)
+          return (
+            <ExplainerContent {...props}>
+              {tableSets[selectedTab].props.explainer({})}
+            </ExplainerContent>
+          )
+        })()}
         {tableSets[selectedTab]}
       </div>
     </div>

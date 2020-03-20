@@ -11,7 +11,7 @@ const Tables = require('./tables')
 const ExplainerIcon = require('./explainer-icon')
 
 const URLTable = (props) => {
-  const { model, showExplainer, explainerActive, onExplain } = props
+  const { model, showExplainer, explainerActive, onExplain, explainerProps } = props
   return (
     <div class='flex-auto pa3 bg-white'>
       <div
@@ -30,46 +30,62 @@ const URLTable = (props) => {
           : null}
       </div>
       <div class='mt3'>
-        <Tables.Container
-          showExplainer={showExplainer}
-        >
+        <Tables.Container>
           <Tables.Table
             columnNames={[__('URL'), __('Pageviews')]}
             rows={model.pages}
-            showExplainer={showExplainer}
           />
         </Tables.Container>
         <Tables.Container
           showExplainer={showExplainer}
+          explainerProps={explainerProps}
+          groupName='referrers'
         >
           <Tables.Table
             headline={__('Referrers')}
             columnNames={[__('Host'), __('Pageviews')]}
             rows={model.referrers}
+            explainer={(props) => {
+              return __('Explaining Referrers')
+            }}
           />
           <Tables.Table
             headline={__('Campaigns')}
             columnNames={[__('Campaign'), __('Pageviews')]}
             rows={model.campaigns}
+            explainer={(props) => {
+              return __('Explaining Campaigns')
+            }}
           />
           <Tables.Table
             headline={__('Sources')}
             columnNames={[__('Source'), __('Pageviews')]}
             rows={model.sources}
+            explainer={(props) => {
+              return __('Explaining Sources')
+            }}
           />
         </Tables.Container>
         <Tables.Container
           showExplainer={showExplainer}
+          explainerProps={explainerProps}
+          groupName='landing-exit'
         >
           <Tables.Table
             headline={__('Landing Pages')}
             columnNames={[__('URL'), __('Landings')]}
             rows={model.landingPages}
+            explainer={(props) => {
+              return __('Explaining Landing Pages')
+            }}
           />
           <Tables.Table
             headline={__('Exit Pages')}
             columnNames={[__('URL'), __('Exits')]}
             rows={model.exitPages}
+            explainer={(props) => {
+              return __('Explaining Exit Pages')
+            }}
           />
         </Tables.Container>
       </div>

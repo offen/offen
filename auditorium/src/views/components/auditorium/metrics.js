@@ -25,7 +25,7 @@ const ExplainerContent = (props) => {
 }
 
 const Metrics = (props) => {
-  const { isOperator, model, arrangement, showExplainer, onExplain, explainerActive, explainerProps } = props
+  const { isOperator, model, arrangement, showExplainer, onExplain, explainerActive, explainerProps = () => ({}) } = props
 
   const uniqueEntities = isOperator
     ? model.uniqueUsers
@@ -51,30 +51,33 @@ const Metrics = (props) => {
         : null}
     </div>
   )
+
+  const propsUniqueEntities = explainerProps('metric/unique-entities')
   const metricUniqueEntities = (
     <KeyMetric
       name={__('Unique %s', entityName)}
       value={uniqueEntities}
       formatAs='count'
-      {...explainerProps('metric/unique-entities')}
+      {...propsUniqueEntities}
     />
   )
   const explainerUniqueEntities = (
-    <ExplainerContent {...explainerProps('metric/unique-entities')}>
+    <ExplainerContent {...propsUniqueEntities}>
       {__('Explaining unique accounts')}
     </ExplainerContent>
   )
 
+  const propsUniqueSessions = explainerProps('metric/unique-sessions')
   const metricUniqueSessions = (
     <KeyMetric
       name={__('Unique sessions')}
       value={model.uniqueSessions}
       formatAs='count'
-      {...explainerProps('metric/unique-sessions')}
+      {...propsUniqueSessions}
     />
   )
   const explainerUniqueSessions = (
-    <ExplainerContent {...explainerProps('metric/unique-sessions')}>
+    <ExplainerContent {...propsUniqueSessions}>
       {__('Explaining unique sessions')}
     </ExplainerContent>
   )
