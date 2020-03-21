@@ -16,7 +16,8 @@ const sf = require('sheetify')
 const IndexView = require('./src/views/index')
 const LoginView = require('./src/views/login')
 const SetupView = require('./src/views/setup')
-const Auditorium = require('./src/views/auditorium')
+const AuditoriumUser = require('./src/views/auditorium-user')
+const AuditoriumOperator = require('./src/views/auditorium-operator')
 const ConsoleView = require('./src/views/console')
 const NotFoundView = require('./src/views/404')
 const JoinView = require('./src/views/join')
@@ -38,6 +39,7 @@ sf('./styles/word-break.css')
 sf('./styles/dim-fix.css')
 sf('./styles/grow-list.css')
 sf('./styles/label-toggle.css')
+sf('./styles/negative-margins.css')
 
 const vaultInstance = vault(process.env.VAULT_HOST || '/vault/')
 
@@ -85,8 +87,8 @@ const App = () => {
       <Router onChange={handleRouteChange}>
         <IndexView path='/' />
         <LoginView path='/login/' />
-        <Auditorium.UserView path='/auditorium/' />
-        <Auditorium.OperatorView path='/auditorium/:accountId' isOperator />
+        <AuditoriumUser path='/auditorium/' />
+        <AuditoriumOperator path='/auditorium/:accountId' />
         <ConsoleView path='/console/' />
         <SetupView path='/setup/' />
         <ForgotPasswordView path='/forgot-password/' />

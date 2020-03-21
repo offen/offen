@@ -4,24 +4,26 @@
  */
 
 /** @jsx h */
-const { h } = require('preact')
+const { h, Fragment } = require('preact')
 const classnames = require('classnames')
 
 const Format = require('./format')
+const ExplainerIcon = require('./explainer-icon')
 
 const KeyMetric = (props) => {
-  const { value, name, small, formatAs } = props
+  const { value, name, small, formatAs, showExplainer, onExplain, explainerActive } = props
   return (
-    <div class='w-50 w-100-ns mb4'>
-      <p class={classnames('mv0', { f2: !small }, { f3: small })}>
+    <Fragment>
+      <p class={classnames('mt0 mb2', { f2: !small }, { f3: small })}>
         <Format formatAs={formatAs}>
           {value}
         </Format>
       </p>
-      <p class='mv0 normal'>
+      <p class={classnames('ma-1 pa1 pb3 normal', { 'bg-light-yellow': explainerActive })}>
         {name}
+        {showExplainer ? <ExplainerIcon invert={explainerActive} marginLeft onclick={onExplain} /> : null}
       </p>
-    </div>
+    </Fragment>
   )
 }
 
