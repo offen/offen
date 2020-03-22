@@ -14,24 +14,30 @@ module.exports = (props) => {
       </h4>
       <div class='flex flex-column flex-row-ns w-100'>
         <div class='w-100 w-50-ns mr2-ns'>
-          <p class='b mt0 mb1'>
+          <p class='b mt0 mb1' id='Auditorium'>
             {__('Auditorium')}
           </p>
           <p class='mt0 mb4'>
             {__('You are viewing the Audiotorium right now. Only available after opt in, it is the interface where you can review and delete your usage data or opt out entirely.')}
           </p>
-          <p class='b mt0 mb1'>
-            {__("What data isn't collected?")}
+          <p class='b mt0 mb1' id='Offen_installation'>
+            {__('Offen installation')}
           </p>
-          <p class='mt0 mb4'>
-            {__('Location data, device information and engagement are not collected. There are also no fingerprinting technologies in use.')}
+          <p class='mt0 mb4'
+            dangerouslySetInnerHTML={{ __html: __('One Offen installation can include several websites. All metrics of all websites in this installation are displayed in the <a href="#Auditorium" class="%s">Auditorium.</a> Metrics generated on websites of other installations can only be viewed in the associated <a href="#Auditorium" class="%s">Auditorium.</a>', 'link dim dark-green', 'link dim dark-green') }}
+          />
+          <p class='b mt0 mb1' id='Cookies'>
+            {__('Cookies')}
           </p>
-          <p class='b mt0 mb1'>
-            {__('How is my data handled?')}
+          <p class='mt0 mb4'
+            dangerouslySetInnerHTML={{ __html: __('When you visit a website where a <a href="#Offen_installation" class="%s">Offen installation</a> is active, small amounts of data are stored on your computer. These data elements are known as cookies. <a href="https://en.wikipedia.org/wiki/HTTP_cookie" class="%s" target="_blank">Learn more.</a>', 'link dim dark-green', 'link dim dark-green') }}
+          />
+          <p class='b mt0 mb1' id='Operator'>
+            {__('Operator')}
           </p>
-          <p class='mt0 mb4'>
-            {__('Your data is encrypted end-to-end. It will be deleted after 6 months at the latest. Offen does not share your data with third-parties.')}
-          </p>
+          <p class='mt0 mb4'
+            dangerouslySetInnerHTML={{ __html: __('Operators are owners of <a href="#Offen_installation" class="%s">Offen installations.</a> Only after you opted in, your usage data of a website is collected. Operators than can view it for maximum 6 months.', 'link dim dark-green') }}
+          />
         </div>
         <div class='w-100 w-50-ns ml4-ns'>
           <p class='b mt0 mb1'>
