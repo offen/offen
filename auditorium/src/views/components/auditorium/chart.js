@@ -131,10 +131,10 @@ const Chart = (props) => {
   return (
     <div class='flex flex-column flex-auto pa3 bg-white'>
       <div
-        class={classnames('pa1', 'ma-1', explainerActive ? 'bg-light-yellow' : null)}
+        class={classnames('pa2', 'ma-1', explainerActive ? 'bg-light-yellow' : null)}
       >
         <h4 class='f4 normal ma0'>
-          {__('Page views and %s', isOperator ? __('visitors') : __('accounts'))}
+          {__('Page views and %s', isOperator ? __('users') : __('websites'))}
           {showExplainer
             ? (
               <ExplainerIcon
@@ -147,9 +147,10 @@ const Chart = (props) => {
         </h4>
         {explainerActive
           ? (
-            <p class='ma0 pv2'>
-              {__('Some text to explain what\'s going on here')}
-            </p>
+            <p
+              class='mw7 ma0 pv2'
+              dangerouslySetInnerHTML={{ __html: __('This panel displays the number of pages (bright green) and websites (dark green) you have visited where the <a href="#" class="%s">Offen installation</a> is active. To measure this, a cookie is used to assign you a user and a session <a href="#" class="%s">ID.</a>', 'link dim dark-green') }}
+            />
           )
           : null}
       </div>

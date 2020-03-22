@@ -15,10 +15,10 @@ module.exports = (props) => {
       <div class='flex flex-column flex-row-ns w-100'>
         <div class='w-100 w-50-ns mr2-ns'>
           <p class='b mt0 mb1'>
-            {__('What data is collected?')}
+            {__('Auditorium')}
           </p>
           <p class='mt0 mb4'>
-            {__('Only page views, sessions, referrer and visited URL are collected. From this, other metrics such as the bounce rate are calculated.')}
+            {__('You are viewing the Audiotorium right now. Only available after opt in, it is the interface where you can review and delete your usage data or opt out entirely.')}
           </p>
           <p class='b mt0 mb1'>
             {__("What data isn't collected?")}

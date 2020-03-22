@@ -169,7 +169,7 @@ const Container = (props) => {
           ? (<div>{headlines}</div>)
           : null}
         {(() => {
-          if (!showExplainer && !tableSets[selectedTab].props.explainer) {
+          if (!explainerProps || !showExplainer || !tableSets[selectedTab].props.explainer) {
             return null
           }
           const props = explainerProps(`table/${groupName}/${tableSets[selectedTab].props.headline}`)
