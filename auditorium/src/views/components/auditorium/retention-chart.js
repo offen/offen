@@ -55,7 +55,7 @@ const RetentionTable = (props) => {
   return (
     <div class='pa3 bg-white flex-auto'>
       <div
-        class={classnames('pa1', 'ma-1', explainerActive ? 'bg-light-yellow' : null)}
+        class={classnames('pa2', 'ma-1', explainerActive ? 'bg-light-yellow' : null)}
       >
         <h4 class='f4 normal ma0'>
           {__('Weekly retention')}
@@ -63,9 +63,10 @@ const RetentionTable = (props) => {
         </h4>
         {explainerActive
           ? (
-            <p class='ma0 pv2'>
-              {__('Some text to explain what\'s going on here')}
-            </p>
+            <p
+              class='mw7 ma0 pv2'
+              dangerouslySetInnerHTML={{ __html: __('This panel displays your recurring visits of pages of the <a href="#Offen_installation" class="%s">Offen installation</a> during the last 4 weeks. For each of the previous weeks, the percentage is calculated from the value of the current week.', 'link dim dark-green') }}
+            />
           )
           : null}
       </div>

@@ -18,9 +18,7 @@ const ExplainerContent = (props) => {
   }
   return (
     <div class='bg-light-yellow w-100 pa1'>
-      <p class='ma0 pv2'>
-        {children}
-      </p>
+      {children}
     </div>
   )
 }
@@ -127,7 +125,7 @@ const Container = (props) => {
       css.push('f5', 'normal', 'dib', 'pv3')
     }
     if (tableSets.length > 1) {
-      css.push('f5', 'normal', 'link', 'dim', 'dib', 'pt2', 'pb3', 'mr3', 'dark-green')
+      css.push('f5', 'normal', 'link', 'dim', 'dib', 'pt2', 'pb3', 'pl2', 'mr2', 'dark-green')
     }
 
     let handleClick = null

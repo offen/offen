@@ -25,7 +25,7 @@ const URLTable = (props) => {
           ? (
             <p
               class='mw7 ma0 pv2'
-              dangerouslySetInnerHTML={{ __html: __('This panel displays several page lists that count the total number of your page views of the <a href="#Offen_installation" class="%s">Offen installation</a> per URL in different categories.', 'link dim dark-green') }}
+              dangerouslySetInnerHTML={{ __html: __('This panel displays several page lists that count the total number of your page views of the <a href="#Offeninstallation" class="%s">Offen installation</a> per URL in different categories.', 'link dim dark-green') }}
             />
           )
           : null}
@@ -47,7 +47,12 @@ const URLTable = (props) => {
             columnNames={[__('Host'), __('Pageviews')]}
             rows={model.referrers}
             explainer={(props) => {
-              return __('Explaining Referrers')
+              return (
+                <p
+                  class='mw7 ma0 ph1 pv2 ws-normal'
+                  dangerouslySetInnerHTML={{ __html: __('A list of referrers that directed you to pages of the <a href="#Offen_installation" class="%s">Offen installation.</a> Popular referrers like, for example, Google or Twitter display their proper name, others their domain.', 'link dim dark-green') }}
+                />
+              )
             }}
           />
           <Tables.Table
