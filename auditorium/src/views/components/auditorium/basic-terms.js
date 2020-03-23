@@ -40,31 +40,24 @@ module.exports = (props) => {
           />
         </div>
         <div class='w-100 w-50-ns ml4-ns'>
-          <p class='b mt0 mb1'>
-            {__('Why do I need to opt in or opt out?')}
+          <p class='b mt0 mb1' id='Unique_user'>
+            {__('Unique user')}
           </p>
-          <p class='mt0 mb4'>
-            {__('Our banner serves two purposes: We ask you to access your usage data and would like to obtain your consent for its use.')}
-          </p>
-          <p class='b mt0 mb1'>
-            {__('Do you use cookies?')}
-          </p>
-          <p class='mt0 mb4'>
-            {__('Yes, in particular cookies are used to store your decision about granting access to your usage data. If you opt in, we also use cookies to store a user and a session ID for you.')}
-          </p>
-          <p class='b mt0 mb1'>
-            {__('How does it all work?')}
-          </p>
-          <p class='mt0 mb1'>
-            {__('After opening a website that has offen installed you can explicitly opt in to the data collection and thereby help to improve the services you use.')}
-          </p>
-          <p
-            class='mt0 mb1'
-            dangerouslySetInnerHTML={{ __html: __('Only then you will be assigned a user and a session ID using a cookie. Learn more about cookies <a href="https://en.wikipedia.org/wiki/HTTP_cookie" class="%s" target="_blank">here.</a>', 'link dim dark-green') }}
+          <p class='mt0 mb4'
+            dangerouslySetInnerHTML={{ __html: __('You are defined as a unique user after your opt in to data collection. To measure this, a <a href="#Cookies" class="%s">cookie</a> is used to assign a user <a href="#ID" class="%s">ID</a> to you.', 'link dim dark-green', 'link dim dark-green') }}
           />
-          <p class='mt0 mb4'>
-            {__('Offen handles these IDs in an unrecognizable form. Operators can identify you only within one website.')}
+          <p class='b mt0 mb1' id='Unique_session'>
+            {__('Unique session')}
           </p>
+          <p class='mt0 mb4'
+            dangerouslySetInnerHTML={{ __html: __('A unique session is defined as a <a href="#Unique_user" class="%s">unique user</a> being actively engaged with a page during a browser session. To measure this, a <a href="#Cookies" class="%s">cookie</a> is used to assign a session <a href="#ID" class="%s">ID</a> to you.', 'link dim dark-green', 'link dim dark-green', 'link dim dark-green') }}
+          />
+          <p class='b mt0 mb1' id='ID'>
+            {__('ID')}
+          </p>
+          <p class='mt0 mb4'
+            dangerouslySetInnerHTML={{ __html: __('Originally: UUID. Full form: Universally unique identifier. Offen uses UUID of version 4. These IDs are generated randomly, unique and without using any personal data. On the individual Offen server, they are handled in an unrecognizable form. <a href="https://en.wikipedia.org/wiki/Universally_unique_identifier" class="%s" target="_blank">Learn more.</a>', 'link dim dark-green') }}
+          />
         </div>
       </div>
     </div>

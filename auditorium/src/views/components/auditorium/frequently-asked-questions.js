@@ -21,7 +21,7 @@ module.exports = (props) => {
             {__('Only page views, sessions, referrer and visited URL are collected. From this, other metrics such as the bounce rate are calculated.')}
           </p>
           <p class='b mt0 mb1'>
-            {__("What data isn't collected?")}
+            {__('What data isn\'t collected?')}
           </p>
           <p class='mt0 mb4'>
             {__('Location data, device information and engagement are not collected. There are also no fingerprinting technologies in use.')}
@@ -30,7 +30,7 @@ module.exports = (props) => {
             {__('How is my data handled?')}
           </p>
           <p class='mt0 mb4'>
-            {__('Your data is encrypted end-to-end. It will be deleted after 6 months at the latest. Offen does not share your data with third-parties.')}
+            {__('Your usage data is encrypted end-to-end. It will be automatically deleted after 6 months. You can delete your usage data yourself at any time in the privacy panel.')}
           </p>
         </div>
         <div class='w-100 w-50-ns ml4-ns'>
@@ -43,22 +43,15 @@ module.exports = (props) => {
           <p class='b mt0 mb1'>
             {__('Do you use cookies?')}
           </p>
-          <p class='mt0 mb4'>
-            {__('Yes, in particular cookies are used to store your decision about granting access to your usage data. If you opt in, we also use cookies to store a user and a session ID for you.')}
-          </p>
+          <p class='mt0 mb4'
+            dangerouslySetInnerHTML={{ __html: __('Yes, in particular cookies are used to store your decision about granting access to your usage data. If you opt in, we also use <a href="#Cookies" class="%s">cookies</a> to store a user and a session <a href="#ID" class="%s">ID</a> for you.', 'link dim dark-green', 'link dim dark-green') }}
+          />
           <p class='b mt0 mb1'>
             {__('How does it all work?')}
           </p>
-          <p class='mt0 mb1'>
-            {__('After opening a website that has offen installed you can explicitly opt in to the data collection and thereby help to improve the services you use.')}
-          </p>
-          <p
-            class='mt0 mb1'
-            dangerouslySetInnerHTML={{ __html: __('Only then you will be assigned a user and a session ID using a cookie. Learn more about cookies <a href="https://en.wikipedia.org/wiki/HTTP_cookie" class="%s" target="_blank">here.</a>', 'link dim dark-green') }}
+          <p class='mt0 mb4'
+            dangerouslySetInnerHTML={{ __html: __('After opening a website where a <a href="#Offen_installation" class="%s">Offen installation</a> is active, you can explicitly opt in to the data collection and thereby help to improve the services you use. Only then you will be assigned a user and a session <a href="#ID" class="%s">ID</a> using a <a href="#Cookies" class="%s">cookie</a>. Offen handles these <a href="#ID" class="%s">IDs</a> in an unrecognizable form. Learn more about cookies <a href="https://en.wikipedia.org/wiki/HTTP_cookie" class="%s" target="_blank">here</a>.', 'link dim dark-green', 'link dim dark-green', 'link dim dark-green', 'link dim dark-green', 'link dim dark-green') }}
           />
-          <p class='mt0 mb4'>
-            {__('Offen handles these IDs in an unrecognizable form. Operators can identify you only within one website.')}
-          </p>
         </div>
       </div>
     </div>
