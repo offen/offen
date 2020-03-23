@@ -16,7 +16,7 @@ const ExplainerContent = (props) => {
     return null
   }
   return (
-    <div class='bg-light-yellow w-100 ma-1 pa1'>
+    <div class='bg-light-yellow w-100 pa1'>
       <p class='ma0 ph1 pv2'>
         {children}
       </p>
@@ -36,7 +36,7 @@ const Metrics = (props) => {
 
   const headline = (
     <div
-      class={classnames('pa2', 'ma-1', explainerActive ? 'bg-light-yellow' : null)}
+      class={classnames('pa2', explainerActive ? 'bg-light-yellow' : null)}
     >
       <h4 class='f4 normal ma0'>
         {__('Key metrics')}
@@ -166,13 +166,13 @@ const Metrics = (props) => {
 
   if (arrangement === 'horizontal') {
     return (
-      <div class='pa3 bg-white flex-auto'>
+      <div class='pa2 bg-white flex-auto'>
         {headline}
-        <div class='flex flex-wrap mv3 mb4 bb b--light-gray'>
-          <div class='mr4 mb1'>
+        <div class='flex flex-wrap justify-between justify-start-ns mv3 pb4 bb b--light-gray'>
+          <div class='ml2 mr4 mb1'>
             {metricUniqueEntities}
           </div>
-          <div class='mr4 mb1'>
+          <div class='mb1 mr2'>
             {metricUniqueSessions}
           </div>
           {explainerUniqueEntities}
