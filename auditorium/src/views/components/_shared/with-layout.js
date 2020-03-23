@@ -32,7 +32,7 @@ const Layout = (props) => (
         )
         : props.children}
     </div>
-    <div class='mw8 center flex flex-column flex-row-ns justify-between ph3 pb5 moon-gray'>
+    <div class='mw8 center flex flex-column flex-row-ns justify-between ph3 pb5 pb7-ns moon-gray'>
       <div>
         <p class='b ma0 mb1'>
         Offen

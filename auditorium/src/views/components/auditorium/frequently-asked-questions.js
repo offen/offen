@@ -50,7 +50,7 @@ module.exports = (props) => {
             {__('How does it all work?')}
           </p>
           <p class='mt0 mb4'
-            dangerouslySetInnerHTML={{ __html: __('After opening a website where a <a href="#Offen_installation" class="%s">Offen installation</a> is active, you can explicitly opt in to the data collection and thereby help to improve the services you use. Only then you will be assigned a user and a session <a href="#ID" class="%s">ID</a> using a <a href="#Cookies" class="%s">cookie</a>. Offen handles these <a href="#ID" class="%s">IDs</a> in an unrecognizable form. Learn more about cookies <a href="https://en.wikipedia.org/wiki/HTTP_cookie" class="%s" target="_blank">here</a>.', 'link dim dark-green', 'link dim dark-green', 'link dim dark-green', 'link dim dark-green', 'link dim dark-green') }}
+            dangerouslySetInnerHTML={{ __html: __('After opening a website where a <a href="#Offen_installation" class="%s">Offen installation</a> is active, you can explicitly opt in to the data collection and thereby help to improve the services you use. Only then you will be assigned a user and a session <a href="#ID" class="%s">ID</a> using a <a href="#Cookies" class="%s">cookie.</a> Offen handles these <a href="#ID" class="%s">IDs</a> in an unrecognizable form.', 'link dim dark-green', 'link dim dark-green', 'link dim dark-green', 'link dim dark-green') }}
           />
         </div>
       </div>

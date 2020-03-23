@@ -19,7 +19,7 @@ const KeyMetric = (props) => {
           {value}
         </Format>
       </p>
-      <p class={classnames('ma-1 pa1 pb3 normal', { 'bg-light-yellow': explainerActive })}>
+      <p class={classnames('ma-1 pa2 pb3 normal', { 'bg-light-yellow': explainerActive })}>
         {name}
         {showExplainer ? <ExplainerIcon invert={explainerActive} marginLeft onclick={onExplain} /> : null}
       </p>

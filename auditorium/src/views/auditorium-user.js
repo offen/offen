@@ -101,7 +101,7 @@ const AuditoriumView = (props) => {
         </div>
       </div>
       <div class='flex flex-column flex-row-ns'>
-        <div class='w-100 flex bt ba-ns b--black-10 br0 br2-ns mb2-ns mr2-ns'>
+        <div class='w-100 flex bt ba-ns b--black-10 br0 br2-ns mb2-ns'>
           <Chart
             model={model}
             isOperator={false}

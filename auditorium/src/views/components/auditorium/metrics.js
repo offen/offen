@@ -17,7 +17,7 @@ const ExplainerContent = (props) => {
   }
   return (
     <div class='bg-light-yellow w-100 ma-1 pa1'>
-      <p class='ma0 pv2'>
+      <p class='ma0 ph1 pv2'>
         {children}
       </p>
     </div>
@@ -36,7 +36,7 @@ const Metrics = (props) => {
 
   const headline = (
     <div
-      class={classnames('pa1', 'ma-1', explainerActive ? 'bg-light-yellow' : null)}
+      class={classnames('pa2', 'ma-1', explainerActive ? 'bg-light-yellow' : null)}
     >
       <h4 class='f4 normal ma0'>
         {__('Key metrics')}
@@ -44,8 +44,8 @@ const Metrics = (props) => {
       </h4>
       {explainerActive
         ? (
-          <p class='ma0 pv2'>
-            {__('Some text to explain what\'s going on here')}
+          <p class='mw7 ma0 pv2'>
+            {__('This panel displays the most significant metrics at a glance.')}
           </p>
         )
         : null}

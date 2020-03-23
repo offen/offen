@@ -149,7 +149,7 @@ const Chart = (props) => {
           ? (
             <p
               class='mw7 ma0 pv2'
-              dangerouslySetInnerHTML={{ __html: __('This panel displays the number of pages (bright green) and websites (dark green) you have visited where the <a href="#" class="%s">Offen installation</a> is active. To measure this, a cookie is used to assign you a user and a session <a href="#" class="%s">ID.</a>', 'link dim dark-green', 'link dim dark-green') }}
+              dangerouslySetInnerHTML={{ __html: __('This panel displays the number of pages (bright green) and websites (dark green) you have visited where the <a href="#Offen_installation" class="%s">Offen installation</a> is active. To measure this, a cookie is used to assign you a user and a session <a href="#ID" class="%s">ID.</a>', 'link dim dark-green', 'link dim dark-green') }}
             />
           )
           : null}

@@ -15,7 +15,7 @@ const URLTable = (props) => {
   return (
     <div class='flex-auto pa3 bg-white'>
       <div
-        class={classnames('pa1', 'ma-1', explainerActive ? 'bg-light-yellow' : null)}
+        class={classnames('pa2', 'ma-1', explainerActive ? 'bg-light-yellow' : null)}
       >
         <h4 class='f4 normal ma0'>
           {__('Top pages')}
@@ -23,9 +23,10 @@ const URLTable = (props) => {
         </h4>
         {explainerActive
           ? (
-            <p class='ma0 pv2'>
-              {__('Some text to explain what\'s going on here')}
-            </p>
+            <p
+              class='mw7 ma0 pv2'
+              dangerouslySetInnerHTML={{ __html: __('This panel displays several page lists that count the total number of your page views of the <a href="#Offen_installation" class="%s">Offen installation</a> per URL in different categories.', 'link dim dark-green') }}
+            />
           )
           : null}
       </div>
