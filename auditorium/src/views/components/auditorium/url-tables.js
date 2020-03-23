@@ -60,7 +60,12 @@ const URLTable = (props) => {
             columnNames={[__('Campaign'), __('Pageviews')]}
             rows={model.campaigns}
             explainer={(props) => {
-              return __('Explaining Campaigns')
+              return (
+                <p
+                  class='mw7 ma0 ph1 pv2 ws-normal'
+                  dangerouslySetInnerHTML={{ __html: __('A list of special referrers that directed you to pages of the <a href="#Offen_installation" class="%s">Offen installation.</a> <a href="#Operator" class="%s">Operators</a> can mark links to their pages with a campaign tag. This is used, for example, to measure the success of online advertising campaigns.', 'link dim dark-green', 'link dim dark-green') }}
+                />
+              )
             }}
           />
           <Tables.Table
@@ -68,7 +73,12 @@ const URLTable = (props) => {
             columnNames={[__('Source'), __('Pageviews')]}
             rows={model.sources}
             explainer={(props) => {
-              return __('Explaining Sources')
+              return (
+                <p
+                  class='mw7 ma0 ph1 pv2 ws-normal'
+                  dangerouslySetInnerHTML={{ __html: __('A list of special referrers that directed you to pages of the <a href="#Offen_installation" class="%s">Offen installation.</a> <a href="#Operator" class="%s">Operators</a> can mark links to their pages with a source tag. This is used, for example, to measure the success of online advertising campaigns.', 'link dim dark-green', 'link dim dark-green') }}
+                />
+              )
             }}
           />
         </Tables.Container>
@@ -82,7 +92,12 @@ const URLTable = (props) => {
             columnNames={[__('URL'), __('Landings')]}
             rows={model.landingPages}
             explainer={(props) => {
-              return __('Explaining Landing Pages')
+              return (
+                <p
+                  class='mw7 ma0 ph1 pv2 ws-normal'
+                  dangerouslySetInnerHTML={{ __html: __('A list of pages of the <a href="#Offen_installation" class="%s">Offen installation</a> that you have opened first in all <a href="#Unique_session" class="%s">unique sessions.</a>', 'link dim dark-green', 'link dim dark-green') }}
+                />
+              )
             }}
           />
           <Tables.Table
@@ -90,7 +105,12 @@ const URLTable = (props) => {
             columnNames={[__('URL'), __('Exits')]}
             rows={model.exitPages}
             explainer={(props) => {
-              return __('Explaining Exit Pages')
+              return (
+                <p
+                  class='mw7 ma0 ph1 pv2 ws-normal'
+                  dangerouslySetInnerHTML={{ __html: __('A list of pages of the <a href="#Offen_installation" class="%s">Offen installation</a> that you have opened last in all <a href="#Unique_session" class="%s">unique sessions.</a> For this to be counted you must have visited at least two pages.', 'link dim dark-green', 'link dim dark-green') }}
+                />
+              )
             }}
           />
         </Tables.Container>

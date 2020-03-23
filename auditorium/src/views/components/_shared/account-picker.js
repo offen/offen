@@ -25,7 +25,7 @@ const AccountPicker = (props) => {
       .map(function (account, idx) {
         let buttonClass = 'link dim dib pv2 mt1 mb2 mr3 mid-gray'
         if (account.accountId === selectedId) {
-          buttonClass = 'b link dim dib bt bw2 b--mid-gray pv2 mb2 mr3 mid-gray'
+          buttonClass = 'b link dim dib bt bw2 b--mid-gray ph2 pv2 mb2 mr3 mid-gray'
         }
 
         let query = null

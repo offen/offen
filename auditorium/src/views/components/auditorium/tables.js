@@ -54,7 +54,7 @@ const Table = (props) => {
 
   return (
     <Fragment>
-      <table class='collapse dt--fixed mb2'>
+      <table class='collapse dt--fixed ml1 mb2'>
         <thead>
           <tr>
             <th class='w-70 normal tl pv2 ph1 moon-gray'>
@@ -125,7 +125,7 @@ const Container = (props) => {
       css.push('f5', 'normal', 'dib', 'pv3')
     }
     if (tableSets.length > 1) {
-      css.push('f5', 'normal', 'link', 'dim', 'dib', 'pt2', 'pb3', 'pl2', 'mr2', 'dark-green')
+      css.push('f5', 'normal', 'link', 'dim', 'dib', 'pt2', 'pb2', 'ph2', 'mr2', 'dark-green')
     }
 
     let handleClick = null
@@ -149,7 +149,7 @@ const Container = (props) => {
     return (
       <a key={index} role='button' class={classnames(css)} onclick={handleClick}>
         {set.props.headline}
-        {showExplainer && index === selectedTab ? <ExplainerIcon onclick={extra.onExplain} invert={extra.explainerActive} marginLeft marginRight /> : null}
+        {showExplainer && index === selectedTab ? <ExplainerIcon onclick={extra.onExplain} invert={extra.explainerActive} marginLeft /> : null}
       </a>
     )
   })

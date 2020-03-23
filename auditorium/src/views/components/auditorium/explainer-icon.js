@@ -8,7 +8,7 @@ const { h } = require('preact')
 const classnames = require('classnames')
 
 module.exports = (props) => {
-  const { marginRight, marginLeft, invert, ...otherProps } = props
+  const { marginLeft, invert, ...otherProps } = props
   return (
     <span
       class={
@@ -17,7 +17,6 @@ module.exports = (props) => {
           'pointer',
           'v-mid',
           {
-            mr2: marginRight,
             ml2: marginLeft
           })
       }

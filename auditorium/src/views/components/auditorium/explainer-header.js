@@ -14,7 +14,7 @@ module.exports = (props) => {
       <ExplainerIcon
         marginRight
       />
-      <p class='ma0 dib'>
+      <p class='dib ma0 ml2-ns mt2 mt0-ns'>
         {__('Click this symbol to display an explanation of the metric.')}
       </p>
     </div>
