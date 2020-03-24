@@ -17,9 +17,7 @@ const ExplainerContent = (props) => {
   }
   return (
     <div class='bg-light-yellow pa1'>
-      <p class='ma0 ph1 pv2'>
-        {children}
-      </p>
+      {children}
     </div>
   )
 }
@@ -32,7 +30,7 @@ const Metrics = (props) => {
     : model.uniqueAccounts
   const entityName = isOperator
     ? __('users')
-    : __('accounts')
+    : __('websites')
 
   const headline = (
     <div
@@ -63,7 +61,10 @@ const Metrics = (props) => {
   )
   const explainerUniqueEntities = (
     <ExplainerContent {...propsUniqueEntities}>
-      {__('Explaining unique accounts')}
+      <p
+        class='mw7 ma0 ph1 pv2'
+        dangerouslySetInnerHTML={{ __html: __('The number of websites you have visited where the <a href="#Offen_installation" class="%s">Offen installation</a> is active. This value will be 1 in many cases.', 'link dim dark-green') }}
+      />
     </ExplainerContent>
   )
 
@@ -78,7 +79,10 @@ const Metrics = (props) => {
   )
   const explainerUniqueSessions = (
     <ExplainerContent {...propsUniqueSessions}>
-      {__('Explaining unique sessions')}
+      <p
+        class='mw7 ma0 ph1 pv2'
+        dangerouslySetInnerHTML={{ __html: __('The number of <a href="#Unique_session" class="%s">unique sessions</a> you have created on pages where the <a href="#Offen_installation" class="%s">Offen installation</a> is active.', 'link dim dark-green', 'link dim dark-green') }}
+      />
     </ExplainerContent>
   )
 
@@ -93,7 +97,10 @@ const Metrics = (props) => {
   )
   const explainerAveragePageDepth = (
     <ExplainerContent {...explainerProps('metric/avg-page-depth')}>
-      {__('Explaining average page depth')}
+      <p
+        class='mw7 ma0 ph1 pv2'
+        dangerouslySetInnerHTML={{ __html: __('Full form: Average page depth. The average number of pages you have visited during all <a href="#Unique_session" class="%s">unique sessions</a> on all websites where the <a href="#Offen_installation" class="%s">Offen installation</a> is active.', 'link dim dark-green', 'link dim dark-green') }}
+      />
     </ExplainerContent>
   )
 
@@ -108,7 +115,10 @@ const Metrics = (props) => {
   )
   const explainerBounceRate = (
     <ExplainerContent {...explainerProps('metric/bounce-rate')}>
-      {__('Explaining bounce rate')}
+      <p
+        class='mw7 ma0 ph1 pv2'
+        dangerouslySetInnerHTML={{ __html: __('The percentage of <a href="#Unique_session" class="%s">unique sessions</a> where you only visited one page of the <a href="#Offen_installation" class="%s">Offen installation.</a> Therefore a website with only one page will always have a bounce rate of 100%.', 'link dim dark-green', 'link dim dark-green') }}
+      />
     </ExplainerContent>
   )
 
@@ -145,7 +155,10 @@ const Metrics = (props) => {
   )
   const explainerMobile = (
     <ExplainerContent {...explainerProps('metric/mobile')}>
-      {__('Explaining mobile user')}
+      <p
+        class='mw7 ma0 ph1 pv2'
+        dangerouslySetInnerHTML={{ __html: __('Shows whether you are considered to be using a mobile device. A check is made to see if your device thinks it can change its orientation. If so, it is considered mobile.') }}
+      />
     </ExplainerContent>
   )
 
@@ -160,7 +173,10 @@ const Metrics = (props) => {
   )
   const explainerAveragePageload = (
     <ExplainerContent {...explainerProps('metric/avg-pageload')}>
-      {__('Explaining average pageload')}
+      <p
+        class='mw7 ma0 ph1 pv2'
+        dangerouslySetInnerHTML={{ __html: __('Full form: Average page load time. The average time it took for all pages of the <a href="#Offen_installation" class="%s">Offen installation</a> you visited to become interactive.', 'link dim dark-green') }}
+      />
     </ExplainerContent>
   )
 
@@ -180,78 +196,61 @@ const Metrics = (props) => {
             {explainerUniqueSessions}
           </div>
         </div>
-
-
-
-
-
         <div class='flex flex-wrap justify-between justify-start-ns'>
-
           <div class='order-0 ml2 mr4'>
             {metricAveragePageDepth}
           </div>
           <div class='order-1 mr2 mr4-ns'>
             {metricBounceRate}
           </div>
-
           <div class='order-2 order-2-m order-5-l w-100 mb4 mb0-l'>
             {explainerAveragePageDepth}
             {explainerBounceRate}
           </div>
-
           <div class='ml2 order-3 mr4'>
             {metricMobile}
           </div>
           <div class='ml2 order-4 mr2 mr4-ns'>
             {metricAveragePageload}
           </div>
-
           <div class='order-6 w-100 mb4'>
             {explainerMobile}
             {explainerAveragePageload}
           </div>
-
         </div>
-
-
-
-
-
-
-
       </div>
     )
   }
   return (
-    <div class='pa3 bg-white flex-auto'>
+    <div class='pa2 bg-white flex-auto'>
       {headline}
       <div class='flex flex-wrap mv3 bb b--light-gray'>
-        <div class='w-50 w-100-ns mb4'>
+        <div class='w-50 w-100-ns mb4 pl2'>
           {metricUniqueEntities}
         </div>
-        <div class='w-50 w-100-ns mb4'>
+        <div class='w-50 w-100-ns mb4 pl2'>
           {metricUniqueSessions}
         </div>
       </div>
       <div class='flex flex-wrap mb3 bb b--light-gray'>
-        <div class='w-50 w-100-ns mb4'>
+        <div class='w-50 w-100-ns mb4 pl2'>
           {metricAveragePageDepth}
         </div>
-        <div class='w-50 w-100-ns mb4'>
+        <div class='w-50 w-100-ns mb4 pl2'>
           {metricBounceRate}
         </div>
-        <div class='w-50 w-100-ns mb4'>
+        <div class='w-50 w-100-ns mb4 pl2'>
           {metricNewUsers}
         </div>
-        <div class='w-50 w-100-ns mb4'>
+        <div class='w-50 w-100-ns mb4 pl2'>
           {metricPlus}
         </div>
       </div>
       <div class='flex flex-wrap'>
-        <div class='w-50 w-100-ns mb4'>
+        <div class='w-50 w-100-ns mb4 pl2'>
           {metricMobile}
         </div>
-        <div class='w-50 w-100-ns mb4'>
+        <div class='w-50 w-100-ns mb4 pl2'>
           {metricAveragePageload}
         </div>
       </div>
