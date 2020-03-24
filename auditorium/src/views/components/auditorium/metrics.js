@@ -191,7 +191,7 @@ const Metrics = (props) => {
           <div class='mb1 mr2'>
             {metricUniqueSessions}
           </div>
-          <div class="w-100">
+          <div class='w-100'>
             {explainerUniqueEntities}
             {explainerUniqueSessions}
           </div>

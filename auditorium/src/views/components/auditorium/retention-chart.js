@@ -21,7 +21,7 @@ const RetentionSquare = (props) => {
       style={{ opacity: children !== 0 ? (children * 0.75 + 0.25) : 1 }}
       class={classnames({ 'bg-dark-green': children !== 0 }, { 'bg-near-white': children === 0 }, 'h3', 'w-100')}
     >
-      <p class="dib f6 br1-ns ma0 ma2-ns pa1 bg-white-80">
+      <p class='dib f6 br1-ns ma0 ma2-ns pa1 bg-white-80'>
         <Format formatAs='percentage'>
           {children}
         </Format>
@@ -77,10 +77,10 @@ const RetentionTable = (props) => {
       <table class='w-100 collapse dt--fixed f6 f5-ns mt3 mb4'>
         <thead>
           <tr>
-            <td/>
+            <td />
             {matrix.map(function (row, index) {
               return (
-                <td class="pb2" key={index}>
+                <td class='pb2' key={index}>
                   <RelativeTime>
                     {index}
                   </RelativeTime>

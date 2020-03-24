@@ -43,13 +43,15 @@ module.exports = (props) => {
           <p class='b mt0 mb1'>
             {__('Do you use cookies?')}
           </p>
-          <p class='mt0 mb4'
+          <p
+            class='mt0 mb4'
             dangerouslySetInnerHTML={{ __html: __('Yes, in particular cookies are used to store your decision about granting access to your usage data. If you opt in, we also use <a href="#Cookies" class="%s">cookies</a> to store a user and a session <a href="#ID" class="%s">ID</a> for you.', 'link dim dark-green', 'link dim dark-green') }}
           />
           <p class='b mt0 mb1'>
             {__('How does it all work?')}
           </p>
-          <p class='mt0 mb4'
+          <p
+            class='mt0 mb4'
             dangerouslySetInnerHTML={{ __html: __('After opening a website where a <a href="#Offen_installation" class="%s">Offen installation</a> is active, you can explicitly opt in to the data collection and thereby help to improve the services you use. Only then you will be assigned a user and a session <a href="#ID" class="%s">ID</a> using a <a href="#Cookies" class="%s">cookie.</a> Offen handles these <a href="#ID" class="%s">IDs</a> in an unrecognizable form.', 'link dim dark-green', 'link dim dark-green', 'link dim dark-green', 'link dim dark-green') }}
           />
         </div>

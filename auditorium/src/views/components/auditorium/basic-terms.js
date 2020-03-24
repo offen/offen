@@ -23,19 +23,22 @@ module.exports = (props) => {
           <p class='b mt0 mb1' id='Offen_installation'>
             {__('Offen installation')}
           </p>
-          <p class='mt0 mb4'
+          <p
+            class='mt0 mb4'
             dangerouslySetInnerHTML={{ __html: __('One Offen installation can include several websites. All metrics of all websites in this installation are displayed in the <a href="#Auditorium" class="%s">Auditorium.</a> Metrics generated on websites of other installations can only be viewed in the associated <a href="#Auditorium" class="%s">Auditorium.</a>', 'link dim dark-green', 'link dim dark-green') }}
           />
           <p class='b mt0 mb1' id='Cookies'>
             {__('Cookies')}
           </p>
-          <p class='mt0 mb4'
+          <p
+            class='mt0 mb4'
             dangerouslySetInnerHTML={{ __html: __('When you visit a website where a <a href="#Offen_installation" class="%s">Offen installation</a> is active, small amounts of data are stored on your computer. These data elements are known as cookies. <a href="https://en.wikipedia.org/wiki/HTTP_cookie" class="%s" target="_blank">Learn more.</a>', 'link dim dark-green', 'link dim dark-green') }}
           />
           <p class='b mt0 mb1' id='Operator'>
             {__('Operator')}
           </p>
-          <p class='mt0 mb4'
+          <p
+            class='mt0 mb4'
             dangerouslySetInnerHTML={{ __html: __('Operators are owners of <a href="#Offen_installation" class="%s">Offen installations.</a> Only after you opted in, your usage data of a website is collected. Operators than can view it for maximum 6 months.', 'link dim dark-green') }}
           />
         </div>
@@ -43,19 +46,22 @@ module.exports = (props) => {
           <p class='b mt0 mb1' id='Unique_user'>
             {__('Unique user')}
           </p>
-          <p class='mt0 mb4'
+          <p
+            class='mt0 mb4'
             dangerouslySetInnerHTML={{ __html: __('You are defined as a unique user after your opt in to data collection. To measure this, a <a href="#Cookies" class="%s">cookie</a> is used to assign a user <a href="#ID" class="%s">ID</a> to you.', 'link dim dark-green', 'link dim dark-green') }}
           />
           <p class='b mt0 mb1' id='Unique_session'>
             {__('Unique session')}
           </p>
-          <p class='mt0 mb4'
+          <p
+            class='mt0 mb4'
             dangerouslySetInnerHTML={{ __html: __('A unique session is defined as a <a href="#Unique_user" class="%s">unique user</a> being actively engaged with a page during a browser session. To measure this, a <a href="#Cookies" class="%s">cookie</a> is used to assign a session <a href="#ID" class="%s">ID</a> to you.', 'link dim dark-green', 'link dim dark-green', 'link dim dark-green') }}
           />
           <p class='b mt0 mb1' id='ID'>
             {__('ID')}
           </p>
-          <p class='mt0 mb4'
+          <p
+            class='mt0 mb4'
             dangerouslySetInnerHTML={{ __html: __('Originally: UUID. Full form: Universally unique identifier. Offen uses UUID of version 4. These IDs are generated randomly, unique and without using any personal data. On the individual Offen server, they are handled in an unrecognizable form. <a href="https://en.wikipedia.org/wiki/Universally_unique_identifier" class="%s" target="_blank">Learn more.</a>', 'link dim dark-green') }}
           />
         </div>
