@@ -212,7 +212,19 @@ jobs:
             make build-docker
 
             mkdir -p /tmp/artifacts
-            cd ./bin && md5sum * > checksums.txt && cp ~/offen/LICENSE . && cp ~/offen/README.md . && tar -czvf /tmp/artifacts/offen-$DOCKER_IMAGE_TAG.tar.gz $(ls -A)
+            cd ./bin
+
+            echo -e $GPG_KEY > PRIVATE_GPG_KEY.asc
+            gpg --import PRIVATE_GPG_KEY.asc
+            for artifact in $(ls); do
+              gpg --armor --detach-sign $artifact
+            done
+            md5sum * > checksums.txt
+            cp ~/offen/LICENSE .
+            cp ~/offen/NOTICE .
+            cp ~/offen/README.md .
+
+            tar -czvf /tmp/artifacts/offen-$DOCKER_IMAGE_TAG.tar.gz $(ls -A)
             aws s3 cp /tmp/artifacts/offen-$DOCKER_IMAGE_TAG.tar.gz s3://offen/binaries/offen-$DOCKER_IMAGE_TAG.tar.gz
 
             echo "$DOCKER_ACCESSTOKEN" | docker login --username $DOCKER_USER --password-stdin
