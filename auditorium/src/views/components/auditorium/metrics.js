@@ -16,7 +16,7 @@ const ExplainerContent = (props) => {
     return null
   }
   return (
-    <div class='bg-light-yellow w-100 pa1'>
+    <div class='bg-light-yellow pa1'>
       <p class='ma0 ph1 pv2'>
         {children}
       </p>
@@ -175,27 +175,50 @@ const Metrics = (props) => {
           <div class='mb1 mr2'>
             {metricUniqueSessions}
           </div>
-          {explainerUniqueEntities}
-          {explainerUniqueSessions}
+          <div class="w-100">
+            {explainerUniqueEntities}
+            {explainerUniqueSessions}
+          </div>
         </div>
-        <div class='flex flex-wrap'>
-          <div class='mb1 mr4'>
+
+
+
+
+
+        <div class='flex flex-wrap justify-between justify-start-ns'>
+
+          <div class='order-0 ml2 mr4'>
             {metricAveragePageDepth}
           </div>
-          <div class='mb1 mr4'>
+          <div class='order-1 mr2 mr4-ns'>
             {metricBounceRate}
           </div>
-          <div class='mb1 mr4'>
+
+          <div class='order-2 order-2-m order-5-l w-100 mb4 mb0-l'>
+            {explainerAveragePageDepth}
+            {explainerBounceRate}
+          </div>
+
+          <div class='ml2 order-3 mr4'>
             {metricMobile}
           </div>
-          <div class='mb1 mr4'>
+          <div class='ml2 order-4 mr2 mr4-ns'>
             {metricAveragePageload}
           </div>
-          {explainerAveragePageDepth}
-          {explainerBounceRate}
-          {explainerMobile}
-          {explainerAveragePageload}
+
+          <div class='order-6 w-100 mb4'>
+            {explainerMobile}
+            {explainerAveragePageload}
+          </div>
+
         </div>
+
+
+
+
+
+
+
       </div>
     )
   }
