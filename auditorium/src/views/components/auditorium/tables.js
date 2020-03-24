@@ -33,7 +33,7 @@ const Table = (props) => {
     ? rows.slice(0, showAll ? rows.length : limit).map(function (row, index) {
       return (
         <tr key={index} class='striped--near-white'>
-          <td class='truncate pv2 ph1'>
+          <td class='truncate pv2 pl2 pr1'>
             {row.key}
           </td>
           <td class='pv2 ph1'>
@@ -46,7 +46,7 @@ const Table = (props) => {
     })
     : (
       <tr>
-        <td class='pl1 moon-gray' colspan='2'>
+        <td class='pl2 moon-gray' colspan='2'>
           {onEmptyMessage}
         </td>
       </tr>
@@ -54,13 +54,13 @@ const Table = (props) => {
 
   return (
     <Fragment>
-      <table class='collapse dt--fixed ml1 mb2'>
+      <table class='collapse dt--fixed mb2'>
         <thead>
           <tr>
-            <th class='w-70 normal tl pv2 ph1 moon-gray'>
+            <th class='w-75 normal tl pv2 pl2 pr1 moon-gray'>
               {props.columnNames[0]}
             </th>
-            <th class='w-30 normal tl pv2 ph1 moon-gray'>
+            <th class='w-25 normal tl pv2 ph1 moon-gray'>
               {props.columnNames[1]}
             </th>
           </tr>
