@@ -366,7 +366,7 @@ function newUsers (events, allEvents) {
     })
     .value()
 
-  return newUsers.length / usersInRange.length
+  return 1 - newUsers.length / usersInRange.length
 }
 
 exports.pageviews = consumeAsync(countKeys('secretId', false))

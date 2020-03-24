@@ -17,7 +17,9 @@ const Layout = (props) => (
         <a href='/' class='dim'>
           <img src='/offen-icon-black.svg' alt='Offen logo' width='37' height='40' class='ma0 mt1 mr3' />
         </a>
-        <h1 class='f2 normal ma0 mt1'>{props.headline || __('Offen Auditorium')}</h1>
+        <a href='/' class='dim link dark-gray'>
+          <h1 class='f2 normal ma0 mt1'>{props.headline || __('Offen Auditorium')}</h1>
+        </a>
       </div>
     </div>
     <div class='mw8 center ph0 ph3-ns pb4'>
@@ -33,17 +35,15 @@ const Layout = (props) => (
         : props.children}
     </div>
     <div class='mw8 center flex flex-wrap flex-column flex-row-ns justify-between ph3 pb5 pb7-ns moon-gray'>
-
       <div class='w-100'>
         <p class='ma0 mb1' dangerouslySetInnerHTML={{ __html: __('<a href="https://www.offen.dev/" class="%s" target="_blank">Offen</a>', 'link dim light-silver') }} />
       </div>
       <div class='w-100 w-60-ns pr3-ns'>
         <p class='ma0 mb3' dangerouslySetInnerHTML={{ __html: __('Transparent web analytics<br>for everyone') }} />
       </div>
-      <div class='w-100 w-40-ns'>
+      <div class='w-70 w-40-ns'>
         <p class='ma0' dangerouslySetInnerHTML={{ __html: __('Found an issue, need help or want to add something?<br><a href="https://twitter.com/hioffen" class="%s" target="_blank">Tweet,</a> <a href="mailto:hioffen@posteo.de" class="%s" target="_blank">email</a> or file an <a href="https://github.com/offen/offen" class="%s" target="_blank">issue.</a>', 'link dim light-silver', 'link dim light-silver', 'link dim light-silver') }} />
       </div>
-
     </div>
     {props.flash.length
       ? (
@@ -51,7 +51,7 @@ const Layout = (props) => (
           {props.flash.map((message) => (
             <p
               key={message.id}
-              class='pointer mw6 mv0 mt3-ns center ph3 pv4 bg-light-yellow shadow-1-ns b--black-10 bt bn-ns flex items-center'
+              class='pointer mw6 mv0 mt3-ns center ph3 pv4 bg-light-yellow shadow-1-ns br2 b--black-10 bt bn-ns flex items-center'
               onclick={() => props.handleExpire(message.id)}
             >
               <img src='/offen-icon-black.svg' alt='Offen logo' height='30' class='ma0 mr3' />

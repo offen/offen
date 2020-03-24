@@ -125,7 +125,7 @@ const Metrics = (props) => {
   const metricNewUsers = (
     isOperator ? (
       <KeyMetric
-        name={__('New users')}
+        name={__('Returning users')}
         value={model.newUsers}
         formatAs='percentage'
         small
