@@ -43,7 +43,7 @@ const EmbedCode = (props) => {
           __html: __('To use Offen with the account <strong>%s</strong> on your website, embed the following script on each page you want to appear in your statistics.', model.account.name)
         }}
       />
-      <div class='w-100 br1 ba b--moon-gray ph2 pv2 white bg-near-black'>
+      <div class='w-100 br1 ba b--moon-gray ph2 pv2 white bg-dark-green'>
         <code
           class='ma0 lh-solid word-wrap'
           dangerouslySetInnerHTML={{

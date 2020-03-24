@@ -32,18 +32,18 @@ const Layout = (props) => (
         )
         : props.children}
     </div>
-    <div class='mw8 center flex flex-column flex-row-ns justify-between ph3 pb5 pb7-ns moon-gray'>
-      <div>
-        <p class='b ma0 mb1'>
-        Offen
-        </p>
-        <p class='ma0 mb2' dangerouslySetInnerHTML={{ __html: __('Transparent web analytics<br>for everyone') }} />
+    <div class='mw8 center flex flex-wrap flex-column flex-row-ns justify-between ph3 pb5 pb7-ns moon-gray'>
+
+      <div class='w-100'>
+        <p class='ma0 mb1' dangerouslySetInnerHTML={{ __html: __('<a href="https://www.offen.dev/" class="%s" target="_blank">Offen</a>', 'link dim light-silver') }} />
       </div>
-      <div>
-        <a href='https://www.offen.dev/' class='normal link dim moon-gray' target='_blank' rel='noopener noreferrer'>
-        www.offen.dev
-        </a>
+      <div class='w-100 w-60-ns pr3-ns'>
+        <p class='ma0 mb3' dangerouslySetInnerHTML={{ __html: __('Transparent web analytics<br>for everyone') }} />
       </div>
+      <div class='w-100 w-40-ns'>
+        <p class='ma0' dangerouslySetInnerHTML={{ __html: __('Found an issue, need help or want to add something?<br><a href="https://twitter.com/hioffen" class="%s" target="_blank">Tweet,</a> <a href="mailto:hioffen@posteo.de" class="%s" target="_blank">email</a> or file an <a href="https://github.com/offen/offen" class="%s" target="_blank">issue.</a>', 'link dim light-silver', 'link dim light-silver', 'link dim light-silver') }} />
+      </div>
+
     </div>
     {props.flash.length
       ? (
