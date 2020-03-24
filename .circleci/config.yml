@@ -214,8 +214,8 @@ jobs:
             mkdir -p /tmp/artifacts
             cd ./bin
 
-            echo -e $GPG_KEY > PRIVATE_GPG_KEY.asc
-            gpg --import PRIVATE_GPG_KEY.asc
+            aws s3 cp s3://offen-secrets/signing-key.asc /tmp
+            gpg --import /tmp/signing-key.asc
             for artifact in $(ls); do
               gpg --armor --detach-sign $artifact
             done
