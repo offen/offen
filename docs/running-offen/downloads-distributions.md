@@ -68,6 +68,15 @@ The archive file currently contains the binaries __for all supported operating s
 [repo-releases]: https://github.com/offen/offen/releases
 [most-recent]: https://get.offen.dev
 
+## Verifying the binaries' signatures
+
+To prevent unwanted modifications of our releases, we sign all binaries using GPG and include the signature in our distribution. You can run the following commands to verify the integrity of your download:
+
+```
+gpg --keyserver pgp.mit.edu --recv F20D4074068C636D58B53F46FD60FBEDC90B8DA1
+gpg --verify offen-linux-amd64.asc offen-linux-amd64
+```
+
 ## Pulling the Docker image
 
 Docker images are available as `offen/offen` on [Docker Hub][docker-hub]. Tagged releases are available under the respective tag (e.g. `offen/offen:v0.1.0`). The `stable` and `latest` channel are available as image tags as well.
