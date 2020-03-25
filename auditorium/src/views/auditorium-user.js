@@ -80,7 +80,7 @@ const AuditoriumView = (props) => {
       <div class='flex flex-column flex-row-l mt4'>
         <div class='w-100 flex mb2 mr0-ns br0 br2-ns'>
           <Privacy
-            userHasOptedIn={consentStatus && consentStatus.status === 'allow'}
+            userHasOptedIn={consentStatus.status === 'allow'}
             onPurge={handlePurge}
             onConsent={expressConsent}
           />
