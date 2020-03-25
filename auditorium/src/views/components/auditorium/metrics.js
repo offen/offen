@@ -122,11 +122,11 @@ const Metrics = (props) => {
     </ExplainerContent>
   )
 
-  const metricNewUsers = (
+  const metricReturningUsers = (
     isOperator ? (
       <KeyMetric
         name={__('Returning users')}
-        value={model.newUsers}
+        value={model.returningUsers}
         formatAs='percentage'
         small
       />
@@ -240,7 +240,7 @@ const Metrics = (props) => {
           {metricBounceRate}
         </div>
         <div class='w-50 w-100-ns mb4 pl2'>
-          {metricNewUsers}
+          {metricReturningUsers}
         </div>
         <div class='w-50 w-100-ns mb4 pl2'>
           {metricPlus}

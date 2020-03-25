@@ -361,14 +361,13 @@ describe('src/stats.js', function () {
     })
   })
 
-  describe('stats.newUsers(events, allEvents)', function () {
+  describe('stats.returningUsers(events, allEvents)', function () {
     it('calculates the number of new users in a range compared to all events', function () {
-      return stats.newUsers(
+      return stats.returningUsers(
         [
-          { eventId: 'e-03', secretId: 's-01' },
-          { eventId: 'e-04', secretId: 's-99' },
-          { eventId: 'e-05', secretId: 's-99' },
-          { eventId: 'e-06', secretId: 's-01' }
+          { eventId: 'e-06', secretId: 's-01' },
+          { eventId: 'e-07', secretId: 's-02' },
+          { eventId: 'e-08', secretId: 's-03' }
         ],
         [
           { eventId: 'e-01', secretId: 's-99' },
@@ -376,15 +375,17 @@ describe('src/stats.js', function () {
           { eventId: 'e-03', secretId: 's-01' },
           { eventId: 'e-04', secretId: 's-99' },
           { eventId: 'e-05', secretId: 's-99' },
-          { eventId: 'e-06', secretId: 's-01' }
+          { eventId: 'e-06', secretId: 's-01' },
+          { eventId: 'e-07', secretId: 's-02' },
+          { eventId: 'e-08', secretId: 's-03' }
         ]
       )
         .then(function (result) {
-          assert.strictEqual(result, 0.5)
+          assert.strictEqual(result, 1 - (2 / 3))
         })
     })
     it('returns zero when given no events', function () {
-      return stats.newUsers([], [])
+      return stats.returningUsers([], [])
         .then(function (result) {
           assert.strictEqual(result, 0)
         })
