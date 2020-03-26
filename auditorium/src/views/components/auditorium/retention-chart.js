@@ -18,11 +18,12 @@ const RetentionSquare = (props) => {
     return null
   }
   return (
-    <div
-      style={{ opacity: children !== 0 ? (children * 0.75 + 0.25) : 1 }}
-      class={classnames({ 'bg-dark-green': children !== 0 }, { 'bg-near-white': children === 0 }, 'h3', 'w-100')}
-    >
-      <p class='dib f6 br1-ns ma0 ma2-ns pa1 bg-white-80'>
+    <div class='h3 w-100 relative'>
+      <div
+        style={{ opacity: children !== 0 ? (children * 0.75 + 0.25) : 1 }}
+        class={classnames(children === 0 ? 'bg-near-white' : 'bg-dark-green', 'absolute w-100 h-100')}
+      />
+      <p class='dib f6 br1-ns ma0 ma2-ns pa1 bg-white-80 absolute'>
         <Format formatAs='percentage'>
           {children}
         </Format>
