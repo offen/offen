@@ -8,6 +8,7 @@ const { h, Fragment } = require('preact')
 const { connect } = require('react-redux')
 
 const HighlightBox = require('./highlight-box')
+const Paragraph = require('./paragraph')
 const flash = require('./../../../action-creators/flash')
 
 const Layout = (props) => (
@@ -34,13 +35,25 @@ const Layout = (props) => (
     </div>
     <div class='mw8 center flex flex-wrap flex-column flex-row-ns justify-between ph3 pb5 pb7-ns moon-gray'>
       <div class='w-100'>
-        <p class='ma0 mb1' dangerouslySetInnerHTML={{ __html: __('<a href="https://www.offen.dev/" class="%s" target="_blank" rel="noreferer noopener">Offen</a>', 'link dim light-silver') }} />
+        <Paragraph
+          class='ma0 mb1'
+        >
+          {__('<a href="https://www.offen.dev/" class="%s" target="_blank" rel="noreferer noopener">Offen</a>', 'link dim light-silver')}
+        </Paragraph>
       </div>
       <div class='w-100 w-60-ns pr3-ns'>
-        <p class='ma0 mb3' dangerouslySetInnerHTML={{ __html: __('Transparent web analytics<br>for everyone') }} />
+        <Paragraph
+          class='ma0 mb3'
+        >
+          {__('Transparent web analytics<br>for everyone')}
+        </Paragraph>
       </div>
       <div class='w-70 w-40-ns'>
-        <p class='ma0' dangerouslySetInnerHTML={{ __html: __('Found an issue, need help or want to add something?<br><a href="https://twitter.com/hioffen" class="%s" target="_blank" rel="noreferer noopener">Tweet,</a> <a href="mailto:hioffen@posteo.de" class="%s" target="_blank">email</a> or file an <a href="https://github.com/offen/offen" class="%s" target="_blank" rel="noreferer noopener">issue.</a>', 'link dim light-silver', 'link dim light-silver', 'link dim light-silver') }} />
+        <Paragraph
+          class='ma0'
+        >
+          {__('Found an issue, need help or want to add something?<br><a href="https://twitter.com/hioffen" class="%s" target="_blank" rel="noreferer noopener">Tweet,</a> <a href="mailto:hioffen@posteo.de" class="%s" target="_blank">email</a> or file an <a href="https://github.com/offen/offen" class="%s" target="_blank" rel="noreferer noopener">issue.</a>', 'link dim light-silver', 'link dim light-silver', 'link dim light-silver')}
+        </Paragraph>
       </div>
     </div>
     {props.flash.length

@@ -9,6 +9,7 @@ const { CopyToClipboard } = require('react-copy-to-clipboard')
 const classnames = require('classnames')
 
 const Collapsible = require('./../_shared/collapsible')
+const Paragraph = require('./../_shared/paragraph')
 
 const EmbedCode = (props) => {
   const { model, collapsible, onCopy } = props
@@ -37,12 +38,9 @@ const EmbedCode = (props) => {
 
   const renderBody = (props = {}) => (
     <div class='mw6 center mb4 mt3'>
-      <p
-        class='ma0 mb3'
-        dangerouslySetInnerHTML={{
-          __html: __('To use Offen with the account <strong>%s</strong> on your website, embed the following script on each page you want to appear in your statistics.', model.account.name)
-        }}
-      />
+      <Paragraph class='ma0 mb3'>
+        {__('To use Offen with the account <strong>%s</strong> on your website, embed the following script on each page you want to appear in your statistics.', model.account.name)}
+      </Paragraph>
       <div class='w-100 br1 ba b--moon-gray ph2 pv2 white bg-dark-green'>
         <code
           class='ma0 lh-solid word-wrap'

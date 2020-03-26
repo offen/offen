@@ -6,6 +6,8 @@
 /** @jsx h */
 const { h } = require('preact')
 
+const Paragraph = require('./../_shared/paragraph')
+
 const Privacy = (props) => {
   const { userHasOptedIn } = props
 
@@ -22,12 +24,9 @@ const Privacy = (props) => {
   if (userHasOptedIn) {
     deleteButton = (
       <div class='bl-ns b--moon-gray pl4-ns'>
-        <p
-          class='ma0 mb3'
-          dangerouslySetInnerHTML={{
-            __html: __('Stay opted in, only delete <strong>usage data</strong>')
-          }}
-        />
+        <Paragraph class='ma0 mb3'>
+          {__('Stay opted in, only delete <strong>usage data</strong>')}
+        </Paragraph>
         <button
           class='pointer w-100 w-auto-ns f5 link dim bn dib br1 ph3 pv2 mr1 mb4 white bg-mid-gray'
           data-role='purge'
@@ -46,14 +45,11 @@ const Privacy = (props) => {
           <h4 class='f4 normal mt0 mb3'>
             {__('Privacy')}
           </h4>
-          <p
-            class='ma0 mb3'
-            dangerouslySetInnerHTML={{
-              __html: userHasOptedIn
-                ? __('Opt out and delete <strong>usage data</strong>')
-                : __('Opt in and grant access to your <strong>usage data</strong>')
-            }}
-          />
+          <Paragraph class='ma0 mb3'>
+            {userHasOptedIn
+              ? __('Opt out and delete <strong>usage data</strong>')
+              : __('Opt in and grant access to your <strong>usage data</strong>')}
+          </Paragraph>
           <button
             class='pointer w-100 w-auto-ns f5 link dim bn ph3 pv2 dib br1 mb4 white bg-mid-gray'
             data-role='consent'

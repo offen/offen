@@ -16,6 +16,7 @@ const _ = require('underscore')
 const classnames = require('classnames')
 
 const ExplainerIcon = require('./explainer-icon')
+const Paragraph = require('./../_shared/paragraph')
 
 const Plot = createPlotlyComponent(Plotly)
 
@@ -147,10 +148,9 @@ const Chart = (props) => {
         </h4>
         {explainerActive
           ? (
-            <p
-              class='mw7 ma0 pv2'
-              dangerouslySetInnerHTML={{ __html: __('This panel displays the number of pages (bright green) and websites (dark green) you have visited where the <a href="#terms-offen-installation" class="%s">Offen installation</a> is active. To measure this, a cookie is used to assign you a user and a session <a href="#terms-id" class="%s">ID.</a>', 'link dim dark-green', 'link dim dark-green') }}
-            />
+            <Paragraph class='mw7 ma0 pv2'>
+              {__('This panel displays the number of pages (bright green) and websites (dark green) you have visited where the <a href="#terms-offen-installation" class="%s">Offen installation</a> is active. To measure this, a cookie is used to assign you a user and a session <a href="#terms-id" class="%s">ID.</a>', 'link dim dark-green', 'link dim dark-green')}
+            </Paragraph>
           )
           : null}
       </div>

@@ -10,6 +10,7 @@ const classnames = require('classnames')
 const Format = require('./format')
 const RelativeTime = require('./relative-time')
 const ExplainerIcon = require('./explainer-icon')
+const Paragraph = require('./../_shared/paragraph')
 
 const RetentionSquare = (props) => {
   const { children } = props
@@ -67,10 +68,9 @@ const RetentionTable = (props) => {
         </h4>
         {explainerActive
           ? (
-            <p
-              class='mw7 ma0 pv2'
-              dangerouslySetInnerHTML={{ __html: __('This panel displays your recurring visits of pages of the <a href="#terms-offen-installation" class="%s">Offen installation</a> during the last 4 weeks. For each of the previous weeks, the percentage is calculated from the value of the current week.', 'link dim dark-green') }}
-            />
+            <Paragraph class='mw7 ma0 pv2'>
+              {__('This panel displays your recurring visits of pages of the <a href="#terms-offen-installation" class="%s">Offen installation</a> during the last 4 weeks. For each of the previous weeks, the percentage is calculated from the value of the current week.', 'link dim dark-green')}
+            </Paragraph>
           )
           : null}
       </div>

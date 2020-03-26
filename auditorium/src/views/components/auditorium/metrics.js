@@ -9,6 +9,7 @@ const classnames = require('classnames')
 
 const KeyMetric = require('./key-metric')
 const ExplainerIcon = require('./explainer-icon')
+const Paragraph = require('./../_shared/paragraph')
 
 const ExplainerContent = (props) => {
   const { explainerActive, children } = props
@@ -42,9 +43,9 @@ const Metrics = (props) => {
       </h4>
       {explainerActive
         ? (
-          <p class='mw7 ma0 pv2'>
+          <Paragraph class='mw7 ma0 pv2'>
             {__('This panel displays the most significant metrics at a glance.')}
-          </p>
+          </Paragraph>
         )
         : null}
     </div>
@@ -61,10 +62,9 @@ const Metrics = (props) => {
   )
   const explainerUniqueEntities = (
     <ExplainerContent {...propsUniqueEntities}>
-      <p
-        class='mw7 ma0 ph1 pv2'
-        dangerouslySetInnerHTML={{ __html: __('The number of websites you have visited where the <a href="#terms-offen-installation" class="%s">Offen installation</a> is active. This value will be 1 in many cases.', 'link dim dark-green') }}
-      />
+      <Paragraph class='mw7 ma0 ph1 pv2'>
+        {__('The number of websites you have visited where the <a href="#terms-offen-installation" class="%s">Offen installation</a> is active. This value will be 1 in many cases.', 'link dim dark-green')}
+      </Paragraph>
     </ExplainerContent>
   )
 
@@ -79,10 +79,9 @@ const Metrics = (props) => {
   )
   const explainerUniqueSessions = (
     <ExplainerContent {...propsUniqueSessions}>
-      <p
-        class='mw7 ma0 ph1 pv2'
-        dangerouslySetInnerHTML={{ __html: __('The number of <a href="#terms-unique-session" class="%s">unique sessions</a> you have created on pages where the <a href="#terms-offen-installation" class="%s">Offen installation</a> is active.', 'link dim dark-green', 'link dim dark-green') }}
-      />
+      <Paragraph class='mw7 ma0 ph1 pv2'>
+        {__('The number of <a href="#terms-unique-session" class="%s">unique sessions</a> you have created on pages where the <a href="#terms-offen-installation" class="%s">Offen installation</a> is active.', 'link dim dark-green', 'link dim dark-green')}
+      </Paragraph>
     </ExplainerContent>
   )
 
@@ -97,10 +96,9 @@ const Metrics = (props) => {
   )
   const explainerAveragePageDepth = (
     <ExplainerContent {...explainerProps('metric/avg-page-depth')}>
-      <p
-        class='mw7 ma0 ph1 pv2'
-        dangerouslySetInnerHTML={{ __html: __('Full form: Average page depth. The average number of pages you have visited during all <a href="#terms-unique-session" class="%s">unique sessions</a> on all websites where the <a href="#terms-offen-installation" class="%s">Offen installation</a> is active.', 'link dim dark-green', 'link dim dark-green') }}
-      />
+      <Paragraph class='mw7 ma0 ph1 pv2'>
+        {__('Full form: Average page depth. The average number of pages you have visited during all <a href="#terms-unique-session" class="%s">unique sessions</a> on all websites where the <a href="#terms-offen-installation" class="%s">Offen installation</a> is active.', 'link dim dark-green', 'link dim dark-green')}
+      </Paragraph>
     </ExplainerContent>
   )
 
@@ -115,10 +113,9 @@ const Metrics = (props) => {
   )
   const explainerBounceRate = (
     <ExplainerContent {...explainerProps('metric/bounce-rate')}>
-      <p
-        class='mw7 ma0 ph1 pv2'
-        dangerouslySetInnerHTML={{ __html: __('The percentage of <a href="#terms-unique-session" class="%s">unique sessions</a> where you only visited one page of the <a href="#terms-offen-installation" class="%s">Offen installation.</a> Therefore a website with only one page will always have a bounce rate of 100%.', 'link dim dark-green', 'link dim dark-green') }}
-      />
+      <Paragraph class='mw7 ma0 ph1 pv2'>
+        {__('The percentage of <a href="#terms-unique-session" class="%s">unique sessions</a> where you only visited one page of the <a href="#terms-offen-installation" class="%s">Offen installation.</a> Therefore a website with only one page will always have a bounce rate of 100%.', 'link dim dark-green', 'link dim dark-green')}
+      </Paragraph>
     </ExplainerContent>
   )
 
@@ -155,10 +152,9 @@ const Metrics = (props) => {
   )
   const explainerMobile = (
     <ExplainerContent {...explainerProps('metric/mobile')}>
-      <p
-        class='mw7 ma0 ph1 pv2'
-        dangerouslySetInnerHTML={{ __html: __('Shows whether you are considered to be using a mobile device. A check is made to see if your device thinks it can change its orientation. If so, it is considered mobile.') }}
-      />
+      <Paragraph class='mw7 ma0 ph1 pv2'>
+        {__('Shows whether you are considered to be using a mobile device. A check is made to see if your device thinks it can change its orientation. If so, it is considered mobile.')}
+      </Paragraph>
     </ExplainerContent>
   )
 
@@ -173,10 +169,9 @@ const Metrics = (props) => {
   )
   const explainerAveragePageload = (
     <ExplainerContent {...explainerProps('metric/avg-pageload')}>
-      <p
-        class='mw7 ma0 ph1 pv2'
-        dangerouslySetInnerHTML={{ __html: __('Full form: Average page load time. The average time it took for all pages of the <a href="#terms-offen-installation" class="%s">Offen installation</a> you visited to become interactive.', 'link dim dark-green') }}
-      />
+      <Paragraph class='mw7 ma0 ph1 pv2'>
+        {__('Full form: Average page load time. The average time it took for all pages of the <a href="#terms-offen-installation" class="%s">Offen installation</a> you visited to become interactive.', 'link dim dark-green')}
+      </Paragraph>
     </ExplainerContent>
   )
 

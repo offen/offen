@@ -12,6 +12,7 @@ const LabeledInput = require('./labeled-input')
 const SubmitButton = require('./submit-button')
 const Collapsible = require('./collapsible')
 const MultiStepForm = require('./multi-step-form')
+const Paragraph = require('./paragraph')
 
 const Share = (props) => {
   const { headline, subline, accountId, onValidationError, onShare, collapsible } = props
@@ -79,12 +80,9 @@ const Share = (props) => {
               <Fragment>
                 {subline
                   ? (
-                    <p
-                      class='ma0 mb3'
-                      dangerouslySetInnerHTML={{
-                        __html: subline
-                      }}
-                    />
+                    <Paragraph class='ma0 mb3'>
+                      {subline}
+                    </Paragraph>
                   )
                   : null}
                 <LabeledInput
