@@ -172,7 +172,7 @@ function getDefaultStatsWith (getDatabase) {
     var exitPages = stats.exitPages(decryptedEvents)
     var mobileShare = stats.mobileShare(decryptedEvents)
 
-    var newUsers = stats.newUsers(eventsInBounds, allEvents)
+    var returningUsers = stats.returningUsers(eventsInBounds, allEvents)
 
     var realtime = decryptions[1]
     var livePages = stats.activePages(realtime)
@@ -218,7 +218,7 @@ function getDefaultStatsWith (getDatabase) {
         sources,
         retentionMatrix,
         empty,
-        newUsers
+        returningUsers
       ])
       .then(function (results) {
         return {
@@ -241,7 +241,7 @@ function getDefaultStatsWith (getDatabase) {
           sources: results[16],
           retentionMatrix: results[17],
           empty: results[18],
-          newUsers: results[19],
+          returningUsers: results[19],
           resolution: resolution,
           range: range
         }

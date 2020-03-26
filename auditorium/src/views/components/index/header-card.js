@@ -38,7 +38,7 @@ module.exports = (props) => {
     const noStatusYet = props.consentStatus !== 'deny'
     content = (
       <Fragment>
-        <div class='w-100 w-60-ns mr3-ns' id='consentBanner'>
+        <div class='w-100 w-60-ns mr3-ns' id='consent-banner'>
           <h3 class='f5 b tl-ns ma0 mb2'>
             {__('Continue with transparent analytics')}
           </h3>

@@ -5,9 +5,12 @@
 
 /** @jsx h */
 const { h } = require('preact')
+const classnames = require('classnames')
+
+const ExplainerIcon = require('./explainer-icon')
 
 const RangeSelector = (props) => {
-  const { resolution, range: currentRange } = props
+  const { resolution, range: currentRange, showExplainer, onExplain, explainerActive } = props
   const ranges = [
     { display: __('24 hours'), query: { range: '24', resolution: 'hours' } },
     { display: __('7 days'), query: null },
@@ -33,7 +36,7 @@ const RangeSelector = (props) => {
       <li key={index} class='pr3 bt b--light-gray'>
         {activeRange
           ? (
-            <a href={url} class='b link dim dib bt bw2 b--dark-green pv2 mb2 mr3 dark-green'>
+            <a href={url} class='b link dim dib bt bw2 b--dark-green ph2 pv2 mb2 mr3 dark-green'>
               {range.display}
             </a>
           )
@@ -44,10 +47,30 @@ const RangeSelector = (props) => {
 
   return (
     <div class='pa3 bg-white flex-auto'>
-      <h4 class='f4 normal mt0 mb3'>
-        {__('Show data from the last')}
-      </h4>
-      <ul class='flex flex-wrap list pa0 ma0 mb3 grow-list b--light-gray'>
+      <div
+        class={classnames('pa2', 'ma-1', explainerActive ? 'bg-light-yellow' : null)}
+      >
+        <h4 class='f4 normal ma0'>
+          {__('Show data from the last')}
+          {showExplainer
+            ? (
+              <ExplainerIcon
+                onclick={onExplain}
+                invert={explainerActive}
+                marginLeft
+              />
+            )
+            : null}
+        </h4>
+        {explainerActive
+          ? (
+            <p class='mw7 ma0 pv2'>
+              {__('Here you can set the time frame for all displayed metrics. As all data is generally deleted after 6 months, the selection is limited to this duration.')}
+            </p>
+          )
+          : null}
+      </div>
+      <ul class='flex flex-wrap list pa0 mh0 mt3 mb3 grow-list b--light-gray'>
         {items}
       </ul>
     </div>
