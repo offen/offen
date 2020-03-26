@@ -90,7 +90,7 @@ module.exports = (props) => {
           </p>
           <p
             class='mt0 mb1'
-            dangerouslySetInnerHTML={{ __html: __('After opening a website where a Offen installation is active, you can explicitly opt in to the data collection and thereby help to improve the services you use. Only then you will be assigned a user and a session ID using a cookie. Offen handles these IDs in an unrecognizable form. Learn more about cookies <a href="https://en.wikipedia.org/wiki/HTTP_cookie" class="%s" target="_blank">here.</a>', 'link dim dark-green') }}
+            dangerouslySetInnerHTML={{ __html: __('After opening a website where a Offen installation is active, you can explicitly opt in to the data collection and thereby help to improve the services you use. Only then you will be assigned a user and a session ID using a cookie. Offen handles these IDs in an unrecognizable form. Learn more about cookies <a href="https://en.wikipedia.org/wiki/HTTP_cookie" class="%s" target="_blank" rel="noreferer noopener">here.</a>', 'link dim dark-green') }}
           />
         </div>
       </div>

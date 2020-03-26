@@ -69,7 +69,7 @@ const RetentionTable = (props) => {
           ? (
             <p
               class='mw7 ma0 pv2'
-              dangerouslySetInnerHTML={{ __html: __('This panel displays your recurring visits of pages of the <a href="#Offen_installation" class="%s">Offen installation</a> during the last 4 weeks. For each of the previous weeks, the percentage is calculated from the value of the current week.', 'link dim dark-green') }}
+              dangerouslySetInnerHTML={{ __html: __('This panel displays your recurring visits of pages of the <a href="#terms-offen-installation" class="%s">Offen installation</a> during the last 4 weeks. For each of the previous weeks, the percentage is calculated from the value of the current week.', 'link dim dark-green') }}
             />
           )
           : null}

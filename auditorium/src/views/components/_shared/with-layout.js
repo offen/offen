@@ -14,11 +14,9 @@ const Layout = (props) => (
   <div class='f5 roboto dark-gray'>
     <div class='w-100 h3 bg-black-05'>
       <div class='mw8 center flex ph3 pt2' id='headline'>
-        <a href='/' class='dim'>
+        <a href='/' class='dim link flex'>
           <img src='/offen-icon-black.svg' alt='Offen logo' width='37' height='40' class='ma0 mt1 mr3' />
-        </a>
-        <a href='/' class='dim link dark-gray'>
-          <h1 class='f2 normal ma0 mt1'>{props.headline || __('Offen Auditorium')}</h1>
+          <h1 class='dib dark-gray f2 normal ma0 mt1'>{props.headline || __('Offen Auditorium')}</h1>
         </a>
       </div>
     </div>
@@ -36,13 +34,13 @@ const Layout = (props) => (
     </div>
     <div class='mw8 center flex flex-wrap flex-column flex-row-ns justify-between ph3 pb5 pb7-ns moon-gray'>
       <div class='w-100'>
-        <p class='ma0 mb1' dangerouslySetInnerHTML={{ __html: __('<a href="https://www.offen.dev/" class="%s" target="_blank">Offen</a>', 'link dim light-silver') }} />
+        <p class='ma0 mb1' dangerouslySetInnerHTML={{ __html: __('<a href="https://www.offen.dev/" class="%s" target="_blank" rel="noreferer noopener">Offen</a>', 'link dim light-silver') }} />
       </div>
       <div class='w-100 w-60-ns pr3-ns'>
         <p class='ma0 mb3' dangerouslySetInnerHTML={{ __html: __('Transparent web analytics<br>for everyone') }} />
       </div>
       <div class='w-70 w-40-ns'>
-        <p class='ma0' dangerouslySetInnerHTML={{ __html: __('Found an issue, need help or want to add something?<br><a href="https://twitter.com/hioffen" class="%s" target="_blank">Tweet,</a> <a href="mailto:hioffen@posteo.de" class="%s" target="_blank">email</a> or file an <a href="https://github.com/offen/offen" class="%s" target="_blank">issue.</a>', 'link dim light-silver', 'link dim light-silver', 'link dim light-silver') }} />
+        <p class='ma0' dangerouslySetInnerHTML={{ __html: __('Found an issue, need help or want to add something?<br><a href="https://twitter.com/hioffen" class="%s" target="_blank" rel="noreferer noopener">Tweet,</a> <a href="mailto:hioffen@posteo.de" class="%s" target="_blank">email</a> or file an <a href="https://github.com/offen/offen" class="%s" target="_blank" rel="noreferer noopener">issue.</a>', 'link dim light-silver', 'link dim light-silver', 'link dim light-silver') }} />
       </div>
     </div>
     {props.flash.length

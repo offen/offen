@@ -25,7 +25,7 @@ const URLTable = (props) => {
           ? (
             <p
               class='mw7 ma0 pv2'
-              dangerouslySetInnerHTML={{ __html: __('This panel displays several page lists that count the total number of your page views of the <a href="#Offeninstallation" class="%s">Offen installation</a> per URL in different categories.', 'link dim dark-green') }}
+              dangerouslySetInnerHTML={{ __html: __('This panel displays several page lists that count the total number of your page views of the <a href="#terms-offen-installation" class="%s">Offen installation</a> per URL in different categories.', 'link dim dark-green') }}
             />
           )
           : null}
@@ -50,7 +50,7 @@ const URLTable = (props) => {
               return (
                 <p
                   class='mw7 ma0 ph1 pv2 ws-normal'
-                  dangerouslySetInnerHTML={{ __html: __('A list of referrers that directed you to pages of the <a href="#Offen_installation" class="%s">Offen installation.</a> Popular referrers like, for example, Google or Twitter display their proper name, others their domain.', 'link dim dark-green') }}
+                  dangerouslySetInnerHTML={{ __html: __('A list of referrers that directed you to pages of the <a href="#terms-offen-installation" class="%s">Offen installation.</a> Popular referrers like, for example, Google or Twitter display their proper name, others their domain.', 'link dim dark-green') }}
                 />
               )
             }}
@@ -63,7 +63,7 @@ const URLTable = (props) => {
               return (
                 <p
                   class='mw7 ma0 ph1 pv2 ws-normal'
-                  dangerouslySetInnerHTML={{ __html: __('A list of special referrers that directed you to pages of the <a href="#Offen_installation" class="%s">Offen installation.</a> <a href="#Operator" class="%s">Operators</a> can mark links to their pages with a campaign tag. This is used, for example, to measure the success of online advertising campaigns.', 'link dim dark-green', 'link dim dark-green') }}
+                  dangerouslySetInnerHTML={{ __html: __('A list of special referrers that directed you to pages of the <a href="#terms-offen-installation" class="%s">Offen installation.</a> <a href="#terms-operator" class="%s">Operators</a> can mark links to their pages with a campaign tag. This is used, for example, to measure the success of online advertising campaigns.', 'link dim dark-green', 'link dim dark-green') }}
                 />
               )
             }}
@@ -76,7 +76,7 @@ const URLTable = (props) => {
               return (
                 <p
                   class='mw7 ma0 ph1 pv2 ws-normal'
-                  dangerouslySetInnerHTML={{ __html: __('A list of special referrers that directed you to pages of the <a href="#Offen_installation" class="%s">Offen installation.</a> <a href="#Operator" class="%s">Operators</a> can mark links to their pages with a source tag. This is used, for example, to measure the success of online advertising campaigns.', 'link dim dark-green', 'link dim dark-green') }}
+                  dangerouslySetInnerHTML={{ __html: __('A list of special referrers that directed you to pages of the <a href="#terms-offen-installation" class="%s">Offen installation.</a> <a href="#terms-operator" class="%s">Operators</a> can mark links to their pages with a source tag. This is used, for example, to measure the success of online advertising campaigns.', 'link dim dark-green', 'link dim dark-green') }}
                 />
               )
             }}
@@ -95,7 +95,7 @@ const URLTable = (props) => {
               return (
                 <p
                   class='mw7 ma0 ph1 pv2 ws-normal'
-                  dangerouslySetInnerHTML={{ __html: __('A list of pages of the <a href="#Offen_installation" class="%s">Offen installation</a> that you have opened first in all <a href="#Unique_session" class="%s">unique sessions.</a>', 'link dim dark-green', 'link dim dark-green') }}
+                  dangerouslySetInnerHTML={{ __html: __('A list of pages of the <a href="#terms-offen-installation" class="%s">Offen installation</a> that you have opened first in all <a href="#terms-unique-session" class="%s">unique sessions.</a>', 'link dim dark-green', 'link dim dark-green') }}
                 />
               )
             }}
@@ -108,7 +108,7 @@ const URLTable = (props) => {
               return (
                 <p
                   class='mw7 ma0 ph1 pv2 ws-normal'
-                  dangerouslySetInnerHTML={{ __html: __('A list of pages of the <a href="#Offen_installation" class="%s">Offen installation</a> that you have opened last in all <a href="#Unique_session" class="%s">unique sessions.</a> For this to be counted you must have visited at least two pages.', 'link dim dark-green', 'link dim dark-green') }}
+                  dangerouslySetInnerHTML={{ __html: __('A list of pages of the <a href="#terms-offen-installation" class="%s">Offen installation</a> that you have opened last in all <a href="#terms-unique-session" class="%s">unique sessions.</a> For this to be counted you must have visited at least two pages.', 'link dim dark-green', 'link dim dark-green') }}
                 />
               )
             }}

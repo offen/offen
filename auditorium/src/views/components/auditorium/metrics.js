@@ -63,7 +63,7 @@ const Metrics = (props) => {
     <ExplainerContent {...propsUniqueEntities}>
       <p
         class='mw7 ma0 ph1 pv2'
-        dangerouslySetInnerHTML={{ __html: __('The number of websites you have visited where the <a href="#Offen_installation" class="%s">Offen installation</a> is active. This value will be 1 in many cases.', 'link dim dark-green') }}
+        dangerouslySetInnerHTML={{ __html: __('The number of websites you have visited where the <a href="#terms-offen-installation" class="%s">Offen installation</a> is active. This value will be 1 in many cases.', 'link dim dark-green') }}
       />
     </ExplainerContent>
   )
@@ -81,7 +81,7 @@ const Metrics = (props) => {
     <ExplainerContent {...propsUniqueSessions}>
       <p
         class='mw7 ma0 ph1 pv2'
-        dangerouslySetInnerHTML={{ __html: __('The number of <a href="#Unique_session" class="%s">unique sessions</a> you have created on pages where the <a href="#Offen_installation" class="%s">Offen installation</a> is active.', 'link dim dark-green', 'link dim dark-green') }}
+        dangerouslySetInnerHTML={{ __html: __('The number of <a href="#terms-unique-session" class="%s">unique sessions</a> you have created on pages where the <a href="#terms-offen-installation" class="%s">Offen installation</a> is active.', 'link dim dark-green', 'link dim dark-green') }}
       />
     </ExplainerContent>
   )
@@ -99,7 +99,7 @@ const Metrics = (props) => {
     <ExplainerContent {...explainerProps('metric/avg-page-depth')}>
       <p
         class='mw7 ma0 ph1 pv2'
-        dangerouslySetInnerHTML={{ __html: __('Full form: Average page depth. The average number of pages you have visited during all <a href="#Unique_session" class="%s">unique sessions</a> on all websites where the <a href="#Offen_installation" class="%s">Offen installation</a> is active.', 'link dim dark-green', 'link dim dark-green') }}
+        dangerouslySetInnerHTML={{ __html: __('Full form: Average page depth. The average number of pages you have visited during all <a href="#terms-unique-session" class="%s">unique sessions</a> on all websites where the <a href="#terms-offen-installation" class="%s">Offen installation</a> is active.', 'link dim dark-green', 'link dim dark-green') }}
       />
     </ExplainerContent>
   )
@@ -117,7 +117,7 @@ const Metrics = (props) => {
     <ExplainerContent {...explainerProps('metric/bounce-rate')}>
       <p
         class='mw7 ma0 ph1 pv2'
-        dangerouslySetInnerHTML={{ __html: __('The percentage of <a href="#Unique_session" class="%s">unique sessions</a> where you only visited one page of the <a href="#Offen_installation" class="%s">Offen installation.</a> Therefore a website with only one page will always have a bounce rate of 100%.', 'link dim dark-green', 'link dim dark-green') }}
+        dangerouslySetInnerHTML={{ __html: __('The percentage of <a href="#terms-unique-session" class="%s">unique sessions</a> where you only visited one page of the <a href="#terms-offen-installation" class="%s">Offen installation.</a> Therefore a website with only one page will always have a bounce rate of 100%.', 'link dim dark-green', 'link dim dark-green') }}
       />
     </ExplainerContent>
   )
@@ -175,7 +175,7 @@ const Metrics = (props) => {
     <ExplainerContent {...explainerProps('metric/avg-pageload')}>
       <p
         class='mw7 ma0 ph1 pv2'
-        dangerouslySetInnerHTML={{ __html: __('Full form: Average page load time. The average time it took for all pages of the <a href="#Offen_installation" class="%s">Offen installation</a> you visited to become interactive.', 'link dim dark-green') }}
+        dangerouslySetInnerHTML={{ __html: __('Full form: Average page load time. The average time it took for all pages of the <a href="#terms-offen-installation" class="%s">Offen installation</a> you visited to become interactive.', 'link dim dark-green') }}
       />
     </ExplainerContent>
   )
