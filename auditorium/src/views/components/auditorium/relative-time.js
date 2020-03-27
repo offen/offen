@@ -7,11 +7,12 @@
 const { h, Fragment } = require('preact')
 
 const RelativeTime = (props) => {
-  var display = null
-  if (props.children === 0) {
-    display = __('This week')
+  const { children, invert } = props
+  let display = null
+  if (children === 0) {
+    display = __('Now')
   } else {
-    display = __('%d days earlier', props.children * 7)
+    display = invert ? __('%d days later', children * 7) : __('%d days earlier', children * 7)
   }
   return (
     <Fragment>

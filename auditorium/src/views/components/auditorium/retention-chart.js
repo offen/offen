@@ -43,7 +43,9 @@ const RetentionTable = (props) => {
     return (
       <tr key={index}>
         <td>
-          <RelativeTime>{index}</RelativeTime>
+          <RelativeTime>
+            {matrix.length - index - 1}
+          </RelativeTime>
         </td>
         {elements.map(function (element, index) {
           return (
@@ -82,7 +84,7 @@ const RetentionTable = (props) => {
             {matrix.map(function (row, index) {
               return (
                 <td class='pb2' key={index}>
-                  <RelativeTime>
+                  <RelativeTime invert>
                     {index}
                   </RelativeTime>
                 </td>

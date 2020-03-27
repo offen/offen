@@ -188,6 +188,7 @@ function getDefaultStatsWith (getDatabase) {
         .toArray()
       retentionChunks.push(chunk)
     }
+    retentionChunks = retentionChunks.reverse()
     var retentionMatrix = Promise.all(retentionChunks)
       .then(function (chunks) {
         return stats.retention.apply(stats, chunks)
