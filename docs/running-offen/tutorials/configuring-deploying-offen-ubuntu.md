@@ -53,6 +53,12 @@ sudo cp offen-linux-amd64 /opt/offen/v0.1.0-alpha.4
 sudo ln -s /opt/offen/v0.1.0-alpha.4/offen-linux-amd64 /usr/bin/offen
 ```
 
+If you have GPG installed, we also recommend verifying the binary's signature:
+```
+gpg --keyserver pgp.mit.edu --recv F20D4074068C636D58B53F46FD60FBEDC90B8DA1
+gpg --verify offen-linux-amd64.asc offen-linux-amd64
+```
+
 You can confirm that your installation is working as expected like this:
 
 ```
