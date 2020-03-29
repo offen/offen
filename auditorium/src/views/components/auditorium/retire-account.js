@@ -10,19 +10,19 @@ const { useState } = require('preact/hooks')
 const Collapsible = require('./../_shared/collapsible')
 const LabeledInput = require('./../_shared/labeled-input')
 const SubmitButton = require('./../_shared/submit-button')
+const Paragraph = require('./../_shared/paragraph')
 const classnames = require('classnames')
 
 const InitialScreen = (props) => {
   const { onClick, account } = props
   return (
     <Fragment>
-      <p
-        class='ma0 mb1'
-        dangerouslySetInnerHTML={{ __html: __('If you retire the account <strong>%s,</strong> it will not appear in your statistics anymore. Users will be able to access and manage their data for the account for another 6 months until data expires.', account.name) }}
-      />
-      <p class='ma0 mb3 orange'>
+      <Paragraph class='ma0 mb1'>
+        {__('If you retire the account <strong>%s,</strong> it will not appear in your statistics anymore. Users will be able to access and manage their data for the account for another 6 months until data expires.', account.name)}
+      </Paragraph>
+      <Paragraph class='ma0 mb3 orange'>
         {__('Danger zone! This action cannot be undone.')}
-      </p>
+      </Paragraph>
       <SubmitButton
         onclick={onClick}
       >

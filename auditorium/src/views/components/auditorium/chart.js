@@ -13,6 +13,10 @@ const isWeekend = require('date-fns/is_weekend')
 const getISOWeek = require('date-fns/get_iso_week')
 const getHours = require('date-fns/get_hours')
 const _ = require('underscore')
+const classnames = require('classnames')
+
+const ExplainerIcon = require('./explainer-icon')
+const Paragraph = require('./../_shared/paragraph')
 
 const Plot = createPlotlyComponent(Plotly)
 
@@ -23,7 +27,7 @@ const barColorViews = '#19A974'
 const barColorViewsFade = '#9EEBCF'
 
 const Chart = (props) => {
-  const { model, isOperator, resolution = 'days' } = props
+  const { model, isOperator, showExplainer, onExplain, explainerActive, resolution = 'days' } = props
   const { pageviews } = model
   const x = pageviews.map(function (item) {
     return item.date
@@ -127,11 +131,31 @@ const Chart = (props) => {
 
   return (
     <div class='flex flex-column flex-auto pa3 bg-white'>
-      <h4 class='f4 normal mt0 mb3'>
-        {__('Page views and %s', isOperator ? __('visitors') : __('accounts'))}
-      </h4>
+      <div
+        class={classnames('pa2', 'ma-1', explainerActive ? 'bg-light-yellow' : null)}
+      >
+        <h4 class='f4 normal ma0'>
+          {__('Page views and %s', isOperator ? __('users') : __('websites'))}
+          {showExplainer
+            ? (
+              <ExplainerIcon
+                onclick={onExplain}
+                invert={explainerActive}
+                marginLeft
+              />
+            )
+            : null}
+        </h4>
+        {explainerActive
+          ? (
+            <Paragraph class='mw7 ma0 pv2'>
+              {__('This panel displays the number of pages (bright green) and websites (dark green) you have visited where the <a href="#terms-offen-installation" class="%s">Offen installation</a> is active. To measure this, a cookie is used to assign you a user and a session <a href="#terms-id" class="%s">ID.</a>', 'link dim dark-green', 'link dim dark-green')}
+            </Paragraph>
+          )
+          : null}
+      </div>
       {/* plotly sometimes is unable to assign a proper height to the svg unless we set its default height as min-height */}
-      <div class='mb4 chart flex-auto' style={{ minHeight: 450 }}>
+      <div class='mt3 mb4 chart flex-auto' style={{ minHeight: 450 }}>
         {yTotal.some((v) => v > 0)
           ? (
             <Plot
@@ -156,6 +180,9 @@ const Chart = (props) => {
 module.exports = memo(
   Chart,
   (prevProps, nextProps) => {
+    if (prevProps.explainerActive !== nextProps.explainerActive) {
+      return false
+    }
     const prevPageviews = prevProps.model.pageviews.map((p) => _.omit(p, 'date'))
     const nextPageviews = nextProps.model.pageviews.map((p) => _.omit(p, 'date'))
     return _.isEqual(prevPageviews, nextPageviews)

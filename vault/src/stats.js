@@ -330,11 +330,11 @@ function retention (/* ...events */) {
   return result
 }
 
-// `newUsers` calculates the percentage of new visitors in the given range
+// `returningUsers` calculates the percentage of returning visitors in the given range
 // as compared to the list of all known events
-exports.newUsers = consumeAsync(newUsers)
+exports.returningUsers = consumeAsync(returningUsers)
 
-function newUsers (events, allEvents) {
+function returningUsers (events, allEvents) {
   var oldestEventIdInRange = _.chain(events)
     .pluck('eventId')
     .sortBy()
@@ -366,7 +366,7 @@ function newUsers (events, allEvents) {
     })
     .value()
 
-  return newUsers.length / usersInRange.length
+  return 1 - (newUsers.length / usersInRange.length)
 }
 
 exports.pageviews = consumeAsync(countKeys('secretId', false))

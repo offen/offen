@@ -9,6 +9,8 @@ const classnames = require('classnames')
 
 const Format = require('./format')
 const RelativeTime = require('./relative-time')
+const ExplainerIcon = require('./explainer-icon')
+const Paragraph = require('./../_shared/paragraph')
 
 const RetentionSquare = (props) => {
   const { children } = props
@@ -16,17 +18,22 @@ const RetentionSquare = (props) => {
     return null
   }
   return (
-    <div title={`${Format.formatNumber(children, 100)}%`}>
+    <div class='h3 w-100 relative'>
       <div
         style={{ opacity: children !== 0 ? (children * 0.75 + 0.25) : 1 }}
-        class={classnames({ 'bg-dark-green': children !== 0 }, { 'bg-near-white': children === 0 }, 'h3', 'w-100')}
+        class={classnames(children === 0 ? 'bg-near-white' : 'bg-dark-green', 'absolute w-100 h-100')}
       />
+      <p class='dib f6 br1-ns ma0 ma2-ns pa1 bg-white-80 absolute'>
+        <Format formatAs='percentage'>
+          {children}
+        </Format>
+      </p>
     </div>
   )
 }
 
 const RetentionTable = (props) => {
-  const { model } = props
+  const { model, showExplainer, explainerActive, onExplain } = props
   const matrix = model.retentionMatrix
   const rows = matrix.map(function (row, index) {
     var elements = row.slice()
@@ -36,7 +43,9 @@ const RetentionTable = (props) => {
     return (
       <tr key={index}>
         <td>
-          <RelativeTime>{index}</RelativeTime>
+          <RelativeTime>
+            {matrix.length - index - 1}
+          </RelativeTime>
         </td>
         {elements.map(function (element, index) {
           return (
@@ -53,17 +62,29 @@ const RetentionTable = (props) => {
 
   return (
     <div class='pa3 bg-white flex-auto'>
-      <h4 class='f4 normal mt0 mb3'>
-        {__('Weekly retention')}
-      </h4>
-      <table class='w-100 collapse mb4 dt--fixed'>
+      <div
+        class={classnames('pa2', 'ma-1', explainerActive ? 'bg-light-yellow' : null)}
+      >
+        <h4 class='f4 normal ma0'>
+          {__('Weekly retention')}
+          {showExplainer ? <ExplainerIcon invert={explainerActive} marginLeft onclick={onExplain} /> : null}
+        </h4>
+        {explainerActive
+          ? (
+            <Paragraph class='mw7 ma0 pv2'>
+              {__('This panel displays your recurring visits of pages of the <a href="#terms-offen-installation" class="%s">Offen installation</a> during the last 4 weeks. For each of the previous weeks, the percentage is calculated from the value of the current week.', 'link dim dark-green')}
+            </Paragraph>
+          )
+          : null}
+      </div>
+      <table class='w-100 collapse dt--fixed f6 f5-ns mt3 mb4'>
         <thead>
           <tr>
             <td />
             {matrix.map(function (row, index) {
               return (
-                <td key={index}>
-                  <RelativeTime>
+                <td class='pb2' key={index}>
+                  <RelativeTime invert>
                     {index}
                   </RelativeTime>
                 </td>
