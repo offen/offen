@@ -42,15 +42,15 @@ Start by creating the `/opt/offen` directory:
 sudo mkdir -p /opt/offen
 ```
 
-Untar the archive you downloaded and look for the binary called `offen-linux-amd64`. Put this file in a subdirectory of `/opt/offen` that specifies its version. This example is using the `v0.1.0-alpha.4` release:
+Untar the archive you downloaded and look for the binary called `offen-linux-amd64`. Put this file in a subdirectory of `/opt/offen` that specifies its version. This example is using the `v0.1.0-alpha.5` release:
 
 ```
 mkdir -p /tmp/offen-download && cd /tmp/offen-download
 curl -L https://get.offen.dev | tar -xvz
 md5sum -c checksums.txt # check that your download contains the expected files
-sudo mkdir -p /opt/offen/v0.1.0-alpha.4
-sudo cp offen-linux-amd64 /opt/offen/v0.1.0-alpha.4
-sudo ln -s /opt/offen/v0.1.0-alpha.4/offen-linux-amd64 /usr/bin/offen
+sudo mkdir -p /opt/offen/v0.1.0-alpha.5
+sudo cp offen-linux-amd64 /opt/offen/v0.1.0-alpha.5
+sudo ln -s /opt/offen/v0.1.0-alpha.5/offen-linux-amd64 /usr/bin/offen
 ```
 
 If you have GPG installed, we also recommend verifying the binary's signature:
@@ -65,7 +65,7 @@ You can confirm that your installation is working as expected like this:
 $ which offen
 /usr/bin/offen
 $ offen version
-INFO[0000] Current build created using                   revision=v0.1.0-alpha.4
+INFO[0000] Current build created using                   revision=v0.1.0-alpha.5
 ```
 
 ---
