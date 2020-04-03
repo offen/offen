@@ -36,17 +36,11 @@ You can download a tarball of the latest release from our [Releases section on G
 
 In this tutorial, we will put the binaries for each version in a directory in `/opt/offen/<version>` and create a symlink for the version you want to use in `/usr/bin`. This allows you to update your binaries without interrupting the service.
 
-Start by creating the `/opt/offen` directory:
-
-```
-sudo mkdir -p /opt/offen
-```
-
 Untar the archive you downloaded and look for the binary called `offen-linux-amd64`. Put this file in a subdirectory of `/opt/offen` that specifies its version. This example is using the `v0.1.0-alpha.5` release:
 
 ```
 mkdir -p /tmp/offen-download && cd /tmp/offen-download
-curl -L https://get.offen.dev | tar -xvz
+curl -sSL https://get.offen.dev | tar -xvz
 md5sum -c checksums.txt # check that your download contains the expected files
 sudo mkdir -p /opt/offen/v0.1.0-alpha.5
 sudo cp offen-linux-amd64 /opt/offen/v0.1.0-alpha.5
@@ -257,7 +251,7 @@ sudo systemctl disable offen
 To update to a new version of Offen, download the contents of the newest release into a new directory in `/opt/offen` and update the symlink in `/usr/bin`:
 
 ```
-curl -L https://get.offen.dev | tar -xvz
+curl -sSL https://get.offen.dev | tar -xvz
 md5sum -c checksums.txt # check that your download contains the expected files
 sudo mkdir -p /opt/offen/v0.1.0-alpha.12
 sudo cp offen-linux-amd64 /opt/offen/v0.1.0-alpha.12
