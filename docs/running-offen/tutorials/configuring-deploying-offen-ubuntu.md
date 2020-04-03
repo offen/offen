@@ -261,7 +261,7 @@ curl -L https://get.offen.dev | tar -xvz
 md5sum -c checksums.txt # check that your download contains the expected files
 sudo mkdir -p /opt/offen/v0.1.0-alpha.12
 sudo cp offen-linux-amd64 /opt/offen/v0.1.0-alpha.12
-sudo ln -s /opt/offen/v0.1.0-alpha.12/offen-linux-amd64 /usr/bin/offen
+sudo ln -sf /opt/offen/v0.1.0-alpha.12/offen-linux-amd64 /usr/bin/offen
 ```
 
 Confirm that this worked by having `offen` print its version:
