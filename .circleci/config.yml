@@ -76,9 +76,6 @@ jobs:
       - restore_cache:
           key: offen-script-{{ checksum "package.json" }}
       - run:
-          name: Install lsof
-          command: sudo apt-get install lsof
-      - run:
           name: Install dependencies
           command: npm install
       - save_cache:
@@ -99,9 +96,6 @@ jobs:
       - restore_cache:
           key: offen-auditorium-{{ checksum "package.json" }}
       - run:
-          name: Install lsof
-          command: sudo apt-get install lsof
-      - run:
           name: Install dependencies
           command: npm install
       - save_cache:
@@ -121,9 +115,6 @@ jobs:
           path: ~/offen
       - restore_cache:
           key: offen-packages-{{ checksum "package.json" }}
-      - run:
-          name: Install lsof
-          command: sudo apt-get install lsof
       - run:
           name: Install dependencies
           command: npm install
