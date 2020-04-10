@@ -53,7 +53,7 @@ func cmdSetup(subcommand string, flags []string) {
 	)
 	cmd.Parse(flags)
 	sanitizer := bluemonday.StrictPolicy()
-	a := newApp(*populateMissing, *envFile)
+	a := newApp(*populateMissing, true, *envFile)
 
 	pw := *password
 	if *source == "" && pw == "" {

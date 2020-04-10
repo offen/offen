@@ -48,7 +48,7 @@ func cmdServe(subcommand string, flags []string) {
 		envFile = cmd.String("envfile", "", "the env file to use")
 	)
 	cmd.Parse(flags)
-	a := newApp(false, *envFile)
+	a := newApp(false, false, *envFile)
 
 	gormDB, err := gorm.Open(a.config.Database.Dialect.String(), a.config.Database.ConnectionString.String())
 	if err != nil {

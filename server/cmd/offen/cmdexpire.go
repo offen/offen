@@ -31,7 +31,7 @@ func cmdExpire(subcommand string, flags []string) {
 		envFile = cmd.String("envfile", "", "the env file to use")
 	)
 	cmd.Parse(flags)
-	a := newApp(false, *envFile)
+	a := newApp(false, true, *envFile)
 
 	gormDB, dbErr := gorm.Open(a.config.Database.Dialect.String(), a.config.Database.ConnectionString.String())
 	if dbErr != nil {

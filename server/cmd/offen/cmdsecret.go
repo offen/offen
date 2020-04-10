@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"log"
 
 	"github.com/offen/offen/server/keys"
 )
@@ -33,7 +32,7 @@ func cmdSecret(subcommand string, flags []string) {
 	for i := 0; i < *count; i++ {
 		value, err := keys.GenerateRandomValue(*length)
 		if err != nil {
-			log.Fatalf("Error creating secret: %v", err)
+			l.Fatalf("Error creating secret: %v", err)
 		}
 		if *quiet {
 			fmt.Println(value)

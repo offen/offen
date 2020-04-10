@@ -44,7 +44,7 @@ func cmdDemo(subcommand string, flags []string) {
 	)
 	demoCmd.Parse(flags)
 
-	a := newApp(false, "")
+	a := newApp(false, true, "")
 	{
 		cfg, _ := config.New(false, "")
 		cfg.Database.Dialect = config.Dialect("sqlite3")

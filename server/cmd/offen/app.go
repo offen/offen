@@ -15,7 +15,7 @@ type app struct {
 	config *config.Config
 }
 
-func newApp(populateMissing bool, envFileOverride string) *app {
+func newApp(populateMissing, quiet bool, envFileOverride string) *app {
 	logger := logrus.New()
 	cfg, cfgErr := config.New(populateMissing, envFileOverride)
 	if cfgErr != nil {
@@ -25,8 +25,9 @@ func newApp(populateMissing bool, envFileOverride string) *app {
 			logger.WithError(cfgErr).Fatal("Error sourcing runtime configuration")
 		}
 	}
+
 	logger.SetLevel(cfg.App.LogLevel.LogLevel())
-	if !cfg.SMTPConfigured() {
+	if !quiet && !cfg.SMTPConfigured() {
 		logger.Warn("SMTP for transactional email is not configured right now, mail delivery will be unreliable")
 		logger.Warn("Refer to the documentation to find out how to configure SMTP")
 	}

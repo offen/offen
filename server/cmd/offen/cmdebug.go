@@ -22,6 +22,6 @@ func cmdDebug(subcommand string, flags []string) {
 		envFile = cmd.String("envfile", "", "the env file to use")
 	)
 	cmd.Parse(flags)
-	a := newApp(false, *envFile)
+	a := newApp(false, true, *envFile)
 	a.logger.WithField("config", fmt.Sprintf("%+v", a.config)).Info("Current configuration values")
 }
