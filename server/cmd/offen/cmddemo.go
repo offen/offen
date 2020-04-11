@@ -13,6 +13,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"runtime"
 	"syscall"
 	"time"
 
@@ -57,6 +58,9 @@ func cmdDemo(subcommand string, flags []string) {
 		cfg, _ := config.New(false, "")
 		cfg.Database.Dialect = config.Dialect("sqlite3")
 		cfg.Database.ConnectionString = config.EnvString(fmt.Sprintf("/tmp/offen-demo-%s.db", dbID.String()))
+		if runtime.GOOS == "windows" {
+			cfg.Database.ConnectionString = config.EnvString(fmt.Sprintf("%%Temp%%\\offen-%s.db", dbID.String()))
+		}
 		cfg.Secrets.CookieExchange = mustSecret(16)
 		a.config = cfg
 	}
