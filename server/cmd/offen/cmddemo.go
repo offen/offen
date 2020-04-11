@@ -74,7 +74,6 @@ func cmdDemo(subcommand string, flags []string) {
 	if err != nil {
 		a.logger.WithError(err).Fatal("Unable to create random account identifier")
 	}
-	a.config.App.RootAccount = accountID.String()
 
 	gormDB, err := gorm.Open(
 		a.config.Database.Dialect.String(),
@@ -97,17 +96,17 @@ func cmdDemo(subcommand string, flags []string) {
 	}
 	if err := db.Bootstrap(persistence.BootstrapConfig{
 		Accounts: []persistence.BootstrapAccount{
-			{AccountID: a.config.App.RootAccount, Name: "Demo Account"},
+			{AccountID: accountID.String(), Name: "Demo Account"},
 		},
 		AccountUsers: []persistence.BootstrapAccountUser{
-			{Email: "demo@offen.dev", Password: "demo", Accounts: []string{a.config.App.RootAccount}},
+			{Email: "demo@offen.dev", Password: "demo", Accounts: []string{accountID.String()}},
 		},
 	}); err != nil {
 		a.logger.WithError(err).Fatal("Error bootstrapping database")
 	}
 
 	if !*empty {
-		a.logger.Info("Offen is generating some random usage data for you, this might take a little while.")
+		a.logger.Info("Offen is generating some random usage data for your demo, this might take a little while.")
 		rand.Seed(time.Now().UnixNano())
 		account, _ := db.GetAccount(accountID.String(), false, "")
 
@@ -169,8 +168,8 @@ func cmdDemo(subcommand string, flags []string) {
 			a.logger.WithError(err).Fatal("Error binding server to network")
 		}
 	}()
-	a.logger.Infof("Demo application now serving http://localhost:%d", a.config.Server.Port)
-	a.logger.Info(`You can log into the demo account using "demo@offen.dev" and password "demo"`)
+	a.logger.Infof("You can now access your Offfen demo at http://localhost:%d/login/", a.config.Server.Port)
+	a.logger.Info(`Use the username "demo@offen.dev" and password "demo" to log in.`)
 	a.logger.Info("Data is stored temporarily only for this demo.")
 	a.logger.Info("Refer to the documentation on how to connect a persistent database.")
 
@@ -234,7 +233,8 @@ var pages = []string{
 	"/about",
 	"/blog",
 	"/imprint",
-	"/landing",
+	"/landing-page",
+	"/contact",
 }
 
 func randomPage() string {
@@ -244,8 +244,8 @@ func randomPage() string {
 var referrers = []string{
 	"https://www.offen.dev",
 	"https://t.co/xyz",
-	"https://example.com/?utm_source=Example_Source",
-	"https://example.com/?utm_campaign=Example_Campaign",
+	"https://example.net/?utm_source=Example_Source",
+	"https://example.net/?utm_campaign=Example_Campaign",
 }
 
 func randomReferrer() string {
@@ -260,13 +260,13 @@ func newFakeSession(length int, root string) []*fakeEvent {
 
 	for i := 0; i < length; i++ {
 		var referrer string
-		if i == 0 && randomInRange(0, 5) == 3 {
+		if i == 0 && randomBool() {
 			referrer = randomReferrer()
 		}
 		result = append(result, &fakeEvent{
 			Type:      "PAGEVIEW",
-			Href:      fmt.Sprintf("%s%s", root, randomPage()),
-			Title:     "Some Title",
+			Href:      fmt.Sprintf("%s%s", "https://demo.offen.dev", randomPage()),
+			Title:     "Page Title",
 			Referrer:  referrer,
 			Pageload:  randomInRange(400, 1200),
 			IsMobile:  isMobileSession,
