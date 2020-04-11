@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/base64"
+	"encoding/json"
 	"flag"
 	"fmt"
 	"net/http"
@@ -13,6 +14,7 @@ import (
 
 	"github.com/gofrs/uuid"
 	"github.com/jinzhu/gorm"
+	"github.com/lestrrat-go/jwx/jwk"
 	"github.com/offen/offen/server/config"
 	"github.com/offen/offen/server/keys"
 	"github.com/offen/offen/server/locales"
@@ -40,7 +42,8 @@ func cmdDemo(subcommand string, flags []string) {
 		demoCmd.PrintDefaults()
 	}
 	var (
-		port = demoCmd.Int("port", 0, "the port to bind to (defaults to a random available port)")
+		port  = demoCmd.Int("port", 0, "the port to bind to (defaults to a random available port)")
+		empty = demoCmd.Bool("empty", false, "do not populate with random usage data")
 	)
 	demoCmd.Parse(flags)
 
@@ -68,7 +71,10 @@ func cmdDemo(subcommand string, flags []string) {
 	}
 	a.config.App.RootAccount = accountID.String()
 
-	gormDB, err := gorm.Open(a.config.Database.Dialect.String(), a.config.Database.ConnectionString.String())
+	gormDB, err := gorm.Open(
+		a.config.Database.Dialect.String(),
+		a.config.Database.ConnectionString.String(),
+	)
 	if err != nil {
 		a.logger.WithError(err).Fatal("Unable to establish database connection")
 	}
@@ -95,13 +101,35 @@ func cmdDemo(subcommand string, flags []string) {
 		a.logger.WithError(err).Fatal("Error bootstrapping database")
 	}
 
-	fs := public.NewLocalizedFS(a.config.App.Locale.String())
+	if !*empty {
+		a.logger.Info("The system is generating some random usage data for you right now, this might take a little.")
+		account, _ := db.GetAccount(a.config.App.RootAccount, false, "")
+		for i := 0; i < 100; i++ {
+			userID, key, jwk := newFakeUser()
+			encryptedSecret, encryptionErr := keys.EncryptAsymmetricWith(account.PublicKey, jwk)
+			if encryptionErr != nil {
+				a.logger.WithError(encryptionErr).Fatal("Error encrypting fake user secret")
+			}
+			db.AssociateUserSecret(account.AccountID, userID, encryptedSecret.Marshal())
+			sessionID, _ := uuid.NewV4()
+			fakePayload := fmt.Sprintf(
+				`{"type":"PAGEVIEW","href":"http://localhost:%d/","title":"Über – Offen - ✔️","referrer":"","pageload":21,"isMobile":false,"timestamp":"2020-04-11T13:10:10.538Z","sessionId":"%s"}`,
+				a.config.Server.Port,
+				sessionID.String(),
+			)
+			event, eventErr := keys.EncryptWith(key, []byte(fakePayload))
+			if eventErr != nil {
+				a.logger.WithError(eventErr).Fatal("Error encrypting fake event payload")
+			}
+			db.Insert(userID, account.AccountID, event.Marshal())
+		}
+	}
 
+	fs := public.NewLocalizedFS(a.config.App.Locale.String())
 	gettext, gettextErr := locales.GettextFor(a.config.App.Locale.String())
 	if gettextErr != nil {
 		a.logger.WithError(gettextErr).Fatal("Failed reading locale files, cannot continue")
 	}
-
 	tpl, tplErr := public.HTMLTemplate(gettext, public.RevWith(fs))
 	if tplErr != nil {
 		a.logger.WithError(tplErr).Fatal("Failed parsing template files, cannot continue")
@@ -151,4 +179,15 @@ func mustSecret(length int) []byte {
 		panic(err)
 	}
 	return b
+}
+
+func newFakeUser() (string, []byte, []byte) {
+	id, _ := uuid.NewV4()
+	k, _ := keys.GenerateRandomBytes(keys.DefaultSecretLength)
+	j, _ := jwk.New(k)
+	j.Set(jwk.AlgorithmKey, "A128GCM")
+	j.Set("ext", true)
+	j.Set(jwk.KeyOpsKey, []string{jwk.KeyOpEncrypt, jwk.KeyOpDecrypt})
+	b, _ := json.Marshal(j)
+	return id.String(), k, b
 }
