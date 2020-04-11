@@ -1,3 +1,6 @@
+// Copyright 2020 - Offen Authors <hioffen@posteo.de>
+// SPDX-License-Identifier: Apache-2.0
+
 package main
 
 import (
@@ -104,11 +107,11 @@ func cmdDemo(subcommand string, flags []string) {
 	}
 
 	if !*empty {
-		a.logger.Info("The system is generating some random usage data for you, this might take a little while.")
+		a.logger.Info("Offen is generating some random usage data for you, this might take a little while.")
 		rand.Seed(time.Now().UnixNano())
 		account, _ := db.GetAccount(accountID.String(), false, "")
 
-		for i := 0; i < randomInRange(50, 100); i++ {
+		for i := 0; i < randomInRange(100, 200); i++ {
 			userID, key, jwk := newFakeUser()
 			encryptedSecret, encryptionErr := keys.EncryptAsymmetricWith(account.PublicKey, jwk)
 			if encryptionErr != nil {
