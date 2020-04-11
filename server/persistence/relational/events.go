@@ -47,17 +47,49 @@ func (r *relationalDAL) FindEvents(q interface{}) ([]persistence.Event, error) {
 		}
 		return exportEvents(events), nil
 	case persistence.FindEventsQueryByEventIDs:
-		if err := r.db.Where("event_id IN (?)", []string(query)).Find(&events).Error; err != nil {
-			return nil, fmt.Errorf("relational: error looking up events: %w", err)
+		var limit int64 = 500
+		var offset int64
+		for {
+			var nextEvents []Event
+			var chunk []string
+			if int64(len(query)) > offset+limit {
+				chunk = query[offset : offset+limit]
+			} else {
+				chunk = query[offset:]
+			}
+			if err := r.db.Where("event_id IN (?)", chunk).Find(&nextEvents).Error; err != nil {
+				return nil, fmt.Errorf("relational: error looking up events: %w", err)
+			}
+			events = append(events, nextEvents...)
+			if int64(len(chunk)) < limit {
+				break
+			}
+			offset += limit
 		}
 		return exportEvents(events), nil
 	case persistence.FindEventsQueryExclusion:
-		if err := r.db.Where(
-			"event_id IN (?) AND secret_id NOT IN (?)",
-			query.EventIDs,
-			query.SecretIDs,
-		).Find(&events).Error; err != nil {
-			return nil, fmt.Errorf("relational: error looking up events: %w", err)
+		var offset int64
+		var limit int64 = 500
+		for {
+			var nextEvents []Event
+			var chunk []string
+			if int64(len(query.EventIDs)) > offset+limit {
+				chunk = query.EventIDs[offset : offset+limit]
+			} else {
+				chunk = query.EventIDs[offset:]
+			}
+			if err := r.db.Where(
+				"event_id IN (?) AND secret_id NOT IN (?)",
+				chunk,
+				query.SecretIDs,
+			).Find(&nextEvents).Error; err != nil {
+				return nil, fmt.Errorf("relational: error looking up events: %w", err)
+			}
+			events = append(events, nextEvents...)
+			if int64(len(chunk)) < limit {
+				break
+			}
+			offset += limit
 		}
 		return exportEvents(events), nil
 	default:

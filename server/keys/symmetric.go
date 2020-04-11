@@ -27,7 +27,8 @@ func GenerateRandomBytes(size int) ([]byte, error) {
 }
 
 const (
-	aesGCMAlgo = 1
+	aesGCMAlgo  = 1
+	rsaOAEPAlgo = 1
 )
 
 // EncryptWith encrypts the given value symmetrically using the given key.
