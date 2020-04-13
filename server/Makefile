@@ -2,13 +2,13 @@ test:
 	@go test ./... -cover -race
 
 up:
-	@go run cmd/server/main.go
+	@go run cmd/server/*.go
 
 install:
 	@go mod download
 
 setup:
-	@go run cmd/offen/main.go setup -force -source bootstrap.yml
+	@go run cmd/offen/*.go setup -force -source bootstrap.yml
 	@echo ""
 	@echo "You can now log into the development backend using the following credentials:"
 	@echo ""
@@ -17,10 +17,10 @@ setup:
 	@echo ""
 
 migrate:
-	@go run cmd/offen/main.go migrate
+	@go run cmd/offen/*.go migrate
 
 secret:
-	@go run cmd/offen/main.go secret
+	@go run cmd/offen/*.go secret
 
 test-ci: setup
 	@go test ./... -cover -tags="integration"

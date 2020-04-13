@@ -4,9 +4,9 @@
   "private": true,
   "main": "index.js",
   "scripts": {
-    "test": "npm run server & (npm run mochify; status=$?; kill $(lsof -t -i:9876); exit $status)",
+    "test": "npm run server & (npm run mochify; status=$?; exit $status)",
     "mochify": "mochify --allow-chrome-as-root ./**/*.test.js",
-    "server": "http-server __fixtures__ -p 9876 -s",
+    "server": "ws -d __fixtures__ -p 9876",
     "pretest": "dependency-check package.json",
     "posttest": "standard",
     "fix": "standard --fix"
@@ -22,7 +22,7 @@
   "devDependencies": {
     "dependency-check": "^3.4.0",
     "fetch-mock": "^7.3.3",
-    "http-server": "^0.12.1",
+    "local-web-server": "^4.0.0",
     "mochify": "^6.2.0",
     "standard": "^14.3.1"
   },

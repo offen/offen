@@ -10,7 +10,6 @@ dist/
 
 bin/
 statik.go
-offen
 
 *.po
 package-lock.json

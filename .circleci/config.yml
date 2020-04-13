@@ -76,9 +76,6 @@ jobs:
       - restore_cache:
           key: offen-script-{{ checksum "package.json" }}
       - run:
-          name: Install lsof
-          command: sudo apt-get install lsof
-      - run:
           name: Install dependencies
           command: npm install
       - save_cache:
@@ -99,9 +96,6 @@ jobs:
       - restore_cache:
           key: offen-auditorium-{{ checksum "package.json" }}
       - run:
-          name: Install lsof
-          command: sudo apt-get install lsof
-      - run:
           name: Install dependencies
           command: npm install
       - save_cache:
@@ -121,9 +115,6 @@ jobs:
           path: ~/offen
       - restore_cache:
           key: offen-packages-{{ checksum "package.json" }}
-      - run:
-          name: Install lsof
-          command: sudo apt-get install lsof
       - run:
           name: Install dependencies
           command: npm install
@@ -212,7 +203,19 @@ jobs:
             make build-docker
 
             mkdir -p /tmp/artifacts
-            cd ./bin && md5sum * > checksums.txt && cp ~/offen/LICENSE . && cp ~/offen/README.md . && tar -czvf /tmp/artifacts/offen-$DOCKER_IMAGE_TAG.tar.gz $(ls -A)
+            cd ./bin
+
+            aws s3 cp s3://offen-secrets/signing-key.asc /tmp
+            gpg --import /tmp/signing-key.asc
+            for artifact in $(ls); do
+              gpg --armor --detach-sign $artifact
+            done
+            md5sum * > checksums.txt
+            cp ~/offen/LICENSE .
+            cp ~/offen/NOTICE .
+            cp ~/offen/README.md .
+
+            tar -czvf /tmp/artifacts/offen-$DOCKER_IMAGE_TAG.tar.gz $(ls -A)
             aws s3 cp /tmp/artifacts/offen-$DOCKER_IMAGE_TAG.tar.gz s3://offen/binaries/offen-$DOCKER_IMAGE_TAG.tar.gz
 
             echo "$DOCKER_ACCESSTOKEN" | docker login --username $DOCKER_USER --password-stdin

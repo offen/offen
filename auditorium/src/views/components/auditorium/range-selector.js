@@ -36,7 +36,7 @@ const RangeSelector = (props) => {
       <li key={index} class='pr3 bt b--light-gray'>
         {activeRange
           ? (
-            <a href={url} class='b link dim dib bt bw2 b--dark-green pv2 mb2 mr3 dark-green'>
+            <a href={url} class='b link dim dib bt bw2 b--dark-green ph2 pv2 mb2 mr3 dark-green'>
               {range.display}
             </a>
           )
@@ -48,7 +48,7 @@ const RangeSelector = (props) => {
   return (
     <div class='pa3 bg-white flex-auto'>
       <div
-        class={classnames('pa1', 'ma-1', explainerActive ? 'bg-light-yellow' : null)}
+        class={classnames('pa2', 'ma-1', explainerActive ? 'bg-light-yellow' : null)}
       >
         <h4 class='f4 normal ma0'>
           {__('Show data from the last')}
@@ -64,8 +64,8 @@ const RangeSelector = (props) => {
         </h4>
         {explainerActive
           ? (
-            <p class='ma0 pv2'>
-              {__('Some text to explain what\'s going on here')}
+            <p class='mw7 ma0 pv2'>
+              {__('Here you can set the time frame for all displayed metrics. As all data is generally deleted after 6 months, the selection is limited to this duration.')}
             </p>
           )
           : null}

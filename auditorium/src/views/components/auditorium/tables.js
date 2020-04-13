@@ -18,9 +18,7 @@ const ExplainerContent = (props) => {
   }
   return (
     <div class='bg-light-yellow w-100 pa1'>
-      <p class='ma0 pv2'>
-        {children}
-      </p>
+      {children}
     </div>
   )
 }
@@ -35,7 +33,7 @@ const Table = (props) => {
     ? rows.slice(0, showAll ? rows.length : limit).map(function (row, index) {
       return (
         <tr key={index} class='striped--near-white'>
-          <td class='truncate pv2 ph1'>
+          <td class='truncate pv2 pl2 pr1'>
             {row.key}
           </td>
           <td class='pv2 ph1'>
@@ -48,7 +46,7 @@ const Table = (props) => {
     })
     : (
       <tr>
-        <td class='pl1 moon-gray' colspan='2'>
+        <td class='pl2 moon-gray' colspan='2'>
           {onEmptyMessage}
         </td>
       </tr>
@@ -59,10 +57,10 @@ const Table = (props) => {
       <table class='collapse dt--fixed mb2'>
         <thead>
           <tr>
-            <th class='w-70 normal tl pv2 ph1 moon-gray'>
+            <th class='w-75 normal tl pv2 pl2 pr1 moon-gray'>
               {props.columnNames[0]}
             </th>
-            <th class='w-30 normal tl pv2 ph1 moon-gray'>
+            <th class='w-25 normal tl pv2 ph1 moon-gray'>
               {props.columnNames[1]}
             </th>
           </tr>
@@ -127,7 +125,7 @@ const Container = (props) => {
       css.push('f5', 'normal', 'dib', 'pv3')
     }
     if (tableSets.length > 1) {
-      css.push('f5', 'normal', 'link', 'dim', 'dib', 'pt2', 'pb3', 'mr3', 'dark-green')
+      css.push('f5', 'normal', 'link', 'dim', 'dib', 'pt2', 'pb2', 'ph2', 'mr2', 'dark-green')
     }
 
     let handleClick = null
@@ -151,7 +149,7 @@ const Container = (props) => {
     return (
       <a key={index} role='button' class={classnames(css)} onclick={handleClick}>
         {set.props.headline}
-        {showExplainer && index === selectedTab ? <ExplainerIcon onclick={extra.onExplain} invert={extra.explainerActive} marginLeft marginRight /> : null}
+        {showExplainer && index === selectedTab ? <ExplainerIcon onclick={extra.onExplain} invert={extra.explainerActive} marginLeft /> : null}
       </a>
     )
   })
@@ -169,7 +167,7 @@ const Container = (props) => {
           ? (<div>{headlines}</div>)
           : null}
         {(() => {
-          if (!showExplainer && !tableSets[selectedTab].props.explainer) {
+          if (!explainerProps || !showExplainer || !tableSets[selectedTab].props.explainer) {
             return null
           }
           const props = explainerProps(`table/${groupName}/${tableSets[selectedTab].props.headline}`)

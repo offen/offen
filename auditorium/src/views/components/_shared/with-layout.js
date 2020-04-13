@@ -8,16 +8,17 @@ const { h, Fragment } = require('preact')
 const { connect } = require('react-redux')
 
 const HighlightBox = require('./highlight-box')
+const Paragraph = require('./paragraph')
 const flash = require('./../../../action-creators/flash')
 
 const Layout = (props) => (
   <div class='f5 roboto dark-gray'>
     <div class='w-100 h3 bg-black-05'>
       <div class='mw8 center flex ph3 pt2' id='headline'>
-        <a href='/' class='dim'>
+        <a href='/' class='dim link flex'>
           <img src='/offen-icon-black.svg' alt='Offen logo' width='37' height='40' class='ma0 mt1 mr3' />
+          <h1 class='dib dark-gray f2 normal ma0 mt1'>{props.headline || __('Offen Auditorium')}</h1>
         </a>
-        <h1 class='f2 normal ma0 mt1'>{props.headline || __('Offen Auditorium')}</h1>
       </div>
     </div>
     <div class='mw8 center ph0 ph3-ns pb4'>
@@ -32,17 +33,27 @@ const Layout = (props) => (
         )
         : props.children}
     </div>
-    <div class='mw8 center flex flex-column flex-row-ns justify-between ph3 pb5 moon-gray'>
-      <div>
-        <p class='b ma0 mb1'>
-        Offen
-        </p>
-        <p class='ma0 mb2' dangerouslySetInnerHTML={{ __html: __('Transparent web analytics<br>for everyone') }} />
+    <div class='mw8 center flex flex-wrap flex-column flex-row-ns justify-between ph3 pb5 pb7-ns moon-gray'>
+      <div class='w-100'>
+        <Paragraph
+          class='ma0 mb1'
+        >
+          {__('<a href="https://www.offen.dev/" class="%s" target="_blank" rel="noreferer noopener">Offen</a>', 'link dim light-silver')}
+        </Paragraph>
       </div>
-      <div>
-        <a href='https://www.offen.dev/' class='normal link dim moon-gray' target='_blank' rel='noopener noreferrer'>
-        www.offen.dev
-        </a>
+      <div class='w-100 w-60-ns pr3-ns'>
+        <Paragraph
+          class='ma0 mb3'
+        >
+          {__('Transparent web analytics<br>for everyone')}
+        </Paragraph>
+      </div>
+      <div class='w-70 w-40-ns'>
+        <Paragraph
+          class='ma0'
+        >
+          {__('Found an issue, need help or want to add something?<br><a href="https://twitter.com/hioffen" class="%s" target="_blank" rel="noreferer noopener">Tweet,</a> <a href="mailto:hioffen@posteo.de" class="%s" target="_blank">email</a> or file an <a href="https://github.com/offen/offen" class="%s" target="_blank" rel="noreferer noopener">issue.</a>', 'link dim light-silver', 'link dim light-silver', 'link dim light-silver')}
+        </Paragraph>
       </div>
     </div>
     {props.flash.length
@@ -51,7 +62,7 @@ const Layout = (props) => (
           {props.flash.map((message) => (
             <p
               key={message.id}
-              class='pointer mw6 mv0 mt3-ns center ph3 pv4 bg-light-yellow shadow-1-ns b--black-10 bt bn-ns flex items-center'
+              class='pointer mw6 mv0 mt3-ns center ph3 pv4 bg-light-yellow shadow-1-ns br2 b--black-10 bt bn-ns flex items-center'
               onclick={() => props.handleExpire(message.id)}
             >
               <img src='/offen-icon-black.svg' alt='Offen logo' height='30' class='ma0 mr3' />

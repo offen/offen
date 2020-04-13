@@ -34,7 +34,7 @@ __Documentation on developing, running and using Offen__ is currently being coll
 
 ### Project status
 
-We are currently working on __Milestone 3 out of 6: Displaying data__. Check our [blog][] for detailed updates on what we are working on right now and what's up next.
+We are currently working on __Milestone 4 out of 6: Managing data__. Check our [blog][] for detailed updates on what we are working on right now and what's up next.
 
 [blog]: https://www.offen.dev/blog/
 
