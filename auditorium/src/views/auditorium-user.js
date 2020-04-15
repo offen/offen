@@ -5,11 +5,12 @@
 
 /** @jsx h */
 const { h, Fragment } = require('preact')
-const { useEffect, useState } = require('preact/hooks')
+const { useEffect } = require('preact/hooks')
 const { connect } = require('react-redux')
 
 const withTitle = require('./components/_shared/with-title')
 const withLayout = require('./components/_shared/with-layout')
+const useExplainer = require('./components/_shared/use-explainer')
 const HighlightBox = require('./components/_shared/highlight-box')
 const Header = require('./components/auditorium/header')
 const ExplainerHeader = require('./components/auditorium/explainer-header')
@@ -55,21 +56,7 @@ const AuditoriumView = (props) => {
     )
   }
 
-  const [activeExplainer, setActiveExplainer] = useState(null)
-
-  function explainerProps (key) {
-    return {
-      showExplainer: true,
-      explainerActive: activeExplainer === key,
-      activeExplainer: activeExplainer,
-      onExplain: (e) => {
-        if (e) {
-          e.stopPropagation()
-        }
-        setActiveExplainer(activeExplainer !== key ? key : null)
-      }
-    }
-  }
+  const explainerPropsFor = useExplainer()
 
   return (
     <Fragment>
@@ -96,7 +83,7 @@ const AuditoriumView = (props) => {
           <RangeSelector
             resolution={resolution}
             range={range}
-            {...explainerProps('range-selector')}
+            {...explainerPropsFor('range-selector')}
           />
         </div>
       </div>
@@ -106,7 +93,7 @@ const AuditoriumView = (props) => {
             model={model}
             isOperator={false}
             resolution={resolution}
-            {...explainerProps('chart')}
+            {...explainerPropsFor('chart')}
           />
         </div>
       </div>
@@ -116,9 +103,7 @@ const AuditoriumView = (props) => {
             arrangement='horizontal'
             isOperator={false}
             model={model}
-            showExplainer
-            explainerProps={explainerProps}
-            {...explainerProps('metrics')}
+            {...explainerPropsFor('metrics')}
           />
         </div>
       </div>
@@ -126,9 +111,7 @@ const AuditoriumView = (props) => {
         <div class='w-100 flex bt ba-ns br0 br2-ns b--black-10 mb2-ns'>
           <URLTables
             model={model}
-            showExplainer
-            explainerProps={explainerProps}
-            {...explainerProps('url-tables')}
+            {...explainerPropsFor('url-tables')}
           />
         </div>
       </div>
@@ -136,8 +119,7 @@ const AuditoriumView = (props) => {
         <div class='w-100 flex bt bb ba-ns br0 br2-ns b--black-10 mb2-ns'>
           <RetentionChart
             model={model}
-            showExplainer
-            {...explainerProps('retention')}
+            {...explainerPropsFor('retention')}
           />
         </div>
       </div>
