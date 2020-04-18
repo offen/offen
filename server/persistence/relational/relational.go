@@ -59,7 +59,35 @@ func (r *relationalDAL) ProbeEmpty() bool {
 }
 
 func (r *relationalDAL) ApplyMigrations() error {
-	m := gormigrate.New(r.db, gormigrate.DefaultOptions, []*gormigrate.Migration{})
+	m := gormigrate.New(r.db, gormigrate.DefaultOptions, []*gormigrate.Migration{
+		{
+			ID: "001_introduce_admin_level",
+			Migrate: func(db *gorm.DB) error {
+				type AccountUser struct {
+					AccountUserID  string `gorm:"primary_key"`
+					HashedEmail    string
+					HashedPassword string
+					Salt           string
+					AdminLevel     int
+					Relationships  []AccountUserRelationship `gorm:"foreignkey:AccountUserID;association_foreignkey:AccountUserID"`
+				}
+				if err := db.AutoMigrate(&AccountUser{}).Error; err != nil {
+					return err
+				}
+				return db.Model(&AccountUser{}).UpdateColumn("admin_level", 1).Error
+			},
+			Rollback: func(db *gorm.DB) error {
+				type AccountUser struct {
+					AccountUserID  string `gorm:"primary_key"`
+					HashedEmail    string
+					HashedPassword string
+					Salt           string
+					Relationships  []AccountUserRelationship `gorm:"foreignkey:AccountUserID;association_foreignkey:AccountUserID"`
+				}
+				return db.AutoMigrate(&AccountUser{}).Error
+			},
+		},
+	})
 
 	m.InitSchema(func(db *gorm.DB) error {
 		return db.AutoMigrate(knownTables...).Error
