@@ -21,6 +21,8 @@ const authentication = require('./../action-creators/authentication')
 const management = require('./../action-creators/management')
 const errors = require('./../action-creators/errors')
 
+const ADMIN_LEVEL_ALLOW_EDIT = 1
+
 const ConsoleView = (props) => {
   const {
     authenticatedUser, handleShare, handleValidationError, handleCreateAccount,
@@ -37,7 +39,7 @@ const ConsoleView = (props) => {
           accounts={accounts}
         />
       </div>
-      {Array.isArray(accounts) && accounts.length && adminLevel === 1
+      {Array.isArray(accounts) && accounts.length && adminLevel === ADMIN_LEVEL_ALLOW_EDIT
         ? (
           <div class='w-100 br0 br2-ns mb2'>
             <ShareAccounts
@@ -47,7 +49,7 @@ const ConsoleView = (props) => {
           </div>
         )
         : null}
-      {adminLevel === 1
+      {adminLevel === ADMIN_LEVEL_ALLOW_EDIT
         ? (
           <div class='w-100 br0 br2-ns mb2'>
             <CreateAccount

@@ -29,6 +29,8 @@ const model = require('./../action-creators/model')
 const errors = require('./../action-creators/errors')
 const management = require('./../action-creators/management')
 
+const ADMIN_LEVEL_ALLOW_EDIT = 1
+
 const AuditoriumView = (props) => {
   const {
     matches, authenticatedUser, model, stale,
@@ -157,7 +159,7 @@ const AuditoriumView = (props) => {
           </div>
         )
         : null}
-      {adminLevel === 1
+      {adminLevel === ADMIN_LEVEL_ALLOW_EDIT
         ? (
           <div class='flex flex-column flex-row-l'>
             <div class='w-100 flex br0 br2-ns mb2'>
@@ -172,7 +174,7 @@ const AuditoriumView = (props) => {
           </div>
         )
         : null}
-      {adminLevel === 1
+      {adminLevel === ADMIN_LEVEL_ALLOW_EDIT
         ? (
           <div class='flex flex-column flex-row-l'>
             <div class='w-100 flex br0 br2-ns mb2'>

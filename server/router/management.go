@@ -80,7 +80,7 @@ func (rt *router) postShareAccount(c *gin.Context) {
 		return
 	}
 
-	result, err := rt.db.ShareAccount(req.InviteeEmailAddress, req.ProviderEmailAddress, req.ProviderPassword, c.Param("accountID"))
+	result, err := rt.db.ShareAccount(req.InviteeEmailAddress, req.ProviderEmailAddress, req.ProviderPassword, c.Param("accountID"), req.GrantAdminPrivileges)
 	if err != nil {
 		newJSONError(
 			fmt.Errorf("router: error inviting user: %w", err),

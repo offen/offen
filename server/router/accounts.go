@@ -131,7 +131,6 @@ func (rt *router) postAccount(c *gin.Context) {
 		return
 	}
 
-	fmt.Printf("account user %#v\n", accountUser)
 	if ok := accountUser.IsSuperAdmin(); !ok {
 		newJSONError(
 			errors.New("router: account user does not have permissions to create account"),

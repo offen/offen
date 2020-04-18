@@ -35,10 +35,10 @@ type BootstrapAccount struct {
 // BootstrapAccountUser contains the information needed for creating an account
 // user at bootstrap time.
 type BootstrapAccountUser struct {
-	Email      string   `yaml:"email"`
-	Password   string   `yaml:"password"`
-	Accounts   []string `yaml:"accounts"`
-	AdminLevel int      `yaml:"admin_level"`
+	Email      string                `yaml:"email"`
+	Password   string                `yaml:"password"`
+	Accounts   []string              `yaml:"accounts"`
+	AdminLevel AccountUserAdminLevel `yaml:"admin_level"`
 }
 
 type accountCreation struct {
@@ -153,7 +153,17 @@ func bootstrapAccounts(config *BootstrapConfig) ([]Account, []AccountUser, []Acc
 	return accounts, accountUserCreations, relationshipCreations, nil
 }
 
-func newAccountUser(email, password string, adminLevel int) (*AccountUser, error) {
+func newAccountUser(email, password string, adminLevel interface{}) (*AccountUser, error) {
+	var level AccountUserAdminLevel
+	switch c := adminLevel.(type) {
+	case int:
+		level = AccountUserAdminLevel(c)
+	case AccountUserAdminLevel:
+		level = c
+	default:
+		return nil, fmt.Errorf("persistence: cannot use %v as admin level", adminLevel)
+	}
+
 	accountUserID, idErr := uuid.NewV4()
 	if idErr != nil {
 		return nil, idErr
@@ -169,7 +179,7 @@ func newAccountUser(email, password string, adminLevel int) (*AccountUser, error
 	a := &AccountUser{
 		AccountUserID: accountUserID.String(),
 		Salt:          salt,
-		AdminLevel:    AccountUserAdminLevel(adminLevel),
+		AdminLevel:    level,
 		HashedEmail:   hashedEmail.Marshal(),
 	}
 

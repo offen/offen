@@ -9,7 +9,7 @@ import (
 	"github.com/offen/offen/server/keys"
 )
 
-func (p *persistenceLayer) ShareAccount(inviteeEmailAddress, providerEmailAddress, providerPassword, accountID string) (ShareAccountResult, error) {
+func (p *persistenceLayer) ShareAccount(inviteeEmailAddress, providerEmailAddress, providerPassword, accountID string, grantAdminPrivileges bool) (ShareAccountResult, error) {
 	var result ShareAccountResult
 	var invitedAccountUser *AccountUser
 
@@ -27,6 +27,10 @@ func (p *persistenceLayer) ShareAccount(inviteeEmailAddress, providerEmailAddres
 		return result, fmt.Errorf("persistence: error comparing passwords: %w", err)
 	}
 
+	var targetAdminLevel AccountUserAdminLevel
+	if grantAdminPrivileges {
+		targetAdminLevel = AccountUserAdminLevelSuperAdmin
+	}
 	// Next, we need to check whether the given address is already associated
 	// with an existing account.
 	if match, err := selectAccountUser(accountUsers, inviteeEmailAddress); err == nil {
@@ -34,8 +38,14 @@ func (p *persistenceLayer) ShareAccount(inviteeEmailAddress, providerEmailAddres
 			result.UserExistsWithPassword = true
 		}
 		invitedAccountUser = match
+		if match.AdminLevel != targetAdminLevel {
+			invitedAccountUser.AdminLevel = targetAdminLevel
+			if err := p.dal.UpdateAccountUser(invitedAccountUser); err != nil {
+				return result, fmt.Errorf("persistence: error updating admin level on previously non-admin user: %w", err)
+			}
+		}
 	} else {
-		newAccountUserRecord, err := newAccountUser(inviteeEmailAddress, "", 1)
+		newAccountUserRecord, err := newAccountUser(inviteeEmailAddress, "", targetAdminLevel)
 		if err != nil {
 			return result, fmt.Errorf("persistence: error creating new account user for invitee: %w", err)
 		}
