@@ -19,6 +19,7 @@ type shareAccountRequest struct {
 	ProviderEmailAddress string `json:"emailAddress"`
 	ProviderPassword     string `json:"password"`
 	URLTemplate          string `json:"urlTemplate"`
+	GrantAdminPrivileges bool   `json:"grantAdminPrivileges"`
 }
 
 func (rt *router) postShareAccount(c *gin.Context) {
@@ -71,7 +72,15 @@ func (rt *router) postShareAccount(c *gin.Context) {
 		return
 	}
 
-	result, err := rt.db.ShareAccount(req.InviteeEmailAddress, req.ProviderEmailAddress, req.ProviderPassword, c.Param("accountID"))
+	if !accountInRequest.IsSuperAdmin() {
+		newJSONError(
+			errors.New("router: given credentials are not allowed to share accounts"),
+			http.StatusBadRequest,
+		).Pipe(c)
+		return
+	}
+
+	result, err := rt.db.ShareAccount(req.InviteeEmailAddress, req.ProviderEmailAddress, req.ProviderPassword, c.Param("accountID"), req.GrantAdminPrivileges)
 	if err != nil {
 		newJSONError(
 			fmt.Errorf("router: error inviting user: %w", err),

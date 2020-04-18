@@ -13,7 +13,7 @@ const ShareAccounts = (props) => {
     <Share
       {...props}
       headline={__('Share all accounts')}
-      subline={__('Share all your Offen accounts via email invitation. Invited users have full access to shared accounts.')}
+      subline={__('Share all your Offen accounts via email invitation. When granted Admin privilges, invited users have full access to shared accounts and can create new accounts on this Offen instance.')}
     />
   )
 }

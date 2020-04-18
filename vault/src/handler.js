@@ -251,7 +251,7 @@ exports.handleShareAccountWith = handleShareAccountWith
 
 function handleShareAccountWith (api) {
   return proxyThunk(function (payload) {
-    return api.shareAccount(payload.invitee, payload.emailAddress, payload.password, payload.urlTemplate, payload.accountId)
+    return api.shareAccount(payload.invitee, payload.emailAddress, payload.password, payload.urlTemplate, payload.accountId, payload.grantAdminPrivileges)
   })
 }
 
