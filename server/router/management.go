@@ -19,6 +19,7 @@ type shareAccountRequest struct {
 	ProviderEmailAddress string `json:"emailAddress"`
 	ProviderPassword     string `json:"password"`
 	URLTemplate          string `json:"urlTemplate"`
+	GrantAdminPrivileges bool   `json:"grantAdminPrivileges"`
 }
 
 func (rt *router) postShareAccount(c *gin.Context) {

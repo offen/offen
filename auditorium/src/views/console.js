@@ -22,6 +22,11 @@ const management = require('./../action-creators/management')
 const errors = require('./../action-creators/errors')
 
 const ConsoleView = (props) => {
+  const {
+    authenticatedUser, handleShare, handleValidationError, handleCreateAccount,
+    handleChangeEmail, handleChangePassword, handleLogout
+  } = props
+  const { adminLevel, accounts } = authenticatedUser
   return (
     <Fragment>
       <Header
@@ -29,38 +34,42 @@ const ConsoleView = (props) => {
       />
       <div class='w-100 br0 br2-ns mb2 mt4'>
         <AccountPicker
-          accounts={props.authenticatedUser.accounts}
+          accounts={accounts}
         />
       </div>
-      {Array.isArray(props.authenticatedUser.accounts) && props.authenticatedUser.accounts.length
+      {Array.isArray(accounts) && accounts.length && adminLevel === 1
         ? (
           <div class='w-100 br0 br2-ns mb2'>
             <ShareAccounts
-              onShare={props.handleShare}
-              onValidationError={props.handleValidationError}
+              onShare={handleShare}
+              onValidationError={handleValidationError}
+            />
+          </div>
+        )
+        : null}
+      {adminLevel === 1
+        ? (
+          <div class='w-100 br0 br2-ns mb2'>
+            <CreateAccount
+              onCreateAccount={handleCreateAccount}
             />
           </div>
         )
         : null}
       <div class='w-100 br0 br2-ns mb2'>
-        <CreateAccount
-          onCreateAccount={props.handleCreateAccount}
-        />
-      </div>
-      <div class='w-100 br0 br2-ns mb2'>
         <ChangeEmail
-          onChangeEmail={props.handleChangeEmail}
+          onChangeEmail={handleChangeEmail}
         />
       </div>
       <div class='w-100 br0 br2-ns mb2'>
         <ChangePassword
-          onChangePassword={props.handleChangePassword}
-          onValidationError={props.handleValidationError}
+          onChangePassword={handleChangePassword}
+          onValidationError={handleValidationError}
         />
       </div>
       <div class='w-100 br0 br2-ns mb2'>
         <Logout
-          onLogout={props.handleLogout}
+          onLogout={handleLogout}
         />
       </div>
     </Fragment>

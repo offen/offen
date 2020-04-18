@@ -30,9 +30,12 @@ const errors = require('./../action-creators/errors')
 const management = require('./../action-creators/management')
 
 const AuditoriumView = (props) => {
-  const { matches, authenticatedUser, model, stale } = props
-  const { handleQuery, handleShare, handleValidationError, handleRetire, handleCopy } = props
+  const {
+    matches, authenticatedUser, model, stale,
+    handleQuery, handleShare, handleValidationError, handleRetire, handleCopy
+  } = props
   const { accountId, range, resolution } = matches
+  const { adminLevel } = authenticatedUser
   const [focus, setFocus] = useState(true)
 
   const softFailure = __(
@@ -154,26 +157,34 @@ const AuditoriumView = (props) => {
           </div>
         )
         : null}
-      <div class='flex flex-column flex-row-l'>
-        <div class='w-100 flex br0 br2-ns mb2'>
-          <Share
-            key={`share-${accountId}`}
-            onValidationError={handleValidationError}
-            onShare={handleShare}
-            accountName={model.account.name}
-            accountId={accountId}
-          />
-        </div>
-      </div>
-      <div class='flex flex-column flex-row-l'>
-        <div class='w-100 flex br0 br2-ns mb2'>
-          <RetireAccount
-            key={`retire-${accountId}`}
-            account={model.account}
-            onRetire={handleRetire}
-          />
-        </div>
-      </div>
+      {adminLevel === 1
+        ? (
+          <div class='flex flex-column flex-row-l'>
+            <div class='w-100 flex br0 br2-ns mb2'>
+              <Share
+                key={`share-${accountId}`}
+                onValidationError={handleValidationError}
+                onShare={handleShare}
+                accountName={model.account.name}
+                accountId={accountId}
+              />
+            </div>
+          </div>
+        )
+        : null}
+      {adminLevel === 1
+        ? (
+          <div class='flex flex-column flex-row-l'>
+            <div class='w-100 flex br0 br2-ns mb2'>
+              <RetireAccount
+                key={`retire-${accountId}`}
+                account={model.account}
+                onRetire={handleRetire}
+              />
+            </div>
+          </div>
+        )
+        : null}
       <div class='flex flex-column flex-row-l'>
         <div class='w-100 flex br0 br2-ns'>
           <GoSettings />

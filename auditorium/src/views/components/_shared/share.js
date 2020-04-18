@@ -20,6 +20,7 @@ const Share = (props) => {
   function handleSubmit (formData, resetForm) {
     var invitee = formData.invitee
     var emailAddress = formData['email-address']
+    var grantAdminPrivileges = formData['admin-privileges'] === 'on'
 
     if (invitee === emailAddress) {
       onValidationError(
@@ -35,7 +36,8 @@ const Share = (props) => {
         emailAddress: emailAddress,
         password: formData.password,
         urlTemplate: window.location.origin + '/join/{token}/',
-        accountId: accountId
+        accountId: accountId,
+        grantAdminPrivileges: grantAdminPrivileges
       },
       __('An invite email has been sent to <strong>%s</strong>.', invitee),
       __('There was an error inviting the user, please try again.')
@@ -92,6 +94,13 @@ const Share = (props) => {
                   disabled={isDisabled}
                 >
                   {__('Email address to send invite to')}
+                </LabeledInput>
+                <LabeledInput
+                  type='checkbox'
+                  name='admin-privileges'
+                  disabled={isDisabled}
+                >
+                  {__('Grant Admin privileges')}
                 </LabeledInput>
                 <SubmitButton
                   disabled={isDisabled}
