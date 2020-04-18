@@ -35,9 +35,10 @@ type BootstrapAccount struct {
 // BootstrapAccountUser contains the information needed for creating an account
 // user at bootstrap time.
 type BootstrapAccountUser struct {
-	Email    string   `yaml:"email"`
-	Password string   `yaml:"password"`
-	Accounts []string `yaml:"accounts"`
+	Email      string   `yaml:"email"`
+	Password   string   `yaml:"password"`
+	Accounts   []string `yaml:"accounts"`
+	AdminLevel int      `yaml:"admin_level"`
 }
 
 type accountCreation struct {
@@ -113,7 +114,7 @@ func bootstrapAccounts(config *BootstrapConfig) ([]Account, []AccountUser, []Acc
 	relationshipCreations := []AccountUserRelationship{}
 
 	for _, accountUserData := range config.AccountUsers {
-		accountUser, err := newAccountUser(accountUserData.Email, accountUserData.Password)
+		accountUser, err := newAccountUser(accountUserData.Email, accountUserData.Password, accountUserData.AdminLevel)
 		if err != nil {
 			return nil, nil, nil, err
 		}
@@ -152,7 +153,7 @@ func bootstrapAccounts(config *BootstrapConfig) ([]Account, []AccountUser, []Acc
 	return accounts, accountUserCreations, relationshipCreations, nil
 }
 
-func newAccountUser(email, password string) (*AccountUser, error) {
+func newAccountUser(email, password string, adminLevel int) (*AccountUser, error) {
 	accountUserID, idErr := uuid.NewV4()
 	if idErr != nil {
 		return nil, idErr
@@ -168,6 +169,7 @@ func newAccountUser(email, password string) (*AccountUser, error) {
 	a := &AccountUser{
 		AccountUserID: accountUserID.String(),
 		Salt:          salt,
+		AdminLevel:    AccountUserAdminLevel(adminLevel),
 		HashedEmail:   hashedEmail.Marshal(),
 	}
 

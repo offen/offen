@@ -113,6 +113,7 @@ func TestRouter_DeleteAccount(t *testing.T) {
 				c.Set(
 					contextKeyAuth,
 					persistence.LoginResult{
+						AdminLevel: 1,
 						Accounts: []persistence.LoginAccountResult{
 							{AccountID: "account-a"},
 						},

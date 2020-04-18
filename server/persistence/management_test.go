@@ -77,7 +77,7 @@ func TestPersistenceLayer_ShareAccount(t *testing.T) {
 			&mockShareAccountDatabase{
 				findAcccountUsersResult: []AccountUser{
 					(func() AccountUser {
-						a, _ := newAccountUser("hioffen@offen.dev", "develop")
+						a, _ := newAccountUser("hioffen@offen.dev", "develop", 1)
 						return *a
 					})(),
 				},
@@ -94,7 +94,7 @@ func TestPersistenceLayer_ShareAccount(t *testing.T) {
 			&mockShareAccountDatabase{
 				findAcccountUsersResult: []AccountUser{
 					(func() AccountUser {
-						a, _ := newAccountUser("develop@offen.dev", "d3v3lop")
+						a, _ := newAccountUser("develop@offen.dev", "d3v3lop", 1)
 						return *a
 					})(),
 				},
@@ -111,7 +111,7 @@ func TestPersistenceLayer_ShareAccount(t *testing.T) {
 			&mockShareAccountDatabase{
 				findAcccountUsersResult: []AccountUser{
 					(func() AccountUser {
-						a, _ := newAccountUser("develop@offen.dev", "develop")
+						a, _ := newAccountUser("develop@offen.dev", "develop", 1)
 						return *a
 					})(),
 				},
@@ -129,7 +129,7 @@ func TestPersistenceLayer_ShareAccount(t *testing.T) {
 			&mockShareAccountDatabase{
 				findAcccountUsersResult: []AccountUser{
 					(func() AccountUser {
-						a, _ := newAccountUser("develop@offen.dev", "develop")
+						a, _ := newAccountUser("develop@offen.dev", "develop", 1)
 
 						emailDerivedKey, _ := keys.DeriveKey("develop@offen.dev", a.Salt)
 						passwordDerivedKey, _ := keys.DeriveKey("develop", a.Salt)
@@ -149,7 +149,7 @@ func TestPersistenceLayer_ShareAccount(t *testing.T) {
 						return *a
 					})(),
 					(func() AccountUser {
-						a, _ := newAccountUser("invitee@offen.dev", "develop")
+						a, _ := newAccountUser("invitee@offen.dev", "develop", 1)
 						return *a
 					})(),
 				},
@@ -169,7 +169,7 @@ func TestPersistenceLayer_ShareAccount(t *testing.T) {
 			&mockShareAccountDatabase{
 				findAcccountUsersResult: []AccountUser{
 					(func() AccountUser {
-						a, _ := newAccountUser("develop@offen.dev", "develop")
+						a, _ := newAccountUser("develop@offen.dev", "develop", 1)
 
 						emailDerivedKey, _ := keys.DeriveKey("develop@offen.dev", a.Salt)
 						passwordDerivedKey, _ := keys.DeriveKey("develop", a.Salt)
@@ -282,7 +282,7 @@ func TestPersistenceLayer_Join(t *testing.T) {
 			&mockJoinDatabase{
 				findAccountUsersResult: []AccountUser{
 					(func() AccountUser {
-						a, _ := newAccountUser("foo@bar.com", "s3cret")
+						a, _ := newAccountUser("foo@bar.com", "s3cret", 1)
 						return *a
 					})(),
 				},
@@ -296,7 +296,7 @@ func TestPersistenceLayer_Join(t *testing.T) {
 			&mockJoinDatabase{
 				findAccountUsersResult: []AccountUser{
 					(func() AccountUser {
-						a, _ := newAccountUser("foo@bar.com", "secret")
+						a, _ := newAccountUser("foo@bar.com", "secret", 1)
 						return *a
 					})(),
 				},
@@ -311,7 +311,7 @@ func TestPersistenceLayer_Join(t *testing.T) {
 			&mockJoinDatabase{
 				findAccountUsersResult: []AccountUser{
 					(func() AccountUser {
-						a, _ := newAccountUser("foo@bar.com", "secret")
+						a, _ := newAccountUser("foo@bar.com", "secret", 1)
 						emailDerivedKey, _ := keys.DeriveKey("foo@bar.com", a.Salt)
 
 						key := []byte("key")
@@ -338,7 +338,7 @@ func TestPersistenceLayer_Join(t *testing.T) {
 			&mockJoinDatabase{
 				findAccountUsersResult: []AccountUser{
 					(func() AccountUser {
-						a, _ := newAccountUser("foo@bar.com", "secret")
+						a, _ := newAccountUser("foo@bar.com", "secret", 1)
 						emailDerivedKey, _ := keys.DeriveKey("foo@bar.com", a.Salt)
 
 						key := []byte("key")
@@ -365,7 +365,7 @@ func TestPersistenceLayer_Join(t *testing.T) {
 			&mockJoinDatabase{
 				findAccountUsersResult: []AccountUser{
 					(func() AccountUser {
-						a, _ := newAccountUser("foo@bar.com", "secret")
+						a, _ := newAccountUser("foo@bar.com", "secret", 1)
 						emailDerivedKey, _ := keys.DeriveKey("foo@bar.com", a.Salt)
 
 						key := []byte("key")
@@ -391,7 +391,7 @@ func TestPersistenceLayer_Join(t *testing.T) {
 			&mockJoinDatabase{
 				findAccountUsersResult: []AccountUser{
 					(func() AccountUser {
-						a, _ := newAccountUser("foo@bar.com", "secret")
+						a, _ := newAccountUser("foo@bar.com", "secret", 1)
 						a.HashedPassword = ""
 						emailDerivedKey, _ := keys.DeriveKey("foo@bar.com", a.Salt)
 

@@ -35,7 +35,7 @@ func (p *persistenceLayer) ShareAccount(inviteeEmailAddress, providerEmailAddres
 		}
 		invitedAccountUser = match
 	} else {
-		newAccountUserRecord, err := newAccountUser(inviteeEmailAddress, "")
+		newAccountUserRecord, err := newAccountUser(inviteeEmailAddress, "", 1)
 		if err != nil {
 			return result, fmt.Errorf("persistence: error creating new account user for invitee: %w", err)
 		}

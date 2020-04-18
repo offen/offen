@@ -71,6 +71,14 @@ func (rt *router) postShareAccount(c *gin.Context) {
 		return
 	}
 
+	if !accountInRequest.IsSuperAdmin() {
+		newJSONError(
+			errors.New("router: given credentials are not allowed to share accounts"),
+			http.StatusBadRequest,
+		).Pipe(c)
+		return
+	}
+
 	result, err := rt.db.ShareAccount(req.InviteeEmailAddress, req.ProviderEmailAddress, req.ProviderPassword, c.Param("accountID"))
 	if err != nil {
 		newJSONError(
