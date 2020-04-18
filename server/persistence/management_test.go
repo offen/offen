@@ -282,7 +282,7 @@ func TestPersistenceLayer_Join(t *testing.T) {
 			&mockJoinDatabase{
 				findAccountUsersResult: []AccountUser{
 					(func() AccountUser {
-						a, _ := newAccountUser("foo@bar.com", "s3cret", AccountUserAdminLevelSuperAdmin)
+						a, _ := newAccountUser("foo@bar.com", "s3cret", 0)
 						return *a
 					})(),
 				},
@@ -296,7 +296,7 @@ func TestPersistenceLayer_Join(t *testing.T) {
 			&mockJoinDatabase{
 				findAccountUsersResult: []AccountUser{
 					(func() AccountUser {
-						a, _ := newAccountUser("foo@bar.com", "secret", AccountUserAdminLevelSuperAdmin)
+						a, _ := newAccountUser("foo@bar.com", "secret", 0)
 						return *a
 					})(),
 				},
@@ -311,7 +311,7 @@ func TestPersistenceLayer_Join(t *testing.T) {
 			&mockJoinDatabase{
 				findAccountUsersResult: []AccountUser{
 					(func() AccountUser {
-						a, _ := newAccountUser("foo@bar.com", "secret", AccountUserAdminLevelSuperAdmin)
+						a, _ := newAccountUser("foo@bar.com", "secret", 0)
 						emailDerivedKey, _ := keys.DeriveKey("foo@bar.com", a.Salt)
 
 						key := []byte("key")
@@ -338,7 +338,7 @@ func TestPersistenceLayer_Join(t *testing.T) {
 			&mockJoinDatabase{
 				findAccountUsersResult: []AccountUser{
 					(func() AccountUser {
-						a, _ := newAccountUser("foo@bar.com", "secret", AccountUserAdminLevelSuperAdmin)
+						a, _ := newAccountUser("foo@bar.com", "secret", 0)
 						emailDerivedKey, _ := keys.DeriveKey("foo@bar.com", a.Salt)
 
 						key := []byte("key")
@@ -365,7 +365,7 @@ func TestPersistenceLayer_Join(t *testing.T) {
 			&mockJoinDatabase{
 				findAccountUsersResult: []AccountUser{
 					(func() AccountUser {
-						a, _ := newAccountUser("foo@bar.com", "secret", AccountUserAdminLevelSuperAdmin)
+						a, _ := newAccountUser("foo@bar.com", "secret", 0)
 						emailDerivedKey, _ := keys.DeriveKey("foo@bar.com", a.Salt)
 
 						key := []byte("key")
@@ -391,7 +391,7 @@ func TestPersistenceLayer_Join(t *testing.T) {
 			&mockJoinDatabase{
 				findAccountUsersResult: []AccountUser{
 					(func() AccountUser {
-						a, _ := newAccountUser("foo@bar.com", "secret", AccountUserAdminLevelSuperAdmin)
+						a, _ := newAccountUser("foo@bar.com", "secret", 0)
 						a.HashedPassword = ""
 						emailDerivedKey, _ := keys.DeriveKey("foo@bar.com", a.Salt)
 

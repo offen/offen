@@ -92,12 +92,42 @@ func TestRouter_DeleteAccount(t *testing.T) {
 		name               string
 		accountID          string
 		database           persistence.Service
+		user               persistence.LoginResult
 		expectedStatusCode int
 	}{
+		{
+			"not authorized",
+			"account-a",
+			&mockDeleteAccountDatabase{},
+			persistence.LoginResult{
+				Accounts: []persistence.LoginAccountResult{
+					{AccountID: "account-a"},
+				},
+			},
+			http.StatusForbidden,
+		},
+		{
+			"account out of scope",
+			"account-b",
+			&mockDeleteAccountDatabase{},
+			persistence.LoginResult{
+				AdminLevel: persistence.AccountUserAdminLevelSuperAdmin,
+				Accounts: []persistence.LoginAccountResult{
+					{AccountID: "account-a"},
+				},
+			},
+			http.StatusForbidden,
+		},
 		{
 			"ok",
 			"account-a",
 			&mockDeleteAccountDatabase{},
+			persistence.LoginResult{
+				AdminLevel: persistence.AccountUserAdminLevelSuperAdmin,
+				Accounts: []persistence.LoginAccountResult{
+					{AccountID: "account-a"},
+				},
+			},
 			http.StatusNoContent,
 		},
 	}
@@ -112,12 +142,7 @@ func TestRouter_DeleteAccount(t *testing.T) {
 			m.DELETE("/:accountID", func(c *gin.Context) {
 				c.Set(
 					contextKeyAuth,
-					persistence.LoginResult{
-						AdminLevel: persistence.AccountUserAdminLevelSuperAdmin,
-						Accounts: []persistence.LoginAccountResult{
-							{AccountID: "account-a"},
-						},
-					},
+					test.user,
 				)
 				c.Next()
 
