@@ -36,7 +36,7 @@ func (rt *router) postShareAccount(c *gin.Context) {
 	if !ok {
 		newJSONError(
 			errors.New("router: could not find account user object in request context"),
-			http.StatusNotFound,
+			http.StatusBadRequest,
 		).Pipe(c)
 		return
 	}
