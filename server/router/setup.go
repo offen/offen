@@ -16,7 +16,7 @@ func (rt *router) getSetup(c *gin.Context) {
 	if !rt.db.ProbeEmpty() {
 		c.JSON(http.StatusForbidden, nil)
 	}
-	c.JSON(http.StatusNoContent, nil)
+	c.Status(http.StatusNoContent)
 }
 
 type setupRequest struct {
@@ -65,5 +65,5 @@ func (rt *router) postSetup(c *gin.Context) {
 		).Pipe(c)
 		return
 	}
-	c.JSON(http.StatusNoContent, nil)
+	c.Status(http.StatusNoContent)
 }

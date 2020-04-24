@@ -87,7 +87,7 @@ func (rt *router) deleteAccount(c *gin.Context) {
 		).Pipe(c)
 		return
 	}
-	c.JSON(http.StatusNoContent, nil)
+	c.Status(http.StatusNoContent)
 }
 
 type createAccountRequest struct {
