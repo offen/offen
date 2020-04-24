@@ -241,6 +241,8 @@ func (rt *router) postResetPassword(c *gin.Context) {
 	}
 
 	if err := rt.db.ResetPassword(req.EmailAddress, req.Password, credentials.Token); err != nil {
+		// on error a successful status is sent in order not to leak information
+		// to attackers
 		rt.logError(err, "error resetting password")
 	}
 	c.Status(http.StatusNoContent)

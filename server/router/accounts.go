@@ -87,7 +87,7 @@ func (rt *router) deleteAccount(c *gin.Context) {
 		).Pipe(c)
 		return
 	}
-	c.JSON(http.StatusNoContent, nil)
+	c.Status(http.StatusNoContent)
 }
 
 type createAccountRequest struct {
@@ -97,6 +97,15 @@ type createAccountRequest struct {
 }
 
 func (rt *router) postAccount(c *gin.Context) {
+	accountUser, ok := c.Value(contextKeyAuth).(persistence.LoginResult)
+	if !ok {
+		newJSONError(
+			errors.New("router: could not find account user object in request context"),
+			http.StatusUnauthorized,
+		).Pipe(c)
+		return
+	}
+
 	var req createAccountRequest
 	if err := c.BindJSON(&req); err != nil {
 		newJSONError(
@@ -105,14 +114,7 @@ func (rt *router) postAccount(c *gin.Context) {
 		).Pipe(c)
 		return
 	}
-	accountUser, ok := c.Value(contextKeyAuth).(persistence.LoginResult)
-	if !ok {
-		newJSONError(
-			errors.New("router: could not find account user object in request context"),
-			http.StatusNotFound,
-		).Pipe(c)
-		return
-	}
+
 	accountInRequest, err := rt.db.Login(req.EmailAddress, req.Password)
 	if err != nil {
 		newJSONError(
