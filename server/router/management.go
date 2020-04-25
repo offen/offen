@@ -107,7 +107,7 @@ func (rt *router) postShareAccount(c *gin.Context) {
 			mailer.MessageExistingUserInvite,
 			map[string]interface{}{"accountNames": result.AccountNames},
 		)
-		subject = "You have been added to additional accounts on Offen"
+		subject = string(mailer.SubjectExistingUserInvite)
 	} else {
 		signedCredentials, signErr := rt.cookieSigner.MaxAge(7*24*60*60).Encode("credentials", req.InviteeEmailAddress)
 		if signErr != nil {
@@ -120,7 +120,7 @@ func (rt *router) postShareAccount(c *gin.Context) {
 			mailer.MessageNewUserInvite,
 			map[string]interface{}{"url": joinURL},
 		)
-		subject = "You have been invited to join Offen"
+		subject = string(mailer.SubjectNewUserInvite)
 	}
 
 	if bodyErr != nil {

@@ -199,7 +199,7 @@ func (rt *router) postForgotPassword(c *gin.Context) {
 		).Pipe(c)
 		return
 	}
-	if err := rt.mailer.Send(rt.config.SMTP.Sender, req.EmailAddress, "Reset your password", emailBody); err != nil {
+	if err := rt.mailer.Send(rt.config.SMTP.Sender, req.EmailAddress, string(mailer.SubjectForgotPassword), emailBody); err != nil {
 		newJSONError(
 			fmt.Errorf("error sending email message: %v", err),
 			http.StatusInternalServerError,

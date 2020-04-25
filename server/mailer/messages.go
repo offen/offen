@@ -5,6 +5,7 @@ package mailer
 
 type MessageTemplate string
 
+var SubjectForgotPassword MessageTemplate = `Reset your password`
 var MessageForgotPassword MessageTemplate = `
 Hi!
 
@@ -16,6 +17,7 @@ The link is valid for 24 hours after this email has been sent. In case you have
 missed this deadline, you can always request a new link.
 `
 
+var SubjectNewUserInvite MessageTemplate = `You have been invited to join Offen`
 var MessageNewUserInvite MessageTemplate = `
 Hi!
 
@@ -27,6 +29,7 @@ The link is valid for 7 days after this email has been sent. In case you have
 missed this deadline, request a new invite.
 `
 
+var SubjectExistingUserInvite MessageTemplate = `You have been added to additional accounts on Offen`
 var MessageExistingUserInvite MessageTemplate = `
 Hi!
 
