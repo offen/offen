@@ -155,7 +155,7 @@ func cmdDemo(subcommand string, flags []string) {
 	if tplErr != nil {
 		a.logger.WithError(tplErr).Fatal("Failed parsing template files, cannot continue")
 	}
-	emails, emailsErr := public.EmailTemplate(gettext, public.RevWith(fs))
+	emails, emailsErr := public.EmailTemplate(gettext)
 	if emailsErr != nil {
 		a.logger.WithError(emailsErr).Fatal("Failed parsing template files, cannot continue")
 	}

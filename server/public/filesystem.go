@@ -86,7 +86,7 @@ func NewLocalizedFS(locale string) http.FileSystem {
 	}
 }
 
-// HTMLTemplate creates a template object containing all of the templates in the
+// HTMLTemplate creates a template object containing all of the HTML templates in the
 // public file system
 func HTMLTemplate(gettext func(string, ...interface{}) template.HTML, rev func(string) string) (*template.Template, error) {
 	t := template.New("index.go.html")
@@ -112,11 +112,12 @@ func HTMLTemplate(gettext func(string, ...interface{}) template.HTML, rev func(s
 	return t, nil
 }
 
-func EmailTemplate(gettext func(string, ...interface{}) template.HTML, rev func(string) string) (*template.Template, error) {
+// EmailTemplate creates a template object containing all of the email templates in the
+// public file system
+func EmailTemplate(gettext func(string, ...interface{}) template.HTML) (*template.Template, error) {
 	t := template.New("emails.go.html")
 	t.Funcs(template.FuncMap{
-		"__":  gettext,
-		"rev": rev,
+		"__": gettext,
 	})
 	templates := []string{"/emails.go.html"}
 	for _, file := range templates {
@@ -133,7 +134,6 @@ func EmailTemplate(gettext func(string, ...interface{}) template.HTML, rev func(
 			return nil, fmt.Errorf("public: error parsing template file %s: %w", file, err)
 		}
 	}
-	fmt.Println(t.DefinedTemplates())
 	return t, nil
 }
 

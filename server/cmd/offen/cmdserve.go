@@ -83,7 +83,7 @@ func cmdServe(subcommand string, flags []string) {
 	if tplErr != nil {
 		a.logger.WithError(tplErr).Fatal("Failed parsing template files, cannot continue")
 	}
-	emails, emailErr := public.EmailTemplate(gettext, public.RevWith(fs))
+	emails, emailErr := public.EmailTemplate(gettext)
 	if emailErr != nil {
 		a.logger.WithError(emailErr).Fatal("Failed parsing template files, cannot continue")
 	}
