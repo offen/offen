@@ -83,6 +83,10 @@ func cmdServe(subcommand string, flags []string) {
 	if tplErr != nil {
 		a.logger.WithError(tplErr).Fatal("Failed parsing template files, cannot continue")
 	}
+	emails, emailErr := public.EmailTemplate(gettext, public.RevWith(fs))
+	if emailErr != nil {
+		a.logger.WithError(emailErr).Fatal("Failed parsing template files, cannot continue")
+	}
 
 	srv := &http.Server{
 		Addr: fmt.Sprintf("0.0.0.0:%d", a.config.Server.Port),
@@ -90,6 +94,7 @@ func cmdServe(subcommand string, flags []string) {
 			router.WithDatabase(db),
 			router.WithLogger(a.logger),
 			router.WithTemplate(tpl),
+			router.WithEmails(emails),
 			router.WithConfig(a.config),
 			router.WithFS(fs),
 			router.WithMailer(a.config.NewMailer()),

@@ -28,6 +28,7 @@ type router struct {
 	logger       *logrus.Logger
 	cookieSigner *securecookie.SecureCookie
 	template     *template.Template
+	emails       *template.Template
 	config       *config.Config
 	sanitizer    *bluemonday.Policy
 }
@@ -112,6 +113,14 @@ func WithLogger(l *logrus.Logger) Config {
 func WithTemplate(t *template.Template) Config {
 	return func(r *router) {
 		r.template = t
+	}
+}
+
+// WithEmails ensures the router is using the given template object
+// for rendering email output.
+func WithEmails(t *template.Template) Config {
+	return func(r *router) {
+		r.emails = t
 	}
 }
 

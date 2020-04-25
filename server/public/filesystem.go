@@ -112,6 +112,31 @@ func HTMLTemplate(gettext func(string, ...interface{}) template.HTML, rev func(s
 	return t, nil
 }
 
+func EmailTemplate(gettext func(string, ...interface{}) template.HTML, rev func(string) string) (*template.Template, error) {
+	t := template.New("emails.go.html")
+	t.Funcs(template.FuncMap{
+		"__":  gettext,
+		"rev": rev,
+	})
+	templates := []string{"/emails.go.html"}
+	for _, file := range templates {
+		f, err := FS.Open(file)
+		if err != nil {
+			return nil, fmt.Errorf("public: error finding template file %s: %w", file, err)
+		}
+		b, err := ioutil.ReadAll(f)
+		if err != nil {
+			return nil, fmt.Errorf("public: error reading template file %s: %w", file, err)
+		}
+		t, err = t.Parse(string(b))
+		if err != nil {
+			return nil, fmt.Errorf("public: error parsing template file %s: %w", file, err)
+		}
+	}
+	fmt.Println(t.DefinedTemplates())
+	return t, nil
+}
+
 type neuteredReaddirFile struct {
 	http.File
 }
