@@ -155,6 +155,10 @@ func cmdDemo(subcommand string, flags []string) {
 	if tplErr != nil {
 		a.logger.WithError(tplErr).Fatal("Failed parsing template files, cannot continue")
 	}
+	emails, emailsErr := public.EmailTemplate(gettext)
+	if emailsErr != nil {
+		a.logger.WithError(emailsErr).Fatal("Failed parsing template files, cannot continue")
+	}
 
 	srv := &http.Server{
 		Addr: fmt.Sprintf("0.0.0.0:%d", a.config.Server.Port),
@@ -162,6 +166,7 @@ func cmdDemo(subcommand string, flags []string) {
 			router.WithDatabase(db),
 			router.WithLogger(a.logger),
 			router.WithTemplate(tpl),
+			router.WithEmails(emails),
 			router.WithConfig(a.config),
 			router.WithFS(fs),
 			router.WithMailer(a.config.NewMailer()),

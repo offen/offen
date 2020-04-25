@@ -4,13 +4,13 @@
 package router
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"net/http"
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/offen/offen/server/mailer"
 	"github.com/offen/offen/server/persistence"
 )
 
@@ -191,15 +191,24 @@ func (rt *router) postForgotPassword(c *gin.Context) {
 	}
 
 	resetURL := strings.Replace(req.URLTemplate, "{token}", signedCredentials, -1)
-	emailBody, bodyErr := mailer.RenderMessage(mailer.MessageForgotPassword, map[string]string{"url": resetURL})
-	if bodyErr != nil {
+
+	subject, body := bytes.NewBuffer(nil), bytes.NewBuffer(nil)
+	if err := rt.emails.ExecuteTemplate(subject, "subject_reset_password", nil); err != nil {
 		newJSONError(
-			fmt.Errorf("router: error rendering email message: %v", err),
+			fmt.Errorf("router: error rendering email subject: %v", err),
 			http.StatusInternalServerError,
 		).Pipe(c)
 		return
 	}
-	if err := rt.mailer.Send(rt.config.SMTP.Sender, req.EmailAddress, "Reset your password", emailBody); err != nil {
+	if err := rt.emails.ExecuteTemplate(body, "body_reset_password", map[string]string{"url": resetURL}); err != nil {
+		newJSONError(
+			fmt.Errorf("router: error rendering email body: %v", err),
+			http.StatusInternalServerError,
+		).Pipe(c)
+		return
+	}
+
+	if err := rt.mailer.Send(rt.config.SMTP.Sender, req.EmailAddress, subject.String(), body.String()); err != nil {
 		newJSONError(
 			fmt.Errorf("error sending email message: %v", err),
 			http.StatusInternalServerError,

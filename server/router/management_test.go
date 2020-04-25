@@ -6,6 +6,7 @@ package router
 import (
 	"errors"
 	"fmt"
+	"html/template"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -312,6 +313,16 @@ func TestRouter_postShareAccount(t *testing.T) {
 				db:           &test.db,
 				cookieSigner: signer,
 				mailer:       &test.mailer,
+				emails: func() *template.Template {
+					t := template.New("emails")
+					t, _ = t.Parse(`
+{{ define "subject_existing_user_invite" }}subject{{ end }}
+{{ define "body_existing_user_invite" }}body{{ end }}
+{{ define "subject_new_user_invite" }}subject{{ end }}
+{{ define "body_new_user_invite" }}body{{ end }}
+					`)
+					return t
+				}(),
 			}
 
 			m := gin.New()
@@ -324,7 +335,7 @@ func TestRouter_postShareAccount(t *testing.T) {
 			m.ServeHTTP(w, r)
 
 			if w.Code != test.expectedStatusCode {
-				t.Errorf("Unexpected status code %v", test.expectedStatusCode)
+				t.Errorf("Unexpected status code %v", w.Code)
 			}
 		})
 	}

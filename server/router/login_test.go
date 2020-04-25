@@ -6,6 +6,7 @@ package router
 import (
 	"errors"
 	"fmt"
+	"html/template"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -528,6 +529,14 @@ func TestRouter_postForgotPassword(t *testing.T) {
 				db:           &test.db,
 				cookieSigner: securecookie.New([]byte("abc"), nil),
 				mailer:       &test.mailer,
+				emails: func() *template.Template {
+					t := template.New("emails")
+					t, _ = t.Parse(`
+{{ define "subject_reset_password" }}subject{{ end }}
+{{ define "body_reset_password" }}body{{ end }}
+					`)
+					return t
+				}(),
 			}
 			m.POST("/", rt.postForgotPassword)
 			r := httptest.NewRequest(http.MethodPost, "/", test.body)
@@ -535,7 +544,7 @@ func TestRouter_postForgotPassword(t *testing.T) {
 			m.ServeHTTP(w, r)
 
 			if w.Code != test.expectedStatus {
-				t.Errorf("Unexpected status code %v", w.Code)
+				t.Errorf("Unexpected status code %v", w.Body)
 			}
 		})
 	}
