@@ -27,11 +27,11 @@ docker run --rm -it -p 9876:9876 offen/offen:latest demo -port 9876
 ```
 {: .mb-8 }
 
-If you have already installed the application use:
+If you have already downloaded the binaries use:
 
 ```
 ./offen demo  
 ```
 {: .mb-8 }
 
-Head to `http://localhost:9876` and start your testing. You can log in using the account `demo@offen.dev` and password `demo`.
+Head to the URL printed in the terminal and start your tests. You can log in using the account `demo@offen.dev` and password `demo`.
