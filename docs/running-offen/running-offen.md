@@ -15,7 +15,7 @@ Offen is distributed as a single binary file, and is currently built for Linux, 
 
 [repo-releases]: https://github.com/offen/offen/releases
 
-## Docker Image
+## Docker image
 
 All releases are also [published to Docker Hub][docker-hub], and are available as `offen/offen`.
 

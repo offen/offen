@@ -1,13 +1,13 @@
 ---
 layout: default
-title: Programming Languages
+title: Programming languages
 nav_order: 3
 description: "An introduction to the languages chosen to develop Offen."
 permalink: /developing-offen/programming-languages/
 parent: Developing Offen
 ---
 
-# Programming Languages
+# Programming languages
 
 The server side application is written in [Go][golang] while the client is written in plain JavaScript
 

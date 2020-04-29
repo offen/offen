@@ -1,14 +1,14 @@
 ---
 layout: default
-title: "Configuring and Deploying Offen on Heroku"
+title: "Configuring and deploying Offen on Heroku"
 nav_order: 3
 description: "A step by step tutorial on how deploy Offen on Heroku."
 permalink: /running-offen/tutorials/configuring-deploying-offen-heroku/
-parent: Installation Tutorials
+parent: Installation tutorials
 grand_parent: Running Offen
 ---
 
-# Configuring and Deploying Offen on Heroku
+# Configuring and deploying Offen on Heroku
 {: .no_toc }
 
 This tutorial walks you through the steps needed to setup and deploy a single-node Offen instance on [Heroku][heroku] using PostgreSQL for storing data.
@@ -25,7 +25,7 @@ If you get stuck or need help, [file an issue][gh-issues], [tweet (@hioffen)][tw
 
 ---
 
-## Table of Contents
+## Table of contents
 {: .no_toc }
 
 1. TOC
@@ -39,7 +39,7 @@ To follow the steps in this tutorial you will need to have created an account wi
 
 ---
 
-## Deploy our Template Repository
+## Deploy our template repository
 
 You can automatically deploy our [template repository][template] to Heroku using this button:
 
@@ -51,11 +51,11 @@ You can automatically deploy our [template repository][template] to Heroku using
 
 Below you will find explanations on what you need to do next:
 
-## Set the Configuration Values
+## Set the configuration values
 
 Heroku will now ask you for a name for you instance (you can call this something like `my-offen` for example), the region where to deploy (choose something the one that is geographically close to your users), and a few configuration values:
 
-### Email Credentials
+### Email credentials
 {: .no_toc }
 
 Offen needs to send transactional email for the following features:
@@ -69,24 +69,24 @@ If you need to look these up and don't want to do it right away, you can always 
 
 ---
 
-## Deploy the App
+## Deploy the app
 
 You are now ready to press the "Deploy app" button. Building the application can take a little while, but you will see the interface updating while Offen is being installed for you.
 
-## Creating an Account
+## Creating an account
 
 The final step for your installation is now to create an account that you can use to collect usage data and log in. To do so, head to `/setup/` on your newly installed instance by clicking the "View app" button once installation has finished.
 
 Create a first account and a user by filling and submitting the form. You can always create more accounts and add users later.
 
-### Test the Setup
+### Test the setup
 {: .no_toc }
 
 You can now head to the running application at `https://<your-provided-app-name>.herokuapp.com/login` and login using your given credentials.
 
 ---
 
-## Run Offen on Your Own Domain
+## Run Offen on your own domain
 
 In a real world setup, you will likely want to make Offen available as a subdomain of your own domain.
 

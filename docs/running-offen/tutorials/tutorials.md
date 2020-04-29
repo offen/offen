@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "Installation Tutorials"
+title: "Installation tutorials"
 nav_order: 1
 description: "Step by step tutorials on how to configure and deploy Offen."
 permalink: /running-offen/tutorials/
@@ -8,11 +8,11 @@ parent: Running Offen
 has_children: true
 ---
 
-# Installation Tutorials
+# Installation tutorials
 
 These tutorials walks you through the steps needed to setup and deploy an Offen instance.
 
-Other and more complex configuration options are documented in ["Configuring The Application At Runtime"][config-docs]. General considerations for deploying Offen are described in ["Requirements for Installing Offen"][installation].
+Other and more complex configuration options are documented in ["Configuring the application at runtime"][config-docs]. General considerations for deploying Offen are described in ["Requirements for installing Offen"][installation].
 
 If you're curious about how we deploy Offen ourselves, head over to our [`offen/deployment` repository][deployment-repo] which contains all of the code we use released under an MIT License.
 
