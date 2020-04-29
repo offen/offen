@@ -1,13 +1,13 @@
 ---
 layout: default
-title: Understanding the Cryptographic Entities
+title: Understanding the cryptographic entities
 nav_order: 6
 description: "Explaining the key concepts for encrypting user data."
 permalink: /developing-offen/understanding-cryptography/
 parent: Developing Offen
 ---
 
-# Understanding the Cryptographic Entities in Use
+# Understanding the cryptographic entities in use
 
 Event data in Offen is encrypted before leaving the user's browser and will also be stored like this at rest. Decryption only happens on the client side. In order to share data between users and operators the following cryptographic entities will be used:
 

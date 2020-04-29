@@ -1,18 +1,18 @@
 ---
 layout: default
-title: Metrics Explained
+title: Metrics explained
 nav_order: 7
 description: "Explanations of the key metrics displayed in Offen."
 permalink: /running-offen/metrics-explained/
 parent: Running Offen
 ---
 
-# Metrics Explained
+# Metrics explained
 {: .no_toc }
 
 ---
 
-## Table of Contents
+## Table of contents
 {: .no_toc }
 
 1. TOC
@@ -122,13 +122,13 @@ A list of special referrer values that directed users to pages. For this metric,
 
 ---
 
-## Landing Pages
+## Landing pages
 
 A list of entry pages for all unique sessions. As this is collected on session level, a returning unique user might create multiple landing pages.
 
 ---
 
-## Exit Pages
+## Exit pages
 
 A list of exit pages for all unique sessions. Only sessions with more than one pageview are taken into account. The event with the most recent timestamp is counted. As this is collected on session level, a returning unique user might create multiple exit pages.
 

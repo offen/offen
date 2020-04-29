@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Using The offen Command
+title: Using the Offen command
 nav_order: 4
 description: "Explaining subcommands and flags for the offen command."
 permalink: /running-offen/using-the-command/
@@ -16,7 +16,7 @@ Offen is distributed as a single binary `offen` that you can download and deploy
 
 ---
 
-## Table of Contents
+## Table of contents
 {: .no_toc }
 
 1. TOC

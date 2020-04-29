@@ -1,14 +1,14 @@
 ---
 layout: default
-title: "Configuring and Deploying Offen Using Docker"
+title: "Configuring and deploying Offen using Docker"
 nav_order: 1
 description: "A step by step tutorial on how to use Docker to deploy Offen."
 permalink: /running-offen/tutorials/configuring-deploying-offen-docker/
-parent: Installation Tutorials
+parent: Installation tutorials
 grand_parent: Running Offen
 ---
 
-# Configuring and Deploying Offen Using Docker
+# Configuring and deploying Offen using Docker
 {: .no_toc }
 
 This tutorial walks you through the steps needed to setup and deploy a standalone, single-node Offen instance that is using a local SQLite file as its database backend.
@@ -23,7 +23,7 @@ If you get stuck or need help, [file an issue][gh-issues], [tweet (@hioffen)][tw
 
 ---
 
-## Table of Contents
+## Table of contents
 {: .no_toc }
 
 1. TOC
@@ -32,7 +32,7 @@ If you get stuck or need help, [file an issue][gh-issues], [tweet (@hioffen)][tw
 
 ---
 
-## Choosing a Location for Storing Your Data
+## Choosing a location for storing your data
 
 In the simple setup described in this tutorial Offen needs to persist the following files:
 
@@ -57,7 +57,7 @@ This tutorial assumes you are on Linux, so we create a `~/.offen` directory in w
 
 ---
 
-## Running the `setup` Command
+## Running the `setup` command
 
 Offen lets you setup a new instance using the `setup` command.
 
@@ -105,7 +105,7 @@ To make sure the automatic certificate creation and renewal works, make sure you
 
 ---
 
-## Setting up Email
+## Setting up email
 
 Offen needs to send transactional email for the following features:
 
@@ -147,7 +147,7 @@ If all of this is populated with the values you expect, you're ready to use Offe
 
 ---
 
-## Starting the Application
+## Starting the application
 
 To start Offen use the Docker image's default command:
 

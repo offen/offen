@@ -1,13 +1,13 @@
 ---
 layout: default
-title: Required Tools
+title: Required tools
 nav_order: 1
 description: "Tools required for developing Offen."
 permalink: /developing-offen/required-tools/
 parent: Developing Offen
 ---
 
-# Required Tools
+# Required tools
 
 Developing Offen currently requires [Docker][docker] and [docker-compose][] to be installed and working correctly. Both tools are free and available for Linux, Windows and Mac.
 

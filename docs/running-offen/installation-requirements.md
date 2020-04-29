@@ -1,20 +1,20 @@
 ---
 layout: default
-title: Requirements for Installing Offen
+title: Requirements for installing Offen
 nav_order: 3
 description: "Considerations for installing Offen in an production environment."
 permalink: /running-offen/installation-requirements/
 parent: Running Offen
 ---
 
-# Requirements for Installing Offen
+# Requirements for installing Offen
 {: .no_toc }
 
 In case you want to use Offen for collecting usage data in a production setup or similar, there are a few requirements to consider.
 
 ---
 
-## Table of Contents
+## Table of contents
 {: .no_toc }
 
 1. TOC

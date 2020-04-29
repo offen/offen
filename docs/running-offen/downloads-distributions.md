@@ -1,20 +1,20 @@
 ---
 layout: default
-title: Downloads and Distributions
+title: Downloads and distributions
 nav_order: 2
 description: "Where and how to download Offen or install it from other sources."
 permalink: /running-offen/downloads-distributions/
 parent: Running Offen
 ---
 
-# Downloads and Distributions
+# Downloads and distributions
 {: .no_toc }
 
 Offen is currently distributed in two ways: packaged as a __single binary file__ for Linux, MacOS and Windows or as a __Docker image__. The most recent release [is available here][most-recent], Docker images are hosted on [Docker Hub][docker-hub].
 
 ---
 
-## Table of Contents
+## Table of contents
 {: .no_toc }
 
 1. TOC

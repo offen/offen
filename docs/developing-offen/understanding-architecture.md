@@ -1,13 +1,13 @@
 ---
 layout: default
-title: Understanding the Application Architecture
+title: Understanding the application architecture
 nav_order: 5
 description: "Explaining the key concepts of Offen's application architecture."
 permalink: /developing-offen/understanding-architecture/
 parent: Developing Offen
 ---
 
-# Understanding the Application Architecture
+# Understanding the application architecture
 
 Offen is composed of four major parts.
 

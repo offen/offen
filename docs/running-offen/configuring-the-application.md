@@ -1,13 +1,13 @@
 ---
 layout: default
-title: Configuring The Application
+title: Configuring the application
 nav_order: 5
 description: "How to configure an Offen instance at runtime."
 permalink: /running-offen/configuring-the-application/
 parent: Running Offen
 ---
 
-# Configuring the Application at Runtime
+# Configuring the application at runtime
 {: .no_toc }
 
 The main interface to configuring Offen at runtime is using your systems environment variables. All variables are following the pattern of `OFFEN_<scope>_<key>`, e.g. `OFFEN_SERVER_PORT`. In addition to setting variables in the environment Offen also allows for setting these values in [`env` files][dotenv].
@@ -16,7 +16,7 @@ The main interface to configuring Offen at runtime is using your systems environ
 
 ---
 
-## Table of Contents
+## Table of contents
 {: .no_toc }
 
 1. TOC
@@ -55,7 +55,7 @@ OFFEN_DATABASE_CONNECTIONSTRING = "/opt/offen/data/db.sqlite"
 
 ## Configuration options
 
-### HTTP Server
+### HTTP server
 
 The `SERVER` namespace collects settings that affect the behavior of the HTTP server that is serving the application.
 

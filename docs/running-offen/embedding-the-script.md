@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Embedding The Offen Script
+title: Embedding the Offen script
 nav_order: 6
 description: "How to add the Offen script to your webpage."
 permalink: /running-offen/embedding-the-script/
@@ -18,5 +18,3 @@ The script is served from `https://<your-installations-domain>/script.js` and ca
 ```
 
 Your account ID can be found when you log in to the Auditorium and select the account you want use.
-
-
