@@ -83,6 +83,7 @@ function ensureSyncWith (queries, api) {
                       value: pair[1]
                     }
                   })
+                var eventsById = _.indexBy(payload.events, 'eventId')
                 return decryptEvents(
                   payload.events, secrets, privateJwk
                 )
@@ -90,8 +91,8 @@ function ensureSyncWith (queries, api) {
                     return decryptedEvents.map(function (decryptedEvent) {
                       // decryption might skip events on erroneous payloads
                       // so we need to look up the sibling like this instead
-                      // of using the index
-                      var match = _.findWhere(payload.events, { eventId: decryptedEvent.eventId })
+                      // of using the position in the list of events
+                      var match = eventsById[decryptedEvent.eventId]
                       return Object.assign(
                         { timestamp: decryptedEvent.payload.timestamp }, match
                       )
