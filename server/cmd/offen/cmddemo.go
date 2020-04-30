@@ -103,7 +103,12 @@ func cmdDemo(subcommand string, flags []string) {
 			{AccountID: accountID.String(), Name: "Demo Account"},
 		},
 		AccountUsers: []persistence.BootstrapAccountUser{
-			{Email: "demo@offen.dev", Password: "demo", Accounts: []string{accountID.String()}},
+			{
+				AdminLevel: persistence.AccountUserAdminLevelSuperAdmin,
+				Email:      "demo@offen.dev",
+				Password:   "demo",
+				Accounts:   []string{accountID.String()},
+			},
 		},
 	}); err != nil {
 		a.logger.WithError(err).Fatal("Error bootstrapping database")
