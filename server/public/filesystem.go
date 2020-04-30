@@ -86,7 +86,7 @@ func NewLocalizedFS(locale string) http.FileSystem {
 	}
 }
 
-// HTMLTemplate creates a template object containing all of the templates in the
+// HTMLTemplate creates a template object containing all of the HTML templates in the
 // public file system
 func HTMLTemplate(gettext func(string, ...interface{}) template.HTML, rev func(string) string) (*template.Template, error) {
 	t := template.New("index.go.html")
@@ -95,6 +95,31 @@ func HTMLTemplate(gettext func(string, ...interface{}) template.HTML, rev func(s
 		"rev": rev,
 	})
 	templates := []string{"/index.go.html"}
+	for _, file := range templates {
+		f, err := FS.Open(file)
+		if err != nil {
+			return nil, fmt.Errorf("public: error finding template file %s: %w", file, err)
+		}
+		b, err := ioutil.ReadAll(f)
+		if err != nil {
+			return nil, fmt.Errorf("public: error reading template file %s: %w", file, err)
+		}
+		t, err = t.Parse(string(b))
+		if err != nil {
+			return nil, fmt.Errorf("public: error parsing template file %s: %w", file, err)
+		}
+	}
+	return t, nil
+}
+
+// EmailTemplate creates a template object containing all of the email templates in the
+// public file system
+func EmailTemplate(gettext func(string, ...interface{}) template.HTML) (*template.Template, error) {
+	t := template.New("emails.go.html")
+	t.Funcs(template.FuncMap{
+		"__": gettext,
+	})
+	templates := []string{"/emails.go.html"}
 	for _, file := range templates {
 		f, err := FS.Open(file)
 		if err != nil {

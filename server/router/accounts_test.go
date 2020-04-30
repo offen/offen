@@ -4,7 +4,9 @@
 package router
 
 import (
+	"errors"
 	"fmt"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -12,6 +14,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/securecookie"
+	"github.com/microcosm-cc/bluemonday"
 	"github.com/offen/offen/server/persistence"
 )
 
@@ -92,12 +95,42 @@ func TestRouter_DeleteAccount(t *testing.T) {
 		name               string
 		accountID          string
 		database           persistence.Service
+		user               persistence.LoginResult
 		expectedStatusCode int
 	}{
+		{
+			"not authorized",
+			"account-a",
+			&mockDeleteAccountDatabase{},
+			persistence.LoginResult{
+				Accounts: []persistence.LoginAccountResult{
+					{AccountID: "account-a"},
+				},
+			},
+			http.StatusForbidden,
+		},
+		{
+			"account out of scope",
+			"account-b",
+			&mockDeleteAccountDatabase{},
+			persistence.LoginResult{
+				AdminLevel: persistence.AccountUserAdminLevelSuperAdmin,
+				Accounts: []persistence.LoginAccountResult{
+					{AccountID: "account-a"},
+				},
+			},
+			http.StatusForbidden,
+		},
 		{
 			"ok",
 			"account-a",
 			&mockDeleteAccountDatabase{},
+			persistence.LoginResult{
+				AdminLevel: persistence.AccountUserAdminLevelSuperAdmin,
+				Accounts: []persistence.LoginAccountResult{
+					{AccountID: "account-a"},
+				},
+			},
 			http.StatusNoContent,
 		},
 	}
@@ -112,11 +145,7 @@ func TestRouter_DeleteAccount(t *testing.T) {
 			m.DELETE("/:accountID", func(c *gin.Context) {
 				c.Set(
 					contextKeyAuth,
-					persistence.LoginResult{
-						Accounts: []persistence.LoginAccountResult{
-							{AccountID: "account-a"},
-						},
-					},
+					test.user,
 				)
 				c.Next()
 
@@ -126,6 +155,153 @@ func TestRouter_DeleteAccount(t *testing.T) {
 				Name:  "auth",
 			})
 			m.ServeHTTP(w, r)
+			if w.Code != test.expectedStatusCode {
+				t.Errorf("Unexpected status code %v", w.Code)
+			}
+		})
+	}
+}
+
+type mockPostAccountDatabase struct {
+	persistence.Service
+	loginResult      persistence.LoginResult
+	loginErr         error
+	createAccountErr error
+}
+
+func (m *mockPostAccountDatabase) Login(string, string) (persistence.LoginResult, error) {
+	return m.loginResult, m.loginErr
+}
+
+func (m *mockPostAccountDatabase) CreateAccount(string, string, string) error {
+	return m.createAccountErr
+}
+
+func TestRouter_postAccount(t *testing.T) {
+	tests := []struct {
+		name               string
+		db                 mockPostAccountDatabase
+		userContext        interface{}
+		body               io.Reader
+		expectedStatusCode int
+	}{
+		{
+			"bad user context",
+			mockPostAccountDatabase{
+				loginResult: persistence.LoginResult{
+					AccountUserID: "account-a",
+					AdminLevel:    persistence.AccountUserAdminLevelSuperAdmin,
+				},
+			},
+			40,
+			strings.NewReader(`{"accountName":"new","emailAddress":"hioffen@posteo.de","password":"pass"}`),
+			http.StatusUnauthorized,
+		},
+		{
+			"bad payload",
+			mockPostAccountDatabase{
+				loginResult: persistence.LoginResult{
+					AccountUserID: "account-a",
+					AdminLevel:    persistence.AccountUserAdminLevelSuperAdmin,
+				},
+			},
+			persistence.LoginResult{
+				AccountUserID: "account-a",
+				AdminLevel:    persistence.AccountUserAdminLevelSuperAdmin,
+			},
+			strings.NewReader(`"}##`),
+			http.StatusBadRequest,
+		},
+		{
+			"login error",
+			mockPostAccountDatabase{
+				loginErr: errors.New("did not work"),
+			},
+			persistence.LoginResult{
+				AccountUserID: "account-a",
+				AdminLevel:    persistence.AccountUserAdminLevelSuperAdmin,
+			},
+			strings.NewReader(`{"accountName":"new","emailAddress":"hioffen@posteo.de","password":"pass"}`),
+			http.StatusUnauthorized,
+		},
+		{
+			"account user mismatch",
+			mockPostAccountDatabase{
+				loginResult: persistence.LoginResult{
+					AccountUserID: "account-a",
+					AdminLevel:    persistence.AccountUserAdminLevelSuperAdmin,
+				},
+			},
+			persistence.LoginResult{
+				AccountUserID: "account-b",
+				AdminLevel:    persistence.AccountUserAdminLevelSuperAdmin,
+			},
+			strings.NewReader(`{"accountName":"new","emailAddress":"hioffen@posteo.de","password":"pass"}`),
+			http.StatusBadRequest,
+		},
+		{
+			"account user is missing permissions",
+			mockPostAccountDatabase{
+				loginResult: persistence.LoginResult{
+					AccountUserID: "account-a",
+					AdminLevel:    persistence.AccountUserAdminLevelSuperAdmin,
+				},
+			},
+			persistence.LoginResult{
+				AccountUserID: "account-a",
+			},
+			strings.NewReader(`{"accountName":"new","emailAddress":"hioffen@posteo.de","password":"pass"}`),
+			http.StatusForbidden,
+		},
+		{
+			"database error",
+			mockPostAccountDatabase{
+				loginResult: persistence.LoginResult{
+					AccountUserID: "account-a",
+					AdminLevel:    persistence.AccountUserAdminLevelSuperAdmin,
+				},
+				createAccountErr: errors.New("did not work"),
+			},
+			persistence.LoginResult{
+				AccountUserID: "account-a",
+				AdminLevel:    persistence.AccountUserAdminLevelSuperAdmin,
+			},
+			strings.NewReader(`{"accountName":"new","emailAddress":"hioffen@posteo.de","password":"pass"}`),
+			http.StatusInternalServerError,
+		},
+		{
+			"ok",
+			mockPostAccountDatabase{
+				loginResult: persistence.LoginResult{
+					AccountUserID: "account-a",
+					AdminLevel:    persistence.AccountUserAdminLevelSuperAdmin,
+				},
+			},
+			persistence.LoginResult{
+				AccountUserID: "account-a",
+				AdminLevel:    persistence.AccountUserAdminLevelSuperAdmin,
+			},
+			strings.NewReader(`{"accountName":"new","emailAddress":"hioffen@posteo.de","password":"pass"}`),
+			http.StatusCreated,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			rt := router{
+				db:        &test.db,
+				sanitizer: bluemonday.StrictPolicy(),
+			}
+
+			m := gin.New()
+			m.POST("/", func(c *gin.Context) {
+				c.Set(contextKeyAuth, test.userContext)
+			}, rt.postAccount)
+
+			r := httptest.NewRequest(http.MethodPost, "/", test.body)
+			w := httptest.NewRecorder()
+			m.ServeHTTP(w, r)
+
 			if w.Code != test.expectedStatusCode {
 				t.Errorf("Unexpected status code %v", w.Code)
 			}

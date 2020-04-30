@@ -12,7 +12,10 @@ const ExplainerIcon = require('./explainer-icon')
 const Paragraph = require('./../_shared/paragraph')
 
 const URLTable = (props) => {
-  const { model, showExplainer, explainerActive, onExplain, explainerProps } = props
+  const {
+    model, showExplainer, explainerActive,
+    onExplain, explainerPropsFor
+  } = props
   return (
     <div class='flex-auto pa3 bg-white'>
       <div
@@ -39,7 +42,7 @@ const URLTable = (props) => {
         </Tables.Container>
         <Tables.Container
           showExplainer={showExplainer}
-          explainerProps={explainerProps}
+          explainerPropsFor={explainerPropsFor}
           groupName='referrers'
         >
           <Tables.Table
@@ -81,7 +84,7 @@ const URLTable = (props) => {
         </Tables.Container>
         <Tables.Container
           showExplainer={showExplainer}
-          explainerProps={explainerProps}
+          explainerPropsFor={explainerPropsFor}
           groupName='landing-exit'
         >
           <Tables.Table

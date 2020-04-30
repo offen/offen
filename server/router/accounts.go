@@ -63,9 +63,9 @@ func (rt *router) deleteAccount(c *gin.Context) {
 		return
 	}
 
-	if ok := accountUser.CanAccessAccount(accountID); !ok {
+	if ok := accountUser.CanAccessAccount(accountID) && accountUser.IsSuperAdmin(); !ok {
 		newJSONError(
-			fmt.Errorf("router: account user does not have permissions to access account %s", accountID),
+			fmt.Errorf("router: account user does not have permissions to delete account %s", accountID),
 			http.StatusForbidden,
 		).Pipe(c)
 		return
@@ -87,7 +87,7 @@ func (rt *router) deleteAccount(c *gin.Context) {
 		).Pipe(c)
 		return
 	}
-	c.JSON(http.StatusNoContent, nil)
+	c.Status(http.StatusNoContent)
 }
 
 type createAccountRequest struct {
@@ -97,6 +97,15 @@ type createAccountRequest struct {
 }
 
 func (rt *router) postAccount(c *gin.Context) {
+	accountUser, ok := c.Value(contextKeyAuth).(persistence.LoginResult)
+	if !ok {
+		newJSONError(
+			errors.New("router: could not find account user object in request context"),
+			http.StatusUnauthorized,
+		).Pipe(c)
+		return
+	}
+
 	var req createAccountRequest
 	if err := c.BindJSON(&req); err != nil {
 		newJSONError(
@@ -105,14 +114,7 @@ func (rt *router) postAccount(c *gin.Context) {
 		).Pipe(c)
 		return
 	}
-	accountUser, ok := c.Value(contextKeyAuth).(persistence.LoginResult)
-	if !ok {
-		newJSONError(
-			errors.New("router: could not find account user object in request context"),
-			http.StatusNotFound,
-		).Pipe(c)
-		return
-	}
+
 	accountInRequest, err := rt.db.Login(req.EmailAddress, req.Password)
 	if err != nil {
 		newJSONError(
@@ -130,6 +132,15 @@ func (rt *router) postAccount(c *gin.Context) {
 		).Pipe(c)
 		return
 	}
+
+	if ok := accountUser.IsSuperAdmin(); !ok {
+		newJSONError(
+			errors.New("router: account user does not have permissions to create account"),
+			http.StatusForbidden,
+		).Pipe(c)
+		return
+	}
+
 	if err := rt.db.CreateAccount(rt.sanitizer.Sanitize(req.AccountName), req.EmailAddress, req.Password); err != nil {
 		newJSONError(
 			fmt.Errorf("router: error creating account %s: %w", req.AccountName, err),

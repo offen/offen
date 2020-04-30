@@ -41,6 +41,10 @@ var buckets = [
     name: 'LinkedIn'
   },
   {
+    re: /^android-app:\/\/com\.linkedin\./,
+    name: 'LinkedIn'
+  },
+  {
     re: /t\.co($|\/)/,
     name: 'Twitter'
   }

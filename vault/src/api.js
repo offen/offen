@@ -256,7 +256,7 @@ exports.shareAccount = shareAccountWith(window.location.origin + '/api/share-acc
 exports.shareAccountWith = shareAccountWith
 
 function shareAccountWith (inviteUrl) {
-  return function (invitee, emailAddress, password, urlTemplate, accountId) {
+  return function (invitee, emailAddress, password, urlTemplate, accountId, grantAdminPrivileges) {
     var url = new window.URL(inviteUrl)
     if (accountId) {
       url.pathname = path.join(url.pathname, accountId)
@@ -269,7 +269,8 @@ function shareAccountWith (inviteUrl) {
           invitee: invitee,
           emailAddress: emailAddress,
           password: password,
-          urlTemplate: urlTemplate
+          urlTemplate: urlTemplate,
+          grantAdminPrivileges: grantAdminPrivileges
         })
       })
       .then(handleFetchResponse)
