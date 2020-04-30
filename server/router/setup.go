@@ -53,9 +53,10 @@ func (rt *router) postSetup(c *gin.Context) {
 		},
 		AccountUsers: []persistence.BootstrapAccountUser{
 			{
-				Email:    req.EmailAddress,
-				Password: req.Password,
-				Accounts: []string{accountID.String()},
+				Email:      req.EmailAddress,
+				Password:   req.Password,
+				AdminLevel: persistence.AccountUserAdminLevelSuperAdmin,
+				Accounts:   []string{accountID.String()},
 			},
 		},
 	}); err != nil {
