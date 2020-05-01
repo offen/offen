@@ -4,13 +4,13 @@
 package router
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"net/http"
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/offen/offen/server/mailer"
 	"github.com/offen/offen/server/persistence"
 )
 
@@ -19,6 +19,7 @@ type shareAccountRequest struct {
 	ProviderEmailAddress string `json:"emailAddress"`
 	ProviderPassword     string `json:"password"`
 	URLTemplate          string `json:"urlTemplate"`
+	GrantAdminPrivileges bool   `json:"grantAdminPrivileges"`
 }
 
 func (rt *router) postShareAccount(c *gin.Context) {
@@ -35,7 +36,7 @@ func (rt *router) postShareAccount(c *gin.Context) {
 	if !ok {
 		newJSONError(
 			errors.New("router: could not find account user object in request context"),
-			http.StatusNotFound,
+			http.StatusBadRequest,
 		).Pipe(c)
 		return
 	}
@@ -71,7 +72,15 @@ func (rt *router) postShareAccount(c *gin.Context) {
 		return
 	}
 
-	result, err := rt.db.ShareAccount(req.InviteeEmailAddress, req.ProviderEmailAddress, req.ProviderPassword, c.Param("accountID"))
+	if !accountInRequest.IsSuperAdmin() {
+		newJSONError(
+			errors.New("router: given credentials are not allowed to share accounts"),
+			http.StatusBadRequest,
+		).Pipe(c)
+		return
+	}
+
+	result, err := rt.db.ShareAccount(req.InviteeEmailAddress, req.ProviderEmailAddress, req.ProviderPassword, c.Param("accountID"), req.GrantAdminPrivileges)
 	if err != nil {
 		newJSONError(
 			fmt.Errorf("router: error inviting user: %w", err),
@@ -90,15 +99,12 @@ func (rt *router) postShareAccount(c *gin.Context) {
 		return
 	}
 
-	var emailBody string
 	var bodyErr error
-	var subject string
+	var subjectErr error
+	body, subject := bytes.NewBuffer(nil), bytes.NewBuffer(nil)
 	if result.UserExistsWithPassword {
-		emailBody, bodyErr = mailer.RenderMessage(
-			mailer.MessageExistingUserInvite,
-			map[string]interface{}{"accountNames": result.AccountNames},
-		)
-		subject = "You have been added to additional accounts on Offen"
+		bodyErr = rt.emails.ExecuteTemplate(body, "body_existing_user_invite", map[string]interface{}{"accountNames": result.AccountNames})
+		subjectErr = rt.emails.ExecuteTemplate(subject, "subject_existing_user_invite", nil)
 	} else {
 		signedCredentials, signErr := rt.cookieSigner.MaxAge(7*24*60*60).Encode("credentials", req.InviteeEmailAddress)
 		if signErr != nil {
@@ -107,21 +113,20 @@ func (rt *router) postShareAccount(c *gin.Context) {
 			return
 		}
 		joinURL := strings.Replace(req.URLTemplate, "{token}", signedCredentials, -1)
-		emailBody, bodyErr = mailer.RenderMessage(
-			mailer.MessageNewUserInvite,
-			map[string]interface{}{"url": joinURL},
-		)
-		subject = "You have been invited to join Offen"
+		bodyErr = rt.emails.ExecuteTemplate(body, "body_new_user_invite", map[string]interface{}{"url": joinURL})
+		subjectErr = rt.emails.ExecuteTemplate(subject, "subject_new_user_invite", nil)
 	}
 
-	if bodyErr != nil {
-		newJSONError(
-			fmt.Errorf("router: error rendering email message: %v", err),
-			http.StatusInternalServerError,
-		).Pipe(c)
-		return
+	for _, err := range []error{bodyErr, subjectErr} {
+		if err != nil {
+			newJSONError(
+				fmt.Errorf("router: error rendering email message: %v", err),
+				http.StatusInternalServerError,
+			).Pipe(c)
+			return
+		}
 	}
-	if err := rt.mailer.Send(rt.config.SMTP.Sender, req.InviteeEmailAddress, subject, emailBody); err != nil {
+	if err := rt.mailer.Send(rt.config.SMTP.Sender, req.InviteeEmailAddress, subject.String(), body.String()); err != nil {
 		newJSONError(
 			fmt.Errorf("router: error sending email message: %v", err),
 			http.StatusInternalServerError,

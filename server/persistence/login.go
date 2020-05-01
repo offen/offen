@@ -79,6 +79,7 @@ func (p *persistenceLayer) Login(email, password string) (LoginResult, error) {
 
 	return LoginResult{
 		AccountUserID: accountUser.AccountUserID,
+		AdminLevel:    accountUser.AdminLevel,
 		Accounts:      results,
 	}, nil
 }
@@ -92,6 +93,7 @@ func (p *persistenceLayer) LookupAccountUser(accountUserID string) (LoginResult,
 	}
 	result := LoginResult{
 		AccountUserID: accountUser.AccountUserID,
+		AdminLevel:    accountUser.AdminLevel,
 		Accounts:      []LoginAccountResult{},
 	}
 	for _, relationship := range accountUser.Relationships {

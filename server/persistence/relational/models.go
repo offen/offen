@@ -69,6 +69,7 @@ type AccountUser struct {
 	HashedEmail    string
 	HashedPassword string
 	Salt           string
+	AdminLevel     int
 	Relationships  []AccountUserRelationship `gorm:"foreignkey:AccountUserID;association_foreignkey:AccountUserID"`
 }
 
@@ -82,6 +83,7 @@ func (a *AccountUser) export() persistence.AccountUser {
 		HashedEmail:    a.HashedEmail,
 		HashedPassword: a.HashedPassword,
 		Salt:           a.Salt,
+		AdminLevel:     persistence.AccountUserAdminLevel(a.AdminLevel),
 		Relationships:  relationships,
 	}
 }
@@ -96,6 +98,7 @@ func importAccountUser(a *persistence.AccountUser) AccountUser {
 		HashedEmail:    a.HashedEmail,
 		HashedPassword: a.HashedPassword,
 		Salt:           a.Salt,
+		AdminLevel:     int(a.AdminLevel),
 		Relationships:  relationships,
 	}
 }

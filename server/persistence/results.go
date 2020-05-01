@@ -46,8 +46,9 @@ type ShareAccountResult struct {
 
 // LoginResult is a successful account user authentication response.
 type LoginResult struct {
-	AccountUserID string               `json:"accountUserId"`
-	Accounts      []LoginAccountResult `json:"accounts"`
+	AccountUserID string                `json:"accountUserId"`
+	AdminLevel    AccountUserAdminLevel `json:"adminLevel"`
+	Accounts      []LoginAccountResult  `json:"accounts"`
 }
 
 // CanAccessAccount checks whether the login result is allowed to access the
@@ -59,6 +60,11 @@ func (l *LoginResult) CanAccessAccount(accountID string) bool {
 		}
 	}
 	return false
+}
+
+// IsSuperAdmin checks whether the login result is a SuperAdmin.
+func (l *LoginResult) IsSuperAdmin() bool {
+	return l.AdminLevel == AccountUserAdminLevelSuperAdmin
 }
 
 // LoginAccountResult contains information for the client to handle an account

@@ -34,7 +34,9 @@ describe('src/buckets.js', function () {
         't.co/123',
         'linkedin.com/business-proposal',
         'www.linkedin.com',
-        'linkedin.community/malware-download'
+        'linkedin.community/malware-download',
+        'android-app://com.linkedin.android',
+        'android-app://com.linkedinteresting.scam'
       ]
       var mapped = referrers.map(mapToBuckets)
       assert.deepStrictEqual(mapped, [
@@ -61,7 +63,9 @@ describe('src/buckets.js', function () {
         'Twitter',
         'LinkedIn',
         'LinkedIn',
-        'linkedin.community/malware-download'
+        'linkedin.community/malware-download',
+        'LinkedIn',
+        'android-app://com.linkedinteresting.scam'
       ])
     })
   })

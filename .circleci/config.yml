@@ -48,7 +48,7 @@ jobs:
 
   vault:
     docker:
-      - image: circleci/node:12-browsers
+      - image: circleci/node:14-browsers
     working_directory: ~/offen/vault
     steps:
       - checkout:
@@ -68,7 +68,7 @@ jobs:
 
   script:
     docker:
-      - image: circleci/node:12-browsers
+      - image: circleci/node:14-browsers
     working_directory: ~/offen/script
     steps:
       - checkout:
@@ -88,7 +88,7 @@ jobs:
 
   auditorium:
     docker:
-      - image: circleci/node:12-browsers
+      - image: circleci/node:14-browsers
     working_directory: ~/offen/auditorium
     steps:
       - checkout:
@@ -108,7 +108,7 @@ jobs:
 
   packages:
     docker:
-      - image: circleci/node:12-browsers
+      - image: circleci/node:14-browsers
     working_directory: ~/offen/packages
     steps:
       - checkout:
@@ -128,7 +128,7 @@ jobs:
 
   integration:
     docker:
-      - image: circleci/node:12-browsers
+      - image: circleci/node:14-browsers
         environment:
           OFFEN_SERVER_PORT: 3000
           OFFEN_DATABASE_CONNECTIONSTRING: $HOME/offen.db
@@ -218,7 +218,7 @@ jobs:
             tar -czvf /tmp/artifacts/offen-$DOCKER_IMAGE_TAG.tar.gz $(ls -A)
             aws s3 cp /tmp/artifacts/offen-$DOCKER_IMAGE_TAG.tar.gz s3://offen/binaries/offen-$DOCKER_IMAGE_TAG.tar.gz
 
-            echo "$DOCKER_ACCESSTOKEN" | docker login --username $DOCKER_USER --password-stdin
+            echo "$DOCKER_ACCESSTOKEN" | docker login --username offen --password-stdin
             docker push offen/offen:$DOCKER_IMAGE_TAG
       - store_artifacts:
           path: /tmp/artifacts

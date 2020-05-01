@@ -118,7 +118,12 @@ func cmdSetup(subcommand string, flags []string) {
 
 		conf.AccountUsers = append(
 			conf.AccountUsers,
-			persistence.BootstrapAccountUser{Email: *email, Password: pw, Accounts: []string{*accountID}},
+			persistence.BootstrapAccountUser{
+				AdminLevel: persistence.AccountUserAdminLevelSuperAdmin,
+				Email:      *email,
+				Password:   pw,
+				Accounts:   []string{*accountID},
+			},
 		)
 		conf.Accounts = append(
 			conf.Accounts,

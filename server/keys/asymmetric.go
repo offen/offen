@@ -38,6 +38,8 @@ func GenerateRSAKeypair(bits int) ([]byte, []byte, error) {
 	return publicBytes, privateBytes, nil
 }
 
+// EncryptAsymmetricWith uses the given RSA Public Key in JWK format to encrypt the
+// given value into a versioned cipher.
 func EncryptAsymmetricWith(publicKey interface{}, value []byte) (*VersionedCipher, error) {
 	key, keyOk := publicKey.(jwk.Key)
 	if !keyOk {

@@ -33,6 +33,16 @@ type Secret struct {
 	EncryptedSecret string
 }
 
+// AccountUserAdminLevel is used to describe the privileges granted to an account
+// user. If zero, no admin privileges are given.
+type AccountUserAdminLevel int
+
+// A SuperAdmin is the only level currently used. It is granted any possible
+// privilege.
+const (
+	AccountUserAdminLevelSuperAdmin AccountUserAdminLevel = 1
+)
+
 // AccountUser is a person that can log in and access data related to all
 // associated accounts.
 type AccountUser struct {
@@ -40,6 +50,7 @@ type AccountUser struct {
 	HashedEmail    string
 	HashedPassword string
 	Salt           string
+	AdminLevel     AccountUserAdminLevel
 	Relationships  []AccountUserRelationship
 }
 

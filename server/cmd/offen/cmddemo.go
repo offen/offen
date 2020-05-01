@@ -103,7 +103,12 @@ func cmdDemo(subcommand string, flags []string) {
 			{AccountID: accountID.String(), Name: "Demo Account"},
 		},
 		AccountUsers: []persistence.BootstrapAccountUser{
-			{Email: "demo@offen.dev", Password: "demo", Accounts: []string{accountID.String()}},
+			{
+				AdminLevel: persistence.AccountUserAdminLevelSuperAdmin,
+				Email:      "demo@offen.dev",
+				Password:   "demo",
+				Accounts:   []string{accountID.String()},
+			},
 		},
 	}); err != nil {
 		a.logger.WithError(err).Fatal("Error bootstrapping database")
@@ -115,7 +120,10 @@ func cmdDemo(subcommand string, flags []string) {
 		account, _ := db.GetAccount(accountID.String(), false, "")
 
 		for i := 0; i < randomInRange(100, 200); i++ {
-			userID, key, jwk := newFakeUser()
+			userID, key, jwk, err := newFakeUser()
+			if err != nil {
+				a.logger.WithError(err).Fatal("Error creating fake user data")
+			}
 			encryptedSecret, encryptionErr := keys.EncryptAsymmetricWith(account.PublicKey, jwk)
 			if encryptionErr != nil {
 				a.logger.WithError(encryptionErr).Fatal("Error encrypting fake user secret")
@@ -125,10 +133,7 @@ func cmdDemo(subcommand string, flags []string) {
 			}
 
 			for s := 0; s < randomInRange(1, 4); s++ {
-				evts := newFakeSession(
-					randomInRange(1, 12),
-					fmt.Sprintf("http://localhost:%d", a.config.Server.Port),
-				)
+				evts := newFakeSession(randomInRange(1, 12))
 				for _, evt := range evts {
 					b, bErr := json.Marshal(evt)
 					if bErr != nil {
@@ -155,6 +160,10 @@ func cmdDemo(subcommand string, flags []string) {
 	if tplErr != nil {
 		a.logger.WithError(tplErr).Fatal("Failed parsing template files, cannot continue")
 	}
+	emails, emailsErr := public.EmailTemplate(gettext)
+	if emailsErr != nil {
+		a.logger.WithError(emailsErr).Fatal("Failed parsing template files, cannot continue")
+	}
 
 	srv := &http.Server{
 		Addr: fmt.Sprintf("0.0.0.0:%d", a.config.Server.Port),
@@ -162,6 +171,7 @@ func cmdDemo(subcommand string, flags []string) {
 			router.WithDatabase(db),
 			router.WithLogger(a.logger),
 			router.WithTemplate(tpl),
+			router.WithEmails(emails),
 			router.WithConfig(a.config),
 			router.WithFS(fs),
 			router.WithMailer(a.config.NewMailer()),
@@ -202,23 +212,35 @@ func mustSecret(length int) []byte {
 	return b
 }
 
-func newFakeUser() (string, []byte, []byte) {
-	id, _ := uuid.NewV4()
-	k, _ := keys.GenerateRandomBytes(keys.DefaultSecretLength)
-	j, _ := jwk.New(k)
+func newFakeUser() (string, []byte, []byte, error) {
+	id, err := uuid.NewV4()
+	if err != nil {
+		return "", nil, nil, fmt.Errorf("error creating user id: %w", err)
+	}
+	k, err := keys.GenerateRandomBytes(keys.DefaultSecretLength)
+	if err != nil {
+		return "", nil, nil, fmt.Errorf("error creating user key: %w", err)
+	}
+	j, err := jwk.New(k)
+	if err != nil {
+		return "", nil, nil, fmt.Errorf("error wrapping key as jwk: %w", err)
+	}
 	j.Set(jwk.AlgorithmKey, "A128GCM")
 	j.Set("ext", true)
 	j.Set(jwk.KeyOpsKey, []string{jwk.KeyOpEncrypt, jwk.KeyOpDecrypt})
-	b, _ := json.Marshal(j)
-	return id.String(), k, b
+	b, err := json.Marshal(j)
+	if err != nil {
+		return "", nil, nil, fmt.Errorf("error marshaling jwk: %w", err)
+	}
+	return id.String(), k, b, nil
 }
 
 func randomInRange(lower, upper int) int {
 	return rand.Intn(upper-lower) + lower
 }
 
-func randomBool() bool {
-	return rand.Intn(4) == 1
+func randomBool(prob float64) bool {
+	return prob <= rand.Float64()
 }
 
 type fakeEvent struct {
@@ -256,15 +278,15 @@ func randomReferrer() string {
 	return referrers[randomInRange(0, len(referrers)-1)]
 }
 
-func newFakeSession(length int, root string) []*fakeEvent {
+func newFakeSession(length int) []*fakeEvent {
 	var result []*fakeEvent
 	sessionID, _ := uuid.NewV4()
 	timestamp := time.Now().Add(-time.Duration(randomInRange(0, int(config.EventRetention))))
-	isMobileSession := randomBool()
+	isMobileSession := randomBool(0.33)
 
 	for i := 0; i < length; i++ {
 		var referrer string
-		if i == 0 && randomBool() {
+		if i == 0 && randomBool(0.25) {
 			referrer = randomReferrer()
 		}
 		result = append(result, &fakeEvent{

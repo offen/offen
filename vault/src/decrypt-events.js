@@ -14,12 +14,14 @@ function decryptEventsWith (cache) {
   return bindCrypto(function (encryptedEvents, secrets, privateJWK) {
     var crypto = this
     var decryptWithAccountKey = crypto.decryptAsymmetricWith(privateJWK)
+    var secretsById
 
     function getMatchingSecret (secretId) {
       function doDecrypt () {
         return Promise.resolve(secrets)
           .then(function (secrets) {
-            var secret = _.findWhere(secrets, { secretId: secretId })
+            secretsById = secretsById || _.indexBy(secrets, 'secretId')
+            var secret = secretsById[secretId]
             if (!secret) {
               return Promise.reject(
                 new Error('Unable to find matching secret')

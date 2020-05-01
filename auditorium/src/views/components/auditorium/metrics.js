@@ -24,7 +24,10 @@ const ExplainerContent = (props) => {
 }
 
 const Metrics = (props) => {
-  const { isOperator, model, arrangement, showExplainer, onExplain, explainerActive, explainerProps = () => ({}) } = props
+  const {
+    isOperator, model, arrangement, showExplainer,
+    onExplain, explainerActive, explainerPropsFor
+  } = props
 
   const uniqueEntities = isOperator
     ? model.uniqueUsers
@@ -51,7 +54,7 @@ const Metrics = (props) => {
     </div>
   )
 
-  const propsUniqueEntities = explainerProps('metric/unique-entities')
+  const propsUniqueEntities = explainerPropsFor ? explainerPropsFor('metric/unique-entities') : {}
   const metricUniqueEntities = (
     <KeyMetric
       name={__('Unique %s', entityName)}
@@ -68,7 +71,7 @@ const Metrics = (props) => {
     </ExplainerContent>
   )
 
-  const propsUniqueSessions = explainerProps('metric/unique-sessions')
+  const propsUniqueSessions = explainerPropsFor ? explainerPropsFor('metric/unique-sessions') : {}
   const metricUniqueSessions = (
     <KeyMetric
       name={__('Unique sessions')}
@@ -85,34 +88,36 @@ const Metrics = (props) => {
     </ExplainerContent>
   )
 
+  const propsAveragePageDepth = explainerPropsFor ? explainerPropsFor('metric/avg-page-depth') : {}
   const metricAveragePageDepth = (
     <KeyMetric
       name={__('Avg. page depth')}
       value={model.avgPageDepth}
       formatAs='number'
       small
-      {...explainerProps('metric/avg-page-depth')}
+      {...propsAveragePageDepth}
     />
   )
   const explainerAveragePageDepth = (
-    <ExplainerContent {...explainerProps('metric/avg-page-depth')}>
+    <ExplainerContent {...propsAveragePageDepth}>
       <Paragraph class='mw7 ma0 ph1 pv2'>
         {__('Full form: Average page depth. The average number of pages you have visited during all <a href="#terms-unique-session" class="%s">unique sessions</a> on all websites where the <a href="#terms-offen-installation" class="%s">Offen installation</a> is active.', 'link dim dark-green', 'link dim dark-green')}
       </Paragraph>
     </ExplainerContent>
   )
 
+  const propsBounceRate = explainerPropsFor ? explainerPropsFor('metric/bounce-rate') : {}
   const metricBounceRate = (
     <KeyMetric
       name={__('Bounce rate')}
       value={model.bounceRate}
       formatAs='percentage'
       small
-      {...explainerProps('metric/bounce-rate')}
+      {...propsBounceRate}
     />
   )
   const explainerBounceRate = (
-    <ExplainerContent {...explainerProps('metric/bounce-rate')}>
+    <ExplainerContent {...propsBounceRate}>
       <Paragraph class='mw7 ma0 ph1 pv2'>
         {__('The percentage of <a href="#terms-unique-session" class="%s">unique sessions</a> where you only visited one page of the <a href="#terms-offen-installation" class="%s">Offen installation.</a> Therefore a website with only one page will always have a bounce rate of 100%.', 'link dim dark-green', 'link dim dark-green')}
       </Paragraph>
@@ -141,34 +146,36 @@ const Metrics = (props) => {
       : null
   )
 
+  const propsMobile = explainerPropsFor ? explainerPropsFor('metric/mobile') : {}
   const metricMobile = (
     <KeyMetric
       name={isOperator ? __('Mobile users') : __('Mobile user')}
       value={model.mobileShare}
       formatAs={isOperator ? 'percentage' : 'boolean'}
       small
-      {...explainerProps('metric/mobile')}
+      {...propsMobile}
     />
   )
   const explainerMobile = (
-    <ExplainerContent {...explainerProps('metric/mobile')}>
+    <ExplainerContent {...propsMobile}>
       <Paragraph class='mw7 ma0 ph1 pv2'>
         {__('Shows whether you are considered to be using a mobile device. A check is made to see if your device thinks it can change its orientation. If so, it is considered mobile.')}
       </Paragraph>
     </ExplainerContent>
   )
 
+  const propsAveragePageload = explainerPropsFor ? explainerPropsFor('metric/avg-pageload') : {}
   const metricAveragePageload = (
     <KeyMetric
       name={__('Avg. page load time')}
       value={model.avgPageload}
       formatAs='duration'
       small
-      {...explainerProps('metric/avg-pageload')}
+      {...propsAveragePageload}
     />
   )
   const explainerAveragePageload = (
-    <ExplainerContent {...explainerProps('metric/avg-pageload')}>
+    <ExplainerContent {...propsAveragePageload}>
       <Paragraph class='mw7 ma0 ph1 pv2'>
         {__('Full form: Average page load time. The average time it took for all pages of the <a href="#terms-offen-installation" class="%s">Offen installation</a> you visited to become interactive.', 'link dim dark-green')}
       </Paragraph>

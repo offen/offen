@@ -101,20 +101,20 @@ const Table = (props) => {
 exports.Table = Table
 
 const Container = (props) => {
-  const { removeBorder, children, showExplainer, explainerProps, groupName } = props
+  const { removeBorder, children, showExplainer, explainerPropsFor, groupName } = props
   const [selectedTab, setSelectedTab] = useState(0)
   const tableSets = Array.isArray(children)
     ? children
     : [children]
 
-  useEffect(function unsetExplainerOnTab () {
-    if (explainerProps) {
-      const { activeExplainer, onExplain } = explainerProps(null)
+  if (explainerPropsFor) {
+    useEffect(function unsetExplainerOnTab () {
+      const { activeExplainer, onExplain } = explainerPropsFor(null)
       if (activeExplainer && activeExplainer.indexOf(`table/${groupName}/`) === 0) {
         onExplain()
       }
-    }
-  }, [selectedTab, groupName])
+    }, [selectedTab, groupName])
+  }
 
   const headlines = tableSets.map(function (set, index) {
     if (!set.props.headline) {
@@ -137,19 +137,27 @@ const Container = (props) => {
       css.push('b', 'bt', 'bw2', 'b--dark-green')
     }
 
-    let extra = {}
-    if (showExplainer && explainerProps) {
-      extra = explainerProps(`table/${groupName}/${set.props.headline}`)
+    let explainerProps = {}
+    if (showExplainer && explainerPropsFor) {
+      explainerProps = explainerPropsFor(`table/${groupName}/${set.props.headline}`)
     }
 
-    if (extra.explainerActive) {
+    if (explainerProps.explainerActive) {
       css.push('bg-light-yellow')
     }
 
     return (
       <a key={index} role='button' class={classnames(css)} onclick={handleClick}>
         {set.props.headline}
-        {showExplainer && index === selectedTab ? <ExplainerIcon onclick={extra.onExplain} invert={extra.explainerActive} marginLeft /> : null}
+        {showExplainer && (index === selectedTab)
+          ? (
+            <ExplainerIcon
+              onclick={explainerProps.onExplain}
+              invert={explainerProps.explainerActive}
+              marginLeft
+            />
+          )
+          : null}
       </a>
     )
   })
@@ -167,10 +175,10 @@ const Container = (props) => {
           ? (<div>{headlines}</div>)
           : null}
         {(() => {
-          if (!explainerProps || !showExplainer || !tableSets[selectedTab].props.explainer) {
+          if (!explainerPropsFor || !showExplainer || !tableSets[selectedTab].props.explainer) {
             return null
           }
-          const props = explainerProps(`table/${groupName}/${tableSets[selectedTab].props.headline}`)
+          const props = explainerPropsFor(`table/${groupName}/${tableSets[selectedTab].props.headline}`)
           return (
             <ExplainerContent {...props}>
               {tableSets[selectedTab].props.explainer({})}
