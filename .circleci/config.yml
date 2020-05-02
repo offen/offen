@@ -1,17 +1,11 @@
-version: 2
+version: 2.1
 
 jobs:
   server:
     docker:
       - image: circleci/golang:1.14
         environment:
-          OFFEN_APP_EVENTRETENTIONPERIOD: 4464h
-          OFFEN_DATABASE_DIALECT: postgres
-          OFFEN_DATABASE_CONNECTIONSTRING: postgres://circle:test@localhost:5432/circle_test?sslmode=disable
-      - image: circleci/postgres:11.2-alpine
-        environment:
-          - POSTGRES_USER=circle
-          - POSTGRES_PASSWORD=test
+          OFFEN_DATABASE_CONNECTIONSTRING: $HOME/offen.db
     working_directory: ~/offen/server
     steps:
       - checkout:
@@ -25,16 +19,6 @@ jobs:
           paths:
             - /go/pkg/mod
           key: offen-server-{{ checksum "go.mod" }}
-      - run:
-          name: Waiting for Postgres to be ready
-          command: |
-            for i in `seq 1 10`;
-            do
-              nc -z localhost 5432 && echo Success && exit 0
-              echo -n .
-              sleep 1
-            done
-            echo Failed waiting for Postgres && exit 1
       - run:
           name: Prepare static assets
           command: |
@@ -51,87 +35,44 @@ jobs:
       - image: circleci/node:14-browsers
     working_directory: ~/offen/vault
     steps:
-      - checkout:
-          path: ~/offen
-      - restore_cache:
-          key: offen-vault-{{ checksum "package.json" }}
-      - run:
-          name: Install dependencies
-          command: npm install
-      - save_cache:
-          paths:
-            - ~/offen/vault/node_modules
-          key: offen-vault-{{ checksum "package.json" }}
-      - run:
-          name: Run tests
-          command: npm test
+      - test_node_app:
+          app: vault
 
   script:
     docker:
       - image: circleci/node:14-browsers
     working_directory: ~/offen/script
     steps:
-      - checkout:
-          path: ~/offen
-      - restore_cache:
-          key: offen-script-{{ checksum "package.json" }}
-      - run:
-          name: Install dependencies
-          command: npm install
-      - save_cache:
-          paths:
-            - ~/offen/script/node_modules
-          key: offen-script-{{ checksum "package.json" }}
-      - run:
-          name: Run tests
-          command: npm test
+      - test_node_app:
+          app: script
 
   auditorium:
     docker:
       - image: circleci/node:14-browsers
     working_directory: ~/offen/auditorium
     steps:
-      - checkout:
-          path: ~/offen
-      - restore_cache:
-          key: offen-auditorium-{{ checksum "package.json" }}
-      - run:
-          name: Install dependencies
-          command: npm install
-      - save_cache:
-          paths:
-            - ~/offen/auditorium/node_modules
-          key: offen-auditorium-{{ checksum "package.json" }}
-      - run:
-          name: Run tests
-          command: npm test
+      - test_node_app:
+          app: auditorium
 
   packages:
     docker:
       - image: circleci/node:14-browsers
     working_directory: ~/offen/packages
     steps:
-      - checkout:
-          path: ~/offen
-      - restore_cache:
-          key: offen-packages-{{ checksum "package.json" }}
-      - run:
-          name: Install dependencies
-          command: npm install
-      - save_cache:
-          paths:
-            - ~/offen/packages/node_modules
-          key: offen-packages-{{ checksum "package.json" }}
-      - run:
-          name: Run tests
-          command: npm test
+      - test_node_app:
+          app: packages
 
   integration:
     docker:
-      - image: circleci/node:14-browsers
+      - image: circleci/node:14
         environment:
           OFFEN_SERVER_PORT: 3000
-          OFFEN_DATABASE_CONNECTIONSTRING: $HOME/offen.db
+          OFFEN_DATABASE_DIALECT: postgres
+          OFFEN_DATABASE_CONNECTIONSTRING: postgres://circle:test@localhost:5432/circle_test?sslmode=disable
+      - image: circleci/postgres:11.2-alpine
+        environment:
+          - POSTGRES_USER=circle
+          - POSTGRES_PASSWORD=test
     working_directory: ~/offen
     steps:
       - checkout
@@ -141,6 +82,16 @@ jobs:
           command: |
             make build
             cp ./bin/offen-linux-amd64 ./offen
+      - run:
+          name: Waiting for Postgres to be ready
+          command: |
+            for i in `seq 1 10`;
+            do
+              nc -z localhost 5432 && echo Success && exit 0
+              echo -n .
+              sleep 1
+            done
+            echo Failed waiting for Postgres && exit 1
       - run:
           name: Setup application
           command: |
@@ -177,10 +128,7 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
-      - run:
-          name: Install deployment dependencies
-          command: |
-            sudo pip install -q awscli --upgrade
+      - aws-cli/install
       - run:
           name: Build application Docker image and binary
           command: |
@@ -225,7 +173,7 @@ jobs:
 
 workflows:
   version: 2
-  test:
+  test_build_push:
     jobs:
       - server: &all_tags_filter
           filters:
@@ -256,3 +204,31 @@ workflows:
               only:
                 - development
                 - master
+
+commands:
+  test_node_app:
+    description: Run unit tests for a Node.js based subapp
+    parameters:
+      app:
+        type: string
+      checkout:
+        type: string
+        default: ~/offen
+    steps:
+      - checkout:
+          path: << parameters.checkout >>
+      - restore_cache:
+          key: offen-<< parameters.app >>-{{ checksum "package.json" }}
+      - run:
+          name: Install dependencies
+          command: npm ci
+      - save_cache:
+          paths:
+            - ~/offen/auditorium/node_modules
+          key: offen-<< parameters.app >>-{{ checksum "package.json" }}
+      - run:
+          name: Run tests
+          command: npm test
+
+orbs:
+  aws-cli: circleci/aws-cli@1.0.0
