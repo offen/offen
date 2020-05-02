@@ -116,48 +116,62 @@ jobs:
     docker:
       - image: circleci/python:3.7
     working_directory: ~/offen
+    environment:
+      DOCKER_LOGIN: offen
     steps:
       - checkout
       - setup_remote_docker
       - aws-cli/install
       - run:
-          name: Build application Docker image and binary
+          name: Set build environment
           command: |
             if [ -z "$CIRCLE_TAG" ]; then
-              export OFFEN_GIT_REVISION=$(git rev-parse --short HEAD)
+              echo 'export OFFEN_GIT_REVISION=$(git rev-parse --short HEAD)' >> $BASH_ENV
               if [ "${CIRCLE_BRANCH}" == "master" ]; then
-                export DOCKER_IMAGE_TAG="stable"
+                echo 'export DOCKER_IMAGE_TAG="stable"' >> $BASH_ENV
               else
-                export DOCKER_IMAGE_TAG="latest"
+                echo 'export DOCKER_IMAGE_TAG="latest"' >> $BASH_ENV
               fi
             else
-              export OFFEN_GIT_REVISION=$CIRCLE_TAG
-              export DOCKER_IMAGE_TAG=$CIRCLE_TAG
+              echo 'export OFFEN_GIT_REVISION=$CIRCLE_TAG' >> $BASH_ENV
+              echo 'export DOCKER_IMAGE_TAG=$CIRCLE_TAG' >> $BASH_ENV
             fi
-
+      - run:
+          name: Build application Docker image and binary
+          command: |
             TARGETS=linux/amd64,windows/amd64 make build
             # Darwin builds cannot be statically linked right now
             # so we override the default LDFLAGS value
             TARGETS=darwin/amd64 LDFLAGS='' make build
             make build-docker
-
-            mkdir -p /tmp/artifacts
-            cd ./bin
-
+      - run:
+          name: Download and import signing key
+          command: |
             aws s3 cp s3://offen-secrets/signing-key.asc /tmp
             gpg --import /tmp/signing-key.asc
+      - run:
+          name: Package tarball
+          working_directory: ~/offen/bin
+          command: |
             for artifact in $(ls); do
               gpg --armor --detach-sign $artifact
             done
+
             md5sum * > checksums.txt
-            cp ~/offen/LICENSE .
-            cp ~/offen/NOTICE .
-            cp ~/offen/README.md .
 
+            cp ~/offen/{LICENSE,NOTICE,README.md} .
+
+            mkdir -p /tmp/artifacts
             tar -czvf /tmp/artifacts/offen-$DOCKER_IMAGE_TAG.tar.gz $(ls -A)
-            aws s3 cp /tmp/artifacts/offen-$DOCKER_IMAGE_TAG.tar.gz s3://offen/binaries/offen-$DOCKER_IMAGE_TAG.tar.gz
-
-            echo "$DOCKER_ACCESSTOKEN" | docker login --username offen --password-stdin
+      - run:
+          name: Upload to S3
+          command: aws s3 cp /tmp/artifacts/offen-$DOCKER_IMAGE_TAG.tar.gz s3://offen/binaries/offen-$DOCKER_IMAGE_TAG.tar.gz
+      - docker/install-docker-credential-helper
+      - docker/configure-docker-credentials-store
+      - run:
+          name: Push offen/offen to Docker Hub
+          command: |
+            echo "$DOCKER_ACCESSTOKEN" | docker login --username $DOCKER_LOGIN --password-stdin
             docker push offen/offen:$DOCKER_IMAGE_TAG
       - store_artifacts:
           path: /tmp/artifacts
@@ -223,3 +237,4 @@ commands:
 
 orbs:
   aws-cli: circleci/aws-cli@1.0.0
+  docker: circleci/docker@1.0.1
