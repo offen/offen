@@ -35,80 +35,32 @@ jobs:
       - image: circleci/node:14-browsers
     working_directory: ~/offen/vault
     steps:
-      - checkout:
-          path: ~/offen
-      - restore_cache:
-          key: offen-vault-{{ checksum "package.json" }}
-      - run:
-          name: Install dependencies
-          command: npm ci
-      - save_cache:
-          paths:
-            - ~/offen/vault/node_modules
-          key: offen-vault-{{ checksum "package.json" }}
-      - run:
-          name: Run tests
-          command: npm test
+      - test_node_app:
+          app: vault
 
   script:
     docker:
       - image: circleci/node:14-browsers
     working_directory: ~/offen/script
     steps:
-      - checkout:
-          path: ~/offen
-      - restore_cache:
-          key: offen-script-{{ checksum "package.json" }}
-      - run:
-          name: Install dependencies
-          command: npm ci
-      - save_cache:
-          paths:
-            - ~/offen/script/node_modules
-          key: offen-script-{{ checksum "package.json" }}
-      - run:
-          name: Run tests
-          command: npm test
+      - test_node_app:
+          app: script
 
   auditorium:
     docker:
       - image: circleci/node:14-browsers
     working_directory: ~/offen/auditorium
     steps:
-      - checkout:
-          path: ~/offen
-      - restore_cache:
-          key: offen-auditorium-{{ checksum "package.json" }}
-      - run:
-          name: Install dependencies
-          command: npm ci
-      - save_cache:
-          paths:
-            - ~/offen/auditorium/node_modules
-          key: offen-auditorium-{{ checksum "package.json" }}
-      - run:
-          name: Run tests
-          command: npm test
+      - test_node_app:
+          app: auditorium
 
   packages:
     docker:
       - image: circleci/node:14-browsers
     working_directory: ~/offen/packages
     steps:
-      - checkout:
-          path: ~/offen
-      - restore_cache:
-          key: offen-packages-{{ checksum "package.json" }}
-      - run:
-          name: Install dependencies
-          command: npm ci
-      - save_cache:
-          paths:
-            - ~/offen/packages/node_modules
-          key: offen-packages-{{ checksum "package.json" }}
-      - run:
-          name: Run tests
-          command: npm test
+      - test_node_app:
+          app: packages
 
   integration:
     docker:
@@ -252,6 +204,31 @@ workflows:
               only:
                 - development
                 - master
+
+commands:
+  test_node_app:
+    description: Run unit tests for a Node.js based subapp
+    parameters:
+      app:
+        type: string
+      checkout:
+        type: string
+        default: ~/offen
+    steps:
+      - checkout:
+          path: << parameters.checkout >>
+      - restore_cache:
+          key: offen-<< parameters.app >>-{{ checksum "package.json" }}
+      - run:
+          name: Install dependencies
+          command: npm ci
+      - save_cache:
+          paths:
+            - ~/offen/auditorium/node_modules
+          key: offen-<< parameters.app >>-{{ checksum "package.json" }}
+      - run:
+          name: Run tests
+          command: npm test
 
 orbs:
   aws-cli: circleci/aws-cli@1.0.0
