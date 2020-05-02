@@ -11,14 +11,14 @@ import (
 // New creates a new Mailer that sends email using the given SMTP configuration
 func New(endpoint, user, password string, port int) mailer.Mailer {
 	d := gomail.NewDialer(endpoint, port, user, password)
-	return &sesMailer{d}
+	return &smtpMailer{d}
 }
 
-type sesMailer struct {
+type smtpMailer struct {
 	*gomail.Dialer
 }
 
-func (s *sesMailer) Send(from, to, subject, body string) error {
+func (s *smtpMailer) Send(from, to, subject, body string) error {
 	m := gomail.NewMessage()
 	m.SetHeader("From", from)
 	m.SetHeader("To", to)
