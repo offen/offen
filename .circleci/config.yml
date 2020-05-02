@@ -4,8 +4,6 @@ jobs:
   server:
     docker:
       - image: circleci/golang:1.14
-        environment:
-          OFFEN_DATABASE_CONNECTIONSTRING: $HOME/offen.db
     working_directory: ~/offen/server
     steps:
       - checkout:
@@ -20,15 +18,8 @@ jobs:
             - /go/pkg/mod
           key: offen-server-{{ checksum "go.mod" }}
       - run:
-          name: Prepare static assets
-          command: |
-            go get github.com/rakyll/statik
-            statik -dest public -src public
-      - run:
           name: Run tests
-          command: |
-            cp ~/offen/bootstrap.yml .
-            make test-ci
+          command: make test
 
   vault:
     docker:

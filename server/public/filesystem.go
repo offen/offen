@@ -63,16 +63,16 @@ func (l *LocalizedFS) Open(file string) (http.File, error) {
 	return nil, err
 }
 
-func newStatikFS(fallbackRoot string) (http.FileSystem, error) {
+func newStatikFS(fallbackRoot string) http.FileSystem {
 	statikFS, err := fs.New()
 	if err != nil {
 		// This is here for development when the statik packages have not
 		// been populated. The filesystem will likely not match the requested
 		// files. In development live-reloading static assets will be routed through
 		// nginx instead.
-		return http.Dir(fallbackRoot), nil
+		return http.Dir(fallbackRoot)
 	}
-	return statikFS, nil
+	return statikFS
 }
 
 // NewLocalizedFS returns a http.FileSystem that is locale aware. It will first
@@ -80,10 +80,9 @@ func newStatikFS(fallbackRoot string) (http.FileSystem, error) {
 // returning the asset in the default language, falling back to the root fs if
 // this isn't found either.
 func NewLocalizedFS(locale string) *LocalizedFS {
-	rootFS, _ := newStatikFS("./public")
 	return &LocalizedFS{
 		locale: locale,
-		root:   rootFS,
+		root:   newStatikFS("./public"),
 	}
 }
 
@@ -112,7 +111,7 @@ func (l *LocalizedFS) EmailTemplate(gettext func(string, ...interface{}) templat
 }
 
 func (l *LocalizedFS) getTemplate(name string, templateFiles []string, funcMap template.FuncMap) (*template.Template, error) {
-	t := template.New("email_template")
+	t := template.New(name)
 	funcMap["rev"] = l.rev
 	t.Funcs(funcMap)
 
