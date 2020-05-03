@@ -10,7 +10,7 @@ Offen is a fair alternative to common web analytics tools.
 Pay respect to your users while gaining insight into their behavior.  
 Self hosted, open source and free.
 
-:star: Thanks for a star on GitHub! It just helps.
+:star: Thanks for a star on GitHub!
 
 ## Contents
 - [Core features](#core-features)
@@ -24,7 +24,7 @@ Self hosted, open source and free.
 - [Give feedback](#give-feedback)
 - [Links](Links)
  
-## Core-features
+## Core features
 __Free & open__  
 Our open source code can be fully audited by the community.  
 It will always be available for free. Seriously.
