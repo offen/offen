@@ -19,16 +19,16 @@ const defaultLocale = "en"
 // FS is a file system containing the static assets for serving the application
 var FS http.FileSystem
 
-func init() {
-	var err error
-	FS, err = fs.New()
+func getFS() http.FileSystem {
+	fileSystem, err := fs.New()
 	if err != nil {
 		// This is here for development when the statik packages have not
 		// been populated. The filesystem will likely not match the requested
 		// files. In development live-reloading static assets will be routed through
 		// nginx instead.
-		FS = http.Dir("./locales")
+		return http.Dir("./locales")
 	}
+	return fileSystem
 }
 
 func wrapFmt(f func(string, ...interface{}) string) func(string, ...interface{}) template.HTML {
@@ -43,10 +43,12 @@ func GettextFor(locale string) (func(string, ...interface{}) template.HTML, erro
 	if locale == defaultLocale {
 		return wrapFmt(fmt.Sprintf), nil
 	}
-	file, err := FS.Open(fmt.Sprintf("/%s.po", locale))
+
+	file, err := getFS().Open(fmt.Sprintf("/%s.po", locale))
 	if err != nil {
 		return nil, fmt.Errorf("locales: error opening file for locale %s: %w", locale, err)
 	}
+
 	b, err := ioutil.ReadAll(file)
 	if err != nil {
 		return nil, fmt.Errorf("locales: error reading file contents for locale %s: %w", locale, err)
