@@ -182,7 +182,7 @@ func cmdDemo(subcommand string, flags []string) {
 			a.logger.WithError(err).Fatal("Error binding server to network")
 		}
 	}()
-	a.logger.Infof("You can now access your Offfen demo at http://localhost:%d/login/", a.config.Server.Port)
+	a.logger.Infof("You can now access your Offen demo at http://localhost:%d/login/", a.config.Server.Port)
 	a.logger.Info(`Use the username "demo@offen.dev" and password "demo" to log in.`)
 	a.logger.Info("Data is stored temporarily only for this demo.")
 	a.logger.Info("Refer to the documentation on how to connect a persistent database.")
