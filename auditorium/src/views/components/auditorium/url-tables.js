@@ -47,7 +47,7 @@ const URLTable = (props) => {
         >
           <Tables.Table
             headline={__('Referrers')}
-            columnNames={[__('Host'), __('Pageviews')]}
+            columnNames={[__('Host'), __('Sessions')]}
             rows={model.referrers}
             explainer={(props) => {
               return (
@@ -59,7 +59,7 @@ const URLTable = (props) => {
           />
           <Tables.Table
             headline={__('Campaigns')}
-            columnNames={[__('Campaign'), __('Pageviews')]}
+            columnNames={[__('Campaign'), __('Sessions')]}
             rows={model.campaigns}
             explainer={(props) => {
               return (
@@ -71,7 +71,7 @@ const URLTable = (props) => {
           />
           <Tables.Table
             headline={__('Sources')}
-            columnNames={[__('Source'), __('Pageviews')]}
+            columnNames={[__('Source'), __('Sessions')]}
             rows={model.sources}
             explainer={(props) => {
               return (

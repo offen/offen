@@ -93,14 +93,24 @@ function sources (events) {
 }
 
 function _referrers (events, groupFn) {
-  var foreign = events
+  var uniqueForeign = events
     .filter(function (event) {
       if (event.secretId === null || !event.payload || !event.payload.referrer) {
         return false
       }
       return event.payload.referrer.host !== event.payload.href.host
     })
-  return _.chain(groupFn(foreign))
+    .reduce(function (acc, event) {
+      function unknownSession (knownEvent) {
+        return knownEvent.payload.sessionId !== event.payload.sessionId
+      }
+      if (_.every(acc, unknownSession)) {
+        acc.push(event)
+      }
+      return acc
+    }, [])
+
+  return _.chain(groupFn(uniqueForeign))
     .countBy(_.identity)
     .pairs()
     .map(function (pair) {
