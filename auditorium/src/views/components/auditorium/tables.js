@@ -65,7 +65,7 @@ const Table = (props) => {
   const [keyName, ...valueNames] = props.columnNames
   return (
     <Fragment>
-      <table class='collapse dt--fixed mb2'>
+      <table class='collapse w-100 dt--fixed-ns mb2'>
         <thead>
           <tr>
             <th class='normal tl pv2 pl2 pr1 moon-gray'>
