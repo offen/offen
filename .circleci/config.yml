@@ -117,6 +117,7 @@ jobs:
       - save_cache:
           paths:
             - ~/offen/integration/node_modules
+            - ~/.cache/Cypress
             - ~/.npm-global
           key: offen-integration-cy4.5.0-{{ checksum "./integration/package.json" }}
       - run:
