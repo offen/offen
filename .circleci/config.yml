@@ -55,8 +55,9 @@ jobs:
 
   integration:
     docker:
-      - image: circleci/node:14
+      - image: circleci/node:14-browsers
         environment:
+          CYPRESS_BASE_URL: http://localhost:3000
           OFFEN_SERVER_PORT: 3000
           OFFEN_DATABASE_DIALECT: postgres
           OFFEN_DATABASE_CONNECTIONSTRING: postgres://circle:test@localhost:5432/circle_test?sslmode=disable
@@ -102,15 +103,26 @@ jobs:
               sleep 1
             done
             echo Failed waiting for server && exit 1
+      - restore_cache:
+          key: offen-integration-cy4.5.0-{{ checksum "./integration/package.json" }}
       - run:
-          name: Check URLs
+          name: Install cypress and dependencies
+          working_directory: ~/offen/integration
           command: |
-            curl -sS -X GET localhost:3000 > /dev/null
-            curl -sS -X GET localhost:3000/script.js > /dev/null
-            curl -sS -X GET localhost:3000/vault/ > /dev/null
-            curl -sS -X GET localhost:3000/auditorium/ > /dev/null
-            curl -sS -X GET localhost:3000/healthz > /dev/null
-            curl -sS -X GET localhost:3000/versionz > /dev/null
+            mkdir ~/.npm-global
+            npm config set prefix '~/.npm-global'
+            npm install cypress@4.5.0 -g
+            npm ci
+            echo 'export PATH=~/.npm-global/bin/:$PATH' >> $BASH_ENV
+      - save_cache:
+          paths:
+            - ~/offen/integration/node_modules
+            - ~/.npm-global
+          key: offen-integration-cy4.5.0-{{ checksum "./integration/package.json" }}
+      - run:
+          working_directory: ~/offen/integration
+          name: Run integration tests
+          command: npm t
 
   build:
     docker:
@@ -229,7 +241,7 @@ commands:
           command: npm ci
       - save_cache:
           paths:
-            - ~/offen/auditorium/node_modules
+            - ~/offen/<< parameters.app >>/node_modules
           key: offen-<< parameters.app >>-{{ checksum "package.json" }}
       - run:
           name: Run tests

@@ -1,0 +1,17 @@
+{
+  "name": "integration",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "posttest": "standard",
+    "test": "cypress run"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "standard": "^14.3.3"
+  },
+  "standard": {
+    "env": ["browser", "mocha"],
+    "globals": ["cy", "Cypress", "expect", "assert"]
+  }
+}

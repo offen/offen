@@ -24,6 +24,10 @@ help:
 	@echo "        Extract strings for localization"
 	@echo "    secret"
 	@echo "        Generate a random base64 encoded secret"
+	@echo "    test"
+	@echo "        Run unit tests for all apps"
+	@echo "    integration"
+	@echo "        Run integration tests against a running dev environment"
 
 setup: dev-build update howto
 
@@ -91,4 +95,7 @@ test:
 	@docker-compose run --rm auditorium npm test
 	@docker-compose run --rm server make test
 
-.PHONY: setup build build-docker bootstrap build secret test up down
+integration:
+	@docker-compose -f docker-compose.integration.yml run --rm integration npm t
+
+.PHONY: setup build build-docker bootstrap build secret test up down integration

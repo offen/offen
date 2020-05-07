@@ -18,3 +18,6 @@ package-lock.json
 server.crt
 server.key
 bundle.*
+
+integration/cypress/screenshots
+integration/cypress/videos
