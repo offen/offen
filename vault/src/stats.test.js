@@ -222,8 +222,8 @@ describe('src/stats.js', function () {
       ])
         .then(function (result) {
           assert.deepStrictEqual(result, [
-            { key: 'www.example.net', count: 2 },
-            { key: 'beep.boop', count: 1 }
+            { key: 'www.example.net', count: [2, 2] },
+            { key: 'beep.boop', count: [1, 1] }
           ])
         })
     })
@@ -247,8 +247,8 @@ describe('src/stats.js', function () {
       ])
         .then(function (result) {
           assert.deepStrictEqual(result, [
-            { key: 'beep', count: 2 },
-            { key: 'boop', count: 1 }
+            { key: 'beep', count: [2, 1] },
+            { key: 'boop', count: [1, 1] }
           ])
         })
     })

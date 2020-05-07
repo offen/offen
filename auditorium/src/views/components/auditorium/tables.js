@@ -24,23 +24,33 @@ const ExplainerContent = (props) => {
 }
 
 const Table = (props) => {
-  const { rows, onEmptyMessage = __('No data available for this view.'), limit = 10, formatAs = 'count' } = props
-  const [showAll, setShowAll] = useState(false)
+  const {
+    rows,
+    formatAs = ['count'],
+    onEmptyMessage = __('No data available for this view.'),
+    limit = 10
+  } = props
 
+  const [showAll, setShowAll] = useState(false)
   const hasMore = Array.isArray(rows) && rows.length > limit
 
   var tBody = Array.isArray(rows) && rows.length
     ? rows.slice(0, showAll ? rows.length : limit).map(function (row, index) {
+      var counts = Array.isArray(row.count) ? row.count : [row.count]
       return (
-        <tr key={index} class='striped--near-white'>
+        <tr key={`outer-${index}`} class='striped--near-white'>
           <td class='truncate pv2 pl2 pr1'>
             {row.key}
           </td>
-          <td class='pv2 ph1'>
-            <Format formatAs={formatAs}>
-              {row.count}
-            </Format>
-          </td>
+          {counts.map((count, index) => {
+            return (
+              <td class='pv2 ph1' key={`inner-${index}`}>
+                <Format formatAs={formatAs[index]}>
+                  {count}
+                </Format>
+              </td>
+            )
+          })}
         </tr>
       )
     })
@@ -52,17 +62,25 @@ const Table = (props) => {
       </tr>
     )
 
+  const [keyName, ...valueNames] = props.columnNames
   return (
     <Fragment>
       <table class='collapse dt--fixed mb2'>
         <thead>
           <tr>
-            <th class='w-75 normal tl pv2 pl2 pr1 moon-gray'>
-              {props.columnNames[0]}
+            <th class='normal tl pv2 pl2 pr1 moon-gray'>
+              {keyName}
             </th>
-            <th class='w-25 normal tl pv2 ph1 moon-gray'>
-              {props.columnNames[1]}
-            </th>
+            {valueNames.map((name, index) => {
+              return (
+                <th
+                  class='w-25 normal tl pv2 ph1 moon-gray'
+                  key={`value-name-${index}`}
+                >
+                  {name}
+                </th>
+              )
+            })}
           </tr>
         </thead>
         <tbody>
