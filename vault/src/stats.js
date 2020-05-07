@@ -100,7 +100,18 @@ function _referrers (events, groupFn) {
       }
       return event.payload.referrer.host !== event.payload.href.host
     })
-  return _.chain(groupFn(foreign))
+  var uniqueForeign = foreign
+    .reduce(function (acc, event) {
+      function unknownSession (knownEvent) {
+        return knownEvent.payload.sessionId !== event.payload.sessionId
+      }
+      if (_.every(acc, unknownSession)) {
+        acc.push(event)
+      }
+      return acc
+    }, [])
+
+  var sessions = _.chain(groupFn(uniqueForeign))
     .countBy(_.identity)
     .pairs()
     .map(function (pair) {
@@ -108,6 +119,29 @@ function _referrers (events, groupFn) {
     })
     .sortBy('count')
     .reverse()
+    .value()
+
+  var pages = _.chain(groupFn(foreign))
+    .countBy(_.identity)
+    .pairs()
+    .map(function (pair) {
+      return { key: pair[0], count: pair[1] }
+    })
+    .sortBy('count')
+    .reverse()
+    .value()
+
+  return _.chain(sessions)
+    .zip(pages)
+    .map(function (pair) {
+      return {
+        key: pair[0].key,
+        count: [
+          pair[0].count,
+          pair[1].count / pair[0].count
+        ]
+      }
+    })
     .value()
 }
 

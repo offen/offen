@@ -51,7 +51,7 @@ function formatCount (count) {
   if (count > 1000) {
     return formatNumber(count / 1000) + __(' k')
   }
-  return count
+  return Math.floor(count)
 }
 
 module.exports.formatNumber = formatNumber
