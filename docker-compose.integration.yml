@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  integration:
+    image: cypress/included:4.5.0
+    entrypoint: []
+    working_dir: /offen/integration
+    network_mode: host
+    volumes:
+      - .:/offen
+      - integrationdeps:/offen/integration/node_modules
+
+volumes:
+  integrationdeps:
