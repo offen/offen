@@ -6,6 +6,9 @@ services:
     entrypoint: []
     working_dir: /offen/integration
     network_mode: host
+    environment:
+      CYPRESS_OPERATOR_USERNAME: develop@offen.dev
+      CYPRESS_OPERATOR_PASSWORD: develop
     volumes:
       - .:/offen
       - integrationdeps:/offen/integration/node_modules

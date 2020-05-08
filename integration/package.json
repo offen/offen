@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "posttest": "standard",
-    "test": "cypress run"
+    "test": "npm run test:chrome && npm run test:firefox",
+    "test:chrome": "cypress run --browser chrome",
+    "test:firefox": "cypress run --browser firefox"
   },
   "dependencies": {},
   "devDependencies": {
