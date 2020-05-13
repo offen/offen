@@ -216,6 +216,7 @@ function hostStylesVisible (selector, isCollapsed) {
     border-radius: 3px;
     background-color: #FFFDF4;
     box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.50);
+    z-index: 2147483647;
   }
   @media all and (max-width: 480px) {
     ${selector} {
