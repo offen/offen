@@ -134,7 +134,10 @@ func cmdDemo(subcommand string, flags []string) {
 			}
 
 			for s := 0; s < randomInRange(1, 4); s++ {
-				evts := newFakeSession(randomInRange(1, 12))
+				evts := newFakeSession(
+					fmt.Sprintf("http://localhost:%d", a.config.Server.Port),
+					randomInRange(1, 12),
+				)
 				for _, evt := range evts {
 					b, bErr := json.Marshal(evt)
 					if bErr != nil {
@@ -185,7 +188,7 @@ func cmdDemo(subcommand string, flags []string) {
 	}()
 	a.logger.Infof("You can now start your Offen demo by visting")
 	a.logger.Infof("")
-	a.logger.Infof("--> http://localhost:%d/demo/ <--", a.config.Server.Port)
+	a.logger.Infof("--> http://localhost:%d/intro/ <--", a.config.Server.Port)
 	a.logger.Infof("")
 	a.logger.Infof("in your browser.")
 
@@ -258,11 +261,12 @@ type fakeEvent struct {
 
 var pages = []string{
 	"/",
-	"/about",
-	"/blog",
-	"/imprint",
-	"/landing-page",
-	"/contact",
+	"/about/",
+	"/blog/",
+	"/imprint/",
+	"/landing-page/",
+	"/intro/",
+	"/contact/",
 }
 
 func randomPage() string {
@@ -280,7 +284,7 @@ func randomReferrer() string {
 	return referrers[randomInRange(0, len(referrers)-1)]
 }
 
-func newFakeSession(length int) []*fakeEvent {
+func newFakeSession(root string, length int) []*fakeEvent {
 	var result []*fakeEvent
 	sessionID, _ := uuid.NewV4()
 	timestamp := time.Now().Add(-time.Duration(randomInRange(0, int(config.EventRetention))))
@@ -293,7 +297,7 @@ func newFakeSession(length int) []*fakeEvent {
 		}
 		result = append(result, &fakeEvent{
 			Type:      "PAGEVIEW",
-			Href:      fmt.Sprintf("%s%s", "https://demo.offen.dev", randomPage()),
+			Href:      fmt.Sprintf("%s%s", root, randomPage()),
 			Title:     "Page Title",
 			Referrer:  referrer,
 			Pageload:  randomInRange(400, 1200),

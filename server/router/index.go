@@ -11,8 +11,8 @@ import (
 )
 
 func (rt *router) getIndex(c *gin.Context) {
-	if rt.config.App.DemoAccount != "" && strings.HasPrefix(c.Request.URL.Path, "/demo") {
-		c.HTML(http.StatusOK, "demo", map[string]interface{}{
+	if rt.config.App.DemoAccount != "" && strings.HasPrefix(c.Request.URL.Path, "/intro") {
+		c.HTML(http.StatusOK, "intro", map[string]interface{}{
 			"demoAccount": rt.config.App.DemoAccount,
 			"lang":        rt.config.App.Locale,
 		})
