@@ -27,6 +27,7 @@ type Config struct {
 		SingleNode   bool     `default:"true"`
 		Locale       Locale   `default:"en"`
 		RootAccount  string
+		DemoAccount  string `ignored:"true"`
 		DeployTarget DeployTarget
 	}
 	Secrets struct {
