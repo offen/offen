@@ -78,6 +78,7 @@ func cmdDemo(subcommand string, flags []string) {
 	if err != nil {
 		a.logger.WithError(err).Fatal("Unable to create random account identifier")
 	}
+	a.config.App.DemoAccount = accountID.String()
 
 	gormDB, err := gorm.Open(
 		a.config.Database.Dialect.String(),
@@ -182,10 +183,11 @@ func cmdDemo(subcommand string, flags []string) {
 			a.logger.WithError(err).Fatal("Error binding server to network")
 		}
 	}()
-	a.logger.Infof("You can now access your Offen demo at http://localhost:%d/login/", a.config.Server.Port)
-	a.logger.Info(`Use the username "demo@offen.dev" and password "demo" to log in.`)
-	a.logger.Info("Data is stored temporarily only for this demo.")
-	a.logger.Info("Refer to the documentation on how to connect a persistent database.")
+	a.logger.Infof("You can now start your Offen demo by visting")
+	a.logger.Infof("")
+	a.logger.Infof("--> http://localhost:%d/demo/ <--", a.config.Server.Port)
+	a.logger.Infof("")
+	a.logger.Infof("in your browser.")
 
 	quit := make(chan os.Signal)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
