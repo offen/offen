@@ -1,6 +1,6 @@
-offen is a free and open source analytics software for websites and
+Offen is a free and open source analytics software for websites and
 web applications that allows for respectful handling of data.
 
-Find out more about why we are building offen at https://www.offen.dev.
+Find out more about why we are building Offen at https://www.offen.dev.
 
 All source code is available at https://github.com/offen/offen.
