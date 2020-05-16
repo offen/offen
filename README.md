@@ -1,5 +1,5 @@
 <a href="https://offen.dev/">
-    <img src="https://github.com/offen/press-kit/blob/master/offen-material/gfx-GitHub-Offen-logo.svg" alt="Offen logo" title="Offen" width="150px"/>
+    <img src="https://offen.github.io/press-kit/offen-material/gfx-GitHub-Offen-logo.svg" alt="Offen logo" title="Offen" width="150px"/>
 </a>
 
 # Transparent web analytics
@@ -45,12 +45,12 @@ __Benefits for your users__
 __What you see__  
 Data of all pages where your Offen installation is active. For example:
 
-![Example A](https://github.com/offen/press-kit/blob/master/offen-material/gfx-GitHub-Example-A.svg) 
+![Example A](https://offen.github.io/press-kit/offen-material/gfx-GitHub-Example-A.svg) 
 
 __What your users see__  
 Data of all pages a user has visited where your Offen installation is active. For example:
 
-![Example B](https://github.com/offen/press-kit/blob/master/offen-material/gfx-GitHub-Example-B.svg)
+![Example B](https://offen.github.io/press-kit/offen-material/gfx-GitHub-Example-B.svg)
 
 __More features__
 - All your accounts can be shared within your team.  
@@ -61,7 +61,7 @@ __More features__
 ## Essential metrics
 All important statistics that help you to improve your service.  
 Collected without violating the privacy of your users.  
-![Essential metrics](https://github.com/offen/press-kit/blob/master/offen-material/gfx-GitHub-Metrics.svg)
+![Essential metrics](https://offen.github.io/press-kit/offen-material/gfx-GitHub-Metrics.svg)
 
 ## Objectives
 __Privacy friendly__  
