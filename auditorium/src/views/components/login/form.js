@@ -30,13 +30,14 @@ const Form = forwardRef((props, ref) => {
       <h4 class='f4 normal mt0 mb3'>
         {__('Log in as operator')}
       </h4>
-      <form class='mw6 center' onsubmit={handleSubmit}>
+      <form data-testid='login/form' class='mw6 center' onsubmit={handleSubmit}>
         <LabeledInput
           type='email'
           name='username'
           ref={ref}
           required
           disabled={isDisabled}
+          data-testid='login/username-input'
         >
           {__('Email address')}
         </LabeledInput>
@@ -45,6 +46,7 @@ const Form = forwardRef((props, ref) => {
           name='password'
           required
           disabled={isDisabled}
+          data-testid='login/password-input'
         >
           {__('Password')}
         </LabeledInput>
