@@ -61,6 +61,7 @@
 <html lang="{{ .lang }}" dir="ltr">
 <head>
   <meta charset="utf-8">
+    <title>An intro to Offen</title>
     {{ template "meta" . }}
     {{ with .demoAccount }}
       <script src="/script.js" data-account-id="{{ . }}"></script>
@@ -111,7 +112,15 @@
       color: #000;
       font-style: normal;
     }
-    button {
+    a:link,
+    a:visited,
+    a:hover,
+    a:active {
+      color:#777;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    q[data-role="button"] {
       background-color: #777;
       display: inline-block;
       cursor: pointer;
@@ -121,14 +130,6 @@
       font-weight: bold;
       text-decoration: none;
       border-width: 0;
-    }
-    a:link,
-    a:visited,
-    a:hover,
-    a:active {
-      color:#777;
-      font-weight: bold;
-      text-decoration: none;
     }
     h3 a:link,
     h3 a:visited,
@@ -195,19 +196,19 @@
 <body>
   <div class="container">
     <div class="head">
-      <h1>You made it</h1>
+      <h1>You made it.</h1>
     </div>
     <div class="main">
       <div class="article">
-        <h2>Welcome to the Offen demo page</h2>
+        <h2>Welcome to your Offen demo</h2>
         <p>
-          It is intended to give you an impression of how things run in a production environment.
+          This page is intended to give you some guidance on what you can do now that you have your Offen demo up and running.
         </p>
         <p>
-          For this demo a temporary set of usage data was generated that you can now explore. Go ahead and take a look at all offered metrics and review the backend functionality.
+          For this demo a random and temporary set of usage data was generated that you can now explore. Go ahead and take a look at the offered metrics and review the backend functionality. Please not that this demo cannot send Emails, so you cannot invite other users or reset your password in this context.
         </p>
         <p>
-          Log in to the Auditorium using the following credentials.
+          Log in using the following credentials:
         </p>
         <hr>
         <p>
@@ -217,23 +218,23 @@
           Password: <em>demo</em>
         </p>
         <hr>
-        <button href="http://localhost:9876/login/" rel="noopener" target="_blank">
+        <a data-role="button" href="/login/" rel="noopener" target="_blank">
           Log in
-        </button>
+        </a>
       </div>
       <div class="article">
         <h2>About the banner on this page</h2>
         <p>
-          Offen only collects data after opt in. This is done by clicking <em>Yes please</em> on the bottom banner entiteld <em>Continue with transparent analytics</em>.
+          Offen collects data only after opt in. Consent is granted by clicking <em>Yes please</em> on the bottom banner you should be seeing right now titled <em>Continue with transparent analytics</em>.
         </p>
         <p>
-          If you do opt in your real usage data is added to the generated set of demo data.
+          If you do opt in, the usage data you generated will be added to the generated set of demo data, so go ahead and see how your usage reflects with the statistics.
         </p>
         <p>
-          Once you are opted in, you can opt out again in the <a href="http://localhost:9876/auditorium/" rel="noopener" target="_blank">Auditorium for users.</a>
+          In case you have opted in, you can opt out again in the <a href="/auditorium/" rel="noopener" target="_blank">Auditorium for users.</a>
         </p>
         <p>
-          When you are opted out, you can simply delete all cookies for this page to display the banner again.
+          When you are opted out, delete all cookies for this page to display the banner again.
         </p>
       </div>
       <div class="article">
@@ -242,7 +243,7 @@
           The unique feature of Offen is that your users can see and manage their own data.
         </p>
         <p>
-          Put yourself in the perspective of your users. First opt in on the banner. Then head to the <a href="http://localhost:9876/auditorium/" rel="noopener" target="_blank">Auditorium for users.</a>
+          Put yourself in the perspective of your users. Use the banner to opt in, then head to the <a href="/auditorium/" rel="noopener" target="_blank">Auditorium for users.</a>
         </p>
       </div>
     </div>
@@ -250,7 +251,7 @@
       <div class="article">
         <h2>Take things further</h2>
         <p>
-          Want to test drive Offen on production level? You find all necessary material to install and self host on our designated <a href="https://www.offen.dev/get-started/" rel="noopener" target="_blank">Get started page.</a>
+          Want to test drive Offen in production? You find all necessary material to install and self host on our designated <a href="https://www.offen.dev/get-started/" rel="noopener" target="_blank">Get started page.</a>
         </p>
       </div>
       <div class="article">
