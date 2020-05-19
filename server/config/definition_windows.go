@@ -10,7 +10,7 @@ package config
 // source values from the application environment at runtime.
 type Config struct {
 	Server struct {
-		Port int `default:"8080"`
+		Port             int  `default:"8080"`
 		ReverseProxy     bool `default:"false"`
 		SSLCertificate   EnvString
 		SSLKey           EnvString
@@ -22,11 +22,12 @@ type Config struct {
 		ConnectionString EnvString `default:"%Temp%\offen.db"`
 	}
 	App struct {
-		Development bool     `default:"false"`
-		LogLevel    LogLevel `default:"info"`
-		SingleNode  bool     `default:"true"`
-		Locale      Locale   `default:"en"`
-		RootAccount string
+		Development  bool     `default:"false"`
+		LogLevel     LogLevel `default:"info"`
+		SingleNode   bool     `default:"true"`
+		Locale       Locale   `default:"en"`
+		RootAccount  string
+		DemoAccount  string `ignored:"true"`
 		DeployTarget DeployTarget
 	}
 	Secrets struct {

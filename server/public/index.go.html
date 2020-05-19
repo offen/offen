@@ -3,12 +3,8 @@
 <html lang="{{ .lang }}" dir="ltr">
   <head>
     <title>Offen</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="/tachyons.min.css">
-    <link rel="stylesheet" type="text/css" href="/fonts.css">
-    <link rel="preload" href="/fonts/roboto-v20-latin-regular.woff2" as="font">
-    <link rel="preload" href="/fonts/roboto-v20-latin-700.woff2" as="font">
+    {{ template "meta" . }}
     {{ with .rootAccount }}
       <script src="/script.js" data-account-id="{{ . }}"></script>
     {{ end }}
@@ -59,4 +55,107 @@
     </noscript>
   </body>
 </html>
+{{ end }}
+
+{{ define "intro" }}
+<!DOCTYPE html>
+<html lang="{{ .lang }}" dir="ltr">
+<head>
+  <meta charset="utf-8">
+    <title>An intro to Offen</title>
+    {{ template "meta" . }}
+    <link rel="stylesheet" type="text/css" href="/intro.css">
+    {{ with .demoAccount }}
+      <script src="/script.js" data-account-id="{{ . }}"></script>
+    {{ end }}
+</head>
+<body>
+  <div class="container">
+    <div class="head">
+      <h1>You made it.</h1>
+    </div>
+    <div class="main">
+      <div class="article">
+        <h2>Welcome to your Offen demo</h2>
+        <p>
+          This page is intended to give you some guidance on what you can do, now that you have your Offen demo up and running.
+        </p>
+        <p>
+          For this demo a random and temporary set of usage data was generated that you can now explore. Go ahead and take a look at the displayed metrics and review the backend functionality. Please note that this demo cannot send emails, so you won't be able invite other users or reset your password in this context.
+        </p>
+        <p>
+          Log in to the Auditorium using the following credentials:
+        </p>
+        <hr>
+        <p>
+          Username: <em>demo@offen.dev</em>
+        </p>
+        <p>
+          Password: <em>demo</em>
+        </p>
+        <hr>
+        <a data-role="button" href="/login/" rel="noopener" target="_blank">
+          Log in
+        </a>
+      </div>
+      <div class="article">
+        <h2>About the banner on this page</h2>
+        <p>
+          Offen collects data only after opt in. To do so, click <em>Yes please</em> on the bottom banner you should be seeing right now titled <em>Continue with transparent analytics</em>.
+        </p>
+        <p>
+          If you do opt in, the usage data you generated will be added to the generated set of demo data, so go ahead and see how your usage reflects with the statistics.
+        </p>
+        <p>
+          In case you have opted in, you can opt out again in the <a href="/auditorium/" rel="noopener" target="_blank">Auditorium for users.</a>
+        </p>
+        <p>
+          When you are opted out, delete all cookies for this page to display the banner again.
+        </p>
+      </div>
+      <div class="article">
+        <h2>What your users see</h2>
+        <p>
+          The unique feature of Offen is that your users can see and manage their own data.
+        </p>
+        <p>
+          Put yourself in the perspective of your users. Use the banner to opt in, then head to the <a href="/auditorium/" rel="noopener" target="_blank">Auditorium for users.</a>
+        </p>
+      </div>
+    </div>
+    <div class="side">
+      <div class="article">
+        <h2>Take things further</h2>
+        <p>
+          Want to test drive Offen in production? You find all necessary material to install and self host on our designated <a href="https://www.offen.dev/get-started/" rel="noopener" target="_blank">Get started page.</a>
+        </p>
+      </div>
+      <div class="article">
+        <h2>Learn more</h2>
+        <p>
+          Want to know more about how to install and run Offen? Like to contribute as a developer? Have a look at our detailed documentation. <a href="https://docs.offen.dev/" rel="noopener" target="_blank">Read the docs.</a>
+        </p>
+      </div>
+      <div class="article">
+        <h2>Feedback welcome</h2>
+        <p>
+          No matter if you had difficulties with the installation or want to share your enthusiasm: <a href="mailto:hioffen@posteo.de" rel="noopener">Get in touch.</a>
+        </p>
+      </div>
+    </div>
+    <div class="foot">
+      <h3><a href="https://www.offen.dev/" rel="noopener" target="_blank">Offen</a></h3>
+      <h3>Transparent web analytics</h3>
+      <h3>for everyone</h3>
+    </div>
+</body>
+</html>
+{{ end }}
+
+{{ define "meta" }}
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="/fonts.css">
+  <link rel="preload" href="/fonts/roboto-v20-latin-regular.woff2" as="font">
+  <link rel="preload" href="/fonts/roboto-v20-latin-700.woff2" as="font">
 {{ end }}
