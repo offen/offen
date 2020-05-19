@@ -59,16 +59,219 @@
 {{ define "intro" }}
 <!DOCTYPE html>
 <html lang="{{ .lang }}" dir="ltr">
-  <head>
-    <title>Offen</title>
-    {{ template "meta" . }}
-    {{ with .demoAccount }}
-      <script src="/script.js" data-account-id="{{ . }}"></script>
-    {{ end }}
-  </head>
-  <body class="bg-washed-yellow">
-    <h1>{{ __ "Explaining the demo" }}</h1>
-  </body>
+<head>
+  <meta charset="utf-8">
+  <title>Demo page | Offen</title>
+  <meta name="description" content="###">
+  <meta name="author" content="###">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    html {
+    box-sizing: border-box;
+    font-size: 16px;
+    font-family: Roboto, Helvetica, Arial, Sans-Serif;
+    }
+    *, *:before, *:after {
+      box-sizing: inherit;
+    }
+    body {
+      line-height: 1.4;
+    }
+    body, h1, h2, h3, p {
+      margin: 0;
+      padding: 0;
+      font-weight: normal;
+    }
+    h1 {
+      font-size: 40px;
+      margin-bottom: 1.8rem;
+    }
+    h2 {
+      font-size: 20px;
+      margin-bottom: 1rem;
+    }
+    h3 {
+      font-size: 14px;
+      color: #aaa;
+    }
+    img {
+      max-width: 100%;
+      height: auto;
+      padding-bottom: 1rem;
+    }
+    p {
+      color: #777;
+      padding-bottom: 0.5rem;
+    }
+    hr {
+      border: none;
+      padding-bottom: 0.2rem;
+    }
+    em {
+      color: #000;
+      font-style: normal;
+    }
+    button {
+      background-color: #777;
+      display: inline-block;
+      cursor: pointer;
+      color:#fff;
+      padding: 0.8rem 2.2rem;
+      font-size: 16px;
+      font-weight: bold;
+      text-decoration: none;
+      border-width: 0;
+    }
+    a:link,
+    a:visited,
+    a:hover,
+    a:active {
+      color:#777;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    h3 a:link,
+    h3 a:visited,
+    h3 a:hover,
+    h3 a:active {
+      color:#aaa;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      max-width: 60em;
+      margin-right: auto;
+      margin-left: auto;
+    }
+    .head,
+    .foot {
+      width: 60em;
+      padding: 1.8rem;
+    }
+    .foot {
+      padding-bottom: 14rem;
+    }
+    .main {
+      max-width: 40em;
+      padding: 1.8rem;
+      padding-right: 1rem;
+    }
+    .side {
+      max-width: 20em;
+      padding: 1.8rem;
+      padding-left: 1rem;
+    }
+    .article {
+      margin-bottom: 4rem;
+    }
+    @media only screen and (max-width: 60em) {
+      .main,
+      .side {
+        max-width: 100%;
+        padding: 1.8rem;
+        padding-bottom: 0;
+      }
+      .side {
+        padding-top: 0;
+      }
+      .foot {
+        margin-top: 1.8rem;
+      }
+      .side .article:first-of-type {
+        padding-top: 1.8rem;
+        border-top:1px solid #ccc;
+      }
+    }
+    .head {
+      border-bottom:1px solid #ccc;
+    }
+    .foot {
+      border-top:1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="head">
+      <h1>You made it</h1>
+    </div>
+    <div class="main">
+      <div class="article">
+        <h2>Welcome to the Offen demo page</h2>
+        <p>
+          It is intended to give you an impression of how things run in a production environment.
+        </p>
+        <p>
+          For this demo a temporary set of usage data was generated that you can now explore. Go ahead and take a look at all offered metrics and review the backend functionality.
+        </p>
+        <p>
+          Log in to the Auditorium using the following credentials.
+        </p>
+        <hr>
+        <p>
+          Username: <em>demo@offen.dev</em>
+        </p>
+        <p>
+          Password: <em>demo</em>
+        </p>
+        <hr>
+        <button href="http://localhost:9876/login/" rel="noopener" target="_blank">
+          Log in
+        </button>
+      </div>
+      <div class="article">
+        <h2>About the banner on this page</h2>
+        <p>
+          Offen only collects data after opt in. This is done by clicking <em>Yes please</em> on the bottom banner entiteld <em>Continue with transparent analytics</em>.
+        </p>
+        <p>
+          If you do opt in your real usage data is added to the generated set of demo data.
+        </p>
+        <p>
+          Once you are opted in, you can opt out again in the <a href="http://localhost:9876/auditorium/" rel="noopener" target="_blank">Auditorium for users.</a>
+        </p>
+        <p>
+          When you are opted out, you can simply delete all cookies for this page to display the banner again.
+        </p>
+      </div>
+      <div class="article">
+        <h2>What your users see</h2>
+        <p>
+          The unique feature of Offen is that your users can see and manage their own data.
+        </p>
+        <p>
+          Put yourself in the perspective of your users. First opt in on the banner. Then head to the <a href="http://localhost:9876/auditorium/" rel="noopener" target="_blank">Auditorium for users.</a>
+        </p>
+      </div>
+    </div>
+    <div class="side">
+      <div class="article">
+        <h2>Take things further</h2>
+        <p>
+          Want to test drive Offen on production level? You find all necessary material to install and self host on our designated <a href="https://www.offen.dev/get-started/" rel="noopener" target="_blank">Get started page.</a>
+        </p>
+      </div>
+      <div class="article">
+        <h2>Learn more</h2>
+        <p>
+          Want to know more about how to install and run Offen? Like to contribute as a developer? Have a look at our detailed documentation. <a href="https://docs.offen.dev/" rel="noopener" target="_blank">Read the docs.</a>
+        </p>
+      </div>
+      <div class="article">
+        <h2>Feedback welcome</h2>
+        <p>
+          No matter if you had difficulties with the installation or want to share your enthusiasm. <a href="mailto:hioffen@posteo.de" rel="noopener">Get in touch.</a>
+        </p>
+      </div>
+    </div>
+    <div class="foot">
+      <h3><a href="https://www.offen.dev/" rel="noopener" target="_blank">Offen</a></h3>
+      <h3>Transparent web analytics</h3>
+      <h3>for everyone</h3>
+    </div>
+</body>
 </html>
 {{ end }}
 
