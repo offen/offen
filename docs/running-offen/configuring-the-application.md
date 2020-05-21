@@ -62,7 +62,7 @@ The `SERVER` namespace collects settings that affect the behavior of the HTTP se
 ### OFFEN_SERVER_PORT
 {: .no_toc }
 
-Defaults to `8080`.
+Defaults to `3000`.
 
 The port the application listens on.
 
