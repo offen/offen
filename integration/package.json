@@ -7,12 +7,22 @@
     "test": "npm run test:chrome",
     "test:chrome": "cypress run --browser chrome"
   },
-  "dependencies": {},
+  "dependencies": {
+    "cypress-audit": "^0.2.0"
+  },
   "devDependencies": {
     "standard": "^14.3.3"
   },
   "standard": {
-    "env": ["browser", "mocha"],
-    "globals": ["cy", "Cypress", "expect", "assert"]
+    "env": [
+      "browser",
+      "mocha"
+    ],
+    "globals": [
+      "cy",
+      "Cypress",
+      "expect",
+      "assert"
+    ]
   }
 }

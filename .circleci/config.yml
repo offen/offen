@@ -60,6 +60,8 @@ jobs:
           CYPRESS_BASE_URL: http://localhost:3000
           CYPRESS_OPERATOR_USERNAME: circle@offen.dev
           CYPRESS_OPERATOR_PASSWORD: secret
+          CYPRESS_ACCOUNT_ID: 9b63c4d8-65c0-438c-9d30-cc4b01173393
+          CYPRESS_RUN_LIGHTHOUSE_AUDIT: 1
           OFFEN_SERVER_PORT: 3000
           OFFEN_DATABASE_DIALECT: postgres
           OFFEN_DATABASE_CONNECTIONSTRING: postgres://circle:test@localhost:5432/circle_test?sslmode=disable
@@ -90,7 +92,7 @@ jobs:
           name: Setup application
           command: |
             touch offen.env
-            ./offen setup -email $CYPRESS_OPERATOR_USERNAME -name circle -password $CYPRESS_OPERATOR_PASSWORD -populate
+            ./offen setup -email $CYPRESS_OPERATOR_USERNAME -name circle -password $CYPRESS_OPERATOR_PASSWORD -populate -forceid $CYPRESS_ACCOUNT_ID
       - run:
           name: Serve application
           command:  ./offen

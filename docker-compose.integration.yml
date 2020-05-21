@@ -9,6 +9,7 @@ services:
     environment:
       CYPRESS_OPERATOR_USERNAME: develop@offen.dev
       CYPRESS_OPERATOR_PASSWORD: develop
+      PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
     volumes:
       - .:/offen
       - integrationdeps:/offen/integration/node_modules

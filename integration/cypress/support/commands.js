@@ -24,6 +24,8 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
+require('cypress-audit/commands')
+
 Cypress.Commands.add('login', () => {
   return cy
     .request({

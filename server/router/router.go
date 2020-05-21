@@ -225,20 +225,17 @@ func New(opts ...Config) http.Handler {
 	}
 
 	fileServer := http.FileServer(rt.fs)
-	if !rt.config.Server.ReverseProxy {
-		fileServer = gziphandler.GzipHandler(fileServer)
-	}
-
 	app.Use(staticMiddleware(fileServer, root))
 
 	if rt.config.Server.ReverseProxy {
 		return app
 	}
 
+	withGzip := gziphandler.GzipHandler(app)
 	// HTTP logging is only added when the reverse proxy setting is not
 	// enabled
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		metrics := httpsnoop.CaptureMetrics(app, w, r)
+		metrics := httpsnoop.CaptureMetrics(withGzip, w, r)
 		logLevel := logrus.InfoLevel
 		if metrics.Code >= http.StatusInternalServerError {
 			logLevel = logrus.ErrorLevel
