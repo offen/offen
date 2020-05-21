@@ -30,10 +30,8 @@ type Config struct {
 		DemoAccount  string `ignored:"true"`
 		DeployTarget DeployTarget
 	}
-	Secrets struct {
-		CookieExchange Bytes
-	}
-	SMTP struct {
+	Secret Bytes
+	SMTP   struct {
 		User     string
 		Password string
 		Host     string

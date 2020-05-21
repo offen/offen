@@ -150,7 +150,7 @@ func New(populateMissing bool, override string) (*Config, error) {
 		}
 		update := map[string]string{}
 		for _, val := range []autopopulatedValue{
-			{"OFFEN_SECRETS_COOKIEEXCHANGE", c.Secrets.CookieExchange.IsZero},
+			{"OFFEN_SECRET", c.Secret.IsZero},
 		} {
 			if !val.isEmpty() {
 				fmt.Println("val not empty, skipping")
@@ -174,12 +174,12 @@ func New(populateMissing bool, override string) (*Config, error) {
 		return result, err
 	}
 
-	if c.Secrets.CookieExchange.IsZero() {
+	if c.Secret.IsZero() {
 		cookieSecret, cookieSecretErr := keys.GenerateRandomBytes(keys.DefaultSecretLength)
 		if cookieSecretErr != nil {
 			return &c, fmt.Errorf("config: error creating cookie one-off secret: %w", cookieSecretErr)
 		}
-		c.Secrets.CookieExchange = Bytes(cookieSecret)
+		c.Secret = Bytes(cookieSecret)
 	}
 
 	// some deploy targets have custom overrides for creating the
