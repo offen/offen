@@ -29,7 +29,7 @@ __Self hosted__
 Comply with GDPR guidelines. Don't share data with third parties. Your users have full access to their data.
 
 __Fair & secure__  
-Pay respect to your website visitors. Gain valuable insights at the same time. All data is encrypted end-to-end.
+Opt in only. Users must actively give their consent to data collection. All data is encrypted end-to-end.
 
 ## How it works
 __Your job__
