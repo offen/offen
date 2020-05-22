@@ -160,14 +160,14 @@ The From address used when sending transactional email.
 
 ### Secrets
 
-The `SECRETS` namespace collects secrets used for signing cookies and tokens for accepting invitations and resetting passwords.
+`OFFEN_SECRET` is a single value.
 
-### OFFEN_SECRETS_COOKIEEXCHANGE
+### OFFEN_SECRET
 {: .no_toc }
 
 No default value.
 
-A Base64 encoded secret that is used for signing cookies. Ideally, it is of 16 bytes length. __If this is not set, a random value will be created at application startup__. This would mean that __an application restart would invalidate all existing sessions and all pending invitation/password reset emails__. If you do not want this behavior, populate this value, which is what we recommend.
+A Base64 encoded secret that is used for signing cookies and validating URL tokens. Ideally, it is of 16 bytes length. __If this is not set, a random value will be created at application startup__. This would mean that __an application restart would invalidate all existing sessions and all pending invitation/password reset emails__. If you do not want this behavior, populate this value, which is what we recommend.
 
 ---
 
