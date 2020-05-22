@@ -53,6 +53,31 @@ jobs:
       - test_node_app:
           app: packages
 
+  build:
+    docker:
+      - image: circleci/python:3.7
+    working_directory: ~/offen
+    environment:
+      DOCKER_LOGIN: offen
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Build binaries
+          command: |
+            if [ -z "$CIRCLE_TAG" ] && [ "${CIRCLE_BRANCH}" != "development" ] && [ "${CIRCLE_BRANCH}" != "master" ]; then
+              make build
+            else
+              TARGETS=linux/amd64,windows/amd64 make build
+              # Darwin builds cannot be statically linked right now
+              # so we override the default LDFLAGS value
+              TARGETS=darwin/amd64 LDFLAGS='' make build
+            fi
+      - persist_to_workspace:
+          root: ~/offen
+          paths:
+            - bin/*
+
   integration:
     docker:
       - image: circleci/node:14-browsers
@@ -72,41 +97,24 @@ jobs:
     working_directory: ~/offen
     steps:
       - checkout
-      - setup_remote_docker
-      - run:
-          name: Build binary
-          command: |
-            make build
-            cp ./bin/offen-linux-amd64 ./offen
-      - run:
-          name: Waiting for Postgres to be ready
-          command: |
-            for i in `seq 1 10`;
-            do
-              nc -z localhost 5432 && echo Success && exit 0
-              echo -n .
-              sleep 1
-            done
-            echo Failed waiting for Postgres && exit 1
+      - attach_workspace:
+          at: ~/offen
+      - wait_for:
+          service: Postgress
+          port: 5432
       - run:
           name: Setup application
           command: |
+            cp ./bin/offen-linux-amd64 ./offen
             touch offen.env
             ./offen setup -email $CYPRESS_OPERATOR_USERNAME -name circle -password $CYPRESS_OPERATOR_PASSWORD -populate -forceid $CYPRESS_ACCOUNT_ID
       - run:
           name: Serve application
           command:  ./offen
           background: true
-      - run:
-          name: Wait for server to be ready
-          command: |
-            for i in `seq 1 10`;
-            do
-              nc -z localhost 3000 && echo Success && exit 0
-              echo -n .
-              sleep 1
-            done
-            echo Failed waiting for server && exit 1
+      - wait_for:
+          service: Offen
+          port: 3000
       - restore_cache:
           key: offen-integration-cy4.5.0-{{ checksum "./integration/package.json" }}
       - run:
@@ -131,7 +139,7 @@ jobs:
       - store_artifacts:
           path: ~/offen/integration/cypress/screenshots
 
-  build:
+  release:
     docker:
       - image: circleci/python:3.7
     working_directory: ~/offen
@@ -139,8 +147,9 @@ jobs:
       DOCKER_LOGIN: offen
     steps:
       - checkout
-      - setup_remote_docker
       - aws-cli/install
+      - attach_workspace:
+          at: ~/offen
       - run:
           name: Set build environment
           command: |
@@ -156,12 +165,8 @@ jobs:
               echo 'export DOCKER_IMAGE_TAG=$CIRCLE_TAG' >> $BASH_ENV
             fi
       - run:
-          name: Build application Docker image and binary
+          name: Build Docker image
           command: |
-            TARGETS=linux/amd64,windows/amd64 make build
-            # Darwin builds cannot be statically linked right now
-            # so we override the default LDFLAGS value
-            TARGETS=darwin/amd64 LDFLAGS='' make build
             make build-docker
       - run:
           name: Download and import signing key
@@ -211,9 +216,13 @@ workflows:
           <<: *all_tags_filter
       - packages:
           <<: *all_tags_filter
+      - build:
+          <<: *all_tags_filter
       - integration:
           <<: *all_tags_filter
-      - build:
+          requires:
+            - build
+      - release:
           requires:
             - server
             - vault
@@ -221,6 +230,7 @@ workflows:
             - auditorium
             - packages
             - integration
+            - build
           filters:
             tags:
               only: /^v.*/ # tagged release from master branch
@@ -230,6 +240,25 @@ workflows:
                 - master
 
 commands:
+  wait_for:
+    description: Wait for a service on a port to be ready
+    parameters:
+      service:
+        type: string
+        default: service
+      port:
+        type: integer
+    steps:
+      - run:
+          name: Waiting for << parameters.service >> to be ready
+          command: |
+            for i in `seq 1 10`;
+            do
+              nc -z localhost << parameters.port >> && echo Success && exit 0
+              echo -n .
+              sleep 1
+            done
+            echo Failed waiting for << parameters.service >> && exit 1
   test_node_app:
     description: Run unit tests for a Node.js based subapp
     parameters:
