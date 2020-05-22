@@ -100,7 +100,7 @@ jobs:
       - attach_workspace:
           at: ~/offen
       - wait_for:
-          service: Postgress
+          service: Postgres
           port: 5432
       - run:
           name: Setup application
