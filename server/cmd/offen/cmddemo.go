@@ -61,7 +61,7 @@ func cmdDemo(subcommand string, flags []string) {
 		if runtime.GOOS == "windows" {
 			cfg.Database.ConnectionString = config.EnvString(fmt.Sprintf("%%Temp%%\\offen-%s.db", dbID.String()))
 		}
-		cfg.Secrets.CookieExchange = mustSecret(16)
+		cfg.Secret = mustSecret(16)
 		a.config = cfg
 	}
 

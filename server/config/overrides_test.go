@@ -11,9 +11,9 @@ import (
 
 func TestApplyHerokuSpecificOverrides(t *testing.T) {
 	fixtures := map[string]string{
-		"DATABASE_URL":         "https://my.postgres:5432",
-		"PORT":                 "9999",
-		"HEROKU_COOKIE_SECRET": "abcdefghijk",
+		"DATABASE_URL": "https://my.postgres:5432",
+		"PORT":         "9999",
+		"APP_SECRET":   "abcdefghijk",
 	}
 	for key, value := range fixtures {
 		defer os.Setenv(key, os.Getenv(key))
@@ -23,7 +23,7 @@ func TestApplyHerokuSpecificOverrides(t *testing.T) {
 	c := &Config{}
 	c.Server.Port = 5555
 	c.Database.ConnectionString = "/tmp/db.sqlite"
-	c.Secrets.CookieExchange = []byte("123456789")
+	c.Secret = []byte("123456789")
 	c.Server.AutoTLS = []string{"www.offen.dev"}
 
 	if err := applyHerokuSpecificOverrides(c); err != nil {
@@ -38,8 +38,8 @@ func TestApplyHerokuSpecificOverrides(t *testing.T) {
 		t.Errorf("Unexpected port value %v", c.Server.Port)
 	}
 
-	if !bytes.Equal(c.Secrets.CookieExchange.Bytes(), []byte("abcdefghijk")) {
-		t.Errorf("Unexpected cookie secret %v", c.Secrets.CookieExchange.Bytes())
+	if !bytes.Equal(c.Secret.Bytes(), []byte("abcdefghijk")) {
+		t.Errorf("Unexpected cookie secret %v", c.Secret.Bytes())
 	}
 
 	if c.Server.AutoTLS[0] != "www.offen.dev" {

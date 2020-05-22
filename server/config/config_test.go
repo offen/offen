@@ -27,7 +27,7 @@ func TestNew(t *testing.T) {
 		t.Errorf("Unexpected AutoTLS config %v", c.Server.AutoTLS)
 	}
 
-	if c.Secrets.CookieExchange == nil {
-		t.Error("Expected cookie exchange secret to be populated")
+	if c.Secret == nil {
+		t.Error("Expected app secret to be populated")
 	}
 }

@@ -156,7 +156,7 @@ func New(opts ...Config) http.Handler {
 	}
 
 	rt.sanitizer = bluemonday.StrictPolicy()
-	rt.cookieSigner = securecookie.New(rt.config.Secrets.CookieExchange.Bytes(), nil)
+	rt.cookieSigner = securecookie.New(rt.config.Secret.Bytes(), nil)
 
 	optin := optinMiddleware(optinKey, optinValue)
 	userCookie := userCookieMiddleware(cookieKey, contextKeyCookie)

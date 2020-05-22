@@ -10,9 +10,9 @@ import (
 )
 
 type herokuRuntime struct {
-	DatabaseURL        string `split_words:"true"`
-	Port               int
-	HerokuCookieSecret string `split_words:"true"`
+	DatabaseURL string `split_words:"true"`
+	Port        int
+	AppSecret   string `split_words:"true"`
 }
 
 func applyHerokuSpecificOverrides(c *Config) error {
@@ -26,8 +26,8 @@ func applyHerokuSpecificOverrides(c *Config) error {
 	if overrides.Port != 0 {
 		c.Server.Port = overrides.Port
 	}
-	if overrides.HerokuCookieSecret != "" {
-		c.Secrets.CookieExchange = []byte(overrides.HerokuCookieSecret)
+	if overrides.AppSecret != "" {
+		c.Secret = []byte(overrides.AppSecret)
 	}
 	return nil
 }
