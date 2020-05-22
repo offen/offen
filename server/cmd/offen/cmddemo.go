@@ -61,7 +61,7 @@ func cmdDemo(subcommand string, flags []string) {
 		if runtime.GOOS == "windows" {
 			cfg.Database.ConnectionString = config.EnvString(fmt.Sprintf("%%Temp%%\\offen-%s.db", dbID.String()))
 		}
-		cfg.Secrets.CookieExchange = mustSecret(16)
+		cfg.Secret = mustSecret(16)
 		a.config = cfg
 	}
 
@@ -78,6 +78,7 @@ func cmdDemo(subcommand string, flags []string) {
 	if err != nil {
 		a.logger.WithError(err).Fatal("Unable to create random account identifier")
 	}
+	a.config.App.DemoAccount = accountID.String()
 
 	gormDB, err := gorm.Open(
 		a.config.Database.Dialect.String(),
@@ -133,7 +134,10 @@ func cmdDemo(subcommand string, flags []string) {
 			}
 
 			for s := 0; s < randomInRange(1, 4); s++ {
-				evts := newFakeSession(randomInRange(1, 12))
+				evts := newFakeSession(
+					fmt.Sprintf("http://localhost:%d", a.config.Server.Port),
+					randomInRange(1, 12),
+				)
 				for _, evt := range evts {
 					b, bErr := json.Marshal(evt)
 					if bErr != nil {
@@ -156,11 +160,11 @@ func cmdDemo(subcommand string, flags []string) {
 	if gettextErr != nil {
 		a.logger.WithError(gettextErr).Fatal("Failed reading locale files, cannot continue")
 	}
-	tpl, tplErr := public.HTMLTemplate(gettext, public.RevWith(fs))
+	tpl, tplErr := fs.HTMLTemplate(gettext)
 	if tplErr != nil {
 		a.logger.WithError(tplErr).Fatal("Failed parsing template files, cannot continue")
 	}
-	emails, emailsErr := public.EmailTemplate(gettext)
+	emails, emailsErr := fs.EmailTemplate(gettext)
 	if emailsErr != nil {
 		a.logger.WithError(emailsErr).Fatal("Failed parsing template files, cannot continue")
 	}
@@ -182,10 +186,11 @@ func cmdDemo(subcommand string, flags []string) {
 			a.logger.WithError(err).Fatal("Error binding server to network")
 		}
 	}()
-	a.logger.Infof("You can now access your Offfen demo at http://localhost:%d/login/", a.config.Server.Port)
-	a.logger.Info(`Use the username "demo@offen.dev" and password "demo" to log in.`)
-	a.logger.Info("Data is stored temporarily only for this demo.")
-	a.logger.Info("Refer to the documentation on how to connect a persistent database.")
+	a.logger.Infof("You can now start your Offen demo by visting")
+	a.logger.Infof("")
+	a.logger.Infof("--> http://localhost:%d/intro/ <--", a.config.Server.Port)
+	a.logger.Infof("")
+	a.logger.Infof("in your browser.")
 
 	quit := make(chan os.Signal)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
@@ -256,11 +261,12 @@ type fakeEvent struct {
 
 var pages = []string{
 	"/",
-	"/about",
-	"/blog",
-	"/imprint",
-	"/landing-page",
-	"/contact",
+	"/about/",
+	"/blog/",
+	"/imprint/",
+	"/landing-page/",
+	"/intro/",
+	"/contact/",
 }
 
 func randomPage() string {
@@ -278,7 +284,7 @@ func randomReferrer() string {
 	return referrers[randomInRange(0, len(referrers)-1)]
 }
 
-func newFakeSession(length int) []*fakeEvent {
+func newFakeSession(root string, length int) []*fakeEvent {
 	var result []*fakeEvent
 	sessionID, _ := uuid.NewV4()
 	timestamp := time.Now().Add(-time.Duration(randomInRange(0, int(config.EventRetention))))
@@ -291,7 +297,7 @@ func newFakeSession(length int) []*fakeEvent {
 		}
 		result = append(result, &fakeEvent{
 			Type:      "PAGEVIEW",
-			Href:      fmt.Sprintf("%s%s", "https://demo.offen.dev", randomPage()),
+			Href:      fmt.Sprintf("%s%s", root, randomPage()),
 			Title:     "Page Title",
 			Referrer:  referrer,
 			Pageload:  randomInRange(400, 1200),

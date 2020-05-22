@@ -27,12 +27,11 @@ type Config struct {
 		SingleNode   bool     `default:"true"`
 		Locale       Locale   `default:"en"`
 		RootAccount  string
+		DemoAccount  string `ignored:"true"`
 		DeployTarget DeployTarget
 	}
-	Secrets struct {
-		CookieExchange Bytes
-	}
-	SMTP struct {
+	Secret Bytes
+	SMTP   struct {
 		User     string
 		Password string
 		Host     string

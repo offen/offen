@@ -22,9 +22,6 @@ migrate:
 secret:
 	@go run cmd/offen/*.go secret
 
-test-ci: setup
-	@go test ./... -cover -tags="integration"
-
 extract-strings:
 	@./extract-strings.sh
 

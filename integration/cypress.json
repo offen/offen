@@ -1,0 +1,12 @@
+{
+  "video": false,
+  "baseUrl": "http://localhost:8080",
+  "defaultCommandTimeout": 20000,
+  "lighthouse": {
+    "performance": 90,
+    "accessibility": 90,
+    "best-practices": 80,
+    "seo": 0,
+    "pwa": 0
+  }
+}

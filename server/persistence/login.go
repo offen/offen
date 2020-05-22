@@ -168,7 +168,7 @@ func (p *persistenceLayer) ResetPassword(emailAddress, password string, oneTimeK
 	if err != nil {
 		return fmt.Errorf("persistence: error creating transaction: %w", err)
 	}
-	for _, relationship := range accountUser.Relationships {
+	for index, relationship := range accountUser.Relationships {
 		keyEncryptionKey, decryptionErr := keys.DecryptWith(oneTimeKey, relationship.OneTimeEncryptedKeyEncryptionKey)
 		if decryptionErr != nil {
 			txn.Rollback()
@@ -179,11 +179,7 @@ func (p *persistenceLayer) ResetPassword(emailAddress, password string, oneTimeK
 			return fmt.Errorf("persistence: error adding password encrypted key to relationship: %w", err)
 		}
 		relationship.OneTimeEncryptedKeyEncryptionKey = ""
-
-		if err := txn.UpdateAccountUserRelationship(&relationship); err != nil {
-			txn.Rollback()
-			return fmt.Errorf("persistence: error updating keys on relationship: %w", err)
-		}
+		accountUser.Relationships[index] = relationship
 	}
 	passwordHash, hashErr := keys.HashString(password)
 	if hashErr != nil {

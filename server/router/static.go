@@ -18,6 +18,8 @@ var (
 	revisionedJSRe         = regexp.MustCompile("-[0-9a-z]{10}\\.js$")
 	webfontRe              = regexp.MustCompile("\\.(woff|woff2|ttf)$")
 	scriptRe               = regexp.MustCompile("script\\.js$")
+	stylesheetRe           = regexp.MustCompile("\\.css$")
+	assetRe                = regexp.MustCompile("\\.svg$")
 	defaultResponseHeaders = map[string]string{
 		"Referrer-Policy":        "origin-when-cross-origin",
 		"X-Content-Type-Options": "no-sniff",
@@ -52,7 +54,7 @@ func staticMiddleware(fileServer, fallback http.Handler) gin.HandlerFunc {
 		case revisionedJSRe.MatchString(uri), webfontRe.MatchString(uri):
 			expires := time.Now().Add(time.Hour * 24 * 365).Format(time.RFC1123)
 			c.Header("Expires", expires)
-		case scriptRe.MatchString(uri):
+		case scriptRe.MatchString(uri), stylesheetRe.MatchString(uri), assetRe.MatchString(uri):
 			c.Header("Cache-Control", "no-cache")
 		}
 

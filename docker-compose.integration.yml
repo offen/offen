@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  integration:
+    image: cypress/included:4.5.0
+    entrypoint: []
+    working_dir: /offen/integration
+    network_mode: host
+    environment:
+      CYPRESS_OPERATOR_USERNAME: develop@offen.dev
+      CYPRESS_OPERATOR_PASSWORD: develop
+      PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
+    volumes:
+      - .:/offen
+      - integrationdeps:/offen/integration/node_modules
+
+volumes:
+  integrationdeps:

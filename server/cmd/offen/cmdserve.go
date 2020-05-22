@@ -79,11 +79,11 @@ func cmdServe(subcommand string, flags []string) {
 	if gettextErr != nil {
 		a.logger.WithError(gettextErr).Fatal("Failed reading locale files, cannot continue")
 	}
-	tpl, tplErr := public.HTMLTemplate(gettext, public.RevWith(fs))
+	tpl, tplErr := fs.HTMLTemplate(gettext)
 	if tplErr != nil {
 		a.logger.WithError(tplErr).Fatal("Failed parsing template files, cannot continue")
 	}
-	emails, emailErr := public.EmailTemplate(gettext)
+	emails, emailErr := fs.EmailTemplate(gettext)
 	if emailErr != nil {
 		a.logger.WithError(emailErr).Fatal("Failed parsing template files, cannot continue")
 	}

@@ -61,7 +61,6 @@ function referrers (events) {
       .map(function (event) {
         return event.payload.referrer.host || event.payload.referrer.href
       })
-      .filter(_.identity)
       .map(placeInBucket)
   })
 }
@@ -75,7 +74,6 @@ function campaigns (events) {
       .map(function (event) {
         return event.payload.referrer.searchParams.get('utm_campaign')
       })
-      .filter(_.identity)
   })
 }
 
@@ -88,25 +86,50 @@ function sources (events) {
       .map(function (event) {
         return event.payload.referrer.searchParams.get('utm_source')
       })
-      .filter(_.identity)
   })
 }
 
 function _referrers (events, groupFn) {
-  var foreign = events
+  var uniqueForeign = events
     .filter(function (event) {
       if (event.secretId === null || !event.payload || !event.payload.referrer) {
         return false
       }
       return event.payload.referrer.host !== event.payload.href.host
     })
-  return _.chain(groupFn(foreign))
-    .countBy(_.identity)
+    .reduce(function (acc, event) {
+      function unknownSession (knownEvent) {
+        return knownEvent.payload.sessionId !== event.payload.sessionId
+      }
+      if (_.every(acc, unknownSession)) {
+        acc.push(event)
+      }
+      return acc
+    }, [])
+
+  var sessionIds = _.map(uniqueForeign, _.property(['payload', 'sessionId']))
+  var values = groupFn(uniqueForeign)
+  return _.chain(values)
+    .zip(sessionIds)
+    .filter(_.head)
+    .groupBy(_.head)
     .pairs()
     .map(function (pair) {
-      return { key: pair[0], count: pair[1] }
+      var sessions = _.map(pair[1], _.last)
+      var associatedViews = _.filter(events, function (event) {
+        return event.payload &&
+          event.payload.sessionId &&
+          _.contains(sessions, event.payload.sessionId)
+      })
+      return {
+        key: pair[0],
+        count: [
+          sessions.length,
+          associatedViews.length / sessions.length
+        ]
+      }
     })
-    .sortBy('count')
+    .sortBy(function (row) { return row.count[0] })
     .reverse()
     .value()
 }
