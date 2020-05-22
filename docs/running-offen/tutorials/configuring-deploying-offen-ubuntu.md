@@ -36,15 +36,15 @@ You can download a tarball of the latest release from our [Releases section on G
 
 In this tutorial, we will put the binaries for each version in a directory in `/opt/offen/<version>` and create a symlink for the version you want to use in `/usr/bin`. This allows you to update your binaries without interrupting the service.
 
-Untar the archive you downloaded and look for the binary called `offen-linux-amd64`. Put this file in a subdirectory of `/opt/offen` that specifies its version. This example is using the `v0.1.0-alpha.6` release:
+Untar the archive you downloaded and look for the binary called `offen-linux-amd64`. Put this file in a subdirectory of `/opt/offen` that specifies its version. This example is using the `v0.1.0-alpha.7` release:
 
 ```
 mkdir -p /tmp/offen-download && cd /tmp/offen-download
 curl -sSL https://get.offen.dev | tar -xvz
 md5sum -c checksums.txt # check that your download contains the expected files
-sudo mkdir -p /opt/offen/v0.1.0-alpha.6
-sudo cp offen-linux-amd64 /opt/offen/v0.1.0-alpha.6
-sudo ln -s /opt/offen/v0.1.0-alpha.6/offen-linux-amd64 /usr/bin/offen
+sudo mkdir -p /opt/offen/v0.1.0-alpha.7
+sudo cp offen-linux-amd64 /opt/offen/v0.1.0-alpha.7
+sudo ln -s /opt/offen/v0.1.0-alpha.7/offen-linux-amd64 /usr/bin/offen
 ```
 
 If you have GPG installed, we also recommend verifying the binary's signature:
@@ -59,7 +59,7 @@ You can confirm that your installation is working as expected like this:
 $ which offen
 /usr/bin/offen
 $ offen version
-INFO[0000] Current build created using                   revision=v0.1.0-alpha.6
+INFO[0000] Current build created using                   revision=v0.1.0-alpha.7
 ```
 
 ---
@@ -114,7 +114,7 @@ When finished, the command has created an account for you, using the given name 
 Your `/etc/offen/offen.env` file will now look something like this:
 
 ```
-OFFEN_SECRETS_COOKIEEXCHANGE="uNrZP7r5fY3sfS35tbzR9w==" # do not use this secret in production
+OFFEN_SECRET="uNrZP7r5fY3sfS35tbzR9w==" # do not use this secret in production
 ```
 
 ---
@@ -162,7 +162,7 @@ Offen will run without these values being set and try to fall back to a local `s
 Before you start the application, it's a good idea to double check the setup. Your config file at `/etc/offen/offen.env` should now contain an entry for each of these values:
 
 ```
-OFFEN_SECRETS_COOKIEEXCHANGE="uNrZP7r5fY3sfS35tbzR9w==" # do not use this secret in production
+OFFEN_SECRET="uNrZP7r5fY3sfS35tbzR9w==" # do not use this secret in production
 OFFEN_SERVER_AUTOTLS="offen.mysite.com"
 OFFEN_SMTP_HOST="smtp.mysite.com"
 OFFEN_SMTP_USER="me"
