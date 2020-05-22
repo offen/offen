@@ -63,6 +63,14 @@ jobs:
       - checkout
       - setup_remote_docker
       - run:
+          name: Set revision
+          command: |
+            if [ -z "$CIRCLE_TAG" ]; then
+              echo 'export OFFEN_GIT_REVISION=$(git rev-parse --short HEAD)' >> $BASH_ENV
+            else
+              echo 'export OFFEN_GIT_REVISION=$CIRCLE_TAG' >> $BASH_ENV
+            fi
+      - run:
           name: Build binaries
           command: |
             if [ -z "$CIRCLE_TAG" ] && [ "${CIRCLE_BRANCH}" != "development" ] && [ "${CIRCLE_BRANCH}" != "master" ]; then
@@ -152,17 +160,15 @@ jobs:
       - attach_workspace:
           at: ~/offen
       - run:
-          name: Set build environment
+          name: Set image tag
           command: |
             if [ -z "$CIRCLE_TAG" ]; then
-              echo 'export OFFEN_GIT_REVISION=$(git rev-parse --short HEAD)' >> $BASH_ENV
               if [ "${CIRCLE_BRANCH}" == "master" ]; then
                 echo 'export DOCKER_IMAGE_TAG="stable"' >> $BASH_ENV
               else
                 echo 'export DOCKER_IMAGE_TAG="latest"' >> $BASH_ENV
               fi
             else
-              echo 'export OFFEN_GIT_REVISION=$CIRCLE_TAG' >> $BASH_ENV
               echo 'export DOCKER_IMAGE_TAG=$CIRCLE_TAG' >> $BASH_ENV
             fi
       - run:
