@@ -230,6 +230,7 @@ workflows:
           requires:
             - build
       - release:
+          context: AWS
           requires:
             - server
             - vault
