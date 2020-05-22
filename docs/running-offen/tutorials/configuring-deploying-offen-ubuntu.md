@@ -114,7 +114,7 @@ When finished, the command has created an account for you, using the given name 
 Your `/etc/offen/offen.env` file will now look something like this:
 
 ```
-OFFEN_SECRETS_COOKIEEXCHANGE="uNrZP7r5fY3sfS35tbzR9w==" # do not use this secret in production
+OFFEN_SECRET="uNrZP7r5fY3sfS35tbzR9w==" # do not use this secret in production
 ```
 
 ---
@@ -162,7 +162,7 @@ Offen will run without these values being set and try to fall back to a local `s
 Before you start the application, it's a good idea to double check the setup. Your config file at `/etc/offen/offen.env` should now contain an entry for each of these values:
 
 ```
-OFFEN_SECRETS_COOKIEEXCHANGE="uNrZP7r5fY3sfS35tbzR9w==" # do not use this secret in production
+OFFEN_SECRET="uNrZP7r5fY3sfS35tbzR9w==" # do not use this secret in production
 OFFEN_SERVER_AUTOTLS="offen.mysite.com"
 OFFEN_SMTP_HOST="smtp.mysite.com"
 OFFEN_SMTP_USER="me"
