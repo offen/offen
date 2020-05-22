@@ -132,41 +132,25 @@ func (p *persistenceLayer) Join(emailAddress, password string) error {
 	}
 	match.HashedPassword = cipher.Marshal()
 
-	txn, err := p.dal.Transaction()
-	if err != nil {
-		return fmt.Errorf("persistence: error creating transaction: %w", err)
-	}
-
-	if err := txn.UpdateAccountUser(match); err != nil {
-		txn.Rollback()
-		return fmt.Errorf("persistence: failed to update account user: %w", err)
-	}
-
 	emailDerivedKey, deriveErr := keys.DeriveKey(emailAddress, match.Salt)
 	if deriveErr != nil {
 		return fmt.Errorf("persistence: error deriving key from email: %w", deriveErr)
 	}
 
-	for _, relationship := range match.Relationships {
+	for index, relationship := range match.Relationships {
 		key, keyErr := keys.DecryptWith(emailDerivedKey, relationship.EmailEncryptedKeyEncryptionKey)
 		if keyErr != nil {
 			return fmt.Errorf("persistence: error decrypting email encrypted key: %w", keyErr)
 		}
 
 		if err := relationship.addPasswordEncryptedKey(key, match.Salt, password); err != nil {
-			txn.Rollback()
 			return fmt.Errorf("persistence: error adding password encrypted key: %w", err)
 		}
-		if err := txn.UpdateAccountUserRelationship(&relationship); err != nil {
-			txn.Rollback()
-			return fmt.Errorf("persistence: error persisting account user relationship: %w", err)
-		}
+		match.Relationships[index] = relationship
 	}
 
-	if err := txn.Commit(); err != nil {
-		txn.Rollback()
-		return fmt.Errorf("persistence: error committing transaction: %w", err)
+	if err := p.dal.UpdateAccountUser(match); err != nil {
+		return fmt.Errorf("persistence: failed to update account user: %w", err)
 	}
-
 	return nil
 }
