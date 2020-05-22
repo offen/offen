@@ -1,23 +1,23 @@
-version: 2
+version: 2.1
 
 jobs:
   deploy:
     docker:
       - image: circleci/python:3.7
+        environment:
+          BUCKET: offen-docs
+          DISTRIBUTION: E2Q11JP684XRCO
     working_directory: ~/offen
     steps:
       - checkout
       - setup_remote_docker
       - run:
-          name: Install deployment dependencies
-          command: |
-            sudo pip install -q awscli --upgrade
+          name: Build static site
+          command: make build
+      - aws-cli/install
       - run:
-          name: Build and deploy to S3
+          name: Build Deploy to S3
           command: |
-            export BUCKET="offen-docs"
-            export DISTRIBUTION="E2Q11JP684XRCO"
-            make build
             aws s3 sync --delete ./output/. s3://$BUCKET
             aws cloudfront create-invalidation --distribution-id $DISTRIBUTION --paths "/*"
 
@@ -26,7 +26,11 @@ workflows:
   build_deploy:
     jobs:
       - deploy:
+          context: AWS
           filters:
             branches:
               only:
                 - master
+
+orbs:
+  aws-cli: circleci/aws-cli@1.0.0
