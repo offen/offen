@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   deploy:
     docker:
-      - image: circleci/python:3.7
+      - image: cimg/python:3.7
         environment:
           BUCKET: offen-docs
           DISTRIBUTION: E2Q11JP684XRCO
