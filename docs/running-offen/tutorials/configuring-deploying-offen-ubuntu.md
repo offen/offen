@@ -44,7 +44,7 @@ curl -sSL https://get.offen.dev | tar -xvz
 md5sum -c checksums.txt # check that your download contains the expected files
 sudo mkdir -p /opt/offen/v0.1.0-alpha.7
 sudo cp offen-linux-amd64 /opt/offen/v0.1.0-alpha.7
-sudo ln -s /opt/offen/v0.1.0-alpha.7/offen-linux-amd64 /usr/bin/offen
+sudo ln -s /opt/offen/v0.1.0-alpha.7/offen-linux-amd64 /usr/local/bin/offen
 ```
 
 If you have GPG installed, we also recommend verifying the binary's signature:
@@ -57,7 +57,7 @@ You can confirm that your installation is working as expected like this:
 
 ```
 $ which offen
-/usr/bin/offen
+/usr/local/bin/offen
 $ offen version
 INFO[0000] Current build created using                   revision=v0.1.0-alpha.7
 ```
@@ -191,7 +191,7 @@ and populate it with the following content:
 Description=Offen Service
 
 [Service]
-ExecStart=/usr/bin/offen
+ExecStart=/usr/local/bin/offen
 Restart=always
 
 [Install]
@@ -216,7 +216,7 @@ $ sudo systemctl status offen
  Main PID: 6701 (offen)
     Tasks: 11 (limit: 4915)
    CGroup: /system.slice/offen.service
-           └─6701 /usr/bin/offen
+           └─6701 /usr/local/bin/offen
 ```
 
 
@@ -255,7 +255,7 @@ curl -sSL https://get.offen.dev | tar -xvz
 md5sum -c checksums.txt # check that your download contains the expected files
 sudo mkdir -p /opt/offen/v0.1.0-alpha.12
 sudo cp offen-linux-amd64 /opt/offen/v0.1.0-alpha.12
-sudo ln -sf /opt/offen/v0.1.0-alpha.12/offen-linux-amd64 /usr/bin/offen
+sudo ln -sf /opt/offen/v0.1.0-alpha.12/offen-linux-amd64 /usr/local/bin/offen
 ```
 
 Confirm that this worked by having `offen` print its version:
