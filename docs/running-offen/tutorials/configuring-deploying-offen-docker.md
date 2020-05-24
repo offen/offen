@@ -32,15 +32,15 @@ If you get stuck or need help, [file an issue][gh-issues], [tweet (@hioffen)][tw
 
 ---
 
-## Choosing a location for storing your data
+## Storing your data
 
-In the simple setup described in this tutorial Offen needs to persist the following files:
+In the simple setup described in this tutorial Offen needs to read and persist the following data:
 
 - a database file
+- cache files for the SSL certificates
 - a configuration file
-- cache files the SSL certificates
 
-Keeping these files available at any time is required for running the application, so make sure they are not stored on ephemeral systems. If you deploy to a ephemeral host (e.g. Heroku), check ["Configuring The Application At Runtime"][config-docs] for how to configure the application using environment variables and connecting to a remote Database.
+Keeping these files available at any time is required for running the application, so make sure they are not stored on ephemeral systems. If you plan to deploy to a ephemeral host (e.g. Heroku), check ["Configuring The Application At Runtime"][config-docs] for how to configure the application using environment variables and connecting to a remote Database.
 
 [config-docs]: /running-offen/configuring-the-application/
 
