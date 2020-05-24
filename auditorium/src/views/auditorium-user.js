@@ -42,8 +42,8 @@ const AuditoriumView = (props) => {
     )
   }
 
-  // it's important to keep this hook below the first check so that it does
-  // not create a race condition between consentStatus and events
+  // it's important to keep this hook below the check for the consent status so
+  // that it does not create a race condition between consentStatus and events
   useEffect(function fetchData () {
     handleQuery({ accountId: null, range, resolution }, null)
   }, [range, resolution, consentStatus])
