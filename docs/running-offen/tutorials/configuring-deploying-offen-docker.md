@@ -46,14 +46,24 @@ Keeping these files available at any time is required for running the applicatio
 
 ---
 
-This tutorial assumes you are on Linux, so we create a `~/.offen` directory in which we will store all data. In your `~/.offen` directory, create a `cache` directory, which will be used for caching SSL certificates, a `data` directory which will be used for storing the database and an empty file called offen.env:
+First we need to create two Docker volumes for persisiting the SQLite database and SSL certificates:
 
 ```
-~/.offen
-├── cache
-└── data
-└── offen.env
+docker volume create offen_data
+docker volume create offen_certs
 ```
+
+Next, we create an empty file for holding the runtime configuration:
+
+```
+mkdir -p ~/.config
+touch ~/.config/offen.env
+```
+
+__Heads Up__
+{: .label .label-red }
+
+The config file in `~/.config/offen.env` assumes you are on Linux and want to follow an established pattern for storing configuration files. In the end, any other location will work too, so feel free to change this depending on your setup and needs.
 
 ---
 
@@ -65,9 +75,9 @@ The value provided to the `email` flag will be your login, `name` is the name of
 
 ```
 docker run -it --rm \
-  -v ~/.offen/cache:/var/www/.cache \
-  -v ~/.offen/data:/var/opt/offen \
-  --mount type=bind,src=/home/you/.offen/offen.env,dst=/root/offen.env \
+  -v offen_data:/var/opt/offen \
+  -v offen_certs:/var/www/.cache \
+  --mount type=bind,src=/home/you/.config/offen.env,dst=/etc/offen/offen.env \
   offen/offen:v0.1.0-alpha.7 setup \
   -email me@mysite.com \
   -name mysite \
@@ -155,9 +165,9 @@ To start Offen use the Docker image's default command:
 docker run -d \
   -p 80:80 -p 443:443 \
   --name offen \
-  -v ~/.offen/cache:/var/www/.cache \
-  -v ~/.offen/data:/var/opt/offen \
-  --mount type=bind,src=/home/you/.offen/offen.env,dst=/root/offen.env \
+  -v offen_data:/var/opt/offen \
+  -v offen_certs:/var/www/.cache \
+  --mount type=bind,src=/home/you/.config/offen.env,dst=/etc/offen/offen.env \
   offen/offen:v0.1.0-alpha.7
 ```
 
