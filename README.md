@@ -3,6 +3,7 @@
 </a>
 
 # Transparent web analytics
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![CircleCI](https://circleci.com/gh/offen/offen/tree/development.svg?style=svg)](https://circleci.com/gh/offen/offen/tree/development)
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/offen/offen.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/offen/offen/alerts/)
 [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/offen/offen.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/offen/offen/context:javascript)
@@ -19,7 +20,8 @@ Offen is a fair alternative to common web analytics tools. Pay respect to your u
 - [Contributions welcome](#contributions-welcome)
 - [Kind support](#kind-support)
 - [Give feedback](#give-feedback)
-- [Links](Links)
+- [License](#license)
+- [Links](#links)
  
 ## Core features
 __Free & open__  
@@ -138,6 +140,10 @@ Cross-Browser testing provided by [BrowserStack](https://www.browserstack.com/).
 
 ## Give feedback
 Found an issue or want to add something? Please do not hesitate to file an issue or open a pull request. For details head to our [contributing guideline.](https://github.com/offen/offen/blob/development/CONTRIBUTING.md)
+
+## License
+
+Offen is licensed under the [Apache 2.0 license](https://github.com/offen/offen/blob/development/LICENSE)
 
 ## Links
 [Website](https://www.offen.dev/)  
