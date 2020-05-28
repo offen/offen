@@ -31,6 +31,7 @@ const flashReducer = require('./src/reducers/flash')
 const staleReducer = require('./src/reducers/stale')
 const modelReducer = require('./src/reducers/model')
 const redirectMiddleware = require('./src/middleware/redirect')
+const pushStateMiddleware = require('./src/middleware/push-state')
 const flashMessagesMiddleware = require('./src/middleware/flash-messages')
 const navigation = require('./src/action-creators/navigation')
 const errors = require('./src/action-creators/errors')
@@ -47,6 +48,7 @@ const middlewares = [
   thunk.withExtraArgument(
     msg => vaultInstance.then(postMessage => postMessage(msg))
   ),
+  pushStateMiddleware,
   redirectMiddleware,
   flashMessagesMiddleware
 ]

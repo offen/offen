@@ -6,7 +6,7 @@
     <link rel="stylesheet" type="text/css" href="/tachyons.min.css">
     {{ template "meta" . }}
     {{ with .rootAccount }}
-      <script src="/script.js" data-account-id="{{ . }}"></script>
+      <script src="/script.js" data-no-banner data-account-id="{{ . }}"></script>
     {{ end }}
   </head>
   <body class="bg-washed-yellow">
