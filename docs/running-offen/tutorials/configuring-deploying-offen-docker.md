@@ -11,7 +11,7 @@ grand_parent: Running Offen
 # Configuring and deploying Offen using Docker
 {: .no_toc }
 
-This tutorial walks you through the steps needed to setup and deploy a standalone, single-node Offen instance that is using a local SQLite file as its database backend.
+This tutorial walks you through the steps needed to setup and deploy a standalone, single-node Offen instance that is using SQLite file as its database backend.
 
 <span class="label label-green">Note</span>
 If you get stuck or need help, [file an issue][gh-issues], [tweet (@hioffen)][twitter] or [email][email].
@@ -136,7 +136,7 @@ OFFEN_SMTP_PORT="587"
 __Heads Up__
 {: .label .label-red }
 
-Offen will run without these values being set and try to fall back to a local `sendmail` install, yet please be aware that if you rely on any of the above features email delivery will be __unreliable if not configured correctly__. You can always add this at a later time though.
+Offen will start without these values being set, but you will not be able to reset your password or invite new users without email being set up correctly. If you want to skip it for now, you can always add these at a later time though.
 
 ---
 
