@@ -16,7 +16,7 @@ If you just want to experiment with Offen or give it a quick test drive, you can
 Open your terminal and type:
 
 ```
-curl https://demo.offen.dev | bash  
+curl -sS https://demo.offen.dev | bash  
 ```
 {: .mb-8 }
 
@@ -34,4 +34,4 @@ If you have already downloaded the binaries use:
 ```
 {: .mb-8 }
 
-Head to the URL printed in the terminal and start your tests. You can log in using the account `demo@offen.dev` and password `demo`.
+Head to the URL printed in the terminal and start your testing. You can log in using the account `demo@offen.dev` and password `demo`.

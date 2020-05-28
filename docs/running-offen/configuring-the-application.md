@@ -10,7 +10,7 @@ parent: Running Offen
 # Configuring the application at runtime
 {: .no_toc }
 
-The main interface to configuring Offen at runtime is using your systems environment variables. All variables are following the pattern of `OFFEN_<scope>_<key>`, e.g. `OFFEN_SERVER_PORT`. In addition to setting variables in the environment Offen also allows for setting these values in [`env` files][dotenv].
+The main interface to configuring Offen at runtime is via the host system's environment variables. All variables are following the pattern of `OFFEN_<scope>_<key>`, e.g. `OFFEN_SERVER_PORT`. In addition to setting variables in the environment Offen also allows for setting these values in [`env` files][dotenv].
 
 [dotenv]: https://github.com/joho/godotenv
 
@@ -71,7 +71,7 @@ The port the application listens on.
 
 Defaults to `false`.
 
-If set to `true` the application will assume it is running behind a reverse proxy. This means it does not add caching or security related headers to any response. Logging requests to `stdout` is also disabled.
+If set to `true` the application will assume it is running behind a reverse proxy. This means it does not add caching or security related headers to any response. Logging information about requests to `stdout` is also disabled.
 
 ### OFFEN_SERVER_SSLCERTIFICATE
 {: .no_toc }
@@ -88,12 +88,22 @@ In case you own a SSL certificate that is valid for the domain you are planning 
 
 In case you want Offen to automatically request a free SSL certifcate from LetsEncrypt you can use this parameter and assign a comma separated list of supported domain names (e.g. `offen.mydomain.org,offen.otherdomain.org`) you are planning to serve Offen from. This will have the application automatically handle certificate issuing and renewal.
 
+__Heads Up__
+{: .label .label-red }
+
+Using this feature will invalidate any port value that has been configured and will make Offen listen to both port 80 and 443. In such a setup, it is important that both ports are available to the public internet.
+
 ### OFFEN_SERVER_CERTFICATECACHE
 {: .no_toc }
 
 Defaults to `/var/www/.cache` on Linux and MacOS, `%Temp%\offen.db` on Windows.
 
 When using the AutoTLS feature, this sets the location where Offen will be caching certificates.
+
+__Heads Up__
+{: .label .label-red }
+
+It is important that this value points to a persistent, non-ephemeral location as otherwise each request would issue a new certificate and your deployment will be rate limited by Let's Encrypt soon.
 
 ---
 
@@ -113,7 +123,7 @@ The SQL dialect to use. Supported options are `sqlite3`, `postgres` or `mysql`.
 
 Defaults to `/var/opt/offen/offen.db` on Linux and MacOS, `%Temp%\offen.db` on Windows.
 
-The connection string or location of the database. For `sqlite3` this will be the location of the database file, for other dialects, it will be the URL the database is located at, including credentials needed to access it.
+The connection string or location of the database. For `sqlite3` this will be the location of the database file, for other dialects, it will be the URL the database is located at, __including the credentials__ needed to access it.
 
 ---
 
@@ -167,7 +177,7 @@ The From address used when sending transactional email.
 
 No default value.
 
-A Base64 encoded secret that is used for signing cookies and validating URL tokens. Ideally, it is of 16 bytes length. __If this is not set, a random value will be created at application startup__. This would mean that __an application restart would invalidate all existing sessions and all pending invitation/password reset emails__. If you do not want this behavior, populate this value, which is what we recommend.
+A Base64 encoded secret that is used for signing cookies and validating URL tokens. Ideally, it is of 16 bytes length. __If this is not set, a random value will be created at application startup__. This would mean that Offen can serve requests, but __an application restart would invalidate all existing sessions and all pending invitation/password reset emails__. If you do not want this behavior, populate this value, which is what we recommend.
 
 ---
 
@@ -194,7 +204,9 @@ The `APP` namespace affects how the application will behave.
 
 Defaults to `en`.
 
-The locale the application will use when displaying user facing text. Right now, only `en` is supported. In case you want to contribute to Offen by adding a new locale, we'd love to hear from you.
+The locale the application will use when displaying user facing text. Right now, only `en` is supported. In case you want to contribute to Offen by adding a new locale, [we'd love to hear from you][email].
+
+[email]: mailto:hioffen@posteo.de
 
 ### OFFEN_APP_LOGLEVEL
 {: .no_toc }
@@ -209,10 +221,3 @@ Specifies the application's log level. Possible values are `debug`, `info`, `war
 Defaults to `true`.
 
 In case you want to run Offen as a horizontally scaling service, you can set this value to `true`. This will disable all cron jobs and similar that handle automated database migration and event expiration.
-
-### OFFEN_APP_DEVELOPMENT
-{: .no_toc }
-
-Defaults to `false`.
-
-If set to `true` the application assumes it is running in development mode, which will add verbose logging and disable production specific optimizations.

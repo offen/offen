@@ -13,7 +13,7 @@ grand_parent: Running Offen
 
 This tutorial walks you through the steps needed to setup and deploy a single-node Offen instance on [Heroku][heroku] using PostgreSQL for storing data.
 
-__All resources created in this tutorial are free of charge__. You might want to upgrade some of them to another plan with costs when running Offen in production though. A single Hobby Dyno ($7 at the time of writing) should be enough to handle most traffic scenarios and will give you managed SSL for a custom domain.
+__All resources created in this tutorial are free of charge__. You might want to upgrade some of them to another plan with costs when running Offen in production though. A single Hobby Dyno ($7 at the time of writing) should be beefy enough to handle most traffic scenarios and will also give you __free and managed SSL for a custom domain__.
 
 <span class="label label-green">Note</span>
 If you get stuck or need help, [file an issue][gh-issues], [tweet (@hioffen)][twitter] or [email][email].
@@ -49,7 +49,7 @@ You can automatically deploy our [template repository][template] to Heroku using
 
 ---
 
-Below you will find explanations on what you need to do next:
+Below you will find what you need to do next:
 
 ## Set the configuration values
 
@@ -63,9 +63,9 @@ Offen needs to send transactional email for the following features:
 - Inviting a new user to an account
 - Resetting your password in case you forgot it
 
-To enable this, you need supply SMTP credentials to Offen, namely __Host, User, Password and Port__ to form in the setup form. If you do not know which values to use, you can start by using your personal mail account or create a new mailbox using your default email provider.
+To enable this, you need supply SMTP credentials to Offen, namely __Host, User, Password and Port__ to the setup form. If you do not know which values to use right now, you can start by using your personal mail account or create a new mailbox using your default email provider.
 
-If you need to look these up and don't want to do it right away, you can always add these at a later time. __Remember though that you cannot reset account passwords until this is configured__.
+If you need to look these up, and don't want to do it right away, you can always add these at a later time. __Remember though that you cannot reset account passwords or invite users until email is configured__.
 
 ---
 
@@ -77,7 +77,7 @@ You are now ready to press the "Deploy app" button. Building the application can
 
 The final step for your installation is now to create an account that you can use to collect usage data and log in. To do so, head to `/setup/` on your newly installed instance by clicking the "View app" button once installation has finished.
 
-Create a first account and a user by filling and submitting the form. You can always create more accounts and add users later.
+Create your first account and a user by filling and submitting the form. You can always create more accounts and add other users later.
 
 ### Test the setup
 {: .no_toc }
@@ -88,7 +88,9 @@ You can now head to the running application at `https://<your-provided-app-name>
 
 ## Run Offen on your own domain
 
-In a real world setup, you will likely want to make Offen available as a subdomain of your own domain.
+In a real world setup, you will likely want to [make Offen available as a subdomain of your own domain][same-domain].
+
+[same-domain]: /running-offen/installation-requirements/#usage-of-a-subdomain
 
 ### Setting up DNS
 {: .no_toc }
