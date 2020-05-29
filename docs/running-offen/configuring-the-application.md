@@ -62,9 +62,14 @@ The `SERVER` namespace collects settings that affect the behavior of the HTTP se
 ### OFFEN_SERVER_PORT
 {: .no_toc }
 
-Defaults to `80`.
+Defaults to `3000`.
 
 The port the application listens on.
+
+__Heads Up__
+{: .label .label-red }
+
+The Docker image sets this value to 80 in the Dockerfile, so you cannot override it from within an env file. Instead, map port 80 in the container to the desired port on your host system.
 
 ### OFFEN_SERVER_REVERSEPROXY
 {: .no_toc }

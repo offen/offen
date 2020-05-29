@@ -77,7 +77,7 @@ The value provided to the `email` flag will be your login, `name` is the name of
 docker run -it --rm \
   -v offen_data:/var/opt/offen \
   -v offen_certs:/var/www/.cache \
-  --mount type=bind,src=/home/you/.config/offen.env,dst=/etc/offen/offen.env \
+  -v ~/.config/offen.env:/etc/offen/offen.env \
   offen/offen:v0.1.0-alpha.7 setup \
   -email me@mysite.com \
   -name mysite \
@@ -167,7 +167,7 @@ docker run -d \
   --name offen \
   -v offen_data:/var/opt/offen \
   -v offen_certs:/var/www/.cache \
-  --mount type=bind,src=/home/you/.config/offen.env,dst=/etc/offen/offen.env \
+  -v ~/.config/offen.env:/etc/offen/offen.env \
   offen/offen:v0.1.0-alpha.7
 ```
 
