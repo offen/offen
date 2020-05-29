@@ -73,9 +73,7 @@ func (rt *router) postUserSecret(c *gin.Context) {
 		return
 	}
 
-	http.SetCookie(
-		c.Writer,
-		rt.userCookie(userID, c.GetBool(contextKeySecureContext)),
-	)
+	ck, _ = rt.userCookie(userID, c.GetBool(contextKeySecureContext))
+	http.SetCookie(c.Writer, ck)
 	c.Status(http.StatusNoContent)
 }

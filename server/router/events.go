@@ -63,11 +63,9 @@ func (rt *router) postEvents(c *gin.Context) {
 	// this handler might be called without a cookie / i.e. receiving an
 	// anonymous event, in which case it is important **NOT** to re-issue
 	// the user cookie.
+	ck, _ := rt.userCookie(userID, c.GetBool(contextKeySecureContext))
 	if userID != "" {
-		http.SetCookie(
-			c.Writer,
-			rt.userCookie(userID, c.GetBool(contextKeySecureContext)),
-		)
+		http.SetCookie(c.Writer, ck)
 	}
 	c.JSON(http.StatusCreated, ackResponse{true})
 }
@@ -135,11 +133,9 @@ func (rt *router) purgeEvents(c *gin.Context) {
 		).Pipe(c)
 		return
 	}
+	ck, _ := rt.userCookie("", c.GetBool(contextKeySecureContext))
 	if c.Query("user") != "" {
-		http.SetCookie(
-			c.Writer,
-			rt.userCookie("", c.GetBool(contextKeySecureContext)),
-		)
+		http.SetCookie(c.Writer, ck)
 	}
 	c.Status(http.StatusNoContent)
 }

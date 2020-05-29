@@ -72,7 +72,8 @@ func TestOptinMiddleware(t *testing.T) {
 
 func TestUserCookieMiddleware(t *testing.T) {
 	m := gin.New()
-	m.GET("/", userCookieMiddleware("user", "1"), func(c *gin.Context) {
+	rt := router{}
+	m.GET("/", rt.userCookieMiddleware("user", "1"), func(c *gin.Context) {
 		value := c.Value("1")
 		c.String(http.StatusOK, "value is %v", value)
 	})

@@ -40,7 +40,7 @@ func optinMiddleware(cookieName, passWhen string) gin.HandlerFunc {
 // userCookieMiddleware ensures a cookie of the given name is present and
 // attaches its value to the request's context using the given key, before
 // passing it on to the wrapped handler.
-func userCookieMiddleware(cookieKey, contextKey string) gin.HandlerFunc {
+func (rt *router) userCookieMiddleware(cookieKey, contextKey string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		ck, err := c.Request.Cookie(cookieKey)
 		if err != nil {
@@ -50,14 +50,22 @@ func userCookieMiddleware(cookieKey, contextKey string) gin.HandlerFunc {
 			).Pipe(c)
 			return
 		}
-		if _, err := uuid.FromString(ck.Value); err != nil {
+		var userID string
+		if err := rt.authenticationSigner.Decode("id", ck.Value, &userID); err != nil {
 			newJSONError(
-				errors.New("user cookie: received invalid identifier"),
+				errors.New("user cookie: user id signature did not match"),
 				http.StatusBadRequest,
 			).Pipe(c)
 			return
 		}
-		c.Set(contextKey, ck.Value)
+		if _, err := uuid.FromString(userID); err != nil {
+			newJSONError(
+				errors.New("user cookie: received malformed identifier"),
+				http.StatusBadRequest,
+			).Pipe(c)
+			return
+		}
+		c.Set(contextKey, userID)
 		c.Next()
 	}
 }

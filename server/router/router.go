@@ -49,15 +49,25 @@ const (
 	contextKeySecureContext = "contextKeySecure"
 )
 
-func (rt *router) userCookie(userID string, secure bool) *http.Cookie {
+func (rt *router) userCookie(userID string, secure bool) (*http.Cookie, error) {
 	sameSite := http.SameSiteNoneMode
 	if !secure {
 		sameSite = http.SameSiteLaxMode
 	}
 
+	value := userID
+	if userID != "" {
+		var err error
+		value, err = rt.authenticationSigner.MaxAge(24*60*60).Encode("id", userID)
+		if err != nil {
+			return nil, err
+		}
+
+	}
+
 	c := &http.Cookie{
 		Name:     cookieKey,
-		Value:    userID,
+		Value:    value,
 		Expires:  time.Unix(0, 0),
 		HttpOnly: true,
 		Secure:   secure,
@@ -67,7 +77,7 @@ func (rt *router) userCookie(userID string, secure bool) *http.Cookie {
 	if userID != "" {
 		c.Expires = time.Now().Add(config.EventRetention)
 	}
-	return c
+	return c, nil
 }
 
 func (rt *router) authCookie(userID string, secure bool) (*http.Cookie, error) {
@@ -159,7 +169,7 @@ func New(opts ...Config) http.Handler {
 	rt.authenticationSigner = securecookie.New(rt.config.Secret.Bytes(), nil)
 
 	optin := optinMiddleware(optinKey, optinValue)
-	userCookie := userCookieMiddleware(cookieKey, contextKeyCookie)
+	userCookie := rt.userCookieMiddleware(cookieKey, contextKeyCookie)
 	accountAuth := rt.accountUserMiddleware(authKey, contextKeyAuth)
 	noStore := headerMiddleware(map[string]func() string{
 		"Cache-Control": func() string {
