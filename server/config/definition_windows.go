@@ -10,7 +10,7 @@ package config
 // source values from the application environment at runtime.
 type Config struct {
 	Server struct {
-		Port             int  `default:"8080"`
+		Port             int  `default:"3000"`
 		ReverseProxy     bool `default:"false"`
 		SSLCertificate   EnvString
 		SSLKey           EnvString
