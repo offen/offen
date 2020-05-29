@@ -311,7 +311,7 @@ func TestRouter_postShareAccount(t *testing.T) {
 			rt := router{
 				config:       &config.Config{},
 				db:           &test.db,
-				cookieSigner: signer,
+				authenticationSigner: signer,
 				mailer:       &test.mailer,
 				emails: func() *template.Template {
 					t := template.New("emails")
@@ -420,7 +420,7 @@ func TestRouter_postJoin(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			rt := router{
 				db:           &test.db,
-				cookieSigner: signer,
+				authenticationSigner: signer,
 			}
 
 			m := gin.New()

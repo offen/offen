@@ -22,15 +22,15 @@ import (
 )
 
 type router struct {
-	db           persistence.Service
-	mailer       mailer.Mailer
-	fs           http.FileSystem
-	logger       *logrus.Logger
-	cookieSigner *securecookie.SecureCookie
-	template     *template.Template
-	emails       *template.Template
-	config       *config.Config
-	sanitizer    *bluemonday.Policy
+	db                   persistence.Service
+	mailer               mailer.Mailer
+	fs                   http.FileSystem
+	logger               *logrus.Logger
+	authenticationSigner *securecookie.SecureCookie
+	template             *template.Template
+	emails               *template.Template
+	config               *config.Config
+	sanitizer            *bluemonday.Policy
 }
 
 func (rt *router) logError(err error, message string) {
@@ -81,7 +81,7 @@ func (rt *router) authCookie(userID string, secure bool) (*http.Cookie, error) {
 	if userID == "" {
 		c.Expires = time.Unix(0, 0)
 	} else {
-		value, err := rt.cookieSigner.MaxAge(24*60*60).Encode(authKey, userID)
+		value, err := rt.authenticationSigner.MaxAge(24*60*60).Encode(authKey, userID)
 		if err != nil {
 			return nil, err
 		}
@@ -156,7 +156,7 @@ func New(opts ...Config) http.Handler {
 	}
 
 	rt.sanitizer = bluemonday.StrictPolicy()
-	rt.cookieSigner = securecookie.New(rt.config.Secret.Bytes(), nil)
+	rt.authenticationSigner = securecookie.New(rt.config.Secret.Bytes(), nil)
 
 	optin := optinMiddleware(optinKey, optinValue)
 	userCookie := userCookieMiddleware(cookieKey, contextKeyCookie)

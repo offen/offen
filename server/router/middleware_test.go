@@ -88,18 +88,18 @@ func TestUserCookieMiddleware(t *testing.T) {
 		}
 	})
 
-	t.Run("no value", func(t *testing.T) {
+	t.Run("invalid identifier", func(t *testing.T) {
 		w := httptest.NewRecorder()
 		r := httptest.NewRequest(http.MethodGet, "/", nil)
-		m.ServeHTTP(w, r)
 		r.AddCookie(&http.Cookie{
 			Name:  "user",
-			Value: "",
+			Value: "xyz",
 		})
+		m.ServeHTTP(w, r)
 		if w.Code != http.StatusBadRequest {
 			t.Errorf("Unexpected status code %v", w.Code)
 		}
-		if !strings.Contains(w.Body.String(), "received no or blank identifier") {
+		if !strings.Contains(w.Body.String(), "received invalid identifier") {
 			t.Errorf("Unexpected body %s", w.Body.String())
 		}
 	})
@@ -109,13 +109,13 @@ func TestUserCookieMiddleware(t *testing.T) {
 		r := httptest.NewRequest(http.MethodGet, "/", nil)
 		r.AddCookie(&http.Cookie{
 			Name:  "user",
-			Value: "token",
+			Value: "600bf860-0477-423b-85e3-d5472c99230e",
 		})
 		m.ServeHTTP(w, r)
 		if w.Code != http.StatusOK {
 			t.Errorf("Unexpected status code %v", w.Code)
 		}
-		if w.Body.String() != "value is token" {
+		if w.Body.String() != "value is 600bf860-0477-423b-85e3-d5472c99230e" {
 			t.Errorf("Unexpected body %s", w.Body.String())
 		}
 	})
@@ -137,8 +137,8 @@ func (*mockUserLookupDatabase) LookupAccountUser(accountUserID string) (persiste
 func TestAccountUserMiddleware(t *testing.T) {
 	cookieSigner := securecookie.New([]byte("keyboard cat"), nil)
 	rt := router{
-		cookieSigner: cookieSigner,
-		db:           &mockUserLookupDatabase{},
+		authenticationSigner: cookieSigner,
+		db:                   &mockUserLookupDatabase{},
 	}
 	m := gin.New()
 	m.GET("/", rt.accountUserMiddleware("auth", "1"), func(c *gin.Context) {

@@ -50,7 +50,7 @@ func TestRouter_GetAccount(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			cookieSigner := securecookie.New([]byte("abc123"), nil)
 			auth, _ := cookieSigner.Encode("auth", test.accountID)
-			rt := router{db: test.database, cookieSigner: cookieSigner}
+			rt := router{db: test.database, authenticationSigner: cookieSigner}
 			w := httptest.NewRecorder()
 			r := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/%s", test.accountID), nil)
 			m := gin.New()
@@ -138,7 +138,7 @@ func TestRouter_DeleteAccount(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			cookieSigner := securecookie.New([]byte("abc123"), nil)
 			auth, _ := cookieSigner.Encode("auth", test.accountID)
-			rt := router{db: test.database, cookieSigner: cookieSigner}
+			rt := router{db: test.database, authenticationSigner: cookieSigner}
 			w := httptest.NewRecorder()
 			r := httptest.NewRequest(http.MethodDelete, fmt.Sprintf("/%s", test.accountID), nil)
 			m := gin.New()

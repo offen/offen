@@ -102,7 +102,7 @@ func TestRouter_postLogin(t *testing.T) {
 			rt := router{
 				config:       &config.Config{},
 				db:           &test.db,
-				cookieSigner: securecookie.New([]byte("abc"), nil),
+				authenticationSigner: securecookie.New([]byte("abc"), nil),
 			}
 			m.POST("/", rt.postLogin)
 			r := httptest.NewRequest(http.MethodPost, "/", test.body)
@@ -443,7 +443,7 @@ func TestRouter_postResetPassword(t *testing.T) {
 			rt := router{
 				config:       &config.Config{},
 				db:           &test.db,
-				cookieSigner: signer,
+				authenticationSigner: signer,
 			}
 			m.POST("/", rt.postResetPassword)
 			r := httptest.NewRequest(http.MethodPost, "/", test.body)
@@ -527,7 +527,7 @@ func TestRouter_postForgotPassword(t *testing.T) {
 			rt := router{
 				config:       &config.Config{},
 				db:           &test.db,
-				cookieSigner: securecookie.New([]byte("abc"), nil),
+				authenticationSigner: securecookie.New([]byte("abc"), nil),
 				mailer:       &test.mailer,
 				emails: func() *template.Template {
 					t := template.New("emails")

@@ -106,7 +106,7 @@ func (rt *router) postShareAccount(c *gin.Context) {
 		bodyErr = rt.emails.ExecuteTemplate(body, "body_existing_user_invite", map[string]interface{}{"accountNames": result.AccountNames})
 		subjectErr = rt.emails.ExecuteTemplate(subject, "subject_existing_user_invite", nil)
 	} else {
-		signedCredentials, signErr := rt.cookieSigner.MaxAge(7*24*60*60).Encode("credentials", req.InviteeEmailAddress)
+		signedCredentials, signErr := rt.authenticationSigner.MaxAge(7*24*60*60).Encode("credentials", req.InviteeEmailAddress)
 		if signErr != nil {
 			rt.logError(signErr, "error signing token")
 			c.Status(http.StatusNoContent)
@@ -152,7 +152,7 @@ func (rt *router) postJoin(c *gin.Context) {
 		return
 	}
 	var email string
-	if err := rt.cookieSigner.Decode("credentials", req.Token, &email); err != nil {
+	if err := rt.authenticationSigner.Decode("credentials", req.Token, &email); err != nil {
 		newJSONError(
 			fmt.Errorf("error decoding signed token: %w", err),
 			http.StatusBadRequest,

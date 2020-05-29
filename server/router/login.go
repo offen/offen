@@ -180,7 +180,7 @@ func (rt *router) postForgotPassword(c *gin.Context) {
 		c.Status(http.StatusNoContent)
 		return
 	}
-	signedCredentials, signErr := rt.cookieSigner.MaxAge(24*60*60).Encode("credentials", forgotPasswordCredentials{
+	signedCredentials, signErr := rt.authenticationSigner.MaxAge(24*60*60).Encode("credentials", forgotPasswordCredentials{
 		Token:        token,
 		EmailAddress: req.EmailAddress,
 	})
@@ -234,7 +234,7 @@ func (rt *router) postResetPassword(c *gin.Context) {
 		return
 	}
 	var credentials forgotPasswordCredentials
-	if err := rt.cookieSigner.Decode("credentials", req.Token, &credentials); err != nil {
+	if err := rt.authenticationSigner.Decode("credentials", req.Token, &credentials); err != nil {
 		newJSONError(
 			fmt.Errorf("error decoding signed token: %w", err),
 			http.StatusBadRequest,

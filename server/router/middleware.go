@@ -13,6 +13,7 @@ import (
 
 	"github.com/gin-contrib/location"
 	"github.com/gin-gonic/gin"
+	"github.com/gofrs/uuid"
 )
 
 func secureContextMiddleware(contextKey string, isDevelopment bool) gin.HandlerFunc {
@@ -49,6 +50,13 @@ func userCookieMiddleware(cookieKey, contextKey string) gin.HandlerFunc {
 			).Pipe(c)
 			return
 		}
+		if _, err := uuid.FromString(ck.Value); err != nil {
+			newJSONError(
+				errors.New("user cookie: received invalid identifier"),
+				http.StatusBadRequest,
+			).Pipe(c)
+			return
+		}
 		c.Set(contextKey, ck.Value)
 		c.Next()
 	}
@@ -66,7 +74,7 @@ func (rt *router) accountUserMiddleware(cookieKey, contextKey string) gin.Handle
 		}
 
 		var userID string
-		if err := rt.cookieSigner.Decode(authKey, authCookie.Value, &userID); err != nil {
+		if err := rt.authenticationSigner.Decode(authKey, authCookie.Value, &userID); err != nil {
 			authCookie, _ = rt.authCookie("", c.GetBool(contextKeySecureContext))
 			http.SetCookie(c.Writer, authCookie)
 			newJSONError(
