@@ -63,7 +63,7 @@ touch ~/.config/offen.env
 __Heads Up__
 {: .label .label-red }
 
-The config file in `~/.config/offen.env` assumes you are on Linux and want to follow an established pattern for storing configuration files. In the end, any other location will work too, so feel free to change this depending on your setup and needs.
+Storing the config file in `~/.config/offen.env` follows an established pattern for storing such files on *ix systems, and is a good idea if you do not have any other preferences or requirements. In the end, any other location will work too though, so feel free to change this depending on your setup and needs.
 
 ---
 
