@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/jinzhu/gorm"
+	"github.com/offen/offen/server/keys"
 	"github.com/offen/offen/server/persistence"
 
 	// GORM imports the dialects for side effects only
@@ -44,6 +45,7 @@ var knownTables = []interface{}{
 	&Secret{},
 	&AccountUser{},
 	&AccountUserRelationship{},
+	&ConfigValue{},
 }
 
 func (r *relationalDAL) ProbeEmpty() bool {
@@ -148,6 +150,25 @@ func (r *relationalDAL) ApplyMigrations() error {
 					Secret   Secret `gorm:"foreignkey:SecretID;association_foreignkey:SecretID"`
 				}
 				return db.AutoMigrate(&Account{}, &AccountUserRelationship{}, &Event{}).Error
+			},
+		},
+		{
+			ID: "003_introduce_config_values",
+			Migrate: func(db *gorm.DB) error {
+				if err := db.AutoMigrate(&ConfigValue{}).Error; err != nil {
+					return err
+				}
+				secret, err := keys.GenerateRandomValue(keys.DefaultSecretLength)
+				if err != nil {
+					return err
+				}
+				return db.Create(&ConfigValue{
+					Key:   persistence.ConfigValueSigningSecret,
+					Value: secret,
+				}).Error
+			},
+			Rollback: func(db *gorm.DB) error {
+				return db.DropTable("config_values").Error
 			},
 		},
 	})

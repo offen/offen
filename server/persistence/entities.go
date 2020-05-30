@@ -33,6 +33,18 @@ type Secret struct {
 	EncryptedSecret string
 }
 
+// The signing key is the only config value currently in use.
+const (
+	ConfigValueSigningSecret = "signing_secret"
+)
+
+// ConfigValue can be used by the application to store persistent configuration
+// values like for example secrets for signing cookies in the database.
+type ConfigValue struct {
+	Key   string
+	Value string
+}
+
 // AccountUserAdminLevel is used to describe the privileges granted to an account
 // user. If zero, no admin privileges are given.
 type AccountUserAdminLevel int

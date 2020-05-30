@@ -86,6 +86,10 @@ func (m *mockUserSecretDatabase) AssociateUserSecret(string, string, string) err
 	return m.err
 }
 
+func (m *mockUserSecretDatabase) GetSigningSecret() ([]byte, error) {
+	return []byte("ok"), nil
+}
+
 func TestRouter_PostUserSecret(t *testing.T) {
 	tests := []struct {
 		name           string

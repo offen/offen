@@ -59,6 +59,14 @@ func (rt *router) userCookieMiddleware(cookieKey, contextKey string) gin.Handler
 		if uuidRE.MatchString(ck.Value) && rt.config.App.AllowUnsignedUserID {
 			userID = ck.Value
 		} else {
+			key, keyErr := rt.db.GetSigningSecret()
+			if keyErr != nil {
+				newJSONError(
+					fmt.Errorf("router: error retrieving signing secret: %w", keyErr),
+					http.StatusInternalServerError,
+				).Pipe(c)
+				return
+			}
 			var signature string
 			chunks := strings.Split(ck.Value, ",")
 			if len(chunks) != 2 {
@@ -70,7 +78,7 @@ func (rt *router) userCookieMiddleware(cookieKey, contextKey string) gin.Handler
 			}
 			userID, signature = chunks[0], chunks[1]
 
-			if err := keys.Verify(userID, signature, userCookieSecret); err != nil {
+			if err := keys.Verify(userID, signature, key); err != nil {
 				newJSONError(
 					errors.New("user cookie: user id signature did not match"),
 					http.StatusBadRequest,

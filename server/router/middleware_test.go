@@ -71,9 +71,22 @@ func TestOptinMiddleware(t *testing.T) {
 	})
 }
 
+type mockUserCookieDB struct {
+	persistence.Service
+	secret []byte
+}
+
+func (m *mockUserCookieDB) GetSigningSecret() ([]byte, error) {
+	return m.secret, nil
+}
+
 func TestUserCookieMiddleware(t *testing.T) {
 	m := gin.New()
-	rt := router{}
+	rt := router{
+		db: &mockUserCookieDB{
+			secret: []byte("abc123"),
+		},
+	}
 	m.GET("/", rt.userCookieMiddleware("user", "1"), func(c *gin.Context) {
 		value := c.Value("1")
 		c.String(http.StatusOK, "value is %v", value)
@@ -107,7 +120,7 @@ func TestUserCookieMiddleware(t *testing.T) {
 	})
 
 	t.Run("ok", func(t *testing.T) {
-		signature, _ := keys.Sign("600bf860-0477-423b-85e3-d5472c99230e", userCookieSecret)
+		signature, _ := keys.Sign("600bf860-0477-423b-85e3-d5472c99230e", []byte("abc123"))
 		w := httptest.NewRecorder()
 		r := httptest.NewRequest(http.MethodGet, "/", nil)
 		r.AddCookie(&http.Cookie{

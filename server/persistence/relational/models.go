@@ -62,6 +62,27 @@ func importSecret(s *persistence.Secret) Secret {
 	}
 }
 
+// ConfigValue can be used by the application to store persistent configuration
+// values like for example secrets for signing cookies in the database.
+type ConfigValue struct {
+	Key   string `gorm:"primary_key"`
+	Value string
+}
+
+func (v *ConfigValue) export() *persistence.ConfigValue {
+	return &persistence.ConfigValue{
+		Key:   v.Key,
+		Value: v.Value,
+	}
+}
+
+func importConfigValue(v *persistence.ConfigValue) ConfigValue {
+	return ConfigValue{
+		Key:   v.Key,
+		Value: v.Value,
+	}
+}
+
 // AccountUser is a person that can log in and access data related to all
 // associated accounts.
 type AccountUser struct {

@@ -222,6 +222,10 @@ func (m *mockPostEventsService) Insert(string, string, string) error {
 	return m.err
 }
 
+func (m *mockPostEventsService) GetSigningSecret() ([]byte, error) {
+	return []byte("ok"), nil
+}
+
 func TestRouter_postEvents(t *testing.T) {
 	tests := []struct {
 		name           string

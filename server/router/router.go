@@ -22,8 +22,6 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-var userCookieSecret = []byte("abc123")
-
 type router struct {
 	db                   persistence.Service
 	mailer               mailer.Mailer
@@ -60,7 +58,11 @@ func (rt *router) userCookie(userID string, secure bool) (*http.Cookie, error) {
 
 	value := userID
 	if userID != "" {
-		signature, err := keys.Sign(userID, userCookieSecret)
+		key, keyErr := rt.db.GetSigningSecret()
+		if keyErr != nil {
+			return nil, fmt.Errorf("router: error retrieving signing secret: %w", keyErr)
+		}
+		signature, err := keys.Sign(userID, key)
 		if err != nil {
 			return nil, fmt.Errorf("router: error signing user cookie: %w", err)
 		}

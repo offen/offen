@@ -91,6 +91,19 @@ func (p *persistenceLayer) Bootstrap(config BootstrapConfig) error {
 			return fmt.Errorf("persistence: error creating account user relationship: %w", err)
 		}
 	}
+	secret, err := keys.GenerateRandomValue(keys.DefaultSecretLength)
+	if err != nil {
+		txn.Rollback()
+		return fmt.Errorf("persistence: error creating signing secret: %w", err)
+	}
+	if err := txn.CreateConfigValue(&ConfigValue{
+		Key:   ConfigValueSigningSecret,
+		Value: secret,
+	}); err != nil {
+		txn.Rollback()
+		return fmt.Errorf("persistence: error persisting signing secret: %w", err)
+	}
+
 	if err := txn.Commit(); err != nil {
 		return fmt.Errorf("persistence: error committing seed data: %w", err)
 	}

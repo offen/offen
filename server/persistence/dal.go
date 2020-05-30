@@ -25,6 +25,8 @@ type DataAccessLayer interface {
 	UpdateAccountUserRelationship(*AccountUserRelationship) error
 	FindAccountUserRelationships(interface{}) ([]AccountUserRelationship, error)
 	DeleteAccountUserRelationships(interface{}) error
+	FindConfigValue(interface{}) (*ConfigValue, error)
+	CreateConfigValue(*ConfigValue) error
 	Transaction() (Transaction, error)
 	ApplyMigrations() error
 	DropAll() error
@@ -62,6 +64,9 @@ type DeleteEventsQueryOlderThan string
 // DeleteEventsQueryByEventIDs requests deletion of all events contained in the
 // given set.
 type DeleteEventsQueryByEventIDs []string
+
+// FindConfigValueQueryByKey looks up the a config value
+type FindConfigValueQueryByKey string
 
 // DeleteSecretQueryBySecretID requests deletion of the secret record with the given
 // secret id.
