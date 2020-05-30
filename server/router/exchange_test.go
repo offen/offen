@@ -145,7 +145,7 @@ func TestRouter_PostUserSecret(t *testing.T) {
 				Value: "existing-user-id",
 			},
 			http.StatusNoContent,
-			func(input string) bool { return input == "existing-user-id" },
+			func(input string) bool { return strings.HasPrefix(input, "existing-user-id,") },
 		},
 	}
 	for _, test := range tests {

@@ -61,6 +61,13 @@ func (rt *router) userCookieMiddleware(cookieKey, contextKey string) gin.Handler
 		} else {
 			var signature string
 			chunks := strings.Split(ck.Value, ",")
+			if len(chunks) != 2 {
+				newJSONError(
+					errors.New("user cookie: received malformed identifier"),
+					http.StatusBadRequest,
+				).Pipe(c)
+				return
+			}
 			userID, signature = chunks[0], chunks[1]
 
 			if err := keys.Verify(userID, signature, userCookieSecret); err != nil {

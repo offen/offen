@@ -54,7 +54,7 @@ func (rt *router) postEvents(c *gin.Context) {
 		}
 
 		newJSONError(
-			fmt.Errorf("router: error persisting event: %v", err),
+			fmt.Errorf("router: error persisting event: %w", err),
 			http.StatusInternalServerError,
 		).Pipe(c)
 		return
@@ -63,7 +63,15 @@ func (rt *router) postEvents(c *gin.Context) {
 	// this handler might be called without a cookie / i.e. receiving an
 	// anonymous event, in which case it is important **NOT** to re-issue
 	// the user cookie.
-	ck, _ := rt.userCookie(userID, c.GetBool(contextKeySecureContext))
+	ck, err := rt.userCookie(userID, c.GetBool(contextKeySecureContext))
+	if err != nil {
+		newJSONError(
+			fmt.Errorf("router: error creating user cookie: %w", err),
+			http.StatusInternalServerError,
+		).Pipe(c)
+		return
+
+	}
 	if userID != "" {
 		http.SetCookie(c.Writer, ck)
 	}
@@ -128,12 +136,19 @@ func (rt *router) purgeEvents(c *gin.Context) {
 	userID := c.GetString(contextKeyCookie)
 	if err := rt.db.Purge(userID); err != nil {
 		newJSONError(
-			fmt.Errorf("router: error purging user events: %v", err),
+			fmt.Errorf("router: error purging user events: %w", err),
 			http.StatusInternalServerError,
 		).Pipe(c)
 		return
 	}
-	ck, _ := rt.userCookie("", c.GetBool(contextKeySecureContext))
+	ck, err := rt.userCookie("", c.GetBool(contextKeySecureContext))
+	if err != nil {
+		newJSONError(
+			fmt.Errorf("router: error creating user cookie: %w", err),
+			http.StatusInternalServerError,
+		).Pipe(c)
+		return
+	}
 	if c.Query("user") != "" {
 		http.SetCookie(c.Writer, ck)
 	}

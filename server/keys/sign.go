@@ -16,6 +16,8 @@ func sign(value string, secret []byte) ([]byte, error) {
 	return h.Sum(nil), nil
 }
 
+// Sign creates a Base64 encoded signature for the given string using the
+// given secret.
 func Sign(value string, secret []byte) (string, error) {
 	bytes, err := sign(value, secret)
 	if err != nil {
@@ -24,12 +26,14 @@ func Sign(value string, secret []byte) (string, error) {
 	return base64.StdEncoding.EncodeToString(bytes), nil
 }
 
-func Verify(value, mac string, secret []byte) error {
+// Verify checks whether the given value matches the given Base64 encoded
+// signature when using the given secret.
+func Verify(value, signature string, secret []byte) error {
 	compare, err := sign(value, secret)
 	if err != nil {
 		return fmt.Errorf("keys: error computing mac for comparison: %w", err)
 	}
-	macBytes, err := base64.StdEncoding.DecodeString(mac)
+	macBytes, err := base64.StdEncoding.DecodeString(signature)
 	if err != nil {
 		return fmt.Errorf("keys: error decoding given mac: %w", err)
 	}

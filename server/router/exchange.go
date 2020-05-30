@@ -73,7 +73,14 @@ func (rt *router) postUserSecret(c *gin.Context) {
 		return
 	}
 
-	ck, _ = rt.userCookie(userID, c.GetBool(contextKeySecureContext))
+	ck, err = rt.userCookie(userID, c.GetBool(contextKeySecureContext))
+	if err != nil {
+		newJSONError(
+			fmt.Errorf("router: error creating user cookie: %w", err),
+			http.StatusInternalServerError,
+		).Pipe(c)
+		return
+	}
 	http.SetCookie(c.Writer, ck)
 	c.Status(http.StatusNoContent)
 }

@@ -13,6 +13,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/securecookie"
+	"github.com/offen/offen/server/keys"
 	"github.com/offen/offen/server/persistence"
 )
 
@@ -100,17 +101,18 @@ func TestUserCookieMiddleware(t *testing.T) {
 		if w.Code != http.StatusBadRequest {
 			t.Errorf("Unexpected status code %v", w.Code)
 		}
-		if !strings.Contains(w.Body.String(), "received invalid identifier") {
+		if !strings.Contains(w.Body.String(), "received malformed identifier") {
 			t.Errorf("Unexpected body %s", w.Body.String())
 		}
 	})
 
 	t.Run("ok", func(t *testing.T) {
+		signature, _ := keys.Sign("600bf860-0477-423b-85e3-d5472c99230e", userCookieSecret)
 		w := httptest.NewRecorder()
 		r := httptest.NewRequest(http.MethodGet, "/", nil)
 		r.AddCookie(&http.Cookie{
 			Name:  "user",
-			Value: "600bf860-0477-423b-85e3-d5472c99230e",
+			Value: fmt.Sprintf("600bf860-0477-423b-85e3-d5472c99230e,%s", signature),
 		})
 		m.ServeHTTP(w, r)
 		if w.Code != http.StatusOK {
