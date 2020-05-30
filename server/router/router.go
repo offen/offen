@@ -16,10 +16,13 @@ import (
 	"github.com/gorilla/securecookie"
 	"github.com/microcosm-cc/bluemonday"
 	"github.com/offen/offen/server/config"
+	"github.com/offen/offen/server/keys"
 	"github.com/offen/offen/server/mailer"
 	"github.com/offen/offen/server/persistence"
 	"github.com/sirupsen/logrus"
 )
+
+var userCookieSecret = []byte("abc123")
 
 type router struct {
 	db                   persistence.Service
@@ -57,12 +60,11 @@ func (rt *router) userCookie(userID string, secure bool) (*http.Cookie, error) {
 
 	value := userID
 	if userID != "" {
-		var err error
-		value, err = rt.authenticationSigner.MaxAge(24*60*60).Encode("id", userID)
+		signature, err := keys.Sign(userID, userCookieSecret)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("router: error signing user cookie: %w", err)
 		}
-
+		value = fmt.Sprintf("%s,%s", userID, signature)
 	}
 
 	c := &http.Cookie{

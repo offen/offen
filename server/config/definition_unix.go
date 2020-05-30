@@ -22,13 +22,14 @@ type Config struct {
 		ConnectionString EnvString `default:"/var/opt/offen/offen.db"`
 	}
 	App struct {
-		Development  bool     `default:"false"`
-		LogLevel     LogLevel `default:"info"`
-		SingleNode   bool     `default:"true"`
-		Locale       Locale   `default:"en"`
-		RootAccount  string
-		DemoAccount  string `ignored:"true"`
-		DeployTarget DeployTarget
+		Development         bool     `default:"false"`
+		LogLevel            LogLevel `default:"info"`
+		SingleNode          bool     `default:"true"`
+		Locale              Locale   `default:"en"`
+		RootAccount         string
+		DemoAccount         string `ignored:"true"`
+		DeployTarget        DeployTarget
+		AllowUnsignedUserID bool `default:"false"`
 	}
 	Secret Bytes
 	SMTP   struct {

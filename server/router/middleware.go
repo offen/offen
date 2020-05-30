@@ -9,11 +9,13 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"regexp"
 	"strings"
 
 	"github.com/gin-contrib/location"
 	"github.com/gin-gonic/gin"
 	"github.com/gofrs/uuid"
+	"github.com/offen/offen/server/keys"
 )
 
 func secureContextMiddleware(contextKey string, isDevelopment bool) gin.HandlerFunc {
@@ -37,6 +39,8 @@ func optinMiddleware(cookieName, passWhen string) gin.HandlerFunc {
 	}
 }
 
+var uuidRE = regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$")
+
 // userCookieMiddleware ensures a cookie of the given name is present and
 // attaches its value to the request's context using the given key, before
 // passing it on to the wrapped handler.
@@ -50,13 +54,22 @@ func (rt *router) userCookieMiddleware(cookieKey, contextKey string) gin.Handler
 			).Pipe(c)
 			return
 		}
+
 		var userID string
-		if err := rt.authenticationSigner.Decode("id", ck.Value, &userID); err != nil {
-			newJSONError(
-				errors.New("user cookie: user id signature did not match"),
-				http.StatusBadRequest,
-			).Pipe(c)
-			return
+		if uuidRE.MatchString(ck.Value) && rt.config.App.AllowUnsignedUserID {
+			userID = ck.Value
+		} else {
+			var signature string
+			chunks := strings.Split(ck.Value, ",")
+			userID, signature = chunks[0], chunks[1]
+
+			if err := keys.Verify(userID, signature, userCookieSecret); err != nil {
+				newJSONError(
+					errors.New("user cookie: user id signature did not match"),
+					http.StatusBadRequest,
+				).Pipe(c)
+				return
+			}
 		}
 		if _, err := uuid.FromString(userID); err != nil {
 			newJSONError(
