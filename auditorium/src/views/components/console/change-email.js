@@ -4,28 +4,30 @@
  */
 
 /** @jsx h */
-const { h } = require('preact')
+const { h, Fragment } = require('preact')
 const { useState } = require('preact/hooks')
 
 const LabeledInput = require('./../_shared/labeled-input')
 const SubmitButton = require('./../_shared/submit-button')
+const MultiStepForm = require('./../_shared/multi-step-form')
 
 const ChangeEmail = (props) => {
   const [isDisabled, setIsDisabled] = useState(false)
-  function handleSubmit (e) {
-    e.preventDefault()
-    var formData = new window.FormData(e.currentTarget)
+  function handleSubmit (formData, resetForm) {
     setIsDisabled(true)
     props.onChangeEmail(
       {
-        password: formData.get('password'),
-        emailAddress: formData.get('email-address'),
-        emailCurrent: formData.get('email-current')
+        password: formData.password,
+        emailAddress: formData['email-address'],
+        emailCurrent: formData['email-current']
       },
       __('Please log in again, using your updated email.'),
       __('Could not change email. Try again.')
     )
-      .then(() => setIsDisabled(false))
+      .then(() => {
+        setIsDisabled(false)
+        resetForm()
+      })
   }
 
   return (
@@ -33,35 +35,64 @@ const ChangeEmail = (props) => {
       <h4 class='f4 normal mt0 mb3'>
         {__('Change email address')}
       </h4>
-      <form class='mw6 center mb4' onsubmit={handleSubmit}>
-        <LabeledInput
-          type='email'
-          name='email-current'
-          required
-          disabled={isDisabled}
-        >
-          {__('Current email address')}
-        </LabeledInput>
-        <LabeledInput
-          type='email'
-          name='email-address'
-          required
-          disabled={isDisabled}
-        >
-          {__('New email address')}
-        </LabeledInput>
-        <LabeledInput
-          type='password'
-          name='password'
-          required
-          disabled={isDisabled}
-        >
-          {__('Password')}
-        </LabeledInput>
-        <SubmitButton disabled={isDisabled}>
-          {__('Change email address')}
-        </SubmitButton>
-      </form>
+      <MultiStepForm
+        class='mw6 center mb4'
+        onsubmit={handleSubmit}
+        steps={[
+          (props) => {
+            return (
+              <Fragment>
+                <LabeledInput
+                  type='email'
+                  name='email-address'
+                  required
+                  disabled={isDisabled}
+                >
+                  {__('New email address')}
+                </LabeledInput>
+                <SubmitButton disabled={isDisabled}>
+                  {__('Change email address')}
+                </SubmitButton>
+              </Fragment>
+            )
+          },
+          (props, autoFocusRef) => {
+            return (
+              <Fragment>
+                <h5>
+                  {__('You need to confirm this action with your credentials')}
+                </h5>
+                <LabeledInput
+                  type='email'
+                  name='email-current'
+                  required
+                  disabled={isDisabled}
+                >
+                  {__('Current email address')}
+                </LabeledInput>
+                <LabeledInput
+                  type='password'
+                  name='password'
+                  required
+                  disabled={isDisabled}
+                >
+                  {__('Password')}
+                </LabeledInput>
+                <SubmitButton disabled={isDisabled}>
+                  {__('Confirm')}
+                </SubmitButton>
+                <SubmitButton
+                  disabled={isDisabled}
+                  onClick={props.onCancel}
+                  disabledCopy={__('Cancel')}
+                >
+                  {__('Cancel')}
+                </SubmitButton>
+              </Fragment>
+            )
+          }
+        ]}
+      />
     </div>
   )
 }
