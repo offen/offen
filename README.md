@@ -8,7 +8,7 @@
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/offen/offen.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/offen/offen/alerts/)
 [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/offen/offen.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/offen/offen/context:javascript)
 
-Offen is a fair alternative to common web analytics tools. Pay respect to your users while gaining insight into their behavior. Self hosted, open source and free.
+Offen is a fair alternative to common web analytics tools. Gain insights while your users have full access to their data. Self hosted, open source and free.
 
 ## Contents
 - [Core features](#core-features)
