@@ -59,6 +59,8 @@ func main() {
 	case "version":
 		cmdVersion("version", flags)
 	default:
-		newLogger().Fatalf("Unknown subcommand %s\n", os.Args[1])
+		fmt.Fprintf(flag.CommandLine.Output(), "Error: unknown subcommand \"%s\"\n", os.Args[1])
+		fmt.Fprint(flag.CommandLine.Output(), mainUsage)
+		os.Exit(1)
 	}
 }
