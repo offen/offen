@@ -130,13 +130,16 @@ exports.login = loginWith(window.location.origin + '/api/login')
 exports.loginWith = loginWith
 
 function loginWith (loginUrl) {
-  return function (credentials) {
-    return credentials
+  return function (username, password) {
+    return (username && password)
       ? window
         .fetch(loginUrl, {
           method: 'POST',
           credentials: 'include',
-          body: JSON.stringify(credentials)
+          body: JSON.stringify({
+            username: username,
+            password: password
+          })
         })
         .then(handleFetchResponse)
       : window
