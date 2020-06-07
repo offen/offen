@@ -43,10 +43,13 @@ const AuditoriumView = (props) => {
   const softFailure = __(
     'This view failed to update automatically, data may be out of date. Check your network connection if the problem persists.'
   )
-  useEffect(function scheduleAutoRefresh () {
+
+  useEffect(function fetchDataAndScheduleRefresh () {
     if (!focus) {
       return null
     }
+    handleQuery({ accountId, range, resolution }, authenticatedUser)
+
     const tick = window.setInterval(() => {
       handleQuery({ accountId, range, resolution }, authenticatedUser, softFailure, true)
     }, 15000)
@@ -69,12 +72,6 @@ const AuditoriumView = (props) => {
       window.removeEventListener('blur', blur)
     }
   })
-
-  // it's important to keep this hook below the first check so that it does
-  // not create a race condition between consentStatus and events
-  useEffect(function fetchData () {
-    handleQuery({ accountId, range, resolution }, authenticatedUser)
-  }, [accountId, range, resolution])
 
   if (!model) {
     return (

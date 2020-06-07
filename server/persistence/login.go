@@ -121,39 +121,23 @@ func (p *persistenceLayer) ChangePassword(userID, currentPassword, changedPasswo
 		return fmt.Errorf("persistence: error hashing new password: %w", hashErr)
 	}
 	accountUser.HashedPassword = newPasswordHash.Marshal()
-
-	txn, err := p.dal.Transaction()
-	if err != nil {
-		return fmt.Errorf("persistence: error creating transaction: %w", err)
-	}
-	if err := txn.UpdateAccountUser(&accountUser); err != nil {
-		txn.Rollback()
-		return fmt.Errorf("persistence: error updating password for user: %w", err)
-	}
-
 	keyFromCurrentPassword, keyErr := keys.DeriveKey(currentPassword, accountUser.Salt)
 	if keyErr != nil {
-		txn.Rollback()
-		return fmt.Errorf("persistence: error deriving key from password: %w", keyErr)
+		return fmt.Errorf("persistence: error deriving key from current password: %w", keyErr)
 	}
 
-	for _, relationship := range accountUser.Relationships {
+	for index, relationship := range accountUser.Relationships {
 		decryptedKey, decryptErr := keys.DecryptWith(keyFromCurrentPassword, relationship.PasswordEncryptedKeyEncryptionKey)
 		if decryptErr != nil {
-			txn.Rollback()
 			return fmt.Errorf("persistence: error decrypting key using password: %w", decryptErr)
 		}
 		if err := relationship.addPasswordEncryptedKey(decryptedKey, accountUser.Salt, changedPassword); err != nil {
-			txn.Rollback()
 			return fmt.Errorf("persistence: error updating password encrypted key: %w", err)
 		}
-		if err := txn.UpdateAccountUserRelationship(&relationship); err != nil {
-			txn.Rollback()
-			return fmt.Errorf("persistence: error updating keys on relationship: %w", err)
-		}
+		accountUser.Relationships[index] = relationship
 	}
-	if err := txn.Commit(); err != nil {
-		return fmt.Errorf("persistence: error committing transaction: %w", err)
+	if err := p.dal.UpdateAccountUser(&accountUser); err != nil {
+		return fmt.Errorf("persistence: error updating password for user: %w", err)
 	}
 	return nil
 }
@@ -164,18 +148,12 @@ func (p *persistenceLayer) ResetPassword(emailAddress, password string, oneTimeK
 		return fmt.Errorf("persistence: error looking up account user: %w", err)
 	}
 
-	txn, err := p.dal.Transaction()
-	if err != nil {
-		return fmt.Errorf("persistence: error creating transaction: %w", err)
-	}
 	for index, relationship := range accountUser.Relationships {
 		keyEncryptionKey, decryptionErr := keys.DecryptWith(oneTimeKey, relationship.OneTimeEncryptedKeyEncryptionKey)
 		if decryptionErr != nil {
-			txn.Rollback()
 			return fmt.Errorf("persistence: error decrypting key encryption key: %w", decryptionErr)
 		}
 		if err := relationship.addPasswordEncryptedKey(keyEncryptionKey, accountUser.Salt, password); err != nil {
-			txn.Rollback()
 			return fmt.Errorf("persistence: error adding password encrypted key to relationship: %w", err)
 		}
 		relationship.OneTimeEncryptedKeyEncryptionKey = ""
@@ -183,16 +161,11 @@ func (p *persistenceLayer) ResetPassword(emailAddress, password string, oneTimeK
 	}
 	passwordHash, hashErr := keys.HashString(password)
 	if hashErr != nil {
-		txn.Rollback()
 		return fmt.Errorf("persistence: error hashing password: %w", hashErr)
 	}
 	accountUser.HashedPassword = passwordHash.Marshal()
-	if err := txn.UpdateAccountUser(accountUser); err != nil {
-		txn.Rollback()
+	if err := p.dal.UpdateAccountUser(accountUser); err != nil {
 		return fmt.Errorf("persistence: error updating password on account user: %w", err)
-	}
-	if err := txn.Commit(); err != nil {
-		return fmt.Errorf("persistence: error committing transaction: %w", err)
 	}
 	return nil
 }
@@ -231,31 +204,18 @@ func (p *persistenceLayer) ChangeEmail(userID, newEmailAddress, currentEmailAddr
 	}
 
 	accountUser.HashedEmail = hashedEmail.Marshal()
-	txn, err := p.dal.Transaction()
-	if err != nil {
-		return fmt.Errorf("persistence: error creating transaction: %w", err)
-	}
-	if err := txn.UpdateAccountUser(accountUser); err != nil {
-		txn.Rollback()
-		return fmt.Errorf("persistence: error updating hashed email on account user: %w", err)
-	}
-	for _, relationship := range accountUser.Relationships {
+	for index, relationship := range accountUser.Relationships {
 		decryptedKey, decryptionErr := keys.DecryptWith(keyFromCurrentEmail, relationship.EmailEncryptedKeyEncryptionKey)
 		if decryptionErr != nil {
-			txn.Rollback()
 			return decryptionErr
 		}
 		if err := relationship.addEmailEncryptedKey(decryptedKey, accountUser.Salt, newEmailAddress); err != nil {
-			txn.Rollback()
 			return fmt.Errorf("persistence: error adding email key to relationship: %w", err)
 		}
-		if err := txn.UpdateAccountUserRelationship(&relationship); err != nil {
-			txn.Rollback()
-			return fmt.Errorf("persistence: error updating keys on relationship: %w", err)
-		}
+		accountUser.Relationships[index] = relationship
 	}
-	if err := txn.Commit(); err != nil {
-		return fmt.Errorf("persistence: error comitting transaction: %w", err)
+	if err := p.dal.UpdateAccountUser(accountUser); err != nil {
+		return fmt.Errorf("persistence: error updating hashed email on account user: %w", err)
 	}
 	return nil
 }

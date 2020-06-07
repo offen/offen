@@ -4,6 +4,9 @@
 package router
 
 import (
+	"context"
+	"io/ioutil"
+	"log"
 	"net/http"
 	"net/http/httptest"
 	"regexp"
@@ -27,9 +30,16 @@ var (
 	}
 )
 
+func muteRequest(r *http.Request) *http.Request {
+	return r.WithContext(context.WithValue(r.Context(), http.ServerContextKey, http.Server{
+		ErrorLog: log.New(ioutil.Discard, "", log.LstdFlags),
+	}))
+}
+
 func staticMiddleware(fileServer, fallback http.Handler) gin.HandlerFunc {
 	tryStatic := func(method, url string) (int, string) {
 		r := httptest.NewRequest(method, url, nil)
+		r = muteRequest(r)
 		w := httptest.NewRecorder()
 		fileServer.ServeHTTP(w, r)
 		return w.Code, w.Header().Get("Content-Type")

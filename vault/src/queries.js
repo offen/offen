@@ -25,6 +25,8 @@ var decryptEvents = require('./decrypt-events')
 var stats = require('./stats')
 var cookies = require('./cookie-tools')
 
+var fallbackEventStore = {}
+
 var startOf = {
   hours: startOfHour,
   days: startOfDay,
@@ -53,6 +55,7 @@ var subtract = {
 exports.getDefaultStats = getDefaultStatsWith(getDatabase)
 exports.getDefaultStatsWith = getDefaultStatsWith
 function getDefaultStatsWith (getDatabase) {
+  var getAllEvents = getAllEventsWith(getDatabase)
   return function (accountId, query, privateJwk) {
     if (!accountId && accountId !== null) {
       return Promise.reject(
@@ -66,7 +69,6 @@ function getDefaultStatsWith (getDatabase) {
       )
     }
 
-    var table = getDatabase(accountId).events
     // range is the number of units the query looks back from the given
     // start day
     var range = (query && query.range) || 7
@@ -79,18 +81,13 @@ function getDefaultStatsWith (getDatabase) {
     var now = (query && query.now) || new Date()
     var lowerBound = startOf[resolution](subtract[resolution](now, range - 1)).toJSON()
     var upperBound = endOf[resolution](now).toJSON()
-    var allEvents = table.toArray()
-    var eventsInBounds = table
-      .where('timestamp')
-      .between(lowerBound, upperBound)
-      .toArray()
+
+    var allEvents = getAllEvents(accountId)
+    var eventsInBounds = getAllEvents(accountId, lowerBound, upperBound)
 
     var realtimeLowerBound = subMinutes(now, 15).toJSON()
     var realtimeUpperBound = now.toJSON()
-    var realtimeEvents = table
-      .where('timestamp')
-      .between(realtimeLowerBound, realtimeUpperBound)
-      .toArray()
+    var realtimeEvents = getAllEvents(accountId, realtimeLowerBound, realtimeUpperBound)
 
     // There are two types of queries happening here: those that rely solely
     // on the IndexedDB indices, and those that require the event payload
@@ -134,10 +131,7 @@ function getDefaultStatsWith (getDatabase) {
 
         var lowerBound = startOf[resolution](date).toJSON()
         var upperBound = endOf[resolution](date).toJSON()
-        var eventsInBounds = table
-          .where('timestamp')
-          .between(lowerBound, upperBound)
-          .toArray()
+        var eventsInBounds = getAllEvents(accountId, lowerBound, upperBound)
 
         var pageviews = stats.pageviews(eventsInBounds)
         var visitors = stats.visitors(eventsInBounds)
@@ -182,10 +176,7 @@ function getDefaultStatsWith (getDatabase) {
     for (var i = 0; i < 4; i++) {
       var currentChunkUpperBound = subtract.days(now, i * 7).toJSON()
       var currentChunkLowerBound = subtract.days(now, (i + 1) * 7).toJSON()
-      var chunk = table
-        .where('timestamp')
-        .between(currentChunkLowerBound, currentChunkUpperBound)
-        .toArray()
+      var chunk = getAllEvents(accountId, currentChunkLowerBound, currentChunkUpperBound)
       retentionChunks.push(chunk)
     }
     retentionChunks = retentionChunks.reverse()
@@ -194,7 +185,7 @@ function getDefaultStatsWith (getDatabase) {
         return stats.retention.apply(stats, chunks)
       })
 
-    var empty = table.count().then(function (count) {
+    var empty = countEvents(accountId).then(function (count) {
       return count === 0
     })
 
@@ -252,6 +243,42 @@ function getDefaultStatsWith (getDatabase) {
 
 var TYPE_USER_SECRET = 'USER_SECRET'
 var TYPE_ENCRYPTED_SECRET = 'ENCRYPTED_SECRET'
+
+function getAllEventsWith (getDatabase) {
+  return function (accountId, lowerBound, upperBound) {
+    var table = getDatabase(accountId).events
+    if (!lowerBound || !upperBound) {
+      return table
+        .toArray()
+        .catch(dexie.OpenFailedError, function () {
+          fallbackEventStore[accountId] = fallbackEventStore[accountId] || []
+          return fallbackEventStore[accountId]
+        })
+    }
+    return table
+      .where('timestamp')
+      .between(lowerBound, upperBound)
+      .toArray()
+      .catch(dexie.OpenFailedError, function () {
+        fallbackEventStore[accountId] = fallbackEventStore[accountId] || []
+        return fallbackEventStore[accountId].filter(function (event) {
+          return event.timestamp >= lowerBound && event.timestamp <= upperBound
+        })
+      })
+  }
+}
+
+var countEvents = countEventsWith(getDatabase)
+function countEventsWith (getDatabase) {
+  return function (accountId) {
+    var table = getDatabase(accountId).events
+    return table.count()
+      .catch(dexie.OpenFailedError, function () {
+        fallbackEventStore[accountId] = fallbackEventStore[accountId] || []
+        return fallbackEventStore[accountId].length
+      })
+  }
+}
 
 exports.getUserSecret = getUserSecretWith(getDatabase)
 exports.getUserSecretWith = getUserSecretWith
@@ -363,6 +390,10 @@ function getLatestEventWith (getDatabase) {
       .then(function (latestLocalEvent) {
         return latestLocalEvent || null
       })
+      .catch(dexie.OpenFailedError, function () {
+        fallbackEventStore[accountId] = fallbackEventStore[accountId] || []
+        return fallbackEventStore[accountId][fallbackEventStore[accountId].length - 1] || null
+      })
   }
 }
 
@@ -372,6 +403,9 @@ function getAllEventIdsWith (getDatabase) {
   return function (accountId) {
     var db = getDatabase(accountId)
     return db.events.toCollection().keys()
+      .catch(dexie.OpenFailedError, function () {
+        return []
+      })
   }
 }
 
@@ -384,6 +418,11 @@ function putEventsWith (getDatabase) {
     var db = getDatabase(accountId)
     // events data is saved in the shape supplied by the server
     return db.events.bulkAdd(args)
+      .catch(dexie.OpenFailedError, function () {
+        fallbackEventStore[accountId] = fallbackEventStore[accountId] || []
+        fallbackEventStore[accountId] = fallbackEventStore[accountId].concat(args)
+        return fallbackEventStore[accountId]
+      })
   }
 }
 
@@ -395,6 +434,13 @@ function deleteEventsWith (getDatabase) {
     var accountId = args.shift()
     var db = getDatabase(accountId)
     return db.events.bulkDelete(args)
+      .catch(dexie.OpenFailedError, function () {
+        fallbackEventStore[accountId] = fallbackEventStore[accountId] || []
+        fallbackEventStore[accountId] = fallbackEventStore[accountId].filter(function (event) {
+          return args.indexOf(event.eventId) === -1
+        })
+        return null
+      })
   }
 }
 
@@ -404,6 +450,10 @@ function purgeWith (getDatabase) {
   return function () {
     var db = getDatabase(null)
     return db.events.clear()
+      .catch(dexie.OpenFailedError, function () {
+        fallbackEventStore = {}
+        return null
+      })
   }
 }
 
@@ -414,5 +464,8 @@ function getEncryptedSecretsWith (getDatabase) {
       .where('type')
       .equals(TYPE_ENCRYPTED_SECRET)
       .toArray()
+      .catch(dexie.OpenFailedError, function () {
+        return []
+      })
   }
 }

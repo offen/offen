@@ -14,6 +14,9 @@ function optIn (event, respond, next) {
       if (status) {
         return status
       }
+      if (event.data.meta && event.data.meta.noBanner) {
+        return consentStatus.DENY
+      }
       function styleHost (payload) {
         return respond({
           type: 'STYLES',

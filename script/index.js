@@ -13,6 +13,8 @@ var events = require('./src/events')
 // again when being accessed from inside a function body
 var accountId = document.currentScript && document.currentScript.dataset.accountId
 var scriptHost = document.currentScript && document.currentScript.src
+var noBanner = document.currentScript && 'noBanner' in document.currentScript.dataset
+
 var scriptUrl = ''
 try {
   scriptUrl = new window.URL(scriptHost).origin
@@ -26,6 +28,9 @@ function main () {
       payload: {
         accountId: accountId,
         event: events.pageview(context === 'initial')
+      },
+      meta: {
+        noBanner: noBanner
       }
     }
     send(message)
