@@ -185,7 +185,7 @@ function getDefaultStatsWith (getDatabase) {
         return stats.retention.apply(stats, chunks)
       })
 
-    var empty = countEvents().then(function (count) {
+    var empty = countEvents(accountId).then(function (count) {
       return count === 0
     })
 
