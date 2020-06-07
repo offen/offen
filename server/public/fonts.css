@@ -11,7 +11,7 @@
   src: local('Roboto'), local('Roboto-Regular'),
        url('../fonts/roboto-v20-latin-regular.woff2') format('woff2'), /* Super Modern Browsers */
        url('../fonts/roboto-v20-latin-regular.woff') format('woff'), /* Modern Browsers */
-       url('../fonts/roboto-v20-latin-regular.ttf') format('truetype'), /* Safari, Android, iOS */
+       url('../fonts/roboto-v20-latin-regular.ttf') format('truetype'); /* Safari, Android, iOS */
 }
 /* roboto-700 - latin */
 @font-face {
@@ -21,7 +21,7 @@
   src: local('Roboto Bold'), local('Roboto-Bold'),
        url('../fonts/roboto-v20-latin-700.woff2') format('woff2'), /* Super Modern Browsers */
        url('../fonts/roboto-v20-latin-700.woff') format('woff'), /* Modern Browsers */
-       url('../fonts/roboto-v20-latin-700.ttf') format('truetype'), /* Safari, Android, iOS */
+       url('../fonts/roboto-v20-latin-700.ttf') format('truetype'); /* Safari, Android, iOS */
 }
 .roboto {
   font-family: roboto, sans-serif;
