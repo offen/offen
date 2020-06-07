@@ -53,7 +53,7 @@ aux_links:
 
 # Footer content appears at the bottom of every page's main content
 footer_content: |
-  This document refers to Offen at <a href="https://github.com/offen/offen/releases/tag/v0.1.0-alpha.7">Version v0.1.0-alpha.7</a><br>
+  This document refers to Offen at <a href="https://github.com/offen/offen/releases/tag/v0.1.0-alpha.8">Version v0.1.0-alpha.8</a><br>
   Copyright &copy; Offen. Distributed by an <a href="https://github.com/offen/docs/tree/master/LICENSE">Apache 2.0 license.</a>
 
 # Color scheme currently only supports "dark" or nil (default)

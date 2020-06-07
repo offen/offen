@@ -78,7 +78,7 @@ docker run -it --rm \
   -v offen_data:/var/opt/offen \
   -v offen_certs:/var/www/.cache \
   -v ~/.config/offen.env:/etc/offen/offen.env \
-  offen/offen:v0.1.0-alpha.7 setup \
+  offen/offen:v0.1.0-alpha.8 setup \
   -email me@mysite.com \
   -name mysite \
   -populate
@@ -97,7 +97,7 @@ OFFEN_SECRET="uNrZP7r5fY3sfS35tbzR9w==" # do not use this secret in production
 __Heads Up__
 {: .label .label-red }
 
-The official Docker image is available as [`offen/offen`][docker-hub] on Docker Hub. The most recent official release is tagged as `v0.1.0-alpha.7` (which is also what the above command is using). If you are feeling adventurous, or require features that are not yet available in a release you can also use the `latest` tag which represents the latest state of development. Be aware though that these versions might be unstable.
+The official Docker image is available as [`offen/offen`][docker-hub] on Docker Hub. The most recent official release is tagged as `v0.1.0-alpha.8` (which is also what the above command is using). If you are feeling adventurous, or require features that are not yet available in a release you can also use the `latest` tag which represents the latest state of development. Be aware though that these versions might be unstable.
 
 [docker-hub]: https://hub.docker.com/r/offen/offen
 
@@ -168,7 +168,7 @@ docker run -d \
   -v offen_data:/var/opt/offen \
   -v offen_certs:/var/www/.cache \
   -v ~/.config/offen.env:/etc/offen/offen.env \
-  offen/offen:v0.1.0-alpha.7
+  offen/offen:v0.1.0-alpha.8
 ```
 
 Once the application has started, you can use `docker ps` to check if it's up and running:
@@ -176,7 +176,7 @@ Once the application has started, you can use `docker ps` to check if it's up an
 ```
 $ docker ps
 CONTAINER ID        IMAGE                        COMMAND                  CREATED             STATUS              PORTS                    NAMES
-70653aca75b4        offen/offen:v0.1.0-alpha.7   "offen"                  5 minutes ago       Up 5 minutes        80/tcp, 443/tcp          offen
+70653aca75b4        offen/offen:v0.1.0-alpha.8   "offen"                  5 minutes ago       Up 5 minutes        80/tcp, 443/tcp          offen
 ```
 
 Your instance is now ready to use. Once you have setup DNS to point at your host system, you can head to `https://offen.mysite.com/login` and login to your account.
