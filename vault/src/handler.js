@@ -166,8 +166,8 @@ exports.handleLoginWith = handleLoginWith
 function handleLoginWith (api, get, set) {
   return function (message) {
     var credentials = (message.payload && message.payload.credentials) || null
-
-    return api.login(credentials)
+    var args = credentials ? [credentials.username, credentials.password] : []
+    return api.login.apply(api, args)
       .then(function (response) {
         if (credentials) {
           return set(response)
