@@ -23,8 +23,9 @@ const AccountPicker = (props) => {
         return a.accountName.localeCompare(b.accountName)
       })
       .map(function (account, idx) {
+        const isCurrent = account.accountId === selectedId
         let buttonClass = 'link dim dib pv2 mt1 mb2 mr3 mid-gray'
-        if (account.accountId === selectedId) {
+        if (isCurrent) {
           buttonClass = 'b link dim dib bt bw2 b--mid-gray ph2 pv2 mb2 mr3 mid-gray'
         }
 
@@ -35,7 +36,11 @@ const AccountPicker = (props) => {
 
         return (
           <li class='bt b--moon-gray' key={idx}>
-            <a href={`/auditorium/${account.accountId}/${query ? `?${query}` : ''}`} class={buttonClass}>
+            <a
+              href={`/auditorium/${account.accountId}/${query ? `?${query}` : ''}`}
+              class={buttonClass}
+              aria-current={isCurrent ? 'page' : 'false'}
+            >
               {account.accountName}
             </a>
           </li>

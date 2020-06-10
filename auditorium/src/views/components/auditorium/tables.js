@@ -147,12 +147,14 @@ const Container = (props) => {
     }
 
     let handleClick = null
+    const ariaLabels = {}
     if (tableSets.length > 1) {
       css.push('pointer')
       handleClick = () => setSelectedTab(index)
     }
     if (index === selectedTab && tableSets.length !== 1) {
       css.push('b', 'bt', 'bw2', 'b--dark-green')
+      ariaLabels['aria-current'] = 'true'
     }
 
     let explainerProps = {}
@@ -165,7 +167,7 @@ const Container = (props) => {
     }
 
     return (
-      <a key={index} role='button' class={classnames(css)} onclick={handleClick}>
+      <a key={index} role='button' class={classnames(css)} onclick={handleClick} {...ariaLabels}>
         {set.props.headline}
         {showExplainer && (index === selectedTab)
           ? (

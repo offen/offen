@@ -25,12 +25,14 @@ const Live = (props) => {
           />
         </div>
         <div class='w-100 w-70-ns bt bn-ns b--light-gray mt1'>
+          <h3 class='f5 normal pv3 mv0'>
+            {__('Active pages')}
+          </h3>
           <Tables.Container
             removeBorder
           >
             <Tables.Table
               limit={5}
-              headline={__('Active pages')}
               columnNames={[__('URL'), __('Visitors')]}
               rows={model.livePages}
             />
