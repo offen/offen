@@ -175,7 +175,7 @@ const Container = (props) => {
         onclick={handleClick}
         onkeypress={(e) => {
           if (e.which === 13) {
-            handleClick(e)
+            handleClick()
           }
         }}
         {...ariaLabels}

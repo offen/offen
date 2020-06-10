@@ -80,13 +80,13 @@ const RetireAccount = (props) => {
       .then(() => setIsDisabled(false))
   }
   return (
-    <div class='pa3 bg-black-05 flex-auto'>
+    <div class='pa0 bg-black-05 flex-auto'>
       <Collapsible
         header={(props) => {
           const { isCollapsed, handleToggle } = props
           return (
             <div
-              class='flex justify-between pointer'
+              class='pa3 flex justify-between pointer'
               onclick={handleToggle}
               role='button'
               onkeypress={(e) => {
