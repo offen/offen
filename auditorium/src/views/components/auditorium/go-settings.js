@@ -26,7 +26,7 @@ const GoSettings = (props) => {
                 {__('Admin console')}
               </h4>
               <a
-                aria-label={__('Toggle display of Admin Console Navigation')}
+                aria-label={__('Toggle display of Admin console navigation')}
                 class={classnames('dib', 'label-toggle', isCollapsed ? 'label-toggle--rotate' : null)}
               />
             </div>
