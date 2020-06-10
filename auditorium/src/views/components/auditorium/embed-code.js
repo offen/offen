@@ -21,7 +21,20 @@ const EmbedCode = (props) => {
   const renderHeader = (props = {}) => {
     const { handleToggle = null, isCollapsed } = props
     return (
-      <div class='flex flex-wrap justify-between pointer' onclick={handleToggle} role='button'>
+      <div
+        class={classnames('flex flex-wrap justify-between', { pa3: collapsible, pointer: collapsible })}
+        onclick={collapsible ? handleToggle : null}
+        onkeypress={(e) => {
+          if (!collapsible) {
+            return
+          }
+          if (e.which === 13) {
+            handleToggle()
+          }
+        }}
+        role={collapsible ? 'button' : null}
+        tabindex={collapsible ? '0' : '-1'}
+      >
         <h4 class='f4 normal ma0'>{__('Embed code')}</h4>
         {collapsible
           ? (
@@ -62,7 +75,7 @@ const EmbedCode = (props) => {
   )
 
   return (
-    <div class='flex-auto pa3 bg-black-05'>
+    <div class={classnames('flex-auto bg-black-05', collapsible ? 'pa0' : 'pa3')}>
       {collapsible
         ? <Collapsible header={renderHeader} body={renderBody} />
         : (

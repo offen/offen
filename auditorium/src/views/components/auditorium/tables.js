@@ -167,7 +167,19 @@ const Container = (props) => {
     }
 
     return (
-      <a key={index} role='button' class={classnames(css)} onclick={handleClick} {...ariaLabels}>
+      <a
+        tabindex='0'
+        key={index}
+        role='button'
+        class={classnames(css)}
+        onclick={handleClick}
+        onkeypress={(e) => {
+          if (e.which === 13) {
+            handleClick()
+          }
+        }}
+        {...ariaLabels}
+      >
         {set.props.headline}
         {showExplainer && (index === selectedTab)
           ? (
