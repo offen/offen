@@ -20,6 +20,12 @@ const GoSettings = (props) => {
               data-testid='auditorium/console-headline'
               class='flex justify-between pointer'
               onclick={handleToggle}
+              onkeypress={(e) => {
+                if (e.which === 13) {
+                  handleToggle()
+                }
+              }}
+              tabindex='0'
               role='button'
             >
               <h4 class='f4 normal ma0'>

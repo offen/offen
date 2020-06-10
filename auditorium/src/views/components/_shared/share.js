@@ -52,6 +52,13 @@ const Share = (props) => {
     const { isCollapsed, handleToggle } = props
     return (
       <div
+        onkeypress={(e) => {
+          if (e.which === 13) {
+            handleToggle()
+          }
+        }}
+        tabindex={collapsible ? '0' : '-1'}
+        role='button'
         onclick={handleToggle}
         class={classnames('flex', 'justify-between', { pointer: collapsible })}
       >
@@ -61,7 +68,6 @@ const Share = (props) => {
         {collapsible
           ? (
             <a
-              role='button'
               aria-label={__('Toggle display of %s functionality', headline)}
               class={classnames('dib', 'label-toggle', isCollapsed ? 'label-toggle--rotate' : null)}
             />

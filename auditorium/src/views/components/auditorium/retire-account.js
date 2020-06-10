@@ -85,7 +85,17 @@ const RetireAccount = (props) => {
         header={(props) => {
           const { isCollapsed, handleToggle } = props
           return (
-            <div class='flex justify-between pointer' onclick={handleToggle} role='button'>
+            <div
+              class='flex justify-between pointer'
+              onclick={handleToggle}
+              role='button'
+              onkeypress={(e) => {
+                if (e.which === 13) {
+                  handleToggle()
+                }
+              }}
+              tabindex='0'
+            >
               <h4 class='f4 normal ma0'>
                 {__('Retire account')}
               </h4>
