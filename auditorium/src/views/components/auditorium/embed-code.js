@@ -21,14 +21,13 @@ const EmbedCode = (props) => {
   const renderHeader = (props = {}) => {
     const { handleToggle = null, isCollapsed } = props
     return (
-      <div class='flex flex-wrap justify-between pointer' onclick={handleToggle}>
+      <div class='flex flex-wrap justify-between pointer' onclick={handleToggle} role='button'>
         <h4 class='f4 normal ma0'>{__('Embed code')}</h4>
         {collapsible
           ? (
             <a
               class={classnames('dib', 'label-toggle', !isCollapsed ? null : 'label-toggle--rotate')}
-              aria-label={__('Toggle display of Embed Code')}
-              role='button'
+              aria-label={__('Toggle display of Embed code')}
             />
           )
           : null}

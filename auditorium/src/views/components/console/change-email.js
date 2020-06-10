@@ -46,6 +46,7 @@ const ChangeEmail = (props) => {
                   type='email'
                   name='email-address'
                   required
+                  autocomplete='off'
                   disabled={isDisabled}
                 >
                   {__('New email address')}

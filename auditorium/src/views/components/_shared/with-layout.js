@@ -64,6 +64,7 @@ const Layout = (props) => (
               key={message.id}
               class='pointer mw6 mv0 mt3-ns center ph3 pv4 bg-light-yellow shadow-1-ns br2 b--black-10 bt bn-ns flex items-center'
               onclick={() => props.handleExpire(message.id)}
+              role='alert'
             >
               <img src='/offen-icon-black.svg' alt='Offen logo' height='30' class='ma0 mr3' />
               <span

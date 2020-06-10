@@ -85,14 +85,13 @@ const RetireAccount = (props) => {
         header={(props) => {
           const { isCollapsed, handleToggle } = props
           return (
-            <div class='flex justify-between pointer' onclick={handleToggle}>
+            <div class='flex justify-between pointer' onclick={handleToggle} role='button'>
               <h4 class='f4 normal ma0'>
                 {__('Retire account')}
               </h4>
               <a
                 class={classnames('dib', 'label-toggle', isCollapsed ? 'label-toggle--rotate' : null)}
-                aria-label={__('Toggle display of Retire Account block')}
-                role='button'
+                aria-label={__('Toggle display of Retire account functionality')}
               />
             </div>
           )

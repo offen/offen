@@ -62,7 +62,7 @@ const Share = (props) => {
           ? (
             <a
               role='button'
-              aria-label={__('Toggle display of account sharing')}
+              aria-label={__('Toggle display of %s functionality', headline)}
               class={classnames('dib', 'label-toggle', isCollapsed ? 'label-toggle--rotate' : null)}
             />
           )
@@ -88,6 +88,7 @@ const Share = (props) => {
                   )
                   : null}
                 <LabeledInput
+                  autocomplete='off'
                   type='email'
                   name='invitee'
                   required

@@ -20,13 +20,13 @@ const GoSettings = (props) => {
               data-testid='auditorium/console-headline'
               class='flex justify-between pointer'
               onclick={handleToggle}
+              role='button'
             >
               <h4 class='f4 normal ma0'>
                 {__('Admin console')}
               </h4>
               <a
-                role='button'
-                aria-label={__('Toggle display of Admin Console Navigation')}
+                aria-label={__('Toggle display of Admin console navigation')}
                 class={classnames('dib', 'label-toggle', isCollapsed ? 'label-toggle--rotate' : null)}
               />
             </div>

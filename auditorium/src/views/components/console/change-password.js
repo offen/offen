@@ -51,6 +51,7 @@ const ChangePassword = (props) => {
           type='password'
           name='changed'
           required
+          autocomplete='off'
           disabled={isDisabled}
         >
           {__('New password')}
@@ -59,6 +60,7 @@ const ChangePassword = (props) => {
           type='password'
           name='repeat'
           required
+          autocomplete='off'
           disabled={isDisabled}
         >
           {__('Repeat new password')}

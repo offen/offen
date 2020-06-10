@@ -46,6 +46,7 @@ const CreateAccount = (props) => {
                   name='account-name'
                   required
                   disabled={isDisabled}
+                  autocomplete='off'
                 >
                   {__('Account name')}
                 </LabeledInput>

@@ -36,7 +36,11 @@ const RangeSelector = (props) => {
       <li key={index} class='pr3 bt b--light-gray'>
         {activeRange
           ? (
-            <a href={url} class='b link dim dib bt bw2 b--dark-green ph2 pv2 mb2 mr3 dark-green'>
+            <a
+              href={url}
+              class='b link dim dib bt bw2 b--dark-green ph2 pv2 mb2 mr3 dark-green'
+              aria-current='time'
+            >
               {range.display}
             </a>
           )
