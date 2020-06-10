@@ -28,6 +28,7 @@ const LabeledInput = forwardRef((props, ref) => {
         <label class={labelClass}>
           {children}
           <input
+            autocomplete='on'
             class='w-100 pa2 mb3 input-reset ba b--black-10 bg-white'
             type='text'
             ref={ref}

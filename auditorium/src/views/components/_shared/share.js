@@ -88,6 +88,7 @@ const Share = (props) => {
                   )
                   : null}
                 <LabeledInput
+                  autocomplete='off'
                   type='email'
                   name='invitee'
                   required
