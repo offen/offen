@@ -49,7 +49,7 @@ const EmbedCode = (props) => {
   }
 
   const renderBody = (props = {}) => (
-    <div class='mw6 center mb4 mt3'>
+    <div class={classnames('mw6 center mb4 mt3', collapsible ? 'ph3' : null)}>
       <Paragraph class='ma0 mb3'>
         {__('To use Offen with the account <strong>%s</strong> on your website, embed the following script on each page you want to appear in your statistics.', model.account.name)}
       </Paragraph>

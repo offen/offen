@@ -80,7 +80,7 @@ const Share = (props) => {
   const renderBody = (props = {}) => {
     return (
       <MultiStepForm
-        class='mw6 center pb4 pt3'
+        class='mw6 center pb4 pt3 ph3'
         onsubmit={handleSubmit}
         steps={[
           (props) => {

@@ -108,7 +108,7 @@ const RetireAccount = (props) => {
         }}
         body={(props) => {
           return (
-            <div class='mw6 center mb4 mt3'>
+            <div class='mw6 center mb4 mt3 ph3'>
               {(() => {
                 if (isConfirmStep) {
                   return (
