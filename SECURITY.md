@@ -1,3 +1,8 @@
+<!--
+Copyright 2020 - Offen Authors <hioffen@posteo.de>
+SPDX-License-Identifier: Apache-2.0
+-->
+
 # Security Policy
 
 We work hard on making Offen as secure as possible. Yet, this does

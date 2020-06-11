@@ -1,3 +1,6 @@
+# Copyright 2020 - Offen Authors <hioffen@posteo.de>
+# SPDX-License-Identifier: Apache-2.0
+
 FROM alpine:3.11
 LABEL maintainer="offen <hioffen@posteo.de>"
 
