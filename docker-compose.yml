@@ -21,7 +21,6 @@ services:
     volumes:
       - serverdata:/var/opt/offen
       - .:/offen
-      - ./bootstrap.yml:/offen/server/bootstrap.yml
       - serverdeps:/data
     environment:
       GOPATH: /data/go
