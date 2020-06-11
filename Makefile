@@ -1,3 +1,6 @@
+# Copyright 2020 - Offen Authors <hioffen@posteo.de>
+# SPDX-License-Identifier: Apache-2.0
+
 help:
 	@echo "    up"
 	@echo "        Start the development server"

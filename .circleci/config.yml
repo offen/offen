@@ -1,3 +1,6 @@
+# Copyright 2020 - Offen Authors <hioffen@posteo.de>
+# SPDX-License-Identifier: Apache-2.0
+
 version: 2.1
 
 jobs:
@@ -52,6 +55,17 @@ jobs:
     steps:
       - test_node_app:
           app: packages
+
+  reuse:
+    docker:
+      - image: fsfe/reuse:0.11.1
+    working_directory: ~/offen
+    steps:
+      - checkout:
+          path: ~/offen
+      - run:
+          name: Check for REUSE compliance
+          command: reuse lint
 
   build:
     docker:
@@ -190,7 +204,7 @@ jobs:
 
             md5sum * > checksums.txt
 
-            cp ~/offen/{LICENSE,NOTICE,README.md} .
+            cp ~/offen/{LICENSE,README.md} .
 
             mkdir -p /tmp/artifacts
             tar -czvf /tmp/artifacts/offen-$DOCKER_IMAGE_TAG.tar.gz $(ls -A)
@@ -223,6 +237,8 @@ workflows:
           <<: *all_tags_filter
       - packages:
           <<: *all_tags_filter
+      - reuse:
+          <<: *all_tags_filter
       - build:
           <<: *all_tags_filter
       - integration:
@@ -237,6 +253,7 @@ workflows:
             - script
             - auditorium
             - packages
+            - reuse
             - integration
             - build
           filters:

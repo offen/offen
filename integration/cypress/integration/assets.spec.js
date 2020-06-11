@@ -1,3 +1,8 @@
+/**
+ * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 describe('Public facing assets', function () {
   it('serves the vault', function () {
     cy.visit('/vault/')
