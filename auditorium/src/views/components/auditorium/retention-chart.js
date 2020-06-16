@@ -72,7 +72,7 @@ const RetentionTable = (props) => {
         {explainerActive
           ? (
             <Paragraph class='mw7 ma0 pv2'>
-              {__('This panel displays your recurring visits of pages of the <a href="#terms-offen-installation" class="%s">Offen installation</a> during the last 4 weeks. For each of the previous weeks, the percentage is calculated from the value of the current week.', 'link dim dark-green')}
+              {__('This panel displays your recurring visits of pages of the <a href="#terms-offen-installation" class="%s">Offen installation</a> during the last 4 weeks. For each of the previous weeks, the percentage is calculated from the value of the current week.', 'b link dim dark-green')}
             </Paragraph>
           )
           : null}

@@ -149,7 +149,7 @@ const Chart = (props) => {
         {explainerActive
           ? (
             <Paragraph class='mw7 ma0 pv2'>
-              {__('This panel displays the number of pages (bright green) and websites (dark green) you have visited where the <a href="#terms-offen-installation" class="%s">Offen installation</a> is active. To measure this, a cookie is used to assign you a user and a session <a href="#terms-id" class="%s">ID.</a>', 'link dim dark-green', 'link dim dark-green')}
+              {__('This panel displays the number of pages (bright green) and websites (dark green) you have visited where the <a href="#terms-offen-installation" class="%s">Offen installation</a> is active. To measure this, a cookie is used to assign you a user and a session <a href="#terms-id" class="%s">ID.</a>', 'b link dim dark-green', 'b link dim dark-green')}
             </Paragraph>
           )
           : null}
