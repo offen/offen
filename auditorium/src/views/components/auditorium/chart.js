@@ -170,7 +170,9 @@ const Chart = (props) => {
             />
           )
           : (
-            <h4>{__("We don't have any data to display for the selected time range.")}</h4>
+            <Paragraph class='f6 normal i'>
+              {__("No data available for the selected time range.")}
+            </Paragraph>
           )}
       </div>
     </div>

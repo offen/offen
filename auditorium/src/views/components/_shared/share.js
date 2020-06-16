@@ -120,8 +120,8 @@ const Share = (props) => {
           (props, autoFocusRef) => {
             return (
               <Fragment>
-                <h5 class='f5 normal ma0 mb3 silver'>
-                  {__('Confirm with your credentials')}
+                <h5 class='f5 i normal ma0 mb3'>
+                  {__('You need to confirm this action with your credentials.')}
                 </h5>
                 <LabeledInput
                   type='email'

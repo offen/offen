@@ -40,7 +40,7 @@ const GoSettings = (props) => {
         }}
         body={(props) => {
           return (
-            <div class='mw6 center mb4 mt3 ph3'>
+            <div class='mw6 center mb4 mt3 ph3 ph0-ns'>
               <p class='ma0 mb3'>
                 {__('Share all accounts, create a new one, change your email address and password, log out from Offen')}
               </p>

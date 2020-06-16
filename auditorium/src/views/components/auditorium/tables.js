@@ -56,7 +56,7 @@ const Table = (props) => {
     })
     : (
       <tr>
-        <td class='f6 mid-gray pl2' colspan='2'>
+        <td class='f6 mid-gray i pl2' colspan='2'>
           {onEmptyMessage}
         </td>
       </tr>
