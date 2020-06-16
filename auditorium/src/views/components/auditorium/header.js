@@ -13,11 +13,11 @@ const Header = (props) => {
   let copy = null
   if (isOperator) {
     copy = __(
-      'You are viewing data as <strong>operator</strong> with account <strong>%s</strong>.',
+      'You are viewing data as operator with account <em class="%s">%s</em>.', 'i tracked',
       accountName
     )
   } else {
-    copy = __('You are viewing your <strong>usage data.</strong>')
+    copy = __('You are viewing your usage data.')
   }
   return (
     <HighlightBox

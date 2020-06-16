@@ -25,7 +25,7 @@ const Privacy = (props) => {
     deleteButton = (
       <div class='bl-ns b--moon-gray pl4-ns'>
         <Paragraph class='ma0 mb3'>
-          {__('Stay opted in, only delete <strong>usage data</strong>')}
+          {__('Stay opted in, only delete usage data')}
         </Paragraph>
         <button
           class='pointer w-100 w-auto-ns f5 link dim bn dib br1 ph3 pv2 mr1 mb4 white bg-mid-gray'
@@ -47,8 +47,8 @@ const Privacy = (props) => {
           </h4>
           <Paragraph class='ma0 mb3'>
             {userHasOptedIn
-              ? __('Opt out and delete <strong>usage data</strong>')
-              : __('Opt in and grant access to your <strong>usage data</strong>')}
+              ? __('Opt out and delete usage data')
+              : __('Opt in and grant access to your usage data')}
           </Paragraph>
           <button
             class='pointer w-100 w-auto-ns f5 link dim bn ph3 pv2 dib br1 mb4 white bg-mid-gray'
