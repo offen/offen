@@ -122,22 +122,16 @@ function bannerView (consentGiven, collapsed, handleCollapse, handleAllow, handl
     `
   } else {
     var learnMore = html`
-      <a target="_blank" rel="noopener" href="/" class="normal link underline dim dark-gray">
+      <a target="_blank" rel="noopener" href="/" class="b normal link dim dark-gray">
         ${__('Learn more')}
       </a>
     `
     content = html`
-      <p class="b mt0 mb3">
-        ${__('Continue with transparent analytics')}
-        ${collapsed ? learnMore : null}
+      <p class="ma0 mb3">
+        ${__('We only access your usage data if you allow.')}
+        ${learnMore}
         <a role="button" class="${toggleClass}" onclick="${handleCollapse}"></a>
       </p>
-      ${!collapsed ? html`
-        <p class="mt0 mb3">
-          ${__('Help to make this website better by granting access to your usage data. Your data always remains yours. Review and delete it at any time.')}
-          ${learnMore}
-        </p>
-      ` : null}
       <div class="flex">
         <div class="w-50 mr2">
           <button class="w-100 pointer tc dim bn ph3 pv2 dib br1 white bg-mid-gray" onclick=${handleAllow}>
@@ -186,12 +180,12 @@ function bannerStyles () {
       body {
         font-size: 1rem;
       }
-      @media all and (max-width: 430px) {
+      @media all and (max-width: 469px) {
         body {
           font-size: .75rem;
         }
       }
-      @media all and (max-width: 340px) {
+      @media all and (max-width: 350px) {
         body {
           font-size: .65rem;
         }
@@ -211,7 +205,7 @@ function hostStylesVisible (selector, isCollapsed) {
     right: 0;
     left: 0;
     margin: 0 auto;
-    width: 450px;
+    width: 470px;
     border: 1px solid #8a8a8a;
     border-radius: 3px;
     background-color: #FFFDF4;

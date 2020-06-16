@@ -43,7 +43,7 @@ module.exports = (props) => {
       <Fragment>
         <div class='w-100 w-60-ns mr3-ns' id='consent-banner'>
           <h3 class='f4 normal tl-ns ma0 mb3'>
-            {__('We only access your usage data if you allow us to.')}
+            {__('We only access your usage data if you allow.')}
           </h3>
           <p class='ma0 mb2'>
             {__('Offen is a fair and open source analytics software. Help the website that linked you here by opting in and thereby granting access to your usage data.')}
