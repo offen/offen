@@ -11,9 +11,12 @@ module.exports = (props) => {
   if (!props.allowsCookies) {
     content = (
       <div class='w-100 w-90-ns mr3-ns'>
-        <h3 class='f5 b ma0 mb2'>
-          {__('Offen is a fair and open source analytics software. It is installed on the website that linked you here.')}
+        <h3 class='f4 normal ma0 mb3'>
+          {__('Offen requires cookies to function properly.')}
         </h3>
+        <p class='ma0 mb2'>
+          {__('Offen is a fair and open source analytics software. It is installed on the website that linked you here.')}
+        </p>
         <p class='ma0'>
           {__('For Offen to work, your browser has to accept cookies. Please change your browsers settings and reload this page. Subsequently, you will be asked for consent to collect your usage data.')}
         </p>
@@ -23,7 +26,7 @@ module.exports = (props) => {
     content = (
       <Fragment>
         <div class='w-100 w-60-ns mr3-ns'>
-          <h3 class='f5 b tc tl-ns mt0 mb0'>
+          <h3 class='f4 normal tc tl-ns mt0 mb0'>
             {__('Manage the usage data that has been collected from you.')}
           </h3>
         </div>
@@ -39,8 +42,8 @@ module.exports = (props) => {
     content = (
       <Fragment>
         <div class='w-100 w-60-ns mr3-ns' id='consent-banner'>
-          <h3 class='f5 b tl-ns ma0 mb2'>
-            {__('Continue with transparent analytics')}
+          <h3 class='f4 normal tl-ns ma0 mb3'>
+            {__('We only access your usage data if you allow us to.')}
           </h3>
           <p class='ma0 mb2'>
             {__('Offen is a fair and open source analytics software. Help the website that linked you here by opting in and thereby granting access to your usage data.')}
