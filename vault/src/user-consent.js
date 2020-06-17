@@ -111,8 +111,11 @@ function bannerView (consentGiven, collapsed, handleCollapse, handleAllow, handl
   var content
   if (consentGiven) {
     content = html`
-      <p class="mt0 mb3">
-        ${raw(__('Thanks a lot for your help. To manage the usage data this website has collected from you, <a class="normal link underline dim dark-gray" target="_blank" rel="noopener" href="%s">open the Auditorium.</a>', '/auditorium/'))}
+      <p class="tc mt0 mb2">
+        ${raw(__('Thanks for your help to make this website better.'))}
+      </p>
+      <p class="tc mt0 mb3">
+        ${raw(__('To manage your usage data <a class="b normal link dim dark-gray" target="_blank" rel="noopener" href="%s">open the Auditorium.</a>', '/auditorium/'))}
       </p>
       <div class="w-100 flex">
         <button class="db w-40 center pointer tc dim bn ph3 pv2 dib br1 white bg-mid-gray" onclick="${handleClose}">
@@ -127,20 +130,22 @@ function bannerView (consentGiven, collapsed, handleCollapse, handleAllow, handl
       </a>
     `
     content = html`
-      <p class="ma0 mb3">
-        ${__('We only access your usage data if you allow.')}
-        ${learnMore}
-        <a role="button" class="${toggleClass}" onclick="${handleCollapse}"></a>
+      <p class="tc ma0 mb2">
+        ${__('We only access usage data with your consent.')}
+      </p>
+      <p class="tc ma0 mb3">
+      ${__('You can opt out and delete any time.')}
+      ${learnMore}
       </p>
       <div class="flex">
         <div class="w-50 mr2">
           <button class="w-100 pointer tc dim bn ph3 pv2 dib br1 white bg-mid-gray" onclick=${handleAllow}>
-            ${__('Yes please')}
+            ${__('I allow')}
           </button>
         </div>
         <div class="w-50 ml2">
           <button class="w-100 pointer tc dim bn ph3 pv2 dib br1 white bg-mid-gray" onclick=${handleDeny}>
-            ${__('I do not allow')}
+            ${__('I don\'t allow')}
           </button>
         </div>
       </div>
@@ -180,12 +185,12 @@ function bannerStyles () {
       body {
         font-size: 1rem;
       }
-      @media all and (max-width: 469px) {
+      @media all and (max-width: 389px) {
         body {
           font-size: .75rem;
         }
       }
-      @media all and (max-width: 350px) {
+      @media all and (max-width: 289px) {
         body {
           font-size: .65rem;
         }
@@ -205,14 +210,14 @@ function hostStylesVisible (selector, isCollapsed) {
     right: 0;
     left: 0;
     margin: 0 auto;
-    width: 470px;
+    width: 410px;
     border: 1px solid #8a8a8a;
     border-radius: 3px;
     background-color: #FFFDF4;
     box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.50);
     z-index: 2147483647;
   }
-  @media all and (max-width: 480px) {
+  @media all and (max-width: 414px) {
     ${selector} {
       width: 100%;
       border-left: none;

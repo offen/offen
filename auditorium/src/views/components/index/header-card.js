@@ -27,7 +27,7 @@ module.exports = (props) => {
       <Fragment>
         <div class='w-100 w-60-ns mr3-ns'>
           <h3 class='f4 normal tc tl-ns mt0 mb0'>
-            {__('Manage the usage data that has been collected from you.')}
+            {__('Manage your usage data that this website has collected.')}
           </h3>
         </div>
         <div class='w-100 w-40-ns tc mt2 mt0-ns'>
@@ -43,10 +43,10 @@ module.exports = (props) => {
       <Fragment>
         <div class='w-100 w-60-ns mr3-ns' id='consent-banner'>
           <h3 class='f4 normal tl-ns ma0 mb3'>
-            {__('We only access your usage data if you allow.')}
+            {__('We only access usage data with your consent.')}
           </h3>
           <p class='ma0 mb2'>
-            {__('Offen is a fair and open source analytics software. Help the website that linked you here by opting in and thereby granting access to your usage data.')}
+            {__('Offen is a fair and open source analytics software. Help the website that linked you here by allowing access to your usage data.')}
           </p>
           <p class='ma0 mb2 mb0-ns'>
             {__('Your data always remains yours. You can review and delete it at any time. Opt out again whenever you want.')}
@@ -54,10 +54,10 @@ module.exports = (props) => {
         </div>
         <div class='w-100 w-40-ns tc mt2 mt0-ns'>
           <button class='pointer f5 tc link dim bn ph3 pv2 dib br1 mr3 white bg-mid-gray' onclick={() => props.expressConsent('allow')}>
-            {__('Yes please')}
+            {__('I allow')}
           </button>
           <button disabled={!noStatusYet} class={`f5 tc link dim bn ph3 pv2 dib br1 white ${noStatusYet ? 'bg-mid-gray pointer' : 'bg-light-gray'}`} onclick={() => props.expressConsent('deny')}>
-            {__('I do not allow')}
+            {__('I don\'t allow')}
           </button>
         </div>
       </Fragment>
