@@ -27,7 +27,7 @@ module.exports = (props) => {
       <Fragment>
         <div class='w-100 w-60-ns mr3-ns'>
           <h3 class='f4 normal tc tl-ns mt0 mb0'>
-            {__('Manage your usage data that this website has collected.')}
+            {__('Manage your usage data this website has collected.')}
           </h3>
         </div>
         <div class='w-100 w-40-ns tc mt2 mt0-ns'>
