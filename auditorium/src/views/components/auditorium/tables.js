@@ -95,7 +95,7 @@ const Table = (props) => {
           return (
             <a
               data-role='button'
-              class='normal link dim dark-green pointer'
+              class='b normal link dim dark-green pointer'
               onclick={() => setShowAll(false)}
             >
               {__('Show top %d only', limit)}
@@ -105,7 +105,7 @@ const Table = (props) => {
         return (
           <a
             data-role='button'
-            class='normal link dim dark-green pointer'
+            class='b normal link dim dark-green pointer'
             onclick={() => setShowAll(true)}
           >
             {__('Show all entries')}
