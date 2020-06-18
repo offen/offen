@@ -19,7 +19,6 @@ exports.askForConsent = askForConsent
 
 function askForConsent (styleHost) {
   return new Promise(function (resolve) {
-    var isCollapsed = false
     var consentGiven = false
     var stylesReady = new Promise(function (resolve) {
       var styleSheet = html`
@@ -32,11 +31,6 @@ function askForConsent (styleHost) {
 
     window.addEventListener('resize', onResize)
     render()
-
-    function handleCollapseAction () {
-      isCollapsed = !isCollapsed
-      render()
-    }
 
     function allowHandler () {
       consentGiven = true
@@ -77,8 +71,6 @@ function askForConsent (styleHost) {
       stylesReady.then(function () {
         var banner = bannerView(
           consentGiven,
-          isCollapsed,
-          handleCollapseAction,
           allowHandler,
           denyHandler,
           closeHandler
@@ -87,14 +79,14 @@ function askForConsent (styleHost) {
           var current = host.firstChild
           host.insertBefore(banner, current)
           adjustHostStyles(
-            hostStylesVisible(styleHost.selector, isCollapsed).innerHTML,
+            hostStylesVisible(styleHost.selector).innerHTML,
             banner.getBoundingClientRect().height
           )
           host.removeChild(current)
         } else {
           host.appendChild(banner)
           adjustHostStyles(
-            hostStylesVisible(styleHost.selector, isCollapsed).innerHTML
+            hostStylesVisible(styleHost.selector).innerHTML
           )
         }
       })
@@ -102,12 +94,7 @@ function askForConsent (styleHost) {
   })
 }
 
-function bannerView (consentGiven, collapsed, handleCollapse, handleAllow, handleDeny, handleClose) {
-  var toggleClass = 'fr pointer gray dim label-toggle'
-  if (collapsed) {
-    toggleClass += ' label-toggle--rotate'
-  }
-
+function bannerView (consentGiven, handleAllow, handleDeny, handleClose) {
   var content
   if (consentGiven) {
     content = html`
@@ -199,14 +186,13 @@ function bannerStyles () {
   `
 }
 
-function hostStylesVisible (selector, isCollapsed) {
-  var bottom = isCollapsed ? '-1px' : '138px'
+function hostStylesVisible (selector) {
   return html`
 <style>
   ${selector} {
     display: block !important;
     position: fixed;
-    bottom: ${bottom};
+    bottom: 138px;
     right: 0;
     left: 0;
     margin: 0 auto;
