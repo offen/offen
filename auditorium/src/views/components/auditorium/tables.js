@@ -56,7 +56,7 @@ const Table = (props) => {
     })
     : (
       <tr>
-        <td class='pl2 moon-gray' colspan='2'>
+        <td class='f6 mid-gray i pl2' colspan='2'>
           {onEmptyMessage}
         </td>
       </tr>
@@ -68,13 +68,13 @@ const Table = (props) => {
       <table class='collapse w-100 dt--fixed-ns mb2'>
         <thead>
           <tr>
-            <th class='normal tl pv2 pl2 pr1 moon-gray'>
+            <th class='f6 normal tl pv2 pl2 pr1 mid-gray'>
               {keyName}
             </th>
             {valueNames.map((name, index) => {
               return (
                 <th
-                  class='w-25 normal tl pv2 ph1 moon-gray'
+                  class='w-25 f6 normal tl pv2 ph1 mid-gray'
                   key={`value-name-${index}`}
                 >
                   {name}
@@ -95,7 +95,7 @@ const Table = (props) => {
           return (
             <a
               data-role='button'
-              class='normal link dim dark-green pointer'
+              class='b normal link dim dark-green pointer'
               onclick={() => setShowAll(false)}
             >
               {__('Show top %d only', limit)}
@@ -105,7 +105,7 @@ const Table = (props) => {
         return (
           <a
             data-role='button'
-            class='normal link dim dark-green pointer'
+            class='b normal link dim dark-green pointer'
             onclick={() => setShowAll(true)}
           >
             {__('Show all entries')}
@@ -143,7 +143,7 @@ const Container = (props) => {
       css.push('f5', 'normal', 'dib', 'pv3')
     }
     if (tableSets.length > 1) {
-      css.push('f5', 'normal', 'link', 'dim', 'dib', 'pt2', 'pb2', 'ph2', 'mr2', 'dark-green')
+      css.push('f5', 'b', 'normal', 'link', 'dim', 'dib', 'pt2', 'pb2', 'ph2', 'mr2', 'dark-green')
     }
 
     let handleClick = null
@@ -153,7 +153,7 @@ const Container = (props) => {
       handleClick = () => setSelectedTab(index)
     }
     if (index === selectedTab && tableSets.length !== 1) {
-      css.push('b', 'bt', 'bw2', 'b--dark-green')
+      css.push('bt', 'bw2', 'b--dark-green')
       ariaLabels['aria-current'] = 'true'
     }
 

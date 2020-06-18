@@ -27,7 +27,7 @@ const RangeSelector = (props) => {
       url += '?' + new window.URLSearchParams(range.query)
     }
     var anchorRange = (
-      <a href={url} class='link dim dib pv2 dark-green mt1 mb2 mr3'>
+      <a href={url} class='b link dim dib pv2 dark-green mt1 mb2 mr3'>
         {range.display}
       </a>
     )

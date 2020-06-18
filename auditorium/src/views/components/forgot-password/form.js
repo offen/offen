@@ -35,7 +35,7 @@ const Form = forwardRef((props, ref) => {
       </h4>
       <form class='mw6 center' onsubmit={handleSubmit}>
         <LabeledInput
-          class='w-100 pa2 mb3 input-reset ba b--black-10 bg-white'
+          class='w-100 pa2 mb3 input-reset ba br1 b--gray bg-white'
           name='email-address'
           type='email'
           ref={ref}

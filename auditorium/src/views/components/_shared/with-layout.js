@@ -47,26 +47,26 @@ const Layout = (props) => {
           )
           : props.children}
       </div>
-      <div class='mw8 center flex flex-wrap flex-column flex-row-ns justify-between ph3 pb5 pb7-ns moon-gray'>
+      <div class='mw8 center flex flex-wrap flex-column flex-row-ns justify-between f6 lh-title ph3 pb5 pb7-ns mid-gray'>
         <div class='w-100'>
           <Paragraph
-            class='ma0 mb1'
+            class='ma0 mb0'
           >
-            {__('<a href="https://www.offen.dev/" class="%s" target="_blank" rel="noreferer noopener">Offen</a>', 'link dim light-silver')}
+            {__('<a href="https://www.offen.dev/" class="%s" target="_blank" rel="noreferer noopener">Offen</a>', 'b link dim mid-gray')}
           </Paragraph>
         </div>
-        <div class='w-100 w-60-ns pr3-ns'>
+        <div class='w-100 w-50-ns pr3-ns'>
           <Paragraph
             class='ma0 mb3'
           >
-            {__('Transparent web analytics<br>for everyone')}
+            {__('Fair web analytics')}
           </Paragraph>
         </div>
-        <div class='w-70 w-40-ns'>
+        <div class='w-100 w-50-ns'>
           <Paragraph
-            class='ma0'
+            class='ma0 tl tr-ns'
           >
-            {__('Found an issue, need help or want to add something?<br><a href="https://twitter.com/hioffen" class="%s" target="_blank" rel="noreferer noopener">Tweet,</a> <a href="mailto:hioffen@posteo.de" class="%s" target="_blank">email</a> or file an <a href="https://github.com/offen/offen" class="%s" target="_blank" rel="noreferer noopener">issue.</a>', 'link dim light-silver', 'link dim light-silver', 'link dim light-silver')}
+            {__('Found an issue, need help or want to add something?<br><a href="https://twitter.com/hioffen" class="%s" target="_blank" rel="noreferer noopener">Tweet,</a> <a href="mailto:hioffen@posteo.de" class="%s" target="_blank">email</a> or file an <a href="https://github.com/offen/offen" class="%s" target="_blank" rel="noreferer noopener">issue.</a>', 'b link dim mid-gray', 'b link dim mid-gray', 'b link dim mid-gray')}
           </Paragraph>
         </div>
       </div>

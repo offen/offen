@@ -20,11 +20,11 @@ const Paragraph = require('./../_shared/paragraph')
 
 const Plot = createPlotlyComponent(Plotly)
 
-const tickColorFade = '#CCCCCC'
-const barColorVisitors = '#137752'
-const barColorVisitorsFade = '#19A974'
+const tickColorFade = '#333333'
+const barColorVisitors = '#11533A'
+const barColorVisitorsFade = '#474747'
 const barColorViews = '#19A974'
-const barColorViewsFade = '#9EEBCF'
+const barColorViewsFade = '#989494'
 
 const Chart = (props) => {
   const { model, isOperator, showExplainer, onExplain, explainerActive, resolution = 'days' } = props
@@ -58,7 +58,7 @@ const Chart = (props) => {
           result = date.toLocaleDateString(process.env.LOCALE, { month: 'short' }) + ' ' + result
         }
         if (isWeekend(date)) {
-          return `<span style="font-weight: bold; color: ${tickColorFade}">${result}</span>`
+          return `<span style="font-style: italic; color: ${tickColorFade}">${result}</span>`
         }
         return result
     }
@@ -149,7 +149,7 @@ const Chart = (props) => {
         {explainerActive
           ? (
             <Paragraph class='mw7 ma0 pv2'>
-              {__('This panel displays the number of pages (bright green) and websites (dark green) you have visited where the <a href="#terms-offen-installation" class="%s">Offen installation</a> is active. To measure this, a cookie is used to assign you a user and a session <a href="#terms-id" class="%s">ID.</a>', 'link dim dark-green', 'link dim dark-green')}
+              {__('This panel displays the number of pages (bright green) and websites (dark green) you have visited where the <a href="#terms-offen-installation" class="%s">Offen installation</a> is active. To measure this, a cookie is used to assign you a user and a session <a href="#terms-id" class="%s">ID.</a>', 'b link dim dark-green', 'b link dim dark-green')}
             </Paragraph>
           )
           : null}
@@ -170,7 +170,9 @@ const Chart = (props) => {
             />
           )
           : (
-            <h4>{__("We don't have any data to display for the selected time range.")}</h4>
+            <Paragraph class='f6 normal i'>
+              {__('No data available for the selected time range.')}
+            </Paragraph>
           )}
       </div>
     </div>

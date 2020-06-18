@@ -39,7 +39,7 @@ const Share = (props) => {
         accountId: accountId,
         grantAdminPrivileges: grantAdminPrivileges
       },
-      __('An invite email has been sent to <strong>%s</strong>.', invitee),
+      __('An invite email has been sent to <em class="%s">%s</em>.', 'i tracked', invitee),
       __('There was an error inviting the user, please try again.')
     )
       .then(() => {
@@ -80,7 +80,7 @@ const Share = (props) => {
   const renderBody = (props = {}) => {
     return (
       <MultiStepForm
-        class='mw6 center pb4 pt3 ph3'
+        class='mw6 center pb4 pt3 ph3 ph0-ns'
         onsubmit={handleSubmit}
         steps={[
           (props) => {
@@ -120,8 +120,8 @@ const Share = (props) => {
           (props, autoFocusRef) => {
             return (
               <Fragment>
-                <h5 class='f5 normal ma0 mb3 silver'>
-                  {__('Confirm with your credentials')}
+                <h5 class='f5 i normal ma0 mb3'>
+                  {__('You need to confirm this action with your credentials.')}
                 </h5>
                 <LabeledInput
                   type='email'

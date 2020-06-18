@@ -19,7 +19,6 @@ exports.askForConsent = askForConsent
 
 function askForConsent (styleHost) {
   return new Promise(function (resolve) {
-    var isCollapsed = false
     var consentGiven = false
     var stylesReady = new Promise(function (resolve) {
       var styleSheet = html`
@@ -32,11 +31,6 @@ function askForConsent (styleHost) {
 
     window.addEventListener('resize', onResize)
     render()
-
-    function handleCollapseAction () {
-      isCollapsed = !isCollapsed
-      render()
-    }
 
     function allowHandler () {
       consentGiven = true
@@ -77,8 +71,6 @@ function askForConsent (styleHost) {
       stylesReady.then(function () {
         var banner = bannerView(
           consentGiven,
-          isCollapsed,
-          handleCollapseAction,
           allowHandler,
           denyHandler,
           closeHandler
@@ -87,14 +79,14 @@ function askForConsent (styleHost) {
           var current = host.firstChild
           host.insertBefore(banner, current)
           adjustHostStyles(
-            hostStylesVisible(styleHost.selector, isCollapsed).innerHTML,
+            hostStylesVisible(styleHost.selector).innerHTML,
             banner.getBoundingClientRect().height
           )
           host.removeChild(current)
         } else {
           host.appendChild(banner)
           adjustHostStyles(
-            hostStylesVisible(styleHost.selector, isCollapsed).innerHTML
+            hostStylesVisible(styleHost.selector).innerHTML
           )
         }
       })
@@ -102,17 +94,15 @@ function askForConsent (styleHost) {
   })
 }
 
-function bannerView (consentGiven, collapsed, handleCollapse, handleAllow, handleDeny, handleClose) {
-  var toggleClass = 'fr pointer gray dim label-toggle'
-  if (collapsed) {
-    toggleClass += ' label-toggle--rotate'
-  }
-
+function bannerView (consentGiven, handleAllow, handleDeny, handleClose) {
   var content
   if (consentGiven) {
     content = html`
-      <p class="mt0 mb3">
-        ${raw(__('Thanks a lot for your help. To manage the usage data this website has collected from you, <a class="normal link underline dim dark-gray" target="_blank" rel="noopener" href="%s">open the Auditorium.</a>', '/auditorium/'))}
+      <p class="tc mt0 mb2">
+        ${raw(__('Thanks for your help to make this website better.'))}
+      </p>
+      <p class="tc mt0 mb3">
+        ${raw(__('To manage your usage data <a class="b normal link dim dark-gray" target="_blank" rel="noopener" href="%s">open the Auditorium.</a>', '/auditorium/'))}
       </p>
       <div class="w-100 flex">
         <button class="db w-40 center pointer tc dim bn ph3 pv2 dib br1 white bg-mid-gray" onclick="${handleClose}">
@@ -122,31 +112,27 @@ function bannerView (consentGiven, collapsed, handleCollapse, handleAllow, handl
     `
   } else {
     var learnMore = html`
-      <a target="_blank" rel="noopener" href="/" class="normal link underline dim dark-gray">
+      <a target="_blank" rel="noopener" href="/" class="b normal link dim dark-gray">
         ${__('Learn more')}
       </a>
     `
     content = html`
-      <p class="b mt0 mb3">
-        ${__('Continue with transparent analytics')}
-        ${collapsed ? learnMore : null}
-        <a role="button" class="${toggleClass}" onclick="${handleCollapse}"></a>
+      <p class="tc ma0 mb2">
+        ${__('We only access usage data with your consent.')}
       </p>
-      ${!collapsed ? html`
-        <p class="mt0 mb3">
-          ${__('Help to make this website better by granting access to your usage data. Your data always remains yours. Review and delete it at any time.')}
-          ${learnMore}
-        </p>
-      ` : null}
+      <p class="tc ma0 mb3">
+      ${__('You can opt out and delete any time.')}
+      ${learnMore}
+      </p>
       <div class="flex">
         <div class="w-50 mr2">
           <button class="w-100 pointer tc dim bn ph3 pv2 dib br1 white bg-mid-gray" onclick=${handleAllow}>
-            ${__('Yes please')}
+            ${__('I allow')}
           </button>
         </div>
         <div class="w-50 ml2">
           <button class="w-100 pointer tc dim bn ph3 pv2 dib br1 white bg-mid-gray" onclick=${handleDeny}>
-            ${__('I do not allow')}
+            ${__('I don\'t allow')}
           </button>
         </div>
       </div>
@@ -186,12 +172,12 @@ function bannerStyles () {
       body {
         font-size: 1rem;
       }
-      @media all and (max-width: 430px) {
+      @media all and (max-width: 389px) {
         body {
           font-size: .75rem;
         }
       }
-      @media all and (max-width: 340px) {
+      @media all and (max-width: 289px) {
         body {
           font-size: .65rem;
         }
@@ -200,25 +186,24 @@ function bannerStyles () {
   `
 }
 
-function hostStylesVisible (selector, isCollapsed) {
-  var bottom = isCollapsed ? '-1px' : '138px'
+function hostStylesVisible (selector) {
   return html`
 <style>
   ${selector} {
     display: block !important;
     position: fixed;
-    bottom: ${bottom};
+    bottom: 138px;
     right: 0;
     left: 0;
     margin: 0 auto;
-    width: 450px;
+    width: 410px;
     border: 1px solid #8a8a8a;
     border-radius: 3px;
     background-color: #FFFDF4;
     box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.50);
     z-index: 2147483647;
   }
-  @media all and (max-width: 480px) {
+  @media all and (max-width: 414px) {
     ${selector} {
       width: 100%;
       border-left: none;

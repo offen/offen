@@ -60,8 +60,8 @@ const ChangeEmail = (props) => {
           (props, autoFocusRef) => {
             return (
               <Fragment>
-                <h5>
-                  {__('You need to confirm this action with your credentials')}
+                <h5 class='f5 i normal ma0 mb3'>
+                  {__('You need to confirm this action with your credentials.')}
                 </h5>
                 <LabeledInput
                   type='email'

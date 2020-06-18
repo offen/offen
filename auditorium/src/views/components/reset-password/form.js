@@ -40,7 +40,7 @@ const Form = forwardRef((props, ref) => {
           {__('Email address')}
         </LabeledInput>
         <LabeledInput
-          class='w-100 pa2 mb3 input-reset ba b--black-10 bg-white'
+          class='w-100 pa2 mb3 input-reset ba br1 b--gray bg-white'
           name='password'
           type='password'
           required

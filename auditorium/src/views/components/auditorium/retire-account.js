@@ -18,10 +18,10 @@ const InitialScreen = (props) => {
   return (
     <Fragment>
       <Paragraph class='ma0 mb1'>
-        {__('If you retire the account <strong>%s,</strong> it will not appear in your statistics anymore. Users will be able to access and manage their data for the account for another 6 months until data expires.', account.name)}
+        {__('If you retire the account <em class="%s">%s,</em> it will not appear in your statistics anymore. Users will be able to access and manage their data for the account for another 6 months until data expires.', 'i tracked', account.name)}
       </Paragraph>
-      <Paragraph class='ma0 mb3 orange'>
-        {__('Danger zone! This action cannot be undone.')}
+      <Paragraph class='ma0 mb3 dark-red'>
+        {__('<em class="%s">Danger zone! This action cannot be undone.</em>', 'i')}
       </Paragraph>
       <SubmitButton
         onclick={onClick}
@@ -42,7 +42,7 @@ const ConfirmScreen = (props) => {
   return (
     <form onsubmit={handleSubmit}>
       <p class='ma0 mb1'>
-        {__('To permanently retire the account, type its name "%s" into the form below:', account.name)}
+        {__('To permanently retire the account, type its name <em class="%s">"%s"</em> into the form below:', 'i tracked', account.name)}
       </p>
       <LabeledInput
         required
@@ -74,7 +74,7 @@ const RetireAccount = (props) => {
     setIsDisabled(true)
     props.onRetire(
       { accountId: account.accountId },
-      __('The account "%s" has been retired successfully. Log in again to continue.', account.name),
+      __('The account <em class="%s">"%s"</em> has been retired successfully. Log in again to continue.', 'i tracked', account.name),
       __('There was an error retiring the account, please try again.')
     )
       .then(() => setIsDisabled(false))
@@ -108,7 +108,7 @@ const RetireAccount = (props) => {
         }}
         body={(props) => {
           return (
-            <div class='mw6 center mb4 mt3 ph3'>
+            <div class='mw6 center mb4 mt3 ph3 ph0-ns'>
               {(() => {
                 if (isConfirmStep) {
                   return (
