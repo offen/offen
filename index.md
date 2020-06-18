@@ -2,11 +2,11 @@
 layout: page
 title: Home
 nav_order: 1
-description: "Welcome to the documentation site for Offen, the transparent web analytic tool. Featuring guides for operators, users and developers."
+description: "Welcome to the documentation site for Offen, the fair web analytics tool. Featuring guides for operators, users and developers."
 permalink: /
 ---
 
-Offen is a fair alternative to common web analytic tools. It allows website operators to pay respect to their users while gaining insight into their behavior. Welcome to our docs.
+Offen is a fair alternative to common web analytics tools. Gain insights while your users have full access to their data. Self hosted, open source and free.
 {: .text-grey-dk-000 }
 
 ---
