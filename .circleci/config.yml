@@ -236,7 +236,7 @@ jobs:
           command: make build-docs
       - aws-cli/install
       - run:
-          name: Build Deploy to S3
+          name: Deploy built site to S3
           command: |
             aws s3 sync --delete ./docs-site/. s3://$BUCKET
             aws cloudfront create-invalidation --distribution-id $DISTRIBUTION --paths "/*"
@@ -266,16 +266,7 @@ workflows:
           requires:
             - build
 
-      - release_docs:
-          context: AWS
-          filters: &default_release_filters
-            tags:
-              only: /^v.*/ # tagged release from master branch
-            branches:
-              only:
-                - development
-                - master
-      - release:
+      - release: &default_release_job
           context: AWS
           requires:
             - server
@@ -287,7 +278,14 @@ workflows:
             - integration
             - build
           filters:
-            <<: *default_release_filters
+            tags:
+              only: /^v.*/ # tagged release from master branch
+            branches:
+              only:
+                - development
+                - master
+      - release_docs:
+          <<: *default_release_job
 
 commands:
   wait_for:
