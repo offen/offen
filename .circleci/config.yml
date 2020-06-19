@@ -213,11 +213,13 @@ jobs:
           command: aws s3 cp /tmp/artifacts/offen-$DOCKER_IMAGE_TAG.tar.gz s3://offen/binaries/offen-$DOCKER_IMAGE_TAG.tar.gz
       - docker/install-docker-credential-helper
       - docker/configure-docker-credentials-store
+      - install_docker_pushrm
       - run:
           name: Push offen/offen to Docker Hub
           command: |
             echo "$DOCKER_ACCESSTOKEN" | docker login --username $DOCKER_LOGIN --password-stdin
             docker push offen/offen:$DOCKER_IMAGE_TAG
+            docker pushrm offen/offen
       - store_artifacts:
           path: /tmp/artifacts
 
@@ -307,6 +309,23 @@ commands:
       - run:
           name: Run tests
           command: npm test
+  install_docker_pushrm:
+    description: Install pushrm Docker CLI plugin
+    parameters:
+      version:
+        type: string
+        default: v1.0.2
+      arch:
+        type: string
+        default: linux_amd64
+    steps:
+      - run:
+          name: Download and install
+          command: |
+            curl -sSL https://github.com/christian-korneck/docker-pushrm/releases/download/<< parameters.version >>/docker-pushrm_<< parameters.arch >> -o /tmp/docker-pushrm
+            mkdir -p ~/.docker/cli-plugins
+            mv /tmp/docker-pushrm ~/.docker/cli-plugins
+            chmod +x ~/.docker/cli-plugins/docker-pushrm
 
 orbs:
   aws-cli: circleci/aws-cli@1.0.0
