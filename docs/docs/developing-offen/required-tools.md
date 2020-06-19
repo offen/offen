@@ -7,6 +7,11 @@ permalink: /developing-offen/required-tools/
 parent: Developing Offen
 ---
 
+<!--
+Copyright 2020 - Offen Authors <hioffen@posteo.de>
+SPDX-License-Identifier: Apache-2.0
+-->
+
 # Required tools
 
 Developing Offen currently requires [Docker][docker] and [docker-compose][] to be installed and working correctly. Both tools are free and available for Linux, Windows and Mac.

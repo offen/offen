@@ -7,6 +7,11 @@ permalink: /developing-offen/understanding-cryptography/
 parent: Developing Offen
 ---
 
+<!--
+Copyright 2020 - Offen Authors <hioffen@posteo.de>
+SPDX-License-Identifier: Apache-2.0
+-->
+
 # Understanding the cryptographic entities in use
 
 Event data in Offen is encrypted before leaving the user's browser and will also be stored like this at rest. Decryption only happens on the client side. In order to share data between users and operators the following cryptographic entities will be used:

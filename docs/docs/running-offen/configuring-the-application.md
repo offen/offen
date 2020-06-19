@@ -7,6 +7,11 @@ permalink: /running-offen/configuring-the-application/
 parent: Running Offen
 ---
 
+<!--
+Copyright 2020 - Offen Authors <hioffen@posteo.de>
+SPDX-License-Identifier: Apache-2.0
+-->
+
 # Configuring the application at runtime
 {: .no_toc }
 

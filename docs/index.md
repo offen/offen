@@ -6,6 +6,11 @@ description: "Welcome to the documentation site for Offen, the fair web analytic
 permalink: /
 ---
 
+<!--
+Copyright 2020 - Offen Authors <hioffen@posteo.de>
+SPDX-License-Identifier: Apache-2.0
+-->
+
 Offen is a fair alternative to common web analytics tools. Gain insights while your users have full access to their data. Self hosted, open source and free.
 {: .text-grey-dk-000 }
 

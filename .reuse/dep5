@@ -9,7 +9,7 @@ Copyright: 2020 Offen Authors <hioffen@posteo.de>
 License: Apache-2.0
 
 # package managers
-Files: */package.json */package-lock.json */cypress.json */go.mod */go.sum
+Files: */package.json */package-lock.json */cypress.json */go.mod */go.sum */Gemfile */Gemfile.lock
 Copyright: 2020 Offen Authors <hioffen@posteo.de>
 License: Apache-2.0
 

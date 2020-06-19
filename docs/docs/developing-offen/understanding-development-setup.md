@@ -7,6 +7,11 @@ permalink: /developing-offen/understanding-development-setup/
 parent: Developing Offen
 ---
 
+<!--
+Copyright 2020 - Offen Authors <hioffen@posteo.de>
+SPDX-License-Identifier: Apache-2.0
+-->
+
 # Understanding the development setup
 
 When built for production use, Offen builds into a single binary file that includes the server application, as well as all static assets like Stylesheets and JavaScript files that it serves. This is great for distribution, but it's a tedious process getting in the way of a rapid feedback cycle in development. This is why when running the development environment the following setup will be launched instead:

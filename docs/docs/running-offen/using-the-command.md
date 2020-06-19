@@ -7,6 +7,11 @@ permalink: /running-offen/using-the-command/
 parent: Running Offen
 ---
 
+<!--
+Copyright 2020 - Offen Authors <hioffen@posteo.de>
+SPDX-License-Identifier: Apache-2.0
+-->
+
 # Using the `offen` command
 {: .no_toc }
 

@@ -7,6 +7,11 @@ permalink: /running-offen/installation-requirements/
 parent: Running Offen
 ---
 
+<!--
+Copyright 2020 - Offen Authors <hioffen@posteo.de>
+SPDX-License-Identifier: Apache-2.0
+-->
+
 # Requirements for installing Offen
 {: .no_toc }
 

@@ -7,6 +7,11 @@ permalink: /developing-offen/programming-languages/
 parent: Developing Offen
 ---
 
+<!--
+Copyright 2020 - Offen Authors <hioffen@posteo.de>
+SPDX-License-Identifier: Apache-2.0
+-->
+
 # Programming languages
 
 The server side application is written in [Go][golang] while the client is written in plain JavaScript

@@ -8,6 +8,11 @@ parent: Running Offen
 has_children: true
 ---
 
+<!--
+Copyright 2020 - Offen Authors <hioffen@posteo.de>
+SPDX-License-Identifier: Apache-2.0
+-->
+
 # Installation tutorials
 
 These tutorials walks you through the steps needed to setup and deploy an Offen instance.
