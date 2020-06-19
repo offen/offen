@@ -24,3 +24,5 @@ bundle.*
 
 integration/cypress/screenshots
 integration/cypress/videos
+
+docs-site

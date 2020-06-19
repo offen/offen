@@ -221,6 +221,26 @@ jobs:
       - store_artifacts:
           path: /tmp/artifacts
 
+  release_docs:
+    docker:
+      - image: cimg/python:3.7
+        environment:
+          BUCKET: offen-docs
+          DISTRIBUTION: E2Q11JP684XRCO
+    working_directory: ~/offen
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Build docs site
+          command: make build-docs
+      - aws-cli/install
+      - run:
+          name: Build Deploy to S3
+          command: |
+            aws s3 sync --delete ./docs-site/. s3://$BUCKET
+            aws cloudfront create-invalidation --distribution-id $DISTRIBUTION --paths "/*"
+
 workflows:
   version: 2
   test_build_push:
@@ -245,6 +265,16 @@ workflows:
           <<: *all_tags_filter
           requires:
             - build
+
+      - release_docs:
+          context: AWS
+          filters: &default_release_filters
+            tags:
+              only: /^v.*/ # tagged release from master branch
+            branches:
+              only:
+                - development
+                - master
       - release:
           context: AWS
           requires:
@@ -257,12 +287,7 @@ workflows:
             - integration
             - build
           filters:
-            tags:
-              only: /^v.*/ # tagged release from master branch
-            branches:
-              only:
-                - development
-                - master
+            <<: *default_release_filters
 
 commands:
   wait_for:

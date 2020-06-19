@@ -1,12 +1,15 @@
+# Copyright 2020 - Offen Authors <hioffen@posteo.de>
+# SPDX-License-Identifier: Apache-2.0
+
 FROM ruby:2.5
 
 RUN gem install bundler
 
 WORKDIR /repo
-COPY ./Gemfile /repo
-COPY ./Gemfile.lock /repo
+COPY ./docs/Gemfile /repo
+COPY ./docs/Gemfile.lock /repo
 RUN bundle install
 
-COPY . /repo
+COPY ./docs /repo
 RUN bundle exec just-the-docs rake search:init
 RUN JEKYLL_ENV=production bundle exec jekyll build
