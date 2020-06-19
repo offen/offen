@@ -225,7 +225,7 @@ Specifies the application's log level. Possible values are `debug`, `info`, `war
 
 Defaults to `true`.
 
-In case you want to run Offen as a horizontally scaling service, you can set this value to `true`. This will disable all cron jobs and similar that handle automated database migration and event expiration.
+In case you want to run Offen as a horizontally scaling service, you can set this value to `false`. This will disable all cron jobs and similar that handle automated database migration and event expiration.
 
 ### OFFEN_APP_ROOTACCOUNT
 {: .no_toc }
