@@ -1,0 +1,27 @@
+#  Copyright 2020 - Offen Authors <hioffen@posteo.de>
+#  SPDX-License-Identifier: Apache-2.0
+
+version: '3'
+
+services:
+  docs_proxy:
+    image: nginx:1.17-alpine
+    ports:
+      - 4000:4000
+    volumes:
+      - ./nginx.docs.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - docs_jekyll
+
+  docs_jekyll:
+    build:
+      context: '.'
+      dockerfile: ./Dockerfile.ruby
+    working_dir: /repo
+    volumes:
+      - ./docs:/repo
+      - docsdeps:/usr/local/bundle
+    command: bundle exec jekyll serve -H 0.0.0.0 --config _config.yml,_override.yml
+
+volumes:
+  docsdeps:
