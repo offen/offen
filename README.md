@@ -97,7 +97,7 @@ This creates an ephemeral one-off installation that is populated with random dat
 ## Project status
 __Offen is in active development.__ We're happy to help if you would like to experiment with deploying it, but at this point we cannot guarantee any upgrade stability yet. Each release might contain breaking changes that might result in data being lost on the next upgrade. 
 
-We are currently working on __Milestone 4 out of 6: Managing data.__ Check our [blog][] for detailed updates on what we are working on right now and what's up next.
+We are currently working on __Milestone 5 out of 6: Resilience and documentation.__ Check our [blog][] for detailed updates on what we are working on right now and what's up next.
 
 [blog]: https://www.offen.dev/blog/
 
