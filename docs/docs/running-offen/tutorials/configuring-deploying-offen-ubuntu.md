@@ -41,15 +41,15 @@ You can download a tarball of the latest release from our [Releases section on G
 
 In this tutorial, we will put the binaries for each version in a directory in `/opt/offen/<version>` and create a symlink for the version you want to use in `/usr/bin`. This allows you to update your binaries without interrupting the service.
 
-Untar the archive you downloaded and look for the binary called `offen-linux-amd64`. Put this file in a subdirectory of `/opt/offen` that specifies its version. This example is using the `v0.1.0-alpha.8` release:
+Untar the archive you downloaded and look for the binary called `offen-linux-amd64`. Put this file in a subdirectory of `/opt/offen` that specifies its version. This example is using the `{{ site.offen_version }}` release:
 
 ```
 mkdir -p /tmp/offen-download && cd /tmp/offen-download
 curl -sSL https://get.offen.dev | tar -xvz
 md5sum -c checksums.txt # check that your download contains the expected files
-sudo mkdir -p /opt/offen/v0.1.0-alpha.8
-sudo cp offen-linux-amd64 /opt/offen/v0.1.0-alpha.8
-sudo ln -s /opt/offen/v0.1.0-alpha.8/offen-linux-amd64 /usr/local/bin/offen
+sudo mkdir -p /opt/offen/{{ site.offen_version }}
+sudo cp offen-linux-amd64 /opt/offen/{{ site.offen_version }}
+sudo ln -s /opt/offen/{{ site.offen_version }}/offen-linux-amd64 /usr/local/bin/offen
 ```
 
 If you have GPG installed, we also recommend verifying the binary's signature:
@@ -64,7 +64,7 @@ You can confirm that your installation is working as expected like this:
 $ which offen
 /usr/local/bin/offen
 $ offen version
-INFO[0000] Current build created using                   revision=v0.1.0-alpha.8
+INFO[0000] Current build created using                   revision={{ site.offen_version }}
 ```
 
 ---
@@ -258,16 +258,16 @@ To update to a new version of Offen, download the contents of the newest release
 ```
 curl -sSL https://get.offen.dev | tar -xvz
 md5sum -c checksums.txt # check that your download contains the expected files
-sudo mkdir -p /opt/offen/v0.1.0-alpha.12
-sudo cp offen-linux-amd64 /opt/offen/v0.1.0-alpha.12
-sudo ln -sf /opt/offen/v0.1.0-alpha.12/offen-linux-amd64 /usr/local/bin/offen
+sudo mkdir -p /opt/offen/v0.1.0-alpha.next
+sudo cp offen-linux-amd64 /opt/offen/v0.1.0-alpha.next
+sudo ln -sf /opt/offen/v0.1.0-alpha.next/offen-linux-amd64 /usr/local/bin/offen
 ```
 
 Confirm that this worked by having `offen` print its version:
 
 ```
 $ offen version
-INFO[0000] Current build created using                   revision=v0.1.0-alpha.12
+INFO[0000] Current build created using                   revision=v0.1.0-alpha.next
 ```
 
 You can now restart your service to pick up the changes:

@@ -46,11 +46,6 @@ aux_links:
   'Offen on GitHub':
     - https://github.com/offen/offen
 
-# Footer content appears at the bottom of every page's main content
-footer_content: |
-  This document refers to Offen at <a href="https://github.com/offen/offen/releases/tag/v0.1.0-alpha.8">Version v0.1.0-alpha.8</a><br>
-  Copyright &copy; Offen. Distributed by an <a href="https://github.com/offen/offen/tree/master/LICENSE">Apache 2.0 license.</a>
-
 # Color scheme currently only supports "dark" or nil (default)
 color_scheme: nil
 
@@ -62,4 +57,4 @@ compress_html:
   blanklines: false
   profile: false
 
-offen_version: local
+offen_version: localdev
