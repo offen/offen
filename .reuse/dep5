@@ -14,7 +14,7 @@ Copyright: 2020 Offen Authors <hioffen@posteo.de>
 License: Apache-2.0
 
 # text files
-Files: banner.txt
+Files: banner.txt */robots.txt
 Copyright: 2020 Offen Authors <hioffen@posteo.de>
 License: Apache-2.0
 

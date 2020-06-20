@@ -240,8 +240,8 @@ jobs:
                 echo "offen_version: stable" >> ./docs/_override.yml
                 echo "baseurl: stable" >> ./docs/_override.yml
                 make build-docs
-                aws s3 sync --delete ./docs-site/stable/. s3://$BUCKET
                 aws s3api put-object --bucket $BUCKET --key /stable/
+                aws s3 sync --delete ./docs-site/stable/. s3://$BUCKET
               else
                 echo "offen_version: latest" >> ./docs/_override.yml
                 echo "baseurl: latest" >> ./docs/_override.yml
@@ -255,6 +255,7 @@ jobs:
               # - once as the tagged version in /$TAG/
               echo "url: https://docs.offen.dev" >> ./docs/_override.yml
               make build-docs
+              aws s3 cp ./docs/robots.txt s3://$BUCKET
               aws s3 cp --recursive ./docs-site/. s3://$BUCKET
 
               echo "offen_version: $CIRCLE_TAG" >> ./docs/_override.yml
@@ -264,8 +265,9 @@ jobs:
               aws s3api put-object --bucket $BUCKET --key /$CIRCLE_TAG/
               aws s3 sync --delete ./docs-site/$CIRCLE_TAG/. s3://$BUCKET
             fi
-
-            aws cloudfront create-invalidation --distribution-id $DISTRIBUTION --paths "/*"
+      - run:
+          name: Invalidate Cloudfront distribution
+          command: aws cloudfront create-invalidation --distribution-id $DISTRIBUTION --paths "/*"
 
 workflows:
   version: 2

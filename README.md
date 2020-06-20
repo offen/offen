@@ -133,6 +133,15 @@ Run the tests for all subapplicatons using
 $ make test
 ```
 
+The documentation site at <https://docs.offen.dev> is also part of this repository. To run this site locally, you can:
+
+```sh
+make setup-docs
+make docs
+```
+
+This will serve the documentation on <https://localhost:4000>.
+
 ## Kind support
 [![NLnet Foundation](https://offen.github.io/press-kit/external-material/nlnet-logo.svg)](https://nlnet.nl/)
 
