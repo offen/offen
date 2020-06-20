@@ -94,7 +94,7 @@ services:
     volumes:
       - ./docs:/repo
       - docsdeps:/usr/local/bundle
-    command: bundle exec jekyll serve -H 0.0.0.0
+    command: bundle exec jekyll serve -H 0.0.0.0 --config _config.yml,_override.yml
 
 volumes:
   serverdata:

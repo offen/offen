@@ -1,0 +1,5 @@
+# Copyright 2020 - Offen Authors <hioffen@posteo.de>
+# SPDX-License-Identifier: Apache-2.0
+
+# This file is supposed to be empty and will be populated with
+# config overrides at build time.

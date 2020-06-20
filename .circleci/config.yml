@@ -231,14 +231,40 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
-      - run:
-          name: Build docs site
-          command: make build-docs
       - aws-cli/install
       - run:
-          name: Deploy built site to S3
+          name: Build and deploy versioned docs site
           command: |
-            aws s3 sync --delete ./docs-site/. s3://$BUCKET
+            if [ -z "$CIRCLE_TAG" ]; then
+              if [ "${CIRCLE_BRANCH}" == "master" ]; then
+                echo "offen_version: stable" >> ./docs/_override.yml
+                echo "baseurl: stable" >> ./docs/_override.yml
+                make build-docs
+                aws s3 sync --delete ./docs-site/stable/. s3://$BUCKET
+                aws s3api put-object --bucket $BUCKET --key /stable/
+              else
+                echo "offen_version: latest" >> ./docs/_override.yml
+                echo "baseurl: latest" >> ./docs/_override.yml
+                make build-docs
+                aws s3api put-object --bucket $BUCKET --key /latest/
+                aws s3 sync --delete ./docs-site/latest/. s3://$BUCKET
+              fi
+            else
+              # a tagged build gets built an deployed twice:
+              # - once as the root version in /
+              # - once as the tagged version in /$TAG/
+              echo "url: https://docs.offen.dev" >> ./docs/_override.yml
+              make build-docs
+              aws s3 cp --recursive ./docs-site/. s3://$BUCKET
+
+              echo "offen_version: $CIRCLE_TAG" >> ./docs/_override.yml
+              echo "baseurl: $CIRCLE_TAG" >> ./docs/_override.yml
+              echo "url: https://docs.offen.dev/$CIRCLE_TAG/" >> ./docs/_override.yml
+              make build-docs
+              aws s3api put-object --bucket $BUCKET --key /$CIRCLE_TAG/
+              aws s3 sync --delete ./docs-site/$CIRCLE_TAG/. s3://$BUCKET
+            fi
+
             aws cloudfront create-invalidation --distribution-id $DISTRIBUTION --paths "/*"
 
 workflows:
