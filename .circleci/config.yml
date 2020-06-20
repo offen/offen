@@ -241,13 +241,13 @@ jobs:
                 echo "baseurl: stable" >> ./docs/_override.yml
                 make build-docs
                 aws s3api put-object --bucket $BUCKET --key /stable/
-                aws s3 sync --delete ./docs-site/stable/. s3://$BUCKET
+                aws s3 sync --delete ./docs-site/. s3://$BUCKET/stable/
               else
                 echo "offen_version: latest" >> ./docs/_override.yml
                 echo "baseurl: latest" >> ./docs/_override.yml
                 make build-docs
                 aws s3api put-object --bucket $BUCKET --key /latest/
-                aws s3 sync --delete ./docs-site/latest/. s3://$BUCKET
+                aws s3 sync --delete ./docs-site/. s3://$BUCKET/latest/
               fi
             else
               # a tagged build gets built an deployed twice:
@@ -263,7 +263,7 @@ jobs:
               echo "url: https://docs.offen.dev/$CIRCLE_TAG/" >> ./docs/_override.yml
               make build-docs
               aws s3api put-object --bucket $BUCKET --key /$CIRCLE_TAG/
-              aws s3 sync --delete ./docs-site/$CIRCLE_TAG/. s3://$BUCKET
+              aws s3 sync --delete ./docs-site/. s3://$BUCKET/$CIRCLE_TAG/
             fi
       - run:
           name: Invalidate Cloudfront distribution
