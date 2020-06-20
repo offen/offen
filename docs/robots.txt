@@ -1,4 +1,2 @@
 User-agent: *
-Disallow: /v0*/
-Disallow: /latest/
-Disallow: /stable/
+Disallow: /v/

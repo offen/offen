@@ -18,11 +18,11 @@ Offen is a fair alternative to common web analytics tools. Gain insights while y
 
 ### I run a website and want to collect usage statistics.
 
-[How to run Offen]({{ site.baseurl }}/running-offen/){: .btn .btn-green }
+[How to run Offen](/{{ site.baseurl }}/running-offen/){: .btn .btn-green }
 {: .mb-8 }
 
 
 ### I want to contribute as a developer.
 
-[Developer guide]({{ site.baseurl }}/developing-offen/){: .btn  .btn-green }
+[Developer guide](/{{ site.baseurl }}/developing-offen/){: .btn  .btn-green }
 {: .mb-8 }
