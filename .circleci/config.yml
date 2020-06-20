@@ -256,7 +256,7 @@ jobs:
               echo "url: https://docs.offen.dev" >> ./docs/_override.yml
               make build-docs
               aws s3 cp ./docs/robots.txt s3://$BUCKET
-              aws s3 cp --recursive ./docs-site/. s3://$BUCKET
+              aws s3 sync --delete ./docs-site/. s3://$BUCKET --exclude 'v/*'
 
               echo "offen_version: $CIRCLE_TAG" >> ./docs/_override.yml
               echo "baseurl: v/$CIRCLE_TAG" >> ./docs/_override.yml
