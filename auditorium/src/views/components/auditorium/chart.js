@@ -20,11 +20,11 @@ const Paragraph = require('./../_shared/paragraph')
 
 const Plot = createPlotlyComponent(Plotly)
 
-const tickColorFade = '#333333'
-const barColorVisitors = '#11533A'
-const barColorVisitorsFade = '#474747'
+const tickColorFade = '#E7040F'
+const barColorVisitors = '#0b533d'
+const barColorVisitorsFade = '#0b533d'
 const barColorViews = '#19A974'
-const barColorViewsFade = '#989494'
+const barColorViewsFade = '#19A974'
 
 const Chart = (props) => {
   const { model, isOperator, showExplainer, onExplain, explainerActive, resolution = 'days' } = props

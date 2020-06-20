@@ -44,7 +44,7 @@ const GoSettings = (props) => {
               <p class='ma0 mb3'>
                 {__('Share all accounts, create a new one, change your email address and password, log out from Offen')}
               </p>
-              <div class="link dim">
+              <div class='link dim'>
                 <a
                   href='/console/'
                   data-testid='auditorium/console-link'

@@ -10,7 +10,7 @@ const classnames = require('classnames')
 const SubmitButton = (props) => {
   const { children, onClick, disabled, disabledCopy, ...otherProps } = props
   return (
-    <div class="link dim">
+    <div class='link dim'>
       <button
         style={{ opacity: props.disabled ? 0.7 : 1 }}
         class={classnames(
