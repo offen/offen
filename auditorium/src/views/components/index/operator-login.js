@@ -14,8 +14,8 @@ const OperatorLogin = (props) => {
           {__('Are you the operator of this Offen installation? Log in to your account.')}
         </h3>
       </div>
-      <div class='w-100 w-40-ns tc'>
-        <a href='/login/' class='f5 tc link dim bn ph3 pv2 dib br1 white bg-mid-gray'>
+      <div class='w-100 w-40-ns link dim tc'>
+        <a href='/login/' class='f5 tc no-underline bn ph3 pv2 dib br1 white bg-mid-gray'>
           {__('Log in as operator')}
         </a>
       </div>

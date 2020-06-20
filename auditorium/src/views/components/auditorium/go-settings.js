@@ -44,13 +44,15 @@ const GoSettings = (props) => {
               <p class='ma0 mb3'>
                 {__('Share all accounts, create a new one, change your email address and password, log out from Offen')}
               </p>
-              <a
-                href='/console/'
-                data-testid='auditorium/console-link'
-                class='w-100 w-auto-ns f5 tc link dim bn dib br1 ph3 pv2 mr0 mr2-ns mb3 mb0-ns white bg-mid-gray'
-              >
-                {__('Open admin console')}
-              </a>
+              <div class="link dim">
+                <a
+                  href='/console/'
+                  data-testid='auditorium/console-link'
+                  class='w-100 w-auto-ns f5 tc no-underline bn dib br1 ph3 pv2 mr0 mr2-ns mb3 mb0-ns white bg-mid-gray'
+                >
+                  {__('Open admin console')}
+                </a>
+              </div>
             </div>
           )
         }}

@@ -67,9 +67,11 @@ const EmbedCode = (props) => {
          `<script async src="${window.location.origin}/script.js" data-account-id="${model.account.accountId}"></script>`
         }
       >
-        <button class='pointer w-100 w-auto-ns f5 tc link dim bn dib br1 ph3 pv2 mt3 white bg-mid-gray'>
-          {__('Copy code')}
-        </button>
+        <div class="link dim">
+          <button class='pointer w-100 w-auto-ns f5 tc bn dib br1 ph3 pv2 mt3 white bg-mid-gray'>
+            {__('Copy code')}
+          </button>
+        </div>
       </CopyToClipboard>
     </div>
   )
