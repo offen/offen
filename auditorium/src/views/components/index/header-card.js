@@ -30,8 +30,8 @@ module.exports = (props) => {
             {__('Manage your usage data this website has collected.')}
           </h3>
         </div>
-        <div class='w-100 w-40-ns tc mt2 mt0-ns'>
-          <a href='/auditorium/' class='f5 tc link dim bn ph3 pv2 dib br1 white bg-dark-green'>
+        <div class='w-100 w-40-ns link dim tc mt2 mt0-ns'>
+          <a href='/auditorium/' class='f5 tc no-underline bn ph3 pv2 dib br1 white bg-dark-green'>
             {__('Open Auditorium')}
           </a>
         </div>
