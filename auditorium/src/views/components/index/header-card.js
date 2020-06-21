@@ -30,8 +30,8 @@ module.exports = (props) => {
             {__('Manage your usage data this website has collected.')}
           </h3>
         </div>
-        <div class='w-100 w-40-ns tc mt2 mt0-ns'>
-          <a href='/auditorium/' class='f5 tc link dim bn ph3 pv2 dib br1 white bg-dark-green'>
+        <div class='w-100 w-40-ns link dim tc mt2 mt0-ns'>
+          <a href='/auditorium/' class='f5 tc no-underline bn ph3 pv2 dib br1 white bg-dark-green'>
             {__('Open Auditorium')}
           </a>
         </div>
@@ -52,13 +52,17 @@ module.exports = (props) => {
             {__('Your data always remains yours. You can review and delete it at any time. Opt out again whenever you want.')}
           </p>
         </div>
-        <div class='w-100 w-40-ns tc mt2 mt0-ns'>
-          <button class='pointer f5 tc link dim bn ph3 pv2 dib br1 mr3 white bg-mid-gray' onclick={() => props.expressConsent('allow')}>
-            {__('I allow')}
-          </button>
-          <button disabled={!noStatusYet} class={`f5 tc link dim bn ph3 pv2 dib br1 white ${noStatusYet ? 'bg-mid-gray pointer' : 'bg-light-gray'}`} onclick={() => props.expressConsent('deny')}>
-            {__('I don\'t allow')}
-          </button>
+        <div class='flex justify-center w-100 w-40-ns tc mt2 mt0-ns'>
+          <div class='link dim'>
+            <button class='pointer f5 tc bn ph3 pv2 dib br1 mr3 white bg-mid-gray' onclick={() => props.expressConsent('allow')}>
+              {__('I allow')}
+            </button>
+          </div>
+          <div class='link dim'>
+            <button disabled={!noStatusYet} class={`f5 tc bn ph3 pv2 dib br1 white ${noStatusYet ? 'bg-mid-gray pointer' : 'bg-light-gray'}`} onclick={() => props.expressConsent('deny')}>
+              {__('I don\'t allow')}
+            </button>
+          </div>
         </div>
       </Fragment>
     )

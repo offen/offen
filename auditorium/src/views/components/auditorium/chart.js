@@ -20,11 +20,11 @@ const Paragraph = require('./../_shared/paragraph')
 
 const Plot = createPlotlyComponent(Plotly)
 
-const tickColorFade = '#333333'
-const barColorVisitors = '#11533A'
-const barColorVisitorsFade = '#474747'
+const tickColorFade = '#767676'
+const barColorVisitors = '#0b533d'
+const barColorVisitorsFade = '#0b533d'
 const barColorViews = '#19A974'
-const barColorViewsFade = '#989494'
+const barColorViewsFade = '#19A974'
 
 const Chart = (props) => {
   const { model, isOperator, showExplainer, onExplain, explainerActive, resolution = 'days' } = props
@@ -58,7 +58,7 @@ const Chart = (props) => {
           result = date.toLocaleDateString(process.env.LOCALE, { month: 'short' }) + ' ' + result
         }
         if (isWeekend(date)) {
-          return `<span style="font-style: italic; color: ${tickColorFade}">${result}</span>`
+          return `<span style="font-style: italic; color: ${tickColorFade}; font-size: 130%">${result}</span>`
         }
         return result
     }
@@ -116,6 +116,8 @@ const Chart = (props) => {
     xaxis: {
       fixedrange: true,
       automargin: true,
+      tickcolor: '#ffffff',
+      ticklen: 10,
       tickvals: x,
       ticktext: text
     },

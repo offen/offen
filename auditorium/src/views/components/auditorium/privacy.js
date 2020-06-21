@@ -27,13 +27,15 @@ const Privacy = (props) => {
         <Paragraph class='ma0 mb3'>
           {__('Stay opted in, only delete usage data')}
         </Paragraph>
-        <button
-          class='pointer w-100 w-auto-ns f5 link dim bn dib br1 ph3 pv2 mr1 mb4 white bg-mid-gray'
-          data-role='purge'
-          onclick={handlePurge}
-        >
-          {__('Delete')}
-        </button>
+        <div class='link dim'>
+          <button
+            class='pointer w-100 w-auto-ns f5 bn dib br1 ph3 pv2 mr1 mb4 white bg-mid-gray'
+            data-role='purge'
+            onclick={handlePurge}
+          >
+            {__('Delete')}
+          </button>
+        </div>
       </div>
     )
   }
@@ -50,13 +52,15 @@ const Privacy = (props) => {
               ? __('Opt out and delete usage data')
               : __('Opt in and grant access to your usage data')}
           </Paragraph>
-          <button
-            class='pointer w-100 w-auto-ns f5 link dim bn ph3 pv2 dib br1 mb4 white bg-mid-gray'
-            data-role='consent'
-            onclick={handleConsent}
-          >
-            {userHasOptedIn ? __('Opt out') : __('Opt in')}
-          </button>
+          <div class='link dim'>
+            <button
+              class='pointer w-100 w-auto-ns f5 bn ph3 pv2 dib br1 mb4 white bg-mid-gray'
+              data-role='consent'
+              onclick={handleConsent}
+            >
+              {userHasOptedIn ? __('Opt out') : __('Opt in')}
+            </button>
+          </div>
         </div>
         <div class='w-100 w-auto-m w-60-l pt4-ns mt2-ns'>
           {deleteButton}
