@@ -14,7 +14,7 @@ SPDX-License-Identifier: Apache-2.0
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/offen/offen.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/offen/offen/alerts/)
 [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/offen/offen.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/offen/offen/context:javascript)
 
-Offen is a fair alternative to common web analytics tools. Gain insights while your users have full access to their data. Self hosted, open source and free.
+Offen is an open alternative to common web analytics tools. Gain insights while your users have full access to their data. Lightweight, self hosted and free.
 
 ## Contents
 - [Core features](#core-features)
@@ -30,8 +30,8 @@ Offen is a fair alternative to common web analytics tools. Gain insights while y
 - [Links](#links)
  
 ## Core features
-__Free & open__  
-Our open source code can be fully audited by the community. It will always be available for free.
+__Open & free__  
+Our lightweight and open source code can be fully audited by the community. Offen will always be available for free.
 
 __Self hosted__  
 Comply with GDPR guidelines. Don't share data with third parties. Your users have full access to their data.
@@ -62,9 +62,9 @@ Data of all pages a user has visited where your Offen installation is active. Fo
 ![Example B](https://offen.github.io/press-kit/offen-material/gfx-GitHub-Example-B.svg)
 
 __More features__
-- All your accounts can be shared within your team.  
+- Easily analyze multiple websites within one installation.
+- All website accounts can be shared within teams.
 - User data is only stored for 6 months and then deleted.  
-- Use the in-browser screen for a more intuitive setup.  
 - A detailed documentation on how to run Offen is available.  
 
 ## Essential metrics
