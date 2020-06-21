@@ -58,7 +58,7 @@ const Chart = (props) => {
           result = date.toLocaleDateString(process.env.LOCALE, { month: 'short' }) + ' ' + result
         }
         if (isWeekend(date)) {
-          return `<span style="font-style: italic; color: ${tickColorFade}">${result}</span>`
+          return `<span style="font-style: italic; color: ${tickColorFade}; font-size: 125%">${result}</span>`
         }
         return result
     }
@@ -116,6 +116,7 @@ const Chart = (props) => {
     xaxis: {
       fixedrange: true,
       automargin: true,
+      tickcolor: '#ffffff',
       ticklen: 10,
       tickvals: x,
       ticktext: text
