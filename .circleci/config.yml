@@ -100,16 +100,30 @@ jobs:
           paths:
             - bin/*
 
-  integration:
+  integration_sqlite:
     docker:
       - image: circleci/node:14-browsers
-        environment:
+        environment: &integration_env
           CYPRESS_BASE_URL: http://localhost:3000
           CYPRESS_OPERATOR_USERNAME: circle@offen.dev
           CYPRESS_OPERATOR_PASSWORD: secret
           CYPRESS_ACCOUNT_ID: 9b63c4d8-65c0-438c-9d30-cc4b01173393
           CYPRESS_RUN_LIGHTHOUSE_AUDIT: 1
           OFFEN_SERVER_PORT: 3000
+          OFFEN_DATABASE_CONNECTIONSTRING: /tmp/offen.sqlite3
+    working_directory: ~/offen
+    steps:
+      - run:
+          name: Create db file
+          command: |
+            touch /tmp/offen.sqlite3
+      - run_integration_tests
+
+  integration_postgres:
+    docker:
+      - image: circleci/node:14-browsers
+        environment:
+          <<: *integration_env
           OFFEN_DATABASE_DIALECT: postgres
           OFFEN_DATABASE_CONNECTIONSTRING: postgres://circle:test@localhost:5432/circle_test?sslmode=disable
       - image: circleci/postgres:11.2-alpine
@@ -118,48 +132,28 @@ jobs:
           POSTGRES_PASSWORD: test
     working_directory: ~/offen
     steps:
-      - checkout
-      - attach_workspace:
-          at: ~/offen
       - wait_for:
           service: Postgres
           port: 5432
-      - run:
-          name: Setup application
-          command: |
-            cp ./bin/offen-linux-amd64 ./offen
-            touch offen.env
-            ./offen setup -email $CYPRESS_OPERATOR_USERNAME -name circle -password $CYPRESS_OPERATOR_PASSWORD -populate -forceid $CYPRESS_ACCOUNT_ID
-      - run:
-          name: Serve application
-          command:  ./offen
-          background: true
+      - run_integration_tests
+
+  integration_mysql:
+    docker:
+      - image: circleci/node:14-browsers
+        environment:
+          <<: *integration_env
+          OFFEN_DATABASE_DIALECT: mysql
+          OFFEN_DATABASE_CONNECTIONSTRING: root:test@tcp(localhost:3306)/circle_test?parseTime=true
+      - image: circleci/mysql:5.7
+        environment:
+          MYSQL_DATABASE: circle_test
+          MYSQL_ROOT_PASSWORD: test
+    working_directory: ~/offen
+    steps:
       - wait_for:
-          service: Offen
-          port: 3000
-      - restore_cache:
-          key: offen-integration-cy4.5.0-{{ checksum "./integration/package.json" }}
-      - run:
-          name: Install cypress and dependencies
-          working_directory: ~/offen/integration
-          command: |
-            mkdir -p ~/.npm-global
-            npm config set prefix '~/.npm-global'
-            npm install cypress@4.5.0 -g
-            npm ci
-            echo 'export PATH=~/.npm-global/bin/:$PATH' >> $BASH_ENV
-      - save_cache:
-          paths:
-            - ~/offen/integration/node_modules
-            - ~/.cache/Cypress
-            - ~/.npm-global
-          key: offen-integration-cy4.5.0-{{ checksum "./integration/package.json" }}-{{ epoch }}
-      - run:
-          working_directory: ~/offen/integration
-          name: Run integration tests
-          command: npm t
-      - store_artifacts:
-          path: ~/offen/integration/cypress/screenshots
+          service: MySQL
+          port: 3306
+      - run_integration_tests
 
   release:
     docker:
@@ -289,7 +283,15 @@ workflows:
           <<: *all_tags_filter
       - build:
           <<: *all_tags_filter
-      - integration:
+      - integration_sqlite:
+          <<: *all_tags_filter
+          requires:
+            - build
+      - integration_postgres:
+          <<: *all_tags_filter
+          requires:
+            - build
+      - integration_mysql:
           <<: *all_tags_filter
           requires:
             - build
@@ -303,7 +305,9 @@ workflows:
             - auditorium
             - packages
             - reuse
-            - integration
+            - integration_postgres
+            - integration_mysql
+            - integration_sqlite
             - build
           filters:
             tags:
@@ -335,6 +339,48 @@ commands:
               sleep 1
             done
             echo Failed waiting for << parameters.service >> && exit 1
+  run_integration_tests:
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/offen
+      - run:
+          name: Setup application
+          command: |
+            cp ./bin/offen-linux-amd64 ./offen
+            touch offen.env
+            ./offen setup -email $CYPRESS_OPERATOR_USERNAME -name circle -password $CYPRESS_OPERATOR_PASSWORD -populate -forceid $CYPRESS_ACCOUNT_ID
+      - run:
+          name: Serve application
+          command:  ./offen
+          background: true
+      - wait_for:
+          service: Offen
+          port: 3000
+      - restore_cache:
+          key: offen-integration-cy4.5.0-{{ checksum "./integration/package.json" }}
+      - run:
+          name: Install cypress and dependencies
+          working_directory: ~/offen/integration
+          command: |
+            mkdir -p ~/.npm-global
+            npm config set prefix '~/.npm-global'
+            npm install cypress@4.5.0 -g
+            npm ci
+            echo 'export PATH=~/.npm-global/bin/:$PATH' >> $BASH_ENV
+      - save_cache:
+          paths:
+            - ~/offen/integration/node_modules
+            - ~/.cache/Cypress
+            - ~/.npm-global
+          key: offen-integration-cy4.5.0-{{ checksum "./integration/package.json" }}-{{ epoch }}
+      - run:
+          working_directory: ~/offen/integration
+          name: Run integration tests
+          command: npm t
+      - store_artifacts:
+          path: ~/offen/integration/cypress/screenshots
+
   test_node_app:
     description: Run unit tests for a Node.js based subapp
     parameters:
