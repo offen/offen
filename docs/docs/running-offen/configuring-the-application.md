@@ -135,6 +135,18 @@ Defaults to `/var/opt/offen/offen.db` on Linux and MacOS, `%Temp%\offen.db` on W
 
 The connection string or location of the database. For `sqlite3` this will be the location of the database file, for other dialects, it will be the URL the database is located at, __including the credentials__ needed to access it.
 
+When using `mysql` make sure you append a `?parseTime=true` parameter to your connection string:
+
+```
+OFFEN_DATABSE_CONNECTIONSTRING=user:pass@tcp(localhost:3306)/offen?parseTime=true
+```
+
+When using `postgres` and you are using a local database (or a Docker network) you might need to append a `?sslmode=disable` parameter to your connection string:
+
+```
+OFFEN_DATABSE_CONNECTIONSTRING=postgres://user:pass@localhost:5432/offen?sslmode=disable
+```
+
 ---
 
 ### Email
