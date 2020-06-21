@@ -116,6 +116,7 @@ const Chart = (props) => {
     xaxis: {
       fixedrange: true,
       automargin: true,
+      ticklen: 10,
       tickvals: x,
       ticktext: text
     },
