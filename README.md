@@ -95,7 +95,7 @@ docker run --rm -it -p 9876:9876 offen/offen:latest demo -port 9876
 This creates an ephemeral one-off installation that is populated with random data and is running on `http://localhost:9876`. There, you can log in using the account `demo@offen.dev` and password `demo`.
 
 ## Project status
-__Offen is in active development.__ We're happy to help if you would like to experiment with deploying it, but at this point we cannot guarantee any upgrade stability yet. Each release might contain breaking changes that might result in data being lost on the next upgrade. 
+__Offen is in active development.__ We're happy to help if you would like to experiment with deploying it, but at this point we cannot guarantee any upgrade stability yet. We'll do our best to help you create a viable upgrade path though.
 
 We are currently working on __Milestone 5 out of 6: Resilience and documentation.__ Check our [blog][] for detailed updates on what we are working on right now and what's up next.
 
