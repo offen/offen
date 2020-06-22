@@ -1,3 +1,10 @@
+<!--
+Copyright 2020 - Offen Authors <hioffen@posteo.de>
+SPDX-FileCopyrightText: 2020 Offen Authors
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
 # server
 
 `server` exposes a HTTP API that can be used to record and query event data as well as static assets.

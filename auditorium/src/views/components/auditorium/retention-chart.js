@@ -42,11 +42,11 @@ const RetentionTable = (props) => {
     }
     return (
       <tr key={index}>
-        <td>
+        <th scope='row' class='tl normal'>
           <RelativeTime>
             {matrix.length - index - 1}
           </RelativeTime>
-        </td>
+        </th>
         {elements.map(function (element, index) {
           return (
             <td key={index}>
@@ -72,7 +72,7 @@ const RetentionTable = (props) => {
         {explainerActive
           ? (
             <Paragraph class='mw7 ma0 pv2'>
-              {__('This panel displays your recurring visits of pages of the <a href="#terms-offen-installation" class="%s">Offen installation</a> during the last 4 weeks. For each of the previous weeks, the percentage is calculated from the value of the current week.', 'link dim dark-green')}
+              {__('This panel displays your recurring visits of pages of the <a href="#terms-offen-installation" class="%s">Offen installation</a> during the last 4 weeks. For each of the previous weeks, the percentage is calculated from the value of the current week.', 'b link dim dark-green')}
             </Paragraph>
           )
           : null}
@@ -80,14 +80,14 @@ const RetentionTable = (props) => {
       <table class='w-100 collapse dt--fixed f6 f5-ns mt3 mb4'>
         <thead>
           <tr>
-            <td />
+            <th />
             {matrix.map(function (row, index) {
               return (
-                <td class='pb2' key={index}>
+                <th class='normal tl pb2' key={index} scope='col'>
                   <RelativeTime invert>
                     {index}
                   </RelativeTime>
-                </td>
+                </th>
               )
             })}
           </tr>

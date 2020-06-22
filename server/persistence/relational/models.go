@@ -16,7 +16,7 @@ type Event struct {
 	AccountID string
 	// the secret id is nullable for anonymous events
 	SecretID *string
-	Payload  string
+	Payload  string `gorm:"type:text"`
 	Secret   Secret `gorm:"foreignkey:SecretID;association_foreignkey:SecretID"`
 }
 
@@ -109,9 +109,9 @@ type AccountUserRelationship struct {
 	RelationshipID                    string `gorm:"primary_key"`
 	AccountUserID                     string
 	AccountID                         string
-	PasswordEncryptedKeyEncryptionKey string
-	EmailEncryptedKeyEncryptionKey    string
-	OneTimeEncryptedKeyEncryptionKey  string
+	PasswordEncryptedKeyEncryptionKey string `gorm:"type:text"`
+	EmailEncryptedKeyEncryptionKey    string `gorm:"type:text"`
+	OneTimeEncryptedKeyEncryptionKey  string `gorm:"type:text"`
 }
 
 func (a *AccountUserRelationship) export() persistence.AccountUserRelationship {
@@ -140,8 +140,8 @@ func importAccountUserRelationship(a *persistence.AccountUserRelationship) Accou
 type Account struct {
 	AccountID           string `gorm:"primary_key"`
 	Name                string
-	PublicKey           string
-	EncryptedPrivateKey string
+	PublicKey           string `gorm:"type:text"`
+	EncryptedPrivateKey string `gorm:"type:text"`
 	UserSalt            string
 	Retired             bool
 	Created             time.Time

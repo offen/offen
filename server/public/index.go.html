@@ -1,3 +1,6 @@
+  Copyright 2020 - Offen Authors <hioffen@posteo.de>
+  SPDX-License-Identifier: Apache-2.0
+
 {{ define "index" }}
 <!DOCTYPE html>
 <html lang="{{ .lang }}" dir="ltr">
@@ -25,29 +28,36 @@
         </div>
         <div class="mw8 center hp0 ph3-ns">
           <p class="dib pa2 br2 ma0 mt3 ml3 ml0-ns mr3 mr0-ns bg-light-yellow">
-            {{ __ "It seems like your browser has <strong>JavaScript disabled.</strong>" }}
+            {{ __ "It seems like your browser has JavaScript disabled." }}
           </p>
           <div class="w-100 ph3 ph4-ns pv4 mt4 mb4 bt bb ba-ns br0 br2-ns b--black-10 bg-white">
             <div class="w-100 w-90-ns mr3">
-              <h3 class="f5 b ma0 mb2">
-                {{ __ "Offen is a fair and open source analytics software. It is installed on the website that linked you here." }}
+              <h3 class="f4 normal ma0 mb3">
+                {{ __ "Offen requires JavaScript to function properly." }}
               </h3>
+              <p class="ma0 mb2">
+                {{ __ "Offen is a fair and open source analytics software. It is installed on the website that linked you here." }}
+              </p>
               <p class="ma0">
                 {{ __ "For Offen to work, your browser has to allow JavaScript and accept cookies. Please change your browser settings and reload this page. Subsequently, Offen will ask for your consent before collecting any usage data." }}
               </p>
             </div>
           </div>
-          <div class="flex flex-column flex-row-ns justify-between pb5 mh3 mh0-ns moon-gray">
-            <div>
-              <p class="b ma0 mb1">Offen</p>
-              <p class="ma0 mb2">
-               {{ __ "Transparent web analytics <br>for everyone" }}
+          <div class='mw8 center flex flex-wrap flex-column flex-row-ns justify-between f6 lh-title ph3 pb5 pb7-ns mid-gray'>
+            <div class='w-100'>
+              <p class='ma0 mb0'>
+                <a href="https://www.offen.dev/" class="b link dim mid-gray" target="_blank" rel="noreferer noopener">{{ __ "Offen" }}</a>
               </p>
             </div>
-            <div>
-              <a href="https://www.offen.dev/" class="normal link underline dim moon-gray" target="_blank">
-                www.offen.dev
-              </a>
+            <div class='w-100 w-50-ns pr3-ns'>
+              <p class='ma0 mb3'>
+                {{ __ "Fair web analytics" }}
+              </p>
+            </div>
+            <div class='w-100 w-50-ns'>
+              <p class='ma0 tl tr-ns'>
+                {{ __ "Found an issue, need help or want to add something?" }}<br><a href="https://twitter.com/hioffen" class="b link dim mid-gray" target="_blank" rel="noreferer noopener">{{ __ "Tweet, " }}</a> <a href="mailto:hioffen@posteo.de" class="b link dim mid-gray" target="_blank">{{ __ "email " }}</a> {{ __ "or file an " }}<a href="https://github.com/offen/offen" class="b link dim mid-gray" target="_blank" rel="noreferer noopener">{{ __ "issue." }}</a>
+              </p>
             </div>
           </div>
         </div>

@@ -14,7 +14,7 @@ const ShareAccount = (props) => {
       {...props}
       headline={__('Share this account')}
       subline={__(
-        'Share your Offen account <strong>%s</strong> via email invitation. If granted Admin privileges, invited users have full access to a shared account and can also create further accounts for this Offen instance.',
+        'Share your Offen account <em class="%s">%s</em> via email invitation. If granted Admin privileges, invited users have full access to a shared account and can also create further accounts for this Offen instance.', 'i tracked',
         props.accountName
       )}
       collapsible

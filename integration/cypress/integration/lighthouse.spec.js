@@ -1,3 +1,8 @@
+/**
+ * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 describe('Lighthouse Audits', function () {
   context('The index page', function () {
     it('passes the lighthouse audits', function () {

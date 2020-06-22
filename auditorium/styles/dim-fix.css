@@ -7,3 +7,7 @@
   transition: none;
   opacity: 1;
 }
+
+[role="button"]:focus {
+  outline: rgba(0,0,0,.2) dotted 1px;
+}

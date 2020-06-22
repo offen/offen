@@ -21,7 +21,7 @@ const CreateAccount = (props) => {
         emailAddress: formData['email-address'],
         password: formData.password
       },
-      __('Log in again to use the newly created account <strong>"%s"</strong>.', formData['account-name']),
+      __('Log in again to use the newly created account <em class="%s">"%s"</em>.', 'i tracked', formData['account-name']),
       __('There was an error creating the account, please try again.')
     )
       .then(() => {
@@ -46,6 +46,7 @@ const CreateAccount = (props) => {
                   name='account-name'
                   required
                   disabled={isDisabled}
+                  autocomplete='off'
                 >
                   {__('Account name')}
                 </LabeledInput>
@@ -58,8 +59,8 @@ const CreateAccount = (props) => {
           (props, autoFocusRef) => {
             return (
               <Fragment>
-                <h5>
-                  {__('You need to confirm this action with your credentials')}
+                <h5 class='f5 i normal ma0 mb3'>
+                  {__('You need to confirm this action with your credentials.')}
                 </h5>
                 <LabeledInput
                   ref={autoFocusRef}

@@ -1,14 +1,20 @@
+<!--
+Copyright 2020 - Offen Authors <hioffen@posteo.de>
+SPDX-License-Identifier: Apache-2.0
+-->
+
 <a href="https://offen.dev/">
     <img src="https://offen.github.io/press-kit/offen-material/gfx-GitHub-Offen-logo.svg" alt="Offen logo" title="Offen" width="150px"/>
 </a>
 
-# Transparent web analytics
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+# Fair web analytics
 [![CircleCI](https://circleci.com/gh/offen/offen/tree/development.svg?style=svg)](https://circleci.com/gh/offen/offen/tree/development)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![REUSE status](https://api.reuse.software/badge/github.com/offen/offen)](https://api.reuse.software/info/github.com/offen/offen)
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/offen/offen.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/offen/offen/alerts/)
 [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/offen/offen.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/offen/offen/context:javascript)
 
-Offen is a fair alternative to common web analytics tools. Gain insights while your users have full access to their data. Self hosted, open source and free.
+Offen is an open alternative to common web analytics tools. Gain insights while your users have full access to their data. Lightweight, self hosted and free.
 
 ## Contents
 - [Core features](#core-features)
@@ -24,8 +30,8 @@ Offen is a fair alternative to common web analytics tools. Gain insights while y
 - [Links](#links)
  
 ## Core features
-__Free & open__  
-Our open source code can be fully audited by the community. It will always be available for free.
+__Open & free__  
+Our lightweight and open source code can be fully audited by the community. Offen will always be available for free.
 
 __Self hosted__  
 Comply with GDPR guidelines. Don't share data with third parties. Your users have full access to their data.
@@ -56,9 +62,9 @@ Data of all pages a user has visited where your Offen installation is active. Fo
 ![Example B](https://offen.github.io/press-kit/offen-material/gfx-GitHub-Example-B.svg)
 
 __More features__
-- All your accounts can be shared within your team.  
+- Easily analyze multiple websites within one installation.
+- All website accounts can be shared within teams.
 - User data is only stored for 6 months and then deleted.  
-- Use the in-browser screen for a more intuitive setup.  
 - A detailed documentation on how to run Offen is available.  
 
 ## Essential metrics
@@ -89,9 +95,9 @@ docker run --rm -it -p 9876:9876 offen/offen:latest demo -port 9876
 This creates an ephemeral one-off installation that is populated with random data and is running on `http://localhost:9876`. There, you can log in using the account `demo@offen.dev` and password `demo`.
 
 ## Project status
-__Offen is in active development.__ We're happy to help if you would like to experiment with deploying it, but at this point we cannot guarantee any upgrade stability yet. Each release might contain breaking changes that might result in data being lost on the next upgrade. 
+__Offen is in active development.__ We're happy to help if you would like to experiment with deploying it, but at this point we cannot guarantee any upgrade stability yet. We'll do our best to help you create a viable upgrade path though.
 
-We are currently working on __Milestone 4 out of 6: Managing data.__ Check our [blog][] for detailed updates on what we are working on right now and what's up next.
+We are currently working on __Milestone 5 out of 6: Resilience and documentation.__ Check our [blog][] for detailed updates on what we are working on right now and what's up next.
 
 [blog]: https://www.offen.dev/blog/
 
@@ -126,6 +132,15 @@ Run the tests for all subapplicatons using
 ```sh
 $ make test
 ```
+
+The documentation site at <https://docs.offen.dev> is also part of this repository. To run this site locally, you can:
+
+```sh
+make setup-docs
+make docs
+```
+
+This will serve the documentation on <https://localhost:4000>.
 
 ## Kind support
 [![NLnet Foundation](https://offen.github.io/press-kit/external-material/nlnet-logo.svg)](https://nlnet.nl/)

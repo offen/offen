@@ -1,3 +1,8 @@
+<!--
+Copyright 2020 - Offen Authors <hioffen@posteo.de>
+SPDX-License-Identifier: Apache-2.0
+-->
+
 # script
 
 The `script` is the script operators are using to deploy _offen_ on a site.

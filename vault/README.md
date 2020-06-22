@@ -1,3 +1,7 @@
+<!--
+Copyright 2020 - Offen Authors <hioffen@posteo.de>
+SPDX-License-Identifier: Apache-2.0
+-->
 # vault
 
 The `vault` is a small client side application that is supposed to be used by other applications (e.g. the `script` or the `auditorium`) by injecting an invisible `iframe` and then requesting or sending information using `window.postMessage`.

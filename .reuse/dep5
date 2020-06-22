@@ -1,0 +1,30 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: Offen
+Upstream-Contact: Offen <hioffen@posteo.de>
+Source: https://github.com/offen/offen
+
+# License for GitHub to pick up and display
+Files: LICENSE
+Copyright: 2020 Offen Authors <hioffen@posteo.de>
+License: Apache-2.0
+
+# package managers
+Files: */package.json */package-lock.json */cypress.json */go.mod */go.sum */Gemfile */Gemfile.lock
+Copyright: 2020 Offen Authors <hioffen@posteo.de>
+License: Apache-2.0
+
+# text files
+Files: banner.txt */robots.txt
+Copyright: 2020 Offen Authors <hioffen@posteo.de>
+License: Apache-2.0
+
+# test site for local development
+Files: test-site/*
+Copyright: 2020 Offen Authors <hioffen@posteo.de>
+License: Apache-2.0
+
+# unit test fixtures
+Files: packages/__fixtures__/* script/__fixtures__/* server/router/testdata/* server/public/testdata/* server/config/testdata/*
+Copyright: 2020 Offen Authors <hioffen@posteo.de>
+License: Apache-2.0
+

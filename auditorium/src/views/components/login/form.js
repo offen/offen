@@ -54,7 +54,7 @@ const Form = forwardRef((props, ref) => {
           {__('Log in')}
         </SubmitButton>
         <div class='mb3'>
-          <a class='normal link dim dark-green' href='/forgot-password/'>
+          <a class='b link dim dark-green' href='/forgot-password/'>
             {__('Forgot password?')}
           </a>
         </div>

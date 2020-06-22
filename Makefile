@@ -1,3 +1,6 @@
+# Copyright 2020 - Offen Authors <hioffen@posteo.de>
+# SPDX-License-Identifier: Apache-2.0
+
 help:
 	@echo "    up"
 	@echo "        Start the development server"
@@ -20,6 +23,7 @@ help:
 	@echo "    build-docker"
 	@echo "        Build the Docker image"
 	@echo "        You can pass DOCKER_IMAGE_TAG if you want to use a non-default tag"
+	@echo "    docs"
 	@echo "    extract-strings"
 	@echo "        Extract strings for localization"
 	@echo "    secret"
@@ -28,8 +32,14 @@ help:
 	@echo "        Run unit tests for all apps"
 	@echo "    integration"
 	@echo "        Run integration tests against a running dev environment"
+	@echo "        Run the docs site locally"
+	@echo "    setup-docs"
+	@echo "        Build the docs containers and install dependencies"
+	@echo "    build-docs"
+	@echo "        Build the documentation site"
 
 setup: dev-build update howto
+
 
 dev-build:
 	@docker-compose build
@@ -98,4 +108,19 @@ test:
 integration:
 	@docker-compose -f docker-compose.integration.yml run --rm integration npm t
 
-.PHONY: setup build build-docker bootstrap build secret test up down integration
+setup-docs:
+	@docker-compose -f docker-compose.docs.yml build
+	@docker-compose -f docker-compose.docs.yml run --rm docs_jekyll bundle install
+	@docker-compose -f docker-compose.docs.yml run --rm docs_jekyll bundle exec just-the-docs rake search:init
+
+docs:
+	@docker-compose -f docker-compose.docs.yml up
+
+build-docs:
+	@docker build -t offen/docs -f build/Dockerfile.docs .
+	@rm -rf docs-site && mkdir docs-site
+	@docker create --entrypoint=bash -it --name assets offen/docs
+	@docker cp assets:/repo/_site/. ./docs-site/
+	@docker rm assets
+
+.PHONY: setup build build-docker bootstrap build secret test up down integration docs

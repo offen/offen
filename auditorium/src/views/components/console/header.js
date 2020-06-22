@@ -13,7 +13,7 @@ const Header = (props) => {
     <HighlightBox
       dangerouslySetInnerHTML={{
         __html: __(
-          'You are logged in as <strong>operator</strong>.'
+          'You are logged in as operator.'
         )
       }}
     />
