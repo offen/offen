@@ -250,14 +250,12 @@ jobs:
               # a tagged build gets built an deployed twice:
               # - once as the root version in /
               # - once as the tagged version in /$TAG/
-              echo "url: https://docs.offen.dev" >> ./docs/_override.yml
+              echo "offen_version: $CIRCLE_TAG" >> ./docs/_override.yml
               make build-docs
               aws s3 cp ./docs/robots.txt s3://$BUCKET
               aws s3 sync --delete ./docs-site/. s3://$BUCKET --exclude 'v/*'
 
-              echo "offen_version: $CIRCLE_TAG" >> ./docs/_override.yml
               echo "baseurl: v/$CIRCLE_TAG" >> ./docs/_override.yml
-              echo "url: https://docs.offen.dev/$CIRCLE_TAG/" >> ./docs/_override.yml
               make build-docs
               aws s3api put-object --bucket $BUCKET --key /v/$CIRCLE_TAG/
               aws s3 sync --delete ./docs-site/. s3://$BUCKET/v/$CIRCLE_TAG/
