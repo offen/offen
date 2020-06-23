@@ -518,4 +518,51 @@ describe('src/queries.js', function () {
       })
     })
   })
+
+  describe('parseAndValidateEvent', function () {
+    it('parses referrer values into a URL', function () {
+      const result = queries.parseAndValidateEvent({
+        payload: {
+          type: 'PAGEVIEW',
+          referrer: 'https://blog.foo.bar',
+          href: 'https://www.offen.dev/foo'
+        }
+      })
+      assert(result.payload.referrer instanceof window.URL)
+      // handling as a URL appends a trailing slash
+      assert.strictEqual(result.payload.referrer.toString(), 'https://blog.foo.bar/')
+    })
+    it('skips bad referrer values', function () {
+      const result = queries.parseAndValidateEvent({
+        payload: {
+          type: 'PAGEVIEW',
+          referrer: '<script>alert("ZALGO")</script>',
+          href: 'https://shady.business'
+        }
+      })
+      assert.strictEqual(result, null)
+    })
+
+    it('parses href values into a URL', function () {
+      const result = queries.parseAndValidateEvent({
+        payload: {
+          type: 'PAGEVIEW',
+          href: 'https://www.offen.dev/foo'
+        }
+      })
+      assert(result.payload.href instanceof window.URL)
+      assert.strictEqual(result.payload.href.toString(), 'https://www.offen.dev/foo')
+    })
+
+    it('skips bad href values', function () {
+      const result = queries.parseAndValidateEvent({
+        payload: {
+          type: 'PAGEVIEW',
+          referrer: 'https://shady.business',
+          href: '<script>alert("ZALGO")</script>'
+        }
+      })
+      assert.strictEqual(result, null)
+    })
+  })
 })

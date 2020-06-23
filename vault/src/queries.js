@@ -111,14 +111,7 @@ function getDefaultStatsWith (getDatabase) {
             : events
         })
         .then(function (events) {
-          return events.map(function (event) {
-            if (event.secretId === null || !event.payload) {
-              return event
-            }
-            event.payload.referrer = event.payload.referrer && new window.URL(event.payload.referrer)
-            event.payload.href = event.payload.href && new window.URL(event.payload.href)
-            return event
-          })
+          return events.map(parseAndValidateEvent).filter(_.identity)
         })
     })
     var decryptedEvents = decryptions[0]
@@ -468,4 +461,25 @@ function getEncryptedSecretsWith (getDatabase) {
         return []
       })
   }
+}
+
+exports.parseAndValidateEvent = parseAndValidateEvent
+function parseAndValidateEvent (event) {
+  if (event.secretId === null || !event.payload) {
+    return event
+  }
+
+  try {
+    event.payload.referrer = event.payload.referrer && new window.URL(event.payload.referrer)
+  } catch (err) {
+    return null
+  }
+
+  try {
+    event.payload.href = event.payload.href && new window.URL(event.payload.href)
+  } catch (err) {
+    return null
+  }
+
+  return event
 }
