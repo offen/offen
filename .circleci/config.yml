@@ -58,14 +58,11 @@ jobs:
 
   reuse:
     docker:
-      - image: cimg/python:3.7
+      - image: fsfe/reuse:latest-extra
     working_directory: ~/offen
     steps:
       - checkout:
           path: ~/offen
-      - run:
-          name: Install tool
-          command: pip install --user fsfe-reuse
       - run:
           name: Check for REUSE compliance
           command: reuse lint
