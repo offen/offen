@@ -17,7 +17,7 @@ import (
 )
 
 var (
-	defaultCSP             = "default-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'"
+	defaultCSP             = "default-src 'self'; style-src 'self' 'unsafe-inline'"
 	revisionedJSRe         = regexp.MustCompile("-[0-9a-z]{10}\\.js$")
 	webfontRe              = regexp.MustCompile("\\.(woff|woff2|ttf)$")
 	scriptRe               = regexp.MustCompile("script\\.js$")
