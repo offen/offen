@@ -77,9 +77,7 @@ In case you want to scale Offen or need more performance you can also use a MySQ
 
 ### Running the application behind a reverse proxy
 
-Offen itself is sufficiently hardened in order to be exposed to the public internet directly. You still might want to use a reverse proxy like Apache or nginx in front of the process. This lets you leverage its buffering and caching capabilities, thus making the application easier to configure and run more smoothly in times of heavy load.
-
-See the [configuration article][config-article] for information on how to run Offen behind a reverse proxy.
+Offen itself is sufficiently hardened in order to be exposed to the public internet directly. If your setup requires running it behind a reverse proxy, you can do it, but __we actively advise against doing so__ for the reason that the proxy will leave possibly unwanted traces like logs containing user IPs or similar. If the reverse proxy is not a hard requirement of your setup, leave it out.
 
 ### Transactional email
 
