@@ -48,7 +48,7 @@ func cmdSetup(subcommand string, flags []string) {
 		accountName     = cmd.String("name", "", "the account name")
 		email           = cmd.String("email", "", "the email address used for login")
 		accountID       = cmd.String("forceid", "", "force usage of given valid UUID as account ID")
-		password        = cmd.String("password", "", "the password used for login")
+		password        = cmd.String("password", "", "the password used for login (must be at least 8 characters long)")
 		source          = cmd.String("source", "", "a configuration file")
 		envFile         = cmd.String("envfile", "", "the env file to use")
 		force           = cmd.Bool("force", false, "allow setup to delete existing data")
@@ -75,6 +75,7 @@ func cmdSetup(subcommand string, flags []string) {
 		}
 		pw = string(input)
 	}
+
 	conf := persistence.BootstrapConfig{}
 	if *source != "" {
 		a.logger.Infof("Trying to read account seed data from %s", *source)

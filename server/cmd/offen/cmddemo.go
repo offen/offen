@@ -105,10 +105,11 @@ func cmdDemo(subcommand string, flags []string) {
 		},
 		AccountUsers: []persistence.BootstrapAccountUser{
 			{
-				AdminLevel: persistence.AccountUserAdminLevelSuperAdmin,
-				Email:      "demo@offen.dev",
-				Password:   "demo",
-				Accounts:   []string{accountID.String()},
+				AdminLevel:            persistence.AccountUserAdminLevelSuperAdmin,
+				Email:                 "demo@offen.dev",
+				Password:              "demo",
+				Accounts:              []string{accountID.String()},
+				AllowInsecurePassword: true,
 			},
 		},
 	}); err != nil {
