@@ -463,10 +463,38 @@ function getEncryptedSecretsWith (getDatabase) {
   }
 }
 
+var knownEventTypes = {
+  PAGEVIEW: true
+}
+
 exports.parseAndValidateEvent = parseAndValidateEvent
 function parseAndValidateEvent (event) {
   if (event.secretId === null || !event.payload) {
     return event
+  }
+
+  if (!knownEventTypes[event.payload.type]) {
+    return null
+  }
+
+  if (event.payload.pageload !== null && !_.isFinite(event.payload.pageload)) {
+    event.payload.pageload = null
+  }
+
+  if (!_.isBoolean(event.payload.isMobile)) {
+    event.payload.isMobile = false
+  }
+
+  if (!_.isString(event.payload.title)) {
+    event.payload.title = ''
+  }
+
+  if (!_.isString(event.payload.sessionId)) {
+    return null
+  }
+
+  if (!isValidJSONDate(event.payload.timestamp)) {
+    return null
   }
 
   try {
@@ -482,4 +510,8 @@ function parseAndValidateEvent (event) {
   }
 
   return event
+}
+
+function isValidJSONDate (dateString) {
+  return _.isString(dateString) && !_.isNaN(new Date(dateString).getTime())
 }

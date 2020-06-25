@@ -525,7 +525,9 @@ describe('src/queries.js', function () {
         payload: {
           type: 'PAGEVIEW',
           referrer: 'https://blog.foo.bar',
-          href: 'https://www.offen.dev/foo'
+          href: 'https://www.offen.dev/foo',
+          timestamp: new Date().toJSON(),
+          sessionId: 'session'
         }
       })
       assert(result.payload.referrer instanceof window.URL)
@@ -537,7 +539,9 @@ describe('src/queries.js', function () {
         payload: {
           type: 'PAGEVIEW',
           referrer: '<script>alert("ZALGO")</script>',
-          href: 'https://shady.business'
+          href: 'https://shady.business',
+          timestamp: new Date().toJSON(),
+          sessionId: 'session'
         }
       })
       assert.strictEqual(result, null)
@@ -547,7 +551,9 @@ describe('src/queries.js', function () {
       const result = queries.parseAndValidateEvent({
         payload: {
           type: 'PAGEVIEW',
-          href: 'https://www.offen.dev/foo'
+          href: 'https://www.offen.dev/foo',
+          timestamp: new Date().toJSON(),
+          sessionId: 'session'
         }
       })
       assert(result.payload.href instanceof window.URL)
@@ -559,10 +565,36 @@ describe('src/queries.js', function () {
         payload: {
           type: 'PAGEVIEW',
           referrer: 'https://shady.business',
-          href: '<script>alert("ZALGO")</script>'
+          href: '<script>alert("ZALGO")</script>',
+          timestamp: new Date().toJSON(),
+          sessionId: 'session'
         }
       })
       assert.strictEqual(result, null)
     })
+  })
+
+  it('skips unkown event types', function () {
+    const result = queries.parseAndValidateEvent({
+      payload: {
+        type: 'ZALGO',
+        href: 'https://www.offen.dev/foo',
+        timestamp: new Date().toJSON(),
+        sessionId: 'session'
+      }
+    })
+    assert.strictEqual(result, null)
+  })
+
+  it('skips bad timestamps', function () {
+    const result = queries.parseAndValidateEvent({
+      payload: {
+        type: 'PAGEVIEW',
+        href: 'https://www.offen.dev/foo',
+        timestamp: 8192,
+        sessionId: 'session'
+      }
+    })
+    assert.strictEqual(result, null)
   })
 })
