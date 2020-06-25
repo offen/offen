@@ -18,6 +18,7 @@ import (
 
 var (
 	defaultCSP             = "default-src 'self'; style-src 'self' 'unsafe-inline'"
+	defaultSTS             = "max-age=15768000"
 	revisionedJSRe         = regexp.MustCompile("-[0-9a-z]{10}\\.js$")
 	webfontRe              = regexp.MustCompile("\\.(woff|woff2|ttf)$")
 	scriptRe               = regexp.MustCompile("script\\.js$")
@@ -46,6 +47,7 @@ func staticMiddleware(fileServer, fallback http.Handler) gin.HandlerFunc {
 	}
 
 	return func(c *gin.Context) {
+		secureContext := c.GetBool(contextKeySecureContext)
 		status, contentType := tryStatic(c.Request.Method, c.Request.URL.String())
 		// Right now, we manually trigger an error when trying to read a directory
 		// so we can skip the directory listings provided by the Go FileServer.
@@ -58,14 +60,22 @@ func staticMiddleware(fileServer, fallback http.Handler) gin.HandlerFunc {
 		if strings.HasPrefix(contentType, "text/html") {
 			c.Header("Cache-Control", "no-cache")
 			c.Header("Content-Security-Policy", defaultCSP)
+			if secureContext {
+				c.Header("Strict-Transport-Security", defaultSTS)
+			}
 		}
 
 		switch uri := c.Request.URL.Path; {
 		case revisionedJSRe.MatchString(uri), webfontRe.MatchString(uri):
 			expires := time.Now().Add(time.Hour * 24 * 365).Format(time.RFC1123)
 			c.Header("Expires", expires)
-		case scriptRe.MatchString(uri), stylesheetRe.MatchString(uri), assetRe.MatchString(uri):
+		case stylesheetRe.MatchString(uri), assetRe.MatchString(uri):
 			c.Header("Cache-Control", "no-cache")
+		case scriptRe.MatchString(uri):
+			c.Header("Cache-Control", "no-cache")
+			if secureContext {
+				c.Header("Strict-Transport-Security", defaultSTS)
+			}
 		}
 
 		for key, value := range defaultResponseHeaders {
