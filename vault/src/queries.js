@@ -26,6 +26,7 @@ var stats = require('./stats')
 var cookies = require('./cookie-tools')
 
 var fallbackEventStore = {}
+var fallbackKeyStore = {}
 
 var startOf = {
   hours: startOfHour,
@@ -376,6 +377,11 @@ function putEncryptedSecretsWith (getDatabase) {
     })
     return db.keys
       .bulkPut(records)
+      .catch(dexie.OpenFailedError, function () {
+        fallbackKeyStore[accountId] = fallbackKeyStore[accountId] || []
+        fallbackKeyStore[accountId] = fallbackKeyStore[accountId].concat(records)
+        return records
+      })
   }
 }
 
@@ -465,7 +471,7 @@ function getEncryptedSecretsWith (getDatabase) {
       .equals(TYPE_ENCRYPTED_SECRET)
       .toArray()
       .catch(dexie.OpenFailedError, function () {
-        return []
+        return fallbackKeyStore[accountId] || []
       })
   }
 }
