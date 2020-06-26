@@ -4,8 +4,12 @@
 package ratelimiter
 
 import (
+	"crypto/sha256"
 	"errors"
+	"fmt"
 	"time"
+
+	"github.com/offen/offen/server/keys"
 )
 
 var (
@@ -31,6 +35,7 @@ type Limiter struct {
 	threshold time.Duration
 	deadline  time.Duration
 	cache     GetSetter
+	salt      []byte
 }
 
 // Result describes the outcome of a `Throttle` call
@@ -43,7 +48,10 @@ type Result struct {
 // rate limit has been satisfied. The channel will send a `Result` exactly
 // once before closing, containing information on the
 // applied rate limiting or possible errors that occured
-func (l *Limiter) Throttle(identifier string) <-chan Result {
+func (l *Limiter) Throttle(rawIdentifier string) <-chan Result {
+	joined := append([]byte(rawIdentifier), l.salt...)
+	identifier := fmt.Sprintf("%x", sha256.Sum256(joined))
+
 	out := make(chan Result)
 	go func() {
 		if value, found := l.cache.Get(identifier); found {
@@ -76,9 +84,14 @@ func (l *Limiter) Throttle(identifier string) <-chan Result {
 // enforced minimum distance between two calls of the
 // instance's `Throttle` method using the same identifier
 func New(threshold, timeout time.Duration, cache GetSetter) Throttler {
+	salt, err := keys.GenerateRandomBytes(keys.DefaultSaltLength)
+	if err != nil {
+		panic("cannot initialize rate limiter")
+	}
 	return &Limiter{
 		cache:     cache,
 		threshold: threshold,
 		deadline:  timeout,
+		salt:      salt,
 	}
 }
