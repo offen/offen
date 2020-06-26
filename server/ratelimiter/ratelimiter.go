@@ -26,10 +26,9 @@ type GetSetter interface {
 // Limiter can be used to rate limit operations
 // based on an identifier and a threshold value
 type Limiter struct {
-	threshold time.Duration
-	timeout   time.Duration
-	cache     GetSetter
-	salt      []byte
+	timeout time.Duration
+	cache   GetSetter
+	salt    []byte
 }
 
 // Result describes the outcome of a `Throttle` call
@@ -52,17 +51,17 @@ type cacheItem struct {
 // rate limit has been satisfied. The channel will send a `Result` exactly
 // once before closing, containing information on the
 // applied rate limiting or possible errors that occured
-func (l *Limiter) LinearThrottle(identifier string) <-chan Result {
-	return l.throttle(identifier, false)
+func (l *Limiter) LinearThrottle(threshold time.Duration, identifier string) <-chan Result {
+	return l.throttle(threshold, identifier, false)
 }
 
 // ExponentialThrottle throttles using exponentially increasing thresholds
-func (l *Limiter) ExponentialThrottle(identifier string) <-chan Result {
-	return l.throttle(identifier, true)
+func (l *Limiter) ExponentialThrottle(threshold time.Duration, identifier string) <-chan Result {
+	return l.throttle(threshold, identifier, true)
 }
 
-func (l *Limiter) throttle(rawIdentifier string, exponential bool) <-chan Result {
-	hashedIdentifier := l.hash(rawIdentifier)
+func (l *Limiter) throttle(threshold time.Duration, identifier string, exponential bool) <-chan Result {
+	hashedIdentifier := l.hash(identifier)
 
 	out := make(chan Result)
 	go func() {
@@ -83,7 +82,7 @@ func (l *Limiter) throttle(rawIdentifier string, exponential bool) <-chan Result
 					hashedIdentifier,
 					cacheItem{
 						blockUntil: item.blockUntil.Add(
-							l.threshold * factor,
+							threshold * factor,
 						),
 						queueLen: item.queueLen + 1,
 					},
@@ -96,9 +95,9 @@ func (l *Limiter) throttle(rawIdentifier string, exponential bool) <-chan Result
 			}
 		} else {
 			l.cache.Set(hashedIdentifier, cacheItem{
-				blockUntil: time.Now().Add(l.threshold),
+				blockUntil: time.Now().Add(threshold),
 				queueLen:   1,
-			}, l.threshold)
+			}, threshold)
 			out <- Result{}
 		}
 		close(out)
@@ -109,16 +108,15 @@ func (l *Limiter) throttle(rawIdentifier string, exponential bool) <-chan Result
 // New creates a new Throttler using Limiter. `threshold` defines the
 // enforced minimum distance between two calls of the
 // instance's `Throttle` method using the same identifier
-func New(threshold, timeout time.Duration, cache GetSetter) *Limiter {
+func New(timeout time.Duration, cache GetSetter) *Limiter {
 	salt, err := randomBytes(16)
 	if err != nil {
 		panic("cannot initialize rate limiter")
 	}
 	return &Limiter{
-		cache:     cache,
-		threshold: threshold,
-		timeout:   timeout,
-		salt:      salt,
+		cache:   cache,
+		timeout: timeout,
+		salt:    salt,
 	}
 }
 

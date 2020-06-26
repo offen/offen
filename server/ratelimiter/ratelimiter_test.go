@@ -65,10 +65,10 @@ func TestLinearThrottle(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			limiter := New(test.threshold, time.Hour, &mockGetSetter{})
-			<-limiter.LinearThrottle(test.name)
+			limiter := New(time.Hour, &mockGetSetter{})
+			<-limiter.LinearThrottle(test.threshold, test.name)
 			time.Sleep(test.sleep)
-			result := <-limiter.LinearThrottle(test.name)
+			result := <-limiter.LinearThrottle(test.threshold, test.name)
 			if result.Delay > 0 != test.expectedThrottling {
 				t.Errorf("Expected %v, got %v", test.expectedThrottling, result.Delay)
 			}
@@ -77,18 +77,18 @@ func TestLinearThrottle(t *testing.T) {
 }
 
 func ExampleNew() {
-	limiter := New(time.Second*2, time.Hour, &mockGetSetter{})
+	limiter := New(time.Hour, &mockGetSetter{})
 
-	r1 := <-limiter.LinearThrottle("example")
+	r1 := <-limiter.LinearThrottle(time.Second*2, "example")
 	fmt.Println(r1.Delay > 0)
 
 	time.Sleep(time.Second * 3)
-	r2 := <-limiter.LinearThrottle("example")
+	r2 := <-limiter.LinearThrottle(time.Second*2, "example")
 	fmt.Println(r2.Delay > 0)
 
 	time.Sleep(time.Second)
-	r3 := <-limiter.LinearThrottle("example")
-	other := <-limiter.LinearThrottle("other")
+	r3 := <-limiter.LinearThrottle(time.Second*2, "example")
+	other := <-limiter.LinearThrottle(time.Second*2, "other")
 	fmt.Println(r3.Delay > 0)
 	fmt.Println(other.Delay > 0)
 

@@ -53,7 +53,7 @@ func (rt *router) postShareAccount(c *gin.Context) {
 		}
 	}
 
-	if l := <-rt.limiter(time.Second).ExponentialThrottle(fmt.Sprintf("postShareAccount-%s", accountUser.AccountUserID)); l.Error != nil {
+	if l := <-rt.getLimiter().ExponentialThrottle(time.Second, fmt.Sprintf("postShareAccount-%s", accountUser.AccountUserID)); l.Error != nil {
 		newJSONError(
 			fmt.Errorf("router: error rate limiting request: %w", l.Error),
 			http.StatusTooManyRequests,
@@ -176,7 +176,7 @@ func (rt *router) postJoin(c *gin.Context) {
 		return
 	}
 
-	if l := <-rt.limiter(time.Second).ExponentialThrottle(fmt.Sprintf("postJoin-%s", req.EmailAddress)); l.Error != nil {
+	if l := <-rt.getLimiter().ExponentialThrottle(time.Second, fmt.Sprintf("postJoin-%s", req.EmailAddress)); l.Error != nil {
 		newJSONError(
 			fmt.Errorf("router: error rate limiting request: %w", l.Error),
 			http.StatusTooManyRequests,
@@ -185,7 +185,7 @@ func (rt *router) postJoin(c *gin.Context) {
 	}
 
 	// we rate limit this twice to prevent floodding with arbitrary emails
-	if l := <-rt.limiter(time.Second / 2).LinearThrottle("postJoin-*"); l.Error != nil {
+	if l := <-rt.getLimiter().LinearThrottle(time.Second/2, "postJoin-*"); l.Error != nil {
 		newJSONError(
 			fmt.Errorf("router: error rate limiting request: %w", l.Error),
 			http.StatusTooManyRequests,

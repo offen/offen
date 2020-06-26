@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
-	"sync"
 	"time"
 
 	"github.com/NYTimes/gziphandler"
@@ -34,27 +33,14 @@ type router struct {
 	emails       *template.Template
 	config       *config.Config
 	sanitizer    *bluemonday.Policy
-	limiters     map[time.Duration]*ratelimiter.Limiter
-	cache        ratelimiter.GetSetter
-	limiterLock  sync.Mutex
+	limiter      *ratelimiter.Limiter
 }
 
-func (rt *router) limiter(rate time.Duration) *ratelimiter.Limiter {
-	if rt.limiters == nil {
-		rt.limiters = map[time.Duration]*ratelimiter.Limiter{}
+func (rt *router) getLimiter() *ratelimiter.Limiter {
+	if rt.limiter == nil {
+		rt.limiter = ratelimiter.New(time.Second*30, cache.New(time.Minute, time.Minute*2))
 	}
-	// multiple requests might access this simultaneously
-	rt.limiterLock.Lock()
-	defer rt.limiterLock.Unlock()
-
-	if _, ok := rt.limiters[rate]; ok {
-		return rt.limiters[rate]
-	}
-	if rt.cache == nil {
-		rt.cache = cache.New(5*time.Minute, 10*time.Minute)
-	}
-	rt.limiters[rate] = ratelimiter.New(rate, time.Second*30, rt.cache)
-	return rt.limiters[rate]
+	return rt.limiter
 }
 
 func (rt *router) logError(err error, message string) {
