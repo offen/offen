@@ -15,7 +15,7 @@ import (
 
 func (rt *router) getAccount(c *gin.Context) {
 	accountID := c.Param("accountID")
-	if l := <-rt.limiter(time.Second).Throttlef("getAccount-%s", accountID); l.Error != nil {
+	if l := <-rt.limiter(time.Second).LinearThrottle(fmt.Sprintf("getAccount-%s", accountID)); l.Error != nil {
 		newJSONError(
 			fmt.Errorf("router: error rate limiting request: %w", l.Error),
 			http.StatusTooManyRequests,
@@ -61,7 +61,7 @@ func (rt *router) getAccount(c *gin.Context) {
 func (rt *router) deleteAccount(c *gin.Context) {
 	accountID := c.Param("accountID")
 
-	if l := <-rt.limiter(time.Second).Throttlef("deleteAccount-%s", accountID); l.Error != nil {
+	if l := <-rt.limiter(time.Second).LinearThrottle(fmt.Sprintf("deleteAccount-%s", accountID)); l.Error != nil {
 		newJSONError(
 			fmt.Errorf("router: error rate limiting request: %w", l.Error),
 			http.StatusTooManyRequests,
@@ -130,7 +130,7 @@ func (rt *router) postAccount(c *gin.Context) {
 		return
 	}
 
-	if l := <-rt.limiter(time.Second*5).Throttlef("postAccount-%s", req.EmailAddress); l.Error != nil {
+	if l := <-rt.limiter(time.Second * 5).LinearThrottle(fmt.Sprintf("postAccount-%s", req.EmailAddress)); l.Error != nil {
 		newJSONError(
 			fmt.Errorf("router: error rate limiting request: %w", l.Error),
 			http.StatusTooManyRequests,

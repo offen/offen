@@ -34,14 +34,14 @@ type router struct {
 	emails       *template.Template
 	config       *config.Config
 	sanitizer    *bluemonday.Policy
-	limiters     map[time.Duration]ratelimiter.Throttler
+	limiters     map[time.Duration]*ratelimiter.Limiter
 	cache        ratelimiter.GetSetter
 	limiterLock  sync.Mutex
 }
 
-func (rt *router) limiter(rate time.Duration) ratelimiter.Throttler {
+func (rt *router) limiter(rate time.Duration) *ratelimiter.Limiter {
 	if rt.limiters == nil {
-		rt.limiters = map[time.Duration]ratelimiter.Throttler{}
+		rt.limiters = map[time.Duration]*ratelimiter.Limiter{}
 	}
 	// multiple requests might access this simultaneously
 	rt.limiterLock.Lock()

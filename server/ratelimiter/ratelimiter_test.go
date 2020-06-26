@@ -43,7 +43,7 @@ func (m *mockGetSetter) Set(key string, v interface{}, expiry time.Duration) {
 	m.values[key] = value{v, time.Now().Add(expiry)}
 }
 
-func TestThrottle(t *testing.T) {
+func TestLinearThrottle(t *testing.T) {
 	tests := []struct {
 		name               string
 		sleep              time.Duration
@@ -66,9 +66,9 @@ func TestThrottle(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			limiter := New(test.threshold, time.Hour, &mockGetSetter{})
-			<-limiter.Throttle(test.name)
+			<-limiter.LinearThrottle(test.name)
 			time.Sleep(test.sleep)
-			result := <-limiter.Throttle(test.name)
+			result := <-limiter.LinearThrottle(test.name)
 			if result.Delay > 0 != test.expectedThrottling {
 				t.Errorf("Expected %v, got %v", test.expectedThrottling, result.Delay)
 			}
@@ -79,16 +79,16 @@ func TestThrottle(t *testing.T) {
 func ExampleNew() {
 	limiter := New(time.Second*2, time.Hour, &mockGetSetter{})
 
-	r1 := <-limiter.Throttle("example")
+	r1 := <-limiter.LinearThrottle("example")
 	fmt.Println(r1.Delay > 0)
 
 	time.Sleep(time.Second * 3)
-	r2 := <-limiter.Throttle("example")
+	r2 := <-limiter.LinearThrottle("example")
 	fmt.Println(r2.Delay > 0)
 
 	time.Sleep(time.Second)
-	r3 := <-limiter.Throttle("example")
-	other := <-limiter.Throttle("other")
+	r3 := <-limiter.LinearThrottle("example")
+	other := <-limiter.LinearThrottle("other")
 	fmt.Println(r3.Delay > 0)
 	fmt.Println(other.Delay > 0)
 

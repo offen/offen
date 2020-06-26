@@ -23,17 +23,11 @@ type GetSetter interface {
 	Set(key string, value interface{}, expiry time.Duration)
 }
 
-// Throttler needs to be implemented by any rate limiter
-type Throttler interface {
-	Throttle(identifier string) <-chan Result
-	Throttlef(format string, args ...interface{}) <-chan Result
-}
-
 // Limiter can be used to rate limit operations
 // based on an identifier and a threshold value
 type Limiter struct {
 	threshold time.Duration
-	deadline  time.Duration
+	timeout   time.Duration
 	cache     GetSetter
 	salt      []byte
 }
@@ -44,26 +38,55 @@ type Result struct {
 	Delay time.Duration
 }
 
-// Throttle returns a channel that blocks until the configured
+func (l *Limiter) hash(s string) string {
+	joined := append([]byte(s), l.salt...)
+	return fmt.Sprintf("%x", sha256.Sum256(joined))
+}
+
+type cacheItem struct {
+	blockUntil time.Time
+	queueLen   int64
+}
+
+// LinearThrottle returns a channel that blocks until the configured
 // rate limit has been satisfied. The channel will send a `Result` exactly
 // once before closing, containing information on the
 // applied rate limiting or possible errors that occured
-func (l *Limiter) Throttle(rawIdentifier string) <-chan Result {
-	joined := append([]byte(rawIdentifier), l.salt...)
-	identifier := fmt.Sprintf("%x", sha256.Sum256(joined))
+func (l *Limiter) LinearThrottle(identifier string) <-chan Result {
+	return l.throttle(identifier, false)
+}
+
+// ExponentialThrottle throttles using exponentially increasing thresholds
+func (l *Limiter) ExponentialThrottle(identifier string) <-chan Result {
+	return l.throttle(identifier, true)
+}
+
+func (l *Limiter) throttle(rawIdentifier string, exponential bool) <-chan Result {
+	hashedIdentifier := l.hash(rawIdentifier)
 
 	out := make(chan Result)
 	go func() {
-		if value, found := l.cache.Get(identifier); found {
-			if timeout, ok := value.(time.Time); ok {
-				remaining := time.Until(timeout)
-				if remaining > l.deadline {
+		if value, found := l.cache.Get(hashedIdentifier); found {
+			if item, ok := value.(cacheItem); ok {
+				remaining := time.Until(item.blockUntil)
+				if remaining > l.timeout {
 					out <- Result{Error: errWouldExceedDeadline}
 					return
 				}
+
+				factor := time.Duration(1)
+				if exponential {
+					factor = time.Duration(item.queueLen)
+				}
+
 				l.cache.Set(
-					identifier,
-					timeout.Add(l.threshold),
+					hashedIdentifier,
+					cacheItem{
+						blockUntil: item.blockUntil.Add(
+							l.threshold * factor,
+						),
+						queueLen: item.queueLen + 1,
+					},
 					remaining,
 				)
 				time.Sleep(remaining)
@@ -72,17 +95,15 @@ func (l *Limiter) Throttle(rawIdentifier string) <-chan Result {
 				out <- Result{Error: errInvalidCache}
 			}
 		} else {
-			l.cache.Set(identifier, time.Now().Add(l.threshold), l.threshold)
+			l.cache.Set(hashedIdentifier, cacheItem{
+				blockUntil: time.Now().Add(l.threshold),
+				queueLen:   1,
+			}, l.threshold)
 			out <- Result{}
 		}
 		close(out)
 	}()
 	return out
-}
-
-// Throttlef calls Throttle while applying the given args to the format
-func (l *Limiter) Throttlef(format string, args ...interface{}) <-chan Result {
-	return l.Throttle(fmt.Sprintf(format, args...))
 }
 
 // New creates a new Throttler using Limiter. `threshold` defines the
@@ -96,7 +117,7 @@ func New(threshold, timeout time.Duration, cache GetSetter) *Limiter {
 	return &Limiter{
 		cache:     cache,
 		threshold: threshold,
-		deadline:  timeout,
+		timeout:   timeout,
 		salt:      salt,
 	}
 }
