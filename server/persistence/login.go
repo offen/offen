@@ -4,11 +4,9 @@
 package persistence
 
 import (
-	"context"
 	"encoding/base64"
 	"errors"
 	"fmt"
-	"sync"
 
 	"github.com/lestrrat-go/jwx/jwk"
 	"github.com/offen/offen/server/keys"
@@ -283,26 +281,10 @@ func (p *persistenceLayer) findAccountUser(emailAddress string, includeRelations
 }
 
 func selectAccountUser(available []AccountUser, email string) (*AccountUser, error) {
-	ctx, cancel := context.WithCancel(context.Background())
-	match := make(chan AccountUser)
-	wg := sync.WaitGroup{}
-	for _, a := range available {
-		wg.Add(1)
-		go func(accountUser AccountUser) {
-			if err := keys.CompareString(email, accountUser.HashedEmail); err == nil {
-				match <- accountUser
-			}
-			wg.Done()
-		}(a)
+	for _, user := range available {
+		if err := keys.CompareString(email, user.HashedEmail); err == nil {
+			return &user, nil
+		}
 	}
-	go func() {
-		wg.Wait()
-		cancel()
-	}()
-	select {
-	case result := <-match:
-		return &result, nil
-	case <-ctx.Done():
-		return nil, fmt.Errorf("persistence: no account user found for %s", email)
-	}
+	return nil, fmt.Errorf("persistence: no account user found for %s", email)
 }
