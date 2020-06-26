@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+	"sync"
 	"time"
 
 	"github.com/NYTimes/gziphandler"
@@ -18,6 +19,8 @@ import (
 	"github.com/offen/offen/server/config"
 	"github.com/offen/offen/server/mailer"
 	"github.com/offen/offen/server/persistence"
+	ratelimiter "github.com/offen/offen/server/ratelimiter"
+	"github.com/patrickmn/go-cache"
 	"github.com/sirupsen/logrus"
 )
 
@@ -31,6 +34,27 @@ type router struct {
 	emails       *template.Template
 	config       *config.Config
 	sanitizer    *bluemonday.Policy
+	limiters     map[time.Duration]ratelimiter.Throttler
+	cache        ratelimiter.GetSetter
+	limiterLock  sync.Mutex
+}
+
+func (rt *router) limiter(rate time.Duration) ratelimiter.Throttler {
+	if rt.limiters == nil {
+		rt.limiters = map[time.Duration]ratelimiter.Throttler{}
+	}
+	// multiple requests might access this simultaneously
+	rt.limiterLock.Lock()
+	defer rt.limiterLock.Unlock()
+
+	if _, ok := rt.limiters[rate]; ok {
+		return rt.limiters[rate]
+	}
+	if rt.cache == nil {
+		rt.cache = cache.New(5*time.Minute, 10*time.Minute)
+	}
+	rt.limiters[rate] = ratelimiter.New(rate, time.Second*30, rt.cache)
+	return rt.limiters[rate]
 }
 
 func (rt *router) logError(err error, message string) {

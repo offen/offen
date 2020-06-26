@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/offen/offen/server/persistence"
@@ -22,11 +23,10 @@ type loginCredentials struct {
 func (rt *router) postLogout(c *gin.Context) {
 	authCookie, authCookieErr := rt.authCookie("", c.GetBool(contextKeySecureContext))
 	if authCookieErr != nil {
-		jsonErr := newJSONError(
+		newJSONError(
 			fmt.Errorf("router: error creating auth cookie: %w", authCookieErr),
 			http.StatusInternalServerError,
-		)
-		c.JSON(jsonErr.Status, jsonErr)
+		).Pipe(c)
 		return
 	}
 
@@ -37,31 +37,37 @@ func (rt *router) postLogout(c *gin.Context) {
 func (rt *router) postLogin(c *gin.Context) {
 	var credentials loginCredentials
 	if err := c.BindJSON(&credentials); err != nil {
-		jsonErr := newJSONError(
+		newJSONError(
 			fmt.Errorf("router: error decoding request payload: %w", err),
 			http.StatusBadRequest,
-		)
-		c.JSON(jsonErr.Status, jsonErr)
+		).Pipe(c)
+		return
+	}
+
+	limiterResult := <-rt.limiter(time.Second * 1).Throttle(fmt.Sprintf("postLogin-%s", credentials.Username))
+	if limiterResult.Error != nil {
+		newJSONError(
+			fmt.Errorf("router: error applying rate limit: %w", limiterResult.Error),
+			http.StatusBadRequest,
+		).Pipe(c)
 		return
 	}
 
 	result, err := rt.db.Login(credentials.Username, credentials.Password)
 	if err != nil {
-		jsonErr := newJSONError(
+		newJSONError(
 			fmt.Errorf("router: error logging in: %w", err),
 			http.StatusUnauthorized,
-		)
-		c.JSON(jsonErr.Status, jsonErr)
+		).Pipe(c)
 		return
 	}
 
 	authCookie, authCookieErr := rt.authCookie(result.AccountUserID, c.GetBool(contextKeySecureContext))
 	if authCookieErr != nil {
-		jsonErr := newJSONError(
+		newJSONError(
 			fmt.Errorf("router: error creating auth cookie: %w", authCookieErr),
 			http.StatusInternalServerError,
-		)
-		c.JSON(jsonErr.Status, jsonErr)
+		).Pipe(c)
 		return
 	}
 
@@ -97,6 +103,16 @@ func (rt *router) postChangePassword(c *gin.Context) {
 		).Pipe(c)
 		return
 	}
+
+	limiterResult := <-rt.limiter(time.Second * 5).Throttle(fmt.Sprintf("postChangePassword-%s", user.AccountUserID))
+	if limiterResult.Error != nil {
+		newJSONError(
+			fmt.Errorf("router: error applying rate limit: %w", limiterResult.Error),
+			http.StatusBadRequest,
+		).Pipe(c)
+		return
+	}
+
 	var req changePasswordRequest
 	if err := c.BindJSON(&req); err != nil {
 		newJSONError(
@@ -132,6 +148,16 @@ func (rt *router) postChangeEmail(c *gin.Context) {
 		).Pipe(c)
 		return
 	}
+
+	limiterResult := <-rt.limiter(time.Second * 5).Throttle(fmt.Sprintf("postChangeEmail-%s", accountUser.AccountUserID))
+	if limiterResult.Error != nil {
+		newJSONError(
+			fmt.Errorf("router: error applying rate limit: %w", limiterResult.Error),
+			http.StatusBadRequest,
+		).Pipe(c)
+		return
+	}
+
 	var req changeEmailRequest
 	if err := c.BindJSON(&req); err != nil {
 		newJSONError(
@@ -174,6 +200,16 @@ func (rt *router) postForgotPassword(c *gin.Context) {
 		).Pipe(c)
 		return
 	}
+
+	limiterResult := <-rt.limiter(time.Second * 10).Throttle(fmt.Sprintf("postForgotPassword-%s", req.EmailAddress))
+	if limiterResult.Error != nil {
+		newJSONError(
+			fmt.Errorf("router: error applying rate limit: %w", limiterResult.Error),
+			http.StatusBadRequest,
+		).Pipe(c)
+		return
+	}
+
 	token, err := rt.db.GenerateOneTimeKey(req.EmailAddress)
 	if err != nil {
 		rt.logError(err, "error generating one time key")
@@ -241,6 +277,16 @@ func (rt *router) postResetPassword(c *gin.Context) {
 		).Pipe(c)
 		return
 	}
+
+	limiterResult := <-rt.limiter(time.Second * 5).Throttle(fmt.Sprintf("postResetPassword-%s", credentials.EmailAddress))
+	if limiterResult.Error != nil {
+		newJSONError(
+			fmt.Errorf("router: error applying rate limit: %w", limiterResult.Error),
+			http.StatusBadRequest,
+		).Pipe(c)
+		return
+	}
+
 	if credentials.EmailAddress != req.EmailAddress {
 		newJSONError(
 			errors.New("given email address did not match token"),
