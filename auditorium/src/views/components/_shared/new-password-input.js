@@ -47,7 +47,7 @@ const NewPasswordInput = forwardRef((props, ref) => {
           class='w-100 pa2 input-reset ba br1 b--gray bg-white'
           type='password'
           ref={ref}
-          pattern='.{8,}'
+          pattern='.{8,64}'
           oninput={(e) => {
             e.target.setCustomValidity('')
             const val = e.target.value

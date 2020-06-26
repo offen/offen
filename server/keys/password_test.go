@@ -11,9 +11,14 @@ func TestValidatePassword(t *testing.T) {
 			t.Errorf("Unexpected error %v", err)
 		}
 	})
-	t.Run("not ok", func(t *testing.T) {
+	t.Run("too short", func(t *testing.T) {
 		if err := ValidatePassword("dev"); err == nil {
 			t.Error("Expected error when giving short password, received nil")
+		}
+	})
+	t.Run("too long", func(t *testing.T) {
+		if err := ValidatePassword("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"); err == nil {
+			t.Error("Expected error when giving long password, received nil")
 		}
 	})
 }
