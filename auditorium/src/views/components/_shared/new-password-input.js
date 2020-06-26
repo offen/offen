@@ -8,6 +8,7 @@ const { h, Fragment } = require('preact')
 const { forwardRef } = require('preact/compat')
 const { useState } = require('preact/hooks')
 const zxcvbn = require('zxcvbn')
+const classnames = require('classnames')
 
 const strengths = [
   __('weak'),
@@ -37,7 +38,7 @@ const NewPasswordInput = forwardRef((props, ref) => {
   const { labelClass = null, children, ...otherProps } = props
 
   const [score, setScore] = useState(0)
-  const [policyMet, setPolicyMet] = useState(false)
+  const [policyMet, setPolicyMet] = useState(null)
 
   return (
     <Fragment>
@@ -51,9 +52,15 @@ const NewPasswordInput = forwardRef((props, ref) => {
           oninput={(e) => {
             e.target.setCustomValidity('')
             const val = e.target.value
+
             const { score } = zxcvbn(val)
             setScore(score)
-            setPolicyMet(val.length >= 8)
+
+            if (val.length === 0) {
+              setPolicyMet(null)
+            } else {
+              setPolicyMet(val.length >= 8)
+            }
           }}
           oninvalid={(e) => {
             e.target.setCustomValidity(
@@ -63,7 +70,9 @@ const NewPasswordInput = forwardRef((props, ref) => {
           {...otherProps}
         />
         <p class='mt1 mb3'>
-          <StrengthMessage score={score} policyMet={policyMet} />
+          <em class={classnames('i', policyMet === false ? 'dark-red' : null)}>
+            <StrengthMessage score={score} policyMet={policyMet} />
+          </em>
         </p>
       </label>
     </Fragment>
