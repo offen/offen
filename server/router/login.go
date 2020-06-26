@@ -44,11 +44,10 @@ func (rt *router) postLogin(c *gin.Context) {
 		return
 	}
 
-	limiterResult := <-rt.limiter(time.Second * 1).Throttle(fmt.Sprintf("postLogin-%s", credentials.Username))
-	if limiterResult.Error != nil {
+	if l := <-rt.limiter(time.Second * 1).Throttle(fmt.Sprintf("postLogin-%s", credentials.Username)); l.Error != nil {
 		newJSONError(
-			fmt.Errorf("router: error applying rate limit: %w", limiterResult.Error),
-			http.StatusBadRequest,
+			fmt.Errorf("router: error applying rate limit: %w", l.Error),
+			http.StatusGatewayTimeout,
 		).Pipe(c)
 		return
 	}
@@ -104,11 +103,10 @@ func (rt *router) postChangePassword(c *gin.Context) {
 		return
 	}
 
-	limiterResult := <-rt.limiter(time.Second * 5).Throttle(fmt.Sprintf("postChangePassword-%s", user.AccountUserID))
-	if limiterResult.Error != nil {
+	if l := <-rt.limiter(time.Second * 5).Throttle(fmt.Sprintf("postChangePassword-%s", user.AccountUserID)); l.Error != nil {
 		newJSONError(
-			fmt.Errorf("router: error applying rate limit: %w", limiterResult.Error),
-			http.StatusBadRequest,
+			fmt.Errorf("router: error applying rate limit: %w", l.Error),
+			http.StatusGatewayTimeout,
 		).Pipe(c)
 		return
 	}
@@ -149,11 +147,10 @@ func (rt *router) postChangeEmail(c *gin.Context) {
 		return
 	}
 
-	limiterResult := <-rt.limiter(time.Second * 5).Throttle(fmt.Sprintf("postChangeEmail-%s", accountUser.AccountUserID))
-	if limiterResult.Error != nil {
+	if l := <-rt.limiter(time.Second * 5).Throttle(fmt.Sprintf("postChangeEmail-%s", accountUser.AccountUserID)); l.Error != nil {
 		newJSONError(
-			fmt.Errorf("router: error applying rate limit: %w", limiterResult.Error),
-			http.StatusBadRequest,
+			fmt.Errorf("router: error applying rate limit: %w", l.Error),
+			http.StatusGatewayTimeout,
 		).Pipe(c)
 		return
 	}
@@ -201,11 +198,10 @@ func (rt *router) postForgotPassword(c *gin.Context) {
 		return
 	}
 
-	limiterResult := <-rt.limiter(time.Second * 10).Throttle(fmt.Sprintf("postForgotPassword-%s", req.EmailAddress))
-	if limiterResult.Error != nil {
+	if l := <-rt.limiter(time.Second * 10).Throttle(fmt.Sprintf("postForgotPassword-%s", req.EmailAddress)); l.Error != nil {
 		newJSONError(
-			fmt.Errorf("router: error applying rate limit: %w", limiterResult.Error),
-			http.StatusBadRequest,
+			fmt.Errorf("router: error applying rate limit: %w", l.Error),
+			http.StatusGatewayTimeout,
 		).Pipe(c)
 		return
 	}
@@ -278,11 +274,10 @@ func (rt *router) postResetPassword(c *gin.Context) {
 		return
 	}
 
-	limiterResult := <-rt.limiter(time.Second * 5).Throttle(fmt.Sprintf("postResetPassword-%s", credentials.EmailAddress))
-	if limiterResult.Error != nil {
+	if l := <-rt.limiter(time.Second * 5).Throttle(fmt.Sprintf("postResetPassword-%s", credentials.EmailAddress)); l.Error != nil {
 		newJSONError(
-			fmt.Errorf("router: error applying rate limit: %w", limiterResult.Error),
-			http.StatusBadRequest,
+			fmt.Errorf("router: error applying rate limit: %w", l.Error),
+			http.StatusGatewayTimeout,
 		).Pipe(c)
 		return
 	}

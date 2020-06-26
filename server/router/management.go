@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/offen/offen/server/persistence"
@@ -50,6 +51,14 @@ func (rt *router) postShareAccount(c *gin.Context) {
 			).Pipe(c)
 			return
 		}
+	}
+
+	if l := <-rt.limiter(time.Second).Throttle(fmt.Sprintf("postShareAccount-%s", accountUser.AccountUserID)); l.Error != nil {
+		newJSONError(
+			fmt.Errorf("router: error rate limiting request: %w", l.Error),
+			http.StatusGatewayTimeout,
+		)
+		return
 	}
 
 	// the given credentials might not be valid
@@ -164,6 +173,14 @@ func (rt *router) postJoin(c *gin.Context) {
 			errors.New("given email address did not match token"),
 			http.StatusBadRequest,
 		).Pipe(c)
+		return
+	}
+
+	if l := <-rt.limiter(5 * time.Second).Throttle(fmt.Sprintf("postJoin-%s", req.EmailAddress)); l.Error != nil {
+		newJSONError(
+			fmt.Errorf("router: error rate limiting request: %w", l.Error),
+			http.StatusGatewayTimeout,
+		)
 		return
 	}
 	if err := rt.db.Join(req.EmailAddress, req.Password); err != nil {

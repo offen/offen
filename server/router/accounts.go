@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/offen/offen/server/persistence"
@@ -14,7 +15,13 @@ import (
 
 func (rt *router) getAccount(c *gin.Context) {
 	accountID := c.Param("accountID")
-
+	if l := <-rt.limiter(time.Second).Throttle(fmt.Sprintf("getAccount-%s", accountID)); l.Error != nil {
+		newJSONError(
+			fmt.Errorf("router: error rate limiting request: %w", l.Error),
+			http.StatusGatewayTimeout,
+		)
+		return
+	}
 	accountUser, ok := c.Value(contextKeyAuth).(persistence.LoginResult)
 	if !ok {
 		newJSONError(
@@ -53,6 +60,14 @@ func (rt *router) getAccount(c *gin.Context) {
 
 func (rt *router) deleteAccount(c *gin.Context) {
 	accountID := c.Param("accountID")
+
+	if l := <-rt.limiter(time.Second).Throttle(fmt.Sprintf("deleteAccount-%s", accountID)); l.Error != nil {
+		newJSONError(
+			fmt.Errorf("router: error rate limiting request: %w", l.Error),
+			http.StatusGatewayTimeout,
+		)
+		return
+	}
 
 	accountUser, ok := c.Value(contextKeyAuth).(persistence.LoginResult)
 	if !ok {
@@ -112,6 +127,14 @@ func (rt *router) postAccount(c *gin.Context) {
 			fmt.Errorf("router: error decoding response body: %w", err),
 			http.StatusBadRequest,
 		).Pipe(c)
+		return
+	}
+
+	if l := <-rt.limiter(time.Second * 5).Throttle(fmt.Sprintf("postAccount-%s", req.EmailAddress)); l.Error != nil {
+		newJSONError(
+			fmt.Errorf("router: error rate limiting request: %w", l.Error),
+			http.StatusGatewayTimeout,
+		)
 		return
 	}
 
