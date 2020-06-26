@@ -391,7 +391,7 @@ func TestPersistenceLayer_Join(t *testing.T) {
 			&mockJoinDatabase{
 				findAccountUsersResult: []AccountUser{
 					(func() AccountUser {
-						a, _ := newAccountUser("foo@bar.com", "secret", 0)
+						a, _ := newAccountUser("foo@bar.com", "secretsecretsosecret", 0)
 						a.HashedPassword = ""
 						emailDerivedKey, _ := keys.DeriveKey("foo@bar.com", a.Salt)
 
@@ -410,7 +410,7 @@ func TestPersistenceLayer_Join(t *testing.T) {
 				},
 			},
 			"foo@bar.com",
-			"secret",
+			"secretsecretsosecret",
 			false,
 		},
 	}

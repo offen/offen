@@ -116,6 +116,10 @@ func (p *persistenceLayer) ChangePassword(userID, currentPassword, changedPasswo
 		return fmt.Errorf("persistence: current password did not match: %w", err)
 	}
 
+	if err := keys.ValidatePassword(changedPassword); err != nil {
+		return fmt.Errorf("persistence: error validating new password: %w", err)
+	}
+
 	newPasswordHash, hashErr := keys.HashString(changedPassword)
 	if hashErr != nil {
 		return fmt.Errorf("persistence: error hashing new password: %w", hashErr)
@@ -146,6 +150,10 @@ func (p *persistenceLayer) ResetPassword(emailAddress, password string, oneTimeK
 	accountUser, err := p.findAccountUser(emailAddress, true, false)
 	if err != nil {
 		return fmt.Errorf("persistence: error looking up account user: %w", err)
+	}
+
+	if err := keys.ValidatePassword(password); err != nil {
+		return fmt.Errorf("persistence: error validating new password: %w", err)
 	}
 
 	for index, relationship := range accountUser.Relationships {

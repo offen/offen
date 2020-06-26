@@ -9,6 +9,7 @@ const { forwardRef } = require('preact/compat')
 const { useState } = require('preact/hooks')
 
 const LabeledInput = require('./../_shared/labeled-input')
+const NewPasswordInput = require('./../_shared/new-password-input')
 const SubmitButton = require('./../_shared/submit-button')
 
 const Form = forwardRef((props, ref) => {
@@ -21,7 +22,10 @@ const Form = forwardRef((props, ref) => {
       emailAddress: formData.get('email-address'),
       password: formData.get('password'),
       token: formData.get('token')
-    })
+    },
+    null,
+    __('There has been an error resetting your password. Please try again.')
+    )
       .then(() => setIsDisabled(false))
   }
   return (
@@ -39,15 +43,14 @@ const Form = forwardRef((props, ref) => {
         >
           {__('Email address')}
         </LabeledInput>
-        <LabeledInput
-          class='w-100 pa2 mb3 input-reset ba br1 b--gray bg-white'
+        <NewPasswordInput
+          class='w-100 pa2 input-reset ba br1 b--gray bg-white'
           name='password'
-          type='password'
           required
           disabled={isDisabled}
         >
           {__('New password')}
-        </LabeledInput>
+        </NewPasswordInput>
         <LabeledInput
           name='password-repeat'
           type='password'
