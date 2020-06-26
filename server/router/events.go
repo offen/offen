@@ -26,7 +26,7 @@ var errBadRequestContext = errors.New("could not use user id in request context"
 
 func (rt *router) postEvents(c *gin.Context) {
 	userID := c.GetString(contextKeyCookie)
-	if l := <-rt.limiter(time.Second).Throttle(fmt.Sprintf("postEvents-%s", userID)); l.Error != nil {
+	if l := <-rt.limiter(time.Second).Throttlef("postEvents-%s", userID); l.Error != nil {
 		newJSONError(
 			fmt.Errorf("router: error rate limiting request: %w", l.Error),
 			http.StatusGatewayTimeout,
@@ -86,7 +86,7 @@ type getResponse struct {
 
 func (rt *router) getEvents(c *gin.Context) {
 	userID := c.GetString(contextKeyCookie)
-	if l := <-rt.limiter(time.Second).Throttle(fmt.Sprintf("getEvents-%s", userID)); l.Error != nil {
+	if l := <-rt.limiter(time.Second).Throttlef("getEvents-%s", userID); l.Error != nil {
 		newJSONError(
 			fmt.Errorf("router: error rate limiting request: %w", l.Error),
 			http.StatusGatewayTimeout,
@@ -118,7 +118,7 @@ type deletedQuery struct {
 
 func (rt *router) getDeletedEvents(c *gin.Context) {
 	userID := c.GetString(contextKeyCookie)
-	if l := <-rt.limiter(time.Second).Throttle(fmt.Sprintf("getDeletedEvents-%s", userID)); l.Error != nil {
+	if l := <-rt.limiter(time.Second).Throttlef("getDeletedEvents-%s", userID); l.Error != nil {
 		newJSONError(
 			fmt.Errorf("router: error rate limiting request: %w", l.Error),
 			http.StatusGatewayTimeout,
@@ -149,7 +149,7 @@ func (rt *router) getDeletedEvents(c *gin.Context) {
 
 func (rt *router) purgeEvents(c *gin.Context) {
 	userID := c.GetString(contextKeyCookie)
-	if l := <-rt.limiter(time.Second).Throttle(fmt.Sprintf("purgeEvents-%s", userID)); l.Error != nil {
+	if l := <-rt.limiter(time.Second).Throttlef("purgeEvents-%s", userID); l.Error != nil {
 		newJSONError(
 			fmt.Errorf("router: error rate limiting request: %w", l.Error),
 			http.StatusGatewayTimeout,

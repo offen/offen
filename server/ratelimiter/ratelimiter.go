@@ -27,6 +27,7 @@ type GetSetter interface {
 // Throttler needs to be implemented by any rate limiter
 type Throttler interface {
 	Throttle(identifier string) <-chan Result
+	Throttlef(format string, args ...interface{}) <-chan Result
 }
 
 // Limiter can be used to rate limit operations
@@ -78,6 +79,11 @@ func (l *Limiter) Throttle(rawIdentifier string) <-chan Result {
 		close(out)
 	}()
 	return out
+}
+
+// Throttlef calls Throttle while applying the given args to the format
+func (l *Limiter) Throttlef(format string, args ...interface{}) <-chan Result {
+	return l.Throttle(fmt.Sprintf(format, args...))
 }
 
 // New creates a new Throttler using Limiter. `threshold` defines the

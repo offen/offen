@@ -44,7 +44,7 @@ func (rt *router) postLogin(c *gin.Context) {
 		return
 	}
 
-	if l := <-rt.limiter(time.Second).Throttle(fmt.Sprintf("postLogin-%s", credentials.Username)); l.Error != nil {
+	if l := <-rt.limiter(time.Second).Throttlef("postLogin-%s", credentials.Username); l.Error != nil {
 		newJSONError(
 			fmt.Errorf("router: error applying rate limit: %w", l.Error),
 			http.StatusGatewayTimeout,
@@ -112,7 +112,7 @@ func (rt *router) postChangePassword(c *gin.Context) {
 		return
 	}
 
-	if l := <-rt.limiter(time.Second * 5).Throttle(fmt.Sprintf("postChangePassword-%s", user.AccountUserID)); l.Error != nil {
+	if l := <-rt.limiter(time.Second*5).Throttlef("postChangePassword-%s", user.AccountUserID); l.Error != nil {
 		newJSONError(
 			fmt.Errorf("router: error applying rate limit: %w", l.Error),
 			http.StatusGatewayTimeout,
@@ -156,7 +156,7 @@ func (rt *router) postChangeEmail(c *gin.Context) {
 		return
 	}
 
-	if l := <-rt.limiter(time.Second * 5).Throttle(fmt.Sprintf("postChangeEmail-%s", accountUser.AccountUserID)); l.Error != nil {
+	if l := <-rt.limiter(time.Second*5).Throttlef("postChangeEmail-%s", accountUser.AccountUserID); l.Error != nil {
 		newJSONError(
 			fmt.Errorf("router: error applying rate limit: %w", l.Error),
 			http.StatusGatewayTimeout,
@@ -207,7 +207,7 @@ func (rt *router) postForgotPassword(c *gin.Context) {
 		return
 	}
 
-	if l := <-rt.limiter(time.Second * 10).Throttle(fmt.Sprintf("postForgotPassword-%s", req.EmailAddress)); l.Error != nil {
+	if l := <-rt.limiter(time.Second*10).Throttlef("postForgotPassword-%s", req.EmailAddress); l.Error != nil {
 		newJSONError(
 			fmt.Errorf("router: error applying rate limit: %w", l.Error),
 			http.StatusGatewayTimeout,
@@ -292,7 +292,7 @@ func (rt *router) postResetPassword(c *gin.Context) {
 		return
 	}
 
-	if l := <-rt.limiter(time.Second * 5).Throttle(fmt.Sprintf("postResetPassword-%s", credentials.EmailAddress)); l.Error != nil {
+	if l := <-rt.limiter(time.Second*5).Throttlef("postResetPassword-%s", credentials.EmailAddress); l.Error != nil {
 		newJSONError(
 			fmt.Errorf("router: error applying rate limit: %w", l.Error),
 			http.StatusGatewayTimeout,

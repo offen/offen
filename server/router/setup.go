@@ -6,6 +6,7 @@ package router
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gofrs/uuid"
@@ -31,6 +32,14 @@ func (rt *router) postSetup(c *gin.Context) {
 		newJSONError(
 			fmt.Errorf("router: error decoding request payload: %w", err),
 			http.StatusBadRequest,
+		).Pipe(c)
+		return
+	}
+
+	if l := <-rt.limiter(time.Second * 5).Throttle("postSetup-*"); l.Error != nil {
+		newJSONError(
+			fmt.Errorf("router: error applying rate limit: %w", l.Error),
+			http.StatusGatewayTimeout,
 		).Pipe(c)
 		return
 	}
