@@ -29,8 +29,8 @@ func (rt *router) postEvents(c *gin.Context) {
 	if l := <-rt.limiter(time.Second).Throttlef("postEvents-%s", userID); l.Error != nil {
 		newJSONError(
 			fmt.Errorf("router: error rate limiting request: %w", l.Error),
-			http.StatusGatewayTimeout,
-		)
+			http.StatusTooManyRequests,
+		).Pipe(c)
 		return
 	}
 	evt := inboundEventPayload{}
@@ -89,8 +89,8 @@ func (rt *router) getEvents(c *gin.Context) {
 	if l := <-rt.limiter(time.Second).Throttlef("getEvents-%s", userID); l.Error != nil {
 		newJSONError(
 			fmt.Errorf("router: error rate limiting request: %w", l.Error),
-			http.StatusGatewayTimeout,
-		)
+			http.StatusTooManyRequests,
+		).Pipe(c)
 		return
 	}
 	result, err := rt.db.Query(persistence.Query{
@@ -121,8 +121,8 @@ func (rt *router) getDeletedEvents(c *gin.Context) {
 	if l := <-rt.limiter(time.Second).Throttlef("getDeletedEvents-%s", userID); l.Error != nil {
 		newJSONError(
 			fmt.Errorf("router: error rate limiting request: %w", l.Error),
-			http.StatusGatewayTimeout,
-		)
+			http.StatusTooManyRequests,
+		).Pipe(c)
 		return
 	}
 	query := deletedQuery{}
@@ -152,8 +152,8 @@ func (rt *router) purgeEvents(c *gin.Context) {
 	if l := <-rt.limiter(time.Second).Throttlef("purgeEvents-%s", userID); l.Error != nil {
 		newJSONError(
 			fmt.Errorf("router: error rate limiting request: %w", l.Error),
-			http.StatusGatewayTimeout,
-		)
+			http.StatusTooManyRequests,
+		).Pipe(c)
 		return
 	}
 	if err := rt.db.Purge(userID); err != nil {

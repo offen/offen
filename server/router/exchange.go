@@ -69,8 +69,8 @@ func (rt *router) postUserSecret(c *gin.Context) {
 	if l := <-rt.limiter(time.Second).Throttlef("postUserSecret-%s", userID); l.Error != nil {
 		newJSONError(
 			fmt.Errorf("router: error rate limiting request: %w", l.Error),
-			http.StatusGatewayTimeout,
-		)
+			http.StatusTooManyRequests,
+		).Pipe(c)
 		return
 	}
 

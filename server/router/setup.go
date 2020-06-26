@@ -39,7 +39,7 @@ func (rt *router) postSetup(c *gin.Context) {
 	if l := <-rt.limiter(time.Second * 5).Throttle("postSetup-*"); l.Error != nil {
 		newJSONError(
 			fmt.Errorf("router: error applying rate limit: %w", l.Error),
-			http.StatusGatewayTimeout,
+			http.StatusTooManyRequests,
 		).Pipe(c)
 		return
 	}

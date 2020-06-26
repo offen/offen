@@ -76,22 +76,6 @@ func TestThrottle(t *testing.T) {
 	}
 }
 
-func TestThrottle_BadCache(t *testing.T) {
-	t.Run("bad cache", func(t *testing.T) {
-		mock := &mockGetSetter{}
-		limiter := New(time.Second, time.Hour, mock)
-		limiter.Throttle("zalgo")
-		mock.Set("zalgo", "zalgo corrupted ur cache", time.Minute)
-		result := <-limiter.Throttle("zalgo")
-		if result.Error == nil {
-			t.Errorf("Expected error, got %v", result)
-		}
-		if result.Delay > 0 {
-			t.Error("Expected error not to block")
-		}
-	})
-}
-
 func ExampleNew() {
 	limiter := New(time.Second*2, time.Hour, &mockGetSetter{})
 

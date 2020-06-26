@@ -18,8 +18,8 @@ func (rt *router) getAccount(c *gin.Context) {
 	if l := <-rt.limiter(time.Second).Throttlef("getAccount-%s", accountID); l.Error != nil {
 		newJSONError(
 			fmt.Errorf("router: error rate limiting request: %w", l.Error),
-			http.StatusGatewayTimeout,
-		)
+			http.StatusTooManyRequests,
+		).Pipe(c)
 		return
 	}
 	accountUser, ok := c.Value(contextKeyAuth).(persistence.LoginResult)
@@ -64,8 +64,8 @@ func (rt *router) deleteAccount(c *gin.Context) {
 	if l := <-rt.limiter(time.Second).Throttlef("deleteAccount-%s", accountID); l.Error != nil {
 		newJSONError(
 			fmt.Errorf("router: error rate limiting request: %w", l.Error),
-			http.StatusGatewayTimeout,
-		)
+			http.StatusTooManyRequests,
+		).Pipe(c)
 		return
 	}
 
@@ -133,8 +133,8 @@ func (rt *router) postAccount(c *gin.Context) {
 	if l := <-rt.limiter(time.Second*5).Throttlef("postAccount-%s", req.EmailAddress); l.Error != nil {
 		newJSONError(
 			fmt.Errorf("router: error rate limiting request: %w", l.Error),
-			http.StatusGatewayTimeout,
-		)
+			http.StatusTooManyRequests,
+		).Pipe(c)
 		return
 	}
 

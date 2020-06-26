@@ -4,12 +4,11 @@
 package ratelimiter
 
 import (
+	"crypto/rand"
 	"crypto/sha256"
 	"errors"
 	"fmt"
 	"time"
-
-	"github.com/offen/offen/server/keys"
 )
 
 var (
@@ -89,8 +88,8 @@ func (l *Limiter) Throttlef(format string, args ...interface{}) <-chan Result {
 // New creates a new Throttler using Limiter. `threshold` defines the
 // enforced minimum distance between two calls of the
 // instance's `Throttle` method using the same identifier
-func New(threshold, timeout time.Duration, cache GetSetter) Throttler {
-	salt, err := keys.GenerateRandomBytes(keys.DefaultSaltLength)
+func New(threshold, timeout time.Duration, cache GetSetter) *Limiter {
+	salt, err := randomBytes(16)
 	if err != nil {
 		panic("cannot initialize rate limiter")
 	}
@@ -100,4 +99,13 @@ func New(threshold, timeout time.Duration, cache GetSetter) Throttler {
 		deadline:  timeout,
 		salt:      salt,
 	}
+}
+
+func randomBytes(size int) ([]byte, error) {
+	b := make([]byte, size)
+	_, err := rand.Read(b)
+	if err != nil {
+		return nil, fmt.Errorf("ratelimiter: error reading random bytes: %w", err)
+	}
+	return b, nil
 }
