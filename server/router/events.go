@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/offen/offen/server/persistence"
@@ -25,6 +26,13 @@ var errBadRequestContext = errors.New("could not use user id in request context"
 
 func (rt *router) postEvents(c *gin.Context) {
 	userID := c.GetString(contextKeyCookie)
+	if l := <-rt.limiter(time.Second / 2).LinearThrottle(fmt.Sprintf("postEvents-%s", userID)); l.Error != nil {
+		newJSONError(
+			fmt.Errorf("router: error rate limiting request: %w", l.Error),
+			http.StatusTooManyRequests,
+		).Pipe(c)
+		return
+	}
 	evt := inboundEventPayload{}
 	if err := c.BindJSON(&evt); err != nil {
 		newJSONError(
@@ -78,6 +86,13 @@ type getResponse struct {
 
 func (rt *router) getEvents(c *gin.Context) {
 	userID := c.GetString(contextKeyCookie)
+	if l := <-rt.limiter(time.Second).LinearThrottle(fmt.Sprintf("getEvents-%s", userID)); l.Error != nil {
+		newJSONError(
+			fmt.Errorf("router: error rate limiting request: %w", l.Error),
+			http.StatusTooManyRequests,
+		).Pipe(c)
+		return
+	}
 	result, err := rt.db.Query(persistence.Query{
 		UserID: userID,
 		Since:  c.Query("since"),
@@ -103,7 +118,13 @@ type deletedQuery struct {
 
 func (rt *router) getDeletedEvents(c *gin.Context) {
 	userID := c.GetString(contextKeyCookie)
-
+	if l := <-rt.limiter(time.Second).LinearThrottle(fmt.Sprintf("getDeletedEvents-%s", userID)); l.Error != nil {
+		newJSONError(
+			fmt.Errorf("router: error rate limiting request: %w", l.Error),
+			http.StatusTooManyRequests,
+		).Pipe(c)
+		return
+	}
 	query := deletedQuery{}
 	if err := c.BindJSON(&query); err != nil {
 		newJSONError(
@@ -128,6 +149,13 @@ func (rt *router) getDeletedEvents(c *gin.Context) {
 
 func (rt *router) purgeEvents(c *gin.Context) {
 	userID := c.GetString(contextKeyCookie)
+	if l := <-rt.limiter(time.Second).LinearThrottle(fmt.Sprintf("purgeEvents-%s", userID)); l.Error != nil {
+		newJSONError(
+			fmt.Errorf("router: error rate limiting request: %w", l.Error),
+			http.StatusTooManyRequests,
+		).Pipe(c)
+		return
+	}
 	if err := rt.db.Purge(userID); err != nil {
 		newJSONError(
 			fmt.Errorf("router: error purging user events: %v", err),
