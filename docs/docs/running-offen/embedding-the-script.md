@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Embedding the Offen script
-nav_order: 6
+nav_order: 7
 description: "How to add the Offen script to your webpage."
 permalink: /running-offen/embedding-the-script/
 parent: Running Offen
