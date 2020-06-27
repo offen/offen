@@ -3,8 +3,8 @@ Upstream-Name: Offen
 Upstream-Contact: Offen <hioffen@posteo.de>
 Source: https://github.com/offen/offen
 
-# License for GitHub to pick up and display
-Files: LICENSE
+# License for GitHub to pick up and display, AUTHORS file
+Files: LICENSE AUTHORS
 Copyright: 2020 Offen Authors <hioffen@posteo.de>
 License: Apache-2.0
 
