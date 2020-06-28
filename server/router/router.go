@@ -33,12 +33,16 @@ type router struct {
 	emails       *template.Template
 	config       *config.Config
 	sanitizer    *bluemonday.Policy
-	limiter      *ratelimiter.Limiter
+	limiter      ratelimiter.Throttler
 }
 
-func (rt *router) getLimiter() *ratelimiter.Limiter {
+func (rt *router) getLimiter() ratelimiter.Throttler {
 	if rt.limiter == nil {
-		rt.limiter = ratelimiter.New(time.Second*30, cache.New(time.Minute, time.Minute*2))
+		if rt.config != nil && rt.config.Server.ReverseProxy {
+			rt.limiter = ratelimiter.NewNoopRateLimiter()
+		} else {
+			rt.limiter = ratelimiter.New(time.Second*30, cache.New(time.Minute, time.Minute*2))
+		}
 	}
 	return rt.limiter
 }
