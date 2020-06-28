@@ -23,6 +23,12 @@ type GetSetter interface {
 	Set(key string, value interface{}, expiry time.Duration)
 }
 
+// Throttler needs to be implemented by any rate limiter
+type Throttler interface {
+	LinearThrottle(threshold time.Duration, identifier string) <-chan Result
+	ExponentialThrottle(threshold time.Duration, identifier string) <-chan Result
+}
+
 // Limiter can be used to rate limit operations
 // based on an identifier and a threshold value
 type Limiter struct {
@@ -108,7 +114,7 @@ func (l *Limiter) throttle(threshold time.Duration, identifier string, exponenti
 // New creates a new Throttler using Limiter. `threshold` defines the
 // enforced minimum distance between two calls of the
 // instance's `Throttle` method using the same identifier
-func New(timeout time.Duration, cache GetSetter) *Limiter {
+func New(timeout time.Duration, cache GetSetter) Throttler {
 	salt, err := randomBytes(16)
 	if err != nil {
 		panic("cannot initialize rate limiter")
@@ -118,6 +124,33 @@ func New(timeout time.Duration, cache GetSetter) *Limiter {
 		timeout: timeout,
 		salt:    salt,
 	}
+}
+
+// NoopRatelimiter implements Throttler without ever blocking
+type NoopRatelimiter struct{}
+
+// LinearThrottle immediately returns an empty result
+func (l *NoopRatelimiter) LinearThrottle(threshold time.Duration, identifier string) <-chan Result {
+	return l.pass()
+}
+
+// ExponentialThrottle immediately returns an empty result
+func (l *NoopRatelimiter) ExponentialThrottle(threshold time.Duration, identifier string) <-chan Result {
+	return l.pass()
+}
+
+func (l *NoopRatelimiter) pass() <-chan Result {
+	out := make(chan Result)
+	go func() {
+		out <- Result{}
+		close(out)
+	}()
+	return out
+}
+
+// NewNoopRateLimiter returns a Throttler that never blocks
+func NewNoopRateLimiter() Throttler {
+	return &NoopRatelimiter{}
 }
 
 func randomBytes(size int) ([]byte, error) {
