@@ -250,16 +250,17 @@ func New(opts ...Config) http.Handler {
 	// enabled
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		metrics := httpsnoop.CaptureMetrics(withGzip, w, r)
-		logLevel := logrus.InfoLevel
-		if metrics.Code >= http.StatusInternalServerError {
-			logLevel = logrus.ErrorLevel
-		}
-		rt.logger.WithFields(logrus.Fields{
-			"status":   metrics.Code,
-			"duration": fmt.Sprintf("%3f", metrics.Duration.Seconds()),
-			"size":     metrics.Written,
-			"method":   r.Method,
-			"uri":      r.RequestURI,
-		}).Logf(logLevel, "%s %s", r.Method, r.URL.Path)
+		fmt.Printf(
+			"%s %s %s [%s] \"%s %s %s\" %d %d\n",
+			"-",
+			"-",
+			"-",
+			time.Now().Format("02/Jan/2006 03:04:05"),
+			r.Method,
+			r.RequestURI,
+			r.Proto,
+			metrics.Code,
+			metrics.Written,
+		)
 	})
 }
