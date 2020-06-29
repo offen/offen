@@ -35,10 +35,11 @@ type BootstrapAccount struct {
 // BootstrapAccountUser contains the information needed for creating an account
 // user at bootstrap time.
 type BootstrapAccountUser struct {
-	Email      string                `yaml:"email"`
-	Password   string                `yaml:"password"`
-	Accounts   []string              `yaml:"accounts"`
-	AdminLevel AccountUserAdminLevel `yaml:"admin_level"`
+	Email                 string                `yaml:"email"`
+	Password              string                `yaml:"password"`
+	Accounts              []string              `yaml:"accounts"`
+	AdminLevel            AccountUserAdminLevel `yaml:"admin_level"`
+	AllowInsecurePassword bool
 }
 
 type accountCreation struct {
@@ -49,6 +50,14 @@ type accountCreation struct {
 // Bootstrap seeds a blank database with the given account and user
 // data. This is likely only ever used in development.
 func (p *persistenceLayer) Bootstrap(config BootstrapConfig) error {
+	for _, user := range config.AccountUsers {
+		if user.AllowInsecurePassword {
+			continue
+		}
+		if err := keys.ValidatePassword(user.Password); err != nil {
+			return fmt.Errorf("persistence: error validating password for user %s: %w", user.Email, err)
+		}
+	}
 	if !config.Force {
 		if !p.dal.ProbeEmpty() {
 			return errors.New("persistence: action would overwrite existing data - not allowed")

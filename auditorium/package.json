@@ -32,7 +32,8 @@
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
     "underscore": "^1.9.1",
-    "url-polyfill": "^1.1.7"
+    "url-polyfill": "^1.1.7",
+    "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
     "@babel/core": "^7.8.4",

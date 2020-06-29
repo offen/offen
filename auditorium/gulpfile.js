@@ -61,6 +61,7 @@ function makeScriptTask (dest, locale) {
 
     return b
       .exclude('plotly.js-basic-dist')
+      .exclude('zxcvbn')
       .plugin('tinyify')
       .bundle()
       .pipe(source('index.js'))
@@ -80,6 +81,7 @@ function makeVendorTask (dest) {
     var b = browserify()
     return b
       .require('plotly.js-basic-dist')
+      .require('zxcvbn')
       .bundle()
       .pipe(source('vendor.js'))
       .pipe(buffer())

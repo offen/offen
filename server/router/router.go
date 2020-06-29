@@ -18,6 +18,8 @@ import (
 	"github.com/offen/offen/server/config"
 	"github.com/offen/offen/server/mailer"
 	"github.com/offen/offen/server/persistence"
+	ratelimiter "github.com/offen/offen/server/ratelimiter"
+	"github.com/patrickmn/go-cache"
 	"github.com/sirupsen/logrus"
 )
 
@@ -31,6 +33,18 @@ type router struct {
 	emails       *template.Template
 	config       *config.Config
 	sanitizer    *bluemonday.Policy
+	limiter      ratelimiter.Throttler
+}
+
+func (rt *router) getLimiter() ratelimiter.Throttler {
+	if rt.limiter == nil {
+		if rt.config != nil && rt.config.Server.ReverseProxy {
+			rt.limiter = ratelimiter.NewNoopRateLimiter()
+		} else {
+			rt.limiter = ratelimiter.New(time.Second*30, cache.New(time.Minute, time.Minute*2))
+		}
+	}
+	return rt.limiter
 }
 
 func (rt *router) logError(err error, message string) {

@@ -11,7 +11,7 @@ services:
     network_mode: host
     environment:
       CYPRESS_OPERATOR_USERNAME: develop@offen.dev
-      CYPRESS_OPERATOR_PASSWORD: develop
+      CYPRESS_OPERATOR_PASSWORD: development
       PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
     volumes:
       - .:/offen

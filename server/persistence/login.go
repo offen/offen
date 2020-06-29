@@ -4,11 +4,11 @@
 package persistence
 
 import (
-	"context"
 	"encoding/base64"
 	"errors"
 	"fmt"
-	"sync"
+	"math/rand"
+	"time"
 
 	"github.com/lestrrat-go/jwx/jwk"
 	"github.com/offen/offen/server/keys"
@@ -116,6 +116,10 @@ func (p *persistenceLayer) ChangePassword(userID, currentPassword, changedPasswo
 		return fmt.Errorf("persistence: current password did not match: %w", err)
 	}
 
+	if err := keys.ValidatePassword(changedPassword); err != nil {
+		return fmt.Errorf("persistence: error validating new password: %w", err)
+	}
+
 	newPasswordHash, hashErr := keys.HashString(changedPassword)
 	if hashErr != nil {
 		return fmt.Errorf("persistence: error hashing new password: %w", hashErr)
@@ -146,6 +150,10 @@ func (p *persistenceLayer) ResetPassword(emailAddress, password string, oneTimeK
 	accountUser, err := p.findAccountUser(emailAddress, true, false)
 	if err != nil {
 		return fmt.Errorf("persistence: error looking up account user: %w", err)
+	}
+
+	if err := keys.ValidatePassword(password); err != nil {
+		return fmt.Errorf("persistence: error validating new password: %w", err)
 	}
 
 	for index, relationship := range accountUser.Relationships {
@@ -275,26 +283,17 @@ func (p *persistenceLayer) findAccountUser(emailAddress string, includeRelations
 }
 
 func selectAccountUser(available []AccountUser, email string) (*AccountUser, error) {
-	ctx, cancel := context.WithCancel(context.Background())
-	match := make(chan AccountUser)
-	wg := sync.WaitGroup{}
-	for _, a := range available {
-		wg.Add(1)
-		go func(accountUser AccountUser) {
-			if err := keys.CompareString(email, accountUser.HashedEmail); err == nil {
-				match <- accountUser
-			}
-			wg.Done()
-		}(a)
+	// this is so that users that have signed up at a later point in time
+	// also get decent login times
+	rand.Seed(time.Now().UnixNano())
+	rand.Shuffle(len(available), func(i, j int) {
+		available[i], available[j] = available[j], available[i]
+	})
+
+	for _, user := range available {
+		if err := keys.CompareString(email, user.HashedEmail); err == nil {
+			return &user, nil
+		}
 	}
-	go func() {
-		wg.Wait()
-		cancel()
-	}()
-	select {
-	case result := <-match:
-		return &result, nil
-	case <-ctx.Done():
-		return nil, fmt.Errorf("persistence: no account user found for %s", email)
-	}
+	return nil, fmt.Errorf("persistence: no account user found for %s", email)
 }

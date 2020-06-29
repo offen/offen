@@ -16,7 +16,7 @@ setup:
 	@echo "You can now log into the development backend using the following credentials:"
 	@echo ""
 	@echo "Email: develop@offen.dev"
-	@echo "Password: develop"
+	@echo "Password: development"
 	@echo ""
 
 migrate:

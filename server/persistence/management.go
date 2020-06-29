@@ -126,6 +126,10 @@ func (p *persistenceLayer) Join(emailAddress, password string) error {
 		return fmt.Errorf("persistence: user with email %s has already joined before", emailAddress)
 	}
 
+	if err := keys.ValidatePassword(password); err != nil {
+		return fmt.Errorf("persistence: error validating password: %w", err)
+	}
+
 	cipher, err := keys.HashString(password)
 	if err != nil {
 		return fmt.Errorf("persistence: hashing given password: %w", err)

@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/offen/offen/server/persistence"
@@ -50,6 +51,14 @@ func (rt *router) postShareAccount(c *gin.Context) {
 			).Pipe(c)
 			return
 		}
+	}
+
+	if l := <-rt.getLimiter().ExponentialThrottle(time.Second, fmt.Sprintf("postShareAccount-%s", accountUser.AccountUserID)); l.Error != nil {
+		newJSONError(
+			fmt.Errorf("router: error rate limiting request: %w", l.Error),
+			http.StatusTooManyRequests,
+		).Pipe(c)
+		return
 	}
 
 	// the given credentials might not be valid
@@ -166,6 +175,24 @@ func (rt *router) postJoin(c *gin.Context) {
 		).Pipe(c)
 		return
 	}
+
+	if l := <-rt.getLimiter().ExponentialThrottle(time.Second, fmt.Sprintf("postJoin-%s", req.EmailAddress)); l.Error != nil {
+		newJSONError(
+			fmt.Errorf("router: error rate limiting request: %w", l.Error),
+			http.StatusTooManyRequests,
+		).Pipe(c)
+		return
+	}
+
+	// we rate limit this twice to prevent floodding with arbitrary emails
+	if l := <-rt.getLimiter().LinearThrottle(time.Second/2, "postJoin-*"); l.Error != nil {
+		newJSONError(
+			fmt.Errorf("router: error rate limiting request: %w", l.Error),
+			http.StatusTooManyRequests,
+		).Pipe(c)
+		return
+	}
+
 	if err := rt.db.Join(req.EmailAddress, req.Password); err != nil {
 		rt.logError(err, "error joining")
 	}

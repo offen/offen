@@ -9,6 +9,7 @@ const { forwardRef } = require('preact/compat')
 const { useState } = require('preact/hooks')
 
 const LabeledInput = require('./../_shared/labeled-input')
+const NewPasswordInput = require('./../_shared/new-password-input')
 const SubmitButton = require('./../_shared/submit-button')
 
 const Form = forwardRef((props, ref) => {
@@ -58,14 +59,13 @@ const Form = forwardRef((props, ref) => {
         >
           {__('Your email address')}
         </LabeledInput>
-        <LabeledInput
+        <NewPasswordInput
           name='password'
-          type='password'
           required
           disabled={isDisabled}
         >
           {__('Your password')}
-        </LabeledInput>
+        </NewPasswordInput>
         <LabeledInput
           name='password-repeat'
           type='password'

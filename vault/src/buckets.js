@@ -47,6 +47,10 @@ var buckets = [
   {
     re: /t\.co($|\/)/,
     name: 'Twitter'
+  },
+  {
+    re: /^news\.ycombinator\.com($|\/)/,
+    name: 'Hacker News'
   }
 ]
 

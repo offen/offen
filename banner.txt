@@ -1,5 +1,7 @@
+Copyright 2020 - Offen Authors <hioffen@posteo.de>
+SPDX-License-Identifier: Apache-2.0
+///////////////////////////////////////////////////////////////////////
 Offen is a fair alternative to common web analytics tools.
-
 Find out more about why we are building Offen at https://www.offen.dev.
-
 All source code is available at https://github.com/offen/offen.
+///////////////////////////////////////////////////////////////////////

@@ -8,6 +8,7 @@ const { h } = require('preact')
 const { useState } = require('preact/hooks')
 
 const LabeledInput = require('./../_shared/labeled-input')
+const NewPasswordInput = require('./../_shared/new-password-input')
 const SubmitButton = require('./../_shared/submit-button')
 
 const ChangePassword = (props) => {
@@ -47,15 +48,14 @@ const ChangePassword = (props) => {
         >
           {__('Current password')}
         </LabeledInput>
-        <LabeledInput
-          type='password'
+        <NewPasswordInput
           name='changed'
           required
           autocomplete='off'
           disabled={isDisabled}
         >
           {__('New password')}
-        </LabeledInput>
+        </NewPasswordInput>
         <LabeledInput
           type='password'
           name='repeat'

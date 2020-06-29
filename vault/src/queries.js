@@ -26,6 +26,7 @@ var stats = require('./stats')
 var cookies = require('./cookie-tools')
 
 var fallbackEventStore = {}
+var fallbackKeyStore = {}
 
 var startOf = {
   hours: startOfHour,
@@ -111,14 +112,7 @@ function getDefaultStatsWith (getDatabase) {
             : events
         })
         .then(function (events) {
-          return events.map(function (event) {
-            if (event.secretId === null || !event.payload) {
-              return event
-            }
-            event.payload.referrer = event.payload.referrer && new window.URL(event.payload.referrer)
-            event.payload.href = event.payload.href && new window.URL(event.payload.href)
-            return event
-          })
+          return events.map(parseAndValidateEvent).filter(_.identity)
         })
     })
     var decryptedEvents = decryptions[0]
@@ -376,6 +370,11 @@ function putEncryptedSecretsWith (getDatabase) {
     })
     return db.keys
       .bulkPut(records)
+      .catch(dexie.OpenFailedError, function () {
+        fallbackKeyStore[accountId] = fallbackKeyStore[accountId] || []
+        fallbackKeyStore[accountId] = fallbackKeyStore[accountId].concat(records)
+        return records
+      })
   }
 }
 
@@ -465,7 +464,60 @@ function getEncryptedSecretsWith (getDatabase) {
       .equals(TYPE_ENCRYPTED_SECRET)
       .toArray()
       .catch(dexie.OpenFailedError, function () {
-        return []
+        return fallbackKeyStore[accountId] || []
       })
   }
+}
+
+var knownEventTypes = {
+  PAGEVIEW: true
+}
+
+exports.parseAndValidateEvent = parseAndValidateEvent
+function parseAndValidateEvent (event) {
+  if (event.secretId === null || !event.payload) {
+    return event
+  }
+
+  if (!knownEventTypes[event.payload.type]) {
+    return null
+  }
+
+  if (event.payload.pageload !== null && !_.isFinite(event.payload.pageload)) {
+    event.payload.pageload = null
+  }
+
+  if (!_.isBoolean(event.payload.isMobile)) {
+    event.payload.isMobile = false
+  }
+
+  if (!_.isString(event.payload.title)) {
+    event.payload.title = ''
+  }
+
+  if (!_.isString(event.payload.sessionId)) {
+    return null
+  }
+
+  if (!isValidJSONDate(event.payload.timestamp)) {
+    return null
+  }
+
+  try {
+    event.payload.referrer = event.payload.referrer && new window.URL(event.payload.referrer)
+  } catch (err) {
+    return null
+  }
+
+  try {
+    event.payload.href = event.payload.href && new window.URL(event.payload.href)
+  } catch (err) {
+    return null
+  }
+
+  return event
+}
+
+function isValidJSONDate (dateString) {
+  return _.isString(dateString) && !_.isNaN(new Date(dateString).getTime())
 }

@@ -78,7 +78,7 @@ The archive file currently contains the binaries __for all supported operating s
 To prevent unwanted modifications of our releases, we sign all binaries using GPG and include the signature in our distribution. You can run the following commands to verify the integrity of your download:
 
 ```
-gpg --keyserver pgp.mit.edu --recv F20D4074068C636D58B53F46FD60FBEDC90B8DA1
+curl https://keybase.io/hioffen/pgp_keys.asc | gpg --import
 gpg --verify offen-linux-amd64.asc offen-linux-amd64
 ```
 

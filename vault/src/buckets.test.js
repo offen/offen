@@ -36,7 +36,10 @@ describe('src/buckets.js', function () {
         'www.linkedin.com',
         'linkedin.community/malware-download',
         'android-app://com.linkedin.android',
-        'android-app://com.linkedinteresting.scam'
+        'android-app://com.linkedinteresting.scam',
+        'news.ycombinator.com',
+        'news.ycombinator.com/item?id=1234567',
+        'news.ycombinator.community'
       ]
       var mapped = referrers.map(mapToBuckets)
       assert.deepStrictEqual(mapped, [
@@ -65,7 +68,10 @@ describe('src/buckets.js', function () {
         'LinkedIn',
         'linkedin.community/malware-download',
         'LinkedIn',
-        'android-app://com.linkedinteresting.scam'
+        'android-app://com.linkedinteresting.scam',
+        'Hacker News',
+        'Hacker News',
+        'news.ycombinator.community'
       ])
     })
   })

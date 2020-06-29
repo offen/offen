@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gofrs/uuid"
@@ -61,6 +62,14 @@ func (rt *router) postUserSecret(c *gin.Context) {
 		newJSONError(
 			fmt.Errorf("router: error decoding response body: %v", err),
 			http.StatusBadRequest,
+		).Pipe(c)
+		return
+	}
+
+	if l := <-rt.getLimiter().LinearThrottle(time.Second, fmt.Sprintf("postUserSecret-%s", userID)); l.Error != nil {
+		newJSONError(
+			fmt.Errorf("router: error rate limiting request: %w", l.Error),
+			http.StatusTooManyRequests,
 		).Pipe(c)
 		return
 	}
