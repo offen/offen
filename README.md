@@ -165,8 +165,8 @@ This work is licensed under multiple licences.
 - Offen bundles normalize.css v8.0.0, licensed under [MIT][license-mit].
 - Offen bundles the Roboto Font Family, licensed under [Apache-2.0][license-mit].
 
-[license-apache]: https://github.com/offen/offen/blob/development/LICENSES/Apache-2.0.txt)
-[license-mit]: https://github.com/offen/offen/blob/development/LICENSES/MIT.txt)
+[license-apache]: https://github.com/offen/offen/blob/development/LICENSES/Apache-2.0.txt
+[license-mit]: https://github.com/offen/offen/blob/development/LICENSES/MIT.txt
 
 ## Links
 [Website](https://www.offen.dev/)  
