@@ -160,13 +160,13 @@ Found an issue or want to add something? Please do not hesitate to file an issue
 
 This work is licensed under multiple licences.
 
-- All original source code is licensed under [Apache-2.0][].
-- Offen bundles TACHYONS v4.11.2, licensed under [MIT][].
-- Offen bundles normalize.css v8.0.0, licensed under [MIT][].
-- Offen bundles the Roboto Font Family, licensed under [Apache-2.0][].
+- All original source code is licensed under [Apache-2.0][license-apache].
+- Offen bundles TACHYONS v4.11.2, licensed under [MIT][license-apache].
+- Offen bundles normalize.css v8.0.0, licensed under [MIT][license-mit].
+- Offen bundles the Roboto Font Family, licensed under [Apache-2.0][license-mit].
 
-[Apache-2.0]: https://github.com/offen/offen/blob/development/LICENSES/Apache-2.0.txt)
-[MIT]: https://github.com/offen/offen/blob/development/LICENSES/MIT.txt)
+[license-apache]: https://github.com/offen/offen/blob/development/LICENSES/Apache-2.0.txt)
+[license-mit]: https://github.com/offen/offen/blob/development/LICENSES/MIT.txt)
 
 ## Links
 [Website](https://www.offen.dev/)  
