@@ -255,7 +255,7 @@ func New(opts ...Config) http.Handler {
 			"-",
 			"-",
 			"-",
-			time.Now().Format("02/Jan/2006 03:04:05"),
+			time.Now().Format("02/Jan/2006:15:04:05 -0700"),
 			r.Method,
 			r.RequestURI,
 			r.Proto,
