@@ -85,7 +85,7 @@ RUN license_finder report | tail -n +2 >> dependencies.csv
 FROM python:3.8-alpine as notice
 
 WORKDIR /code
-COPY ./create_notice.py /code
+COPY ./create_notice.py ./NOTICE /code/
 
 COPY --from=script /code/script/dependencies.csv /code/script.csv
 COPY --from=vault /code/vault/dependencies.csv /code/vault.csv
@@ -98,7 +98,7 @@ RUN python ./create_notice.py \
   --client vault.csv \
   --client packages.csv \
   --client auditorium.csv \
-  --server server.csv > NOTICE
+  --server server.csv >> NOTICE
 
 FROM golang:1.14 as statik
 

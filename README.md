@@ -163,13 +163,12 @@ This work is licensed under multiple licences.
 - All original source code is licensed under [Apache-2.0][license-apache].
 - All documentation is licensed under [Apache-2.0][license-apache].
 - The Offen icon and logo are licensed as [CC-BY-NC-ND-4.0][license-cc].
-- Offen bundles TACHYONS v4.11.2, licensed under [MIT][license-apache].
-- Offen bundles normalize.css v8.0.0, licensed under [MIT][license-mit].
-- Offen bundles the Roboto Font Family, licensed under [Apache-2.0][license-mit].
+
+See the [NOTICE][notice] file for license information on works that get bundled by Offen.
 
 [license-apache]: https://github.com/offen/offen/blob/development/LICENSES/Apache-2.0.txt
-[license-mit]: https://github.com/offen/offen/blob/development/LICENSES/MIT.txt
 [license-cc]: https://github.com/offen/offen/blob/development/LICENSES/CC-BY-NC-ND-4.0.txt
+[notice]: https://github.com/offen/offen/blob/development/NOTICE
 
 ## Links
 [Website](https://www.offen.dev/)  
