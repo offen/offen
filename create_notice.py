@@ -78,7 +78,7 @@ Client side:
             """
 Server side:
 ============
-        """
+"""
         )
         for dep in server_deps:
             print(
@@ -86,6 +86,13 @@ Server side:
                     dep["name"].strip(), dep["licenses"].strip(), dep["source"].strip(),
                 )
             )
+
+    print(
+        """
+This file is generated automatically and - even if we try to prevent it - may
+contain errors and mistakes. If you found any, send us an email
+at hioffen@posteo.de containing details about what is incorrect or missing."""
+    )
 
 
 if __name__ == "__main__":
