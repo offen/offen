@@ -52,19 +52,20 @@ ENV NODE_ENV production
 RUN npm run build
 RUN npm run licenses
 
-FROM golang:1.14 as statik
-
-WORKDIR /code/server
-COPY ./server /code/server
-
-COPY --from=script /code/script/dist /code/server/public
-COPY --from=vault /code/vault/dist /code/server/public
-COPY --from=auditorium /code/auditorium/dist /code/server/public
-
-RUN go get github.com/rakyll/statik
-RUN statik -dest public -src public
-RUN statik -dest locales -src locales
-
+# packages does not have a build step but we need to derive license information
+FROM node:14 as packages
+COPY ./packages/package.json ./packages/package-lock.json /code/deps/
+COPY ./packages /code/packages
+WORKDIR /code/deps
+ENV ADBLOCK true
+ENV DISABLE_OPENCOLLECTIVE true
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
+RUN npm ci
+COPY ./packages /code/packages
+WORKDIR /code/packages
+RUN cp -a /code/deps/node_modules /code/packages/
+ENV NODE_ENV production
+RUN npm run licenses
 
 FROM ruby:2.7-alpine AS server_licenses
 
@@ -80,7 +81,6 @@ RUN go mod download
 
 RUN echo "repository,version,licenses" > dependencies.csv
 RUN license_finder report | tail -n +2 >> dependencies.csv
-RUN cat dependencies.csv
 
 FROM python:3.8-alpine as notice
 
@@ -90,10 +90,29 @@ COPY ./create_notice.py /code
 COPY --from=script /code/script/dependencies.csv /code/script.csv
 COPY --from=vault /code/vault/dependencies.csv /code/vault.csv
 COPY --from=auditorium /code/auditorium/dependencies.csv /code/auditorium.csv
+COPY --from=packages /code/packages/dependencies.csv /code/packages.csv
 COPY --from=server_licenses /code/server/dependencies.csv /code/server.csv
 
-RUN python ./create_notice.py script.csv vault.csv auditorium.csv server.csv > NOTICE
+RUN python ./create_notice.py \
+  --client script.csv \
+  --client vault.csv \
+  --client packages.csv \
+  --client auditorium.csv \
+  --server server.csv > NOTICE
 
+FROM golang:1.14 as statik
+
+WORKDIR /code/server
+COPY ./server /code/server
+
+COPY --from=script /code/script/dist /code/server/public
+COPY --from=vault /code/vault/dist /code/server/public
+COPY --from=auditorium /code/auditorium/dist /code/server/public
+COPY --from=notice /code/NOTICE /code/server/public/NOTICE.txt
+
+RUN go get github.com/rakyll/statik
+RUN statik -dest public -src public
+RUN statik -dest locales -src locales
 
 FROM techknowlogick/xgo:go-1.14.x as compiler
 
