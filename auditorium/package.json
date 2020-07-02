@@ -10,7 +10,8 @@
     "posttest": "standard",
     "fix": "standard --fix",
     "build": "gulp",
-    "extract-strings": "gulp extract-strings"
+    "extract-strings": "gulp extract-strings",
+    "licenses": "npm-license-crawler --production --onlyDirectDependencies --omitVersion --csv dependencies.csv"
   },
   "aliasify": {
     "aliases": {
@@ -50,6 +51,7 @@
     "gulp-rev": "^9.0.0",
     "gulp-uglify": "^3.0.2",
     "mochify": "^6.3.0",
+    "npm-license-crawler": "^0.2.1",
     "redux-mock-store": "^1.5.4",
     "sheetify": "^8.0.0",
     "sinon": "^8.1.1",

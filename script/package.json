@@ -12,7 +12,8 @@
     "posttest": "standard",
     "fix": "standard --fix",
     "build": "gulp",
-    "extract-strings": "gulp extract-strings"
+    "extract-strings": "gulp extract-strings",
+    "licenses": "npm-license-crawler --production --onlyDirectDependencies --omitVersion --csv dependencies.csv"
   },
   "dependencies": {
     "history-events": "^1.0.4",
@@ -29,6 +30,7 @@
     "gulp-clean": "^0.4.0",
     "local-web-server": "^4.0.0",
     "mochify": "^6.3.0",
+    "npm-license-crawler": "^0.2.1",
     "standard": "^14.3.1",
     "tinyify": "^2.5.0",
     "vinyl-buffer": "^1.0.1",

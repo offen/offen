@@ -16,6 +16,7 @@ WORKDIR /code/auditorium
 RUN cp -a /code/deps/node_modules /code/auditorium/
 ENV NODE_ENV production
 RUN npm run build
+RUN npm run licenses
 
 FROM node:14 as script
 
@@ -32,6 +33,7 @@ WORKDIR /code/script
 RUN cp -a /code/deps/node_modules /code/script/
 ENV NODE_ENV production
 RUN npm run build
+RUN npm run licenses
 
 FROM node:14 as vault
 
@@ -48,6 +50,7 @@ WORKDIR /code/vault
 RUN cp -a /code/deps/node_modules /code/vault/
 ENV NODE_ENV production
 RUN npm run build
+RUN npm run licenses
 
 FROM golang:1.14 as statik
 
@@ -61,6 +64,18 @@ COPY --from=auditorium /code/auditorium/dist /code/server/public
 RUN go get github.com/rakyll/statik
 RUN statik -dest public -src public
 RUN statik -dest locales -src locales
+
+FROM python:3.7-alpine as notice
+
+WORKDIR /code
+COPY ./create_notice.py .
+
+COPY --from=script /code/script/dependencies.csv /code/script.csv
+COPY --from=vault /code/vault/dependencies.csv /code/vault.csv
+COPY --from=auditorium /code/auditorium/dependencies.csv /code/auditorium.csv
+
+RUN python ./create_notice.py script.csv vault.csv auditorium.csv > NOTICE
+
 
 FROM techknowlogick/xgo:go-1.14.x as compiler
 
@@ -76,3 +91,5 @@ ENV GOPATH /go
 WORKDIR /build
 
 RUN xgo --targets=$TARGETS --tags 'osusergo netgo static_build sqlite_omit_load_extension' --ldflags="-linkmode external -extldflags '$LDFLAGS' -s -w -X github.com/offen/offen/server/config.Revision=$GIT_REVISION" github.com/offen/offen/server/cmd/offen
+
+COPY --from=notice /code/NOTICE ./
