@@ -1,0 +1,8 @@
+Offen bundles the following 3rd party software:
+
+Vendored:
+=========
+
+"tachyons", licensed under MIT, available at <https://github.com/tachyons-css/tachyons>
+"normalize.css", licensed under MIT, available at <https://github.com/necolas/normalize.css>
+"Roboto Font Family", licensed under Apache-2.0, available at <https://github.com/googlefonts/roboto>

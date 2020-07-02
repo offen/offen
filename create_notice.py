@@ -3,6 +3,7 @@
 
 import csv
 import argparse
+import re
 
 """
 This script is used to automatically generate a NOTICE file from different
@@ -13,12 +14,19 @@ dependencies) and `license_finder` (for Go modules) [1] is supported.
 [1]: https://github.com/pivotal/LicenseFinder
 """
 
+
 def normalize_row(row):
+    is_versioned_go_module = re.compile(r".*v\d$")
     result = {}
     try:
         result["name"] = row["module name"]
     except KeyError:
-        result["name"] = row["repository"].rsplit("/", 1)[-1]
+        repository = row["repository"]
+        chunks = repository.split("/")
+        if is_versioned_go_module.match(repository):
+            result["name"] = chunks[-2:-1][0]
+        else:
+            result["name"] = chunks[-1]
 
     result["licenses"] = row["licenses"]
 
@@ -48,48 +56,25 @@ def dedupe(dependencies):
     return result
 
 
-def main(app='Offen', server=[], client=[]):
-    client_deps = []
-    for source in client:
-        client_deps += read_file(source)
-    client_deps = dedupe(client_deps)
+def main(**kwargs):
+    for key, values in kwargs.items():
+        deps = []
+        for source in values:
+            deps += read_file(source)
+        deps = dedupe(deps)
 
-    server_deps = []
-    for source in server:
-        server_deps += read_file(source)
-    server_deps = dedupe(server_deps)
-
-    print("{} bundles the following 3rd party software:".format(app))
-    if client_deps:
-        print(
-            """
-Client side:
-============
-"""
-        )
-        for dep in client_deps:
-            print(
-                '"{}" licensed under {}, available at {}'.format(
-                    dep["name"].strip(), dep["licenses"].strip(), dep["source"].strip(),
+        if deps:
+            print("\n{} side:\n=========\n".format(key.title()))
+            for dep in deps:
+                print(
+                    '"{}" licensed under {}, available at {}'.format(
+                        dep["name"].strip(), dep["licenses"].strip(), dep["source"].strip(),
+                    )
                 )
-            )
-    if server_deps:
-        print(
-            """
-Server side:
-============
-"""
-        )
-        for dep in server_deps:
-            print(
-                '"{}" licensed under {}, available at {}'.format(
-                    dep["name"].strip(), dep["licenses"].strip(), dep["source"].strip(),
-                )
-            )
 
     print(
         """
-This file is generated automatically and - even if we try to prevent it - may
+This file is generated automatically and - even though we try to prevent it - may
 contain errors and mistakes. If you found any, send us an email
 at hioffen@posteo.de containing details about what is incorrect or missing."""
     )
@@ -100,4 +85,4 @@ if __name__ == "__main__":
     parser.add_argument("--client", dest="client", action="append", default=[])
     parser.add_argument("--server", dest="server", action="append", default=[])
     args = parser.parse_args()
-    main(server=args.server, client=args.client)
+    main(client=args.client, server=args.server)
