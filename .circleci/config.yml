@@ -195,11 +195,11 @@ jobs:
           name: Package tarball
           working_directory: ~/offen/bin
           command: |
-            for artifact in $(ls); do
+            md5sum $(find . -perm -111 -type f) > checksums.txt
+
+            for artifact in $(find . -perm -111 -type f); do
               gpg --armor --detach-sign $artifact
             done
-
-            md5sum * > checksums.txt
 
             cp ~/offen/{LICENSE,README.md} .
 
