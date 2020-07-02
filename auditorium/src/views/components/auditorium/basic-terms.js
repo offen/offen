@@ -10,7 +10,7 @@ const Paragraph = require('./../_shared/paragraph')
 
 module.exports = (props) => {
   return (
-    <div class='ph3 ph4-ns pv4 bg-black-05'>
+    <div class='ph3 ph4-ns pv4 bg-black-05' data-testid='auditorium/basic-terms'>
       <h4 class='f4 normal mt0 mb4'>
         {__('Basic Terms')}
       </h4>

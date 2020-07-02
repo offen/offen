@@ -31,7 +31,11 @@ module.exports = (props) => {
           </h3>
         </div>
         <div class='w-100 w-40-ns link dim tc mt2 mt0-ns'>
-          <a href='/auditorium/' class='f5 tc no-underline bn ph3 pv2 dib br1 white bg-dark-green'>
+          <a
+            href='/auditorium/'
+            class='f5 tc no-underline bn ph3 pv2 dib br1 white bg-dark-green'
+            data-testid='index/open-auditorium'
+          >
             {__('Open Auditorium')}
           </a>
         </div>
@@ -41,7 +45,7 @@ module.exports = (props) => {
     const noStatusYet = props.consentStatus !== 'deny'
     content = (
       <Fragment>
-        <div class='w-100 w-60-ns mr3-ns' id='consent-banner'>
+        <div class='w-100 w-60-ns mr3-ns' id='consent-banner' data-testid='index/consent-banner'>
           <h3 class='f4 normal tl-ns ma0 mb3'>
             {__('We only access usage data with your consent.')}
           </h3>
@@ -54,12 +58,19 @@ module.exports = (props) => {
         </div>
         <div class='flex justify-center w-100 w-40-ns tc mt2 mt0-ns'>
           <div class='link dim'>
-            <button class='pointer f5 tc bn ph3 pv2 dib br1 mr3 white bg-mid-gray' onclick={() => props.expressConsent('allow')}>
+            <button
+              class='pointer f5 tc bn ph3 pv2 dib br1 mr3 white bg-mid-gray' onclick={() => props.expressConsent('allow')}
+              data-testid='index/consent-opt-in'
+            >
               {__('I allow')}
             </button>
           </div>
           <div class='link dim'>
-            <button disabled={!noStatusYet} class={`f5 tc bn ph3 pv2 dib br1 white ${noStatusYet ? 'bg-mid-gray pointer' : 'bg-light-gray'}`} onclick={() => props.expressConsent('deny')}>
+            <button
+              class={`f5 tc bn ph3 pv2 dib br1 white ${noStatusYet ? 'bg-mid-gray pointer' : 'bg-light-gray'}`} onclick={() => props.expressConsent('deny')}
+              disabled={!noStatusYet}
+              data-testid='index/consent-opt-out'
+            >
               {__('I don\'t allow')}
             </button>
           </div>

@@ -10,6 +10,7 @@ describe('Operator', function () {
       cy.get('[data-testid="login/username-input"]').type(Cypress.env('OPERATOR_USERNAME'))
       cy.get('[data-testid="login/password-input"]').type(Cypress.env('OPERATOR_PASSWORD'))
       cy.get('[data-testid="login/form"]').submit()
+      cy.url().should('not.include', '/login/')
       cy.url().should('include', '/auditorium/')
 
       cy.get('[data-testid="auditorium/console-headline"]').click()
@@ -28,6 +29,26 @@ describe('Operator', function () {
       cy.get('[data-testid="login/username-input"]').type('not@invented.here')
       cy.get('[data-testid="login/password-input"]').type('foobarbaz')
       cy.get('[data-testid="login/form"]').submit()
+      cy.url().should('not.include', '/auditorium/')
+      cy.url().should('include', '/login/')
+    })
+
+    it('does not allow login using an invalid password', function () {
+      cy.visit('/login/')
+      cy.get('[data-testid="login/username-input"]').type(Cypress.env('OPERATOR_USERNAME'))
+      cy.get('[data-testid="login/password-input"]').type('nottherealpassword')
+      cy.get('[data-testid="login/form"]').submit()
+      cy.url().should('not.include', '/auditorium/')
+      cy.url().should('include', '/login/')
+
+      cy.get('[data-testid="login/password-input"]').type('anothertry')
+      cy.get('[data-testid="login/form"]').submit()
+      cy.url().should('not.include', '/auditorium/')
+      cy.url().should('include', '/login/')
+
+      cy.get('[data-testid="login/password-input"]').type('yetanothertry')
+      cy.get('[data-testid="login/form"]').submit()
+      cy.url().should('not.include', '/auditorium/')
       cy.url().should('include', '/login/')
     })
 
