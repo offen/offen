@@ -67,6 +67,8 @@ $ offen version
 INFO[0000] Current build created using                   revision={{ site.offen_version }}
 ```
 
+[releases]: https://github.com/offen/offen/releases
+
 ---
 
 ## Choosing a location for storing your data
@@ -258,16 +260,16 @@ To update to a new version of Offen, download the contents of the newest release
 ```
 curl -sSL https://get.offen.dev | tar -xvz
 md5sum -c checksums.txt # check that your download contains the expected files
-sudo mkdir -p /opt/offen/v0.1.0-alpha.next
-sudo cp offen-linux-amd64 /opt/offen/v0.1.0-alpha.next
-sudo ln -sf /opt/offen/v0.1.0-alpha.next/offen-linux-amd64 /usr/local/bin/offen
+sudo mkdir -p /opt/offen/v0.2.12
+sudo cp offen-linux-amd64 /opt/offen/v0.2.12
+sudo ln -sf /opt/offen/v0.2.12/offen-linux-amd64 /usr/local/bin/offen
 ```
 
 Confirm that this worked by having `offen` print its version:
 
 ```
 $ offen version
-INFO[0000] Current build created using                   revision=v0.1.0-alpha.next
+INFO[0000] Current build created using                   revision=v0.2.12
 ```
 
 You can now restart your service to pick up the changes:
@@ -275,15 +277,3 @@ You can now restart your service to pick up the changes:
 ```
 sudo systemctl restart offen
 ```
-
----
-
-__Heads Up__
-{: .label .label-red }
-
-At the moment __Offen is alpha stage software__. We are working hard to keep things stable for our users, but at the moment we cannot guarantee upgrade compatibility. Check the changelogs carefully to see if you can actually upgrade to a new release before replacing your running version.
-
-You can read more about our approach to versioning in [this blog post][versioning-blog].
-
-[releases]: https://github.com/offen/offen/releases
-[versioning-blog]: https://www.offen.dev/blog/untold-roads-versioning-early-stage-software/

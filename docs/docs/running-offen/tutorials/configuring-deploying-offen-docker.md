@@ -173,7 +173,7 @@ docker run -d \
   -v offen_data:/var/opt/offen \
   -v offen_certs:/var/www/.cache \
   -v ~/.config/offen.env:/etc/offen/offen.env \
-  offen/offen:v0.1.0-alpha.8
+  offen/offen:{{ site.offen_version }}
 ```
 
 Once the application has started, you can use `docker ps` to check if it's up and running:
