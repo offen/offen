@@ -65,16 +65,34 @@ RUN go get github.com/rakyll/statik
 RUN statik -dest public -src public
 RUN statik -dest locales -src locales
 
-FROM python:3.7-alpine as notice
+
+FROM ruby:2.7-alpine AS server_licenses
+
+COPY --from=golang:1.14-alpine /usr/local/go/ /usr/local/go/
+ENV PATH="/usr/local/go/bin:${PATH}"
+
+RUN gem install license_finder
+
+WORKDIR /code/server
+COPY ./server /code/server
+RUN go mod tidy
+RUN go mod download
+
+RUN echo "repository,version,licenses" > dependencies.csv
+RUN license_finder report | tail -n +2 >> dependencies.csv
+RUN cat dependencies.csv
+
+FROM python:3.8-alpine as notice
 
 WORKDIR /code
-COPY ./create_notice.py .
+COPY ./create_notice.py /code
 
 COPY --from=script /code/script/dependencies.csv /code/script.csv
 COPY --from=vault /code/vault/dependencies.csv /code/vault.csv
 COPY --from=auditorium /code/auditorium/dependencies.csv /code/auditorium.csv
+COPY --from=server_licenses /code/server/dependencies.csv /code/server.csv
 
-RUN python ./create_notice.py script.csv vault.csv auditorium.csv > NOTICE
+RUN python ./create_notice.py script.csv vault.csv auditorium.csv server.csv > NOTICE
 
 
 FROM techknowlogick/xgo:go-1.14.x as compiler

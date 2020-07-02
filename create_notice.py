@@ -4,19 +4,32 @@
 import sys
 import csv
 
+def normalize_row(row):
+    result = {}
+    try:
+        result['name'] = row['module name']
+    except KeyError:
+        result['name'] = row['repository']
+
+    result['licenses'] = row['licenses']
+    result['source'] = row['repository']
+
+    return result
+
+
 def read_file(filename):
     result = []
     with open(filename, 'r') as csv_file:
         csv_reader = csv.DictReader(csv_file)
         for row in csv_reader:
-            result.append(row)
+            result.append(normalize_row(row))
     return result
 
 
 def dedupe(dependencies):
     result = []
     for dep in dependencies:
-        if not any(existing['module name'] == dep['module name'] for existing in result):
+        if not any(existing['name'] == dep['name'] for existing in result):
             result.append(dep)
     return result
 
@@ -32,7 +45,7 @@ def main(*sources):
     for dep in all_deps:
         print(
             "\"{}\" licensed under {}, available at {}".format(
-                dep['module name'], dep['licenses'], dep['repository'],
+                dep['name'], dep['licenses'], dep['source'],
             )
         )
 
