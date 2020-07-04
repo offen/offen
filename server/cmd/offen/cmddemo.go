@@ -18,7 +18,6 @@ import (
 	"time"
 
 	"github.com/gofrs/uuid"
-	"github.com/jinzhu/gorm"
 	"github.com/lestrrat-go/jwx/jwk"
 	"github.com/offen/offen/server/config"
 	"github.com/offen/offen/server/keys"
@@ -80,15 +79,10 @@ func cmdDemo(subcommand string, flags []string) {
 	}
 	a.config.App.DemoAccount = accountID.String()
 
-	gormDB, err := gorm.Open(
-		a.config.Database.Dialect.String(),
-		a.config.Database.ConnectionString.String(),
-	)
+	gormDB, err := newDB(a.config)
 	if err != nil {
 		a.logger.WithError(err).Fatal("Unable to establish database connection")
 	}
-	gormDB.LogMode(a.config.App.Development)
-
 	db, err := persistence.New(
 		relational.NewRelationalDAL(gormDB),
 	)

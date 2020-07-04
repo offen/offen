@@ -7,7 +7,6 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/jinzhu/gorm"
 	"github.com/offen/offen/server/persistence"
 	"github.com/offen/offen/server/persistence/relational"
 )
@@ -33,11 +32,11 @@ func cmdMigrate(subcommand string, flags []string) {
 	cmd.Parse(flags)
 	a := newApp(false, true, *envFile)
 
-	gormDB, dbErr := gorm.Open(a.config.Database.Dialect.String(), a.config.Database.ConnectionString.String())
+	gormDB, dbErr := newDB(a.config)
 	if dbErr != nil {
 		a.logger.WithError(dbErr).Fatal("Error establishing database connection")
 	}
-	gormDB.LogMode(a.config.App.Development)
+
 	db, err := persistence.New(
 		relational.NewRelationalDAL(gormDB),
 	)
