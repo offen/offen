@@ -13,7 +13,6 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/jinzhu/gorm"
 	"github.com/offen/offen/server/config"
 	"github.com/offen/offen/server/locales"
 	"github.com/offen/offen/server/persistence"
@@ -53,11 +52,10 @@ func cmdServe(subcommand string, flags []string) {
 	cmd.Parse(flags)
 	a := newApp(false, false, *envFile)
 
-	gormDB, err := gorm.Open(a.config.Database.Dialect.String(), a.config.Database.ConnectionString.String())
+	gormDB, err := newDB(a.config)
 	if err != nil {
 		a.logger.WithError(err).Fatal("Unable to establish database connection")
 	}
-	gormDB.LogMode(a.config.App.Development)
 
 	db, err := persistence.New(
 		relational.NewRelationalDAL(gormDB),
