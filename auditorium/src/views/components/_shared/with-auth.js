@@ -8,6 +8,7 @@ const { h } = require('preact')
 const { connect } = require('react-redux')
 
 const HighlightBox = require('./../_shared/highlight-box')
+const Dots = require('./../_shared/dots')
 const authentication = require('./../../../action-creators/authentication')
 
 const withAuth = (redirectTo) => (OriginalComponent) => {
@@ -19,7 +20,8 @@ const withAuth = (redirectTo) => (OriginalComponent) => {
       )
       return (
         <HighlightBox error={props.error} flash={props.flash}>
-          {__('Checking authentication...')}
+          {__('Checking authentication')}
+          <Dots />
         </HighlightBox>
       )
     }

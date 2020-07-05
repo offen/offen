@@ -12,6 +12,7 @@ const withAuth = require('./components/_shared/with-auth')
 const withTitle = require('./components/_shared/with-title')
 const withLayout = require('./components/_shared/with-layout')
 const HighlightBox = require('./components/_shared/highlight-box')
+const Dots = require('./components/_shared/dots')
 const Header = require('./components/auditorium/header')
 const RangeSelector = require('./components/auditorium/range-selector')
 const Metrics = require('./components/auditorium/metrics')
@@ -76,7 +77,8 @@ const AuditoriumView = (props) => {
   if (!model) {
     return (
       <HighlightBox>
-        {__('Fetching and decrypting the latest data...')}
+        {__('Fetching and decrypting the latest data')}
+        <Dots />
       </HighlightBox>
     )
   }
