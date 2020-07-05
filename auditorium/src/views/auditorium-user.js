@@ -12,6 +12,7 @@ const withTitle = require('./components/_shared/with-title')
 const withLayout = require('./components/_shared/with-layout')
 const useExplainer = require('./components/_shared/use-explainer')
 const HighlightBox = require('./components/_shared/highlight-box')
+const Dots = require('./components/_shared/dots')
 const Header = require('./components/auditorium/header')
 const ExplainerHeader = require('./components/auditorium/explainer-header')
 const RangeSelector = require('./components/auditorium/range-selector')
@@ -37,7 +38,8 @@ const AuditoriumView = (props) => {
   if (!consentStatus) {
     return (
       <HighlightBox>
-        {__('Checking your consent status ...')}
+        {__('Checking your consent status')}
+        <Dots />
       </HighlightBox>
     )
   }
@@ -51,7 +53,8 @@ const AuditoriumView = (props) => {
   if (!model) {
     return (
       <HighlightBox>
-        {__('Fetching and decrypting the latest data...')}
+        {__('Fetching and decrypting the latest data')}
+        <Dots />
       </HighlightBox>
     )
   }
