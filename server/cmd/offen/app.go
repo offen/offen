@@ -6,6 +6,7 @@ package main
 import (
 	"errors"
 
+	"github.com/jinzhu/gorm"
 	"github.com/offen/offen/server/config"
 	"github.com/sirupsen/logrus"
 )
@@ -39,4 +40,16 @@ func newApp(populateMissing, quiet bool, envFileOverride string) *app {
 
 func newLogger() *logrus.Logger {
 	return logrus.New()
+}
+
+func newDB(c *config.Config) (*gorm.DB, error) {
+	gormDB, err := gorm.Open(c.Database.Dialect.String(), c.Database.ConnectionString.String())
+	if err != nil {
+		return nil, err
+	}
+	gormDB.LogMode(c.App.Development)
+	if c.Database.Dialect == "sqlite3" {
+		gormDB.DB().SetMaxOpenConns(1)
+	}
+	return gormDB, nil
 }

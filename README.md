@@ -158,7 +158,17 @@ Found an issue or want to add something? Please do not hesitate to file an issue
 
 ## License
 
-Offen is licensed under the [Apache 2.0 license](https://github.com/offen/offen/blob/development/LICENSE)
+This work is licensed under multiple licences.
+
+- All original source code is licensed under [Apache-2.0][license-apache].
+- All documentation is licensed under [Apache-2.0][license-apache].
+- The Offen icon and logo are licensed as [CC-BY-NC-ND-4.0][license-cc].
+
+See the [NOTICE][notice] file for license information on works that get bundled by Offen.
+
+[license-apache]: https://github.com/offen/offen/blob/development/LICENSES/Apache-2.0.txt
+[license-cc]: https://github.com/offen/offen/blob/development/LICENSES/CC-BY-NC-ND-4.0.txt
+[notice]: https://github.com/offen/offen/blob/development/NOTICE
 
 ## Links
 [Website](https://www.offen.dev/)  

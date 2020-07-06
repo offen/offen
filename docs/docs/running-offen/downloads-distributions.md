@@ -59,8 +59,8 @@ Downloading `https://get.offen.dev` will give you a tarball containing the most 
 curl -L https://get.offen.dev
 # most recent build from the latest channel
 curl -L https://get.offen.dev/latest
-# build for v0.1.0-alpha.8
-curl -L https://get.offen.dev/v0.1.0-alpha.8
+# build for {{ site.offen_version }}
+curl -L https://get.offen.dev/{{ site.offen_version }}
 ```
 
 ---
@@ -87,8 +87,8 @@ gpg --verify offen-linux-amd64.asc offen-linux-amd64
 Docker images are available as `offen/offen` on [Docker Hub][docker-hub]. Tagged releases are available under the respective tag (e.g. `offen/offen:v0.1.0`). The `stable` and `latest` channel are available as image tags as well.
 
 ```sh
-# v0.1.0-alpha.8 release
-docker pull offen/offen:v0.1.0-alpha.8
+# {{ site.offen_version }} release
+docker pull offen/offen:{{ site.offen_version }}
 # latest channel
 docker pull offen/offen:latest
 ```

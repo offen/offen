@@ -11,7 +11,6 @@ import (
 	"time"
 
 	uuid "github.com/gofrs/uuid"
-	"github.com/jinzhu/gorm"
 	"github.com/microcosm-cc/bluemonday"
 	"github.com/offen/offen/server/persistence"
 	"github.com/offen/offen/server/persistence/relational"
@@ -133,8 +132,7 @@ func cmdSetup(subcommand string, flags []string) {
 	}
 	conf.Force = *force
 
-	gormDB, dbErr := gorm.Open(a.config.Database.Dialect.String(), a.config.Database.ConnectionString.String())
-	gormDB.LogMode(a.config.App.Development)
+	gormDB, dbErr := newDB(a.config)
 
 	if dbErr != nil {
 		a.logger.WithError(dbErr).Fatal("Error establishing database connection")

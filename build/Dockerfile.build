@@ -1,7 +1,9 @@
 # Copyright 2020 - Offen Authors <hioffen@posteo.de>
 # SPDX-License-Identifier: Apache-2.0
 
-FROM node:14 as auditorium
+FROM node:14-alpine as auditorium
+RUN apk add git
+RUN apk add --no-cache --virtual .gyp python make g++
 
 COPY ./auditorium/package.json ./auditorium/package-lock.json /code/deps/
 COPY ./packages /code/packages
@@ -16,8 +18,11 @@ WORKDIR /code/auditorium
 RUN cp -a /code/deps/node_modules /code/auditorium/
 ENV NODE_ENV production
 RUN npm run build
+RUN npm run licenses
 
-FROM node:14 as script
+FROM node:14-alpine as script
+RUN apk add git
+RUN apk add --no-cache --virtual .gyp python make g++
 
 COPY ./script/package.json ./script/package-lock.json /code/deps/
 COPY ./packages /code/packages
@@ -32,8 +37,11 @@ WORKDIR /code/script
 RUN cp -a /code/deps/node_modules /code/script/
 ENV NODE_ENV production
 RUN npm run build
+RUN npm run licenses
 
-FROM node:14 as vault
+FROM node:14-alpine as vault
+RUN apk add git
+RUN apk add --no-cache --virtual .gyp python make g++
 
 COPY ./vault/package.json ./vault/package-lock.json /code/deps/
 COPY ./packages /code/packages
@@ -48,8 +56,60 @@ WORKDIR /code/vault
 RUN cp -a /code/deps/node_modules /code/vault/
 ENV NODE_ENV production
 RUN npm run build
+RUN npm run licenses
 
-FROM golang:1.14 as statik
+# packages does not have a build step but we need to derive license information
+FROM node:14-alpine as packages
+RUN apk add git
+RUN apk add --no-cache --virtual .gyp python make g++
+
+COPY ./packages/package.json ./packages/package-lock.json /code/deps/
+COPY ./packages /code/packages
+WORKDIR /code/deps
+ENV ADBLOCK true
+ENV DISABLE_OPENCOLLECTIVE true
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
+RUN npm ci
+COPY ./packages /code/packages
+WORKDIR /code/packages
+RUN cp -a /code/deps/node_modules /code/packages/
+ENV NODE_ENV production
+RUN npm run licenses
+
+FROM ruby:2.7-alpine AS server_licenses
+
+COPY --from=golang:1.14-alpine /usr/local/go/ /usr/local/go/
+ENV PATH="/usr/local/go/bin:${PATH}"
+
+RUN gem install license_finder
+
+WORKDIR /code/server
+COPY ./server /code/server
+RUN go mod tidy
+RUN go mod download
+
+RUN echo "repository,version,licenses" > dependencies.csv
+RUN license_finder report | tail -n +2 >> dependencies.csv
+
+FROM python:3.8-alpine as notice
+
+WORKDIR /code
+COPY ./create_notice.py ./NOTICE /code/
+
+COPY --from=script /code/script/dependencies.csv /code/script.csv
+COPY --from=vault /code/vault/dependencies.csv /code/vault.csv
+COPY --from=auditorium /code/auditorium/dependencies.csv /code/auditorium.csv
+COPY --from=packages /code/packages/dependencies.csv /code/packages.csv
+COPY --from=server_licenses /code/server/dependencies.csv /code/server.csv
+
+RUN python ./create_notice.py \
+  --client script.csv \
+  --client vault.csv \
+  --client packages.csv \
+  --client auditorium.csv \
+  --server server.csv >> NOTICE
+
+FROM golang:1.14-alpine as statik
 
 WORKDIR /code/server
 COPY ./server /code/server
@@ -57,6 +117,7 @@ COPY ./server /code/server
 COPY --from=script /code/script/dist /code/server/public
 COPY --from=vault /code/vault/dist /code/server/public
 COPY --from=auditorium /code/auditorium/dist /code/server/public
+COPY --from=notice /code/NOTICE /code/server/public/NOTICE.txt
 
 RUN go get github.com/rakyll/statik
 RUN statik -dest public -src public
@@ -76,3 +137,5 @@ ENV GOPATH /go
 WORKDIR /build
 
 RUN xgo --targets=$TARGETS --tags 'osusergo netgo static_build sqlite_omit_load_extension' --ldflags="-linkmode external -extldflags '$LDFLAGS' -s -w -X github.com/offen/offen/server/config.Revision=$GIT_REVISION" github.com/offen/offen/server/cmd/offen
+
+COPY --from=notice /code/NOTICE ./

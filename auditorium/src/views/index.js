@@ -9,6 +9,7 @@ const { useEffect } = require('preact/hooks')
 const { connect } = require('react-redux')
 
 const HighlightBox = require('./components/_shared/highlight-box')
+const Dots = require('./components/_shared/dots')
 const ConsentStatusDisplay = require('./components/index/consent-status-display')
 const HeaderCard = require('./components/index/header-card')
 const MainCard = require('./components/index/main-card')
@@ -25,7 +26,8 @@ const IndexView = (props) => {
   if (!props.consentStatus) {
     return (
       <HighlightBox>
-        {__('Checking your consent status ...')}
+        {__('Checking your consent status')}
+        <Dots />
       </HighlightBox>
     )
   }

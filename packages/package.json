@@ -9,7 +9,8 @@
     "server": "ws -d __fixtures__ -p 9876",
     "pretest": "dependency-check package.json",
     "posttest": "standard",
-    "fix": "standard --fix"
+    "fix": "standard --fix",
+    "licenses": "npm-license-crawler --production --onlyDirectDependencies --omitVersion --csv dependencies.csv"
   },
   "dependencies": {
     "envify": "^4.1.0",
@@ -24,6 +25,7 @@
     "fetch-mock": "^7.3.3",
     "local-web-server": "^4.0.0",
     "mochify": "^6.2.0",
+    "npm-license-crawler": "^0.2.1",
     "standard": "^14.3.1"
   },
   "standard": {

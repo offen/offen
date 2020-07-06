@@ -10,7 +10,8 @@
     "posttest": "standard",
     "fix": "standard --fix",
     "build": "gulp",
-    "extract-strings": "gulp extract-strings"
+    "extract-strings": "gulp extract-strings",
+    "licenses": "npm-license-crawler --production --onlyDirectDependencies --omitVersion --csv dependencies.csv"
   },
   "dependencies": {
     "date-fns": "^1.30.1",
@@ -41,6 +42,7 @@
     "gulp-sri-hash": "^2.2.0",
     "gulp-uglify": "^3.0.2",
     "mochify": "^6.2.0",
+    "npm-license-crawler": "^0.2.1",
     "sinon": "^7.3.2",
     "standard": "^14.3.1",
     "tinyify": "^2.5.1",
