@@ -30,7 +30,7 @@ func GenerateRSAKeypair(bits int) ([]byte, []byte, error) {
 	}
 	privateJWK, privateJWKErr := jwk.New(key)
 	if privateJWKErr != nil {
-		return nil, nil, fmt.Errorf("keys: error serializing privaze key: %v", privateJWKErr)
+		return nil, nil, fmt.Errorf("keys: error serializing private key: %v", privateJWKErr)
 	}
 
 	publicBytes, _ := json.Marshal(publicJWK)
