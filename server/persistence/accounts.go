@@ -73,7 +73,11 @@ func (p *persistenceLayer) AssociateUserSecret(accountID, userID, encryptedUserS
 		return fmt.Errorf(`persistence: error looking up account with id "%s": %w`, accountID, err)
 	}
 
-	hashedUserID := account.HashUserID(userID)
+	hashedUserID, hashErr := account.HashUserID(userID)
+	if hashErr != nil {
+		return fmt.Errorf("persistence: erro hashing user id: %w", err)
+	}
+
 	secret, err := p.dal.FindSecret(FindSecretQueryBySecretID(hashedUserID))
 	if err != nil {
 		var notFound ErrUnknownSecret
@@ -94,7 +98,10 @@ func (p *persistenceLayer) AssociateUserSecret(accountID, userID, encryptedUserS
 		if parkedIDErr != nil {
 			return fmt.Errorf("persistence: error creating identifier for parking events: %v", parkedIDErr)
 		}
-		parkedHash := account.HashUserID(parkedID.String())
+		parkedHash, parkErr := account.HashUserID(parkedID.String())
+		if parkErr != nil {
+			return fmt.Errorf("persistence: error hashing parked id: %v", parkErr)
+		}
 
 		txn, err := p.dal.Transaction()
 		if err != nil {

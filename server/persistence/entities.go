@@ -4,8 +4,6 @@
 package persistence
 
 import (
-	"crypto/sha256"
-	"encoding/base64"
 	"errors"
 	"fmt"
 	"time"
@@ -114,11 +112,12 @@ type Account struct {
 
 // HashUserID uses the account's `UserSalt` to create a hashed version of a
 // user identifier that is unique per account.
-func (a *Account) HashUserID(userID string) string {
-	b, _ := base64.StdEncoding.DecodeString(a.UserSalt)
-	joined := append([]byte(userID), b...)
-	hashed := sha256.Sum256(joined)
-	return fmt.Sprintf("%x", hashed)
+func (a *Account) HashUserID(userID string) (string, error) {
+	result, err := keys.HashFast(userID, a.UserSalt)
+	if err != nil {
+		return "", err
+	}
+	return result, nil
 }
 
 // WrapPublicKey returns the public key of an account's keypair in

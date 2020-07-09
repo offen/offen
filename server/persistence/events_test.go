@@ -69,7 +69,7 @@ func TestPersistenceLayer_Insert(t *testing.T) {
 			&mockInsertEventDatabase{
 				findAccountResult: Account{
 					Name:     "test",
-					UserSalt: "CaHVhk78uhoPmf5wanA0vg==",
+					UserSalt: "{1,} CaHVhk78uhoPmf5wanA0vg==",
 				},
 				findSecretErr: errors.New("did not work"),
 			},
@@ -99,7 +99,7 @@ func TestPersistenceLayer_Insert(t *testing.T) {
 			&mockInsertEventDatabase{
 				findAccountResult: Account{
 					Name:     "test",
-					UserSalt: "CaHVhk78uhoPmf5wanA0vg==",
+					UserSalt: "{1,} CaHVhk78uhoPmf5wanA0vg==",
 				},
 				createEventErr: errors.New("did not work"),
 			},
@@ -141,7 +141,7 @@ func TestPersistenceLayer_Insert(t *testing.T) {
 			&mockInsertEventDatabase{
 				findAccountResult: Account{
 					Name:     "test",
-					UserSalt: "CaHVhk78uhoPmf5wanA0vg==",
+					UserSalt: "{1,} CaHVhk78uhoPmf5wanA0vg==",
 				},
 			},
 			false,
@@ -182,7 +182,7 @@ func TestPersistenceLayer_Insert(t *testing.T) {
 			&mockInsertEventDatabase{
 				findAccountResult: Account{
 					Name:     "test",
-					UserSalt: "CaHVhk78uhoPmf5wanA0vg==",
+					UserSalt: "{1,} CaHVhk78uhoPmf5wanA0vg==",
 				},
 				findSecretErr: errors.New("did not work"),
 			},
