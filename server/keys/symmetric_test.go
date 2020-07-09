@@ -22,7 +22,7 @@ func TestSymmetricEncryption(t *testing.T) {
 		{
 			"derived",
 			func() ([]byte, error) {
-				return DeriveKey("mypassword", "XqiWf9CdPpmT3bu0aHkzjQ==")
+				return DeriveKey("mypassword", "{1,} XqiWf9CdPpmT3bu0aHkzjQ==")
 			},
 		},
 	}

@@ -5,6 +5,7 @@ package relational
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/jinzhu/gorm"
@@ -148,6 +149,56 @@ func (r *relationalDAL) ApplyMigrations() error {
 					Secret   Secret `gorm:"foreignkey:SecretID;association_foreignkey:SecretID"`
 				}
 				return db.AutoMigrate(&Account{}, &AccountUserRelationship{}, &Event{}).Error
+			},
+		},
+		{
+			ID: "003_account_user_salt_version",
+			Migrate: func(db *gorm.DB) error {
+				type AccountUser struct {
+					AccountUserID  string `gorm:"primary_key"`
+					HashedEmail    string
+					HashedPassword string
+					Salt           string
+					AdminLevel     int
+					Relationships  []AccountUserRelationship `gorm:"foreignkey:AccountUserID;association_foreignkey:AccountUserID"`
+				}
+				var allUsers []*AccountUser
+				if err := db.Find(&allUsers).Error; err != nil {
+					return err
+				}
+				txn := db.Begin()
+				for _, user := range allUsers {
+					user.Salt = fmt.Sprintf("{1,} %s", user.Salt)
+					if err := txn.Save(user).Error; err != nil {
+						txn.Rollback()
+						return err
+					}
+				}
+				return txn.Commit().Error
+			},
+			Rollback: func(db *gorm.DB) error {
+				type AccountUser struct {
+					AccountUserID  string `gorm:"primary_key"`
+					HashedEmail    string
+					HashedPassword string
+					Salt           string
+					AdminLevel     int
+					Relationships  []AccountUserRelationship `gorm:"foreignkey:AccountUserID;association_foreignkey:AccountUserID"`
+				}
+				var allUsers []*AccountUser
+				if err := db.Find(&allUsers).Error; err != nil {
+					return err
+				}
+				txn := db.Begin()
+				for _, user := range allUsers {
+					chunks := strings.Split(user.Salt, " ")
+					user.Salt = chunks[1]
+					if err := txn.Save(user).Error; err != nil {
+						txn.Rollback()
+						return err
+					}
+				}
+				return txn.Commit().Error
 			},
 		},
 	})

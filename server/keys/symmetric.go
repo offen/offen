@@ -8,7 +8,6 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/rand"
-	"encoding/base64"
 	"errors"
 	"fmt"
 
@@ -76,17 +75,32 @@ func DecryptWith(key []byte, s string) ([]byte, error) {
 // DeriveKey wraps package argon2 in order to derive a symmetric key from the
 // given value (most likely a password) and the given salt.
 func DeriveKey(value, encodedSalt string) ([]byte, error) {
-	salt, saltErr := base64.StdEncoding.DecodeString(encodedSalt)
+	salt, saltErr := unmarshalVersionedCipher(encodedSalt)
 	if saltErr != nil {
 		return nil, fmt.Errorf("keys: error decoding salt into bytes: %w", saltErr)
 	}
-	key := defaultArgon2Hash([]byte(value), salt, DefaultEncryptionKeySize)
-	return key, nil
+	switch salt.algoVersion {
+	case passwordAlgoArgon2:
+		key := defaultArgon2Hash([]byte(value), salt.cipher, DefaultEncryptionKeySize)
+		return key, nil
+	default:
+		return nil, fmt.Errorf("keys: received unknown algo version %d for deriving key", salt.algoVersion)
+	}
 }
 
 const (
 	passwordAlgoArgon2 = 1
 )
+
+// NewSalt creates a new salt value of the default length and wraps it in a
+// versioned cipher
+func NewSalt() (*VersionedCipher, error) {
+	b, err := GenerateRandomBytes(DefaultSaltLength)
+	if err != nil {
+		return nil, fmt.Errorf("keys: error generating random salt: %w", err)
+	}
+	return newVersionedCipher(b, passwordAlgoArgon2), nil
+}
 
 // HashString hashed the given string using argon2
 func HashString(pw string) (*VersionedCipher, error) {

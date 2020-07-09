@@ -181,13 +181,13 @@ func newAccountUser(email, password string, adminLevel interface{}) (*AccountUse
 	if hashedEmailErr != nil {
 		return nil, hashedEmailErr
 	}
-	salt, saltErr := keys.GenerateRandomValue(keys.DefaultSaltLength)
+	salt, saltErr := keys.NewSalt()
 	if saltErr != nil {
 		return nil, saltErr
 	}
 	a := &AccountUser{
 		AccountUserID: accountUserID.String(),
-		Salt:          salt,
+		Salt:          salt.Marshal(),
 		AdminLevel:    level,
 		HashedEmail:   hashedEmail.Marshal(),
 	}
