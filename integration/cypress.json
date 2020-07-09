@@ -4,7 +4,7 @@
   "defaultCommandTimeout": 20000,
   "lighthouse": {
     "performance": 90,
-    "accessibility": 90,
+    "accessibility": 100,
     "best-practices": 80,
     "seo": 0,
     "pwa": 0
