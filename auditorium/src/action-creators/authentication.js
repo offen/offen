@@ -154,7 +154,7 @@ exports.forgotPassword = (update, onSuccessMessage, onFailureMessage) => (dispat
 
 exports.changeCredentials = (update, onSuccessMessage, onFailureMessage) => (dispatch, getState, postMessage) => {
   dispatch({
-    type: 'CHANGE_CREDENTIALS_SUCCESS',
+    type: 'CHANGE_CREDENTIALS_REQUEST',
     payload: null
   })
 
