@@ -6,6 +6,7 @@ package persistence
 import (
 	"errors"
 	"fmt"
+	"sync"
 	"time"
 
 	jwk "github.com/lestrrat-go/jwx/jwk"
@@ -61,6 +62,40 @@ type AccountUserRelationship struct {
 	PasswordEncryptedKeyEncryptionKey string
 	EmailEncryptedKeyEncryptionKey    string
 	OneTimeEncryptedKeyEncryptionKey  string
+	// this cache is used to prevent deriving the same email or password based
+	// key over and over again when updating a large number of relationships
+	keyCache     map[string][]byte
+	keyCacheLock *sync.Mutex
+}
+
+func (a *AccountUserRelationship) ensureCache() {
+	if a.keyCache == nil {
+		a.keyCache = map[string][]byte{}
+	}
+	if a.keyCacheLock == nil {
+		a.keyCacheLock = &sync.Mutex{}
+	}
+}
+
+func (a *AccountUserRelationship) getCacheItem(key string) []byte {
+	a.ensureCache()
+
+	a.keyCacheLock.Lock()
+	defer a.keyCacheLock.Unlock()
+
+	if item, ok := a.keyCache[key]; ok {
+		return item
+	}
+	return nil
+}
+
+func (a *AccountUserRelationship) setCacheItem(key string, value []byte) {
+	a.ensureCache()
+
+	a.keyCacheLock.Lock()
+	defer a.keyCacheLock.Unlock()
+
+	a.keyCache[key] = value
 }
 
 func (a *AccountUserRelationship) addOneTimeEncryptedKey(encryptionKey, oneTimeKey []byte) error {
@@ -72,10 +107,15 @@ func (a *AccountUserRelationship) addOneTimeEncryptedKey(encryptionKey, oneTimeK
 	return nil
 }
 
-func (a *AccountUserRelationship) addEmailEncryptedKey(encryptionKey []byte, salt, emailAddress string) error {
-	emailDerivedKey, deriveErr := keys.DeriveKey(emailAddress, salt)
-	if deriveErr != nil {
-		return fmt.Errorf("persistence: error deriving key from email: %w", deriveErr)
+func (a *AccountUserRelationship) addEmailEncryptedKey(encryptionKey []byte, versionedSalt, emailAddress string) error {
+	emailDerivedKey := a.getCacheItem(emailAddress + versionedSalt)
+	if emailDerivedKey == nil {
+		var err error
+		emailDerivedKey, err = keys.DeriveKey(emailAddress, versionedSalt)
+		if err != nil {
+			return fmt.Errorf("persistence: error deriving key from email: %w", err)
+		}
+		a.setCacheItem(emailAddress+versionedSalt, emailDerivedKey)
 	}
 	emailEncryptedKey, encryptErr := keys.EncryptWith(emailDerivedKey, encryptionKey)
 	if encryptErr != nil {
@@ -85,10 +125,15 @@ func (a *AccountUserRelationship) addEmailEncryptedKey(encryptionKey []byte, sal
 	return nil
 }
 
-func (a *AccountUserRelationship) addPasswordEncryptedKey(encryptionKey []byte, salt, password string) error {
-	passwordDerivedKey, deriveErr := keys.DeriveKey(password, salt)
-	if deriveErr != nil {
-		return fmt.Errorf("persistence: error deriving key from password: %w", deriveErr)
+func (a *AccountUserRelationship) addPasswordEncryptedKey(encryptionKey []byte, versionedSalt, password string) error {
+	passwordDerivedKey := a.getCacheItem(password + versionedSalt)
+	if passwordDerivedKey == nil {
+		var err error
+		passwordDerivedKey, err = keys.DeriveKey(password, versionedSalt)
+		if err != nil {
+			return fmt.Errorf("persistence: error deriving key from password: %w", err)
+		}
+		a.setCacheItem(password+versionedSalt, passwordDerivedKey)
 	}
 	passwordEncryptedKey, encryptErr := keys.EncryptWith(passwordDerivedKey, encryptionKey)
 	if encryptErr != nil {
