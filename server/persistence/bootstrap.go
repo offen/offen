@@ -181,13 +181,13 @@ func newAccountUser(email, password string, adminLevel interface{}) (*AccountUse
 	if hashedEmailErr != nil {
 		return nil, hashedEmailErr
 	}
-	salt, saltErr := keys.GenerateRandomValue(keys.DefaultSaltLength)
+	salt, saltErr := keys.NewSalt(keys.DefaultSaltLength)
 	if saltErr != nil {
 		return nil, saltErr
 	}
 	a := &AccountUser{
 		AccountUserID: accountUserID.String(),
-		Salt:          salt,
+		Salt:          salt.Marshal(),
 		AdminLevel:    level,
 		HashedEmail:   hashedEmail.Marshal(),
 	}
@@ -234,7 +234,7 @@ func newAccount(name, accountID string) (*Account, []byte, error) {
 		return nil, nil, encryptedPrivateKeyErr
 	}
 
-	salt, saltErr := keys.GenerateRandomValue(keys.DefaultSecretLength)
+	salt, saltErr := keys.NewFastSalt(keys.DefaultSecretLength)
 	if saltErr != nil {
 		return nil, nil, saltErr
 	}
@@ -244,7 +244,7 @@ func newAccount(name, accountID string) (*Account, []byte, error) {
 		Name:                name,
 		PublicKey:           string(publicKey),
 		EncryptedPrivateKey: encryptedPrivateKey.Marshal(),
-		UserSalt:            salt,
+		UserSalt:            salt.Marshal(),
 		Retired:             false,
 		Created:             time.Now(),
 	}, encryptionKey, nil

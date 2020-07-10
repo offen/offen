@@ -5,7 +5,6 @@ package relational
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/jinzhu/gorm"
 	"github.com/offen/offen/server/persistence"
@@ -14,7 +13,6 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
-	gormigrate "gopkg.in/gormigrate.v1"
 )
 
 type relationalDAL struct {
@@ -57,106 +55,6 @@ func (r *relationalDAL) ProbeEmpty() bool {
 		}
 	}
 	return true
-}
-
-func (r *relationalDAL) ApplyMigrations() error {
-	m := gormigrate.New(r.db, gormigrate.DefaultOptions, []*gormigrate.Migration{
-		{
-			ID: "001_introduce_admin_level",
-			Migrate: func(db *gorm.DB) error {
-				type AccountUser struct {
-					AccountUserID  string `gorm:"primary_key"`
-					HashedEmail    string
-					HashedPassword string
-					Salt           string
-					AdminLevel     int
-					Relationships  []AccountUserRelationship `gorm:"foreignkey:AccountUserID;association_foreignkey:AccountUserID"`
-				}
-				if err := db.AutoMigrate(&AccountUser{}).Error; err != nil {
-					return err
-				}
-				return db.Model(&AccountUser{}).UpdateColumn("admin_level", 1).Error
-			},
-			Rollback: func(db *gorm.DB) error {
-				type AccountUser struct {
-					AccountUserID  string `gorm:"primary_key"`
-					HashedEmail    string
-					HashedPassword string
-					Salt           string
-					Relationships  []AccountUserRelationship `gorm:"foreignkey:AccountUserID;association_foreignkey:AccountUserID"`
-				}
-				return db.AutoMigrate(&AccountUser{}).Error
-			},
-		},
-		{
-			ID: "002_mysql_set_column_sizes",
-			Migrate: func(db *gorm.DB) error {
-				type Account struct {
-					AccountID           string `gorm:"primary_key"`
-					Name                string
-					PublicKey           string `gorm:"type:text"`
-					EncryptedPrivateKey string `gorm:"type:text"`
-					UserSalt            string
-					Retired             bool
-					Created             time.Time
-					Events              []Event `gorm:"foreignkey:AccountID;association_foreignkey:AccountID"`
-				}
-				type AccountUserRelationship struct {
-					RelationshipID                    string `gorm:"primary_key"`
-					AccountUserID                     string
-					AccountID                         string
-					PasswordEncryptedKeyEncryptionKey string `gorm:"type:text"`
-					EmailEncryptedKeyEncryptionKey    string `gorm:"type:text"`
-					OneTimeEncryptedKeyEncryptionKey  string `gorm:"type:text"`
-				}
-				type Event struct {
-					EventID   string `gorm:"primary_key"`
-					AccountID string
-					// the secret id is nullable for anonymous events
-					SecretID *string
-					Payload  string `gorm:"type:text"`
-					Secret   Secret `gorm:"foreignkey:SecretID;association_foreignkey:SecretID"`
-				}
-
-				return db.AutoMigrate(&Account{}, &AccountUserRelationship{}, &Event{}).Error
-			},
-			Rollback: func(db *gorm.DB) error {
-				type Account struct {
-					AccountID           string `gorm:"primary_key"`
-					Name                string
-					PublicKey           string
-					EncryptedPrivateKey string
-					UserSalt            string
-					Retired             bool
-					Created             time.Time
-					Events              []Event `gorm:"foreignkey:AccountID;association_foreignkey:AccountID"`
-				}
-				type AccountUserRelationship struct {
-					RelationshipID                    string `gorm:"primary_key"`
-					AccountUserID                     string
-					AccountID                         string
-					PasswordEncryptedKeyEncryptionKey string
-					EmailEncryptedKeyEncryptionKey    string
-					OneTimeEncryptedKeyEncryptionKey  string
-				}
-				type Event struct {
-					EventID   string `gorm:"primary_key"`
-					AccountID string
-					// the secret id is nullable for anonymous events
-					SecretID *string
-					Payload  string
-					Secret   Secret `gorm:"foreignkey:SecretID;association_foreignkey:SecretID"`
-				}
-				return db.AutoMigrate(&Account{}, &AccountUserRelationship{}, &Event{}).Error
-			},
-		},
-	})
-
-	m.InitSchema(func(db *gorm.DB) error {
-		return db.AutoMigrate(knownTables...).Error
-	})
-
-	return m.Migrate()
 }
 
 func (r *relationalDAL) Ping() error {

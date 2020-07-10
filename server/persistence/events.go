@@ -20,7 +20,10 @@ func (p *persistenceLayer) Insert(userID, accountID, payload string) error {
 
 	var hashedUserID *string
 	if userID != "" {
-		hash := account.HashUserID(userID)
+		hash, err := account.HashUserID(userID)
+		if err != nil {
+			return fmt.Errorf("persistence: error hashing user id: %w", err)
+		}
 		hashedUserID = &hash
 	}
 
@@ -144,7 +147,7 @@ func hashUserIDForAccounts(userID string, accounts []Account) []string {
 	// computation is being done concurrently
 	for _, account := range accounts {
 		go func(account Account) {
-			hash := account.HashUserID(userID)
+			hash, _ := account.HashUserID(userID)
 			hashes <- hash
 		}(account)
 	}
