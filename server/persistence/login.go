@@ -31,13 +31,17 @@ func (p *persistenceLayer) Login(email, password string) (LoginResult, error) {
 
 	// the account user logging in might have pending invitations which we can
 	// populate with proper password encrypted keys now
+	var emailDerivedKey []byte
 	for idx, relationship := range accountUser.Relationships {
 		if relationship.PasswordEncryptedKeyEncryptionKey != "" {
 			continue
 		}
-		emailDerivedKey, emailDerivedKeyErr := keys.DeriveKey(email, accountUser.Salt)
-		if emailDerivedKeyErr != nil {
-			return LoginResult{}, fmt.Errorf("persistence: error deriving key from email: %w", emailDerivedKeyErr)
+		if emailDerivedKey == nil {
+			var err error
+			emailDerivedKey, err = keys.DeriveKey(email, accountUser.Salt)
+			if err != nil {
+				return LoginResult{}, fmt.Errorf("persistence: error deriving key from email: %w", err)
+			}
 		}
 		key, keyErr := keys.DecryptWith(emailDerivedKey, relationship.EmailEncryptedKeyEncryptionKey)
 		if keyErr != nil {
