@@ -53,6 +53,7 @@
   },
   "browserify": {
     "transform": [
+      "offen/schemaify",
       "envify",
       "offen/localize",
       "nanohtml"
