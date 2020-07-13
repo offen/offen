@@ -5,14 +5,16 @@
 
 module.exports = createVault
 
+window.__offen__cache__ = window.__offen__cache__ || {}
+
 // createVault inserts an iframe element that will be loading the given source
 // and asynchronously resolves with a function that will use the postMessage API
 // to send the given message to the iframe element. In case createVault is
 // called with the same host value multiple times, the returned function will
 // target a single iframe instance.
 function createVault (host) {
-  if (createVault[host]) {
-    return createVault[host]
+  if (window.__offen__cache__[host]) {
+    return window.__offen__cache__[host]
   }
 
   var vault = document.createElement('iframe')
@@ -25,7 +27,7 @@ function createVault (host) {
   var elementId = createElementId()
   vault.setAttribute('id', elementId)
 
-  createVault[host] = new Promise(function (resolve, reject) {
+  window.__offen__cache__[host] = new Promise(function (resolve, reject) {
     vault.addEventListener('load', function (e) {
       function postMessage (message) {
         return new Promise(function (resolve, reject) {
@@ -84,7 +86,7 @@ function createVault (host) {
         document.body.appendChild(vault)
       })
   }
-  return createVault[host]
+  return window.__offen__cache__[host]
 }
 
 function createElementId () {

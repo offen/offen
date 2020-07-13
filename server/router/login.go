@@ -131,7 +131,7 @@ func (rt *router) postChangePassword(c *gin.Context) {
 	if err := rt.db.ChangePassword(user.AccountUserID, req.CurrentPassword, req.ChangedPassword); err != nil {
 		newJSONError(
 			fmt.Errorf("router: error changing password: %w", err),
-			http.StatusInternalServerError,
+			http.StatusBadRequest,
 		).Pipe(c)
 		return
 	}

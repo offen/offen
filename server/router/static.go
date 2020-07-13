@@ -31,6 +31,8 @@ var (
 	}
 )
 
+// muteRequest suppresses all error logging that is happening from inside the
+// http package
 func muteRequest(r *http.Request) *http.Request {
 	return r.WithContext(context.WithValue(r.Context(), http.ServerContextKey, http.Server{
 		ErrorLog: log.New(ioutil.Discard, "", log.LstdFlags),
@@ -40,9 +42,8 @@ func muteRequest(r *http.Request) *http.Request {
 func staticMiddleware(fileServer, fallback http.Handler) gin.HandlerFunc {
 	tryStatic := func(method, url string) (int, string) {
 		r := httptest.NewRequest(method, url, nil)
-		r = muteRequest(r)
 		w := httptest.NewRecorder()
-		fileServer.ServeHTTP(w, r)
+		fileServer.ServeHTTP(w, muteRequest(r))
 		return w.Code, w.Header().Get("Content-Type")
 	}
 
@@ -53,7 +54,7 @@ func staticMiddleware(fileServer, fallback http.Handler) gin.HandlerFunc {
 		// so we can skip the directory listings provided by the Go FileServer.
 		// TODO: revisit this solution.
 		if status == http.StatusNotFound || status == http.StatusInternalServerError {
-			fallback.ServeHTTP(c.Writer, c.Request)
+			fallback.ServeHTTP(c.Writer, muteRequest(c.Request))
 			return
 		}
 
@@ -81,6 +82,6 @@ func staticMiddleware(fileServer, fallback http.Handler) gin.HandlerFunc {
 		for key, value := range defaultResponseHeaders {
 			c.Header(key, value)
 		}
-		fileServer.ServeHTTP(c.Writer, c.Request)
+		fileServer.ServeHTTP(c.Writer, muteRequest(c.Request))
 	}
 }

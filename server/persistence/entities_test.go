@@ -8,10 +8,10 @@ import "testing"
 func TestAccount_HashUserID(t *testing.T) {
 	t.Run("default", func(t *testing.T) {
 		account := Account{
-			UserSalt: "some-salt-value",
+			UserSalt: "{1,} b2tpZG9raQ==",
 		}
-		one := account.HashUserID("user-one")
-		two := account.HashUserID("user-two")
+		one, _ := account.HashUserID("user-one")
+		two, _ := account.HashUserID("user-two")
 
 		if one == "" {
 			t.Error("Unexpected empty string")
@@ -26,7 +26,7 @@ func TestAccount_HashUserID(t *testing.T) {
 		otherAccount := Account{
 			UserSalt: "other-salt-value",
 		}
-		otherOne := otherAccount.HashUserID("user-one")
+		otherOne, _ := otherAccount.HashUserID("user-one")
 
 		if one == otherOne {
 			t.Error("Expected different values for same user id on different accounts")

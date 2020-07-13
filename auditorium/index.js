@@ -42,7 +42,7 @@ sf('./styles/grow-list.css')
 sf('./styles/label-toggle.css')
 sf('./styles/negative-margins.css')
 
-const vaultInstance = vault(process.env.VAULT_HOST || '/vault/')
+const vaultInstance = vault(process.env.VAULT_HOST || (window.location.origin + '/vault/'))
 
 const middlewares = [
   thunk.withExtraArgument(

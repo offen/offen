@@ -210,7 +210,7 @@ func TestRouter_postChangePassword(t *testing.T) {
 			persistence.LoginResult{
 				AccountUserID: "account-user",
 			},
-			http.StatusInternalServerError,
+			http.StatusBadRequest,
 			false,
 		},
 		{
