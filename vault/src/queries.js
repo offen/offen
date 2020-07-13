@@ -24,7 +24,7 @@ var getDatabase = require('./database')
 var decryptEvents = require('./decrypt-events')
 var stats = require('./stats')
 var cookies = require('./cookie-tools')
-var eventSchema = require('./event.json.schema')
+var eventSchema = require('./event.jsonschema')
 
 var fallbackEventStore = {}
 var fallbackKeyStore = {}
@@ -475,7 +475,7 @@ function validateAndParseEvent (event) {
   if (!eventSchema(event)) {
     return null
   }
-  const clone = JSON.parse(JSON.stringify(event))
+  var clone = JSON.parse(JSON.stringify(event))
   if (clone.payload.href) {
     clone.payload.href = new window.URL(clone.payload.href)
   }

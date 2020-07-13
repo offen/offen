@@ -11,7 +11,7 @@ var pack = require('ajv-pack')
 
 module.exports = transform
 
-var isSchemaRe = /\.json.schema$/
+var isSchemaRe = /\.jsonschema$/
 
 function transform (file, options) {
   if (!isSchemaRe.test(file)) {
@@ -22,7 +22,14 @@ function transform (file, options) {
     buf += chunk
     next()
   }, function (done) {
-    var validate = ajv.compile(JSON.parse(buf))
+    var validate
+    try {
+      validate = ajv.compile(JSON.parse(buf))
+    } catch (err) {
+      this.push(buf)
+      this.push(null)
+      return
+    }
     var moduleCode = pack(ajv, validate)
     this.push(moduleCode)
     this.push(null)
