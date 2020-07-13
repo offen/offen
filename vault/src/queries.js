@@ -24,6 +24,7 @@ var getDatabase = require('./database')
 var decryptEvents = require('./decrypt-events')
 var stats = require('./stats')
 var cookies = require('./cookie-tools')
+var eventSchema = require('./event.json.schema')
 
 var fallbackEventStore = {}
 var fallbackKeyStore = {}
@@ -112,7 +113,7 @@ function getDefaultStatsWith (getDatabase) {
             : events
         })
         .then(function (events) {
-          return events.map(parseAndValidateEvent).filter(_.identity)
+          return events.map(validateAndParseEvent).filter(_.identity)
         })
     })
     var decryptedEvents = decryptions[0]
@@ -469,55 +470,17 @@ function getEncryptedSecretsWith (getDatabase) {
   }
 }
 
-var knownEventTypes = {
-  PAGEVIEW: true
-}
-
-exports.parseAndValidateEvent = parseAndValidateEvent
-function parseAndValidateEvent (event) {
-  if (event.secretId === null || !event.payload) {
-    return event
-  }
-
-  if (!knownEventTypes[event.payload.type]) {
+exports.validateAndParseEvent = validateAndParseEvent
+function validateAndParseEvent (event) {
+  if (!eventSchema(event)) {
     return null
   }
-
-  if (event.payload.pageload !== null && !_.isFinite(event.payload.pageload)) {
-    event.payload.pageload = null
+  const clone = JSON.parse(JSON.stringify(event))
+  if (clone.payload.href) {
+    clone.payload.href = new window.URL(clone.payload.href)
   }
-
-  if (!_.isBoolean(event.payload.isMobile)) {
-    event.payload.isMobile = false
+  if (clone.payload.referrer) {
+    clone.payload.referrer = new window.URL(clone.payload.referrer)
   }
-
-  if (!_.isString(event.payload.title)) {
-    event.payload.title = ''
-  }
-
-  if (!_.isString(event.payload.sessionId)) {
-    return null
-  }
-
-  if (!isValidJSONDate(event.payload.timestamp)) {
-    return null
-  }
-
-  try {
-    event.payload.referrer = event.payload.referrer && new window.URL(event.payload.referrer)
-  } catch (err) {
-    return null
-  }
-
-  try {
-    event.payload.href = event.payload.href && new window.URL(event.payload.href)
-  } catch (err) {
-    return null
-  }
-
-  return event
-}
-
-function isValidJSONDate (dateString) {
-  return _.isString(dateString) && !_.isNaN(new Date(dateString).getTime())
+  return clone
 }
