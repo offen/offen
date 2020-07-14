@@ -1,0 +1,49 @@
+{
+  "type": "object",
+  "properties": {
+    "secretId": {
+      "type": ["string", "null"]
+    },
+    "payload": {
+      "type": ["object", "null"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["PAGEVIEW"]
+        },
+        "pageload": {
+          "type": ["number", "null"]
+        },
+        "isMobile": {
+          "type": "boolean"
+        },
+        "title": {
+          "type": "string"
+        },
+        "sessionId": {
+          "type": ["string", "null"]
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "referrer": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "uri"
+            },
+            {
+              "type": "string",
+              "maxLength": 0
+            }
+          ]
+        },
+        "href": {
+          "type": "string",
+          "format": "uri"
+        }
+      }
+    }
+  }
+}

@@ -16,7 +16,7 @@ indent_style = tab
 [*.md]
 trim_trailing_whitespace = false
 
-[{*.js,*.yml,*.md,Gopkg.toml,*.json,*.html,Dockerfile.*,Dockerrun.*,*.css}]
+[{*.js,*.yml,*.md,Gopkg.toml,*.json,*.html,Dockerfile.*,Dockerrun.*,*.css,*.jsonschema}]
 indent_style = space
 indent_size = 2
 

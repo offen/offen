@@ -519,9 +519,9 @@ describe('src/queries.js', function () {
     })
   })
 
-  describe('parseAndValidateEvent', function () {
+  describe('validateAndParseEvent', function () {
     it('parses referrer values into a URL', function () {
-      const result = queries.parseAndValidateEvent({
+      const result = queries.validateAndParseEvent({
         payload: {
           type: 'PAGEVIEW',
           referrer: 'https://blog.foo.bar',
@@ -535,7 +535,7 @@ describe('src/queries.js', function () {
       assert.strictEqual(result.payload.referrer.toString(), 'https://blog.foo.bar/')
     })
     it('skips bad referrer values', function () {
-      const result = queries.parseAndValidateEvent({
+      const result = queries.validateAndParseEvent({
         payload: {
           type: 'PAGEVIEW',
           referrer: '<script>alert("ZALGO")</script>',
@@ -548,7 +548,7 @@ describe('src/queries.js', function () {
     })
 
     it('parses href values into a URL', function () {
-      const result = queries.parseAndValidateEvent({
+      const result = queries.validateAndParseEvent({
         payload: {
           type: 'PAGEVIEW',
           href: 'https://www.offen.dev/foo',
@@ -561,7 +561,7 @@ describe('src/queries.js', function () {
     })
 
     it('skips bad href values', function () {
-      const result = queries.parseAndValidateEvent({
+      const result = queries.validateAndParseEvent({
         payload: {
           type: 'PAGEVIEW',
           referrer: 'https://shady.business',
@@ -572,29 +572,29 @@ describe('src/queries.js', function () {
       })
       assert.strictEqual(result, null)
     })
-  })
 
-  it('skips unkown event types', function () {
-    const result = queries.parseAndValidateEvent({
-      payload: {
-        type: 'ZALGO',
-        href: 'https://www.offen.dev/foo',
-        timestamp: new Date().toJSON(),
-        sessionId: 'session'
-      }
+    it('skips unkown event types', function () {
+      const result = queries.validateAndParseEvent({
+        payload: {
+          type: 'ZALGO',
+          href: 'https://www.offen.dev/foo',
+          timestamp: new Date().toJSON(),
+          sessionId: 'session'
+        }
+      })
+      assert.strictEqual(result, null)
     })
-    assert.strictEqual(result, null)
-  })
 
-  it('skips bad timestamps', function () {
-    const result = queries.parseAndValidateEvent({
-      payload: {
-        type: 'PAGEVIEW',
-        href: 'https://www.offen.dev/foo',
-        timestamp: 8192,
-        sessionId: 'session'
-      }
+    it('skips bad timestamps', function () {
+      const result = queries.validateAndParseEvent({
+        payload: {
+          type: 'PAGEVIEW',
+          href: 'https://www.offen.dev/foo',
+          timestamp: 8192,
+          sessionId: 'session'
+        }
+      })
+      assert.strictEqual(result, null)
     })
-    assert.strictEqual(result, null)
   })
 })
