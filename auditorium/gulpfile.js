@@ -45,9 +45,17 @@ function createLocalizedBundle (locale) {
 
 function makeScriptTask (dest, locale) {
   return function () {
+    var transforms = JSON.parse(JSON.stringify(pkg.browserify.transform))
     var b = browserify({
       entries: './index.js',
-      transform: pkg.browserify.transform.map(function (transform) {
+      // See: https://github.com/nikku/karma-browserify/issues/130#issuecomment-120036815
+      postFilter: function (id, file, currentPkg) {
+        if (currentPkg.name === pkg.name) {
+          currentPkg.browserify.transform = []
+        }
+        return true
+      },
+      transform: transforms.map(function (transform) {
         if (transform === 'offen/localize') {
           return ['offen/localize', { locale: locale }]
         }

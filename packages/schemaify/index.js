@@ -22,15 +22,13 @@ function transform (file, options) {
     buf += chunk
     next()
   }, function (done) {
-    var validate
+    var moduleCode
     try {
-      validate = ajv.compile(JSON.parse(buf))
+      var validate = ajv.compile(JSON.parse(buf))
+      moduleCode = pack(ajv, validate)
     } catch (err) {
-      this.push(buf)
-      this.push(null)
-      return
+      return done(err)
     }
-    var moduleCode = pack(ajv, validate)
     this.push(moduleCode)
     this.push(null)
   })
