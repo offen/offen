@@ -7,6 +7,8 @@ module.exports = (state = null, action) => {
   switch (action.type) {
     case 'UNRECOVERABLE_ERROR':
       return action.payload
+    case 'NAVIGATE':
+      return null
     default:
       return state
   }
