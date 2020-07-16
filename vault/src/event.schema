@@ -25,13 +25,15 @@
         },
         "timestamp": {
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "maxLength": 24
         },
         "referrer": {
           "oneOf": [
             {
               "type": "string",
-              "format": "uri"
+              "format": "uri",
+          		"maxLength": 2000
             },
             {
               "type": "string",
@@ -41,7 +43,8 @@
         },
         "href": {
           "type": "string",
-          "format": "uri"
+          "format": "uri",
+      		"maxLength": 2000
         }
       }
     }

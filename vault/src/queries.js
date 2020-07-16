@@ -24,7 +24,7 @@ var getDatabase = require('./database')
 var decryptEvents = require('./decrypt-events')
 var stats = require('./stats')
 var cookies = require('./cookie-tools')
-var eventSchema = require('./event.jsonschema')
+var eventSchema = require('./event.schema')
 
 var fallbackEventStore = {}
 var fallbackKeyStore = {}
