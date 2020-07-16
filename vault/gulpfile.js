@@ -8,7 +8,6 @@ var crypto = require('crypto')
 var gulp = require('gulp')
 var clean = require('gulp-clean')
 var browserify = require('browserify')
-var uglify = require('gulp-uglify')
 var source = require('vinyl-source-stream')
 var rev = require('gulp-rev')
 var buffer = require('vinyl-buffer')
@@ -16,7 +15,7 @@ var revReplace = require('gulp-rev-replace')
 var sriHash = require('gulp-sri-hash')
 var gap = require('gulp-append-prepend')
 var to = require('flush-write-stream')
-var UglifyJS = require('uglify-js')
+var tinyify = require('tinyify')
 
 var extractStrings = require('offen/localize/task.js')
 
@@ -79,8 +78,13 @@ function makeScriptTask (dest, locale) {
       })
     })
 
+    b.on('split.pipeline', function (pipeline) {
+      tinyify.applyToPipeline(pipeline)
+    })
+
     return b
       .exclude('dexie')
+      .plugin('tinyify')
       .plugin('split-require', {
         dir: dest,
         filename: function (entry) {
@@ -96,21 +100,16 @@ function makeScriptTask (dest, locale) {
           }
 
           function onend (cb) {
-            var minified = UglifyJS.minify(buf)
-            if (minified.error) {
-              return cb(minified.error)
-            }
-            var hash = crypto.createHash('sha1').update(minified.code)
+            var hash = crypto.createHash('sha1').update(buf)
             var name = bundleName.replace(/\.js$/, '') + '-' + hash.digest('hex').slice(0, 10) + '.js'
             this.emit('name', name)
-            fs.writeFile(dest + name, minified.code, cb)
+            fs.writeFile(dest + name, buf, cb)
           }
         }
       })
       .bundle()
       .pipe(source('index.js'))
       .pipe(buffer())
-      .pipe(uglify())
       .pipe(gap.prependText('*/'))
       .pipe(gap.prependFile('./../banner.txt'))
       .pipe(gap.prependText('/**'))

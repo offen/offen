@@ -7,7 +7,6 @@ var gulp = require('gulp')
 var clean = require('gulp-clean')
 var browserify = require('browserify')
 var source = require('vinyl-source-stream')
-var uglify = require('gulp-uglify')
 var rev = require('gulp-rev')
 var buffer = require('vinyl-buffer')
 var gap = require('gulp-append-prepend')
@@ -90,12 +89,10 @@ function makeVendorTask (dest) {
     return b
       .require('plotly.js-basic-dist')
       .require('zxcvbn')
+      .plugin('tinyify', { noFlat: true })
       .bundle()
       .pipe(source('vendor.js'))
       .pipe(buffer())
-      // the `tinyify` plugin fails on mangling plotly for unknown reasons, so
-      // it is being uglified instead: https://github.com/browserify/tinyify/issues/13
-      .pipe(uglify())
       .pipe(gap.prependText('*/'))
       .pipe(gap.prependFile('./../banner.txt'))
       .pipe(gap.prependText('/**'))
