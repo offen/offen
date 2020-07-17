@@ -11,11 +11,7 @@ var rev = require('gulp-rev')
 var buffer = require('vinyl-buffer')
 var gap = require('gulp-append-prepend')
 
-var extractStrings = require('offen/localize/task.js')
-
 var pkg = require('./package.json')
-
-gulp.task('extract-strings', extractStrings(pkg.offen.locales))
 
 gulp.task('clean:pre', function () {
   return gulp
@@ -55,8 +51,8 @@ function makeScriptTask (dest, locale) {
         return true
       },
       transform: transforms.map(function (transform) {
-        if (transform === 'offen/localize') {
-          return ['offen/localize', { locale: locale }]
+        if (transform === '@offen/l10nify') {
+          return ['@offen/l10nify', { locale: locale }]
         }
         if (Array.isArray(transform) && transform[0] === 'envify') {
           return ['envify', { LOCALE: locale }]
