@@ -91,8 +91,7 @@ describe('src/get-user-events', function () {
               eventId: 'z',
               secretId: 'local',
               accountId: 'account-a',
-              payload: { type: 'TEST', timestamp: 'timestamp-fixture' },
-              timestamp: 'timestamp-fixture'
+              payload: { type: 'TEST', timestamp: 'timestamp-fixture' }
             }
           ))
 

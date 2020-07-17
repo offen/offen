@@ -70,7 +70,7 @@ function ensureSyncWith (queries, api) {
           // this value in IndexedDB though, so a fixed value is used instead
           // of using real data.
           return Object.assign(
-            event, { secretId: LOCAL_SECRET_ID, timestamp: event.payload.timestamp }
+            event, { secretId: LOCAL_SECRET_ID }
           )
         })
         return queries.putEvents.apply(null, [null].concat(events))

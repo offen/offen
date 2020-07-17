@@ -4,6 +4,7 @@
  */
 
 var _ = require('underscore')
+var ULID = require('ulid')
 var dexie = require('dexie')
 var startOfHour = require('date-fns/start_of_hour')
 var startOfDay = require('date-fns/start_of_day')
@@ -81,15 +82,63 @@ function getDefaultStatsWith (getDatabase) {
     }
 
     var now = (query && query.now) || new Date()
-    var lowerBound = startOf[resolution](subtract[resolution](now, range - 1)).toJSON()
-    var upperBound = endOf[resolution](now).toJSON()
+    var lowerBound = toLowerBound(startOf[resolution](subtract[resolution](now, range - 1)))
+    var upperBound = toUpperBound(endOf[resolution](now))
 
     var allEvents = getAllEvents(accountId)
     var eventsInBounds = getAllEvents(accountId, lowerBound, upperBound)
-
-    var realtimeLowerBound = subMinutes(now, 15).toJSON()
-    var realtimeUpperBound = now.toJSON()
+    var realtimeLowerBound = toLowerBound(subMinutes(now, 15))
+    var realtimeUpperBound = toUpperBound(now)
     var realtimeEvents = getAllEvents(accountId, realtimeLowerBound, realtimeUpperBound)
+    // `pageviews` is a list of basic metrics grouped by the given range
+    // and resolution. It contains the number of pageviews, unique visitors
+    // for operators and accounts for users.
+    var pageviews = Promise.all(Array.from({ length: range })
+      .map(function (num, distance) {
+        var date = subtract[resolution](now, distance)
+
+        var lowerBound = toLowerBound(startOf[resolution](date))
+        var upperBound = toUpperBound(endOf[resolution](date))
+        var eventsInBounds = getAllEvents(accountId, lowerBound, upperBound)
+
+        var pageviews = stats.pageviews(eventsInBounds)
+        var visitors = stats.visitors(eventsInBounds)
+        var accounts = stats.accounts(eventsInBounds)
+
+        return Promise.all([pageviews, visitors, accounts])
+          .then(function (values) {
+            return {
+              date: date.toJSON(),
+              pageviews: values[0],
+              visitors: values[1],
+              accounts: values[2]
+            }
+          })
+      }))
+      .then(function (days) {
+        return _.sortBy(days, 'date')
+      })
+
+    var uniqueUsers = stats.visitors(eventsInBounds)
+    var uniqueAccounts = stats.accounts(eventsInBounds)
+    var returningUsers = stats.returningUsers(eventsInBounds, allEvents)
+
+    var empty = countEvents(accountId).then(function (count) {
+      return count === 0
+    })
+
+    var retentionChunks = []
+    for (var i = 0; i < 4; i++) {
+      var currentChunkLowerBound = toLowerBound(subtract.days(now, (i + 1) * 7))
+      var currentChunkUpperBound = toUpperBound(subtract.days(now, i * 7))
+      var chunk = getAllEvents(accountId, currentChunkLowerBound, currentChunkUpperBound)
+      retentionChunks.push(chunk)
+    }
+    retentionChunks = retentionChunks.reverse()
+    var retentionMatrix = Promise.all(retentionChunks)
+      .then(function (chunks) {
+        return stats.retention.apply(stats, chunks)
+      })
 
     // There are two types of queries happening here: those that rely solely
     // on the IndexedDB indices, and those that require the event payload
@@ -116,39 +165,9 @@ function getDefaultStatsWith (getDatabase) {
           return events.map(validateAndParseEvent).filter(_.identity)
         })
     })
+
     var decryptedEvents = decryptions[0]
-    // `pageviews` is a list of basic metrics grouped by the given range
-    // and resolution. It contains the number of pageviews, unique visitors
-    // for operators and accounts for users.
-    var pageviews = Promise.all(Array.from({ length: range })
-      .map(function (num, distance) {
-        var date = subtract[resolution](now, distance)
-
-        var lowerBound = startOf[resolution](date).toJSON()
-        var upperBound = endOf[resolution](date).toJSON()
-        var eventsInBounds = getAllEvents(accountId, lowerBound, upperBound)
-
-        var pageviews = stats.pageviews(eventsInBounds)
-        var visitors = stats.visitors(eventsInBounds)
-        var accounts = stats.accounts(eventsInBounds)
-
-        return Promise.all([pageviews, visitors, accounts])
-          .then(function (values) {
-            return {
-              date: date.toJSON(),
-              pageviews: values[0],
-              visitors: values[1],
-              accounts: values[2]
-            }
-          })
-      }))
-      .then(function (days) {
-        return _.sortBy(days, 'date')
-      })
-
-    var uniqueUsers = stats.visitors(eventsInBounds)
     var loss = stats.loss(decryptedEvents)
-    var uniqueAccounts = stats.accounts(eventsInBounds)
     var uniqueSessions = stats.uniqueSessions(decryptedEvents)
     var bounceRate = stats.bounceRate(decryptedEvents)
     var referrers = stats.referrers(decryptedEvents)
@@ -161,28 +180,9 @@ function getDefaultStatsWith (getDatabase) {
     var exitPages = stats.exitPages(decryptedEvents)
     var mobileShare = stats.mobileShare(decryptedEvents)
 
-    var returningUsers = stats.returningUsers(eventsInBounds, allEvents)
-
     var realtime = decryptions[1]
     var livePages = stats.activePages(realtime)
     var liveUsers = stats.visitors(realtime)
-
-    var retentionChunks = []
-    for (var i = 0; i < 4; i++) {
-      var currentChunkUpperBound = subtract.days(now, i * 7).toJSON()
-      var currentChunkLowerBound = subtract.days(now, (i + 1) * 7).toJSON()
-      var chunk = getAllEvents(accountId, currentChunkLowerBound, currentChunkUpperBound)
-      retentionChunks.push(chunk)
-    }
-    retentionChunks = retentionChunks.reverse()
-    var retentionMatrix = Promise.all(retentionChunks)
-      .then(function (chunks) {
-        return stats.retention.apply(stats, chunks)
-      })
-
-    var empty = countEvents(accountId).then(function (count) {
-      return count === 0
-    })
 
     return Promise
       .all([
@@ -249,16 +249,22 @@ function getAllEventsWith (getDatabase) {
           fallbackEventStore[accountId] = fallbackEventStore[accountId] || []
           return fallbackEventStore[accountId]
         })
+        .then(function (events) {
+          return events.filter(validateAndParseEvent)
+        })
     }
     return table
-      .where('timestamp')
-      .between(lowerBound, upperBound)
+      .where('eventId')
+      .between(lowerBound, upperBound, false, false)
       .toArray()
       .catch(dexie.OpenFailedError, function () {
         fallbackEventStore[accountId] = fallbackEventStore[accountId] || []
         return fallbackEventStore[accountId].filter(function (event) {
-          return event.timestamp >= lowerBound && event.timestamp <= upperBound
+          return event.eventId >= lowerBound && event.eventId <= upperBound
         })
+      })
+      .then(function (events) {
+        return events.filter(validateAndParseEvent)
       })
   }
 }
@@ -493,4 +499,12 @@ function validateAndParseEvent (event) {
     clone.payload.referrer = new window.URL(clone.payload.referrer)
   }
   return clone
+}
+
+function toUpperBound (date) {
+  return ULID.ulid(date.getTime() + 1)
+}
+
+function toLowerBound (date) {
+  return ULID.ulid(date.getTime() - 1)
 }

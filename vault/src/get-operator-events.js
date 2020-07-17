@@ -8,7 +8,6 @@ var _ = require('underscore')
 var api = require('./api')
 var queries = require('./queries')
 var bindCrypto = require('./bind-crypto')
-var decryptEvents = require('./decrypt-events')
 
 module.exports = getOperatorEventsWith(queries, api)
 module.exports.getOperatorEventsWith = getOperatorEventsWith
@@ -71,51 +70,31 @@ function ensureSyncWith (queries, api) {
               ? queries.deleteEvents.apply(null, [accountId].concat(response.eventIds))
               : null
           })
+
+        var payload
         return Promise.all([fetchNewEvents, pruneEvents])
           .then(function (results) {
-            var payload = results[0]
-            return crypto.decryptSymmetricWith(keyEncryptionJWK)(payload.account.encryptedPrivateKey)
-              .then(function (privateJwk) {
-                var secrets = payload.encryptedSecrets
-                  .map(function (pair) {
-                    return {
-                      secretId: pair[0],
-                      value: pair[1]
-                    }
-                  })
-                var eventsById = _.indexBy(payload.events, 'eventId')
-                return decryptEvents(
-                  payload.events, secrets, privateJwk
+            payload = results[0]
+            var encryptedPrivateKey = payload.account.encryptedPrivateKey
+            return Promise
+              .all([
+                crypto.decryptSymmetricWith(keyEncryptionJWK)(encryptedPrivateKey),
+                queries.putEvents.apply(
+                  null, [accountId].concat(payload.events.map(function (event) {
+                    return _.omit(event, ['accountId'])
+                  }))
+                ),
+                queries.putEncryptedSecrets.apply(
+                  null, [accountId].concat(payload.encryptedSecrets)
                 )
-                  .then(function (decryptedEvents) {
-                    return decryptedEvents.map(function (decryptedEvent) {
-                      // decryption might skip events on erroneous payloads
-                      // so we need to look up the sibling like this instead
-                      // of using the position in the list of events
-                      var match = eventsById[decryptedEvent.eventId]
-                      return Object.assign(
-                        { timestamp: decryptedEvent.payload.timestamp }, match
-                      )
-                    })
-                  })
-                  .then(function (events) {
-                    return Promise
-                      .all([
-                        queries.putEvents.apply(
-                          null, [accountId].concat(events)
-                        ),
-                        queries.putEncryptedSecrets.apply(
-                          null, [accountId].concat(payload.encryptedSecrets)
-                        )
-                      ])
-                  })
-                  .then(function (results) {
-                    var result = Object.assign(payload.account, {
-                      privateJwk: privateJwk
-                    })
-                    return result
-                  })
-              })
+              ])
+          })
+          .then(function (results) {
+            var privateJwk = results[0]
+            var result = Object.assign(payload.account, {
+              privateJwk: privateJwk
+            })
+            return result
           })
       })
   })

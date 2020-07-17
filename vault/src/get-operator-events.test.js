@@ -259,8 +259,6 @@ describe('src/get-operator-events', function () {
             assert(mockQueries.putEvents.calledWith('account-a', {
               eventId: 'z',
               secretId: 'user-a',
-              accountId: 'account-a',
-              timestamp: 'timestamp-fixture',
               payload: encryptedEventPayload
             }))
           })

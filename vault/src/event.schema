@@ -1,11 +1,15 @@
 {
   "type": "object",
   "properties": {
+    "eventId": {
+      "type": "string",
+      "length": 26
+    },
     "secretId": {
       "type": ["string", "null"]
     },
     "payload": {
-      "type": ["object", "null"],
+      "type": ["object", "null", "string"],
       "properties": {
         "type": {
           "type": "string",
@@ -33,7 +37,7 @@
             {
               "type": "string",
               "format": "uri",
-          		"maxLength": 2000
+              "maxLength": 2000
             },
             {
               "type": "string",
@@ -44,7 +48,7 @@
         "href": {
           "type": "string",
           "format": "uri",
-      		"maxLength": 2000
+          "maxLength": 2000
         }
       }
     }
