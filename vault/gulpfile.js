@@ -17,11 +17,7 @@ var gap = require('gulp-append-prepend')
 var to = require('flush-write-stream')
 var tinyify = require('tinyify')
 
-var extractStrings = require('offen/localize/task.js')
-
 var pkg = require('./package.json')
-
-gulp.task('extract-strings', extractStrings(pkg.offen.locales))
 
 gulp.task('clean:pre', function () {
   return gulp
@@ -71,8 +67,8 @@ function makeScriptTask (dest, locale) {
         return true
       },
       transform: transforms.map(function (transform) {
-        if (transform === 'offen/localize') {
-          return ['offen/localize', { locale: locale }]
+        if (transform === '@offen/l10nify') {
+          return ['@offen/l10nify', { locale: locale }]
         }
         return transform
       })

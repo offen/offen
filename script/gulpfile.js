@@ -10,11 +10,7 @@ var buffer = require('vinyl-buffer')
 var source = require('vinyl-source-stream')
 var browserify = require('browserify')
 
-var extractStrings = require('offen/localize/task.js')
-
 var pkg = require('./package.json')
-
-gulp.task('extract-strings', extractStrings(pkg.offen.locales))
 
 gulp.task('clean:pre', function () {
   return gulp
