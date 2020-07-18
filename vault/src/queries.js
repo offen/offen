@@ -362,19 +362,29 @@ function putEncryptedSecretsWith (getDatabase) {
     var accountId = args.shift()
 
     var db = getDatabase(accountId)
-    var records = args.map(function (pair) {
+    var newKeys = args.map(function (pair) {
       return {
         type: TYPE_ENCRYPTED_SECRET,
         secretId: pair[0],
         value: pair[1]
       }
     })
-    return db.keys
-      .bulkPut(records)
-      .catch(dexie.OpenFailedError, function () {
-        fallbackKeyStore[accountId] = fallbackKeyStore[accountId] || []
-        fallbackKeyStore[accountId] = fallbackKeyStore[accountId].concat(records)
-        return records
+    return db.keys.toArray()
+      .then(function (knownKeys) {
+        return newKeys.filter(function (newKey) {
+          return knownKeys.every(function (knownKey) {
+            return knownKey.secretId !== newKey.secretId
+          })
+        })
+      })
+      .then(function (records) {
+        return db.keys
+          .bulkPut(records)
+          .catch(dexie.OpenFailedError, function () {
+            fallbackKeyStore[accountId] = fallbackKeyStore[accountId] || []
+            fallbackKeyStore[accountId] = fallbackKeyStore[accountId].concat(records)
+            return records
+          })
       })
   }
 }
