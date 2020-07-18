@@ -17,11 +17,18 @@ import (
 // uniquely tied to an Account and a Secret model.
 type Event struct {
 	EventID   string
+	Sequence  string
 	AccountID string
 	// the secret id is nullable for anonymous events
 	SecretID *string
 	Payload  string
 	Secret   Secret
+}
+
+// A Tombstone replaces an event on its deletion
+type Tombstone struct {
+	EventID  string
+	Sequence string
 }
 
 // Secret associates a hashed user id - which ties a user and account together

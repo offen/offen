@@ -11,7 +11,7 @@ func (p *persistenceLayer) Insert(userID, accountID, payload string, idOverride 
 	var eventID string
 	if idOverride == nil {
 		var err error
-		eventID, err = newEventID()
+		eventID, err = NewULID()
 		if err != nil {
 			return fmt.Errorf("persistence: error creating new event identifier: %w", err)
 		}
@@ -41,11 +41,17 @@ func (p *persistenceLayer) Insert(userID, accountID, payload string, idOverride 
 		}
 	}
 
+	sequence, seqErr := NewULID()
+	if seqErr != nil {
+		return fmt.Errorf("persistence: error creating sequence number: %w", seqErr)
+	}
+
 	insertErr := p.dal.CreateEvent(&Event{
 		AccountID: accountID,
 		SecretID:  hashedUserID,
 		Payload:   payload,
 		EventID:   eventID,
+		Sequence:  sequence,
 	})
 	if insertErr != nil {
 		return fmt.Errorf("persistence: error inserting event: %w", insertErr)
