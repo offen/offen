@@ -181,7 +181,7 @@ func cmdDemo(subcommand string, flags []string) {
 			a.logger.WithError(err).Fatal("Error binding server to network")
 		}
 	}()
-	a.logger.Infof("You can now start your Offen demo by visting")
+	a.logger.Infof("You can now start your Offen demo by visiting")
 	a.logger.Infof("")
 	a.logger.Infof("--> http://localhost:%d/intro/ <--", a.config.Server.Port)
 	a.logger.Infof("")
