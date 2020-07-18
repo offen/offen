@@ -7,10 +7,16 @@ import (
 	"fmt"
 )
 
-func (p *persistenceLayer) Insert(userID, accountID, payload string) error {
-	eventID, err := newEventID()
-	if err != nil {
-		return fmt.Errorf("persistence: error creating new event identifier: %w", err)
+func (p *persistenceLayer) Insert(userID, accountID, payload string, idOverride *string) error {
+	var eventID string
+	if idOverride == nil {
+		var err error
+		eventID, err = newEventID()
+		if err != nil {
+			return fmt.Errorf("persistence: error creating new event identifier: %w", err)
+		}
+	} else {
+		eventID = *idOverride
 	}
 
 	account, err := p.dal.FindAccount(FindAccountQueryActiveByID(accountID))

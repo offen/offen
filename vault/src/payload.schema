@@ -20,7 +20,7 @@
     "timestamp": {
       "type": "string",
       "format": "date-time",
-      "maxLength": 24
+      "maxLength": 36
     },
     "referrer": {
       "oneOf": [

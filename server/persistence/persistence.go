@@ -11,7 +11,7 @@ import (
 // layer. It does not make any assumptions about how data is being modelled
 // and stored.
 type Service interface {
-	Insert(userID, accountID, payload string) error
+	Insert(userID, accountID, payload string, eventID *string) error
 	Query(Query) (map[string][]EventResult, error)
 	GetAccount(accountID string, events bool, eventsSince string) (AccountResult, error)
 	CreateAccount(name, creatorEmailAddress, creatorPassword string) error

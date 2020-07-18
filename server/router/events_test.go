@@ -218,7 +218,7 @@ type mockPostEventsService struct {
 	err error
 }
 
-func (m *mockPostEventsService) Insert(string, string, string) error {
+func (m *mockPostEventsService) Insert(string, string, string, *string) error {
 	return m.err
 }
 

@@ -216,7 +216,7 @@ func TestPersistenceLayer_Insert(t *testing.T) {
 			r := &persistenceLayer{
 				dal: test.db,
 			}
-			err := r.Insert(test.callArgs[0], test.callArgs[1], test.callArgs[2])
+			err := r.Insert(test.callArgs[0], test.callArgs[1], test.callArgs[2], nil)
 			if (err != nil) != test.expectError {
 				t.Errorf("Unexpected error value %v", err)
 			}

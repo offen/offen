@@ -42,7 +42,7 @@ func (rt *router) postEvents(c *gin.Context) {
 		return
 	}
 
-	if err := rt.db.Insert(userID, evt.AccountID, evt.Payload); err != nil {
+	if err := rt.db.Insert(userID, evt.AccountID, evt.Payload, nil); err != nil {
 		var unknownAccountErr persistence.ErrUnknownAccount
 		if errors.As(err, &unknownAccountErr) {
 			newJSONError(

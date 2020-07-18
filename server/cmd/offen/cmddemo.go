@@ -142,7 +142,8 @@ func cmdDemo(subcommand string, flags []string) {
 					if eventErr != nil {
 						a.logger.WithError(eventErr).Fatal("Error encrypting fake event payload")
 					}
-					if err := db.Insert(userID, accountID.String(), event.Marshal()); err != nil {
+					eventID, _ := persistence.EventIDAt(evt.Timestamp)
+					if err := db.Insert(userID, accountID.String(), event.Marshal(), &eventID); err != nil {
 						a.logger.WithError(err).Warn("Error inserting event")
 					}
 				}
