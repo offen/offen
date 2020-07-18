@@ -4,6 +4,7 @@
 package persistence
 
 import (
+	"fmt"
 	"math/rand"
 	"time"
 
@@ -25,7 +26,16 @@ func EventIDAt(t time.Time) (string, error) {
 		ulid.Monotonic(rand.New(rand.NewSource(t.UnixNano())), 0),
 	)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("persistence: error creating new ULID: %w", err)
 	}
 	return eventID.String(), nil
+}
+
+func siblingEventID(id string) (string, error) {
+	pid, err := ulid.Parse(id)
+	if err != nil {
+		return "", fmt.Errorf("persistence: error parsing given string to ULID: %w", err)
+	}
+
+	return EventIDAt(ulid.Time(pid.Time()))
 }

@@ -130,7 +130,7 @@ func (p *persistenceLayer) AssociateUserSecret(accountID, userID, encryptedUserS
 			return fmt.Errorf("persistence: error looking up orphaned events: %w", err)
 		}
 		for _, orphan := range orphanedEvents {
-			newID, err := newEventID()
+			newID, err := siblingEventID(orphan.EventID)
 			if err != nil {
 				txn.Rollback()
 				return fmt.Errorf("persistence: error creating new event id: %w", err)
