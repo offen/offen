@@ -26,6 +26,7 @@ var decryptEvents = require('./decrypt-events')
 var stats = require('./stats')
 var cookies = require('./cookie-tools')
 var eventSchema = require('./event.schema')
+var payloadSchema = require('./payload.schema')
 
 var fallbackEventStore = {}
 var fallbackKeyStore = {}
@@ -250,7 +251,7 @@ function getAllEventsWith (getDatabase) {
           return fallbackEventStore[accountId]
         })
         .then(function (events) {
-          return events.filter(validateAndParseEvent)
+          return events.filter(eventSchema)
         })
     }
     return table
@@ -264,7 +265,7 @@ function getAllEventsWith (getDatabase) {
         })
       })
       .then(function (events) {
-        return events.filter(validateAndParseEvent)
+        return events.filter(eventSchema)
       })
   }
 }
@@ -488,7 +489,7 @@ function getEncryptedSecretsWith (getDatabase) {
 
 exports.validateAndParseEvent = validateAndParseEvent
 function validateAndParseEvent (event) {
-  if (!eventSchema(event)) {
+  if (!payloadSchema(event.payload)) {
     return null
   }
   var clone = JSON.parse(JSON.stringify(event))
