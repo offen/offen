@@ -137,3 +137,20 @@ func (r *relationalDAL) CreateTombstone(t *persistence.Tombstone) error {
 	}
 	return nil
 }
+
+func (r *relationalDAL) FindTombstones(q interface{}) ([]persistence.Tombstone, error) {
+	switch query := q.(type) {
+	case persistence.FindTombstonesQuerySince:
+		var result []Tombstone
+		if err := r.db.Find(&result, "account_id = ? AND sequence > ?", query.AccountID, query.Since).Error; err != nil {
+			return nil, fmt.Errorf("relational: error looking up tombstones: %w", err)
+		}
+		var export []persistence.Tombstone
+		for _, t := range result {
+			export = append(export, t.export())
+		}
+		return export, nil
+	default:
+		return nil, persistence.ErrBadQuery
+	}
+}

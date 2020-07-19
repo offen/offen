@@ -254,8 +254,8 @@ function updateLastKnownCheckpointWith (getDatabase) {
   }
 }
 
-exports.setLastKnownCheckpoint = setLastKnownCheckpointWith(getDatabase)
-function setLastKnownCheckpointWith (getDatabase) {
+exports.getLastKnownCheckpoint = getLastKnownCheckpointWith(getDatabase)
+function getLastKnownCheckpointWith (getDatabase) {
   return function (accountId) {
     var table = getDatabase(accountId).checkpoints
     return table.get({ type: TYPE_LAST_KNOWN_CHECKPOINT })
@@ -468,7 +468,7 @@ function putEventsWith (getDatabase) {
     var accountId = args.shift()
     var db = getDatabase(accountId)
     // events data is saved in the shape supplied by the server
-    return db.events.bulkAdd(args)
+    return db.events.bulkPut(args)
       .catch(dexie.OpenFailedError, function () {
         fallbackEventStore[accountId] = fallbackEventStore[accountId] || []
         fallbackEventStore[accountId] = fallbackEventStore[accountId].concat(args)

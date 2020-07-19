@@ -14,7 +14,7 @@ type SecretResult struct {
 // EventResult is an element returned from a query. It contains all data that
 // is stored about an atomic event.
 type EventResult struct {
-	AccountID string  `json:"accountId"`
+	AccountID string  `json:"accountId,omitempty"`
 	SecretID  *string `json:"secretId"`
 	EventID   string  `json:"eventId"`
 	Payload   string  `json:"payload"`
@@ -34,6 +34,8 @@ type AccountResult struct {
 	PublicKey           interface{}           `json:"publicKey,omitempty"`
 	EncryptedPrivateKey string                `json:"encryptedPrivateKey,omitempty"`
 	Events              *EventsByAccountID    `json:"events,omitempty"`
+	DeletedEvents       []string              `json:"deletedEvents,omitempty"`
+	Sequence            string                `json:"sequence,omitempty"`
 	Secrets             *EncryptedSecretsByID `json:"secrets,omitempty"`
 	Created             time.Time             `json:"created,omitempty"`
 }

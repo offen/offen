@@ -26,6 +26,7 @@ type DataAccessLayer interface {
 	FindAccountUserRelationships(interface{}) ([]AccountUserRelationship, error)
 	DeleteAccountUserRelationships(interface{}) error
 	CreateTombstone(*Tombstone) error
+	FindTombstones(interface{}) ([]Tombstone, error)
 	Transaction() (Transaction, error)
 	ApplyMigrations() error
 	DropAll() error
@@ -111,6 +112,13 @@ type FindAccountUsersQueryAllAccountUsers struct {
 
 // RetireAccountQueryByID requests the account of the given id to be retired.
 type RetireAccountQueryByID string
+
+// FindTombstonesQuerySince requests all tombstones for an account id that are
+// newer than the given sequence
+type FindTombstonesQuerySince struct {
+	Since     string
+	AccountID string
+}
 
 // Transaction is a data access layer that does not persist data until commit
 // is called. In case rollback is called before, the underlying database will

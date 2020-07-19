@@ -52,49 +52,39 @@ function fetchOperatorEventsWith (api, queries) {
 function ensureSyncWith (queries, api) {
   return bindCrypto(function (accountId, keyEncryptionJWK) {
     var crypto = this
-    return queries.getAllEventIds(accountId)
-      .then(function (knownEventIds) {
-        var fetchNewEvents = queries.getLatestEvent(accountId)
-          .then(function (latestLocalEvent) {
-            var params = latestLocalEvent
-              ? { since: latestLocalEvent.eventId }
-              : null
-            return fetchOperatorEventsWith(api, queries)(accountId, params)
-          })
-        var pruneEvents = (knownEventIds.length
-          ? api.getDeletedEvents(knownEventIds)
-          : Promise.resolve({ eventIds: [] })
-        )
-          .then(function (response) {
-            return response
-              ? queries.deleteEvents.apply(null, [accountId].concat(response.eventIds))
-              : null
-          })
-
-        var payload
-        return Promise.all([fetchNewEvents, pruneEvents])
-          .then(function (results) {
-            payload = results[0]
+    return queries.getLastKnownCheckpoint(accountId)
+      .then(function (checkpoint) {
+        var params = checkpoint
+          ? { since: checkpoint }
+          : null
+        return fetchOperatorEventsWith(api, queries)(accountId, params)
+          .then(function (payload) {
             var encryptedPrivateKey = payload.account.encryptedPrivateKey
             return Promise
               .all([
                 crypto.decryptSymmetricWith(keyEncryptionJWK)(encryptedPrivateKey),
                 queries.putEvents.apply(
-                  null, [accountId].concat(payload.events.map(function (event) {
-                    return _.omit(event, ['accountId'])
-                  }))
+                  null, [accountId].concat(payload.events)
                 ),
                 queries.putEncryptedSecrets.apply(
                   null, [accountId].concat(payload.encryptedSecrets)
-                )
+                ),
+                payload.account.deletedEvents
+                  ? queries.deleteEvents.apply(
+                    null, [accountId].concat(payload.account.deletedEvents)
+                  )
+                  : null,
+                payload.account.sequence
+                  ? queries.updateLastKnownCheckpoint(accountId, payload.account.sequence)
+                  : null
               ])
-          })
-          .then(function (results) {
-            var privateJwk = results[0]
-            var result = Object.assign(payload.account, {
-              privateJwk: privateJwk
-            })
-            return result
+              .then(function (results) {
+                var privateJwk = results[0]
+                var result = Object.assign(payload.account, {
+                  privateJwk: privateJwk
+                })
+                return result
+              })
           })
       })
   })

@@ -6,6 +6,7 @@ package persistence
 import (
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/gofrs/uuid"
 	"github.com/offen/offen/server/keys"
@@ -44,17 +45,18 @@ func (p *persistenceLayer) GetAccount(accountID string, includeEvents bool, even
 
 	eventResults := EventsByAccountID{}
 	secrets := EncryptedSecretsByID{}
+	seqs := []string{}
 
 	for _, evt := range account.Events {
 		eventResults[evt.AccountID] = append(eventResults[evt.AccountID], EventResult{
-			SecretID:  evt.SecretID,
-			EventID:   evt.EventID,
-			Payload:   evt.Payload,
-			AccountID: evt.AccountID,
+			SecretID: evt.SecretID,
+			EventID:  evt.EventID,
+			Payload:  evt.Payload,
 		})
 		if evt.SecretID != nil {
 			secrets[*evt.SecretID] = evt.Secret.EncryptedSecret
 		}
+		seqs = append(seqs, evt.Sequence)
 	}
 
 	if len(eventResults) != 0 {
@@ -63,6 +65,31 @@ func (p *persistenceLayer) GetAccount(accountID string, includeEvents bool, even
 	if len(secrets) != 0 {
 		result.Secrets = &secrets
 	}
+
+	if eventsSince != "" {
+		pruned, err := p.dal.FindTombstones(FindTombstonesQuerySince{
+			AccountID: accountID,
+			Since:     eventsSince,
+		})
+		if err != nil {
+			return AccountResult{}, fmt.Errorf("persistence: error finding deleted events: %w", err)
+		}
+
+		var prunedIDs []string
+		for _, tombstone := range pruned {
+			prunedIDs = append(prunedIDs, tombstone.EventID)
+			seqs = append(seqs, tombstone.Sequence)
+		}
+		result.DeletedEvents = prunedIDs
+	}
+
+	var latestSeq string
+	for _, seq := range seqs {
+		if strings.Compare(seq, latestSeq) == 1 {
+			latestSeq = seq
+		}
+	}
+	result.Sequence = latestSeq
 
 	return result, nil
 }
