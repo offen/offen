@@ -209,8 +209,9 @@ func (r *relationalDAL) ApplyMigrations() error {
 			ID: "004_add_tombstones_event_revs",
 			Migrate: func(db *gorm.DB) error {
 				type Tombstone struct {
-					EventID  string `gorm:"primary_key"`
-					Sequence string
+					EventID   string `gorm:"primary_key"`
+					AccountID string
+					Sequence  string
 				}
 
 				type Event struct {

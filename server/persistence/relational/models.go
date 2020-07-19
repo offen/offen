@@ -45,21 +45,24 @@ func importEvent(e *persistence.Event) Event {
 
 // A Tombstone replaces an event on its deletion
 type Tombstone struct {
-	EventID  string `gorm:"primary_key"`
-	Sequence string
+	EventID   string `gorm:"primary_key"`
+	AccountID string
+	Sequence  string
 }
 
 func (t *Tombstone) export() persistence.Tombstone {
 	return persistence.Tombstone{
-		EventID:  t.EventID,
-		Sequence: t.Sequence,
+		EventID:   t.EventID,
+		AccountID: t.AccountID,
+		Sequence:  t.Sequence,
 	}
 }
 
 func importTombstone(t *persistence.Tombstone) *Tombstone {
 	return &Tombstone{
-		EventID:  t.EventID,
-		Sequence: t.Sequence,
+		EventID:   t.EventID,
+		AccountID: t.AccountID,
+		Sequence:  t.Sequence,
 	}
 }
 

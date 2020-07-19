@@ -27,8 +27,9 @@ type Event struct {
 
 // A Tombstone replaces an event on its deletion
 type Tombstone struct {
-	EventID  string
-	Sequence string
+	EventID   string
+	AccountID string
+	Sequence  string
 }
 
 // Secret associates a hashed user id - which ties a user and account together

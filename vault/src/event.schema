@@ -3,13 +3,13 @@
   "properties": {
     "eventId": {
       "type": "string",
-      "length": 26
+      "maxLength": 26
     },
     "secretId": {
       "type": ["string", "null"]
     },
     "payload": {
-      "type": "string"
+      "type": ["string", "object"]
     }
   }
 }

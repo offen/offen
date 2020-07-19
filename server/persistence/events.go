@@ -94,14 +94,47 @@ func (p *persistenceLayer) Query(query Query) (map[string][]EventResult, error) 
 }
 
 func (p *persistenceLayer) Purge(userID string) error {
-	accounts, err := p.dal.FindAccounts(FindAccountsQueryAllAccounts{})
+	sequence, err := NewULID()
 	if err != nil {
+		return fmt.Errorf("persistence: error creating sequence number: %w", err)
+	}
+
+	txn, err := p.dal.Transaction()
+	if err != nil {
+		return fmt.Errorf("persistence: error creating transaction: %w", err)
+	}
+
+	accounts, err := txn.FindAccounts(FindAccountsQueryAllAccounts{})
+	if err != nil {
+		txn.Rollback()
 		return fmt.Errorf("persistence: error retrieving available accounts: %w", err)
 	}
 
 	hashedUserIDs := hashUserIDForAccounts(userID, accounts)
-	if _, err := p.dal.DeleteEvents(DeleteEventsQueryBySecretIDs(hashedUserIDs)); err != nil {
+
+	affectedEvents, err := txn.FindEvents(FindEventsQueryForSecretIDs{SecretIDs: hashedUserIDs})
+	if err != nil {
+		txn.Rollback()
+		return fmt.Errorf("persistence: error looking up events to purge: %w", err)
+	}
+	for _, evt := range affectedEvents {
+		if err := txn.CreateTombstone(&Tombstone{
+			EventID:   evt.EventID,
+			AccountID: evt.AccountID,
+			Sequence:  sequence,
+		}); err != nil {
+			txn.Rollback()
+			return fmt.Errorf("persistence: error creating tombstone for purged event: %w", err)
+		}
+	}
+
+	if _, err := txn.DeleteEvents(DeleteEventsQueryBySecretIDs(hashedUserIDs)); err != nil {
+		txn.Rollback()
 		return fmt.Errorf("persistence: error purging events: %w", err)
+	}
+
+	if err := txn.Commit(); err != nil {
+		return fmt.Errorf("persistence: error committing pruning of events: %w", err)
 	}
 	return nil
 }

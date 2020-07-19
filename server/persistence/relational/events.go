@@ -28,6 +28,11 @@ func exportEvents(evts []Event) []persistence.Event {
 func (r *relationalDAL) FindEvents(q interface{}) ([]persistence.Event, error) {
 	var events []Event
 	switch query := q.(type) {
+	case persistence.FindEventsQueryOlderThan:
+		if err := r.db.Find(&events, "event_id < ?", query).Error; err != nil {
+			return nil, fmt.Errorf("relational: error looking up events by age: %w", err)
+		}
+		return exportEvents(events), nil
 	case persistence.FindEventsQueryForSecretIDs:
 		var eventConditions []interface{}
 		if query.Since != "" {
@@ -123,4 +128,12 @@ func (r *relationalDAL) DeleteEvents(q interface{}) (int64, error) {
 	default:
 		return 0, persistence.ErrBadQuery
 	}
+}
+
+func (r *relationalDAL) CreateTombstone(t *persistence.Tombstone) error {
+	local := importTombstone(t)
+	if err := r.db.Create(&local).Error; err != nil {
+		return fmt.Errorf("relational: error creating tombstone: %w", err)
+	}
+	return nil
 }

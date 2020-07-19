@@ -25,6 +25,7 @@ type DataAccessLayer interface {
 	UpdateAccountUserRelationship(*AccountUserRelationship) error
 	FindAccountUserRelationships(interface{}) ([]AccountUserRelationship, error)
 	DeleteAccountUserRelationships(interface{}) error
+	CreateTombstone(*Tombstone) error
 	Transaction() (Transaction, error)
 	ApplyMigrations() error
 	DropAll() error
@@ -50,6 +51,9 @@ type FindEventsQueryExclusion struct {
 	EventIDs  []string
 	SecretIDs []string
 }
+
+// FindEventsQueryOlderThan looks up all events older than the given event id
+type FindEventsQueryOlderThan string
 
 // DeleteEventsQueryBySecretIDs requests deletion of all events that match
 // the given identifiers.
