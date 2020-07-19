@@ -30,6 +30,7 @@ var payloadSchema = require('./payload.schema')
 
 var fallbackEventStore = {}
 var fallbackKeyStore = {}
+var fallbackCheckpointStore = null
 
 var startOf = {
   hours: startOfHour,
@@ -233,6 +234,39 @@ function getDefaultStatsWith (getDatabase) {
           resolution: resolution,
           range: range
         }
+      })
+  }
+}
+
+var TYPE_LAST_KNOWN_CHECKPOINT = 'LAST_KNOWN_CHECKPOINT'
+
+exports.updateLastKnownCheckpoint = updateLastKnownCheckpointWith(getDatabase)
+function updateLastKnownCheckpointWith (getDatabase) {
+  return function (accountId, sequence) {
+    var table = getDatabase(accountId).checkpoints
+    return table.put({
+      type: TYPE_LAST_KNOWN_CHECKPOINT,
+      sequence: sequence
+    })
+      .catch(dexie.OpenFailedError, function () {
+        fallbackCheckpointStore = sequence
+      })
+  }
+}
+
+exports.setLastKnownCheckpoint = setLastKnownCheckpointWith(getDatabase)
+function setLastKnownCheckpointWith (getDatabase) {
+  return function (accountId) {
+    var table = getDatabase(accountId).checkpoints
+    return table.get({ type: TYPE_LAST_KNOWN_CHECKPOINT })
+      .then(function (result) {
+        if (!result) {
+          return null
+        }
+        return result.sequence
+      })
+      .catch(dexie.OpenFailedError, function () {
+        return fallbackCheckpointStore
       })
   }
 }

@@ -28,7 +28,8 @@ function createDatabase (name) {
   // needed anymore. Clients will resync from scratch after this migration.
   db.version(2).stores({
     keys: '++,type',
-    events: 'eventId'
+    events: 'eventId',
+    checkpoints: 'type'
   }).upgrade(function (txn) {
     return txn.table('events').clear()
   })
