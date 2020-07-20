@@ -53,10 +53,6 @@ type FindEventsQueryOlderThan string
 // the given identifiers.
 type DeleteEventsQueryBySecretIDs []string
 
-// DeleteEventsQueryOlderThan requests deletion of all events that are older than
-// the given ULID event identifier.
-type DeleteEventsQueryOlderThan string
-
 // DeleteEventsQueryByEventIDs requests deletion of all events contained in the
 // given set.
 type DeleteEventsQueryByEventIDs []string

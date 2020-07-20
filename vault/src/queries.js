@@ -353,7 +353,9 @@ exports.putUserSecretWith = putUserSecretWith
 function putUserSecretWith (getDatabase) {
   return function (accountId, userSecret) {
     var db = getDatabase(accountId)
-    return db.keys.get({ type: TYPE_USER_SECRET })
+    return db.keys
+      .where({ type: TYPE_USER_SECRET })
+      .first()
       .then(function (existingSecret) {
         if (existingSecret) {
           return

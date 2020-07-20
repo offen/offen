@@ -45,9 +45,9 @@ describe('src/get-user-events', function () {
     it('ensures sync and then returns the generated default stats', function () {
       var mockQueries = {
         getDefaultStats: sinon.stub().resolves({ mock: 'result' }),
-        getAllEventIds: sinon.stub().resolves(['a', 'b', 'c']),
+        getLastKnownCheckpoint: sinon.stub().resolves('sequence-a'),
+        updateLastKnownCheckpoint: sinon.stub().resolves(),
         deleteEvents: sinon.stub().resolves(true),
-        getLatestEvent: sinon.stub().resolves({ eventId: 'c' }),
         putEvents: sinon.stub().resolves(true),
         getUserSecret: sinon.stub().resolves(window.crypto.subtle.exportKey('jwk', userSecret))
       }
@@ -60,29 +60,28 @@ describe('src/get-user-events', function () {
               accountId: 'account-a',
               payload: encryptedPayload
             }]
-          }
+          },
+          deletedEvents: ['k'],
+          sequence: 'sequence-b'
         })
       }
       var getUserEvents = getUserEventsWith(mockQueries, mockApi)
       return getUserEvents()
         .then(function (result) {
-          assert(mockQueries.getAllEventIds.calledOnce)
-          assert(mockQueries.getAllEventIds.calledWith(null))
-
-          assert(mockApi.getDeletedEvents.calledOnce)
-          assert(mockApi.getDeletedEvents.calledWith(['a', 'b', 'c']))
+          assert(mockQueries.getLastKnownCheckpoint.calledOnce)
+          assert(mockQueries.getLastKnownCheckpoint.calledWith(null))
 
           assert(mockQueries.deleteEvents.calledOnce)
-          assert(mockQueries.deleteEvents.calledWith(null, 'a'))
-
-          assert(mockQueries.getLatestEvent.calledOnce)
-          assert(mockQueries.getLatestEvent.calledWith(null))
+          assert(mockQueries.deleteEvents.calledWith(null, 'k'))
 
           assert(mockApi.getEvents.calledOnce)
-          assert(mockApi.getEvents.calledWith({ since: 'c' }))
+          assert(mockApi.getEvents.calledWith({ since: 'sequence-a' }))
 
           assert(mockQueries.getUserSecret.calledOnce)
           assert(mockQueries.getUserSecret.calledWith('account-a'))
+
+          assert(mockQueries.updateLastKnownCheckpoint.calledOnce)
+          assert(mockQueries.updateLastKnownCheckpoint.calledWith(null, 'sequence-b'))
 
           assert(mockQueries.putEvents.calledOnce)
           assert(mockQueries.putEvents.calledWith(

@@ -251,6 +251,26 @@ func (m *mockPurgeEventsDatabase) DeleteEvents(q interface{}) (int64, error) {
 	return m.deleteEventsResult, m.deleteEventsErr
 }
 
+func (m *mockPurgeEventsDatabase) FindTombstones(q interface{}) ([]Tombstone, error) {
+	return nil, nil
+}
+
+func (m *mockPurgeEventsDatabase) Commit() error {
+	return nil
+}
+
+func (m *mockPurgeEventsDatabase) Rollback() error {
+	return nil
+}
+
+func (m *mockPurgeEventsDatabase) Transaction() (Transaction, error) {
+	return m, nil
+}
+
+func (m *mockPurgeEventsDatabase) FindEvents(q interface{}) ([]Event, error) {
+	return nil, nil
+}
+
 func TestPersistenceLayer_Purge(t *testing.T) {
 	tests := []struct {
 		name          string
@@ -373,11 +393,15 @@ func (m *mockQueryEventDatabase) FindEvents(q interface{}) ([]Event, error) {
 	return m.findEventsResult, m.findEventsErr
 }
 
+func (m *mockQueryEventDatabase) FindTombstones(q interface{}) ([]Tombstone, error) {
+	return nil, nil
+}
+
 func TestPersistenceLayer_Query(t *testing.T) {
 	tests := []struct {
 		name           string
 		db             *mockQueryEventDatabase
-		expectedResult map[string][]EventResult
+		expectedResult EventsResult
 		expectError    bool
 		argAssertions  []assertion
 	}{
@@ -386,7 +410,7 @@ func TestPersistenceLayer_Query(t *testing.T) {
 			&mockQueryEventDatabase{
 				findAccountsErr: errors.New("did not work"),
 			},
-			nil,
+			EventsResult{},
 			true,
 			[]assertion{
 				func(q interface{}) error {
@@ -406,7 +430,7 @@ func TestPersistenceLayer_Query(t *testing.T) {
 				},
 				findEventsErr: errors.New("did not work"),
 			},
-			nil,
+			EventsResult{},
 			true,
 			[]assertion{
 				func(q interface{}) error {
@@ -441,12 +465,14 @@ func TestPersistenceLayer_Query(t *testing.T) {
 					{AccountID: "account-b", EventID: "event-b", Payload: "payload-b"},
 				},
 			},
-			map[string][]EventResult{
-				"account-a": []EventResult{
-					{AccountID: "account-a", Payload: "payload-a", EventID: "event-a"},
-				},
-				"account-b": []EventResult{
-					{AccountID: "account-b", Payload: "payload-b", EventID: "event-b"},
+			EventsResult{
+				Events: &EventsByAccountID{
+					"account-a": []EventResult{
+						{AccountID: "account-a", Payload: "payload-a", EventID: "event-a"},
+					},
+					"account-b": []EventResult{
+						{AccountID: "account-b", Payload: "payload-b", EventID: "event-b"},
+					},
 				},
 			},
 			false,

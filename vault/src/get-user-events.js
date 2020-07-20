@@ -32,6 +32,14 @@ function ensureSyncWith (queries, api) {
           ? { since: checkpoint }
           : null
         return api.getEvents(params)
+          .catch(function (err) {
+            // in case a user without a cookie tries to query for events a 400
+            // will be returned
+            if (err.status === 400) {
+              return { events: [] }
+            }
+            throw err
+          })
           .then(function (payload) {
             var events = payload.events
             return Promise.all([
@@ -43,14 +51,6 @@ function ensureSyncWith (queries, api) {
                 ? queries.deleteEvents.apply(null, [null].concat(payload.deletedEvents))
                 : null
             ])
-          })
-          .catch(function (err) {
-            // in case a user without a cookie tries to query for events a 400
-            // will be returned
-            if (err.status === 400) {
-              return []
-            }
-            throw err
           })
       })
       .then(function (results) {

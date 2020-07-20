@@ -73,11 +73,11 @@ func TestRouter_purgeEvents(t *testing.T) {
 
 type mockGetEventsService struct {
 	persistence.Service
-	result map[string][]persistence.EventResult
+	result persistence.EventsResult
 	err    error
 }
 
-func (m *mockGetEventsService) Query(persistence.Query) (map[string][]persistence.EventResult, error) {
+func (m *mockGetEventsService) Query(persistence.Query) (persistence.EventsResult, error) {
 	return m.result, m.err
 }
 
@@ -99,9 +99,11 @@ func TestRouter_getEvents(t *testing.T) {
 		{
 			"StatusOK",
 			&mockGetEventsService{
-				result: map[string][]persistence.EventResult{
-					"account-a": []persistence.EventResult{
-						{AccountID: "account-a", SecretID: strptr("hashed-user-a"), EventID: "event-a", Payload: "payload"},
+				result: persistence.EventsResult{
+					Events: &persistence.EventsByAccountID{
+						"account-a": []persistence.EventResult{
+							{AccountID: "account-a", SecretID: strptr("hashed-user-a"), EventID: "event-a", Payload: "payload"},
+						},
 					},
 				},
 			},
