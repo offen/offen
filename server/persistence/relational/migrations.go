@@ -211,6 +211,7 @@ func (r *relationalDAL) ApplyMigrations() error {
 				type Tombstone struct {
 					EventID   string `gorm:"primary_key"`
 					AccountID string
+					SecretID  string
 					Sequence  string
 				}
 
@@ -227,24 +228,15 @@ func (r *relationalDAL) ApplyMigrations() error {
 					return err
 				}
 
-				var allEvents []*Event
-				if err := db.Find(&allEvents).Error; err != nil {
+				rev, err := persistence.NewULID()
+				if err != nil {
 					return err
 				}
 
-				txn := db.Begin()
-				for _, event := range allEvents {
-					rev, err := persistence.NewULID()
-					if err != nil {
-						txn.Rollback()
-						return err
-					}
-					if err := txn.Model(event).Update("rev", rev).Error; err != nil {
-						txn.Rollback()
-						return err
-					}
+				if err := db.Model(&Event{}).Update("rev", rev).Error; err != nil {
+					return err
 				}
-				return txn.Commit().Error
+				return nil
 			},
 			Rollback: func(db *gorm.DB) error {
 				// we cannot drop the sequence column on the events table

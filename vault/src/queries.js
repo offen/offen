@@ -353,10 +353,16 @@ exports.putUserSecretWith = putUserSecretWith
 function putUserSecretWith (getDatabase) {
   return function (accountId, userSecret) {
     var db = getDatabase(accountId)
-    return db.keys
-      .put({
-        type: TYPE_USER_SECRET,
-        value: userSecret
+    return db.keys.get({ type: TYPE_USER_SECRET })
+      .then(function (existingSecret) {
+        if (existingSecret) {
+          return
+        }
+        return db.keys
+          .put({
+            type: TYPE_USER_SECRET,
+            value: userSecret
+          })
       })
       .catch(dexie.OpenFailedError, function () {
         var isLocalhost = window.location.hostname === 'localhost'

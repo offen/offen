@@ -46,13 +46,6 @@ type FindEventsQueryForSecretIDs struct {
 // identifiers.
 type FindEventsQueryByEventIDs []string
 
-// FindEventsQueryExclusion requests all events of the given identifiers
-// that do not have a hashed user id contained in the given set.
-type FindEventsQueryExclusion struct {
-	EventIDs  []string
-	SecretIDs []string
-}
-
 // FindEventsQueryOlderThan looks up all events older than the given event id
 type FindEventsQueryOlderThan string
 
@@ -113,11 +106,18 @@ type FindAccountUsersQueryAllAccountUsers struct {
 // RetireAccountQueryByID requests the account of the given id to be retired.
 type RetireAccountQueryByID string
 
-// FindTombstonesQuerySince requests all tombstones for an account id that are
+// FindTombstonesQueryByAccounts requests all tombstones for an account id that are
 // newer than the given sequence
-type FindTombstonesQuerySince struct {
+type FindTombstonesQueryByAccounts struct {
+	Since      string
+	AccountIDs []string
+}
+
+// FindTombstonesQueryBySecrets requests all tombstones for an account id that are
+// newer than the given sequence
+type FindTombstonesQueryBySecrets struct {
 	Since     string
-	AccountID string
+	SecretIDs []string
 }
 
 // Transaction is a data access layer that does not persist data until commit

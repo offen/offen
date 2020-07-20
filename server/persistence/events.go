@@ -5,6 +5,7 @@ package persistence
 
 import (
 	"fmt"
+	"strings"
 )
 
 func (p *persistenceLayer) Insert(userID, accountID, payload string, idOverride *string) error {
@@ -66,11 +67,11 @@ type Query struct {
 	Since  string
 }
 
-func (p *persistenceLayer) Query(query Query) (map[string][]EventResult, error) {
+func (p *persistenceLayer) Query(query Query) (EventsResult, error) {
 	var accounts []Account
 	accounts, err := p.dal.FindAccounts(FindAccountsQueryAllAccounts{})
 	if err != nil {
-		return nil, fmt.Errorf("persistence: error looking up all accounts: %v", err)
+		return EventsResult{}, fmt.Errorf("persistence: error looking up all accounts: %v", err)
 	}
 
 	results, err := p.dal.FindEvents(FindEventsQueryForSecretIDs{
@@ -78,18 +79,39 @@ func (p *persistenceLayer) Query(query Query) (map[string][]EventResult, error) 
 		Since:     query.Since,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("persistence: error looking up events: %w", err)
+		return EventsResult{}, fmt.Errorf("persistence: error looking up events: %w", err)
 	}
-
-	// results will be keyed on account ids
-	out := map[string][]EventResult{}
+	out := EventsResult{}
+	eventResults := EventsByAccountID{}
+	seqs := []string{}
 	for _, match := range results {
-		out[match.AccountID] = append(out[match.AccountID], EventResult{
+		eventResults[match.AccountID] = append(eventResults[match.AccountID], EventResult{
 			AccountID: match.AccountID,
 			Payload:   match.Payload,
 			EventID:   match.EventID,
 		})
+		seqs = append(seqs, match.Sequence)
 	}
+	out.Events = &eventResults
+
+	if query.Since != "" {
+		pruned, err := p.dal.FindTombstones(FindTombstonesQueryBySecrets{
+			SecretIDs: hashUserIDForAccounts(query.UserID, accounts),
+			Since:     query.Since,
+		})
+		if err != nil {
+			return EventsResult{}, fmt.Errorf("persistence: error finding deleted events: %w", err)
+		}
+
+		var prunedIDs []string
+		for _, tombstone := range pruned {
+			prunedIDs = append(prunedIDs, tombstone.EventID)
+			seqs = append(seqs, tombstone.Sequence)
+		}
+		out.DeletedEvents = prunedIDs
+	}
+
+	out.Sequence = getLatestSeq(seqs)
 	return out, nil
 }
 
@@ -121,6 +143,7 @@ func (p *persistenceLayer) Purge(userID string) error {
 		if err := txn.CreateTombstone(&Tombstone{
 			EventID:   evt.EventID,
 			AccountID: evt.AccountID,
+			SecretID:  evt.SecretID,
 			Sequence:  sequence,
 		}); err != nil {
 			txn.Rollback()
@@ -137,49 +160,6 @@ func (p *persistenceLayer) Purge(userID string) error {
 		return fmt.Errorf("persistence: error committing pruning of events: %w", err)
 	}
 	return nil
-}
-
-func (p *persistenceLayer) GetDeletedEvents(ids []string, userID string) ([]string, error) {
-	// First, perform a check which one of the events have been deleted
-	existing, err := p.dal.FindEvents(FindEventsQueryByEventIDs(ids))
-	if err != nil {
-		return nil, fmt.Errorf("persistence: error looking up events: %w", err)
-	}
-
-	deletedIds := []string{}
-outer:
-	for _, id := range ids {
-		for _, ev := range existing {
-			if id == ev.EventID {
-				continue outer
-			}
-		}
-		deletedIds = append(deletedIds, id)
-	}
-
-	// The user might have changed their identifier and might know about events
-	// associated to previous values, so the next check looks up events that
-	// are still present but considered "foreign"
-	if userID != "" {
-		accounts, err := p.dal.FindAccounts(FindAccountsQueryAllAccounts{})
-		if err != nil {
-			return nil, fmt.Errorf("persistence: error looking up all accounts: %v", err)
-		}
-
-		foreign, err := p.dal.FindEvents(FindEventsQueryExclusion{
-			EventIDs:  ids,
-			SecretIDs: hashUserIDForAccounts(userID, accounts),
-		})
-		if err != nil {
-			return nil, fmt.Errorf("persistence: error looking up foreign events: %v", err)
-		}
-
-		for _, evt := range foreign {
-			deletedIds = append(deletedIds, evt.EventID)
-		}
-	}
-
-	return deletedIds, nil
 }
 
 func hashUserIDForAccounts(userID string, accounts []Account) []string {
@@ -206,4 +186,14 @@ func hashUserIDForAccounts(userID string, accounts []Account) []string {
 		}
 	}
 	return hashedUserIDs
+}
+
+func getLatestSeq(s []string) string {
+	var latestSeq string
+	for _, seq := range s {
+		if strings.Compare(seq, latestSeq) == 1 {
+			latestSeq = seq
+		}
+	}
+	return latestSeq
 }

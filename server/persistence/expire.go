@@ -36,6 +36,7 @@ func (p *persistenceLayer) Expire(retention time.Duration) (int, error) {
 		if err := txn.CreateTombstone(&Tombstone{
 			AccountID: evt.AccountID,
 			EventID:   evt.EventID,
+			SecretID:  evt.SecretID,
 			Sequence:  sequence,
 		}); err != nil {
 			txn.Rollback()

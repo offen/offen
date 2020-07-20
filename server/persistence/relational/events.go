@@ -72,31 +72,6 @@ func (r *relationalDAL) FindEvents(q interface{}) ([]persistence.Event, error) {
 			offset += limit
 		}
 		return exportEvents(events), nil
-	case persistence.FindEventsQueryExclusion:
-		var offset int64
-		var limit int64 = 500
-		for {
-			var nextEvents []Event
-			var chunk []string
-			if int64(len(query.EventIDs)) > offset+limit {
-				chunk = query.EventIDs[offset : offset+limit]
-			} else {
-				chunk = query.EventIDs[offset:]
-			}
-			if err := r.db.Where(
-				"event_id IN (?) AND secret_id NOT IN (?)",
-				chunk,
-				query.SecretIDs,
-			).Find(&nextEvents).Error; err != nil {
-				return nil, fmt.Errorf("relational: error looking up events: %w", err)
-			}
-			events = append(events, nextEvents...)
-			if int64(len(chunk)) < limit {
-				break
-			}
-			offset += limit
-		}
-		return exportEvents(events), nil
 	default:
 		return nil, persistence.ErrBadQuery
 	}
@@ -140,10 +115,20 @@ func (r *relationalDAL) CreateTombstone(t *persistence.Tombstone) error {
 
 func (r *relationalDAL) FindTombstones(q interface{}) ([]persistence.Tombstone, error) {
 	switch query := q.(type) {
-	case persistence.FindTombstonesQuerySince:
+	case persistence.FindTombstonesQueryByAccounts:
 		var result []Tombstone
-		if err := r.db.Find(&result, "account_id = ? AND sequence > ?", query.AccountID, query.Since).Error; err != nil {
-			return nil, fmt.Errorf("relational: error looking up tombstones: %w", err)
+		if err := r.db.Find(&result, "account_id IN (?) AND sequence > ?", query.AccountIDs, query.Since).Error; err != nil {
+			return nil, fmt.Errorf("relational: error looking up tombstones by account ids: %w", err)
+		}
+		var export []persistence.Tombstone
+		for _, t := range result {
+			export = append(export, t.export())
+		}
+		return export, nil
+	case persistence.FindTombstonesQueryBySecrets:
+		var result []Tombstone
+		if err := r.db.Find(&result, "secret_id IN (?) AND sequence > ?", query.SecretIDs, query.Since).Error; err != nil {
+			return nil, fmt.Errorf("relational: error looking up tombstones by secret ids: %w", err)
 		}
 		var export []persistence.Tombstone
 		for _, t := range result {

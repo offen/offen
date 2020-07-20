@@ -29,6 +29,7 @@ type Event struct {
 type Tombstone struct {
 	EventID   string
 	AccountID string
+	SecretID  *string
 	Sequence  string
 }
 

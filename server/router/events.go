@@ -80,10 +80,6 @@ func (rt *router) postEvents(c *gin.Context) {
 	c.JSON(http.StatusCreated, ackResponse{true})
 }
 
-type getResponse struct {
-	Events map[string][]persistence.EventResult `json:"events"`
-}
-
 func (rt *router) getEvents(c *gin.Context) {
 	userID := c.GetString(contextKeyCookie)
 	if l := <-rt.getLimiter().LinearThrottle(time.Second, fmt.Sprintf("getEvents-%s", userID)); l.Error != nil {
@@ -104,47 +100,7 @@ func (rt *router) getEvents(c *gin.Context) {
 		).Pipe(c)
 		return
 	}
-	// the query result gets wrapped in a top level object before marshalling
-	// it into JSON so new data can easily be added or removed
-	outbound := getResponse{
-		Events: result,
-	}
-	c.JSON(http.StatusOK, outbound)
-}
-
-type deletedQuery struct {
-	EventIDs []string `json:"eventIds"`
-}
-
-func (rt *router) getDeletedEvents(c *gin.Context) {
-	userID := c.GetString(contextKeyCookie)
-	if l := <-rt.getLimiter().LinearThrottle(time.Second, fmt.Sprintf("getDeletedEvents-%s", userID)); l.Error != nil {
-		newJSONError(
-			fmt.Errorf("router: error rate limiting request: %w", l.Error),
-			http.StatusTooManyRequests,
-		).Pipe(c)
-		return
-	}
-	query := deletedQuery{}
-	if err := c.BindJSON(&query); err != nil {
-		newJSONError(
-			fmt.Errorf("router: error decoding request payload: %v", err),
-			http.StatusBadRequest,
-		).Pipe(c)
-		return
-	}
-	deleted, err := rt.db.GetDeletedEvents(query.EventIDs, userID)
-	if err != nil {
-		newJSONError(
-			fmt.Errorf("router: error getting deleted events: %v", err),
-			http.StatusInternalServerError,
-		).Pipe(c)
-		return
-	}
-	out := deletedQuery{
-		EventIDs: deleted,
-	}
-	c.JSON(http.StatusOK, out)
+	c.JSON(http.StatusOK, result)
 }
 
 func (rt *router) purgeEvents(c *gin.Context) {

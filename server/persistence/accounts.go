@@ -6,7 +6,6 @@ package persistence
 import (
 	"errors"
 	"fmt"
-	"strings"
 
 	"github.com/gofrs/uuid"
 	"github.com/offen/offen/server/keys"
@@ -67,9 +66,9 @@ func (p *persistenceLayer) GetAccount(accountID string, includeEvents bool, even
 	}
 
 	if eventsSince != "" {
-		pruned, err := p.dal.FindTombstones(FindTombstonesQuerySince{
-			AccountID: accountID,
-			Since:     eventsSince,
+		pruned, err := p.dal.FindTombstones(FindTombstonesQueryByAccounts{
+			AccountIDs: []string{accountID},
+			Since:      eventsSince,
 		})
 		if err != nil {
 			return AccountResult{}, fmt.Errorf("persistence: error finding deleted events: %w", err)
@@ -83,13 +82,7 @@ func (p *persistenceLayer) GetAccount(accountID string, includeEvents bool, even
 		result.DeletedEvents = prunedIDs
 	}
 
-	var latestSeq string
-	for _, seq := range seqs {
-		if strings.Compare(seq, latestSeq) == 1 {
-			latestSeq = seq
-		}
-	}
-	result.Sequence = latestSeq
+	result.Sequence = getLatestSeq(seqs)
 
 	return result, nil
 }
@@ -181,6 +174,7 @@ func (p *persistenceLayer) AssociateUserSecret(accountID, userID, encryptedUserS
 			if err := txn.CreateTombstone(&Tombstone{
 				EventID:   orphan.EventID,
 				AccountID: orphan.AccountID,
+				SecretID:  orphan.SecretID,
 				Sequence:  sequence,
 			}); err != nil {
 				return fmt.Errorf("persistence: error creating tombstone for migrated event: %w", err)

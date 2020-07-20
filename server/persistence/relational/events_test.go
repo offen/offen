@@ -132,28 +132,6 @@ func TestRelationalDAL_FindEvents(t *testing.T) {
 			},
 			false,
 		},
-		{
-			"exclusion",
-			func(db *gorm.DB) error {
-				for _, token := range []string{"a", "b", "c"} {
-					if err := db.Save(&Event{
-						EventID:  fmt.Sprintf("event-%s", token),
-						SecretID: strptr(fmt.Sprintf("hashed-user-id-%s", token)),
-					}).Error; err != nil {
-						return fmt.Errorf("error saving fixture data: %v", err)
-					}
-				}
-				return nil
-			},
-			persistence.FindEventsQueryExclusion{
-				EventIDs:  []string{"event-a", "event-c"},
-				SecretIDs: []string{"hashed-user-id-b", "hashed-user-id-c"},
-			},
-			[]persistence.Event{
-				{EventID: "event-a", SecretID: strptr("hashed-user-id-a")},
-			},
-			false,
-		},
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {

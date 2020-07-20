@@ -47,6 +47,7 @@ func importEvent(e *persistence.Event) Event {
 type Tombstone struct {
 	EventID   string `gorm:"primary_key"`
 	AccountID string
+	SecretID  *string
 	Sequence  string
 }
 
@@ -54,6 +55,7 @@ func (t *Tombstone) export() persistence.Tombstone {
 	return persistence.Tombstone{
 		EventID:   t.EventID,
 		AccountID: t.AccountID,
+		SecretID:  t.SecretID,
 		Sequence:  t.Sequence,
 	}
 }
@@ -63,6 +65,7 @@ func importTombstone(t *persistence.Tombstone) *Tombstone {
 		EventID:   t.EventID,
 		AccountID: t.AccountID,
 		Sequence:  t.Sequence,
+		SecretID:  t.SecretID,
 	}
 }
 
