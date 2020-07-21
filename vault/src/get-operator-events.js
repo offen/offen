@@ -7,18 +7,19 @@ var _ = require('underscore')
 
 var api = require('./api')
 var queries = require('./queries')
+var storage = require('./storage')
 var bindCrypto = require('./bind-crypto')
 
-module.exports = getOperatorEventsWith(queries, api)
+module.exports = getOperatorEventsWith(queries, storage, api)
 module.exports.getOperatorEventsWith = getOperatorEventsWith
 
-function getOperatorEventsWith (queries, api) {
+function getOperatorEventsWith (queries, storage, api) {
   return function (query, authenticatedUser) {
     var matchingAccount = _.findWhere(authenticatedUser.accounts, { accountId: query.accountId })
     if (!matchingAccount) {
       return Promise.reject(new Error('No matching key found for account with id ' + query.accountId))
     }
-    return ensureSyncWith(queries, api)(query.accountId, matchingAccount.keyEncryptionKey)
+    return ensureSyncWith(storage, api)(query.accountId, matchingAccount.keyEncryptionKey)
       .then(function (account) {
         return queries.getDefaultStats(query.accountId, query, account.privateJwk)
           .then(function (stats) {
@@ -28,7 +29,7 @@ function getOperatorEventsWith (queries, api) {
   }
 }
 
-function fetchOperatorEventsWith (api, queries) {
+function fetchOperatorEventsWith (api) {
   return function (accountId, params) {
     return api.getAccount(accountId, params)
       .then(function (account) {
@@ -49,33 +50,33 @@ function fetchOperatorEventsWith (api, queries) {
   }
 }
 
-function ensureSyncWith (queries, api) {
+function ensureSyncWith (storage, api) {
   return bindCrypto(function (accountId, keyEncryptionJWK) {
     var crypto = this
-    return queries.getLastKnownCheckpoint(accountId)
+    return storage.getLastKnownCheckpoint(accountId)
       .then(function (checkpoint) {
         var params = checkpoint
           ? { since: checkpoint }
           : null
-        return fetchOperatorEventsWith(api, queries)(accountId, params)
+        return fetchOperatorEventsWith(api)(accountId, params)
           .then(function (payload) {
             var encryptedPrivateKey = payload.account.encryptedPrivateKey
             return Promise
               .all([
                 crypto.decryptSymmetricWith(keyEncryptionJWK)(encryptedPrivateKey),
-                queries.putEvents.apply(
+                storage.putEvents.apply(
                   null, [accountId].concat(payload.events)
                 ),
-                queries.putEncryptedSecrets.apply(
+                storage.putEncryptedSecrets.apply(
                   null, [accountId].concat(payload.encryptedSecrets)
                 ),
                 payload.account.deletedEvents
-                  ? queries.deleteEvents.apply(
+                  ? storage.deleteEvents.apply(
                     null, [accountId].concat(payload.account.deletedEvents)
                   )
                   : null,
                 payload.account.sequence
-                  ? queries.updateLastKnownCheckpoint(accountId, payload.account.sequence)
+                  ? storage.updateLastKnownCheckpoint(accountId, payload.account.sequence)
                   : null
               ])
               .then(function (results) {

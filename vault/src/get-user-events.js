@@ -6,27 +6,28 @@
 var api = require('./api')
 var bindCrypto = require('./bind-crypto')
 var queries = require('./queries')
+var storage = require('./storage')
 
 var LOCAL_SECRET_ID = 'local'
 
-module.exports = getUserEventsWith(queries, api)
+module.exports = getUserEventsWith(queries, storage, api)
 module.exports.getUserEventsWith = getUserEventsWith
 
 // getEvents queries the server API for events using the given query parameters.
 // Once the server has responded, it looks up the matching UserSecrets in the
 // local database and decrypts and parses the previously encrypted event payloads.
-function getUserEventsWith (queries, api) {
+function getUserEventsWith (queries, storage, api) {
   return function (query) {
-    return ensureSyncWith(queries, api)()
+    return ensureSyncWith(storage, api)()
       .then(function () {
         return queries.getDefaultStats(null, query)
       })
   }
 }
 
-function ensureSyncWith (queries, api) {
+function ensureSyncWith (storage, api) {
   return function () {
-    return queries.getLastKnownCheckpoint(null)
+    return storage.getLastKnownCheckpoint(null)
       .then(function (checkpoint) {
         var params = checkpoint
           ? { since: checkpoint }
@@ -43,12 +44,12 @@ function ensureSyncWith (queries, api) {
           .then(function (payload) {
             var events = payload.events
             return Promise.all([
-              decryptUserEventsWith(queries)(events),
+              decryptUserEventsWith(storage)(events),
               payload.sequence
-                ? queries.updateLastKnownCheckpoint(null, payload.sequence)
+                ? storage.updateLastKnownCheckpoint(null, payload.sequence)
                 : null,
               payload.deletedEvents
-                ? queries.deleteEvents.apply(null, [null].concat(payload.deletedEvents))
+                ? storage.deleteEvents.apply(null, [null].concat(payload.deletedEvents))
                 : null
             ])
           })
@@ -64,17 +65,17 @@ function ensureSyncWith (queries, api) {
             event, { secretId: LOCAL_SECRET_ID }
           )
         })
-        return queries.putEvents.apply(null, [null].concat(events))
+        return storage.putEvents.apply(null, [null].concat(events))
       })
   }
 }
 
-function decryptUserEventsWith (queries) {
+function decryptUserEventsWith (storage) {
   return bindCrypto(function (eventsByAccountId) {
     var crypto = this
     var decrypted = Object.keys(eventsByAccountId)
       .map(function (accountId) {
-        var withSecret = queries.getUserSecret(accountId)
+        var withSecret = storage.getUserSecret(accountId)
           .then(function (jwk) {
             if (!jwk) {
               return function () {

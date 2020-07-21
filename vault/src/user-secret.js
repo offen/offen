@@ -5,24 +5,24 @@
 
 var bindCrypto = require('./bind-crypto')
 var api = require('./api')
-var queries = require('./queries')
+var storage = require('./storage')
 
-module.exports = ensureUserSecretWith(api, queries)
+module.exports = ensureUserSecretWith(api, storage)
 module.exports.ensureUserSecretWith = ensureUserSecretWith
 
 // ensureUserSecret looks up the UserSecret for the given accountId. In case it
 // is not present in the local database or `flush` is passed, it initiates a
 // new exchange of secrets and stores the result in the local database.
-function ensureUserSecretWith (api, queries) {
+function ensureUserSecretWith (api, storage) {
   return function (accountId, flush) {
     var before = Promise.resolve()
     if (flush) {
-      before = queries.deleteUserSecret(accountId)
+      before = storage.deleteUserSecret(accountId)
     }
 
     return before
       .then(function () {
-        return queries.getUserSecret(accountId)
+        return storage.getUserSecret(accountId)
       })
       .then(function (jwk) {
         if (jwk) {
@@ -33,7 +33,7 @@ function ensureUserSecretWith (api, queries) {
       .then(function (jwk) {
         // persisting the secret every time we look it up
         // ensures it does not expire while in use
-        return queries.putUserSecret(accountId, jwk)
+        return storage.putUserSecret(accountId, jwk)
           .then(function () {
             return jwk
           })

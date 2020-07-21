@@ -5,7 +5,6 @@
 
 var _ = require('underscore')
 var ULID = require('ulid')
-var dexie = require('dexie')
 var startOfHour = require('date-fns/start_of_hour')
 var startOfDay = require('date-fns/start_of_day')
 var startOfWeek = require('date-fns/start_of_week')
@@ -19,18 +18,12 @@ var subHours = require('date-fns/sub_hours')
 var subDays = require('date-fns/sub_days')
 var subWeeks = require('date-fns/sub_weeks')
 var subMonths = require('date-fns/sub_months')
-var addHours = require('date-fns/add_hours')
 
-var getDatabase = require('./database')
 var decryptEvents = require('./decrypt-events')
 var stats = require('./stats')
-var cookies = require('./cookie-tools')
+var storage = require('./storage')
 var eventSchema = require('./event.schema')
 var payloadSchema = require('./payload.schema')
-
-var fallbackEventStore = {}
-var fallbackKeyStore = {}
-var fallbackCheckpointStore = null
 
 var startOf = {
   hours: startOfHour,
@@ -57,10 +50,16 @@ var subtract = {
   months: subMonths
 }
 
-exports.getDefaultStats = getDefaultStatsWith(getDatabase)
+exports.getDefaultStats = getDefaultStatsWith(storage)
 exports.getDefaultStatsWith = getDefaultStatsWith
-function getDefaultStatsWith (getDatabase) {
-  var getAllEvents = getAllEventsWith(getDatabase)
+function getDefaultStatsWith (storage) {
+  var getAllEvents = function () {
+    return storage.getAllEvents
+      .apply(null, arguments)
+      .then(function (events) {
+        return events.filter(eventSchema)
+      })
+  }
   return function (accountId, query, privateJwk) {
     if (!accountId && accountId !== null) {
       return Promise.reject(
@@ -125,7 +124,7 @@ function getDefaultStatsWith (getDatabase) {
     var uniqueAccounts = stats.accounts(eventsInBounds)
     var returningUsers = stats.returningUsers(eventsInBounds, allEvents)
 
-    var empty = countEvents(accountId).then(function (count) {
+    var empty = storage.countEvents(accountId).then(function (count) {
       return count === 0
     })
 
@@ -158,7 +157,7 @@ function getDefaultStatsWith (getDatabase) {
           return accountId
             ? decryptEvents(
               events,
-              getEncryptedSecretsWith(getDatabase)(accountId),
+              storage.getEncryptedSecrets(accountId),
               privateJwk
             )
             : events
@@ -234,297 +233,6 @@ function getDefaultStatsWith (getDatabase) {
           resolution: resolution,
           range: range
         }
-      })
-  }
-}
-
-var TYPE_LAST_KNOWN_CHECKPOINT = 'LAST_KNOWN_CHECKPOINT'
-
-exports.updateLastKnownCheckpoint = updateLastKnownCheckpointWith(getDatabase)
-function updateLastKnownCheckpointWith (getDatabase) {
-  return function (accountId, sequence) {
-    var table = getDatabase(accountId).checkpoints
-    return table.put({
-      type: TYPE_LAST_KNOWN_CHECKPOINT,
-      sequence: sequence
-    })
-      .catch(dexie.OpenFailedError, function () {
-        fallbackCheckpointStore = sequence
-      })
-  }
-}
-
-exports.getLastKnownCheckpoint = getLastKnownCheckpointWith(getDatabase)
-function getLastKnownCheckpointWith (getDatabase) {
-  return function (accountId) {
-    var table = getDatabase(accountId).checkpoints
-    return table.get({ type: TYPE_LAST_KNOWN_CHECKPOINT })
-      .then(function (result) {
-        if (!result) {
-          return null
-        }
-        return result.sequence
-      })
-      .catch(dexie.OpenFailedError, function () {
-        return fallbackCheckpointStore
-      })
-  }
-}
-
-var TYPE_USER_SECRET = 'USER_SECRET'
-var TYPE_ENCRYPTED_SECRET = 'ENCRYPTED_SECRET'
-
-function getAllEventsWith (getDatabase) {
-  return function (accountId, lowerBound, upperBound) {
-    var table = getDatabase(accountId).events
-    if (!lowerBound || !upperBound) {
-      return table
-        .toArray()
-        .catch(dexie.OpenFailedError, function () {
-          fallbackEventStore[accountId] = fallbackEventStore[accountId] || []
-          return fallbackEventStore[accountId]
-        })
-        .then(function (events) {
-          return events.filter(eventSchema)
-        })
-    }
-    return table
-      .where('eventId')
-      .between(lowerBound, upperBound, false, false)
-      .toArray()
-      .catch(dexie.OpenFailedError, function () {
-        fallbackEventStore[accountId] = fallbackEventStore[accountId] || []
-        return fallbackEventStore[accountId].filter(function (event) {
-          return event.eventId >= lowerBound && event.eventId <= upperBound
-        })
-      })
-      .then(function (events) {
-        return events.filter(eventSchema)
-      })
-  }
-}
-
-var countEvents = countEventsWith(getDatabase)
-function countEventsWith (getDatabase) {
-  return function (accountId) {
-    var table = getDatabase(accountId).events
-    return table.count()
-      .catch(dexie.OpenFailedError, function () {
-        fallbackEventStore[accountId] = fallbackEventStore[accountId] || []
-        return fallbackEventStore[accountId].length
-      })
-  }
-}
-
-exports.getUserSecret = getUserSecretWith(getDatabase)
-exports.getUserSecretWith = getUserSecretWith
-function getUserSecretWith (getDatabase) {
-  return function (accountId) {
-    var db = getDatabase(accountId)
-    return db.keys
-      .get({ type: TYPE_USER_SECRET })
-      .then(function (result) {
-        if (result) {
-          return result.value
-        }
-        // This is a nifty hack to work around the following situation:
-        // When run in a non-Auditorium context, Safari throws an OpenFailedError
-        // when trying to access IndexedDB which is we we need to fall back to
-        // cookie based persistence for user secrets.
-        // When run in the context of the Auditorium, Safari allows IndexedDB
-        // to be accessed, but the lookup will not yield any result. This means
-        // we throw this error to make another lookup attempt before returning
-        // null.
-        throw new dexie.OpenFailedError('Trying to fall back to cookie based persistence.')
-      })
-      .catch(dexie.OpenFailedError, function () {
-        var cookieData = cookies.parse(document.cookie)
-        var lookupKey = TYPE_USER_SECRET + '-' + accountId
-        if (cookieData[lookupKey]) {
-          return JSON.parse(cookieData[lookupKey])
-        }
-        return null
-      })
-  }
-}
-
-exports.putUserSecret = putUserSecretWith(getDatabase)
-exports.putUserSecretWith = putUserSecretWith
-function putUserSecretWith (getDatabase) {
-  return function (accountId, userSecret) {
-    var db = getDatabase(accountId)
-    return db.keys
-      .where({ type: TYPE_USER_SECRET })
-      .first()
-      .then(function (existingSecret) {
-        if (existingSecret) {
-          return
-        }
-        return db.keys
-          .put({
-            type: TYPE_USER_SECRET,
-            value: userSecret
-          })
-      })
-      .catch(dexie.OpenFailedError, function () {
-        var isLocalhost = window.location.hostname === 'localhost'
-        var sameSite = isLocalhost ? 'Lax' : 'None'
-
-        var entry = {}
-        entry[TYPE_USER_SECRET + '-' + accountId] = JSON.stringify(userSecret)
-        Object.assign(entry, {
-          Path: '/vault',
-          SameSite: sameSite,
-          Secure: !isLocalhost,
-          expires: addHours(new Date(), 4464).toUTCString()
-        })
-        document.cookie = cookies.serialize(entry)
-      })
-  }
-}
-
-exports.deleteUserSecret = deleteUserSecretWith(getDatabase)
-exports.deleteUserSecretWith = deleteUserSecretWith
-function deleteUserSecretWith (getDatabase) {
-  return function (accountId) {
-    var db = getDatabase(accountId)
-    return db.keys
-      .where({ type: TYPE_USER_SECRET })
-      .delete()
-      .catch(dexie.OpenFailedError, function () {
-        var entry = {}
-        entry[TYPE_USER_SECRET + '-' + accountId] = ''
-        Object.assign(entry, {
-          expires: new Date(0).toUTCString()
-        })
-        document.cookie = cookies.serialize(entry)
-      })
-  }
-}
-
-exports.putEncryptedSecrets = putEncryptedSecretsWith(getDatabase)
-exports.putEncryptedSecretsWith = putEncryptedSecretsWith
-function putEncryptedSecretsWith (getDatabase) {
-  // user secrets are expected to be passed in [secretUd, secret] tuples
-  return function (/* accountId, ...userSecrets */) {
-    var args = [].slice.call(arguments)
-    var accountId = args.shift()
-
-    var db = getDatabase(accountId)
-    var newKeys = args.map(function (pair) {
-      return {
-        type: TYPE_ENCRYPTED_SECRET,
-        secretId: pair[0],
-        value: pair[1]
-      }
-    })
-    return db.keys.toArray()
-      .then(function (knownKeys) {
-        return newKeys.filter(function (newKey) {
-          return knownKeys.every(function (knownKey) {
-            return knownKey.secretId !== newKey.secretId
-          })
-        })
-      })
-      .then(function (records) {
-        return db.keys
-          .bulkPut(records)
-          .catch(dexie.OpenFailedError, function () {
-            fallbackKeyStore[accountId] = fallbackKeyStore[accountId] || []
-            fallbackKeyStore[accountId] = fallbackKeyStore[accountId].concat(records)
-            return records
-          })
-      })
-  }
-}
-
-exports.getLatestEvent = getLatestEventWith(getDatabase)
-exports.getLatestEventWith = getLatestEventWith
-function getLatestEventWith (getDatabase) {
-  return function (accountId) {
-    var db = getDatabase(accountId)
-    return db.events
-      .orderBy('eventId')
-      .last()
-      .then(function (latestLocalEvent) {
-        return latestLocalEvent || null
-      })
-      .catch(dexie.OpenFailedError, function () {
-        fallbackEventStore[accountId] = fallbackEventStore[accountId] || []
-        return fallbackEventStore[accountId][fallbackEventStore[accountId].length - 1] || null
-      })
-  }
-}
-
-exports.getAllEventIds = getAllEventIdsWith(getDatabase)
-exports.getAllEventIdsWith = getAllEventIdsWith
-function getAllEventIdsWith (getDatabase) {
-  return function (accountId) {
-    var db = getDatabase(accountId)
-    return db.events.toCollection().keys()
-      .catch(dexie.OpenFailedError, function () {
-        return []
-      })
-  }
-}
-
-exports.putEvents = putEventsWith(getDatabase)
-exports.putEventsWith = putEventsWith
-function putEventsWith (getDatabase) {
-  return function (/* accountId, ...events */) {
-    var args = [].slice.call(arguments)
-    var accountId = args.shift()
-    var db = getDatabase(accountId)
-    // events data is saved in the shape supplied by the server
-    return db.events.bulkPut(args)
-      .catch(dexie.OpenFailedError, function () {
-        fallbackEventStore[accountId] = fallbackEventStore[accountId] || []
-        fallbackEventStore[accountId] = fallbackEventStore[accountId].concat(args)
-        return fallbackEventStore[accountId]
-      })
-  }
-}
-
-exports.deleteEvents = deleteEventsWith(getDatabase)
-exports.deleteEventsWith = deleteEventsWith
-function deleteEventsWith (getDatabase) {
-  return function (/* accountId, ...eventIds */) {
-    var args = [].slice.call(arguments)
-    var accountId = args.shift()
-    var db = getDatabase(accountId)
-    return db.events.bulkDelete(args)
-      .catch(dexie.OpenFailedError, function () {
-        fallbackEventStore[accountId] = fallbackEventStore[accountId] || []
-        fallbackEventStore[accountId] = fallbackEventStore[accountId].filter(function (event) {
-          return args.indexOf(event.eventId) === -1
-        })
-        return null
-      })
-  }
-}
-
-exports.purge = purgeWith(getDatabase)
-exports.purgeWith = purgeWith
-function purgeWith (getDatabase) {
-  return function () {
-    var db = getDatabase(null)
-    return db.events.clear()
-      .catch(dexie.OpenFailedError, function () {
-        fallbackEventStore = {}
-        return null
-      })
-  }
-}
-
-function getEncryptedSecretsWith (getDatabase) {
-  return function (accountId) {
-    var db = getDatabase(accountId)
-    return db.keys
-      .where('type')
-      .equals(TYPE_ENCRYPTED_SECRET)
-      .toArray()
-      .catch(dexie.OpenFailedError, function () {
-        return fallbackKeyStore[accountId] || []
       })
   }
 }
