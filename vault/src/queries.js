@@ -50,17 +50,19 @@ var subtract = {
   months: subMonths
 }
 
-exports.getDefaultStats = getDefaultStatsWith(storage)
-exports.getDefaultStatsWith = getDefaultStatsWith
-function getDefaultStatsWith (storage) {
-  var getAllEvents = function () {
+module.exports = new Queries(storage)
+module.exports.Queries = Queries
+
+function Queries (storage) {
+  function getAllEvents () {
     return storage.getAllEvents
-      .apply(null, arguments)
+      .apply(storage, arguments)
       .then(function (events) {
         return events.filter(eventSchema)
       })
   }
-  return function (accountId, query, privateJwk) {
+
+  this.getDefaultStats = function (accountId, query, privateJwk) {
     if (!accountId && accountId !== null) {
       return Promise.reject(
         new Error('Expected either an account id or null to be given, got: ' + accountId)
@@ -237,7 +239,7 @@ function getDefaultStatsWith (storage) {
   }
 }
 
-exports.validateAndParseEvent = validateAndParseEvent
+module.exports.validateAndParseEvent = validateAndParseEvent
 function validateAndParseEvent (event) {
   if (!payloadSchema(event.payload)) {
     return null

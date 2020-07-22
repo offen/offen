@@ -11,6 +11,7 @@ var uuid = require('uuid/v4')
 
 var queries = require('./queries')
 var getDatabase = require('./database')
+var storage = require('./storage')
 
 describe('src/queries.js', function () {
   describe('getDefaultStats(accountId, query, privateKey)', function () {
@@ -41,9 +42,8 @@ describe('src/queries.js', function () {
 
       beforeEach(function () {
         db = getDatabase('test-' + uuid())
-        getDefaultStats = queries.getDefaultStatsWith(function () {
-          return db
-        })
+        var s = new storage.Storage(function () { return db }, {})
+        getDefaultStats = new queries.Queries(s).getDefaultStats
       })
 
       afterEach(function () {
@@ -106,9 +106,8 @@ describe('src/queries.js', function () {
       before(function () {
         var userSecretsById = {}
         db = getDatabase('test-' + uuid())
-        getDefaultStats = queries.getDefaultStatsWith(function () {
-          return db
-        })
+        var s = new storage.Storage(function () { return db }, {})
+        getDefaultStats = new queries.Queries(s).getDefaultStats
         // this is a sunday morning
         now = new Date('2019-07-14T10:01:00.000Z')
         var userSecrets = ['test-user-1', 'test-user-2']

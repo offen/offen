@@ -12,10 +12,14 @@ var cookies = require('./cookie-tools')
 var fallbackStore = { events: {}, keys: {}, checkpoints: {} }
 
 var TYPE_LAST_KNOWN_CHECKPOINT = 'LAST_KNOWN_CHECKPOINT'
+var TYPE_USER_SECRET = 'USER_SECRET'
+var TYPE_ENCRYPTED_SECRET = 'ENCRYPTED_SECRET'
 
-exports.updateLastKnownCheckpoint = updateLastKnownCheckpointWith(getDatabase, fallbackStore)
-function updateLastKnownCheckpointWith (getDatabase, fallbackStore) {
-  return function (accountId, sequence) {
+module.exports = new Storage(getDatabase, fallbackStore)
+module.exports.Storage = Storage
+
+function Storage (getDatabase, fallbackStore) {
+  this.updateLastKnownCheckpoint = function (accountId, sequence) {
     var table = getDatabase(accountId).checkpoints
     return table.put({
       type: TYPE_LAST_KNOWN_CHECKPOINT,
@@ -25,11 +29,8 @@ function updateLastKnownCheckpointWith (getDatabase, fallbackStore) {
         fallbackStore.checkpoints[accountId] = sequence
       })
   }
-}
 
-exports.getLastKnownCheckpoint = getLastKnownCheckpointWith(getDatabase, fallbackStore)
-function getLastKnownCheckpointWith (getDatabase, fallbackStore) {
-  return function (accountId) {
+  this.getLastKnownCheckpoint = function (accountId) {
     var table = getDatabase(accountId).checkpoints
     return table.get({ type: TYPE_LAST_KNOWN_CHECKPOINT })
       .then(function (result) {
@@ -42,14 +43,8 @@ function getLastKnownCheckpointWith (getDatabase, fallbackStore) {
         return fallbackStore.checkpoints[accountId] || null
       })
   }
-}
 
-var TYPE_USER_SECRET = 'USER_SECRET'
-var TYPE_ENCRYPTED_SECRET = 'ENCRYPTED_SECRET'
-
-exports.getAllEvents = getAllEventsWith(getDatabase, fallbackStore)
-function getAllEventsWith (getDatabase, fallbackStore) {
-  return function (accountId, lowerBound, upperBound) {
+  this.getAllEvents = function (accountId, lowerBound, upperBound) {
     var table = getDatabase(accountId).events
     if (!lowerBound || !upperBound) {
       return table
@@ -70,11 +65,8 @@ function getAllEventsWith (getDatabase, fallbackStore) {
         })
       })
   }
-}
 
-exports.countEvents = countEventsWith(getDatabase, fallbackStore)
-function countEventsWith (getDatabase, fallbackStore) {
-  return function (accountId) {
+  this.countEvents = function (accountId) {
     var table = getDatabase(accountId).events
     return table.count()
       .catch(dexie.OpenFailedError, function () {
@@ -82,12 +74,8 @@ function countEventsWith (getDatabase, fallbackStore) {
         return fallbackStore.events[accountId].length
       })
   }
-}
 
-exports.getUserSecret = getUserSecretWith(getDatabase)
-exports.getUserSecretWith = getUserSecretWith
-function getUserSecretWith (getDatabase) {
-  return function (accountId) {
+  this.getUserSecret = function (accountId) {
     var db = getDatabase(accountId)
     return db.keys
       .get({ type: TYPE_USER_SECRET })
@@ -114,12 +102,8 @@ function getUserSecretWith (getDatabase) {
         return null
       })
   }
-}
 
-exports.putUserSecret = putUserSecretWith(getDatabase)
-exports.putUserSecretWith = putUserSecretWith
-function putUserSecretWith (getDatabase) {
-  return function (accountId, userSecret) {
+  this.putUserSecret = function (accountId, userSecret) {
     var db = getDatabase(accountId)
     return db.keys
       .where({ type: TYPE_USER_SECRET })
@@ -149,12 +133,8 @@ function putUserSecretWith (getDatabase) {
         document.cookie = cookies.serialize(entry)
       })
   }
-}
 
-exports.deleteUserSecret = deleteUserSecretWith(getDatabase)
-exports.deleteUserSecretWith = deleteUserSecretWith
-function deleteUserSecretWith (getDatabase) {
-  return function (accountId) {
+  this.deleteUserSecret = function (accountId) {
     var db = getDatabase(accountId)
     return db.keys
       .where({ type: TYPE_USER_SECRET })
@@ -168,13 +148,9 @@ function deleteUserSecretWith (getDatabase) {
         document.cookie = cookies.serialize(entry)
       })
   }
-}
 
-exports.putEncryptedSecrets = putEncryptedSecretsWith(getDatabase, fallbackStore)
-exports.putEncryptedSecretsWith = putEncryptedSecretsWith
-function putEncryptedSecretsWith (getDatabase, fallbackStore) {
   // user secrets are expected to be passed in [secretUd, secret] tuples
-  return function (/* accountId, ...userSecrets */) {
+  this.putEncryptedSecrets = function (/* accountId, ...userSecrets */) {
     var args = [].slice.call(arguments)
     var accountId = args.shift()
 
@@ -205,12 +181,8 @@ function putEncryptedSecretsWith (getDatabase, fallbackStore) {
         return records
       })
   }
-}
 
-exports.putEvents = putEventsWith(getDatabase, fallbackStore)
-exports.putEventsWith = putEventsWith
-function putEventsWith (getDatabase, fallbackStore) {
-  return function (/* accountId, ...events */) {
+  this.putEvents = function (/* accountId, ...events */) {
     var args = [].slice.call(arguments)
     var accountId = args.shift()
     var db = getDatabase(accountId)
@@ -222,12 +194,8 @@ function putEventsWith (getDatabase, fallbackStore) {
         return fallbackStore.events[accountId]
       })
   }
-}
 
-exports.deleteEvents = deleteEventsWith(getDatabase, fallbackStore)
-exports.deleteEventsWith = deleteEventsWith
-function deleteEventsWith (getDatabase, fallbackStore) {
-  return function (/* accountId, ...eventIds */) {
+  this.deleteEvents = function (/* accountId, ...eventIds */) {
     var args = [].slice.call(arguments)
     var accountId = args.shift()
     var db = getDatabase(accountId)
@@ -240,12 +208,8 @@ function deleteEventsWith (getDatabase, fallbackStore) {
         return null
       })
   }
-}
 
-exports.purge = purgeWith(getDatabase, fallbackStore)
-exports.purgeWith = purgeWith
-function purgeWith (getDatabase, fallbackStore) {
-  return function () {
+  this.purge = function () {
     var db = getDatabase(null)
     return db.events.clear()
       .catch(dexie.OpenFailedError, function () {
@@ -253,11 +217,8 @@ function purgeWith (getDatabase, fallbackStore) {
         return null
       })
   }
-}
 
-exports.getEncryptedSecrets = getEncryptedSecretsWith(getDatabase, fallbackStore)
-function getEncryptedSecretsWith (getDatabase, fallbackStore) {
-  return function (accountId) {
+  this.getEncryptedSecrets = function (accountId) {
     var db = getDatabase(accountId)
     return db.keys
       .where('type')
