@@ -115,7 +115,7 @@ func cmdDemo(subcommand string, flags []string) {
 		rand.Seed(time.Now().UnixNano())
 		account, _ := db.GetAccount(accountID.String(), false, "")
 
-		for i := 0; i < randomInRange(100, 200); i++ {
+		for i := 0; i < randomInRange(250, 500); i++ {
 			userID, key, jwk, err := newFakeUser()
 			if err != nil {
 				a.logger.WithError(err).Fatal("Error creating fake user data")
