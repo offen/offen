@@ -149,27 +149,19 @@ function Queries (storage) {
     // Theoretically *all* queries could be done on the set of events after
     // encryption, yet it seems using the IndexedDB API where possible makes
     // more sense and performs better.
-    var decryptions = [eventsInBounds, realtimeEvents].map(function (query) {
-      return query
-        .then(function (events) {
-          // User events are already decrypted, so there is no need to proceed
-          // further. This may seem counterintuitive at first, but it'd be
-          // relatively pointless to store the encrypted events alongside a
-          // key that is able to decrypt them.
-          return accountId
-            ? decryptEvents(
-              events,
-              storage.getEncryptedSecrets(accountId),
-              privateJwk
-            )
-            : events
-        })
-        .then(function (events) {
-          return events.map(validateAndParseEvent).filter(_.identity)
-        })
-    })
+    var decryptions = [eventsInBounds, realtimeEvents]
+      .map(function (asyncSet) {
+        return asyncSet
+          .then(function (set) {
+            return maybeDecrypt(set, accountId, privateJwk)
+          })
+          .then(function (events) {
+            return _.compact(events.map(validateAndParseEvent))
+          })
+      })
 
     var decryptedEvents = decryptions[0]
+    var realtime = decryptions[1]
     var loss = stats.loss(decryptedEvents)
     var uniqueSessions = stats.uniqueSessions(decryptedEvents)
     var bounceRate = stats.bounceRate(decryptedEvents)
@@ -183,7 +175,6 @@ function Queries (storage) {
     var exitPages = stats.exitPages(decryptedEvents)
     var mobileShare = stats.mobileShare(decryptedEvents)
 
-    var realtime = decryptions[1]
     var livePages = stats.activePages(realtime)
     var liveUsers = stats.visitors(realtime)
 
@@ -236,6 +227,13 @@ function Queries (storage) {
           range: range
         }
       })
+  }
+
+  function maybeDecrypt (set, accountId, privateJwk) {
+    if (!accountId || !privateJwk) {
+      return set
+    }
+    return decryptEvents(set, storage.getEncryptedSecrets(accountId), privateJwk)
   }
 }
 

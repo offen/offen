@@ -1,6 +1,9 @@
 {
   "type": "object",
   "properties": {
+    "accountId": {
+      "type": ["string", "null"]
+    },
     "eventId": {
       "type": "string",
       "maxLength": 26
