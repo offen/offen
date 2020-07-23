@@ -228,12 +228,12 @@ func (r *relationalDAL) ApplyMigrations() error {
 					return err
 				}
 
-				rev, err := persistence.NewULID()
+				seq, err := persistence.NewULID()
 				if err != nil {
 					return err
 				}
 
-				if err := db.Model(&Event{}).Update("rev", rev).Error; err != nil {
+				if err := db.Table("events").Update("sequence", seq).Error; err != nil {
 					return err
 				}
 				return nil
