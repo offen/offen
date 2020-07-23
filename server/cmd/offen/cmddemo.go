@@ -123,28 +123,27 @@ func cmdDemo(subcommand string, flags []string) {
 		}
 
 		wg := sync.WaitGroup{}
-		errs := make(chan error)
-		done := make(chan bool)
+		done := make(chan error)
 		wg.Add(users)
 
 		for i := 0; i < users; i++ {
 			go func() {
 				userID, key, jwk, err := newFakeUser()
 				if err != nil {
-					errs <- err
+					done <- err
 					return
 				}
 				encryptedSecret, encryptionErr := keys.EncryptAsymmetricWith(
 					account.PublicKey, jwk,
 				)
 				if encryptionErr != nil {
-					errs <- err
+					done <- err
 					return
 				}
 				if err := db.AssociateUserSecret(
 					accountID.String(), userID, encryptedSecret.Marshal(),
 				); err != nil {
-					errs <- err
+					done <- err
 				}
 
 				for s := 0; s < randomInRange(1, 4); s++ {
@@ -155,11 +154,11 @@ func cmdDemo(subcommand string, flags []string) {
 					for _, evt := range evts {
 						b, bErr := json.Marshal(evt)
 						if bErr != nil {
-							errs <- err
+							done <- err
 						}
 						event, eventErr := keys.EncryptWith(key, b)
 						if eventErr != nil {
-							errs <- err
+							done <- err
 						}
 						eventID, _ := persistence.EventIDAt(evt.Timestamp)
 						if err := db.Insert(
@@ -168,21 +167,24 @@ func cmdDemo(subcommand string, flags []string) {
 							event.Marshal(),
 							&eventID,
 						); err != nil {
-							errs <- err
+							done <- err
 						}
 					}
 				}
 				wg.Done()
 			}()
 		}
+
 		go func() {
 			wg.Wait()
-			done <- true
+			done <- nil
 		}()
+
 		select {
-		case err := <-errs:
-			a.logger.WithError(err).Fatal("Error setting up demo")
-		case <-done:
+		case err := <-done:
+			if err != nil {
+				a.logger.WithError(err).Fatal("Error setting up demo")
+			}
 		}
 	}
 
