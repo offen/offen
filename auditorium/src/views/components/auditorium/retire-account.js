@@ -41,9 +41,9 @@ const ConfirmScreen = (props) => {
   }
   return (
     <form onsubmit={handleSubmit}>
-      <p class='ma0 mb1'>
+      <Paragraph class='ma0 mb1'>
         {__('To permanently retire the account, type its name <em class="%s">"%s"</em> into the form below:', 'i tracked', account.name)}
-      </p>
+      </Paragraph>
       <LabeledInput
         required
         oninput={(e) => setInputValue(e.target.value)}
