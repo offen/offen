@@ -153,7 +153,9 @@ function Queries (storage) {
       .map(function (asyncSet) {
         return asyncSet
           .then(function (set) {
-            return maybeDecrypt(set, accountId, privateJwk)
+            return accountId && privateJwk
+              ? doDecrypt(set, accountId, privateJwk)
+              : set
           })
           .then(function (events) {
             return _.compact(events.map(validateAndParseEvent))
@@ -229,11 +231,11 @@ function Queries (storage) {
       })
   }
 
-  function maybeDecrypt (set, accountId, privateJwk) {
-    if (!accountId || !privateJwk) {
-      return set
-    }
-    return decryptEvents(set, storage.getEncryptedSecrets(accountId), privateJwk)
+  function doDecrypt (events, accountId, privateJwk) {
+    return storage.getEncryptedSecrets(accountId)
+      .then(function (secrets) {
+        return decryptEvents(events, secrets, privateJwk)
+      })
   }
 }
 
