@@ -25,6 +25,8 @@ type DataAccessLayer interface {
 	UpdateAccountUserRelationship(*AccountUserRelationship) error
 	FindAccountUserRelationships(interface{}) ([]AccountUserRelationship, error)
 	DeleteAccountUserRelationships(interface{}) error
+	CreateTombstone(*Tombstone) error
+	FindTombstones(interface{}) ([]Tombstone, error)
 	Transaction() (Transaction, error)
 	ApplyMigrations() error
 	DropAll() error
@@ -44,20 +46,12 @@ type FindEventsQueryForSecretIDs struct {
 // identifiers.
 type FindEventsQueryByEventIDs []string
 
-// FindEventsQueryExclusion requests all events of the given identifiers
-// that do not have a hashed user id contained in the given set.
-type FindEventsQueryExclusion struct {
-	EventIDs  []string
-	SecretIDs []string
-}
+// FindEventsQueryOlderThan looks up all events older than the given event id
+type FindEventsQueryOlderThan string
 
 // DeleteEventsQueryBySecretIDs requests deletion of all events that match
 // the given identifiers.
 type DeleteEventsQueryBySecretIDs []string
-
-// DeleteEventsQueryOlderThan requests deletion of all events that are older than
-// the given ULID event identifier.
-type DeleteEventsQueryOlderThan string
 
 // DeleteEventsQueryByEventIDs requests deletion of all events contained in the
 // given set.
@@ -107,6 +101,20 @@ type FindAccountUsersQueryAllAccountUsers struct {
 
 // RetireAccountQueryByID requests the account of the given id to be retired.
 type RetireAccountQueryByID string
+
+// FindTombstonesQueryByAccounts requests all tombstones for an account id that are
+// newer than the given sequence
+type FindTombstonesQueryByAccounts struct {
+	Since      string
+	AccountIDs []string
+}
+
+// FindTombstonesQueryBySecrets requests all tombstones for an account id that are
+// newer than the given sequence
+type FindTombstonesQueryBySecrets struct {
+	Since     string
+	SecretIDs []string
+}
 
 // Transaction is a data access layer that does not persist data until commit
 // is called. In case rollback is called before, the underlying database will

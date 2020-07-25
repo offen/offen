@@ -43,13 +43,15 @@ describe('src/get-user-events', function () {
     })
 
     it('ensures sync and then returns the generated default stats', function () {
-      var mockQueries = {
-        getDefaultStats: sinon.stub().resolves({ mock: 'result' }),
-        getAllEventIds: sinon.stub().resolves(['a', 'b', 'c']),
+      var mockStorage = {
+        getLastKnownCheckpoint: sinon.stub().resolves('sequence-a'),
+        updateLastKnownCheckpoint: sinon.stub().resolves(),
         deleteEvents: sinon.stub().resolves(true),
-        getLatestEvent: sinon.stub().resolves({ eventId: 'c' }),
         putEvents: sinon.stub().resolves(true),
         getUserSecret: sinon.stub().resolves(window.crypto.subtle.exportKey('jwk', userSecret))
+      }
+      var mockQueries = {
+        getDefaultStats: sinon.stub().resolves({ mock: 'result' })
       }
       var mockApi = {
         getDeletedEvents: sinon.stub().resolves({ eventIds: ['a'] }),
@@ -60,39 +62,37 @@ describe('src/get-user-events', function () {
               accountId: 'account-a',
               payload: encryptedPayload
             }]
-          }
+          },
+          deletedEvents: ['k'],
+          sequence: 'sequence-b'
         })
       }
-      var getUserEvents = getUserEventsWith(mockQueries, mockApi)
+      var getUserEvents = getUserEventsWith(mockQueries, mockStorage, mockApi)
       return getUserEvents()
         .then(function (result) {
-          assert(mockQueries.getAllEventIds.calledOnce)
-          assert(mockQueries.getAllEventIds.calledWith(null))
+          assert(mockStorage.getLastKnownCheckpoint.calledOnce)
+          assert(mockStorage.getLastKnownCheckpoint.calledWith(null))
 
-          assert(mockApi.getDeletedEvents.calledOnce)
-          assert(mockApi.getDeletedEvents.calledWith(['a', 'b', 'c']))
-
-          assert(mockQueries.deleteEvents.calledOnce)
-          assert(mockQueries.deleteEvents.calledWith(null, 'a'))
-
-          assert(mockQueries.getLatestEvent.calledOnce)
-          assert(mockQueries.getLatestEvent.calledWith(null))
+          assert(mockStorage.deleteEvents.calledOnce)
+          assert(mockStorage.deleteEvents.calledWith(null, 'k'))
 
           assert(mockApi.getEvents.calledOnce)
-          assert(mockApi.getEvents.calledWith({ since: 'c' }))
+          assert(mockApi.getEvents.calledWith({ since: 'sequence-a' }))
 
-          assert(mockQueries.getUserSecret.calledOnce)
-          assert(mockQueries.getUserSecret.calledWith('account-a'))
+          assert(mockStorage.getUserSecret.calledOnce)
+          assert(mockStorage.getUserSecret.calledWith('account-a'))
 
-          assert(mockQueries.putEvents.calledOnce)
-          assert(mockQueries.putEvents.calledWith(
+          assert(mockStorage.updateLastKnownCheckpoint.calledOnce)
+          assert(mockStorage.updateLastKnownCheckpoint.calledWith(null, 'sequence-b'))
+
+          assert(mockStorage.putEvents.calledOnce)
+          assert(mockStorage.putEvents.calledWith(
             null,
             {
               eventId: 'z',
               secretId: 'local',
               accountId: 'account-a',
-              payload: { type: 'TEST', timestamp: 'timestamp-fixture' },
-              timestamp: 'timestamp-fixture'
+              payload: { type: 'TEST', timestamp: 'timestamp-fixture' }
             }
           ))
 

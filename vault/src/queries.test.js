@@ -11,6 +11,7 @@ var uuid = require('uuid/v4')
 
 var queries = require('./queries')
 var getDatabase = require('./database')
+var storage = require('./storage')
 
 describe('src/queries.js', function () {
   describe('getDefaultStats(accountId, query, privateKey)', function () {
@@ -41,9 +42,8 @@ describe('src/queries.js', function () {
 
       beforeEach(function () {
         db = getDatabase('test-' + uuid())
-        getDefaultStats = queries.getDefaultStatsWith(function () {
-          return db
-        })
+        var s = new storage.Storage(function () { return db }, {})
+        getDefaultStats = new queries.Queries(s).getDefaultStats
       })
 
       afterEach(function () {
@@ -106,9 +106,8 @@ describe('src/queries.js', function () {
       before(function () {
         var userSecretsById = {}
         db = getDatabase('test-' + uuid())
-        getDefaultStats = queries.getDefaultStatsWith(function () {
-          return db
-        })
+        var s = new storage.Storage(function () { return db }, {})
+        getDefaultStats = new queries.Queries(s).getDefaultStats
         // this is a sunday morning
         now = new Date('2019-07-14T10:01:00.000Z')
         var userSecrets = ['test-user-1', 'test-user-2']
@@ -447,73 +446,6 @@ describe('src/queries.js', function () {
 
             assert.strictEqual(data.loss, 1 - (2 / 3))
             assert.strictEqual(data.retentionMatrix.length, 4)
-          })
-      })
-    })
-  })
-
-  describe('getLatestEvent', function () {
-    var db
-    var getLatestEvent
-
-    beforeEach(function () {
-      db = getDatabase('test-' + uuid())
-      getLatestEvent = queries.getLatestEventWith(function () {
-        return db
-      })
-    })
-
-    afterEach(function () {
-      return db.delete()
-    })
-
-    it('returns null when no events are known', function () {
-      return getLatestEvent('account-id')
-        .then(function (result) {
-          assert.strictEqual(result, null)
-        })
-    })
-
-    it('returns the highest sorting event id for the requested account', function () {
-      return db.events.bulkAdd([
-        { accountId: 'account-a', eventId: 'a' },
-        { accountId: 'account-a', eventId: 'b' },
-        { accountId: 'account-a', eventId: 't' },
-        { accountId: 'account-a', eventId: 'c' }
-      ]).then(function () {
-        return getLatestEvent('account-a')
-          .then(function (result) {
-            assert.strictEqual(result.eventId, 't')
-          })
-      })
-    })
-  })
-
-  describe('getAllEventIds', function () {
-    var db
-    var getAllEventIds
-
-    beforeEach(function () {
-      db = getDatabase('test-' + uuid())
-      getAllEventIds = queries.getAllEventIdsWith(function () {
-        return db
-      })
-    })
-
-    afterEach(function () {
-      return db.delete()
-    })
-
-    it('returns an ordered list of all known event ids', function () {
-      return db.events.bulkAdd([
-        { accountId: 'account-a', eventId: 'a' },
-        { accountId: 'account-a', eventId: 'b' },
-        { accountId: 'account-a', eventId: 't' },
-        { accountId: 'account-a', eventId: 'c' }
-      ]).then(function () {
-        return getAllEventIds('account-a')
-          .then(function (result) {
-            assert.deepStrictEqual(result, ['a', 'b', 'c', 't'])
           })
       })
     })

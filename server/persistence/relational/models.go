@@ -13,6 +13,7 @@ import (
 // uniquely tied to an Account and a User model.
 type Event struct {
 	EventID   string `gorm:"primary_key"`
+	Sequence  string
 	AccountID string
 	// the secret id is nullable for anonymous events
 	SecretID *string
@@ -27,6 +28,7 @@ func (e *Event) export() persistence.Event {
 		SecretID:  e.SecretID,
 		Payload:   e.Payload,
 		Secret:    e.Secret.export(),
+		Sequence:  e.Sequence,
 	}
 }
 
@@ -37,6 +39,33 @@ func importEvent(e *persistence.Event) Event {
 		SecretID:  e.SecretID,
 		Payload:   e.Payload,
 		Secret:    importSecret(&e.Secret),
+		Sequence:  e.Sequence,
+	}
+}
+
+// A Tombstone replaces an event on its deletion
+type Tombstone struct {
+	EventID   string `gorm:"primary_key"`
+	AccountID string
+	SecretID  *string
+	Sequence  string
+}
+
+func (t *Tombstone) export() persistence.Tombstone {
+	return persistence.Tombstone{
+		EventID:   t.EventID,
+		AccountID: t.AccountID,
+		SecretID:  t.SecretID,
+		Sequence:  t.Sequence,
+	}
+}
+
+func importTombstone(t *persistence.Tombstone) *Tombstone {
+	return &Tombstone{
+		EventID:   t.EventID,
+		AccountID: t.AccountID,
+		Sequence:  t.Sequence,
+		SecretID:  t.SecretID,
 	}
 }
 

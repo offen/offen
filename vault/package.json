@@ -25,6 +25,7 @@
     "unfetch": "^4.1.0",
     "unibabel": "^2.1.8",
     "url-polyfill": "^1.1.7",
+    "ulid": "^2.3.0",
     "uuid": "^3.3.2"
   },
   "devDependencies": {
@@ -48,7 +49,6 @@
     "sinon": "^7.3.2",
     "standard": "^14.3.1",
     "tinyify": "^2.5.1",
-    "ulid": "^2.3.0",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0"
   },

@@ -4,7 +4,7 @@
  */
 
 var api = require('./api')
-var queries = require('./queries')
+var storage = require('./storage')
 var relayEvent = require('./relay-event')
 var consentStatus = require('./user-consent')
 var allowsCookies = require('./allows-cookies')
@@ -48,10 +48,10 @@ function handleConsentStatusWith (getConsentStatus, allowsCookies) {
   }
 }
 
-exports.handleExpressConsent = handleExpressConsentWith(api, queries, consentStatus.get)
+exports.handleExpressConsent = handleExpressConsentWith(api, storage, consentStatus.get)
 exports.handleExpressConsentWith = handleExpressConsentWith
 
-function handleExpressConsentWith (api, queries, getConsentStatus) {
+function handleExpressConsentWith (api, storage, getConsentStatus) {
   return function (message) {
     var status = message.payload.status
     if ([consentStatus.ALLOW, consentStatus.DENY].indexOf(status) < 0) {
@@ -71,7 +71,7 @@ function handleExpressConsentWith (api, queries, getConsentStatus) {
             }
             throw err
           }),
-        queries.purge()
+        storage.purge()
       ])
     return purge.then(function () {
       return {
@@ -115,10 +115,10 @@ function handleQueryWith (getUserEvents, getOperatorEvents) {
   }
 }
 
-exports.handlePurge = handlePurgeWith(api, queries, getUserEvents, getOperatorEvents)
+exports.handlePurge = handlePurgeWith(api, storage, getUserEvents, getOperatorEvents)
 exports.handlePurgeWith = handlePurgeWith
 
-function handlePurgeWith (api, queries, getUserEvents, getOperatorEvents) {
+function handlePurgeWith (api, storage, getUserEvents, getOperatorEvents) {
   var handleQuery = handleQueryWith(getUserEvents, getOperatorEvents)
   return function handlePurge (message) {
     return Promise.all([
@@ -130,7 +130,7 @@ function handlePurgeWith (api, queries, getUserEvents, getOperatorEvents) {
           }
           throw err
         }),
-      queries.purge()
+      storage.purge()
     ])
       .then(function () {
         return handleQuery(message)

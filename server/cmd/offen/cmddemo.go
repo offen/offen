@@ -14,6 +14,7 @@ import (
 	"os"
 	"os/signal"
 	"runtime"
+	"sync"
 	"syscall"
 	"time"
 
@@ -46,8 +47,9 @@ func cmdDemo(subcommand string, flags []string) {
 		demoCmd.PrintDefaults()
 	}
 	var (
-		port  = demoCmd.Int("port", 0, "the port to bind to (defaults to a random available port)")
-		empty = demoCmd.Bool("empty", false, "do not populate with random usage data")
+		port     = demoCmd.Int("port", 0, "the port to bind to (defaults to a random available port)")
+		empty    = demoCmd.Bool("empty", false, "do not populate with random usage data")
+		numUsers = demoCmd.Int("users", 0, "the number of users to simulate - this defaults to a random number between 250 and 500")
 	)
 	demoCmd.Parse(flags)
 
@@ -115,37 +117,73 @@ func cmdDemo(subcommand string, flags []string) {
 		rand.Seed(time.Now().UnixNano())
 		account, _ := db.GetAccount(accountID.String(), false, "")
 
-		for i := 0; i < randomInRange(100, 200); i++ {
-			userID, key, jwk, err := newFakeUser()
-			if err != nil {
-				a.logger.WithError(err).Fatal("Error creating fake user data")
-			}
-			encryptedSecret, encryptionErr := keys.EncryptAsymmetricWith(account.PublicKey, jwk)
-			if encryptionErr != nil {
-				a.logger.WithError(encryptionErr).Fatal("Error encrypting fake user secret")
-			}
-			if err := db.AssociateUserSecret(accountID.String(), userID, encryptedSecret.Marshal()); err != nil {
-				a.logger.WithError(err).Warn("Error persisting fake user secret")
-			}
+		users := *numUsers
+		if users == 0 {
+			users = randomInRange(250, 500)
+		}
 
-			for s := 0; s < randomInRange(1, 4); s++ {
-				evts := newFakeSession(
-					fmt.Sprintf("http://localhost:%d", a.config.Server.Port),
-					randomInRange(1, 12),
+		wg := sync.WaitGroup{}
+		done := make(chan error)
+		wg.Add(users)
+
+		for i := 0; i < users; i++ {
+			go func() {
+				userID, key, jwk, err := newFakeUser()
+				if err != nil {
+					done <- err
+					return
+				}
+				encryptedSecret, encryptionErr := keys.EncryptAsymmetricWith(
+					account.PublicKey, jwk,
 				)
-				for _, evt := range evts {
-					b, bErr := json.Marshal(evt)
-					if bErr != nil {
-						a.logger.WithError(bErr).Fatal("Error marshaling fake event")
-					}
-					event, eventErr := keys.EncryptWith(key, b)
-					if eventErr != nil {
-						a.logger.WithError(eventErr).Fatal("Error encrypting fake event payload")
-					}
-					if err := db.Insert(userID, accountID.String(), event.Marshal()); err != nil {
-						a.logger.WithError(err).Warn("Error inserting event")
+				if encryptionErr != nil {
+					done <- err
+					return
+				}
+				if err := db.AssociateUserSecret(
+					accountID.String(), userID, encryptedSecret.Marshal(),
+				); err != nil {
+					done <- err
+				}
+
+				for s := 0; s < randomInRange(1, 4); s++ {
+					evts := newFakeSession(
+						fmt.Sprintf("http://localhost:%d", a.config.Server.Port),
+						randomInRange(1, 12),
+					)
+					for _, evt := range evts {
+						b, bErr := json.Marshal(evt)
+						if bErr != nil {
+							done <- err
+						}
+						event, eventErr := keys.EncryptWith(key, b)
+						if eventErr != nil {
+							done <- err
+						}
+						eventID, _ := persistence.EventIDAt(evt.Timestamp)
+						if err := db.Insert(
+							userID,
+							accountID.String(),
+							event.Marshal(),
+							&eventID,
+						); err != nil {
+							done <- err
+						}
 					}
 				}
+				wg.Done()
+			}()
+		}
+
+		go func() {
+			wg.Wait()
+			done <- nil
+		}()
+
+		select {
+		case err := <-done:
+			if err != nil {
+				a.logger.WithError(err).Fatal("Error setting up demo")
 			}
 		}
 	}

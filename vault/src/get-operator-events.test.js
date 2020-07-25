@@ -68,19 +68,23 @@ describe('src/get-operator-events', function () {
       })
 
       it('syncs the database and returns stats plus account info', function () {
-        var mockQueries = {
-          getDefaultStats: sinon.stub().resolves({ mock: 'result' }),
-          getAllEventIds: sinon.stub().resolves(['a', 'b', 'c', 'd']),
-          getLatestEvent: sinon.stub().resolves({ eventId: 'd' }),
+        var mockStorage = {
+          getLastKnownCheckpoint: sinon.stub().resolves('sequence-a'),
+          updateLastKnownCheckpoint: sinon.stub().resolves(),
           deleteEvents: sinon.stub().resolves(true),
           putEvents: sinon.stub().resolves(true),
           putEncryptedSecrets: sinon.stub().resolves()
         }
-        var mockApi = {
-          getDeletedEvents: sinon.stub().resolves({ eventIds: ['a'] }),
-          getAccount: sinon.stub().resolves({ accountId: 'account-a', encryptedPrivateKey: encryptedPrivateKey })
+        var mockQueries = {
+          getDefaultStats: sinon.stub().resolves({ mock: 'result' })
         }
-        var getOperatorEvents = getOperatorEventsWith(mockQueries, mockApi)
+        var mockApi = {
+          getAccount: sinon.stub().resolves({
+            accountId: 'account-a',
+            encryptedPrivateKey: encryptedPrivateKey
+          })
+        }
+        var getOperatorEvents = getOperatorEventsWith(mockQueries, mockStorage, mockApi)
         return getOperatorEvents(
           { accountId: 'account-a' },
           {
@@ -203,34 +207,36 @@ describe('src/get-operator-events', function () {
       })
 
       it('syncs the database and returns stats plus account info', function () {
-        var mockQueries = {
-          getDefaultStats: sinon.stub().resolves({ mock: 'result' }),
-          getAllEventIds: sinon.stub().resolves(['a', 'b', 'c', 'd']),
-          getLatestEvent: sinon.stub().resolves({ eventId: 'd' }),
+        var mockStorage = {
+          getLastKnownCheckpoint: sinon.stub().resolves('sequence-a'),
+          updateLastKnownCheckpoint: sinon.stub().resolves(),
           deleteEvents: sinon.stub().resolves(true),
           putEvents: sinon.stub().resolves(true),
           putEncryptedSecrets: sinon.stub().resolves()
         }
+        var mockQueries = {
+          getDefaultStats: sinon.stub().resolves({ mock: 'result' })
+        }
         var mockApi = {
-          getDeletedEvents: sinon.stub().resolves({ eventIds: ['a'] }),
           getAccount: sinon.stub().resolves({
             events: {
               'account-a': [{
                 eventId: 'z',
                 secretId: 'user-a',
-                accountId: 'account-a',
                 payload: encryptedEventPayload
               }]
             },
             secrets: {
               'user-a': encryptedUserSecret
             },
+            deletedEvents: ['m', 't'],
+            sequence: 'sequence-b',
             name: 'test',
             accountId: 'account-a',
             encryptedPrivateKey: encryptedPrivateKey
           })
         }
-        var getOperatorEvents = getOperatorEventsWith(mockQueries, mockApi)
+        var getOperatorEvents = getOperatorEventsWith(mockQueries, mockStorage, mockApi)
         return getOperatorEvents(
           { accountId: 'account-a' },
           {
@@ -240,27 +246,22 @@ describe('src/get-operator-events', function () {
           }
         )
           .then(function (result) {
-            assert(mockQueries.getAllEventIds.calledOnce)
-            assert(mockQueries.getAllEventIds.calledWith('account-a'))
-
-            assert(mockQueries.getLatestEvent.calledOnce)
-            assert(mockQueries.getLatestEvent.calledWith('account-a'))
-
-            assert(mockApi.getDeletedEvents.calledOnce)
-            assert(mockApi.getDeletedEvents.calledWith(['a', 'b', 'c', 'd']))
-
             assert(mockApi.getAccount.calledOnce)
             assert(mockApi.getAccount.calledWith('account-a'))
 
-            assert(mockQueries.deleteEvents.calledOnce)
-            assert(mockQueries.deleteEvents.calledWith('account-a', 'a'))
+            assert(mockStorage.deleteEvents.calledOnce)
+            assert(mockStorage.deleteEvents.calledWith('account-a', 'm', 't'))
 
-            assert(mockQueries.putEvents.calledOnce)
-            assert(mockQueries.putEvents.calledWith('account-a', {
+            assert(mockStorage.getLastKnownCheckpoint.calledOnce)
+            assert(mockStorage.getLastKnownCheckpoint.calledWith('account-a'))
+
+            assert(mockStorage.updateLastKnownCheckpoint.calledOnce)
+            assert(mockStorage.updateLastKnownCheckpoint.calledWith('account-a', 'sequence-b'))
+
+            assert(mockStorage.putEvents.calledOnce)
+            assert(mockStorage.putEvents.calledWith('account-a', {
               eventId: 'z',
               secretId: 'user-a',
-              accountId: 'account-a',
-              timestamp: 'timestamp-fixture',
               payload: encryptedEventPayload
             }))
           })

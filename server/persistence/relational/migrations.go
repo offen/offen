@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/jinzhu/gorm"
+	"github.com/offen/offen/server/persistence"
 	gormigrate "gopkg.in/gormigrate.v1"
 )
 
@@ -202,6 +203,45 @@ func (r *relationalDAL) ApplyMigrations() error {
 				}
 
 				return txn.Commit().Error
+			},
+		},
+		{
+			ID: "004_add_tombstones_event_revs",
+			Migrate: func(db *gorm.DB) error {
+				type Tombstone struct {
+					EventID   string `gorm:"primary_key"`
+					AccountID string
+					SecretID  string
+					Sequence  string
+				}
+
+				type Event struct {
+					EventID   string `gorm:"primary_key"`
+					Sequence  string
+					AccountID string
+					SecretID  *string
+					Payload   string `gorm:"type:text"`
+					Secret    Secret `gorm:"foreignkey:SecretID;association_foreignkey:SecretID"`
+				}
+
+				if err := db.AutoMigrate(&Tombstone{}, &Event{}).Error; err != nil {
+					return err
+				}
+
+				seq, err := persistence.NewULID()
+				if err != nil {
+					return err
+				}
+
+				if err := db.Table("events").Update("sequence", seq).Error; err != nil {
+					return err
+				}
+				return nil
+			},
+			Rollback: func(db *gorm.DB) error {
+				// we cannot drop the sequence column on the events table
+				// because this is not supported by SQLite
+				return db.DropTable("tombstones").Error
 			},
 		},
 	})

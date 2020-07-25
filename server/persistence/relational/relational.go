@@ -42,6 +42,7 @@ var knownTables = []interface{}{
 	&Secret{},
 	&AccountUser{},
 	&AccountUserRelationship{},
+	&Tombstone{},
 }
 
 func (r *relationalDAL) ProbeEmpty() bool {

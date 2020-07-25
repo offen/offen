@@ -44,17 +44,18 @@ func (p *persistenceLayer) GetAccount(accountID string, includeEvents bool, even
 
 	eventResults := EventsByAccountID{}
 	secrets := EncryptedSecretsByID{}
+	seqs := []string{}
 
 	for _, evt := range account.Events {
 		eventResults[evt.AccountID] = append(eventResults[evt.AccountID], EventResult{
-			SecretID:  evt.SecretID,
-			EventID:   evt.EventID,
-			Payload:   evt.Payload,
-			AccountID: evt.AccountID,
+			SecretID: evt.SecretID,
+			EventID:  evt.EventID,
+			Payload:  evt.Payload,
 		})
 		if evt.SecretID != nil {
 			secrets[*evt.SecretID] = evt.Secret.EncryptedSecret
 		}
+		seqs = append(seqs, evt.Sequence)
 	}
 
 	if len(eventResults) != 0 {
@@ -63,6 +64,25 @@ func (p *persistenceLayer) GetAccount(accountID string, includeEvents bool, even
 	if len(secrets) != 0 {
 		result.Secrets = &secrets
 	}
+
+	if eventsSince != "" {
+		pruned, err := p.dal.FindTombstones(FindTombstonesQueryByAccounts{
+			AccountIDs: []string{accountID},
+			Since:      eventsSince,
+		})
+		if err != nil {
+			return AccountResult{}, fmt.Errorf("persistence: error finding deleted events: %w", err)
+		}
+
+		var prunedIDs []string
+		for _, tombstone := range pruned {
+			prunedIDs = append(prunedIDs, tombstone.EventID)
+			seqs = append(seqs, tombstone.Sequence)
+		}
+		result.DeletedEvents = prunedIDs
+	}
+
+	result.Sequence = getLatestSeq(seqs)
 
 	return result, nil
 }
@@ -129,8 +149,13 @@ func (p *persistenceLayer) AssociateUserSecret(accountID, userID, encryptedUserS
 		if err != nil {
 			return fmt.Errorf("persistence: error looking up orphaned events: %w", err)
 		}
+
+		sequence, seqErr := NewULID()
+		if seqErr != nil {
+			return fmt.Errorf("persistence: error creating sequence for parked events: %w", err)
+		}
 		for _, orphan := range orphanedEvents {
-			newID, err := newEventID()
+			newID, err := siblingEventID(orphan.EventID)
 			if err != nil {
 				txn.Rollback()
 				return fmt.Errorf("persistence: error creating new event id: %w", err)
@@ -138,12 +163,23 @@ func (p *persistenceLayer) AssociateUserSecret(accountID, userID, encryptedUserS
 
 			if err := txn.CreateEvent(&Event{
 				EventID:   newID,
+				Sequence:  sequence,
 				AccountID: orphan.AccountID,
 				SecretID:  &parkedHash,
 				Payload:   orphan.Payload,
 			}); err != nil {
 				return fmt.Errorf("persistence: error migrating an existing event: %w", err)
 			}
+
+			if err := txn.CreateTombstone(&Tombstone{
+				EventID:   orphan.EventID,
+				AccountID: orphan.AccountID,
+				SecretID:  orphan.SecretID,
+				Sequence:  sequence,
+			}); err != nil {
+				return fmt.Errorf("persistence: error creating tombstone for migrated event: %w", err)
+			}
+
 			idsToDelete = append(idsToDelete, orphan.EventID)
 		}
 		if _, err := txn.DeleteEvents(DeleteEventsQueryByEventIDs(idsToDelete)); err != nil {

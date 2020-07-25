@@ -28,11 +28,16 @@ func exportEvents(evts []Event) []persistence.Event {
 func (r *relationalDAL) FindEvents(q interface{}) ([]persistence.Event, error) {
 	var events []Event
 	switch query := q.(type) {
+	case persistence.FindEventsQueryOlderThan:
+		if err := r.db.Find(&events, "sequence < ?", query).Error; err != nil {
+			return nil, fmt.Errorf("relational: error looking up events by age: %w", err)
+		}
+		return exportEvents(events), nil
 	case persistence.FindEventsQueryForSecretIDs:
 		var eventConditions []interface{}
 		if query.Since != "" {
 			eventConditions = []interface{}{
-				"event_id > ? AND secret_id in (?)",
+				"sequence > ? AND secret_id in (?)",
 				query.Since,
 				query.SecretIDs,
 			}
@@ -67,31 +72,6 @@ func (r *relationalDAL) FindEvents(q interface{}) ([]persistence.Event, error) {
 			offset += limit
 		}
 		return exportEvents(events), nil
-	case persistence.FindEventsQueryExclusion:
-		var offset int64
-		var limit int64 = 500
-		for {
-			var nextEvents []Event
-			var chunk []string
-			if int64(len(query.EventIDs)) > offset+limit {
-				chunk = query.EventIDs[offset : offset+limit]
-			} else {
-				chunk = query.EventIDs[offset:]
-			}
-			if err := r.db.Where(
-				"event_id IN (?) AND secret_id NOT IN (?)",
-				chunk,
-				query.SecretIDs,
-			).Find(&nextEvents).Error; err != nil {
-				return nil, fmt.Errorf("relational: error looking up events: %w", err)
-			}
-			events = append(events, nextEvents...)
-			if int64(len(chunk)) < limit {
-				break
-			}
-			offset += limit
-		}
-		return exportEvents(events), nil
 	default:
 		return nil, persistence.ErrBadQuery
 	}
@@ -102,7 +82,7 @@ func (r *relationalDAL) DeleteEvents(q interface{}) (int64, error) {
 	case persistence.DeleteEventsQueryByEventIDs:
 		deletion := r.db.Where("event_id in (?)", []string(query)).Delete(&Event{})
 		if err := deletion.Error; err != nil {
-			return 0, fmt.Errorf("relational: error deleting orphaned events: %w", err)
+			return 0, fmt.Errorf("relational: error deleting events by event id: %w", err)
 		}
 		return deletion.RowsAffected, nil
 	case persistence.DeleteEventsQueryBySecretIDs:
@@ -110,12 +90,6 @@ func (r *relationalDAL) DeleteEvents(q interface{}) (int64, error) {
 			"secret_id IN (?)",
 			[]string(query),
 		).Delete(&Event{})
-		if err := deletion.Error; err != nil {
-			return 0, fmt.Errorf("relational: error deleting events: %w", err)
-		}
-		return deletion.RowsAffected, nil
-	case persistence.DeleteEventsQueryOlderThan:
-		deletion := r.db.Where("event_id < ?", string(query)).Delete(&Event{})
 		if err := deletion.Error; err != nil {
 			return 0, fmt.Errorf("relational: error deleting events: %w", err)
 		}

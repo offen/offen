@@ -1,52 +1,18 @@
 {
   "type": "object",
   "properties": {
+    "accountId": {
+      "type": ["string", "null"]
+    },
+    "eventId": {
+      "type": "string",
+      "maxLength": 26
+    },
     "secretId": {
       "type": ["string", "null"]
     },
     "payload": {
-      "type": ["object", "null"],
-      "properties": {
-        "type": {
-          "type": "string",
-          "enum": ["PAGEVIEW"]
-        },
-        "pageload": {
-          "type": ["number", "null"]
-        },
-        "isMobile": {
-          "type": "boolean"
-        },
-        "title": {
-          "type": "string"
-        },
-        "sessionId": {
-          "type": ["string", "null"]
-        },
-        "timestamp": {
-          "type": "string",
-          "format": "date-time",
-          "maxLength": 36
-        },
-        "referrer": {
-          "oneOf": [
-            {
-              "type": "string",
-              "format": "uri",
-          		"maxLength": 2000
-            },
-            {
-              "type": "string",
-              "maxLength": 0
-            }
-          ]
-        },
-        "href": {
-          "type": "string",
-          "format": "uri",
-      		"maxLength": 2000
-        }
-      }
+      "type": ["string", "object"]
     }
   }
 }
