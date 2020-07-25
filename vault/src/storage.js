@@ -211,9 +211,13 @@ function Storage (getDatabase, fallbackStore) {
 
   this.purge = function () {
     var db = getDatabase(null)
-    return db.events.clear()
+    return Promise.all([
+      db.events.clear(),
+      db.checkpoints.clear()
+    ])
       .catch(dexie.OpenFailedError, function () {
         fallbackStore.events = {}
+        fallbackStore.checkpoints = {}
         return null
       })
   }
