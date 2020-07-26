@@ -29,7 +29,8 @@ function createDatabase (name) {
   db.version(2).stores({
     keys: '++,type',
     events: 'eventId',
-    checkpoints: 'type'
+    checkpoints: 'type',
+    caches: 'type'
   }).upgrade(function (txn) {
     return txn.table('events').clear()
   })

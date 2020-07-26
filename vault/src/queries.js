@@ -234,7 +234,7 @@ function Queries (storage) {
   function doDecrypt (events, accountId, privateJwk) {
     return storage.getEncryptedSecrets(accountId)
       .then(function (secrets) {
-        return decryptEvents(events, secrets, privateJwk)
+        return decryptEvents(accountId, events, secrets, privateJwk)
       })
   }
 }

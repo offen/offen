@@ -6,13 +6,15 @@
 var _ = require('underscore')
 
 var bindCrypto = require('./bind-crypto')
+var DecryptionCache = require('./decryption-cache')
 
-module.exports = decryptEventsWith(new InMemoryDecryptionCache())
+module.exports = decryptEventsWith({}, DecryptionCache)
 module.exports.decryptEventsWith = decryptEventsWith
 
-function decryptEventsWith (cache) {
-  return bindCrypto(function (encryptedEvents, encryptedSecrets, privateJWK) {
+function decryptEventsWith (cache, CacheImplementation) {
+  return bindCrypto(function (accountId, encryptedEvents, encryptedSecrets, privateJWK) {
     var crypto = this
+    var cache = getCacheInstance(accountId)
     var decryptWithAccountKey = crypto.decryptAsymmetricWith(privateJWK)
     var secretsById = _.indexBy(encryptedSecrets, 'secretId')
 
@@ -32,6 +34,7 @@ function decryptEventsWith (cache) {
             return withKey
           })
       }
+
       if (cache) {
         return cache.get(secretId)
           .then(function (cachedSecret) {
@@ -98,21 +101,14 @@ function decryptEventsWith (cache) {
         return result
       })
   })
-}
 
-function InMemoryDecryptionCache () {
-  var cache = {}
-
-  this.get = function (key) {
-    return Promise.resolve(cache[key] || null)
-  }
-
-  this.set = function (key, value) {
-    cache[key] = value
-    return Promise.resolve()
-  }
-
-  this.commit = function () {
-    return Promise.resolve()
+  function getCacheInstance (accountId) {
+    if (!cache) {
+      return null
+    }
+    if (!cache[accountId]) {
+      cache[accountId] = new CacheImplementation(accountId)
+    }
+    return cache[accountId]
   }
 }

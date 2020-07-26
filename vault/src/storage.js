@@ -14,6 +14,7 @@ var fallbackStore = { events: {}, keys: {}, checkpoints: {} }
 var TYPE_LAST_KNOWN_CHECKPOINT = 'LAST_KNOWN_CHECKPOINT'
 var TYPE_USER_SECRET = 'USER_SECRET'
 var TYPE_ENCRYPTED_SECRET = 'ENCRYPTED_SECRET'
+var TYPE_DECRYPTION_CACHE = 'DECRYPTION_CACHE'
 
 module.exports = new Storage(getDatabase, fallbackStore)
 module.exports.Storage = Storage
@@ -230,6 +231,28 @@ function Storage (getDatabase, fallbackStore) {
       .toArray()
       .catch(dexie.OpenFailedError, function () {
         return fallbackStore.keys[accountId] || []
+      })
+  }
+
+  this.getDecryptionCache = function (accountId) {
+    var db = getDatabase(accountId)
+    return db.caches.get(TYPE_DECRYPTION_CACHE)
+      .then(function (result) {
+        if (!result) {
+          return null
+        }
+        return result.value
+      })
+      .catch(dexie.OpenFailedError, function () {
+        return {}
+      })
+  }
+
+  this.setDecryptionCache = function (accountId, value) {
+    var db = getDatabase(accountId)
+    return db.caches.put({ type: TYPE_DECRYPTION_CACHE, value: value })
+      .catch(dexie.OpenFailedError, function () {
+        return {}
       })
   }
 }

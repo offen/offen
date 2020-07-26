@@ -81,6 +81,7 @@ describe('src/decrypt-events.js', function () {
 
     it('returns the given events with decrypted payloads', function () {
       return decryptEvents(
+        'account-a',
         [
           {
             secretId: 'user-id',
