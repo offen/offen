@@ -6,13 +6,13 @@
   "scripts": {
     "start": "budo index.js --pushstate --port $PORT",
     "test": "npm run server & (VAULT_HOST=http://localhost:9876 npm run mochify; status=$?; exit $status)",
-    "mochify": "mochify --chrome $(which google-chrome) --allow-chrome-as-root {,**}/*.test.js",
+    "mochify": "mochify --chrome $(which google-chrome) --allow-chrome-as-root src/{,**}/*.test.js",
     "server": "ws -d __fixtures__ -p 9876",
     "pretest": "dependency-check package.json --unused --no-dev",
     "posttest": "standard",
     "fix": "standard --fix",
     "build": "gulp",
-    "extract-strings": "gulp extract-strings",
+    "extract-strings": "extract-strings index.js $(find src -name '*.js')",
     "licenses": "npm-license-crawler --production --onlyDirectDependencies --omitVersion --csv dependencies.csv"
   },
   "dependencies": {
@@ -21,6 +21,7 @@
     "on-idle": "^3.1.4"
   },
   "devDependencies": {
+    "@offen/l10nify": "^0.1.3",
     "browserify": "^16.2.3",
     "budo": "^11.6.3",
     "dependency-check": "^4.1.0",
@@ -33,13 +34,14 @@
     "npm-license-crawler": "^0.2.1",
     "standard": "^14.3.1",
     "tinyify": "^2.5.0",
+    "util.promisify": "^1.0.1",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0"
   },
   "browserify": {
     "transform": [
       "envify",
-      "offen/localize"
+      "@offen/l10nify"
     ]
   },
   "standard": {

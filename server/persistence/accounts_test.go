@@ -39,6 +39,10 @@ func (m *mockGetAccountDatabase) FindAccount(q interface{}) (Account, error) {
 	return m.findAccountResult, m.findAccountErr
 }
 
+func (m *mockGetAccountDatabase) FindTombstones(q interface{}) ([]Tombstone, error) {
+	return nil, nil
+}
+
 func TestPersistenceLayer_GetAccount(t *testing.T) {
 	tests := []struct {
 		name           string
@@ -93,9 +97,9 @@ func TestPersistenceLayer_GetAccount(t *testing.T) {
 				EncryptedPrivateKey: "encrypted-private-key",
 				Events: &EventsByAccountID{
 					"account-id": []EventResult{
-						{EventID: "event-a", SecretID: strptr("hashed-user-a"), AccountID: "account-id", Payload: "payload-a"},
-						{EventID: "event-b", SecretID: strptr("hashed-user-b"), AccountID: "account-id", Payload: "payload-b"},
-						{EventID: "event-c", AccountID: "account-id", Payload: "payload-c"},
+						{EventID: "event-a", SecretID: strptr("hashed-user-a"), Payload: "payload-a"},
+						{EventID: "event-b", SecretID: strptr("hashed-user-b"), Payload: "payload-b"},
+						{EventID: "event-c", Payload: "payload-c"},
 					},
 				},
 				Secrets: &EncryptedSecretsByID{

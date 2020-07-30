@@ -24,5 +24,15 @@ function createDatabase (name) {
     events: 'eventId,timestamp'
   })
 
+  // Version 2 removes the timestamp index from the events table as it's not
+  // needed anymore. Clients will resync from scratch after this migration.
+  db.version(2).stores({
+    keys: '++,type',
+    events: 'eventId',
+    checkpoints: 'type'
+  }).upgrade(function (txn) {
+    return txn.table('events').clear()
+  })
+
   return db
 }

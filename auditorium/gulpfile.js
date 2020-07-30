@@ -7,16 +7,11 @@ var gulp = require('gulp')
 var clean = require('gulp-clean')
 var browserify = require('browserify')
 var source = require('vinyl-source-stream')
-var uglify = require('gulp-uglify')
 var rev = require('gulp-rev')
 var buffer = require('vinyl-buffer')
 var gap = require('gulp-append-prepend')
 
-var extractStrings = require('offen/localize/task.js')
-
 var pkg = require('./package.json')
-
-gulp.task('extract-strings', extractStrings(pkg.offen.locales))
 
 gulp.task('clean:pre', function () {
   return gulp
@@ -45,11 +40,19 @@ function createLocalizedBundle (locale) {
 
 function makeScriptTask (dest, locale) {
   return function () {
+    var transforms = JSON.parse(JSON.stringify(pkg.browserify.transform))
     var b = browserify({
       entries: './index.js',
-      transform: pkg.browserify.transform.map(function (transform) {
-        if (transform === 'offen/localize') {
-          return ['offen/localize', { locale: locale }]
+      // See: https://github.com/nikku/karma-browserify/issues/130#issuecomment-120036815
+      postFilter: function (id, file, currentPkg) {
+        if (currentPkg.name === pkg.name) {
+          currentPkg.browserify.transform = []
+        }
+        return true
+      },
+      transform: transforms.map(function (transform) {
+        if (transform === '@offen/l10nify') {
+          return ['@offen/l10nify', { locale: locale }]
         }
         if (Array.isArray(transform) && transform[0] === 'envify') {
           return ['envify', { LOCALE: locale }]
@@ -82,12 +85,10 @@ function makeVendorTask (dest) {
     return b
       .require('plotly.js-basic-dist')
       .require('zxcvbn')
+      .plugin('tinyify', { noFlat: true })
       .bundle()
       .pipe(source('vendor.js'))
       .pipe(buffer())
-      // the `tinyify` plugin fails on mangling plotly for unknown reasons, so
-      // it is being uglified instead: https://github.com/browserify/tinyify/issues/13
-      .pipe(uglify())
       .pipe(gap.prependText('*/'))
       .pipe(gap.prependFile('./../banner.txt'))
       .pipe(gap.prependText('/**'))

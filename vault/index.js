@@ -2,7 +2,6 @@
  * Copyright 2020 - Offen Authors <hioffen@posteo.de>
  * SPDX-License-Identifier: Apache-2.0
  */
-
 var router = require('./src/router')
 var handler = require('./src/handler')
 var middleware = require('./src/middleware')

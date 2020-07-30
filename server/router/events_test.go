@@ -71,87 +71,13 @@ func TestRouter_purgeEvents(t *testing.T) {
 	}
 }
 
-type mockGetDeletedEventsService struct {
-	persistence.Service
-	result []string
-	err    error
-}
-
-func (m *mockGetDeletedEventsService) GetDeletedEvents([]string, string) ([]string, error) {
-	return m.result, m.err
-}
-
-func TestRouter_getDeletedEvents(t *testing.T) {
-	tests := []struct {
-		name           string
-		db             persistence.Service
-		body           string
-		expectedStatus int
-		expectedBody   string
-	}{
-		{
-			"bad request body",
-			&mockGetDeletedEventsService{},
-			"zomfg what is this even",
-			http.StatusBadRequest,
-			"",
-		},
-		{
-			"database error",
-			&mockGetDeletedEventsService{
-				err: errors.New("did not work"),
-			},
-			`{"eventIds":["event-a", "event-b"]}`,
-			http.StatusInternalServerError,
-			"",
-		},
-		{
-			"ok",
-			&mockGetDeletedEventsService{
-				result: []string{"event-a"},
-			},
-			`{"eventIds":["event-a", "event-b"]}`,
-			http.StatusOK,
-			`{"eventIds":["event-a"]}`,
-		},
-	}
-
-	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-			m := gin.New()
-			rt := router{
-				db: test.db,
-			}
-			m.POST("/", func(c *gin.Context) {
-				c.Set(contextKeyCookie, "user-id")
-				c.Next()
-			}, rt.getDeletedEvents)
-
-			w := httptest.NewRecorder()
-			r := httptest.NewRequest(http.MethodPost, "/", strings.NewReader(test.body))
-
-			m.ServeHTTP(w, r)
-
-			if w.Code != test.expectedStatus {
-				t.Errorf("Expected status code %d, got %d", test.expectedStatus, w.Code)
-			}
-
-			if test.expectedBody != "" {
-				if !strings.Contains(w.Body.String(), test.expectedBody) {
-					t.Errorf("Expected response body %s to contain %s", w.Body.String(), test.expectedBody)
-				}
-			}
-		})
-	}
-}
-
 type mockGetEventsService struct {
 	persistence.Service
-	result map[string][]persistence.EventResult
+	result persistence.EventsResult
 	err    error
 }
 
-func (m *mockGetEventsService) Query(persistence.Query) (map[string][]persistence.EventResult, error) {
+func (m *mockGetEventsService) Query(persistence.Query) (persistence.EventsResult, error) {
 	return m.result, m.err
 }
 
@@ -173,9 +99,11 @@ func TestRouter_getEvents(t *testing.T) {
 		{
 			"StatusOK",
 			&mockGetEventsService{
-				result: map[string][]persistence.EventResult{
-					"account-a": []persistence.EventResult{
-						{AccountID: "account-a", SecretID: strptr("hashed-user-a"), EventID: "event-a", Payload: "payload"},
+				result: persistence.EventsResult{
+					Events: &persistence.EventsByAccountID{
+						"account-a": []persistence.EventResult{
+							{AccountID: "account-a", SecretID: strptr("hashed-user-a"), EventID: "event-a", Payload: "payload"},
+						},
 					},
 				},
 			},
@@ -218,7 +146,7 @@ type mockPostEventsService struct {
 	err error
 }
 
-func (m *mockPostEventsService) Insert(string, string, string) error {
+func (m *mockPostEventsService) Insert(string, string, string, *string) error {
 	return m.err
 }
 

@@ -29,7 +29,14 @@ SPDX-License-Identifier: Apache-2.0
 
 Offen is designed to leverage the [Same-origin policy][sop] and usage of 1st party cookies only to make sure usage data is handled securely and protected from unwanted access by 3rd party scripts on your site or similar, at all times.
 
-In practice, this boils down to the following setup: if you are using your Offen instance for collecting usage data on a site `www.yoursite.org`, Offen is expected to be served from a subdomain of `yoursite.org`, e.g. `offen.yoursite.org` or `analytics.yoursite.org` (the exact name of the subdomain does not matter). This makes sure Offen can securely collect usage data of all visitors that opt in to data collection.
+In practice, this boils down to the following setup: if you are using your Offen instance for collecting usage data on a site `www.yoursite.org`, Offen is expected to be served from a subdomain of `yoursite.org`, e.g. `offen.yoursite.org` or `usage.yoursite.org` (the exact name of the subdomain does not matter, although we recommend to use `offen` to make it transparent what is running). This makes sure Offen can securely collect usage data of all visitors that opt in to data collection.
+
+__Heads Up__
+{: .label .label-red }
+
+Even if it would make sense, we recommend **not to use an `analytics.yoursite.org` subdomain** for your Offen installation as these domains are often **subject to blocking by adblockers** like uBlock or similar.
+
+---
 
 In case you would be using a _different_ top level domain for your Offen installation (e.g. `offen.example.com`), Offen would be limited to user agents that accept 3rd party cookies, which is a concept that is luckily fading away quickly.
 

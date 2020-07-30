@@ -10,14 +10,14 @@ import (
 )
 
 func TestNewEventID(t *testing.T) {
-	first, firstErr := newEventID()
+	first, firstErr := NewULID()
 	if firstErr != nil {
 		t.Fatalf("Unexpected error %v", firstErr)
 	}
 
 	time.Sleep(time.Millisecond)
 
-	second, secondErr := newEventID()
+	second, secondErr := NewULID()
 	if secondErr != nil {
 		t.Fatalf("Unexpected error %v", secondErr)
 	}

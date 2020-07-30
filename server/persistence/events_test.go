@@ -216,7 +216,7 @@ func TestPersistenceLayer_Insert(t *testing.T) {
 			r := &persistenceLayer{
 				dal: test.db,
 			}
-			err := r.Insert(test.callArgs[0], test.callArgs[1], test.callArgs[2])
+			err := r.Insert(test.callArgs[0], test.callArgs[1], test.callArgs[2], nil)
 			if (err != nil) != test.expectError {
 				t.Errorf("Unexpected error value %v", err)
 			}
@@ -249,6 +249,26 @@ func (m *mockPurgeEventsDatabase) FindAccounts(q interface{}) ([]Account, error)
 func (m *mockPurgeEventsDatabase) DeleteEvents(q interface{}) (int64, error) {
 	m.methodArgs = append(m.methodArgs, q)
 	return m.deleteEventsResult, m.deleteEventsErr
+}
+
+func (m *mockPurgeEventsDatabase) FindTombstones(q interface{}) ([]Tombstone, error) {
+	return nil, nil
+}
+
+func (m *mockPurgeEventsDatabase) Commit() error {
+	return nil
+}
+
+func (m *mockPurgeEventsDatabase) Rollback() error {
+	return nil
+}
+
+func (m *mockPurgeEventsDatabase) Transaction() (Transaction, error) {
+	return m, nil
+}
+
+func (m *mockPurgeEventsDatabase) FindEvents(q interface{}) ([]Event, error) {
+	return nil, nil
 }
 
 func TestPersistenceLayer_Purge(t *testing.T) {
@@ -373,11 +393,15 @@ func (m *mockQueryEventDatabase) FindEvents(q interface{}) ([]Event, error) {
 	return m.findEventsResult, m.findEventsErr
 }
 
+func (m *mockQueryEventDatabase) FindTombstones(q interface{}) ([]Tombstone, error) {
+	return nil, nil
+}
+
 func TestPersistenceLayer_Query(t *testing.T) {
 	tests := []struct {
 		name           string
 		db             *mockQueryEventDatabase
-		expectedResult map[string][]EventResult
+		expectedResult EventsResult
 		expectError    bool
 		argAssertions  []assertion
 	}{
@@ -386,7 +410,7 @@ func TestPersistenceLayer_Query(t *testing.T) {
 			&mockQueryEventDatabase{
 				findAccountsErr: errors.New("did not work"),
 			},
-			nil,
+			EventsResult{},
 			true,
 			[]assertion{
 				func(q interface{}) error {
@@ -406,7 +430,7 @@ func TestPersistenceLayer_Query(t *testing.T) {
 				},
 				findEventsErr: errors.New("did not work"),
 			},
-			nil,
+			EventsResult{},
 			true,
 			[]assertion{
 				func(q interface{}) error {
@@ -441,12 +465,14 @@ func TestPersistenceLayer_Query(t *testing.T) {
 					{AccountID: "account-b", EventID: "event-b", Payload: "payload-b"},
 				},
 			},
-			map[string][]EventResult{
-				"account-a": []EventResult{
-					{AccountID: "account-a", Payload: "payload-a", EventID: "event-a"},
-				},
-				"account-b": []EventResult{
-					{AccountID: "account-b", Payload: "payload-b", EventID: "event-b"},
+			EventsResult{
+				Events: &EventsByAccountID{
+					"account-a": []EventResult{
+						{AccountID: "account-a", Payload: "payload-a", EventID: "event-a"},
+					},
+					"account-b": []EventResult{
+						{AccountID: "account-b", Payload: "payload-b", EventID: "event-b"},
+					},
 				},
 			},
 			false,
@@ -503,258 +529,9 @@ func TestPersistenceLayer_Query(t *testing.T) {
 	}
 }
 
-type mockGetDeletedEventsDatabase struct {
-	DataAccessLayer
-	findAccountsResult []Account
-	findAccountsErr    error
-	findEventsResults  [][]Event
-	findEventsErrs     []error
-	methodArgs         []interface{}
-}
-
-func (m *mockGetDeletedEventsDatabase) FindAccounts(q interface{}) ([]Account, error) {
-	m.methodArgs = append(m.methodArgs, q)
-	return m.findAccountsResult, m.findAccountsErr
-}
-
-func (m *mockGetDeletedEventsDatabase) FindEvents(q interface{}) ([]Event, error) {
-	m.methodArgs = append(m.methodArgs, q)
-	var result []Event
-	if len(m.findEventsResults) > 0 {
-		result = m.findEventsResults[0]
-	}
-	if len(m.findEventsResults) > 1 {
-		m.findEventsResults = m.findEventsResults[1:]
-	}
-	var err error
-	if len(m.findEventsErrs) > 0 {
-		err = m.findEventsErrs[0]
-	}
-	if len(m.findEventsErrs) > 1 {
-		m.findEventsErrs = m.findEventsErrs[1:]
-	}
-	return result, err
-}
-
-func TestPersistenceLayer_GetDeletedEvents(t *testing.T) {
-	tests := []struct {
-		name           string
-		db             *mockGetDeletedEventsDatabase
-		userIDArg      string
-		expectError    bool
-		expectedResult []string
-		argAssertions  []assertion
-	}{
-		{
-			"error finding events",
-			&mockGetDeletedEventsDatabase{
-				findEventsErrs: []error{
-					errors.New("did not work"),
-				},
-			},
-			"user-id",
-			true,
-			nil,
-			[]assertion{
-				func(q interface{}) error {
-					if ids, ok := q.(FindEventsQueryByEventIDs); ok {
-						if !reflect.DeepEqual([]string(ids), []string{"event-a", "event-m", "event-z"}) {
-							return fmt.Errorf("unexpected list of event ids: %v", ids)
-						}
-						return nil
-					}
-					return fmt.Errorf("unexpected argument %v", q)
-				},
-			},
-		},
-		{
-			"ok no user id",
-			&mockGetDeletedEventsDatabase{
-				findEventsResults: [][]Event{
-					[]Event{
-						{EventID: "event-a"},
-						{EventID: "event-z"},
-					},
-				},
-			},
-			"",
-			false,
-			[]string{"event-m"},
-			[]assertion{
-				func(q interface{}) error {
-					if ids, ok := q.(FindEventsQueryByEventIDs); ok {
-						if !reflect.DeepEqual([]string(ids), []string{"event-a", "event-m", "event-z"}) {
-							return fmt.Errorf("unexpected list of event ids: %v", ids)
-						}
-						return nil
-					}
-					return fmt.Errorf("unexpected argument %v", q)
-				},
-			},
-		},
-		{
-			"error finding accounts",
-			&mockGetDeletedEventsDatabase{
-				findEventsErrs: []error{
-					nil,
-				},
-				findEventsResults: [][]Event{
-					[]Event{
-						{EventID: "event-a"},
-						{EventID: "event-z"},
-					},
-				},
-				findAccountsErr: errors.New("did not work"),
-			},
-			"user-id",
-			true,
-			nil,
-			[]assertion{
-				func(q interface{}) error {
-					if ids, ok := q.(FindEventsQueryByEventIDs); ok {
-						if !reflect.DeepEqual([]string(ids), []string{"event-a", "event-m", "event-z"}) {
-							return fmt.Errorf("unexpected list of event ids: %v", ids)
-						}
-						return nil
-					}
-					return fmt.Errorf("unexpected argument %v", q)
-				},
-				func(q interface{}) error {
-					if _, ok := q.(FindAccountsQueryAllAccounts); ok {
-						return nil
-					}
-					return fmt.Errorf("unexpected argument %v", q)
-				},
-			},
-		},
-		{
-			"error finding exclusive events",
-			&mockGetDeletedEventsDatabase{
-				findEventsErrs: []error{
-					nil,
-					errors.New("did not work"),
-				},
-				findEventsResults: [][]Event{
-					[]Event{
-						{EventID: "event-a"},
-						{EventID: "event-z"},
-					},
-				},
-				findAccountsResult: []Account{
-					{UserSalt: "hYNyqFJnGq9fEJ+PW8CRwQ=="},
-				},
-			},
-			"user-id",
-			true,
-			nil,
-			[]assertion{
-				func(q interface{}) error {
-					if ids, ok := q.(FindEventsQueryByEventIDs); ok {
-						if !reflect.DeepEqual([]string(ids), []string{"event-a", "event-m", "event-z"}) {
-							return fmt.Errorf("unexpected list of event ids: %v", ids)
-						}
-						return nil
-					}
-					return fmt.Errorf("unexpected argument %v", q)
-				},
-				func(q interface{}) error {
-					if _, ok := q.(FindAccountsQueryAllAccounts); ok {
-						return nil
-					}
-					return fmt.Errorf("unexpected argument %v", q)
-				},
-				func(q interface{}) error {
-					if query, ok := q.(FindEventsQueryExclusion); ok {
-						if !reflect.DeepEqual(query.EventIDs, []string{"event-a", "event-m", "event-z"}) {
-							return fmt.Errorf("unexpected list of event ids %v", query.EventIDs)
-						}
-						if len(query.SecretIDs) != 1 {
-							return fmt.Errorf("unexpected number of user ids %v", len(query.SecretIDs))
-						}
-						return nil
-					}
-					return fmt.Errorf("unexpected argument %v", q)
-				},
-			},
-		},
-		{
-			"ok with user id",
-			&mockGetDeletedEventsDatabase{
-				findEventsErrs: []error{
-					nil,
-					nil,
-				},
-				findEventsResults: [][]Event{
-					[]Event{
-						{EventID: "event-a"},
-						{EventID: "event-z"},
-					},
-					[]Event{
-						{EventID: "event-z"},
-					},
-				},
-				findAccountsResult: []Account{
-					{UserSalt: "hYNyqFJnGq9fEJ+PW8CRwQ=="},
-				},
-			},
-			"user-id",
-			false,
-			[]string{"event-m", "event-z"},
-			[]assertion{
-				func(q interface{}) error {
-					if ids, ok := q.(FindEventsQueryByEventIDs); ok {
-						if !reflect.DeepEqual([]string(ids), []string{"event-a", "event-m", "event-z"}) {
-							return fmt.Errorf("unexpected list of event ids: %v", ids)
-						}
-						return nil
-					}
-					return fmt.Errorf("unexpected argument %v", q)
-				},
-				func(q interface{}) error {
-					if _, ok := q.(FindAccountsQueryAllAccounts); ok {
-						return nil
-					}
-					return fmt.Errorf("unexpected argument %v", q)
-				},
-				func(q interface{}) error {
-					if query, ok := q.(FindEventsQueryExclusion); ok {
-						if !reflect.DeepEqual(query.EventIDs, []string{"event-a", "event-m", "event-z"}) {
-							return fmt.Errorf("unexpected list of event ids %v", query.EventIDs)
-						}
-						if len(query.SecretIDs) != 1 {
-							return fmt.Errorf("unexpected number of user ids %v", len(query.SecretIDs))
-						}
-						return nil
-					}
-					return fmt.Errorf("unexpected argument %v", q)
-				},
-			},
-		},
-	}
-	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-			p := persistenceLayer{
-				dal: test.db,
-			}
-			result, err := p.GetDeletedEvents([]string{"event-a", "event-m", "event-z"}, test.userIDArg)
-
-			if (err != nil) != test.expectError {
-				t.Errorf("Unexpected error value %v", err)
-			}
-
-			if !reflect.DeepEqual(test.expectedResult, result) {
-				t.Errorf("Expected %v, got %v", test.expectedResult, result)
-			}
-
-			if expected, found := len(test.argAssertions), len(test.db.methodArgs); expected != found {
-				t.Fatalf("Number of assertions did not match number of calls, expected %d and found %d", expected, found)
-			}
-
-			for i, a := range test.argAssertions {
-				if err := a(test.db.methodArgs[i]); err != nil {
-					t.Errorf("Assertion error when checking arguments: %v", err)
-				}
-			}
-		})
+func TestGetLatestSeq(t *testing.T) {
+	result := getLatestSeq([]string{"x", "0", "z", "a", "x", "1", "0"})
+	if result != "z" {
+		t.Errorf("Unexpected result %v", result)
 	}
 }

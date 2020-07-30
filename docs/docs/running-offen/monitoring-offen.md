@@ -30,6 +30,6 @@ date: Tue, 30 Jun 2020 06:33:59 GMT
 and a payload like this:
 
 ```
-$ curl -X GET https://analytics.offen.dev/healthz
+$ curl -X GET https://offen.yoursite.org/healthz
 {"ok":true}
 ```

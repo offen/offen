@@ -116,6 +116,7 @@ func TestRelationalDAL_FindEvents(t *testing.T) {
 				for _, token := range []string{"a", "b", "c"} {
 					if err := db.Save(&Event{
 						EventID:  fmt.Sprintf("event-%s", token),
+						Sequence: fmt.Sprintf("event-%s", token),
 						SecretID: strptr(fmt.Sprintf("hashed-user-id-%s", token)),
 					}).Error; err != nil {
 						return fmt.Errorf("error saving fixture data: %v", err)
@@ -128,29 +129,7 @@ func TestRelationalDAL_FindEvents(t *testing.T) {
 				SecretIDs: []string{"hashed-user-id-a", "hashed-user-id-b", "hashed-user-id-z"},
 			},
 			[]persistence.Event{
-				{EventID: "event-b", SecretID: strptr("hashed-user-id-b")},
-			},
-			false,
-		},
-		{
-			"exclusion",
-			func(db *gorm.DB) error {
-				for _, token := range []string{"a", "b", "c"} {
-					if err := db.Save(&Event{
-						EventID:  fmt.Sprintf("event-%s", token),
-						SecretID: strptr(fmt.Sprintf("hashed-user-id-%s", token)),
-					}).Error; err != nil {
-						return fmt.Errorf("error saving fixture data: %v", err)
-					}
-				}
-				return nil
-			},
-			persistence.FindEventsQueryExclusion{
-				EventIDs:  []string{"event-a", "event-c"},
-				SecretIDs: []string{"hashed-user-id-b", "hashed-user-id-c"},
-			},
-			[]persistence.Event{
-				{EventID: "event-a", SecretID: strptr("hashed-user-id-a")},
+				{EventID: "event-b", Sequence: "event-b", SecretID: strptr("hashed-user-id-b")},
 			},
 			false,
 		},
@@ -244,32 +223,6 @@ func TestRelationalDAL_DeleteEvents(t *testing.T) {
 					return fmt.Errorf("error counting event rows: %v", err)
 				}
 				if count != 1 {
-					return fmt.Errorf("error counting event rows, got %d", count)
-				}
-				return nil
-			},
-		},
-		{
-			"by age",
-			func(db *gorm.DB) error {
-				for _, token := range []string{"x", "y", "z"} {
-					if err := db.Save(&Event{
-						EventID: fmt.Sprintf("event-%s", token),
-					}).Error; err != nil {
-						return fmt.Errorf("error creating fixture record: %v", err)
-					}
-				}
-				return nil
-			},
-			persistence.DeleteEventsQueryOlderThan("event-y"),
-			1,
-			false,
-			func(db *gorm.DB) error {
-				var count int
-				if err := db.Table("events").Count(&count).Error; err != nil {
-					return fmt.Errorf("error counting event rows: %v", err)
-				}
-				if count != 2 {
 					return fmt.Errorf("error counting event rows, got %d", count)
 				}
 				return nil

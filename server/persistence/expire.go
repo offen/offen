@@ -17,10 +17,43 @@ func (p *persistenceLayer) Expire(retention time.Duration) (int, error) {
 		return 0, fmt.Errorf("persistence: error determing deadline for expiring events: %w", deadlineErr)
 	}
 
-	eventsAffected, err := p.dal.DeleteEvents(DeleteEventsQueryOlderThan(deadline))
-	if err != nil {
-		return 0, fmt.Errorf("persistence: error expiring events: %w", err)
+	sequence, seqErr := NewULID()
+	if seqErr != nil {
+		return 0, fmt.Errorf("persistence: error creating sequence number: %w", seqErr)
 	}
 
+	txn, err := p.dal.Transaction()
+	if err != nil {
+		return 0, fmt.Errorf("persistence: error creating transaction: %w", err)
+	}
+	expiredEvents, err := txn.FindEvents(FindEventsQueryOlderThan(deadline))
+	if err != nil {
+		txn.Rollback()
+		return 0, fmt.Errorf("persistence: error looking up expired events: %w", err)
+	}
+
+	var eventIDs DeleteEventsQueryByEventIDs
+	for _, evt := range expiredEvents {
+		if err := txn.CreateTombstone(&Tombstone{
+			AccountID: evt.AccountID,
+			EventID:   evt.EventID,
+			SecretID:  evt.SecretID,
+			Sequence:  sequence,
+		}); err != nil {
+			txn.Rollback()
+			return 0, fmt.Errorf("persistence: error creating tombstone: %w", err)
+		}
+		eventIDs = append(eventIDs, evt.EventID)
+	}
+
+	eventsAffected, err := txn.DeleteEvents(eventIDs)
+	if err != nil {
+		txn.Rollback()
+		return 0, fmt.Errorf("persistence: error deleting expired events: %w", err)
+	}
+
+	if err := txn.Commit(); err != nil {
+		return 0, fmt.Errorf("persistence: error expiring events: %w", err)
+	}
 	return int(eventsAffected), nil
 }

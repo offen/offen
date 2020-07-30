@@ -21,5 +21,13 @@ describe('src/reducers/global-error.js', function () {
       })
       assert.strictEqual(next, 'fake payload')
     })
+
+    it('handles NAVIGATE', function () {
+      const next = globalError('nope', {
+        type: 'NAVIGATE',
+        payload: null
+      })
+      assert.strictEqual(next, null)
+    })
   })
 })
