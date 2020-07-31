@@ -1,0 +1,36 @@
+# Copyright 2020 - Offen Authors <hioffen@posteo.de>
+# SPDX-License-Identifier: Apache-2.0
+
+name: Update offen/heroku
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  update_heroku:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.PERSONAL_TOKEN }}
+          repository: offen/heroku
+
+      - name: Make changes to pull request
+        run: sed -i "1cFROM offen/offen:${{ github.event.release.tag_name }}" Dockerfile
+
+      - name: Create Pull Request
+        id: cpr
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.PERSONAL_TOKEN }}
+          commit-message: Update version to ${{ github.event.release.tag_name }}
+          committer: Offen <hioffen@posteo.de>
+          author: ${{ github.actor }} <hioffen@posteo.de>
+          branch: bump-version-${{ github.event.release.tag_name }}
+          title: Update version to ${{ github.event.release.tag_name }}
+          body: |
+            Update version to [${{ github.event.release.tag_name }}][1]
+
+            [1]: https://github.com/${{ github.repository }}/releases/${{ github.event.release.tag_name }}
+          draft: false
