@@ -34,7 +34,7 @@ var (
 // muteRequest suppresses all error logging that is happening from inside the
 // http package
 func muteRequest(r *http.Request) *http.Request {
-	return r.WithContext(context.WithValue(r.Context(), http.ServerContextKey, http.Server{
+	return r.WithContext(context.WithValue(r.Context(), http.ServerContextKey, &http.Server{
 		ErrorLog: log.New(ioutil.Discard, "", log.LstdFlags),
 	}))
 }
