@@ -33,9 +33,9 @@ function optIn (event, respond, next) {
       if (status === consentStatus.ALLOW) {
         return next()
       }
-      console.log(__('This page is using offen to collect usage statistics.'))
+      console.log(__('This page is using Offen to collect usage statistics.'))
       console.log(__('You have opted out of data collection, no data is being collected.'))
-      console.log(__('Find out more about offen at "%s"', window.location.origin))
+      console.log(__('Find out more about Offen at "%s"', window.location.origin))
     })
     .catch(function (err) {
       if (err && err.ok) {
