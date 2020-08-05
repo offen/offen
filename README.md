@@ -145,7 +145,7 @@ This will serve the documentation on <https://localhost:4000>.
 ## Kind support
 [![NLnet Foundation](https://offen.github.io/press-kit/external-material/nlnet-logo.svg)](https://nlnet.nl/)
 
-We are happy to work with [NLnet Foundation](https://nlnet.nl/) who complement our activities within their [Next Generation Internet](https://nlnet.nl/NGI/) initiative.
+We are happy to work with [NLnet Foundation,](https://nlnet.nl/) which actively supports our efforts as part of its [Next Generation Internet](https://nlnet.nl/NGI/) initiative.
 
 <a href="https://www.browserstack.com/">
   <img src="https://offen.github.io/press-kit/external-material/browserstack-logo.svg" width="160">
