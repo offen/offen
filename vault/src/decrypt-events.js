@@ -7,7 +7,7 @@ var _ = require('underscore')
 
 var bindCrypto = require('./bind-crypto')
 
-module.exports = decryptEventsWith(new InMemoryDecryptionCache())
+module.exports = decryptEventsWith({})
 module.exports.decryptEventsWith = decryptEventsWith
 
 function decryptEventsWith (cache) {
@@ -17,6 +17,12 @@ function decryptEventsWith (cache) {
     var secretsById = _.indexBy(encryptedSecrets, 'secretId')
 
     function getMatchingSecret (secretId) {
+      if (cache) {
+        cache[secretId] = cache[secretId] || doDecrypt()
+        return cache[secretId]
+      }
+      return doDecrypt()
+
       function doDecrypt () {
         var secret = secretsById[secretId]
         if (!secret) {
@@ -24,6 +30,7 @@ function decryptEventsWith (cache) {
             new Error('Unable to find matching secret')
           )
         }
+
         return decryptWithAccountKey(secret.value)
           .then(function (jwk) {
             var withKey = Object.assign(
@@ -32,19 +39,6 @@ function decryptEventsWith (cache) {
             return withKey
           })
       }
-      if (cache) {
-        return cache.get(secretId)
-          .then(function (cachedSecret) {
-            return cachedSecret || doDecrypt()
-          })
-          .then(function (secret) {
-            return cache.set(secretId, secret)
-              .then(function () {
-                return secret
-              })
-          })
-      }
-      return doDecrypt()
     }
 
     var decryptedEvents = encryptedEvents
@@ -53,66 +47,39 @@ function decryptEventsWith (cache) {
         var secretId = encryptedEvent.secretId
         var payload = encryptedEvent.payload
 
-        return Promise.resolve(cache && cache.get(eventId))
-          .then(function (cachedResult) {
-            if (cachedResult) {
-              return cachedResult
-            }
+        if (cache) {
+          cache[eventId] = cache[eventId] || doDecrypt()
+          return cache[eventId]
+        }
 
-            if (!secretId) {
-              return decryptWithAccountKey(payload)
-            } else {
-              return getMatchingSecret(secretId)
-                .then(function (secret) {
-                  if (!secret) {
-                    return null
-                  }
-                  return crypto.decryptSymmetricWith(secret.jwk)(payload)
-                })
-            }
-          })
-          .then(function (decryptedPayload) {
-            var withDecryptedPayload = Object.assign(
-              {}, encryptedEvent, { payload: decryptedPayload }
-            )
-            return Promise.resolve(
-              cache && cache.set(eventId, decryptedPayload)
-            )
-              .then(function () {
-                return withDecryptedPayload
+        return doDecrypt()
+
+        function doDecrypt () {
+          var result
+          if (!secretId) {
+            result = decryptWithAccountKey(payload)
+          } else {
+            result = getMatchingSecret(secretId)
+              .then(function (secret) {
+                if (!secret) {
+                  return null
+                }
+                return crypto.decryptSymmetricWith(secret.jwk)(payload)
               })
-          })
-          .catch(function () {
-            return null
-          })
+          }
+
+          return result
+            .then(function (decryptedPayload) {
+              return Object.assign(
+                {}, encryptedEvent, { payload: decryptedPayload }
+              )
+            })
+            .catch(function () {
+              return null
+            })
+        }
       })
 
-    var result
-    return Promise.all(decryptedEvents)
-      .then(_.compact)
-      .then(function (_result) {
-        result = _result
-        return Promise.resolve(cache && cache.commit())
-      })
-      .then(function () {
-        return result
-      })
+    return Promise.all(decryptedEvents).then(_.compact)
   })
-}
-
-function InMemoryDecryptionCache () {
-  var cache = {}
-
-  this.get = function (key) {
-    return Promise.resolve(cache[key] || null)
-  }
-
-  this.set = function (key, value) {
-    cache[key] = value
-    return Promise.resolve()
-  }
-
-  this.commit = function () {
-    return Promise.resolve()
-  }
 }
