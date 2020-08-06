@@ -18,9 +18,9 @@ if (!window.URL || !window.URLSearchParams) {
 var register = router()
 
 register('EVENT',
-  middleware.eventDuplexer,
   allowsCookiesMiddleware,
   middleware.optIn,
+  middleware.eventDuplexer,
   function (event, respond, next) {
     handler.handleAnalyticsEvent(event.data)
       .then(function () {
