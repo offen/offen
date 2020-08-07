@@ -26,9 +26,9 @@ module.exports = (props) => {
     content = (
       <Fragment>
         <div class='w-100 w-60-ns mr3-ns'>
-          <h3 class='f4 normal tc tl-ns mt0 mb0'>
+          <h2 class='f4 normal tc tl-ns mt0 mb0'>
             {__('Manage your usage data this website has collected.')}
-          </h3>
+          </h2>
         </div>
         <div class='w-100 w-40-ns link dim tc mt2 mt0-ns'>
           <a
@@ -46,9 +46,9 @@ module.exports = (props) => {
     content = (
       <Fragment>
         <div class='w-100 w-60-ns mr3-ns' id='consent-banner' data-testid='index/consent-banner'>
-          <h3 class='f4 normal tl-ns ma0 mb3'>
+          <h2 class='f4 normal tl-ns ma0 mb3'>
             {__('We only access usage data with your consent.')}
-          </h3>
+          </h2>
           <p class='ma0 mb2'>
             {__('Offen is a fair and open source analytics software. Help the website that linked you here by allowing access to your usage data.')}
           </p>
