@@ -483,13 +483,13 @@ describe('src/queries.js', function () {
       const result = queries.validateAndParseEvent({
         payload: {
           type: 'PAGEVIEW',
-          href: 'https://www.offen.dev/foo',
+          href: 'https://www.offen.dev/foo/',
           timestamp: new Date().toJSON(),
           sessionId: 'session'
         }
       })
       assert(result.payload.href instanceof window.URL)
-      assert.strictEqual(result.payload.href.toString(), 'https://www.offen.dev/foo')
+      assert.strictEqual(result.payload.href.toString(), 'https://www.offen.dev/foo/')
     })
 
     it('skips bad href values', function () {
@@ -509,7 +509,7 @@ describe('src/queries.js', function () {
       const result = queries.validateAndParseEvent({
         payload: {
           type: 'ZALGO',
-          href: 'https://www.offen.dev/foo',
+          href: 'https://www.offen.dev/foo/',
           timestamp: new Date().toJSON(),
           sessionId: 'session'
         }
@@ -521,12 +521,54 @@ describe('src/queries.js', function () {
       const result = queries.validateAndParseEvent({
         payload: {
           type: 'PAGEVIEW',
-          href: 'https://www.offen.dev/foo',
+          href: 'https://www.offen.dev/foo/',
           timestamp: 8192,
           sessionId: 'session'
         }
       })
       assert.strictEqual(result, null)
+    })
+
+    it('normalizes trailing slashes on URLs', function () {
+      let result = queries.validateAndParseEvent({
+        payload: {
+          type: 'PAGEVIEW',
+          href: 'https://www.offen.dev/foo',
+          timestamp: new Date().toJSON(),
+          sessionId: 'session'
+        }
+      })
+      assert.strictEqual(result.payload.href.toString(), 'https://www.offen.dev/foo/')
+
+      result = queries.validateAndParseEvent({
+        payload: {
+          type: 'PAGEVIEW',
+          href: 'https://www.offen.dev/foo/',
+          timestamp: new Date().toJSON(),
+          sessionId: 'session'
+        }
+      })
+      assert.strictEqual(result.payload.href.toString(), 'https://www.offen.dev/foo/')
+
+      result = queries.validateAndParseEvent({
+        payload: {
+          type: 'PAGEVIEW',
+          href: 'https://www.offen.dev/foo/?bar-baz',
+          timestamp: new Date().toJSON(),
+          sessionId: 'session'
+        }
+      })
+      assert.strictEqual(result.payload.href.toString(), 'https://www.offen.dev/foo/?bar-baz')
+
+      result = queries.validateAndParseEvent({
+        payload: {
+          type: 'PAGEVIEW',
+          href: 'https://www.offen.dev/foo?bar-baz',
+          timestamp: new Date().toJSON(),
+          sessionId: 'session'
+        }
+      })
+      assert.strictEqual(result.payload.href.toString(), 'https://www.offen.dev/foo/?bar-baz')
     })
   })
 })
