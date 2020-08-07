@@ -57,6 +57,10 @@ type DeleteEventsQueryBySecretIDs []string
 // given set.
 type DeleteEventsQueryByEventIDs []string
 
+// DeleteEventsQueryOlderThan requests deletion of all events older than the
+// given deadline
+type DeleteEventsQueryOlderThan string
+
 // DeleteSecretQueryBySecretID requests deletion of the secret record with the given
 // secret id.
 type DeleteSecretQueryBySecretID string

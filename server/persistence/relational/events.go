@@ -94,6 +94,12 @@ func (r *relationalDAL) DeleteEvents(q interface{}) (int64, error) {
 			return 0, fmt.Errorf("relational: error deleting events: %w", err)
 		}
 		return deletion.RowsAffected, nil
+	case persistence.DeleteEventsQueryOlderThan:
+		deletion := r.db.Where("sequence < ?", query).Delete(&Event{})
+		if err := deletion.Error; err != nil {
+			return 0, fmt.Errorf("relational: error deleting events: %w", err)
+		}
+		return deletion.RowsAffected, nil
 	default:
 		return 0, persistence.ErrBadQuery
 	}

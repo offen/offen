@@ -32,7 +32,6 @@ func (p *persistenceLayer) Expire(retention time.Duration) (int, error) {
 		return 0, fmt.Errorf("persistence: error looking up expired events: %w", err)
 	}
 
-	var eventIDs DeleteEventsQueryByEventIDs
 	for _, evt := range expiredEvents {
 		if err := txn.CreateTombstone(&Tombstone{
 			AccountID: evt.AccountID,
@@ -43,10 +42,9 @@ func (p *persistenceLayer) Expire(retention time.Duration) (int, error) {
 			txn.Rollback()
 			return 0, fmt.Errorf("persistence: error creating tombstone: %w", err)
 		}
-		eventIDs = append(eventIDs, evt.EventID)
 	}
 
-	eventsAffected, err := txn.DeleteEvents(eventIDs)
+	eventsAffected, err := txn.DeleteEvents(DeleteEventsQueryOlderThan(deadline))
 	if err != nil {
 		txn.Rollback()
 		return 0, fmt.Errorf("persistence: error deleting expired events: %w", err)
