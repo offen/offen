@@ -13,7 +13,7 @@ import (
 var secretUsage = `
 "secret" can be used to generate Base64-encoded random secrets for signing
 cookies or similar. The default length of 16 is a good default value for
-generating a value to use as OFFEN_SECRETS_COOKIEEXCHANGE.
+generating a value to use as OFFEN_SECRET.
 
 Usage of "secret":
 `
