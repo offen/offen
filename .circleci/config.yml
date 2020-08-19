@@ -6,7 +6,7 @@ version: 2.1
 jobs:
   server:
     docker:
-      - image: circleci/golang:1.14
+      - image: circleci/golang:1.15
     working_directory: ~/offen/server
     steps:
       - checkout:
@@ -78,7 +78,8 @@ jobs:
       DOCKER_LOGIN: offen
     steps:
       - checkout
-      - setup_remote_docker
+      - setup_remote_docker:
+          version: 19.03.12
       - run:
           name: Set revision
           command: |
