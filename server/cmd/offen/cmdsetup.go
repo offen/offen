@@ -21,11 +21,11 @@ import (
 var setupUsage = `
 "setup" is used to populate a fresh Offen instance with user(s) and account(s).
 In the most basic case, you are likely going to create a single user and an
-account and then will use the UI to add more users create additional accounts.
+account will then use the UI to add more users create additional accounts.
 
 A basic example for setting up a new instance looks like:
 
-$ ./offen setup -name "My New Account" -email me@mydomain.org -populate
+$ offen setup -name "My New Account" -email me@mydomain.org -populate
 
 The command will then prompt for a password to use. Passing -populate will
 create potentially missing secrets in your envfile. Do not pass the flag if you
@@ -46,12 +46,12 @@ func cmdSetup(subcommand string, flags []string) {
 	var (
 		accountName     = cmd.String("name", "", "the account name")
 		email           = cmd.String("email", "", "the email address used for login")
-		accountID       = cmd.String("forceid", "", "force usage of given valid UUID as account ID")
 		password        = cmd.String("password", "", "the password used for login (must be at least 8 characters long)")
-		source          = cmd.String("source", "", "a configuration file")
 		envFile         = cmd.String("envfile", "", "the env file to use")
-		force           = cmd.Bool("force", false, "allow setup to delete existing data")
 		populateMissing = cmd.Bool("populate", false, "in case required secrets are missing from the configuration, create and persist them in the target env file")
+		force           = cmd.Bool("force", false, "allow setup to delete existing data")
+		source          = cmd.String("source", "", "a configuration file (this is an experimental feature - do not use it if you are not sure)")
+		accountID       = cmd.String("forceid", "", "force usage of given valid UUID as account ID (this is meant to be used in tests or similar - you probably do not want to use this)")
 	)
 	cmd.Parse(flags)
 	sanitizer := bluemonday.StrictPolicy()

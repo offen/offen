@@ -4,6 +4,7 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 )
@@ -26,5 +27,10 @@ func cmdDebug(subcommand string, flags []string) {
 	)
 	cmd.Parse(flags)
 	a := newApp(false, true, *envFile)
-	a.logger.WithField("config", fmt.Sprintf("%+v", a.config)).Info("Current configuration values")
+	pretty, err := json.MarshalIndent(a.config, "", "  ")
+	if err != nil {
+		a.logger.WithError(err).Fatal("Error pretty printing config")
+	}
+	a.logger.Info("Current configuration values")
+	fmt.Fprintln(a.logger.Out, string(pretty))
 }

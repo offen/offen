@@ -13,8 +13,8 @@ import (
 
 var migrateUsage = `
 "migrate" applies all pending database migrations to the connected database.
-Only run this command when you run Offen as a horizontally scaling service.
-The default installation will handle this routine by itself.
+Only run this command when you run Offen as a horizontally scaling service as
+the default installation will handle this routine by itself.
 
 Usage of "migrate":
 `
