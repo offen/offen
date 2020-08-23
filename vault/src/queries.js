@@ -246,12 +246,20 @@ function validateAndParseEvent (event) {
   }
   var clone = JSON.parse(JSON.stringify(event))
   if (clone.payload.href) {
-    clone.payload.href = new window.URL(clone.payload.href)
+    clone.payload.href = normalizedURL(clone.payload.href)
   }
   if (clone.payload.referrer) {
-    clone.payload.referrer = new window.URL(clone.payload.referrer)
+    clone.payload.referrer = normalizedURL(clone.payload.referrer)
   }
   return clone
+}
+
+function normalizedURL (urlString) {
+  var url = new window.URL(urlString)
+  if (!/\/$/.test(url.pathname)) {
+    url.pathname += '/'
+  }
+  return url
 }
 
 function toUpperBound (date) {

@@ -31,10 +31,12 @@ import (
 )
 
 var demoUsage = `
-"demo" starts a one-off Offen instance that you can use for testing the software.
-You can use the username "demo@offen.dev" with password "demo" to log in.
+"demo" starts a one-off Offen instance that you can use for testing the software
+on your local machine. You can use the username "demo@offen.dev" with password
+"demo" to log in. Depending on your setup, generation of random usage data might
+take a minute or two.
 
-By default, a random available port will be picked for running the server.
+By default, a random free port will be picked for running the server.
 If you need to override this, pass a value to -port.
 
 Usage of "demo":
@@ -47,7 +49,7 @@ func cmdDemo(subcommand string, flags []string) {
 		demoCmd.PrintDefaults()
 	}
 	var (
-		port     = demoCmd.Int("port", 0, "the port to bind to (defaults to a random available port)")
+		port     = demoCmd.Int("port", 0, "the port to bind to (defaults to a random free port)")
 		empty    = demoCmd.Bool("empty", false, "do not populate with random usage data")
 		numUsers = demoCmd.Int("users", 0, "the number of users to simulate - this defaults to a random number between 250 and 500")
 	)

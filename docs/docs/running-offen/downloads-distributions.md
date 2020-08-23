@@ -114,3 +114,50 @@ You can deploy Offen to Heroku using our [deployment template][heroku-repo]. We 
 
 [heroku-repo]: https://github.com/offen/heroku
 [heroku-tutorial]: /running-offen/tutorials/configuring-deploying-offen-heroku/
+
+### DigitalOcean
+
+Using [Packer][packer] you can build our [DigitalOcean image][do-repo] and use it to create a new Droplet running Offen.
+
+[do-repo]: https://github.com/offen/digitalocean
+[packer]: https://www.packer.io/
+
+### YunoHost
+
+If you use YunoHost to self-host your applications, you can install our [packaged Offen app][ynh-repo] to get Offen up and running:
+
+```
+$ sudo yunohost app install https://github.com/offen/offen_ynh
+```
+
+## Building Offen for architectures other than `amd64`
+
+Current distributions of Offen target `amd64` architectures only. If you want to run Offen on different hardware (e.g. Raspberry Pi), it is trivial to build a binary for your target OS and platform yourself. Assuming you have Docker and `make` installed, you can build the latest version like this (the example targets Linux on ARM v8):
+
+```
+git clone git@github.com:offen/offen.git
+cd offen
+git checkout {{ site.offen_version }}
+TARGETS=linux/arm64 make build
+```
+
+Once finished, the `bin` folder contains your binary of choice. Currently supported architectures are all architectures supported by [xgo][xgo]:
+
+- 386
+- amd64
+- arm-5
+- arm-6
+- arm-7
+- arm64
+- mips
+- mipsle
+- mips64
+- mips64le
+
+Supported operating systems are:
+
+- linux
+- darwin
+- windows
+
+[xgo]: https://github.com/techknowlogick/xgo

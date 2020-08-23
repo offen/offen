@@ -23,7 +23,7 @@ import (
 )
 
 var serveUsage = `
-"serve" starts the Offen instance and listens to the configured ports.
+"serve" starts the Offen instance and listens to the configured port(s).
 Configuration is sourced either from the envfile given to -envfile or a file
 called offen.env in the default lookup hierarchy (this applies to Linux and
 Darwin only):
@@ -36,6 +36,9 @@ Darwin only):
 In case no envfile is found or given, the environment variables already set are
 used. More documentation about configuration Offen can be found at:
 https://docs.offen.dev/running-offen/configuring-the-application/
+
+To find out about the configuration that would currently by applied, use
+the "offen debug" subcommand.
 
 Usage of "serve":
 `

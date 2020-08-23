@@ -15,7 +15,7 @@ import (
 var expireUsage = `
 "expire" prunes all events older than 6 months (4464 hours) from the connected
 database. Only run this command when you run Offen as a horizontally scaling
-service. The default installation will handle this routine by itself.
+service as the default installation will handle this routine by itself.
 
 Usage of "expire":
 `

@@ -29,7 +29,7 @@ func (r *relationalDAL) FindEvents(q interface{}) ([]persistence.Event, error) {
 	var events []Event
 	switch query := q.(type) {
 	case persistence.FindEventsQueryOlderThan:
-		if err := r.db.Find(&events, "sequence < ?", query).Error; err != nil {
+		if err := r.db.Find(&events, "event_id < ?", query).Error; err != nil {
 			return nil, fmt.Errorf("relational: error looking up events by age: %w", err)
 		}
 		return exportEvents(events), nil
@@ -90,6 +90,12 @@ func (r *relationalDAL) DeleteEvents(q interface{}) (int64, error) {
 			"secret_id IN (?)",
 			[]string(query),
 		).Delete(&Event{})
+		if err := deletion.Error; err != nil {
+			return 0, fmt.Errorf("relational: error deleting events: %w", err)
+		}
+		return deletion.RowsAffected, nil
+	case persistence.DeleteEventsQueryOlderThan:
+		deletion := r.db.Where("event_id < ?", query).Delete(&Event{})
 		if err := deletion.Error; err != nil {
 			return 0, fmt.Errorf("relational: error deleting events: %w", err)
 		}

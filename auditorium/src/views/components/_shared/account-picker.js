@@ -55,7 +55,7 @@ const AccountPicker = (props) => {
 
   return (
     <div class='flex-auto bg-black-05 pa3'>
-      <h4
+      <h2
         class='f4 normal mt0 mb3'
         dangerouslySetInnerHTML={{
           __html: headline
