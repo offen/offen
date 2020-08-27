@@ -398,7 +398,9 @@ commands:
           key: offen-<< parameters.app >>-{{ checksum "package.json" }}
       - run:
           name: Install dependencies
-          command: npm ci
+          command: |
+            sudo apt-get install libxss1
+            npm ci
       - save_cache:
           paths:
             - ~/offen/<< parameters.app >>/node_modules
