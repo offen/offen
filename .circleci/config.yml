@@ -365,6 +365,7 @@ commands:
           name: Install cypress and dependencies
           working_directory: ~/offen/integration
           command: |
+            sudo apt-get install libxss1
             mkdir -p ~/.npm-global
             npm config set prefix '~/.npm-global'
             npm install cypress@4.5.0 -g
