@@ -2,12 +2,12 @@
 # Copyright 2020 - Offen Authors <hioffen@posteo.de>
 # SPDX-License-Identifier: Apache-2.0
 
-set -e
+set -eo pipefail
 
-locales="${@:1}"
+locales=$(cat ./locales/LINGUAS)
 
 if [ -z "$locales" ]; then
-	echo "No locales given. Nothing to do."
+	echo "No locales configured. Nothing to do."
 	exit 0
 fi
 
