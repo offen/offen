@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+var fs = require('fs')
 var gulp = require('gulp')
 var clean = require('gulp-clean')
 var gap = require('gulp-append-prepend')
@@ -11,6 +12,9 @@ var source = require('vinyl-source-stream')
 var browserify = require('browserify')
 
 var pkg = require('./package.json')
+
+var defaultLocale = 'en'
+var linguas = fs.readFileSync('./locales/LINGUAS', 'utf-8').split(' ').filter(Boolean)
 
 gulp.task('clean:pre', function () {
   return gulp
@@ -26,7 +30,7 @@ gulp.task('clean:post', function () {
 
 gulp.task('default', gulp.series(
   'clean:pre',
-  gulp.series(pkg.offen.locales.map(function (locale) {
+  gulp.series([defaultLocale].concat(linguas).map(function (locale) {
     return createLocalizedBundle(locale)
   })),
   'clean:post'
