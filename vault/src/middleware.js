@@ -47,6 +47,8 @@ function optIn (event, respond, next) {
 
 exports.eventDuplexer = eventDuplexer
 
+var allowedQueryParams = ['utm_source', 'utm_campaign']
+
 function eventDuplexer (event, respond, next) {
   // eventDuplexerMiddleware adds properties to an event that could be subject to spoofing
   // or unwanted access by 3rd parties in "script". For example adding the session id
@@ -56,6 +58,16 @@ function eventDuplexer (event, respond, next) {
     timestamp: now,
     sessionId: getSessionId(event.data.payload.accountId)
   })
+  if (event.data.payload.event.referrer) {
+    var cleanedReferrer = new window.URL(event.data.payload.event.referrer)
+    cleanedReferrer.searchParams.forEach(function (value, key) {
+      if (allowedQueryParams.indexOf(key) === -1) {
+        cleanedReferrer.searchParams.delete(key)
+      }
+    })
+    event.data.payload.event.referrer = cleanedReferrer.toString()
+  }
+
   next()
 }
 
