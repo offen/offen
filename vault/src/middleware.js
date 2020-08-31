@@ -60,7 +60,7 @@ function eventDuplexer (event, respond, next) {
   })
   if (event.data.payload.event.referrer) {
     var cleanedReferrer = new window.URL(event.data.payload.event.referrer)
-    Array.from(cleanedReferrer.searchParams.keys()).forEach(function (value, key) {
+    Array.from(cleanedReferrer.searchParams.keys()).forEach(function (key) {
       if (allowedQueryParams.indexOf(key) === -1) {
         cleanedReferrer.searchParams.delete(key)
       }
