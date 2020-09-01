@@ -75,7 +75,9 @@ function _queryParam (key) {
       .map(function (event) {
         return {
           sessionId: event.payload.sessionId,
-          value: event.payload.href.searchParams.get(key)
+          value: event.payload.rawHref
+            ? event.payload.rawHref.searchParams.get(key)
+            : event.payload.href.searchParams.get(key)
         }
       })
       .uniq(false, JSON.stringify)
