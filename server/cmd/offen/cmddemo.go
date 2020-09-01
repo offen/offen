@@ -297,6 +297,8 @@ var pages = []string{
 	"/blog/",
 	"/imprint/",
 	"/landing-page/",
+	"/landing-page/?utm_source=Example_Source",
+	"/landing-page/?utm_campaign=Example_Campaign",
 	"/intro/",
 	"/contact/",
 }
@@ -308,8 +310,7 @@ func randomPage() string {
 var referrers = []string{
 	"https://www.offen.dev",
 	"https://t.co/xyz",
-	"https://example.net/?utm_source=Example_Source",
-	"https://example.net/?utm_campaign=Example_Campaign",
+	"https://example.net/",
 }
 
 func randomReferrer() string {
