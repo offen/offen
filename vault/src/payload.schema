@@ -39,6 +39,11 @@
       "type": "string",
       "format": "uri",
       "maxLength": 2000
+    },
+    "rawHref": {
+      "type": "string",
+      "format": "uri",
+      "maxLength": 2000
     }
   }
 }
