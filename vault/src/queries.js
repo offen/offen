@@ -249,7 +249,7 @@ function validateAndParseEvent (event) {
     clone.payload.href = normalizedURL(clone.payload.href)
   }
   if (clone.payload.rawHref) {
-    clone.payload.href = normalizedURL(clone.payload.rawHref)
+    clone.payload.rawHref = normalizedURL(clone.payload.rawHref)
   }
   if (clone.payload.referrer) {
     clone.payload.referrer = normalizedURL(clone.payload.referrer)
