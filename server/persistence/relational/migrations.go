@@ -244,6 +244,23 @@ func (r *relationalDAL) ApplyMigrations() error {
 				return db.DropTable("tombstones").Error
 			},
 		},
+		{
+			ID: "005_update_secrets_table",
+			Migrate: func(db *gorm.DB) error {
+				type Secret struct {
+					SecretID        string `gorm:"primary_key"`
+					EncryptedSecret string `gorm:"type:text"`
+				}
+				return db.AutoMigrate(&Secret{}).Error
+			},
+			Rollback: func(db *gorm.DB) error {
+				type Secret struct {
+					SecretID        string `gorm:"primary_key"`
+					EncryptedSecret string
+				}
+				return db.AutoMigrate(&Secret{}).Error
+			},
+		},
 	})
 
 	m.InitSchema(func(db *gorm.DB) error {
