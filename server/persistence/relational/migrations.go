@@ -251,14 +251,20 @@ func (r *relationalDAL) ApplyMigrations() error {
 					SecretID        string `gorm:"primary_key"`
 					EncryptedSecret string `gorm:"type:text"`
 				}
-				return db.AutoMigrate(&Secret{}).Error
+				if db.Dialect().GetName() == "mysql" {
+					return db.Exec("ALTER TABLE secrets MODIFY COLUMN encrypted_secret TEXT").Error
+				}
+				return nil
 			},
 			Rollback: func(db *gorm.DB) error {
 				type Secret struct {
 					SecretID        string `gorm:"primary_key"`
 					EncryptedSecret string
 				}
-				return db.AutoMigrate(&Secret{}).Error
+				if db.Dialect().GetName() == "mysql" {
+					return db.Exec("ALTER TABLE secrets MODIFY COLUMN encrypted_secret VARCHAR").Error
+				}
+				return nil
 			},
 		},
 	})
