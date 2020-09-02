@@ -41,10 +41,10 @@ In case you want to deploy Offen, this channel is what you are most likely going
 
 The `stable` channel gives you the most recent build from the `master` branch of our repository. These are usually stable and ready to use. Be aware that there is not necessarily an upgrade path in between `stable` versions.
 
-### Latest channel
+### Development channel
 {: .no_toc }
 
-The `latest` channel gives you the most recent build from the `development` branch of our repository. This is likely to contain things that are not production ready or bring other kinds of caveats. __You probably should not use this__ unless you are participating in the development of Offen.
+The `development` channel gives you the most recent build from the `development` branch of our repository. This is likely to contain things that are not production ready or bring other kinds of caveats. __You probably should not use this__ unless you are participating in the development of Offen.
 
 ---
 
@@ -56,11 +56,11 @@ Downloading `https://get.offen.dev` will give you a tarball containing the most 
 
 ```sh
 # most recent release
-curl -L https://get.offen.dev
-# most recent build from the latest channel
-curl -L https://get.offen.dev/latest
+curl -sSL https://get.offen.dev
+# most recent build from the development channel
+curl -sSL https://get.offen.dev/development
 # build for {{ site.offen_version }}
-curl -L https://get.offen.dev/{{ site.offen_version }}
+curl -sSL https://get.offen.dev/{{ site.offen_version }}
 ```
 
 ---
@@ -84,7 +84,7 @@ gpg --verify offen-linux-amd64.asc offen-linux-amd64
 
 ## Pulling the Docker image
 
-Docker images are available as `offen/offen` on [Docker Hub][docker-hub]. Tagged releases are available under the respective tag (e.g. `offen/offen:v0.1.0`). The `stable` and `latest` channel are available as image tags as well.
+Docker images are available as `offen/offen` on [Docker Hub][docker-hub]. Tagged releases are available under the respective tag (e.g. `offen/offen:v0.1.0`). The `stable` and `development` channel are available as image tags as well. As per Docker convention `latest` maps to the latest tagged release.
 
 ```sh
 # {{ site.offen_version }} release
@@ -98,7 +98,7 @@ docker pull offen/offen:latest
 __Heads Up__
 {: .label .label-red }
 
-While our version tags on Docker Hub are immutable and __will always return the same build__, it is important to note that both `stable` and `latest` will be updated on a rolling basis. If you deploy Offen using Docker, make sure to use a version tag or pin your image's revision.
+While our version tags on Docker Hub are immutable and __will always return the same build__, it is important to note that `development`, `stable` and `latest` will be updated on a rolling basis. If you deploy Offen using Docker, make sure to use a version tag or pin your image's revision.
 
 [docker-hub]: https://hub.docker.com/r/offen/offen
 
