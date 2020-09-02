@@ -181,7 +181,7 @@ jobs:
                 echo 'export DOCKER_IMAGE_TAGS=(development)' >> $BASH_ENV
               fi
             else
-              echo 'export DOCKER_IMAGE_TAGS=(${CIRCLE_TAG} latest) >> $BASH_ENV
+              echo 'export DOCKER_IMAGE_TAGS=(${CIRCLE_TAG} latest)' >> $BASH_ENV
             fi
       - run:
           name: Build Docker image
