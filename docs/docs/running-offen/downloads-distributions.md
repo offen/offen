@@ -17,6 +17,18 @@ SPDX-License-Identifier: Apache-2.0
 
 Offen is currently distributed in two ways: packaged as a __single binary file__ for Linux, MacOS and Windows or as a __Docker image__. The most recent release [is available here][most-recent], Docker images are hosted on [Docker Hub][docker-hub].
 
+The latest binary tarball can be downloaded from `https://get.offen.dev`:
+
+```
+curl -sSL https://get.offen.dev -o offen.tar.gz
+```
+
+On Docker Hub, `latest` will give you the last release:
+
+```
+docker pull offen/offen:latest
+```
+
 ---
 
 ## Table of contents
@@ -89,8 +101,8 @@ Docker images are available as `offen/offen` on [Docker Hub][docker-hub]. Tagged
 ```sh
 # {{ site.offen_version }} release
 docker pull offen/offen:{{ site.offen_version }}
-# latest channel
-docker pull offen/offen:latest
+# stable channel
+docker pull offen/offen:stable
 ```
 
 ---
