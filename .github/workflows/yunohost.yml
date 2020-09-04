@@ -19,7 +19,8 @@ jobs:
       - name: Make changes to pull request
         run: |
           sudo apt-get install moreutils
-          jq '.version = "${{ github.event.release.tag_name }}~ynh1"' manifest.json | sponge manifest.json
+          stripped_version=$(echo ${{ github.event.release.tag_name }} | cut -c 1-)
+          jq '.version = "$stripped_version~ynh1"' manifest.json | sponge manifest.json
           sed -i "1cSOURCE_VERSION=${{ github.event.release.tag_name }}" conf/app.src
 
       - name: Create Pull Request
