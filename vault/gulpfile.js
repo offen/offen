@@ -17,6 +17,9 @@ var gap = require('gulp-append-prepend')
 var to = require('flush-write-stream')
 var tinyify = require('tinyify')
 
+var defaultLocale = 'en'
+var linguas = fs.readFileSync('./locales/LINGUAS', 'utf-8').split(' ').filter(Boolean)
+
 var pkg = require('./package.json')
 
 gulp.task('clean:pre', function () {
@@ -33,7 +36,7 @@ gulp.task('clean:post', function () {
 
 gulp.task('default', gulp.series(
   'clean:pre',
-  gulp.series(pkg.offen.locales.map(function (locale) {
+  gulp.series([defaultLocale].concat(linguas).map(function (locale) {
     return createLocalizedBundle(locale)
   })),
   'clean:post'

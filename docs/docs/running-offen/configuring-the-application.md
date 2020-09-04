@@ -138,13 +138,13 @@ The connection string or location of the database. For `sqlite3` this will be th
 When using `mysql` make sure you append a `?parseTime=true` parameter to your connection string:
 
 ```
-OFFEN_DATABSE_CONNECTIONSTRING=user:pass@tcp(localhost:3306)/offen?parseTime=true
+OFFEN_DATABASE_CONNECTIONSTRING=user:pass@tcp(localhost:3306)/offen?parseTime=true
 ```
 
 When using `postgres` and you are using a local database (or a Docker network) you might need to append a `?sslmode=disable` parameter to your connection string:
 
 ```
-OFFEN_DATABSE_CONNECTIONSTRING=postgres://user:pass@localhost:5432/offen?sslmode=disable
+OFFEN_DATABASE_CONNECTIONSTRING=postgres://user:pass@localhost:5432/offen?sslmode=disable
 ```
 
 ---

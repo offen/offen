@@ -50,8 +50,7 @@ func cmdDemo(subcommand string, flags []string) {
 	}
 	var (
 		port     = demoCmd.Int("port", 0, "the port to bind to (defaults to a random free port)")
-		empty    = demoCmd.Bool("empty", false, "do not populate with random usage data")
-		numUsers = demoCmd.Int("users", 0, "the number of users to simulate - this defaults to a random number between 250 and 500")
+		numUsers = demoCmd.Int("users", -1, "the number of users to simulate - this defaults to a random number between 250 and 500")
 	)
 	demoCmd.Parse(flags)
 
@@ -114,79 +113,77 @@ func cmdDemo(subcommand string, flags []string) {
 		a.logger.WithError(err).Fatal("Error bootstrapping database")
 	}
 
-	if !*empty {
-		a.logger.Info("Offen is generating some random usage data for your demo, this might take a little while.")
-		rand.Seed(time.Now().UnixNano())
-		account, _ := db.GetAccount(accountID.String(), false, "")
+	a.logger.Info("Offen is generating some random usage data for your demo, this might take a little while.")
+	rand.Seed(time.Now().UnixNano())
+	account, _ := db.GetAccount(accountID.String(), false, "")
 
-		users := *numUsers
-		if users == 0 {
-			users = randomInRange(250, 500)
-		}
+	users := *numUsers
+	if users == -1 {
+		users = randomInRange(250, 500)
+	}
 
-		wg := sync.WaitGroup{}
-		done := make(chan error)
-		wg.Add(users)
+	wg := sync.WaitGroup{}
+	done := make(chan error)
+	wg.Add(users)
 
-		for i := 0; i < users; i++ {
-			go func() {
-				userID, key, jwk, err := newFakeUser()
-				if err != nil {
-					done <- err
-					return
-				}
-				encryptedSecret, encryptionErr := keys.EncryptAsymmetricWith(
-					account.PublicKey, jwk,
+	for i := 0; i < users; i++ {
+		go func() {
+			userID, key, jwk, err := newFakeUser()
+			if err != nil {
+				done <- err
+				return
+			}
+			encryptedSecret, encryptionErr := keys.EncryptAsymmetricWith(
+				account.PublicKey, jwk,
+			)
+			if encryptionErr != nil {
+				done <- err
+				return
+			}
+			if err := db.AssociateUserSecret(
+				accountID.String(), userID, encryptedSecret.Marshal(),
+			); err != nil {
+				done <- err
+			}
+
+			for s := 0; s < randomInRange(1, 4); s++ {
+				evts := newFakeSession(
+					fmt.Sprintf("http://localhost:%d", a.config.Server.Port),
+					randomInRange(1, 12),
 				)
-				if encryptionErr != nil {
-					done <- err
-					return
-				}
-				if err := db.AssociateUserSecret(
-					accountID.String(), userID, encryptedSecret.Marshal(),
-				); err != nil {
-					done <- err
-				}
-
-				for s := 0; s < randomInRange(1, 4); s++ {
-					evts := newFakeSession(
-						fmt.Sprintf("http://localhost:%d", a.config.Server.Port),
-						randomInRange(1, 12),
-					)
-					for _, evt := range evts {
-						b, bErr := json.Marshal(evt)
-						if bErr != nil {
-							done <- err
-						}
-						event, eventErr := keys.EncryptWith(key, b)
-						if eventErr != nil {
-							done <- err
-						}
-						eventID, _ := persistence.EventIDAt(evt.Timestamp)
-						if err := db.Insert(
-							userID,
-							accountID.String(),
-							event.Marshal(),
-							&eventID,
-						); err != nil {
-							done <- err
-						}
+				for _, evt := range evts {
+					b, bErr := json.Marshal(evt)
+					if bErr != nil {
+						done <- err
+					}
+					event, eventErr := keys.EncryptWith(key, b)
+					if eventErr != nil {
+						done <- err
+					}
+					eventID, _ := persistence.EventIDAt(evt.Timestamp)
+					if err := db.Insert(
+						userID,
+						accountID.String(),
+						event.Marshal(),
+						&eventID,
+					); err != nil {
+						done <- err
 					}
 				}
-				wg.Done()
-			}()
-		}
-
-		go func() {
-			wg.Wait()
-			done <- nil
-		}()
-
-		select {
-		case err := <-done:
-			if err != nil {
-				a.logger.WithError(err).Fatal("Error setting up demo")
 			}
+			wg.Done()
+		}()
+	}
+
+	go func() {
+		wg.Wait()
+		done <- nil
+	}()
+
+	select {
+	case err := <-done:
+		if err != nil {
+			a.logger.WithError(err).Fatal("Error setting up demo")
 		}
 	}
 
@@ -300,6 +297,8 @@ var pages = []string{
 	"/blog/",
 	"/imprint/",
 	"/landing-page/",
+	"/landing-page/?utm_source=Example_Source",
+	"/landing-page/?utm_campaign=Example_Campaign",
 	"/intro/",
 	"/contact/",
 }
@@ -311,8 +310,7 @@ func randomPage() string {
 var referrers = []string{
 	"https://www.offen.dev",
 	"https://t.co/xyz",
-	"https://example.net/?utm_source=Example_Source",
-	"https://example.net/?utm_campaign=Example_Campaign",
+	"https://example.net/",
 }
 
 func randomReferrer() string {

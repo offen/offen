@@ -108,6 +108,10 @@ Running `offen version` prints information about the git revision the binary has
 
 `offen demo` starts a one-off demo instance that requires zero configuration. This is meant for anyone that wants to have a look at what Offen is offering but doesn't want to set up any configuration yet. Data is persisted in an temporary database that will be deleted once the process is shut down.
 
+### `offen debug`
+
+`offen debug` prints the currently applicable runtime configuration. Use this in case Offen does end up with a configuration you do not expect. Passing a value to the `-envfile` flag will override the default lookup (just like with for example `serve` or `setup`).
+
 ---
 
 ## When run as a horizontally scaling service

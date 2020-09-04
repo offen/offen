@@ -28,3 +28,8 @@ Files: packages/__fixtures__/* script/__fixtures__/* server/router/testdata/* se
 Copyright: 2020 Offen Authors <hioffen@posteo.de>
 License: Apache-2.0
 
+# l10n related files
+Files: **/locales/LINGUAS
+Copyright: 2020 Offen Authors <hioffen@posteo.de>
+License: Apache-2.0
+

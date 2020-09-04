@@ -10,7 +10,7 @@
     "posttest": "standard",
     "fix": "standard --fix",
     "build": "gulp",
-    "extract-strings": "extract-strings index.js $(find src -name '*.js')",
+    "extract-strings": "extract-strings --default-locale en $(for l in $(cat ./locales/LINGUAS); do echo \"--locale $l\"; done) index.js $(find src -name '*.js')",
     "licenses": "npm-license-crawler --production --onlyDirectDependencies --omitVersion --csv dependencies.csv"
   },
   "dependencies": {
@@ -70,11 +70,6 @@
     ],
     "env": [
       "mocha"
-    ]
-  },
-  "offen": {
-    "locales": [
-      "en"
     ]
   }
 }

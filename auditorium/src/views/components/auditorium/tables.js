@@ -39,7 +39,7 @@ const Table = (props) => {
       var counts = Array.isArray(row.count) ? row.count : [row.count]
       return (
         <tr key={`outer-${index}`} class='striped--near-white'>
-          <td class='truncate pv2 pl2 pr1'>
+          <td class='truncate pv2 pl2 pr1' title={row.key}>
             {row.key}
           </td>
           {counts.map((count, index) => {

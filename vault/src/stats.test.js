@@ -239,16 +239,17 @@ describe('src/stats.js', function () {
     it('returns sorted referrer campaigns from foreign domains grouped by host', function () {
       return stats.campaigns([
         {},
-        { payload: { sessionId: 'session-a', href: new window.URL('https://www.mysite.com/x'), referrer: new window.URL('https://www.example.net/foo?utm_campaign=beep') } },
-        { payload: { sessionId: 'session-b', href: new window.URL('https://www.mysite.com/y'), referrer: new window.URL('https://www.example.net/bar?something=12&utm_campaign=boop') } },
-        { payload: { sessionId: 'session-c', href: new window.URL('https://www.mysite.com/z'), referrer: new window.URL('https://www.example.net/baz') } },
-        { payload: { sessionId: 'session-d', href: new window.URL('https://www.mysite.com/x'), referrer: new window.URL('https://beep.boop/site?utm_campaign=beep') } },
-        { payload: { sessionId: 'session-e', href: new window.URL('https://www.mysite.com/x'), referrer: new window.URL('https://www.mysite.com/a') } }
+        { payload: { sessionId: 'session-a', href: new window.URL('https://www.example.net/foo?utm_campaign=beep') } },
+        { payload: { sessionId: 'session-b', href: new window.URL('https://www.example.net/bar?something=12&utm_campaign=boop') } },
+        { payload: { sessionId: 'session-b', href: new window.URL('https://www.example.net/baz') } },
+        { payload: { sessionId: 'session-c', href: new window.URL('https://www.example.net/baz') } },
+        { payload: { sessionId: 'session-d', href: new window.URL('https://beep.boop/site'), rawHref: new window.URL('https://beep.boop/site?utm_campaign=beep') } },
+        { payload: { sessionId: 'session-e', href: new window.URL('https://www.mysite.com/a') } }
       ])
         .then(function (result) {
           assert.deepStrictEqual(result, [
             { key: 'beep', count: [2, 1] },
-            { key: 'boop', count: [1, 1] }
+            { key: 'boop', count: [1, 2] }
           ])
         })
     })

@@ -7,18 +7,12 @@ exports.pageview = pageview
 
 function pageview (initial) {
   var canonicalLink = document.head.querySelector('link[rel="canonical"]')
-  return {
+  var canonicalHref = canonicalLink && canonicalLink.getAttribute('href')
+  var event = {
     type: 'PAGEVIEW',
-    href: (canonicalLink && canonicalLink.getAttribute('href')) || window.location.href,
+    href: canonicalHref || window.location.href,
     title: document.title,
-    referrer: (function () {
-      if (!window.URL || !document.referrer) {
-        return ''
-      }
-      var r = new window.URL(document.referrer)
-      r.search = ''
-      return r.toString()
-    })(),
+    referrer: document.referrer,
     pageload: (function () {
       if (initial && window.performance && window.performance.timing) {
         return Math.round(
@@ -31,4 +25,8 @@ function pageview (initial) {
     // some point in the future. Find a more robust feature detect.
     isMobile: typeof window.onorientationchange !== 'undefined'
   }
+  if (canonicalHref && canonicalHref !== window.location.href) {
+    event.rawHref = window.location.href
+  }
+  return event
 }

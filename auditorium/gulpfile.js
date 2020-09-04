@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+var fs = require('fs')
 var gulp = require('gulp')
 var clean = require('gulp-clean')
 var browserify = require('browserify')
@@ -12,6 +13,9 @@ var buffer = require('vinyl-buffer')
 var gap = require('gulp-append-prepend')
 
 var pkg = require('./package.json')
+
+var defaultLocale = 'en'
+var linguas = fs.readFileSync('./locales/LINGUAS', 'utf-8').split(' ').filter(Boolean)
 
 gulp.task('clean:pre', function () {
   return gulp
@@ -24,7 +28,7 @@ gulp.task('default', gulp.series(
   // it is important to run the localized bundles in series so that
   // browserify is always sure which locale to use in the transform
   // configuration
-  gulp.series.apply(gulp, pkg.offen.locales.map(function (locale) {
+  gulp.series.apply(gulp, [defaultLocale].concat(linguas).map(function (locale) {
     return createLocalizedBundle(locale)
   }))
 ))

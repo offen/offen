@@ -176,17 +176,20 @@ jobs:
           command: |
             if [ -z "$CIRCLE_TAG" ]; then
               if [ "${CIRCLE_BRANCH}" == "master" ]; then
-                echo 'export DOCKER_IMAGE_TAG="stable"' >> $BASH_ENV
+                echo 'export DOCKER_IMAGE_TAGS=(stable)' >> $BASH_ENV
               else
-                echo 'export DOCKER_IMAGE_TAG="latest"' >> $BASH_ENV
+                echo 'export DOCKER_IMAGE_TAGS=(development)' >> $BASH_ENV
               fi
             else
-              echo 'export DOCKER_IMAGE_TAG=$CIRCLE_TAG' >> $BASH_ENV
+              echo 'export DOCKER_IMAGE_TAGS=(${CIRCLE_TAG} latest)' >> $BASH_ENV
             fi
       - run:
           name: Build Docker image
           command: |
             make build-docker
+            for tag in $DOCKER_IMAGE_TAGS; do
+              docker tag offen/offen:local offen/offen:$tag
+            done
       - run:
           name: Download and import signing key
           command: |
@@ -205,17 +208,24 @@ jobs:
             cp ~/offen/{LICENSE,README.md} .
 
             mkdir -p /tmp/artifacts
-            tar -czvf /tmp/artifacts/offen-$DOCKER_IMAGE_TAG.tar.gz $(ls -A)
+            for tag in $DOCKER_IMAGE_TAGS; do
+              tar -czvf /tmp/artifacts/offen-$tag.tar.gz $(ls -A)
+            done
       - run:
           name: Upload to S3
-          command: aws s3 cp /tmp/artifacts/offen-$DOCKER_IMAGE_TAG.tar.gz s3://offen/binaries/offen-$DOCKER_IMAGE_TAG.tar.gz
+          command: |
+            for tag in $DOCKER_IMAGE_TAGS; do
+              aws s3 cp /tmp/artifacts/offen-$tag.tar.gz s3://offen/binaries/offen-$tag.tar.gz
+            done
       - docker/install-docker-credential-helper
       - docker/configure-docker-credentials-store
       - run:
           name: Push offen/offen to Docker Hub
           command: |
             echo "$DOCKER_ACCESSTOKEN" | docker login --username $DOCKER_LOGIN --password-stdin
-            docker push offen/offen:$DOCKER_IMAGE_TAG
+            for tag in $DOCKER_IMAGE_TAGS; do
+              docker push offen/offen:$tag
+            done
       - store_artifacts:
           path: /tmp/artifacts
 
@@ -241,11 +251,11 @@ jobs:
                 aws s3api put-object --bucket $BUCKET --key /v/stable/
                 aws s3 sync --delete ./docs-site/. s3://$BUCKET/v/stable/
               else
-                echo "offen_version: latest" >> ./docs/_override.yml
-                echo "baseurl: v/latest" >> ./docs/_override.yml
+                echo "offen_version: development" >> ./docs/_override.yml
+                echo "baseurl: v/development" >> ./docs/_override.yml
                 make build-docs
-                aws s3api put-object --bucket $BUCKET --key /v/latest/
-                aws s3 sync --delete ./docs-site/. s3://$BUCKET/v/latest/
+                aws s3api put-object --bucket $BUCKET --key /v/development/
+                aws s3 sync --delete ./docs-site/. s3://$BUCKET/v/development/
               fi
             else
               # a tagged build gets built an deployed twice:
@@ -365,6 +375,7 @@ commands:
           name: Install cypress and dependencies
           working_directory: ~/offen/integration
           command: |
+            sudo apt-get install libxss1
             mkdir -p ~/.npm-global
             npm config set prefix '~/.npm-global'
             npm install cypress@4.5.0 -g
@@ -398,7 +409,9 @@ commands:
           key: offen-<< parameters.app >>-{{ checksum "package.json" }}
       - run:
           name: Install dependencies
-          command: npm ci
+          command: |
+            sudo apt-get install libxss1
+            npm ci
       - save_cache:
           paths:
             - ~/offen/<< parameters.app >>/node_modules

@@ -74,7 +74,7 @@ func importTombstone(t *persistence.Tombstone) *Tombstone {
 // to decrypt events stored for that user.
 type Secret struct {
 	SecretID        string `gorm:"primary_key"`
-	EncryptedSecret string
+	EncryptedSecret string `gorm:"type:text"`
 }
 
 func (s *Secret) export() persistence.Secret {

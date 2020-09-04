@@ -56,6 +56,13 @@ function eventDuplexer (event, respond, next) {
     timestamp: now,
     sessionId: getSessionId(event.data.payload.accountId)
   })
+  // strip search parameters from referrers as they might contain sensitive information
+  if (event.data.payload.event.referrer) {
+    var cleanedReferrer = new window.URL(event.data.payload.event.referrer)
+    cleanedReferrer.search = ''
+    event.data.payload.event.referrer = cleanedReferrer.toString()
+  }
+
   next()
 }
 

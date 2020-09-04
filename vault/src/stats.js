@@ -66,28 +66,55 @@ function referrers (events) {
 }
 
 // `campaigns` groups the referrer values by their `utm_campaign` if present
-exports.campaigns = consumeAsync(campaigns)
+exports.campaigns = consumeAsync(_queryParam('utm_campaign'))
 
-function campaigns (events) {
-  return _referrers(events, function (set) {
-    return set
+function _queryParam (key) {
+  return function (events) {
+    return _.chain(events)
+      .filter(_.property(['payload', 'href']))
       .map(function (event) {
-        return event.payload.referrer.searchParams.get('utm_campaign')
+        return {
+          sessionId: event.payload.sessionId,
+          value: event.payload.rawHref
+            ? event.payload.rawHref.searchParams.get(key)
+            : event.payload.href.searchParams.get(key)
+        }
       })
-  })
+      .uniq(false, JSON.stringify)
+      .filter(function (item) {
+        return item.value && item.sessionId
+      })
+      .groupBy('value')
+      .pairs()
+      .map(function (pair) {
+        var value = pair[0]
+        var items = pair[1]
+        var associatedViews = _.chain(items)
+          .pluck('sessionId')
+          .uniq()
+          .map(function (sessionId) {
+            return events.filter(function (event) {
+              return event.payload && event.payload.sessionId === sessionId
+            })
+          })
+          .flatten(true)
+          .size()
+          .value()
+
+        return {
+          key: value,
+          count: [
+            items.length,
+            associatedViews / items.length
+          ]
+        }
+      })
+      .value()
+  }
 }
 
 // `sources` groups the referrer values by their `utm_source` if present
-exports.sources = consumeAsync(sources)
-
-function sources (events) {
-  return _referrers(events, function (set) {
-    return set
-      .map(function (event) {
-        return event.payload.referrer.searchParams.get('utm_source')
-      })
-  })
-}
+exports.sources = consumeAsync(_queryParam('utm_source'))
 
 function _referrers (events, groupFn) {
   var uniqueForeign = events
