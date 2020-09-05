@@ -27,6 +27,10 @@ In case you want to use Offen for collecting usage data in a production setup or
 
 ---
 
+## Hardware requirements
+
+Offen is designed to have a very low hardware footprint, so unless you are serving a lot of traffic, a single CPU core will be enough. The amount of memory consumed depends on the number of backend users logging in to your instance. If this number is rather low (up to 4), 512MB should be enough already, but if you plan on having more users, 1GB or 2GB will be a better choice and ensure a smooth experience for everyone.
+
 ## Running the application as a service
 
 Offen as an application is a web server that binds to one or multiple TCP ports and listens for incoming traffic. This means that in a production setup you will need to ensure the process is always running and restarts on failure or system restart.
@@ -51,7 +55,7 @@ In case you would use the script on a website running on an entirely different h
 
 [sop]: https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy
 
-## https protocol
+## Serving the application via https
 
 Offen itself __requires to be served using SSL__. This enables us to guarantee data is being transmitted without the possibility of third parties intercepting any communication. In case you do not have a SSL certificate for your Offen subdomain, you can configure Offen to automatically request and periodically renew a free certificate from [LetsEncrypt][lets-encrypt] for the subdomain Offen is being served from. See the [configuration article][config-article] for how to use this feature.
 
