@@ -249,7 +249,7 @@ func New(opts ...Config) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		metrics := httpsnoop.CaptureMetrics(withGzip, w, r)
 		fmt.Printf(
-			"%s %s %s [%s] \"%s %s %s\" %d %d\n",
+			"%s %s %s [%s] \"%s %s %s\" %d %s\n",
 			"-",
 			"-",
 			"-",
@@ -257,8 +257,18 @@ func New(opts ...Config) http.Handler {
 			r.Method,
 			r.RequestURI,
 			r.Proto,
-			metrics.Code,
-			metrics.Written,
+			anonymizeStatusCode(metrics.Code),
+			"-",
 		)
 	})
+}
+
+// anonymizeStatusCode turns all non-error status codes into http.StatusOK
+// in order not to leak information about returning visitors that have opted
+// out while still providing information about failing requests
+func anonymizeStatusCode(code int) int {
+	if http.StatusOK <= code && code < http.StatusBadRequest {
+		return http.StatusOK
+	}
+	return code
 }
