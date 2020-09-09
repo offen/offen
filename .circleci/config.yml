@@ -229,7 +229,7 @@ jobs:
               --maintainer "Offen Authors <hioffen@posteo.de>" \
               --url "https://www.offen.dev" \
               --license "Apache-2.0" \
-              --provides "analytics" \
+              --description "Offen is an open alternative to common web analytics tools.\nGain insights while your users have full access to their data." \
               --post-install "build/deb/post_install.sh" \
               --deb-systemd "build/deb/offen.service" \
               -p $artifact \
