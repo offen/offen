@@ -29,6 +29,12 @@ On Docker Hub, `latest` will give you the last release:
 docker pull offen/offen:latest
 ```
 
+For Ubuntu and Debian, we also provide a `deb` package you can download:
+
+```
+curl -sSL https://get.offen.dev/deb -o offen.deb
+```
+
 ---
 
 ## Table of contents
@@ -92,6 +98,13 @@ To prevent unwanted modifications of our releases, we sign all binaries using GP
 ```
 curl https://keybase.io/hioffen/pgp_keys.asc | gpg --import
 gpg --verify offen-linux-amd64.asc offen-linux-amd64
+```
+
+Debian packages are also signed:
+
+```
+curl https://keybase.io/hioffen/pgp_keys.asc | gpg --import
+dpkg-sig --verify offen.deb
 ```
 
 ## Pulling the Docker image

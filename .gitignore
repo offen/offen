@@ -28,3 +28,4 @@ integration/cypress/videos
 docs-site
 
 dependencies.csv
+*.deb

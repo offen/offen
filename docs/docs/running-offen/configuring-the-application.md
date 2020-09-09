@@ -51,9 +51,9 @@ In case the `-envfile` flag was supplied with a value when invoking a command, O
 `env` files will specify the same keys the environment variables use, e.g.:
 
 ```
-OFFEN_SERVER_PORT = "4000"
-OFFEN_DATABASE_DIALECT = "sqlite3"
-OFFEN_DATABASE_CONNECTIONSTRING = "/opt/offen/data/db.sqlite"
+OFFEN_SERVER_PORT="4000"
+OFFEN_DATABASE_DIALECT="sqlite3"
+OFFEN_DATABASE_CONNECTIONSTRING="/opt/offen/data/db.sqlite"
 ```
 
 ---
