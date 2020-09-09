@@ -231,7 +231,7 @@ jobs:
               --license "Apache-2.0" \
               --provides "analytics" \
               --post-install "build/deb/post_install.sh" \
-              --deb-systemd "build/deb/offen.service"
+              --deb-systemd "build/deb/offen.service" \
               -p $artifact \
               -s dir -t deb -n offen -v $DEB_VERSION \
               bin/offen-linux-amd64=/usr/local/bin/offen \
