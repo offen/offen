@@ -39,7 +39,12 @@ describe('src/buckets.js', function () {
         'android-app://com.linkedinteresting.scam',
         'news.ycombinator.com',
         'news.ycombinator.com/item?id=1234567',
-        'news.ycombinator.community'
+        'news.ycombinator.community',
+        'old.redditors.community',
+        'old.reddit.com/r/distract-me',
+        'www.reddit.com',
+        'www.reddit.tk',
+        'android-app://com.laurencedawson.reddit_sync.pro'
       ]
       var mapped = referrers.map(mapToBuckets)
       assert.deepStrictEqual(mapped, [
@@ -71,7 +76,12 @@ describe('src/buckets.js', function () {
         'android-app://com.linkedinteresting.scam',
         'Hacker News',
         'Hacker News',
-        'news.ycombinator.community'
+        'news.ycombinator.community',
+        'old.redditors.community',
+        'Reddit',
+        'Reddit',
+        'www.reddit.tk',
+        'Reddit'
       ])
     })
   })

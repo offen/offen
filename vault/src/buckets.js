@@ -51,6 +51,14 @@ var buckets = [
   {
     re: /^news\.ycombinator\.com($|\/)/,
     name: 'Hacker News'
+  },
+  {
+    re: /^(old|www)\.reddit\.com($|\/)/,
+    name: 'Reddit'
+  },
+  {
+    re: /^android-app:\/\/com.laurencedawson\.reddit_sync\./,
+    name: 'Reddit'
   }
 ]
 
