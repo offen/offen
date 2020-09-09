@@ -223,13 +223,15 @@ jobs:
           name: Package .deb package
           working_directory: ~/offen
           command: |
-            artifact=/tmp/artifacts/offen_$DEB_VERSION_amd64.deb
+            artifact="/tmp/artifacts/offen_${DEB_VERSION}_amd64.deb"
 
             fpm \
-              --maintainer "<hioffen@posteo.de>" \
+              --maintainer "Offen Authors <hioffen@posteo.de>" \
               --url "https://www.offen.dev" \
               --license "Apache-2.0" \
+              --provides "analytics" \
               --post-install "build/deb/post_install.sh" \
+              --deb-systemd "build/deb/offen.service"
               -p $artifact \
               -s dir -t deb -n offen -v $DEB_VERSION \
               bin/offen-linux-amd64=/usr/local/bin/offen \
@@ -242,7 +244,7 @@ jobs:
             for tag in "${DOCKER_IMAGE_TAGS[@]}"; do
               aws s3 cp /tmp/artifacts/offen-$tag.tar.gz s3://offen/binaries/offen-$tag.tar.gz
             done
-            aws s3 cp /tmp/artifacts/offen_$DEB_VERSION_amd64.deb s3://offen/deb/offen_$DEB_VERSION_amd64.deb
+            aws s3 cp "/tmp/artifacts/offen_${DEB_VERSION}_amd64.deb" "s3://offen/deb/offen_${DEB_VERSION}_amd64.deb"
       - docker/install-docker-credential-helper
       - docker/configure-docker-credentials-store
       - run:

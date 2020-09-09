@@ -1,0 +1,9 @@
+[Unit]
+Description=Offen Web Analytics
+
+[Service]
+ExecStart=/usr/local/bin/offen
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
