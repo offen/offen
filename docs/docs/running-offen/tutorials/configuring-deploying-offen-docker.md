@@ -37,6 +37,12 @@ If you get stuck or need help, [file an issue][gh-issues], [tweet (@hioffen)][tw
 
 ---
 
+## Prerequisites
+
+Apart from having already installed Docker, this tutorial assumes the machine you are planning to run Offen on is connected to the internet and has DNS records for `offen.example.com` (or the domain you are actually planning to use) pointing to it. Ports 80 and 443 are expected to be accessible to the public. See the [documentation for subdomains][domain-doc] for further information on this topic.
+
+[domain-doc]: ./../setting-up-using-subdomains/
+
 ## Storing your data
 
 In the simple setup described in this tutorial Offen needs to read and persist the following data:
@@ -47,7 +53,7 @@ In the simple setup described in this tutorial Offen needs to read and persist t
 
 Keeping these files available at any time is required for running the application, so make sure they are not stored on ephemeral systems. If you plan to deploy to a ephemeral host (e.g. Heroku), check ["Configuring The Application At Runtime"][config-docs] for how to configure the application using environment variables and connecting to a remote Database.
 
-[config-docs]: /running-offen/configuring-the-application/
+[config-docs]: ./../configuring-the-application/
 
 ---
 
