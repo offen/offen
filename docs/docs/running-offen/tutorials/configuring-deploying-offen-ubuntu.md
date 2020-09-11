@@ -159,6 +159,7 @@ If all of this is populated with the values you expect, you're ready to use Offe
 `systemd` is used to make sure Offen is up and running at all times (e.g. after rebooting or crashing) and accepts events. The `deb` package has already creating a `systemd` service for you on installation, so all you need to do now is start it:
 
 ```
+sudo systemctl enable offen
 sudo systemctl start offen
 ```
 
