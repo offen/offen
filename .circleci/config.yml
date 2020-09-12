@@ -161,7 +161,7 @@ jobs:
 
   release:
     docker:
-      - image: circleci/ruby:2.7
+      - image: circleci/python:3.7
     working_directory: ~/offen
     environment:
       DOCKER_LOGIN: offen
@@ -172,24 +172,16 @@ jobs:
       - attach_workspace:
           at: ~/offen
       - run:
-          name: Install fpm
-          command: |
-            sudo apt-get install dpkg-sig
-            gem install --no-document fpm
-      - run:
           name: Set image tag
           command: |
             if [ -z "$CIRCLE_TAG" ]; then
               if [ "${CIRCLE_BRANCH}" == "master" ]; then
                 echo 'export DOCKER_IMAGE_TAGS=(stable)' >> $BASH_ENV
-                echo 'export DEB_VERSION="0.0.0-stable"' >> $BASH_ENV
               else
                 echo 'export DOCKER_IMAGE_TAGS=(development)' >> $BASH_ENV
-                echo 'export DEB_VERSION="0.0.0-development"' >> $BASH_ENV
               fi
             else
               echo 'export DOCKER_IMAGE_TAGS=($CIRCLE_TAG latest)' >> $BASH_ENV
-              echo 'export DEB_VERSION=$(echo $CIRCLE_TAG | cut -c 2-)' >> $BASH_ENV
             fi
       - run:
           name: Build Docker image
@@ -220,32 +212,11 @@ jobs:
               tar -czvf /tmp/artifacts/offen-$tag.tar.gz $(ls -A)
             done
       - run:
-          name: Package .deb package
-          working_directory: ~/offen
-          command: |
-            artifact="/tmp/artifacts/offen_${DEB_VERSION}_amd64.deb"
-
-            fpm \
-              --maintainer "Offen Authors <hioffen@posteo.de>" \
-              --url "https://www.offen.dev" \
-              --license "Apache-2.0" \
-              --vendor "Offen" \
-              --description "Offen is an open alternative to common web analytics tools. Gain insights while your users have full access to their data." \
-              --post-install "build/deb/post_install.sh" \
-              --deb-systemd "build/deb/offen.service" \
-              -p $artifact \
-              -s dir -t deb -n offen -v $DEB_VERSION \
-              bin/offen-linux-amd64=/usr/local/bin/offen \
-              build/offen.env=/etc/offen/
-
-            dpkg-sig --sign builder $artifact
-      - run:
-          name: Upload tarballs and deb to S3
+          name: Upload tarballs to S3
           command: |
             for tag in "${DOCKER_IMAGE_TAGS[@]}"; do
               aws s3 cp /tmp/artifacts/offen-$tag.tar.gz s3://offen/binaries/offen-$tag.tar.gz
             done
-            aws s3 cp "/tmp/artifacts/offen_${DEB_VERSION}_amd64.deb" "s3://offen/deb/offen_${DEB_VERSION}_amd64.deb"
       - docker/install-docker-credential-helper
       - docker/configure-docker-credentials-store
       - run:
