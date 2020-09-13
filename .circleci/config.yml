@@ -181,13 +181,13 @@ jobs:
                 echo 'export DOCKER_IMAGE_TAGS=(development)' >> $BASH_ENV
               fi
             else
-              echo 'export DOCKER_IMAGE_TAGS=(${CIRCLE_TAG} latest)' >> $BASH_ENV
+              echo 'export DOCKER_IMAGE_TAGS=($CIRCLE_TAG latest)' >> $BASH_ENV
             fi
       - run:
           name: Build Docker image
           command: |
             make build-docker
-            for tag in $DOCKER_IMAGE_TAGS; do
+            for tag in "${DOCKER_IMAGE_TAGS[@]}"; do
               docker tag offen/offen:local offen/offen:$tag
             done
       - run:
@@ -208,13 +208,13 @@ jobs:
             cp ~/offen/{LICENSE,README.md} .
 
             mkdir -p /tmp/artifacts
-            for tag in $DOCKER_IMAGE_TAGS; do
+            for tag in "${DOCKER_IMAGE_TAGS[@]}"; do
               tar -czvf /tmp/artifacts/offen-$tag.tar.gz $(ls -A)
             done
       - run:
-          name: Upload to S3
+          name: Upload tarballs to S3
           command: |
-            for tag in $DOCKER_IMAGE_TAGS; do
+            for tag in "${DOCKER_IMAGE_TAGS[@]}"; do
               aws s3 cp /tmp/artifacts/offen-$tag.tar.gz s3://offen/binaries/offen-$tag.tar.gz
             done
       - docker/install-docker-credential-helper
@@ -223,7 +223,7 @@ jobs:
           name: Push offen/offen to Docker Hub
           command: |
             echo "$DOCKER_ACCESSTOKEN" | docker login --username $DOCKER_LOGIN --password-stdin
-            for tag in $DOCKER_IMAGE_TAGS; do
+            for tag in "${DOCKER_IMAGE_TAGS[@]}"; do
               docker push offen/offen:$tag
             done
       - store_artifacts:

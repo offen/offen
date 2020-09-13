@@ -35,31 +35,33 @@ If you get stuck or need help, [file an issue][gh-issues], [tweet (@hioffen)][tw
 
 ---
 
-## Downloading and installing the binaries
+## Prerequisites
 
-You can download a tarball of the latest release from our [Releases section on GitHub][releases].
+This tutorial assumes the machine you are planning to run Offen on is connected to the internet and has DNS records for `offen.mysite.com` (or the domain you are actually planning to use) pointing to it. Ports 80 and 443 are expected to be accessible to the public. See the [documentation for subdomains][domain-doc] for further information on this topic.
 
-In this tutorial, we will put the binaries for each version in a directory in `/opt/offen/<version>` and create a symlink for the version you want to use in `/usr/bin`. This allows you to update your binaries without interrupting the service.
+[domain-doc]: ./../setting-up-using-subdomains/
 
-Untar the archive you downloaded and look for the binary called `offen-linux-amd64`. Put this file in a subdirectory of `/opt/offen` that specifies its version. This example is using the `{{ site.offen_version }}` release:
+## Downloading and installing the package
+
+Offen version v0.1.6 and later is packaged as a Debian package, so installation on Ubuntu (and other Debian based distributions) is easy. First, download the package for the latest release:
 
 ```
-mkdir -p /tmp/offen-download && cd /tmp/offen-download
-curl -sSL https://get.offen.dev | tar -xvz
-md5sum -c checksums.txt # check that your download contains the expected files
-sudo mkdir -p /opt/offen/{{ site.offen_version }}
-sudo cp offen-linux-amd64 /opt/offen/{{ site.offen_version }}
-sudo ln -s /opt/offen/{{ site.offen_version }}/offen-linux-amd64 /usr/local/bin/offen
+curl -sSL https://get.offen.dev/deb -o offen.deb
 ```
 
-If you have GPG installed, we also recommend verifying the binary's signature:
+Next, you can verify the package's signature using `gpg` and `dpkg-sig` (this step is optional, but recommended):
 ```
 curl https://keybase.io/hioffen/pgp_keys.asc | gpg --import
-gpg --verify offen-linux-amd64.asc offen-linux-amd64
+dpkg-sig --verify offen.deb
+```
+
+The package itself can be installed using `dpkg`:
+
+```
+sudo dpkg -i offen.deb
 ```
 
 You can confirm that your installation is working as expected like this:
-
 ```
 $ which offen
 /usr/local/bin/offen
@@ -67,68 +69,43 @@ $ offen version
 INFO[0000] Current build created using                   revision={{ site.offen_version }}
 ```
 
+You can now safely remove the download:
+
+```
+rm offen.deb
+```
+
 [releases]: https://github.com/offen/offen/releases
 
 ---
 
-## Choosing a location for storing your data
+## Configuring Offen
 
-In the simple setup described in this tutorial Offen needs to persist the following files:
+In this setup, Offen stores its runtime configuration in `/etc/offen/offen.env`. This file has already been created on installation, so you can now populate it with the values required for your install.
 
-- a database file
-- a configuration file
-- cache files the SSL certificates
+### Application Secret
 
-Keeping these files available at any time is required for running the application, so make sure they aren't stored on ephemeral systems. If you deploy to a ephemeral host (e.g. Heroku), check ["Configuring The Application At Runtime"][config-docs] for how to configure the application using environment variables and connecting to a remote Database.
-
-[config-docs]: /running-offen/configuring-the-application/
-
----
-
-This tutorial assumes you are able to use `sudo`, so we create a `/var/opt/offen` directory in which we will store our database.
+Offen is using a secret to sign login cookies and tokens for resetting passwords or inviting users. You can generate a unique secret for your installation using the `offen secret` subcommand:
 
 ```
-sudo mkdir -p /var/opt/offen
+$ offen secret
+INFO[0000] Created 16 bytes secret                       secret="S2dR9JYYTNG3+5QN+jxiwA=="
 ```
 
-In your `/var/www` directory, create a `.cache` directory if it doesn't already exist.
+Populate the `OFFEN_SECRET` key with the value you just generated:
 
 ```
-sudo mkdir -p /var/www/.cache
+OFFEN_SECRET="S2dR9JYYTNG3+5QN+jxiwA==" # do not use this secret in production
 ```
 
-In your `/etc` directory create an `offen` directory and populate it with an empty file called `offen.env`. This will hold your application configuration.
+__Heads Up__
+{: .label .label-red }
 
-```
-sudo mkdir -p /etc/offen && sudo touch /etc/offen/offen.env
-```
+If you do not set this config value, Offen will generate a random one every time it starts up. This means it works securely, yet all login sessions, password reset emails or invitations will be invalidated when the service restarts.
 
----
+### Setting up AutoTLS
 
-## Running the `setup` command
-
-Now that we have defined the database location, Offen lets you setup a new instance using the `setup` command:
-
-```
-sudo offen setup \
-  -email me@mysite.com \ # the email used for login
-  -name mysite \ # your account name, this will not be displayed to users
-  -populate # this will automatically create required secrets for you
-```
-
-When finished, the command has created an account for you, using the given name and credentials.
-
-Your `/etc/offen/offen.env` file will now look something like this:
-
-```
-OFFEN_SECRET="uNrZP7r5fY3sfS35tbzR9w==" # do not use this secret in production
-```
-
----
-
-## Setting up AutoTLS
-
-Offen requires a secure connection and can automatically acquire a renew SSL certificates from LetsEncrypt for your domain. All you need to do is add the domain you want to serve Offen from to your `/etc/offen/offen.env` file:
+Offen requires a secure connection and can automatically acquire a renew SSL certificates from LetsEncrypt for your domain. Add the domain you want to use to serve Offen to `OFFEN_SERVER_AUTOTLS`:
 
 ```
 OFFEN_SERVER_AUTOTLS="offen.mysite.com"
@@ -136,9 +113,7 @@ OFFEN_SERVER_AUTOTLS="offen.mysite.com"
 
 To make sure the automatic certificate creation and renewal works, make sure your host system exposes __both port 80 and 443__ to the public internet.
 
----
-
-## Setting up email
+### Setting up email
 
 Offen needs to send transactional email for the following features:
 
@@ -155,8 +130,6 @@ OFFEN_SMTP_PASSWORD="my-password"
 OFFEN_SMTP_PORT="587"
 ```
 
----
-
 __Heads Up__
 {: .label .label-red }
 
@@ -164,7 +137,7 @@ Offen will run without these values being set and try to fall back to a local `s
 
 ---
 
-## Verifying your config file
+### Verifying your config file
 
 Before you start the application, it's a good idea to double check the setup. Your config file at `/etc/offen/offen.env` should now contain an entry for each of these values:
 
@@ -181,34 +154,11 @@ If all of this is populated with the values you expect, you're ready to use Offe
 
 ---
 
-## Creating and running a `systemd` service
+## Starting the `systemd` service
 
-If you want to expose Offen to the internet, you need some other process to supervise it and restart it on failure or reboot. This tutorial uses `systemd` to do so for it ubiquity, but if you prefer any other tool to handle this for you it should work just as fine.
-
-First, create a service definiton in `/etc/systemd/system/offen.service`:
-
-```sh
-sudo touch /etc/systemd/system/offen.service
-```
-
-and populate it with the following content:
+`systemd` is used to make sure Offen is up and running at all times (e.g. after rebooting or crashing) and accepts events. The `deb` package has already creating a `systemd` service for you on installation, so all you need to do now is start it:
 
 ```
-[Unit]
-Description=Offen Service
-
-[Service]
-ExecStart=/usr/local/bin/offen
-Restart=always
-
-[Install]
-WantedBy=multi-user.target
-```
-
-This means you can now register the service with `systemd`:
-
-```
-sudo systemctl daemon-reload
 sudo systemctl enable offen
 sudo systemctl start offen
 ```
@@ -227,12 +177,19 @@ $ sudo systemctl status offen
 ```
 
 
-Your instance is now ready to use. Once you have setup DNS to point at your host system, you can head to `https://offen.mysite.com/login` and login to your account.
+Your instance is now ready to use.
 
 ---
 
-### Accessing logs for the service
-{: .no_toc }
+## Setting up the instance
+
+Now that Offen is up and running, you can create your login user and a first account by navigating to `https://offen.mysite.com/setup`. You can create one user and one account here, but you can always add more later on.
+
+After submitting the form, your Offen instance is ready to use.
+
+## Maintenance
+
+### Accessing logs
 
 The easiest way for accessing application logs in this setup is using `journald`
 
@@ -244,7 +201,6 @@ offen[6573]: time="2020-01-27T15:57:41+01:00" level=info msg="Cron successfully 
 ```
 
 ### Uninstalling the service
-{: .no_toc }
 
 If you want to uninstall the service from your system, stop and disable the `offen` service:
 
@@ -253,19 +209,17 @@ sudo systemctl stop offen
 sudo systemctl disable offen
 ```
 
-## Updating the version in use
+### Updating the version in use
 
-To update to a new version of Offen, download the contents of the newest release into a new directory in `/opt/offen` and update the symlink in `/usr/bin`:
+To update to a new version of Offen, download the package for the newer version and install:
 
 ```
-curl -sSL https://get.offen.dev | tar -xvz
-md5sum -c checksums.txt # check that your download contains the expected files
-sudo mkdir -p /opt/offen/v0.2.12
-sudo cp offen-linux-amd64 /opt/offen/v0.2.12
-sudo ln -sf /opt/offen/v0.2.12/offen-linux-amd64 /usr/local/bin/offen
+curl https://get.offen.dev/deb -o offen.deb
+dpkg-sig --verify offen.deb
+sudo dpkg -i offen.deb
 ```
 
-Confirm that this worked by having `offen` print its version:
+Confirm that this worked by having `offen` print its updated version:
 
 ```
 $ offen version

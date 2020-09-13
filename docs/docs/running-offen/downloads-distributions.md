@@ -29,6 +29,12 @@ On Docker Hub, `latest` will give you the last release:
 docker pull offen/offen:latest
 ```
 
+For Ubuntu and Debian, we also provide a `deb` package you can download:
+
+```
+curl -sSL https://get.offen.dev/deb -o offen.deb
+```
+
 ---
 
 ## Table of contents
@@ -51,12 +57,12 @@ In case you want to deploy Offen, this channel is what you are most likely going
 ### Stable channel
 {: .no_toc }
 
-The `stable` channel gives you the most recent build from the `master` branch of our repository. These are usually stable and ready to use. Be aware that there is not necessarily an upgrade path in between `stable` versions.
+The `stable` channel gives you the most recent build from the `master` branch of our repository. These are usually stable and ready to use. Be aware that there is not necessarily an upgrade path in between `stable` versions. Only binaries and Docker images are available for this channel.
 
 ### Development channel
 {: .no_toc }
 
-The `development` channel gives you the most recent build from the `development` branch of our repository. This is likely to contain things that are not production ready or bring other kinds of caveats. __You probably should not use this__ unless you are participating in the development of Offen.
+The `development` channel gives you the most recent build from the `development` branch of our repository. This is likely to contain things that are not production ready or bring other kinds of caveats. Only binaries and Docker images are available for this channel. __You probably should not use this__ unless you are participating in the development of Offen.
 
 ---
 
@@ -92,6 +98,13 @@ To prevent unwanted modifications of our releases, we sign all binaries using GP
 ```
 curl https://keybase.io/hioffen/pgp_keys.asc | gpg --import
 gpg --verify offen-linux-amd64.asc offen-linux-amd64
+```
+
+Debian packages are also signed:
+
+```
+curl https://keybase.io/hioffen/pgp_keys.asc | gpg --import
+dpkg-sig --verify offen.deb
 ```
 
 ## Pulling the Docker image
