@@ -162,6 +162,7 @@ jobs:
   release:
     environment:
       DOCKER_LOGIN: offen
+      MINIO_STORAGE: https://storage.offen.dev
     docker:
       - image: circleci/python:3.7
     working_directory: ~/offen
@@ -193,7 +194,7 @@ jobs:
       - run:
           name: Download and import signing key
           command: |
-            aws s3 cp s3://offen-secrets/signing-key.asc /tmp
+            AWS_ACCESS_KEY_ID=$MINIO_ACCESS_KEY AWS_SECRET_ACCESS_KEY=$MINIO_SECRET_KEY aws s3 --endpoint $MINIO_STORAGE --region us-east-1 cp s3://secrets/signing-key.asc /tmp
             gpg --import /tmp/signing-key.asc
       - run:
           name: Package tarball
