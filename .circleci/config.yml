@@ -213,10 +213,10 @@ jobs:
               tar -czvf /tmp/artifacts/offen-$tag.tar.gz $(ls -A)
             done
       - run:
-          name: Upload tarballs to S3
+          name: Upload tarballs to storage.offen.dev
           command: |
             for tag in "${DOCKER_IMAGE_TAGS[@]}"; do
-              aws s3 cp /tmp/artifacts/offen-$tag.tar.gz s3://offen/binaries/offen-$tag.tar.gz
+              AWS_ACCESS_KEY_ID=$MINIO_ACCESS_KEY AWS_SECRET_ACCESS_KEY=$MINIO_SECRET_KEY aws s3 --endpoint $MINIO_STORAGE cp /tmp/artifacts/offen-$tag.tar.gz s3://binaries/offen-$tag.tar.gz
             done
       - docker/install-docker-credential-helper
       - docker/configure-docker-credentials-store
