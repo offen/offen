@@ -40,16 +40,16 @@ function formatDuration (valueInMs) {
   if (valueInMs >= 1000) {
     return formatNumber(valueInMs / 1000, 1, 2) + __('s')
   }
-  return Math.round(valueInMs) + __(' ms')
+  return Math.round(valueInMs) + __('ms')
 }
 
 module.exports.formatCount = formatCount
 function formatCount (count) {
   if (count > 1000000) {
-    return formatNumber(count / 1000000) + __(' M')
+    return formatNumber(count / 1000000) + __('M')
   }
   if (count > 1000) {
-    return formatNumber(count / 1000) + __(' k')
+    return formatNumber(count / 1000) + __('k')
   }
   return Math.floor(count)
 }
