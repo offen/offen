@@ -249,12 +249,12 @@ jobs:
                 echo "offen_version: stable" >> ./docs/_override.yml
                 echo "baseurl: v/stable" >> ./docs/_override.yml
                 make build-docs
-                mc mirror --remove ./docs-site/ offen/docs/v/stable/
+                mc mirror --remove --overwrite ./docs-site/ offen/docs/v/stable/
               else
                 echo "offen_version: development" >> ./docs/_override.yml
                 echo "baseurl: v/development" >> ./docs/_override.yml
                 make build-docs
-                mc mirror --remove ./docs-site/ offen/docs/v/development/
+                mc mirror --remove --overwrite ./docs-site/ offen/docs/v/development/
               fi
             else
               mc cp ./docs/robots.txt offen/docs
@@ -265,11 +265,11 @@ jobs:
 
               echo "offen_version: $CIRCLE_TAG" >> ./docs/_override.yml
               make build-docs
-              mc mirror --remove --exclude 'v/*' ./docs-site/ offen/docs
+              mc mirror --remove --overwrite --exclude 'v/*' ./docs-site/ offen/docs/
 
               echo "baseurl: v/$CIRCLE_TAG" >> ./docs/_override.yml
               make build-docs
-              mc mirror --remove ./docs-site/ offen/docs/v/$CIRCLE_TAG
+              mc mirror --remove --overwrite ./docs-site/ offen/docs/v/$CIRCLE_TAG/
             fi
 
 workflows:
