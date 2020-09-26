@@ -58,7 +58,7 @@ update:
 	@docker-compose run --rm script npm install
 	@docker-compose run --rm vault npm install
 	@docker-compose run --rm auditorium npm install
-	@docker-compose run --rm server go mod download
+	@docker-compose run --rm server go mod download -x
 
 audit:
 	@echo "Auditing npm dependencies ..."
