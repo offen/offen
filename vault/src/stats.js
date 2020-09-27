@@ -109,6 +109,8 @@ function _queryParam (key) {
           ]
         }
       })
+      .sortBy(function (row) { return row.count[0] })
+      .reverse()
       .value()
   }
 }

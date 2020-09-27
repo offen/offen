@@ -24,9 +24,8 @@ services:
     volumes:
       - serverdata:/var/opt/offen
       - .:/offen
-      - serverdeps:/data
+      - serverdeps:/go/pkg
     environment:
-      GOPATH: /data/go
       OFFEN_APP_DEVELOPMENT: '1'
       OFFEN_SERVER_REVERSEPROXY: '1'
       OFFEN_SERVER_PORT: 8080
