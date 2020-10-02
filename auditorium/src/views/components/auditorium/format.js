@@ -4,12 +4,13 @@
  */
 
 /** @jsx h */
-const { h, Fragment } = require('preact')
+const { h } = require('preact')
 
 const Format = (props) => {
   const { formatAs, children, factor, digits } = props
   const source = Number.isFinite(children) ? children : 0
   let value = null
+  let tooltip = null
   switch (formatAs) {
     case 'boolean':
       value = source === 0 ? __('No') : __('Yes')
@@ -19,6 +20,7 @@ const Format = (props) => {
       break
     case 'count':
       value = formatCount(source)
+      tooltip = value !== Math.floor(source) ? formatNumber(source, 1, 0) : null
       break
     case 'percentage':
       value = formatNumber(source, 100, 1) + ' %'
@@ -26,11 +28,13 @@ const Format = (props) => {
     default:
       value = formatNumber(source, factor, digits)
   }
-  return (
-    <Fragment>
-      {value}
-    </Fragment>
-  )
+  return tooltip
+    ? (
+      <span title={source}>
+        {value}
+      </span>
+    )
+    : value
 }
 
 module.exports = Format
@@ -55,9 +59,9 @@ function formatCount (count) {
 }
 
 module.exports.formatNumber = formatNumber
-function formatNumber (value, factor, digits) {
-  return (value * (factor || 1)).toLocaleString(process.env.LOCALE, {
-    maximumFractionDigits: digits || 1,
-    minimumFractionDigits: digits || 1
+function formatNumber (value, factor = 1, digits = 1) {
+  return (value * factor).toLocaleString(process.env.LOCALE, {
+    maximumFractionDigits: digits,
+    minimumFractionDigits: digits
   })
 }
