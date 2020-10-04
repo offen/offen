@@ -4,10 +4,11 @@
 package relational
 
 import (
+	"errors"
 	"fmt"
 
-	"github.com/jinzhu/gorm"
 	"github.com/offen/offen/server/persistence"
+	"gorm.io/gorm"
 )
 
 func (r *relationalDAL) CreateSecret(s *persistence.Secret) error {
@@ -38,7 +39,7 @@ func (r *relationalDAL) FindSecret(q interface{}) (persistence.Secret, error) {
 			"secret_id = ?",
 			string(query),
 		).First(&secret).Error; err != nil {
-			if gorm.IsRecordNotFoundError(err) {
+			if errors.Is(err, gorm.ErrRecordNotFound) {
 				return secret.export(), persistence.ErrUnknownSecret("relational: no matching secret found")
 			}
 			return secret.export(), fmt.Errorf("relational: error looking up secret: %w", err)

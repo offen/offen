@@ -8,9 +8,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/jinzhu/gorm"
+	gormigrate "github.com/go-gormigrate/gormigrate/v2"
 	"github.com/offen/offen/server/persistence"
-	gormigrate "gopkg.in/gormigrate.v1"
+	"gorm.io/gorm"
 )
 
 func (r *relationalDAL) ApplyMigrations() error {
@@ -26,7 +26,7 @@ func (r *relationalDAL) ApplyMigrations() error {
 					AdminLevel     int
 					Relationships  []AccountUserRelationship `gorm:"foreignkey:AccountUserID;association_foreignkey:AccountUserID"`
 				}
-				if err := db.AutoMigrate(&AccountUser{}).Error; err != nil {
+				if err := db.AutoMigrate(&AccountUser{}); err != nil {
 					return err
 				}
 				return db.Model(&AccountUser{}).UpdateColumn("admin_level", 1).Error
@@ -39,7 +39,7 @@ func (r *relationalDAL) ApplyMigrations() error {
 					Salt           string
 					Relationships  []AccountUserRelationship `gorm:"foreignkey:AccountUserID;association_foreignkey:AccountUserID"`
 				}
-				return db.AutoMigrate(&AccountUser{}).Error
+				return db.AutoMigrate(&AccountUser{})
 			},
 		},
 		{
@@ -72,7 +72,7 @@ func (r *relationalDAL) ApplyMigrations() error {
 					Secret   Secret `gorm:"foreignkey:SecretID;association_foreignkey:SecretID"`
 				}
 
-				return db.AutoMigrate(&Account{}, &AccountUserRelationship{}, &Event{}).Error
+				return db.AutoMigrate(&Account{}, &AccountUserRelationship{}, &Event{})
 			},
 			Rollback: func(db *gorm.DB) error {
 				type Account struct {
@@ -101,7 +101,7 @@ func (r *relationalDAL) ApplyMigrations() error {
 					Payload  string
 					Secret   Secret `gorm:"foreignkey:SecretID;association_foreignkey:SecretID"`
 				}
-				return db.AutoMigrate(&Account{}, &AccountUserRelationship{}, &Event{}).Error
+				return db.AutoMigrate(&Account{}, &AccountUserRelationship{}, &Event{})
 			},
 		},
 		{
@@ -224,7 +224,7 @@ func (r *relationalDAL) ApplyMigrations() error {
 					Secret    Secret `gorm:"foreignkey:SecretID;association_foreignkey:SecretID"`
 				}
 
-				if err := db.AutoMigrate(&Tombstone{}, &Event{}).Error; err != nil {
+				if err := db.AutoMigrate(&Tombstone{}, &Event{}); err != nil {
 					return err
 				}
 
@@ -241,7 +241,7 @@ func (r *relationalDAL) ApplyMigrations() error {
 			Rollback: func(db *gorm.DB) error {
 				// we cannot drop the sequence column on the events table
 				// because this is not supported by SQLite
-				return db.DropTable("tombstones").Error
+				return db.Migrator().DropTable("tombstones")
 			},
 		},
 		{
@@ -251,7 +251,7 @@ func (r *relationalDAL) ApplyMigrations() error {
 					SecretID        string `gorm:"primary_key"`
 					EncryptedSecret string `gorm:"type:text"`
 				}
-				if db.Dialect().GetName() == "mysql" {
+				if db.Config.Dialector.Name() == "mysql" {
 					return db.Exec("ALTER TABLE secrets MODIFY COLUMN encrypted_secret TEXT").Error
 				}
 				return nil
@@ -261,7 +261,7 @@ func (r *relationalDAL) ApplyMigrations() error {
 					SecretID        string `gorm:"primary_key"`
 					EncryptedSecret string
 				}
-				if db.Dialect().GetName() == "mysql" {
+				if db.Config.Dialector.Name() == "mysql" {
 					return db.Exec("ALTER TABLE secrets MODIFY COLUMN encrypted_secret VARCHAR").Error
 				}
 				return nil
@@ -270,7 +270,7 @@ func (r *relationalDAL) ApplyMigrations() error {
 	})
 
 	m.InitSchema(func(db *gorm.DB) error {
-		return db.AutoMigrate(knownTables...).Error
+		return db.AutoMigrate(knownTables...)
 	})
 
 	return m.Migrate()

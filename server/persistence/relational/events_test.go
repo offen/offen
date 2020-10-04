@@ -8,8 +8,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/jinzhu/gorm"
 	"github.com/offen/offen/server/persistence"
+	"gorm.io/gorm"
 )
 
 func TestRelationalDAL_CreateEvent(t *testing.T) {
@@ -191,7 +191,7 @@ func TestRelationalDAL_DeleteEvents(t *testing.T) {
 			2,
 			false,
 			func(db *gorm.DB) error {
-				var count int
+				var count int64
 				if err := db.Table("events").Count(&count).Error; err != nil {
 					return fmt.Errorf("error counting event rows: %v", err)
 				}
@@ -218,7 +218,7 @@ func TestRelationalDAL_DeleteEvents(t *testing.T) {
 			2,
 			false,
 			func(db *gorm.DB) error {
-				var count int
+				var count int64
 				if err := db.Table("events").Count(&count).Error; err != nil {
 					return fmt.Errorf("error counting event rows: %v", err)
 				}

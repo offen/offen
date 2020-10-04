@@ -4,10 +4,11 @@
 package relational
 
 import (
+	"errors"
 	"fmt"
 
-	"github.com/jinzhu/gorm"
 	"github.com/offen/offen/server/persistence"
+	"gorm.io/gorm"
 )
 
 func (r *relationalDAL) CreateAccount(a *persistence.Account) error {
@@ -31,13 +32,13 @@ func (r *relationalDAL) FindAccount(q interface{}) (persistence.Account, error) 
 	switch query := q.(type) {
 	case persistence.FindAccountQueryIncludeEvents:
 		if err := r.db.Find(&account, "account_id = ?", query.AccountID).Error; err != nil {
-			if gorm.IsRecordNotFoundError(err) {
+			if errors.Is(err, gorm.ErrRecordNotFound) {
 				return account.export(), persistence.ErrUnknownAccount(fmt.Sprintf(`relational: account id "%s" unknown`, query.AccountID))
 			}
 			return account.export(), fmt.Errorf(`relational: error looking up account with id %s: %w`, query.AccountID, err)
 		}
-		var limit int64 = 500
-		var offset int64
+		var limit int = 500
+		var offset int
 		var events []Event
 		queryDB := r.db.Preload("Secret").Limit(limit)
 		for {
@@ -50,7 +51,7 @@ func (r *relationalDAL) FindAccount(q interface{}) (persistence.Account, error) 
 				found = queryDB.Find(&nextEvents, "account_id = ? AND event_id > ?", query.AccountID, query.Since).RowsAffected
 			}
 			events = append(events, nextEvents...)
-			if found < limit {
+			if int(found) < limit {
 				break
 			}
 			offset += limit
@@ -59,7 +60,7 @@ func (r *relationalDAL) FindAccount(q interface{}) (persistence.Account, error) 
 		return account.export(), nil
 	case persistence.FindAccountQueryByID:
 		if err := r.db.Where("account_id = ?", string(query)).First(&account).Error; err != nil {
-			if gorm.IsRecordNotFoundError(err) {
+			if errors.Is(err, gorm.ErrRecordNotFound) {
 				return account.export(), persistence.ErrUnknownAccount("relational: no matching account found")
 			}
 			return account.export(), fmt.Errorf("relational: error looking up account: %w", err)
@@ -71,7 +72,7 @@ func (r *relationalDAL) FindAccount(q interface{}) (persistence.Account, error) 
 			string(query),
 			false,
 		).First(&account).Error; err != nil {
-			if gorm.IsRecordNotFoundError(err) {
+			if errors.Is(err, gorm.ErrRecordNotFound) {
 				return account.export(), persistence.ErrUnknownAccount("relational: no matching active account found")
 			}
 			return account.export(), fmt.Errorf("relational: error looking up account: %w", err)

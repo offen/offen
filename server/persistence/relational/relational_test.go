@@ -4,21 +4,23 @@
 package relational
 
 import (
+	"errors"
 	"testing"
 
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/sqlite"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 )
 
 func createTestDatabase() (*gorm.DB, func() error) {
-	db, err := gorm.Open("sqlite3", ":memory:")
+	db, err := gorm.Open(sqlite.Open(":memory:"), &gorm.Config{})
 	if err != nil {
 		panic(err)
 	}
 	if err := db.AutoMigrate(&Event{}, &Account{}, &Secret{}, &AccountUser{}, &AccountUserRelationship{}, &Tombstone{}).Error; err != nil {
 		panic(err)
 	}
-	return db, db.Close
+	d, _ := db.DB()
+	return db, d.Close
 }
 
 type dbAccess func(*gorm.DB) error
@@ -58,7 +60,7 @@ func TestRelationalDAL_DropAll(t *testing.T) {
 	}
 
 	err := db.Where("event_id = ?", "event-id").First(&Event{}).Error
-	if !gorm.IsRecordNotFoundError(err) {
+	if !errors.Is(err, gorm.ErrRecordNotFound) {
 		t.Errorf("Unexpected error value %v", err)
 	}
 }
