@@ -9,14 +9,17 @@ import (
 
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 func createTestDatabase() (*gorm.DB, func() error) {
-	db, err := gorm.Open(sqlite.Open(":memory:"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open(":memory:"), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Silent),
+	})
 	if err != nil {
 		panic(err)
 	}
-	if err := db.AutoMigrate(&Event{}, &Account{}, &Secret{}, &AccountUser{}, &AccountUserRelationship{}, &Tombstone{}).Error; err != nil {
+	if err := db.AutoMigrate(&Event{}, &Account{}, &Secret{}, &AccountUser{}, &AccountUserRelationship{}, &Tombstone{}); err != nil {
 		panic(err)
 	}
 	d, _ := db.DB()

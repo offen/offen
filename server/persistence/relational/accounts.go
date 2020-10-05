@@ -31,7 +31,7 @@ func (r *relationalDAL) FindAccount(q interface{}) (persistence.Account, error) 
 	var account Account
 	switch query := q.(type) {
 	case persistence.FindAccountQueryIncludeEvents:
-		if err := r.db.Find(&account, "account_id = ?", query.AccountID).Error; err != nil {
+		if err := r.db.First(&account, "account_id = ?", query.AccountID).Error; err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
 				return account.export(), persistence.ErrUnknownAccount(fmt.Sprintf(`relational: account id "%s" unknown`, query.AccountID))
 			}
