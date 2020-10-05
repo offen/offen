@@ -1,12 +1,17 @@
 # Copyright 2020 - Offen Authors <hioffen@posteo.de>
 # SPDX-License-Identifier: Apache-2.0
 
+x-docker-pull-creds: &docker-pull-creds
+  username: offen
+  password: $DOCKER_ACCESSTOKEN
+
 version: 2.1
 
 jobs:
   server:
     docker:
       - image: circleci/golang:1.15
+        auth: *docker-pull-creds
     working_directory: ~/offen/server
     steps:
       - checkout:
@@ -27,6 +32,7 @@ jobs:
   vault:
     docker:
       - image: circleci/node:14-browsers
+        auth: *docker-pull-creds
     working_directory: ~/offen/vault
     steps:
       - test_node_app:
@@ -35,6 +41,7 @@ jobs:
   script:
     docker:
       - image: circleci/node:14-browsers
+        auth: *docker-pull-creds
     working_directory: ~/offen/script
     steps:
       - test_node_app:
@@ -43,6 +50,7 @@ jobs:
   auditorium:
     docker:
       - image: circleci/node:14-browsers
+        auth: *docker-pull-creds
     working_directory: ~/offen/auditorium
     steps:
       - test_node_app:
@@ -51,6 +59,7 @@ jobs:
   packages:
     docker:
       - image: circleci/node:14-browsers
+        auth: *docker-pull-creds
     working_directory: ~/offen/packages
     steps:
       - test_node_app:
@@ -59,6 +68,7 @@ jobs:
   reuse:
     docker:
       - image: cimg/python:3.7
+        auth: *docker-pull-creds
     working_directory: ~/offen
     steps:
       - checkout:
@@ -73,6 +83,7 @@ jobs:
   build:
     docker:
       - image: circleci/python:3.7
+        auth: *docker-pull-creds
     working_directory: ~/offen
     environment:
       DOCKER_LOGIN: offen
@@ -115,6 +126,7 @@ jobs:
       OFFEN_DATABASE_CONNECTIONSTRING: /tmp/offen.sqlite3
     docker:
       - image: circleci/node:14-browsers
+        auth: *docker-pull-creds
     working_directory: ~/offen
     steps:
       - run:
@@ -130,7 +142,9 @@ jobs:
       OFFEN_DATABASE_CONNECTIONSTRING: postgres://circle:test@localhost:5432/circle_test?sslmode=disable
     docker:
       - image: circleci/node:14-browsers
+        auth: *docker-pull-creds
       - image: circleci/postgres:11.2-alpine
+        auth: *docker-pull-creds
         environment:
           POSTGRES_USER: circle
           POSTGRES_PASSWORD: test
@@ -148,7 +162,9 @@ jobs:
       OFFEN_DATABASE_CONNECTIONSTRING: root:test@tcp(localhost:3306)/circle_test?parseTime=true
     docker:
       - image: circleci/node:14-browsers
+        auth: *docker-pull-creds
       - image: circleci/mysql:5.7
+        auth: *docker-pull-creds
         environment:
           MYSQL_DATABASE: circle_test
           MYSQL_ROOT_PASSWORD: test
@@ -165,6 +181,7 @@ jobs:
       MINIO_STORAGE: https://storage.offen.dev
     docker:
       - image: circleci/python:3.7
+        auth: *docker-pull-creds
     working_directory: ~/offen
     steps:
       - checkout
@@ -236,6 +253,7 @@ jobs:
       DISTRIBUTION: E2Q11JP684XRCO
     docker:
       - image: cimg/python:3.7
+        auth: *docker-pull-creds
     working_directory: ~/offen
     steps:
       - checkout
