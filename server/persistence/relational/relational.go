@@ -37,11 +37,11 @@ func (r *relationalDAL) Transaction() (persistence.Transaction, error) {
 }
 
 var knownTables = []interface{}{
-	&Event{},
 	&Account{},
-	&Secret{},
 	&AccountUser{},
 	&AccountUserRelationship{},
+	&Event{},
+	&Secret{},
 	&Tombstone{},
 }
 

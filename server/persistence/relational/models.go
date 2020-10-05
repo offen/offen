@@ -10,15 +10,65 @@ import (
 )
 
 // Event is any analytics event that will be stored in the database. It is
-// uniquely tied to an Account and a User model.
+// uniquely tied to an Account and a Secret model.
 type Event struct {
-	EventID   string `gorm:"primary_key"`
-	Sequence  string
-	AccountID string
+	EventID   string `gorm:"primary_key;size:26;unique"`
+	Sequence  string `gorm:"size:26"`
+	AccountID string `gorm:"size:36"`
 	// the secret id is nullable for anonymous events
-	SecretID *string
-	Payload  string `gorm:"type:text"`
-	Secret   Secret `gorm:"foreignkey:SecretID;association_foreignkey:SecretID"`
+	SecretID *string `gorm:"size:64"`
+	Payload  string  `gorm:"type:text"`
+	Secret   Secret  `gorm:"foreignkey:SecretID;association_foreignkey:SecretID"`
+}
+
+// A Tombstone replaces an event on its deletion
+type Tombstone struct {
+	EventID   string  `gorm:"primary_key"`
+	AccountID string  `gorm:"size:36"`
+	SecretID  *string `gorm:"size:64"`
+	Sequence  string  `gorm:"size:24"`
+}
+
+// Secret associates a hashed user id - which ties a user and account together
+// uniquely - with the encrypted user secret the account owner can use
+// to decrypt events stored for that user.
+type Secret struct {
+	SecretID        string `gorm:"primary_key;size:64;unique"`
+	EncryptedSecret string `gorm:"type:text"`
+}
+
+// Account stores information about an account.
+type Account struct {
+	AccountID           string `gorm:"primary_key;size:36;unique"`
+	Name                string
+	PublicKey           string `gorm:"type:text"`
+	EncryptedPrivateKey string `gorm:"type:text"`
+	UserSalt            string
+	Retired             bool
+	Created             time.Time
+	Events              []Event `gorm:"foreignkey:AccountID;association_foreignkey:AccountID"`
+}
+
+// AccountUser is a person that can log in and access data related to all
+// associated accounts.
+type AccountUser struct {
+	AccountUserID  string `gorm:"primary_key;size:36;unique"`
+	HashedEmail    string
+	HashedPassword string
+	Salt           string
+	AdminLevel     int
+	Relationships  []AccountUserRelationship `gorm:"foreignkey:AccountUserID;association_foreignkey:AccountUserID"`
+}
+
+// AccountUserRelationship contains the encrypted KeyEncryptionKeys needed for
+// an AccountUser to access the data of the account it links to.
+type AccountUserRelationship struct {
+	RelationshipID                    string `gorm:"primary_key;size:36;unique"`
+	AccountUserID                     string `gorm:"size:36"`
+	AccountID                         string `gorm:"size:36"`
+	PasswordEncryptedKeyEncryptionKey string `gorm:"type:text"`
+	EmailEncryptedKeyEncryptionKey    string `gorm:"type:text"`
+	OneTimeEncryptedKeyEncryptionKey  string `gorm:"type:text"`
 }
 
 func (e *Event) export() persistence.Event {
@@ -43,14 +93,6 @@ func importEvent(e *persistence.Event) Event {
 	}
 }
 
-// A Tombstone replaces an event on its deletion
-type Tombstone struct {
-	EventID   string `gorm:"primary_key"`
-	AccountID string
-	SecretID  *string
-	Sequence  string
-}
-
 func (t *Tombstone) export() persistence.Tombstone {
 	return persistence.Tombstone{
 		EventID:   t.EventID,
@@ -69,14 +111,6 @@ func importTombstone(t *persistence.Tombstone) *Tombstone {
 	}
 }
 
-// Secret associates a hashed user id - which ties a user and account together
-// uniquely - with the encrypted user secret the account owner can use
-// to decrypt events stored for that user.
-type Secret struct {
-	SecretID        string `gorm:"primary_key"`
-	EncryptedSecret string `gorm:"type:text"`
-}
-
 func (s *Secret) export() persistence.Secret {
 	return persistence.Secret{
 		SecretID:        s.SecretID,
@@ -89,17 +123,6 @@ func importSecret(s *persistence.Secret) Secret {
 		SecretID:        s.SecretID,
 		EncryptedSecret: s.EncryptedSecret,
 	}
-}
-
-// AccountUser is a person that can log in and access data related to all
-// associated accounts.
-type AccountUser struct {
-	AccountUserID  string `gorm:"primary_key"`
-	HashedEmail    string
-	HashedPassword string
-	Salt           string
-	AdminLevel     int
-	Relationships  []AccountUserRelationship `gorm:"foreignkey:AccountUserID;association_foreignkey:AccountUserID"`
 }
 
 func (a *AccountUser) export() persistence.AccountUser {
@@ -132,17 +155,6 @@ func importAccountUser(a *persistence.AccountUser) AccountUser {
 	}
 }
 
-// AccountUserRelationship contains the encrypted KeyEncryptionKeys needed for
-// an AccountUser to access the data of the account it links to.
-type AccountUserRelationship struct {
-	RelationshipID                    string `gorm:"primary_key"`
-	AccountUserID                     string
-	AccountID                         string
-	PasswordEncryptedKeyEncryptionKey string `gorm:"type:text"`
-	EmailEncryptedKeyEncryptionKey    string `gorm:"type:text"`
-	OneTimeEncryptedKeyEncryptionKey  string `gorm:"type:text"`
-}
-
 func (a *AccountUserRelationship) export() persistence.AccountUserRelationship {
 	return persistence.AccountUserRelationship{
 		RelationshipID:                    a.RelationshipID,
@@ -163,18 +175,6 @@ func importAccountUserRelationship(a *persistence.AccountUserRelationship) Accou
 		EmailEncryptedKeyEncryptionKey:    a.EmailEncryptedKeyEncryptionKey,
 		OneTimeEncryptedKeyEncryptionKey:  a.OneTimeEncryptedKeyEncryptionKey,
 	}
-}
-
-// Account stores information about an account.
-type Account struct {
-	AccountID           string `gorm:"primary_key"`
-	Name                string
-	PublicKey           string `gorm:"type:text"`
-	EncryptedPrivateKey string `gorm:"type:text"`
-	UserSalt            string
-	Retired             bool
-	Created             time.Time
-	Events              []Event `gorm:"foreignkey:AccountID;association_foreignkey:AccountID"`
 }
 
 func (a *Account) export() persistence.Account {
