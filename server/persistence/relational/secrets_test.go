@@ -4,12 +4,13 @@
 package relational
 
 import (
+	"errors"
 	"fmt"
 	"reflect"
 	"testing"
 
-	"github.com/jinzhu/gorm"
 	"github.com/offen/offen/server/persistence"
+	"gorm.io/gorm"
 )
 
 func TestRelationalDAL_CreateSecret(t *testing.T) {
@@ -98,7 +99,7 @@ func TestRelationalDAL_DeleteSecret(t *testing.T) {
 			false,
 			func(db *gorm.DB) error {
 				err := db.Where("secret_id = ?", "hashed-user-id-1").Error
-				if !gorm.IsRecordNotFoundError(err) {
+				if !errors.Is(err, gorm.ErrRecordNotFound) {
 					return err
 				}
 				if err := db.Where("secret_id = ?", "hashed-user-id-2").Error; err != nil {

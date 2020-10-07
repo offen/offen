@@ -9,8 +9,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/jinzhu/gorm"
 	"github.com/offen/offen/server/persistence"
+	"gorm.io/gorm"
 )
 
 func TestRelationalDAL_CreateAccount(t *testing.T) {
@@ -85,7 +85,7 @@ func TestRelationalDAL_UpdateAccount(t *testing.T) {
 				{
 
 					var account Account
-					if err := db.Find(&account, "account_id = ?", "account-a").Error; err != nil {
+					if err := db.First(&account, "account_id = ?", "account-a").Error; err != nil {
 						return err
 					}
 					if account.Retired != true {
@@ -94,7 +94,7 @@ func TestRelationalDAL_UpdateAccount(t *testing.T) {
 				}
 				{
 					var account Account
-					if err := db.Find(&account, "account_id = ?", "account-b").Error; err != nil {
+					if err := db.First(&account, "account_id = ?", "account-b").Error; err != nil {
 						return err
 					}
 					if account.Retired != false {
