@@ -267,6 +267,69 @@ func (r *relationalDAL) ApplyMigrations() error {
 				return nil
 			},
 		},
+		{
+			ID: "006_gorm_upgrade",
+			Migrate: func(db *gorm.DB) error {
+				type Event struct {
+					EventID   string  `gorm:"primary_key;size:26;unique"`
+					Sequence  string  `gorm:"size:26"`
+					AccountID string  `gorm:"size:36"`
+					SecretID  *string `gorm:"size:64"`
+					Payload   string  `gorm:"type:text"`
+					Secret    Secret  `gorm:"foreignkey:SecretID;association_foreignkey:SecretID"`
+				}
+
+				type Tombstone struct {
+					EventID   string  `gorm:"primary_key"`
+					AccountID string  `gorm:"size:36"`
+					SecretID  *string `gorm:"size:64"`
+					Sequence  string  `gorm:"size:24"`
+				}
+				type Secret struct {
+					SecretID        string `gorm:"primary_key;size:64;unique"`
+					EncryptedSecret string `gorm:"type:text"`
+				}
+				type Account struct {
+					AccountID           string `gorm:"primary_key;size:36;unique"`
+					Name                string
+					PublicKey           string `gorm:"type:text"`
+					EncryptedPrivateKey string `gorm:"type:text"`
+					UserSalt            string
+					Retired             bool
+					Created             time.Time
+					Events              []Event `gorm:"foreignkey:AccountID;association_foreignkey:AccountID"`
+				}
+				type AccountUser struct {
+					AccountUserID  string `gorm:"primary_key;size:36;unique"`
+					HashedEmail    string
+					HashedPassword string
+					Salt           string
+					AdminLevel     int
+					Relationships  []AccountUserRelationship `gorm:"foreignkey:AccountUserID;association_foreignkey:AccountUserID"`
+				}
+				type AccountUserRelationship struct {
+					RelationshipID                    string `gorm:"primary_key;size:36;unique"`
+					AccountUserID                     string `gorm:"size:36"`
+					AccountID                         string `gorm:"size:36"`
+					PasswordEncryptedKeyEncryptionKey string `gorm:"type:text"`
+					EmailEncryptedKeyEncryptionKey    string `gorm:"type:text"`
+					OneTimeEncryptedKeyEncryptionKey  string `gorm:"type:text"`
+				}
+				return db.AutoMigrate(
+					&Account{},
+					&AccountUser{},
+					&AccountUserRelationship{},
+					&Event{},
+					&Secret{},
+					&Tombstone{},
+				)
+			},
+			Rollback: func(db *gorm.DB) error {
+				// this change cannot be rolled back considering the upgraded GORM version
+				// is not accepting the previously defined schemas
+				return nil
+			},
+		},
 	})
 
 	m.InitSchema(func(db *gorm.DB) error {
