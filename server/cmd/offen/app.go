@@ -64,7 +64,8 @@ func newDB(c *config.Config) (*gorm.DB, error) {
 	}
 
 	gormDB, err := gorm.Open(d, &gorm.Config{
-		Logger: logger.Default.LogMode(logLevel),
+		Logger:                                   logger.Default.LogMode(logLevel),
+		DisableForeignKeyConstraintWhenMigrating: c.Database.Dialect.String() == "sqlite3",
 	})
 	if err != nil {
 		return nil, fmt.Errorf("error opening database: %w", err)
