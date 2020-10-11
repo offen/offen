@@ -15,6 +15,7 @@ type Config struct {
 		SSLCertificate   EnvString
 		SSLKey           EnvString
 		AutoTLS          []string
+		LetsEncryptEmail  string
 		CertificateCache EnvString `default:"%AppData%\offen\.cache"`
 	}
 	Database struct {
