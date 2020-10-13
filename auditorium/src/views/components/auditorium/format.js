@@ -30,7 +30,7 @@ const Format = (props) => {
   }
   return tooltip
     ? (
-      <span title={source}>
+      <span title={tooltip}>
         {value}
       </span>
     )
