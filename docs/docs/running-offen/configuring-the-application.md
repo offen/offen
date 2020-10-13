@@ -115,6 +115,11 @@ __Heads Up__
 
 It is important that this value points to a persistent, non-ephemeral location as otherwise each request would issue a new certificate and your deployment will be rate limited by Let's Encrypt soon.
 
+### OFFEN_SERVER_LETSENCRYPTEMAIL
+{: .no_toc }
+
+In case you are using the AutoTLS feature, this setting can be used to pass an email to Let's Encrypt that will then be associated with the issued certificate. This allows Let's Encrypt to email you on certificate expiry or other possible issues with the certificate.
+
 ---
 
 ### Database
