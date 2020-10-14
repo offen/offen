@@ -23,7 +23,7 @@ type relationalDAL struct {
 // interface for data access layers.
 func NewRelationalDAL(db *gorm.DB) persistence.DataAccessLayer {
 	return &relationalDAL{
-		db: db,
+		db: db.Session(&gorm.Session{FullSaveAssociations: true}),
 	}
 }
 
