@@ -39,12 +39,17 @@ const ChangePassword = (props) => {
       <h4 class='f4 normal mt0 mb3'>
         {__('Change password')}
       </h4>
-      <form class='mw6 center mb4' onsubmit={handleSubmit}>
+      <form
+        class='mw6 center mb4'
+        onsubmit={handleSubmit}
+        data-testid='console/reset-password/form'
+      >
         <LabeledInput
           type='password'
           name='current'
           required
           disabled={isDisabled}
+          data-testid='console/reset-password/current-password-input'
         >
           {__('Current password')}
         </LabeledInput>
@@ -53,6 +58,7 @@ const ChangePassword = (props) => {
           required
           autocomplete='off'
           disabled={isDisabled}
+          data-testid='console/reset-password/new-password-input'
         >
           {__('New password')}
         </NewPasswordInput>
@@ -62,6 +68,7 @@ const ChangePassword = (props) => {
           required
           autocomplete='off'
           disabled={isDisabled}
+          data-testid='console/reset-password/new-password-repeat'
         >
           {__('Repeat new password')}
         </LabeledInput>
