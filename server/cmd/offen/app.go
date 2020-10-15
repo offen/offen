@@ -77,7 +77,7 @@ func newDB(c *config.Config, l *logrus.Logger) (*gorm.DB, error) {
 		},
 		backoff.WithMaxRetries(backoff.NewExponentialBackOff(), uint64(c.Database.ConnectionRetries)),
 		func(err error, duration time.Duration) {
-			if l != nil {
+			if l != nil && c.Database.ConnectionRetries != 0 {
 				l.WithError(err).Warn("Connecting to database failed")
 				l.WithField("duration", duration).Info("Scheduling sleep before retrying")
 			}
