@@ -55,7 +55,7 @@ func cmdServe(subcommand string, flags []string) {
 	cmd.Parse(flags)
 	a := newApp(false, false, *envFile)
 
-	gormDB, err := newDB(a.config)
+	gormDB, err := newDB(a.config, a.logger)
 	if err != nil {
 		a.logger.WithError(err).Fatal("Unable to establish database connection")
 	}

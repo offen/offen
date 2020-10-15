@@ -83,7 +83,7 @@ func cmdDemo(subcommand string, flags []string) {
 	}
 	a.config.App.DemoAccount = accountID.String()
 
-	gormDB, err := newDB(a.config)
+	gormDB, err := newDB(a.config, a.logger)
 	if err != nil {
 		a.logger.WithError(err).Fatal("Unable to establish database connection")
 	}

@@ -4,6 +4,7 @@ go 1.12
 
 require (
 	github.com/NYTimes/gziphandler v1.1.1
+	github.com/cenkalti/backoff/v4 v4.1.0
 	github.com/felixge/httpsnoop v1.0.1
 	github.com/gin-contrib/location v0.0.1
 	github.com/gin-gonic/gin v1.4.0

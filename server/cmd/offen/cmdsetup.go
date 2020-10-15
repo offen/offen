@@ -132,7 +132,7 @@ func cmdSetup(subcommand string, flags []string) {
 	}
 	conf.Force = *force
 
-	gormDB, dbErr := newDB(a.config)
+	gormDB, dbErr := newDB(a.config, a.logger)
 
 	if dbErr != nil {
 		a.logger.WithError(dbErr).Fatal("Error establishing database connection")
