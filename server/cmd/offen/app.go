@@ -6,7 +6,9 @@ package main
 import (
 	"errors"
 	"fmt"
+	"time"
 
+	"github.com/cenkalti/backoff/v4"
 	"github.com/offen/offen/server/config"
 	"github.com/sirupsen/logrus"
 	"gorm.io/driver/mysql"
@@ -47,7 +49,7 @@ func newLogger() *logrus.Logger {
 	return logrus.New()
 }
 
-func newDB(c *config.Config) (*gorm.DB, error) {
+func newDB(c *config.Config, l *logrus.Logger) (*gorm.DB, error) {
 	var d gorm.Dialector
 	switch c.Database.Dialect.String() {
 	case "sqlite3":
@@ -63,13 +65,27 @@ func newDB(c *config.Config) (*gorm.DB, error) {
 		logLevel = logger.Info
 	}
 
-	gormDB, err := gorm.Open(d, &gorm.Config{
-		Logger:                                   logger.Default.LogMode(logLevel),
-		DisableForeignKeyConstraintWhenMigrating: c.Database.Dialect.String() == "sqlite3",
-	})
-	if err != nil {
+	var gormDB *gorm.DB
+	if err := backoff.RetryNotify(
+		func() error {
+			var err error
+			gormDB, err = gorm.Open(d, &gorm.Config{
+				Logger:                                   logger.Default.LogMode(logLevel),
+				DisableForeignKeyConstraintWhenMigrating: c.Database.Dialect.String() == "sqlite3",
+			})
+			return err
+		},
+		backoff.WithMaxRetries(backoff.NewExponentialBackOff(), uint64(c.Database.ConnectionRetries)),
+		func(err error, duration time.Duration) {
+			if l != nil {
+				l.WithError(err).Warn("Connecting to database failed")
+				l.WithField("duration", duration).Info("Scheduling sleep before retrying")
+			}
+		},
+	); err != nil {
 		return nil, fmt.Errorf("error opening database: %w", err)
 	}
+
 	if c.Database.Dialect == "sqlite3" {
 		db, err := gormDB.DB()
 		if err != nil {
