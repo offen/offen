@@ -272,3 +272,58 @@ function toUpperBound (date) {
 function toLowerBound (date) {
   return ULID.ulid(date.getTime() - 1)
 }
+
+module.exports.aggregate = aggregate
+function aggregate () {
+  return _.chain(arguments)
+    .toArray()
+    .reduce(function (acc, event) {
+      var givenKeys = _.keys(event)
+      var knownKeys = _.keys(acc)
+
+      var currentLength = _.size(_.head(_.values(acc)))
+      var newKeys = _.without.apply(_, [givenKeys].concat(knownKeys))
+      _.each(newKeys, function (key) {
+        acc[key] = _.times(currentLength, _.constant(null))
+      })
+
+      for (var key in event) {
+        acc[key].push(event[key])
+      }
+
+      var missingKeys = _.difference(knownKeys, givenKeys)
+      _.each(missingKeys, function (key) {
+        acc[key].push(null)
+      })
+      return acc
+    }, {})
+    .value()
+}
+
+module.exports.mergeAggregates = mergeAggregates
+function mergeAggregates () {
+  return _.chain(arguments)
+    .toArray()
+    .reduce(function (acc, aggregate) {
+      var givenKeys = _.keys(aggregate)
+      var knownKeys = _.keys(acc)
+
+      var currentLength = _.size(_.head(_.values(acc)))
+      var newKeys = _.without.apply(_, [givenKeys].concat(knownKeys))
+      _.each(newKeys, function (key) {
+        acc[key] = _.times(currentLength, _.constant(null))
+      })
+
+      for (var key in aggregate) {
+        acc[key] = acc[key].concat(aggregate[key])
+      }
+
+      var missingKeys = _.difference(knownKeys, givenKeys)
+      var aggregateLength = _.size(_.head(_.values(aggregate)))
+      _.each(missingKeys, function (key) {
+        acc[key] = acc[key].concat(_.times(aggregateLength, _.constant(null)))
+      })
+      return acc
+    }, {})
+    .value()
+}

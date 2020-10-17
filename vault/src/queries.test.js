@@ -571,4 +571,69 @@ describe('src/queries.js', function () {
       assert.strictEqual(result.payload.href.toString(), 'https://www.offen.dev/foo/?bar-baz')
     })
   })
+
+  describe('aggregate(...events)', function () {
+    it('aggregates objects of the same shape', function () {
+      var result = queries.aggregate(
+        { type: 'foo', value: 12 },
+        { type: 'bar', value: 44 }
+      )
+      assert.deepStrictEqual(result, {
+        type: ['foo', 'bar'],
+        value: [12, 44]
+      })
+    })
+
+    it('fills missing values with null', function () {
+      var result = queries.aggregate(
+        { solo: [99] },
+        { type: 'bar', value: 12, other: 'ok' },
+        { type: 'baz', value: 14, extra: true }
+      )
+      assert.deepStrictEqual(result, {
+        type: [null, 'bar', 'baz'],
+        value: [null, 12, 14],
+        extra: [null, null, true],
+        other: [null, 'ok', null],
+        solo: [[99], null, null]
+      })
+    })
+  })
+
+  describe('mergeAggregates(...aggregates)', function () {
+    it('merges aggregates of the same shape', function () {
+      var result = queries.mergeAggregates(
+        { type: ['a', 'b'], value: [true, false] },
+        { type: ['x', 'y', 'z'], value: [1, 2, 3] }
+      )
+      assert.deepStrictEqual(result, {
+        type: ['a', 'b', 'x', 'y', 'z'],
+        value: [true, false, 1, 2, 3]
+      })
+    })
+
+    it('adds null padding at the head', function () {
+      var result = queries.mergeAggregates(
+        { type: ['a', 'b'] },
+        { type: ['x', 'y', 'z'], value: [1, 2, 3] }
+      )
+      assert.deepStrictEqual(result, {
+        type: ['a', 'b', 'x', 'y', 'z'],
+        value: [null, null, 1, 2, 3]
+      })
+    })
+
+    it('adds null padding at the tail', function () {
+      var result = queries.mergeAggregates(
+        { type: ['a', 'b'], value: [1, 2] },
+        { type: ['x', 'y', 'z'] },
+        { other: [['ok']] }
+      )
+      assert.deepStrictEqual(result, {
+        type: ['a', 'b', 'x', 'y', 'z', null],
+        value: [1, 2, null, null, null, null],
+        other: [null, null, null, null, null, ['ok']]
+      })
+    })
+  })
 })
