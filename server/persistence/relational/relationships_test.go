@@ -8,8 +8,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/jinzhu/gorm"
 	"github.com/offen/offen/server/persistence"
+	"gorm.io/gorm"
 )
 
 func TestRelationalDAL_CreateAccountUserRelationship(t *testing.T) {
@@ -136,7 +136,7 @@ func TestRelationalDAL_UpdateAccountUserRelationship(t *testing.T) {
 			},
 			true,
 			func(db *gorm.DB) error {
-				var count int
+				var count int64
 				db.Find(&AccountUserRelationship{}).Count(&count)
 				if count != 0 {
 					return fmt.Errorf("unexpected row count %d", count)

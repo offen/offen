@@ -6,8 +6,8 @@ package relational
 import (
 	"fmt"
 
-	"github.com/jinzhu/gorm"
 	"github.com/offen/offen/server/persistence"
+	"gorm.io/gorm"
 
 	// GORM imports the dialects for side effects only
 	_ "github.com/jinzhu/gorm/dialects/mysql"
@@ -23,7 +23,7 @@ type relationalDAL struct {
 // interface for data access layers.
 func NewRelationalDAL(db *gorm.DB) persistence.DataAccessLayer {
 	return &relationalDAL{
-		db: db,
+		db: db.Session(&gorm.Session{FullSaveAssociations: true}),
 	}
 }
 
@@ -37,17 +37,17 @@ func (r *relationalDAL) Transaction() (persistence.Transaction, error) {
 }
 
 var knownTables = []interface{}{
-	&Event{},
 	&Account{},
-	&Secret{},
 	&AccountUser{},
 	&AccountUserRelationship{},
+	&Event{},
+	&Secret{},
 	&Tombstone{},
 }
 
 func (r *relationalDAL) ProbeEmpty() bool {
 	for _, table := range knownTables {
-		var count int
+		var count int64
 		if err := r.db.Model(table).Count(&count).Error; err != nil {
 			return false
 		}
@@ -59,18 +59,25 @@ func (r *relationalDAL) ProbeEmpty() bool {
 }
 
 func (r *relationalDAL) Ping() error {
-	return r.db.DB().Ping()
+	db, err := r.db.DB()
+	if err != nil {
+		return fmt.Errorf("relational: error accessing underlying database connection: %w", err)
+	}
+	if err := db.Ping(); err != nil {
+		return fmt.Errorf("relational: error pinging database: %w", err)
+	}
+	return err
 }
 
 func (r *relationalDAL) DropAll() error {
-	if err := r.db.DropTableIfExists(
+	if err := r.db.Migrator().DropTable(
 		&Event{},
 		&Account{},
 		&Secret{},
 		&AccountUser{},
 		&AccountUserRelationship{},
 		"migrations",
-	).Error; err != nil {
+	); err != nil {
 		return fmt.Errorf("relational: error dropping tables: %w,", err)
 	}
 	return nil

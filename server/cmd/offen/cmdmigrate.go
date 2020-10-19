@@ -32,7 +32,7 @@ func cmdMigrate(subcommand string, flags []string) {
 	cmd.Parse(flags)
 	a := newApp(false, true, *envFile)
 
-	gormDB, dbErr := newDB(a.config)
+	gormDB, dbErr := newDB(a.config, a.logger)
 	if dbErr != nil {
 		a.logger.WithError(dbErr).Fatal("Error establishing database connection")
 	}

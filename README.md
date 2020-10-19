@@ -8,6 +8,7 @@ SPDX-License-Identifier: Apache-2.0
 </a>
 
 # Fair web analytics
+
 [![CircleCI](https://circleci.com/gh/offen/offen/tree/development.svg?style=svg)](https://circleci.com/gh/offen/offen/tree/development)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Awesome Humane Tech](https://raw.githubusercontent.com/humanetech-community/awesome-humane-tech/main/humane-tech-badge.svg?sanitize=true)](https://github.com/humanetech-community/awesome-humane-tech)
@@ -18,6 +19,7 @@ SPDX-License-Identifier: Apache-2.0
 Offen is an open alternative to common web analytics tools. Gain insights while your users have full access to their data. Lightweight, self hosted and free.
 
 ## Contents
+
 - [Core features](#core-features)
 - [How it works](#how-it-works)
 - [Essential metrics](#essential-metrics)
@@ -31,6 +33,7 @@ Offen is an open alternative to common web analytics tools. Gain insights while 
 - [Links](#links)
  
 ## Core features
+
 __Open & free__  
 Our lightweight and open source code can be fully audited by the community. Offen will always be available for free.
 
@@ -41,6 +44,7 @@ __Fair & secure__
 Opt in only. Users must actively give their consent to data collection. All data is encrypted end-to-end.
 
 ## How it works
+
 __Your job__
 - Self host Offen and thereby comply with GDPR guidelines.  
 - Integrate the code snippet into pages you want to track.  
@@ -69,11 +73,13 @@ __More features__
 - A detailed documentation on how to run Offen is available.  
 
 ## Essential metrics
+
 All important statistics that help you to improve your service.  
 Collected without violating the privacy of your users.  
 ![Essential metrics](https://offen.github.io/press-kit/offen-material/gfx-GitHub-Metrics.svg)
 
 ## Objectives
+
 __Privacy friendly__  
 Collection of usage data is opt in, users that do not actively opt in will never leave a trace. After opt in, Offen collects the minimal amount of data needed to generate meaningful statistics for operators. No IPs, User-Agent strings or similar are being collected or even looked at.
 
@@ -87,6 +93,7 @@ __Transparent and fair__
 Offen treats the user as a party of equal importance in the collection of usage data. Users have access to the same set of tools for analyzing their own data and they can delete their data at any time.
 
 ## Test drive
+
 If you're curious, give it a test drive right now:
 
 ```sh
@@ -96,14 +103,14 @@ docker run --rm -it -p 9876:9876 offen/offen:latest demo -port 9876
 This creates an ephemeral one-off installation that is populated with random data and is running on `http://localhost:9876`. There, you can log in using the account `demo@offen.dev` and password `demo`.
 
 ## Project status
-__Offen is in active development.__ We're happy to help if you would like to experiment with deploying it, but at this point we cannot guarantee any upgrade stability yet. We'll do our best to help you create a viable upgrade path though.
 
-We are currently working on __Milestone 6 out of 6: Testing and packaging.__ Check our [blog][] for detailed updates on what we are working on right now and what's up next.
+__Offen is in active development.__ Check our [blog][] and [Twitter][] for detailed updates on what we are working on right now and what's up next.
 
 [blog]: https://www.offen.dev/blog/
-
+[Twitter]: https://twitter.com/hioffen
 
 ## Contributions welcome
+
 This repository contains all source code needed to build and run Offen, both on the server as well as on the client. Also see each of the READMEs in the subdirectories for information on how to work on that particular area of the application.
 
 The development setup requires `docker` and `docker-compose` to be installed.
@@ -144,6 +151,7 @@ make docs
 This will serve the documentation on <https://localhost:4000>.
 
 ## Kind support
+
 [![NLnet Foundation](https://offen.github.io/press-kit/external-material/nlnet-logo.svg)](https://nlnet.nl/)
 
 We are happy to work with [NLnet Foundation,](https://nlnet.nl/) which actively supports our efforts as part of its [Next Generation Internet](https://nlnet.nl/NGI/) initiative.
@@ -155,11 +163,12 @@ We are happy to work with [NLnet Foundation,](https://nlnet.nl/) which actively 
 Cross-Browser testing provided by [BrowserStack](https://www.browserstack.com/).
 
 ## Give feedback
+
 Found an issue or want to add something? Please do not hesitate to file an issue or open a pull request. For details head to our [contributing guideline.](https://github.com/offen/offen/blob/development/CONTRIBUTING.md)
 
 ## License
 
-This work is licensed under multiple licences.
+Work in this repository is licensed under multiple licences.
 
 - All original source code is licensed under [Apache-2.0][license-apache].
 - All documentation is licensed under [Apache-2.0][license-apache].
@@ -172,6 +181,7 @@ See the [NOTICE][notice] file for license information on works that get bundled 
 [notice]: https://github.com/offen/offen/blob/development/NOTICE
 
 ## Links
+
 [Website](https://www.offen.dev/)  
 [Docs](https://docs.offen.dev/)  
 [Twitter](https://twitter.com/hioffen)  

@@ -4,11 +4,11 @@
 package relational
 
 import (
+	"errors"
 	"testing"
 
-	"github.com/jinzhu/gorm"
-
 	"github.com/offen/offen/server/persistence"
+	"gorm.io/gorm"
 )
 
 func TestRelationalDAL_Transaction(t *testing.T) {
@@ -64,7 +64,7 @@ func TestRelationalDAL_Transaction(t *testing.T) {
 		t.Errorf("Unexpected error rolling back transaction: %v", err)
 	}
 
-	if err := db.Where("event_id = ?", "event-b").First(&Event{}).Error; !gorm.IsRecordNotFoundError(err) {
+	if err := db.Where("event_id = ?", "event-b").First(&Event{}).Error; !errors.Is(err, gorm.ErrRecordNotFound) {
 		t.Errorf("Unexpected error value looking up record post-rollback: %v", err)
 	}
 }

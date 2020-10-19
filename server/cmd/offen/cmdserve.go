@@ -55,7 +55,7 @@ func cmdServe(subcommand string, flags []string) {
 	cmd.Parse(flags)
 	a := newApp(false, false, *envFile)
 
-	gormDB, err := newDB(a.config)
+	gormDB, err := newDB(a.config, a.logger)
 	if err != nil {
 		a.logger.WithError(err).Fatal("Unable to establish database connection")
 	}
@@ -112,6 +112,7 @@ func cmdServe(subcommand string, flags []string) {
 				Prompt:     autocert.AcceptTOS,
 				HostPolicy: autocert.HostWhitelist(a.config.Server.AutoTLS...),
 				Cache:      autocert.DirCache(a.config.Server.CertificateCache),
+				Email:      a.config.Server.LetsEncryptEmail,
 			}
 			go http.ListenAndServe(":http", m.HTTPHandler(nil))
 			if err := http.Serve(m.Listener(), srv.Handler); err != nil && err != http.ErrServerClosed {

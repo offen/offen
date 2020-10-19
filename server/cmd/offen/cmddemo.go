@@ -28,6 +28,7 @@ import (
 	"github.com/offen/offen/server/public"
 	"github.com/offen/offen/server/router"
 	"github.com/phayes/freeport"
+	"github.com/schollz/progressbar/v3"
 )
 
 var demoUsage = `
@@ -82,7 +83,7 @@ func cmdDemo(subcommand string, flags []string) {
 	}
 	a.config.App.DemoAccount = accountID.String()
 
-	gormDB, err := newDB(a.config)
+	gormDB, err := newDB(a.config, a.logger)
 	if err != nil {
 		a.logger.WithError(err).Fatal("Unable to establish database connection")
 	}
@@ -125,6 +126,7 @@ func cmdDemo(subcommand string, flags []string) {
 	wg := sync.WaitGroup{}
 	done := make(chan error)
 	wg.Add(users)
+	pBar := progressbar.NewOptions(users, progressbar.OptionClearOnFinish())
 
 	for i := 0; i < users; i++ {
 		go func() {
@@ -172,6 +174,7 @@ func cmdDemo(subcommand string, flags []string) {
 				}
 			}
 			wg.Done()
+			pBar.Add(1)
 		}()
 	}
 

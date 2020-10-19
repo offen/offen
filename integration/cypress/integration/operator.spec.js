@@ -56,5 +56,25 @@ describe('Operator', function () {
       cy.visit('/console/')
       cy.url().should('include', '/login/')
     })
+
+    it('allows accounts to change their password', function () {
+      cy.visit('/login/')
+      cy.get('[data-testid="login/username-input"]').type(Cypress.env('OPERATOR_USERNAME'))
+      cy.get('[data-testid="login/password-input"]').type(Cypress.env('OPERATOR_PASSWORD'))
+      cy.get('[data-testid="login/form"]').submit()
+      cy.url().should('include', '/auditorium/')
+      cy.visit('/console/')
+
+      cy.get('[data-testid="console/reset-password/current-password-input"]').type(Cypress.env('OPERATOR_PASSWORD'))
+      cy.get('[data-testid="console/reset-password/new-password-input"]').type('thisissomethingnew')
+      cy.get('[data-testid="console/reset-password/new-password-repeat"]').type('thisissomethingnew')
+      cy.get('[data-testid="console/reset-password/form"]').submit()
+
+      cy.url().should('include', '/login/')
+      cy.get('[data-testid="login/username-input"]').type(Cypress.env('OPERATOR_USERNAME'))
+      cy.get('[data-testid="login/password-input"]').type('thisissomethingnew')
+      cy.get('[data-testid="login/form"]').submit()
+      cy.url().should('include', '/auditorium/')
+    })
   })
 })

@@ -15,11 +15,13 @@ type Config struct {
 		SSLCertificate   EnvString
 		SSLKey           EnvString
 		AutoTLS          []string
+		LetsEncryptEmail string
 		CertificateCache EnvString `default:"/var/www/.cache"`
 	}
 	Database struct {
-		Dialect          Dialect   `default:"sqlite3"`
-		ConnectionString EnvString `default:"/var/opt/offen/offen.db"`
+		Dialect           Dialect   `default:"sqlite3"`
+		ConnectionString  EnvString `default:"/var/opt/offen/offen.db"`
+		ConnectionRetries int       `default:"0"`
 	}
 	App struct {
 		Development  bool     `default:"false"`

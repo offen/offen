@@ -115,6 +115,11 @@ __Heads Up__
 
 It is important that this value points to a persistent, non-ephemeral location as otherwise each request would issue a new certificate and your deployment will be rate limited by Let's Encrypt soon.
 
+### OFFEN_SERVER_LETSENCRYPTEMAIL
+{: .no_toc }
+
+In case you are using the AutoTLS feature, this setting can be used to pass an email to Let's Encrypt that will then be associated with the issued certificate. This allows Let's Encrypt to email you on certificate expiry or other possible issues with the certificate.
+
 ---
 
 ### Database
@@ -146,6 +151,15 @@ When using `postgres` and you are using a local database (or a Docker network) y
 ```
 OFFEN_DATABASE_CONNECTIONSTRING=postgres://user:pass@localhost:5432/offen?sslmode=disable
 ```
+
+### OFFEN_DATABASE_CONNECTIONRETRIES
+{: .no_toc }
+
+Defaults to `0`.
+
+When running in a setup where you start the Offen server together with your database, you might run into race scenarios where Offen tries to connect to your database before it's ready to accept connections (e.g. docker-compose with MySQL). If needed, you can use this setting to tell Offen to retry connecting to the database after sleeping for a few seconds. This mechanism uses an exponential backoff algorithm, so if you specify a large number, the intervals might become big.
+
+As this is more of a workaround, the __default behavior is not to retry__.
 
 ---
 
