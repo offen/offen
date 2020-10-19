@@ -283,7 +283,7 @@ func (r *relationalDAL) ApplyMigrations() error {
 					EventID   string  `gorm:"primary_key"`
 					AccountID string  `gorm:"size:36"`
 					SecretID  *string `gorm:"size:64"`
-					Sequence  string  `gorm:"size:24"`
+					Sequence  string  `gorm:"size:26"`
 				}
 				type Secret struct {
 					SecretID        string `gorm:"primary_key;size:64;unique"`

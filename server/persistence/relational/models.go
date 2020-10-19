@@ -26,7 +26,7 @@ type Tombstone struct {
 	EventID   string  `gorm:"primary_key"`
 	AccountID string  `gorm:"size:36"`
 	SecretID  *string `gorm:"size:64"`
-	Sequence  string  `gorm:"size:24"`
+	Sequence  string  `gorm:"size:26"`
 }
 
 // Secret associates a hashed user id - which ties a user and account together
