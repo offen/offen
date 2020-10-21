@@ -600,18 +600,18 @@ describe('src/queries.js', function () {
       })
     })
 
-    it('fills missing values with null', function () {
+    it('adds padding for undefined values', function () {
       var result = queries.aggregate([
         { solo: [99] },
         { type: 'bar', value: 12, other: 'ok' },
         { type: 'baz', value: 14, extra: true }
       ])
       assert.deepStrictEqual(result, {
-        type: [null, 'bar', 'baz'],
-        value: [null, 12, 14],
-        extra: [null, null, true],
-        other: [null, 'ok', null],
-        solo: [[99], null, null]
+        type: [undefined, 'bar', 'baz'],
+        value: [undefined, 12, 14],
+        extra: [undefined, undefined, true],
+        other: [undefined, 'ok', undefined],
+        solo: [[99], undefined, undefined]
       })
     })
   })
@@ -628,27 +628,27 @@ describe('src/queries.js', function () {
       })
     })
 
-    it('adds null padding at the head', function () {
+    it('adds padding at the head', function () {
       var result = queries.mergeAggregates([
         { type: ['a', 'b'] },
         { type: ['x', 'y', 'z'], value: [1, 2, 3] }
       ])
       assert.deepStrictEqual(result, {
         type: ['a', 'b', 'x', 'y', 'z'],
-        value: [null, null, 1, 2, 3]
+        value: [undefined, undefined, 1, 2, 3]
       })
     })
 
-    it('adds null padding at the tail', function () {
+    it('adds padding at the tail', function () {
       var result = queries.mergeAggregates([
         { type: ['a', 'b'], value: [1, 2] },
         { type: ['x', 'y', 'z'] },
         { other: [['ok']] }
       ])
       assert.deepStrictEqual(result, {
-        type: ['a', 'b', 'x', 'y', 'z', null],
-        value: [1, 2, null, null, null, null],
-        other: [null, null, null, null, null, ['ok']]
+        type: ['a', 'b', 'x', 'y', 'z', undefined],
+        value: [1, 2, undefined, undefined, undefined, undefined],
+        other: [undefined, undefined, undefined, undefined, undefined, ['ok']]
       })
     })
   })
