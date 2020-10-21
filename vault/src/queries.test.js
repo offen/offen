@@ -574,10 +574,26 @@ describe('src/queries.js', function () {
 
   describe('aggregate(...events)', function () {
     it('aggregates objects of the same shape', function () {
-      var result = queries.aggregate(
+      var result = queries.aggregate([
         { type: 'foo', value: 12 },
         { type: 'bar', value: 44 }
-      )
+      ])
+      assert.deepStrictEqual(result, {
+        type: ['foo', 'bar'],
+        value: [12, 44]
+      })
+    })
+
+    it('supports passing a normalization function', function () {
+      var result = queries.aggregate([
+        { type: 'foo', payload: { value: 12 } },
+        { type: 'bar', payload: { value: 44 } }
+      ], function (item) {
+        return {
+          type: item.type,
+          value: item.payload.value
+        }
+      })
       assert.deepStrictEqual(result, {
         type: ['foo', 'bar'],
         value: [12, 44]
@@ -585,11 +601,11 @@ describe('src/queries.js', function () {
     })
 
     it('fills missing values with null', function () {
-      var result = queries.aggregate(
+      var result = queries.aggregate([
         { solo: [99] },
         { type: 'bar', value: 12, other: 'ok' },
         { type: 'baz', value: 14, extra: true }
-      )
+      ])
       assert.deepStrictEqual(result, {
         type: [null, 'bar', 'baz'],
         value: [null, 12, 14],
@@ -602,10 +618,10 @@ describe('src/queries.js', function () {
 
   describe('mergeAggregates(...aggregates)', function () {
     it('merges aggregates of the same shape', function () {
-      var result = queries.mergeAggregates(
+      var result = queries.mergeAggregates([
         { type: ['a', 'b'], value: [true, false] },
         { type: ['x', 'y', 'z'], value: [1, 2, 3] }
-      )
+      ])
       assert.deepStrictEqual(result, {
         type: ['a', 'b', 'x', 'y', 'z'],
         value: [true, false, 1, 2, 3]
@@ -613,10 +629,10 @@ describe('src/queries.js', function () {
     })
 
     it('adds null padding at the head', function () {
-      var result = queries.mergeAggregates(
+      var result = queries.mergeAggregates([
         { type: ['a', 'b'] },
         { type: ['x', 'y', 'z'], value: [1, 2, 3] }
-      )
+      ])
       assert.deepStrictEqual(result, {
         type: ['a', 'b', 'x', 'y', 'z'],
         value: [null, null, 1, 2, 3]
@@ -624,16 +640,54 @@ describe('src/queries.js', function () {
     })
 
     it('adds null padding at the tail', function () {
-      var result = queries.mergeAggregates(
+      var result = queries.mergeAggregates([
         { type: ['a', 'b'], value: [1, 2] },
         { type: ['x', 'y', 'z'] },
         { other: [['ok']] }
-      )
+      ])
       assert.deepStrictEqual(result, {
         type: ['a', 'b', 'x', 'y', 'z', null],
         value: [1, 2, null, null, null, null],
         other: [null, null, null, null, null, ['ok']]
       })
+    })
+  })
+
+  describe('inflateAggregate(aggregates)', function () {
+    it('deflates an aggregate into an array of objects', function () {
+      var result = queries.inflateAggregate({
+        type: ['thing', 'widget', 'roomba'],
+        value: [[0], null, 'foo']
+      })
+      assert.deepStrictEqual(result, [
+        { type: 'thing', value: [0] },
+        { type: 'widget', value: null },
+        { type: 'roomba', value: 'foo' }
+      ])
+    })
+    it('throws on asymmetric input', function () {
+      assert.throws(function () {
+        queries.inflateAggregate({
+          type: ['thing', 'widget', 'roomba'],
+          value: [[0], null, 'foo', 'whoops']
+        })
+      })
+    })
+    it('supports passing a function for denormalizing items', function () {
+      var result = queries.inflateAggregate({
+        type: ['thing', 'widget', 'roomba'],
+        value: [[0], null, 'foo']
+      }, function (item) {
+        return {
+          type: item.type,
+          payload: { value: item.value }
+        }
+      })
+      assert.deepStrictEqual(result, [
+        { type: 'thing', payload: { value: [0] } },
+        { type: 'widget', payload: { value: null } },
+        { type: 'roomba', payload: { value: 'foo' } }
+      ])
     })
   })
 })
