@@ -274,56 +274,74 @@ function toLowerBound (date) {
 }
 
 module.exports.aggregate = aggregate
-function aggregate () {
-  return _.chain(arguments)
-    .toArray()
-    .reduce(function (acc, event) {
-      var givenKeys = _.keys(event)
-      var knownKeys = _.keys(acc)
+function aggregate (events, normalizeFn) {
+  if (normalizeFn) {
+    events = events.map(normalizeFn)
+  }
+  return _.reduce(events, function (acc, event) {
+    var givenKeys = _.keys(event)
+    var knownKeys = _.keys(acc)
 
-      var currentLength = _.size(_.head(_.values(acc)))
-      var newKeys = _.without.apply(_, [givenKeys].concat(knownKeys))
-      _.each(newKeys, function (key) {
-        acc[key] = _.times(currentLength, _.constant(null))
-      })
+    var currentLength = _.size(_.head(_.values(acc)))
+    var newKeys = _.without.apply(_, [givenKeys].concat(knownKeys))
+    _.each(newKeys, function (key) {
+      acc[key] = _.times(currentLength, _.constant(null))
+    })
 
-      for (var key in event) {
-        acc[key].push(event[key])
-      }
+    for (var key in event) {
+      acc[key].push(event[key])
+    }
 
-      var missingKeys = _.difference(knownKeys, givenKeys)
-      _.each(missingKeys, function (key) {
-        acc[key].push(null)
-      })
-      return acc
-    }, {})
-    .value()
+    var missingKeys = _.difference(knownKeys, givenKeys)
+    _.each(missingKeys, function (key) {
+      acc[key].push(null)
+    })
+    return acc
+  }, {})
 }
 
 module.exports.mergeAggregates = mergeAggregates
-function mergeAggregates () {
-  return _.chain(arguments)
-    .toArray()
-    .reduce(function (acc, aggregate) {
-      var givenKeys = _.keys(aggregate)
-      var knownKeys = _.keys(acc)
+function mergeAggregates (aggregates) {
+  return _.reduce(aggregates, function (acc, aggregate) {
+    var givenKeys = _.keys(aggregate)
+    var knownKeys = _.keys(acc)
 
-      var currentLength = _.size(_.head(_.values(acc)))
-      var newKeys = _.without.apply(_, [givenKeys].concat(knownKeys))
-      _.each(newKeys, function (key) {
-        acc[key] = _.times(currentLength, _.constant(null))
-      })
+    var currentLength = _.size(_.head(_.values(acc)))
+    var newKeys = _.without.apply(_, [givenKeys].concat(knownKeys))
+    _.each(newKeys, function (key) {
+      acc[key] = _.times(currentLength, _.constant(null))
+    })
 
-      for (var key in aggregate) {
-        acc[key] = acc[key].concat(aggregate[key])
-      }
+    for (var key in aggregate) {
+      acc[key] = acc[key].concat(aggregate[key])
+    }
 
-      var missingKeys = _.difference(knownKeys, givenKeys)
-      var aggregateLength = _.size(_.head(_.values(aggregate)))
-      _.each(missingKeys, function (key) {
-        acc[key] = acc[key].concat(_.times(aggregateLength, _.constant(null)))
-      })
-      return acc
-    }, {})
-    .value()
+    var missingKeys = _.difference(knownKeys, givenKeys)
+    var aggregateLength = _.size(_.head(_.values(aggregate)))
+    _.each(missingKeys, function (key) {
+      acc[key] = acc[key].concat(_.times(aggregateLength, _.constant(null)))
+    })
+    return acc
+  }, {})
+}
+
+module.exports.inflateAggregate = inflateAggregate
+function inflateAggregate (aggregate, denormalizeFn) {
+  var lengths = _.map(_.values(aggregate), _.size)
+  if (Math.min.apply(Math, lengths) !== Math.max.apply(Math, lengths)) {
+    throw new Error('Cannot inflate an aggregate where members are of different lengths.')
+  }
+
+  var pairs = _.pairs(aggregate)
+  var result = _.reduce(pairs, function (acc, nextPair) {
+    return _.map(nextPair[1], function (value, index) {
+      var item = acc[index] || {}
+      item[nextPair[0]] = value
+      return item
+    })
+  }, [])
+  if (denormalizeFn) {
+    return result.map(denormalizeFn)
+  }
+  return result
 }
