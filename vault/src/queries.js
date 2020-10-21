@@ -285,7 +285,7 @@ function aggregate (events, normalizeFn) {
     var currentLength = _.size(_.head(_.values(acc)))
     var newKeys = _.without.apply(_, [givenKeys].concat(knownKeys))
     _.each(newKeys, function (key) {
-      acc[key] = _.times(currentLength, _.constant(null))
+      acc[key] = _.times(currentLength, _.constant(undefined))
     })
 
     for (var key in event) {
@@ -294,7 +294,7 @@ function aggregate (events, normalizeFn) {
 
     var missingKeys = _.difference(knownKeys, givenKeys)
     _.each(missingKeys, function (key) {
-      acc[key].push(null)
+      acc[key].push(undefined)
     })
     return acc
   }, {})
@@ -309,7 +309,7 @@ function mergeAggregates (aggregates) {
     var currentLength = _.size(_.head(_.values(acc)))
     var newKeys = _.without.apply(_, [givenKeys].concat(knownKeys))
     _.each(newKeys, function (key) {
-      acc[key] = _.times(currentLength, _.constant(null))
+      acc[key] = _.times(currentLength, _.constant(undefined))
     })
 
     for (var key in aggregate) {
@@ -319,7 +319,7 @@ function mergeAggregates (aggregates) {
     var missingKeys = _.difference(knownKeys, givenKeys)
     var aggregateLength = _.size(_.head(_.values(aggregate)))
     _.each(missingKeys, function (key) {
-      acc[key] = acc[key].concat(_.times(aggregateLength, _.constant(null)))
+      acc[key] = acc[key].concat(_.times(aggregateLength, _.constant(undefined)))
     })
     return acc
   }, {})
@@ -328,6 +328,10 @@ function mergeAggregates (aggregates) {
 module.exports.inflateAggregate = inflateAggregate
 function inflateAggregate (aggregate, denormalizeFn) {
   var lengths = _.map(_.values(aggregate), _.size)
+  if (!lengths.length) {
+    return []
+  }
+
   if (Math.min.apply(Math, lengths) !== Math.max.apply(Math, lengths)) {
     throw new Error('Cannot inflate an aggregate where members are of different lengths.')
   }
@@ -344,4 +348,20 @@ function inflateAggregate (aggregate, denormalizeFn) {
     return result.map(denormalizeFn)
   }
   return result
+}
+
+module.exports.normalizeEvent = normalizeEvent
+function normalizeEvent (evt) {
+  return Object.assign(
+    _.pick(evt, 'accountId', 'eventId', 'secretId'),
+    evt.payload
+  )
+}
+
+module.exports.denormalizeEvent = denormalizeEvent
+function denormalizeEvent (evt) {
+  return Object.assign(
+    _.pick(evt, 'accountId', 'eventId', 'secretId'),
+    { payload: _.omit(evt, 'accountId', 'eventId', 'secretId') }
+  )
 }
