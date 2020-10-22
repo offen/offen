@@ -102,6 +102,10 @@ func TestPersistenceLayer_GetAccount(t *testing.T) {
 						{EventID: "event-c", Payload: "payload-c"},
 					},
 				},
+				PublicKey: (func() jwk.Key {
+					s, _ := jwk.ParseString(publicKey)
+					return s.Keys[0]
+				})(),
 				Secrets: &EncryptedSecretsByID{
 					"hashed-user-a": "aaaaa",
 					"hashed-user-b": "bbbbb",
@@ -169,7 +173,7 @@ func TestPersistenceLayer_GetAccount(t *testing.T) {
 
 			result, err := p.GetAccount("account-id", test.includeEvents, test.since)
 			if !reflect.DeepEqual(test.expectedResult, result) {
-				t.Errorf("Expected %v, got %v", test.expectedResult, result)
+				t.Errorf("Expected %#v, got %#v", test.expectedResult, result)
 			}
 
 			if (err != nil) != test.expectError {

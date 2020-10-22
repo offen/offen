@@ -14,6 +14,7 @@ var fallbackStore = { events: {}, keys: {}, checkpoints: {} }
 var TYPE_LAST_KNOWN_CHECKPOINT = 'LAST_KNOWN_CHECKPOINT'
 var TYPE_USER_SECRET = 'USER_SECRET'
 var TYPE_ENCRYPTED_SECRET = 'ENCRYPTED_SECRET'
+var TYPE_ENCRYPTED_AGGREGATION_SECRET = 'ENCRYPTED_AGGREGATION_SECRET'
 
 module.exports = new Storage(getDatabase, fallbackStore)
 module.exports.Storage = Storage
@@ -72,6 +73,32 @@ function Storage (getDatabase, fallbackStore) {
       .catch(dexie.OpenFailedError, function () {
         fallbackStore.events[accountId] = fallbackStore.events[accountId] || []
         return fallbackStore.events[accountId].length
+      })
+  }
+
+  this.getAggregationSecret = function (accountId) {
+    var db = getDatabase(accountId)
+    return db.keys
+      .get({ type: TYPE_ENCRYPTED_AGGREGATION_SECRET })
+      .then(function (result) {
+        if (result) {
+          return result.value
+        }
+      })
+      .catch(dexie.OpenFailedError, function () {
+        return null
+      })
+  }
+
+  this.putAggregationSecret = function (accountId, aggregationSecret) {
+    var db = getDatabase(accountId)
+    return db.keys
+      .put({
+        type: TYPE_ENCRYPTED_AGGREGATION_SECRET,
+        value: aggregationSecret
+      })
+      .catch(dexie.OpenFailedError, function () {
+        return null
       })
   }
 
