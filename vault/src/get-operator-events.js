@@ -77,7 +77,8 @@ function ensureSyncWith (storage, api) {
                   : null,
                 payload.account.sequence
                   ? storage.updateLastKnownCheckpoint(accountId, payload.account.sequence)
-                  : null
+                  : null,
+                ensureAggregationSecret(payload.account.publicKey)
               ])
               .then(function (results) {
                 var privateJwk = results[0]
@@ -88,5 +89,21 @@ function ensureSyncWith (storage, api) {
               })
           })
       })
+
+    function ensureAggregationSecret (publicKey) {
+      return storage.getAggregationSecret(accountId)
+        .then(function (secret) {
+          if (secret) {
+            return secret
+          }
+          return crypto.createSymmetricKey()
+            .then(function (cryptoKey) {
+              return crypto.encryptAsymmetricWith(publicKey)(cryptoKey)
+            })
+            .then(function (encryptedSecret) {
+              return storage.putAggregationSecret(accountId, encryptedSecret)
+            })
+        })
+    }
   })
 }
