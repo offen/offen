@@ -73,7 +73,8 @@ describe('src/get-operator-events', function () {
           updateLastKnownCheckpoint: sinon.stub().resolves(),
           deleteEvents: sinon.stub().resolves(true),
           putEvents: sinon.stub().resolves(true),
-          putEncryptedSecrets: sinon.stub().resolves()
+          putEncryptedSecrets: sinon.stub().resolves(),
+          getAggregationSecret: sinon.stub().resolves('ok')
         }
         var mockQueries = {
           getDefaultStats: sinon.stub().resolves({ mock: 'result' })
@@ -212,7 +213,8 @@ describe('src/get-operator-events', function () {
           updateLastKnownCheckpoint: sinon.stub().resolves(),
           deleteEvents: sinon.stub().resolves(true),
           putEvents: sinon.stub().resolves(true),
-          putEncryptedSecrets: sinon.stub().resolves()
+          putEncryptedSecrets: sinon.stub().resolves(),
+          getAggregationSecret: sinon.stub().resolves('ok')
         }
         var mockQueries = {
           getDefaultStats: sinon.stub().resolves({ mock: 'result' })
