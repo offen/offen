@@ -350,6 +350,22 @@ function inflateAggregate (aggregate, denormalizeFn) {
   return result
 }
 
+module.exports.removeFromAggregate = removeFromAggregate
+function removeFromAggregate (aggregate, keyRef, values) {
+  var indices = values.map(function (value) {
+    return _.indexOf(aggregate[keyRef], value)
+  })
+  return _.mapObject(aggregate, function (values) {
+    return _.reduceRight(values, function (acc, value, index) {
+      if (_.contains(indices, index)) {
+        return acc
+      }
+      acc.unshift(value)
+      return acc
+    }, [])
+  })
+}
+
 module.exports.normalizeEvent = normalizeEvent
 function normalizeEvent (evt) {
   return Object.assign(
