@@ -37,7 +37,7 @@ const AuditoriumView = (props) => {
     matches, authenticatedUser, model, stale,
     handleQuery, handleShare, handleValidationError, handleRetire, handleCopy
   } = props
-  const { accountId, range, resolution } = matches
+  const { accountId, range, resolution, now } = matches
   const { adminLevel } = authenticatedUser
   const [focus, setFocus] = useState(true)
 
@@ -49,10 +49,10 @@ const AuditoriumView = (props) => {
     if (!focus) {
       return null
     }
-    handleQuery({ accountId, range, resolution }, authenticatedUser)
+    handleQuery({ accountId, range, resolution, now }, authenticatedUser)
 
     const tick = window.setInterval(() => {
-      handleQuery({ accountId, range, resolution }, authenticatedUser, softFailure, true)
+      handleQuery({ accountId, range, resolution, now }, authenticatedUser, softFailure, true)
     }, 15000)
     return function cancelAutoRefresh () {
       window.clearInterval(tick)
