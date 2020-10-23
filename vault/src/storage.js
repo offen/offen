@@ -67,6 +67,14 @@ function Storage (getDatabase, fallbackStore) {
       })
   }
 
+  this.getEventsByIds = function (accountId, eventIds) {
+    var table = getDatabase(accountId).events
+    return table
+      .where('eventId')
+      .anyOf(eventIds)
+      .toArray()
+  }
+
   this.countEvents = function (accountId) {
     var table = getDatabase(accountId).events
     return table.count()
@@ -100,6 +108,35 @@ function Storage (getDatabase, fallbackStore) {
       .catch(dexie.OpenFailedError, function () {
         return null
       })
+  }
+
+  this.putAggregate = function (accountId, timestamp, aggregate) {
+    return getDatabase(accountId)
+      .aggregates
+      .put({
+        timestamp: timestamp,
+        value: aggregate
+      })
+      .catch(dexie.OpenFailedError, function () {
+        return null
+      })
+  }
+
+  this.getAggregate = function (accountId, timestamp) {
+    return getDatabase(accountId)
+      .aggregates
+      .get(timestamp)
+      .then(function (result) {
+        if (result) {
+          return result.value
+        }
+      })
+  }
+
+  this.deleteAggregate = function (accountId, timestamp) {
+    return getDatabase(accountId)
+      .aggregates
+      .delete(timestamp)
   }
 
   this.getUserSecret = function (accountId) {

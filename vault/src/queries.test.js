@@ -616,7 +616,7 @@ describe('src/queries.js', function () {
     })
   })
 
-  describe('mergeAggregates(...aggregates)', function () {
+  describe('mergeAggregates(aggregates)', function () {
     it('merges aggregates of the same shape', function () {
       var result = queries.mergeAggregates([
         { type: ['a', 'b'], value: [true, false] },
@@ -688,6 +688,19 @@ describe('src/queries.js', function () {
         { type: 'widget', payload: { value: null } },
         { type: 'roomba', payload: { value: 'foo' } }
       ])
+    })
+  })
+
+  describe('removeFromAggregate(aggregate, keyRef, values)', function () {
+    it('removes the matching indices from the given aggregate', function () {
+      var result = queries.removeFromAggregate({
+        type: ['a', 'b', 'x', 'y', 'z'],
+        value: [true, false, 1, 2, 3]
+      }, 'type', ['x', 'z'])
+      assert.deepStrictEqual(result, {
+        type: ['a', 'b', 'y'],
+        value: [true, false, 2]
+      })
     })
   })
 })

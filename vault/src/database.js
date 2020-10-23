@@ -34,5 +34,14 @@ function createDatabase (name) {
     return txn.table('events').clear()
   })
 
+  db.version(3).stores({
+    keys: '++,type',
+    events: 'eventId',
+    checkpoints: 'type',
+    aggregates: 'timestamp'
+  }).upgrade(function (txn) {
+    return txn.table('events').clear()
+  })
+
   return db
 }
