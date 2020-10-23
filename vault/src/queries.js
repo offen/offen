@@ -84,7 +84,7 @@ function Queries (storage) {
       return Promise.reject(new Error('Unknown resolution value: ' + resolution))
     }
 
-    var now = (query && query.now) || new Date()
+    var now = (query && query.now && new Date(query.now)) || new Date()
     var lowerBound = toLowerBound(startOf[resolution](subtract[resolution](now, range - 1)))
     var upperBound = toUpperBound(endOf[resolution](now))
 

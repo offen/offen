@@ -12,7 +12,6 @@ exports.query = (data, authenticatedUser, softFailureMessage, inBackground) => (
       payload: null
     })
   }
-
   const payload = data
     ? { query: data, authenticatedUser: authenticatedUser }
     : { authenticatedUser: authenticatedUser }
