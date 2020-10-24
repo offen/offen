@@ -147,6 +147,9 @@ function ensureSyncWith (storage, api) {
               var eventIds = pair[1]
               return storage.getAggregate(accountId, timestamp)
                 .then(function (aggregate) {
+                  if (!aggregate) {
+                    return {}
+                  }
                   return queries.removeFromAggregate(aggregate, 'eventId', eventIds)
                 })
                 .then(function (updatedAggregate) {

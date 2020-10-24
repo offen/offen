@@ -9,7 +9,7 @@ var addHours = require('date-fns/add_hours')
 var getDatabase = require('./database')
 var cookies = require('./cookie-tools')
 
-var fallbackStore = { events: {}, keys: {}, checkpoints: {} }
+var fallbackStore = { events: {}, keys: {}, checkpoints: {}, aggregates: {} }
 
 var TYPE_LAST_KNOWN_CHECKPOINT = 'LAST_KNOWN_CHECKPOINT'
 var TYPE_USER_SECRET = 'USER_SECRET'
@@ -137,6 +137,28 @@ function Storage (getDatabase, fallbackStore) {
     return getDatabase(accountId)
       .aggregates
       .delete(timestamp)
+  }
+
+  this.getAggregates = function (accountId, lowerBound, upperBound) {
+    var table = getDatabase(accountId).aggregates
+    if (!lowerBound || !upperBound) {
+      return table
+        .toArray()
+        .then(function (records) {
+          return records.map(function (record) {
+            return record.value
+          })
+        })
+    }
+    return table
+      .where('timestamp')
+      .between(lowerBound, upperBound)
+      .toArray()
+      .then(function (records) {
+        return records.map(function (record) {
+          return record.value
+        })
+      })
   }
 
   this.getUserSecret = function (accountId) {
