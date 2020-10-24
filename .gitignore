@@ -3,6 +3,7 @@
 
 .vscode
 *.pem
+*.db
 
 bootstrap-alpha.yml
 Dockerrun.aws.json
