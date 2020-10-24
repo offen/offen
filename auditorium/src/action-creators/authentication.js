@@ -34,7 +34,7 @@ exports.login = (username, password, onFailureMessage) => (dispatch, getState, p
           return
         case 'LOGIN_FAILURE':
           dispatch({
-            type: 'AUTHENTICATION_FAILURE',
+            type: credentials ? 'AUTHENTICATION_FAILURE' : 'SESSION_AUTHENTICATION_FAILURE',
             payload: {
               flash: onFailureMessage
             }
