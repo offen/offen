@@ -19,7 +19,6 @@ var subDays = require('date-fns/sub_days')
 var subWeeks = require('date-fns/sub_weeks')
 var subMonths = require('date-fns/sub_months')
 
-var decryptEvents = require('./decrypt-events')
 var stats = require('./stats')
 var storage = require('./storage')
 var eventSchema = require('./event.schema')
@@ -54,21 +53,26 @@ module.exports = new Queries(storage)
 module.exports.Queries = Queries
 
 function Queries (storage) {
-  function getAllEvents () {
-    return storage.getAllEvents
-      .apply(storage, arguments)
-      .then(function (events) {
-        return events.filter(eventSchema)
+  function getAllEvents (accountId, lowerBound, upperBound) {
+    if (!accountId) {
+      return storage.getAllEvents(accountId, toLowerBound(lowerBound), toUpperBound(upperBound))
+        .then(function (events) {
+          return _.compact(events.map(validateAndParseEvent))
+        })
+    }
+
+    return storage.getAggregates(
+      accountId,
+      lowerBound && startOfHour(lowerBound).toJSON(),
+      upperBound && endOfHour(upperBound).toJSON()
+    )
+      .then(function (aggregates) {
+        var events = inflateAggregate(mergeAggregates(aggregates), denormalizeEvent)
+        return _.compact(events.map(validateAndParseEvent))
       })
   }
 
   this.getDefaultStats = function (accountId, query, privateJwk) {
-    if (!accountId && accountId !== null) {
-      return Promise.reject(
-        new Error('Expected either an account id or null to be given, got: ' + accountId)
-      )
-    }
-
     if (accountId && !privateJwk) {
       return Promise.reject(
         new Error('Got account id but no private key, cannot continue.')
@@ -85,13 +89,13 @@ function Queries (storage) {
     }
 
     var now = (query && query.now && new Date(query.now)) || new Date()
-    var lowerBound = toLowerBound(startOf[resolution](subtract[resolution](now, range - 1)))
-    var upperBound = toUpperBound(endOf[resolution](now))
+    var lowerBound = startOf[resolution](subtract[resolution](now, range - 1))
+    var upperBound = endOf[resolution](now)
 
     var allEvents = getAllEvents(accountId)
     var eventsInBounds = getAllEvents(accountId, lowerBound, upperBound)
-    var realtimeLowerBound = toLowerBound(subMinutes(now, 15))
-    var realtimeUpperBound = toUpperBound(now)
+    var realtimeLowerBound = subMinutes(now, 15)
+    var realtimeUpperBound = now
     var realtimeEvents = getAllEvents(accountId, realtimeLowerBound, realtimeUpperBound)
     // `pageviews` is a list of basic metrics grouped by the given range
     // and resolution. It contains the number of pageviews, unique visitors
@@ -100,8 +104,8 @@ function Queries (storage) {
       .map(function (num, distance) {
         var date = subtract[resolution](now, distance)
 
-        var lowerBound = toLowerBound(startOf[resolution](date))
-        var upperBound = toUpperBound(endOf[resolution](date))
+        var lowerBound = startOf[resolution](date)
+        var upperBound = endOf[resolution](date)
         var eventsInBounds = getAllEvents(accountId, lowerBound, upperBound)
 
         var pageviews = stats.pageviews(eventsInBounds)
@@ -132,8 +136,8 @@ function Queries (storage) {
 
     var retentionChunks = []
     for (var i = 0; i < 4; i++) {
-      var currentChunkLowerBound = toLowerBound(subtract.days(now, (i + 1) * 7))
-      var currentChunkUpperBound = toUpperBound(subtract.days(now, i * 7))
+      var currentChunkLowerBound = subtract.days(now, (i + 1) * 7)
+      var currentChunkUpperBound = subtract.days(now, i * 7)
       var chunk = getAllEvents(accountId, currentChunkLowerBound, currentChunkUpperBound)
       retentionChunks.push(chunk)
     }
@@ -143,27 +147,8 @@ function Queries (storage) {
         return stats.retention.apply(stats, chunks)
       })
 
-    // There are two types of queries happening here: those that rely solely
-    // on the IndexedDB indices, and those that require the event payload
-    // (which might be encrypted and therefore not indexable).
-    // Theoretically *all* queries could be done on the set of events after
-    // encryption, yet it seems using the IndexedDB API where possible makes
-    // more sense and performs better.
-    var decryptions = [eventsInBounds, realtimeEvents]
-      .map(function (asyncSet) {
-        return asyncSet
-          .then(function (set) {
-            return accountId && privateJwk
-              ? doDecrypt(set, accountId, privateJwk)
-              : set
-          })
-          .then(function (events) {
-            return _.compact(events.map(validateAndParseEvent))
-          })
-      })
-
-    var decryptedEvents = decryptions[0]
-    var realtime = decryptions[1]
+    var decryptedEvents = eventsInBounds
+    var realtime = realtimeEvents
     var loss = stats.loss(decryptedEvents)
     var uniqueSessions = stats.uniqueSessions(decryptedEvents)
     var bounceRate = stats.bounceRate(decryptedEvents)
@@ -230,18 +215,11 @@ function Queries (storage) {
         }
       })
   }
-
-  function doDecrypt (events, accountId, privateJwk) {
-    return storage.getEncryptedSecrets(accountId)
-      .then(function (secrets) {
-        return decryptEvents(events, secrets, privateJwk)
-      })
-  }
 }
 
 module.exports.validateAndParseEvent = validateAndParseEvent
 function validateAndParseEvent (event) {
-  if (!payloadSchema(event.payload)) {
+  if (!eventSchema(event) || !payloadSchema(event.payload)) {
     return null
   }
   var clone = JSON.parse(JSON.stringify(event))
