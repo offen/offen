@@ -4,7 +4,6 @@
  */
 
 var _ = require('underscore')
-var ULID = require('ulid')
 var startOfHour = require('date-fns/start_of_hour')
 var startOfDay = require('date-fns/start_of_day')
 var startOfWeek = require('date-fns/start_of_week')
@@ -20,9 +19,7 @@ var subWeeks = require('date-fns/sub_weeks')
 var subMonths = require('date-fns/sub_months')
 
 var stats = require('./stats')
-var storage = require('./storage')
-var eventSchema = require('./event.schema')
-var payloadSchema = require('./payload.schema')
+var eventStore = require('./event-store')
 
 var startOf = {
   hours: startOfHour,
@@ -49,29 +46,10 @@ var subtract = {
   months: subMonths
 }
 
-module.exports = new Queries(storage)
+module.exports = new Queries(eventStore)
 module.exports.Queries = Queries
 
-function Queries (storage) {
-  function getAllEvents (accountId, lowerBound, upperBound) {
-    if (!accountId) {
-      return storage.getAllEvents(accountId, toLowerBound(lowerBound), toUpperBound(upperBound))
-        .then(function (events) {
-          return _.compact(events.map(validateAndParseEvent))
-        })
-    }
-
-    return storage.getAggregates(
-      accountId,
-      lowerBound && startOfHour(lowerBound).toJSON(),
-      upperBound && endOfHour(upperBound).toJSON()
-    )
-      .then(function (aggregates) {
-        var events = inflateAggregate(mergeAggregates(aggregates), denormalizeEvent)
-        return _.compact(events.map(validateAndParseEvent))
-      })
-  }
-
+function Queries (eventStore) {
   this.getDefaultStats = function (accountId, query, privateJwk) {
     if (accountId && !privateJwk) {
       return Promise.reject(
@@ -92,11 +70,11 @@ function Queries (storage) {
     var lowerBound = startOf[resolution](subtract[resolution](now, range - 1))
     var upperBound = endOf[resolution](now)
 
-    var allEvents = getAllEvents(accountId)
-    var eventsInBounds = getAllEvents(accountId, lowerBound, upperBound)
+    var allEvents = eventStore.getEvents(accountId)
+    var eventsInBounds = eventStore.getEvents(accountId, lowerBound, upperBound)
     var realtimeLowerBound = subMinutes(now, 15)
     var realtimeUpperBound = now
-    var realtimeEvents = getAllEvents(accountId, realtimeLowerBound, realtimeUpperBound)
+    var realtimeEvents = eventStore.getEvents(accountId, realtimeLowerBound, realtimeUpperBound)
     // `pageviews` is a list of basic metrics grouped by the given range
     // and resolution. It contains the number of pageviews, unique visitors
     // for operators and accounts for users.
@@ -106,7 +84,7 @@ function Queries (storage) {
 
         var lowerBound = startOf[resolution](date)
         var upperBound = endOf[resolution](date)
-        var eventsInBounds = getAllEvents(accountId, lowerBound, upperBound)
+        var eventsInBounds = eventStore.getEvents(accountId, lowerBound, upperBound)
 
         var pageviews = stats.pageviews(eventsInBounds)
         var visitors = stats.visitors(eventsInBounds)
@@ -130,7 +108,7 @@ function Queries (storage) {
     var uniqueAccounts = stats.accounts(eventsInBounds)
     var returningUsers = stats.returningUsers(eventsInBounds, allEvents)
 
-    var empty = storage.countEvents(accountId).then(function (count) {
+    var empty = eventStore.countEvents(accountId).then(function (count) {
       return count === 0
     })
 
@@ -138,7 +116,7 @@ function Queries (storage) {
     for (var i = 0; i < 4; i++) {
       var currentChunkLowerBound = subtract.days(now, (i + 1) * 7)
       var currentChunkUpperBound = subtract.days(now, i * 7)
-      var chunk = getAllEvents(accountId, currentChunkLowerBound, currentChunkUpperBound)
+      var chunk = eventStore.getEvents(accountId, currentChunkLowerBound, currentChunkUpperBound)
       retentionChunks.push(chunk)
     }
     retentionChunks = retentionChunks.reverse()
@@ -215,147 +193,4 @@ function Queries (storage) {
         }
       })
   }
-}
-
-module.exports.validateAndParseEvent = validateAndParseEvent
-function validateAndParseEvent (event) {
-  if (!eventSchema(event) || !payloadSchema(event.payload)) {
-    return null
-  }
-  var clone = JSON.parse(JSON.stringify(event))
-  if (clone.payload.href) {
-    clone.payload.href = normalizedURL(clone.payload.href)
-  }
-  if (clone.payload.rawHref) {
-    clone.payload.rawHref = normalizedURL(clone.payload.rawHref)
-  }
-  if (clone.payload.referrer) {
-    clone.payload.referrer = normalizedURL(clone.payload.referrer)
-  }
-  return clone
-}
-
-function normalizedURL (urlString) {
-  var url = new window.URL(urlString)
-  if (!/\/$/.test(url.pathname)) {
-    url.pathname += '/'
-  }
-  return url
-}
-
-function toUpperBound (date) {
-  return ULID.ulid(date.getTime() + 1)
-}
-
-function toLowerBound (date) {
-  return ULID.ulid(date.getTime() - 1)
-}
-
-module.exports.aggregate = aggregate
-function aggregate (events, normalizeFn) {
-  if (normalizeFn) {
-    events = events.map(normalizeFn)
-  }
-  return _.reduce(events, function (acc, event) {
-    var givenKeys = _.keys(event)
-    var knownKeys = _.keys(acc)
-
-    var currentLength = _.size(_.head(_.values(acc)))
-    var newKeys = _.without.apply(_, [givenKeys].concat(knownKeys))
-    _.each(newKeys, function (key) {
-      acc[key] = _.times(currentLength, _.constant(undefined))
-    })
-
-    for (var key in event) {
-      acc[key].push(event[key])
-    }
-
-    var missingKeys = _.difference(knownKeys, givenKeys)
-    _.each(missingKeys, function (key) {
-      acc[key].push(undefined)
-    })
-    return acc
-  }, {})
-}
-
-module.exports.mergeAggregates = mergeAggregates
-function mergeAggregates (aggregates) {
-  return _.reduce(aggregates, function (acc, aggregate) {
-    var givenKeys = _.keys(aggregate)
-    var knownKeys = _.keys(acc)
-
-    var currentLength = _.size(_.head(_.values(acc)))
-    var newKeys = _.without.apply(_, [givenKeys].concat(knownKeys))
-    _.each(newKeys, function (key) {
-      acc[key] = _.times(currentLength, _.constant(undefined))
-    })
-
-    for (var key in aggregate) {
-      acc[key] = acc[key].concat(aggregate[key])
-    }
-
-    var missingKeys = _.difference(knownKeys, givenKeys)
-    var aggregateLength = _.size(_.head(_.values(aggregate)))
-    _.each(missingKeys, function (key) {
-      acc[key] = acc[key].concat(_.times(aggregateLength, _.constant(undefined)))
-    })
-    return acc
-  }, {})
-}
-
-module.exports.inflateAggregate = inflateAggregate
-function inflateAggregate (aggregate, denormalizeFn) {
-  var lengths = _.map(_.values(aggregate), _.size)
-  if (!lengths.length) {
-    return []
-  }
-
-  if (Math.min.apply(Math, lengths) !== Math.max.apply(Math, lengths)) {
-    throw new Error('Cannot inflate an aggregate where members are of different lengths.')
-  }
-
-  var pairs = _.pairs(aggregate)
-  var result = _.reduce(pairs, function (acc, nextPair) {
-    return _.map(nextPair[1], function (value, index) {
-      var item = acc[index] || {}
-      item[nextPair[0]] = value
-      return item
-    })
-  }, [])
-  if (denormalizeFn) {
-    return result.map(denormalizeFn)
-  }
-  return result
-}
-
-module.exports.removeFromAggregate = removeFromAggregate
-function removeFromAggregate (aggregate, keyRef, values) {
-  var indices = values.map(function (value) {
-    return _.indexOf(aggregate[keyRef], value)
-  })
-  return _.mapObject(aggregate, function (values) {
-    return _.reduceRight(values, function (acc, value, index) {
-      if (_.contains(indices, index)) {
-        return acc
-      }
-      acc.unshift(value)
-      return acc
-    }, [])
-  })
-}
-
-module.exports.normalizeEvent = normalizeEvent
-function normalizeEvent (evt) {
-  return Object.assign(
-    _.pick(evt, 'accountId', 'eventId', 'secretId'),
-    evt.payload
-  )
-}
-
-module.exports.denormalizeEvent = denormalizeEvent
-function denormalizeEvent (evt) {
-  return Object.assign(
-    _.pick(evt, 'accountId', 'eventId', 'secretId'),
-    { payload: _.omit(evt, 'accountId', 'eventId', 'secretId') }
-  )
 }
