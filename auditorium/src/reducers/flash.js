@@ -5,6 +5,7 @@
 
 module.exports = (state = [], action) => {
   switch (action.type) {
+    case 'SESSION_AUTHENTICATION_FAILURE':
     case 'AUTHENTICATION_FAILURE':
     case 'SHARE_ACCOUNT_SUCCESS':
     case 'SHARE_ACCOUNT_FAILURE':
