@@ -268,28 +268,24 @@ function Storage (getDatabase, fallbackStore) {
       })
   }
 
-  this.putEvents = function (/* accountId, ...events */) {
-    var args = [].slice.call(arguments)
-    var accountId = args.shift()
+  this.putEvents = function (accountId, events) {
     var db = getDatabase(accountId)
     // events data is saved in the shape supplied by the server
-    return db.events.bulkPut(args)
+    return db.events.bulkPut(events)
       .catch(dexie.OpenFailedError, function () {
         fallbackStore.events[accountId] = fallbackStore.events[accountId] || []
-        fallbackStore.events[accountId] = fallbackStore.events[accountId].concat(args)
+        fallbackStore.events[accountId] = fallbackStore.events[accountId].concat(events)
         return fallbackStore.events[accountId]
       })
   }
 
-  this.deleteEvents = function (/* accountId, ...eventIds */) {
-    var args = [].slice.call(arguments)
-    var accountId = args.shift()
+  this.deleteEvents = function (accountId, eventIds) {
     var db = getDatabase(accountId)
-    return db.events.bulkDelete(args)
+    return db.events.bulkDelete(eventIds)
       .catch(dexie.OpenFailedError, function () {
         fallbackStore.events[accountId] = fallbackStore.events[accountId] || []
         fallbackStore.events[accountId] = fallbackStore.events[accountId].filter(function (event) {
-          return args.indexOf(event.eventId) === -1
+          return eventIds.indexOf(event.eventId) === -1
         })
         return null
       })
