@@ -19,12 +19,20 @@ module.exports.EventStore = EventStore
 
 function EventStore (storage) {
   var aggregationSecrets = {}
-  this.ensureAggregationSecret = bindCrypto(function (accountId, publicKey, privateJwk) {
-    var crypto = this
+  this.ensureAggregationSecret = function (accountId, publicKey, privateJwk) {
+    if (accountId === null) {
+      return Promise.resolve(null)
+    }
+
+    if ((!publicKey || !privateJwk) && !aggregationSecrets[accountId]) {
+      throw new Error('Could not find matching aggregation secret for account "' + accountId + '".')
+    }
+
     aggregationSecrets[accountId] = aggregationSecrets[accountId] || storage.getAggregationSecret(accountId)
-      .then(function (secret) {
+      .then(bindCrypto(function (secret) {
+        var crypto = this
         if (secret) {
-          return crypto.decrypAsymmetricWith(privateJwk)(secret)
+          return crypto.decryptAsymmetricWith(privateJwk)(secret)
         }
         var cryptoKey
         return crypto.createSymmetricKey()
@@ -38,15 +46,20 @@ function EventStore (storage) {
           .then(function () {
             return cryptoKey
           })
-      })
-  })
+      }))
+    return aggregationSecrets[accountId]
+  }
 
   this.putEvents = function (accountId, events, privateJwk) {
-    return storage.putEvents(accountId, events)
-      .then(function () {
+    return Promise.all([
+      storage.putEvents(accountId, events),
+      this.ensureAggregationSecret(accountId)
+    ])
+      .then(function (results) {
         if (!accountId) {
           return
         }
+        var aggregationSecret = results[1]
         return storage.getEncryptedSecrets(accountId)
           .then(function (encryptedSecrets) {
             return decryptEvents(events, encryptedSecrets, privateJwk)
@@ -58,18 +71,23 @@ function EventStore (storage) {
                 return startOfHour(new Date(time)).toJSON()
               })
               .pairs()
-              .map(function (pair) {
+              .map(bindCrypto(function (pair) {
+                var crypto = this
                 var timestamp = pair[0]
                 var events = pair[1]
+
                 return storage.getAggregate(accountId, timestamp)
                   .then(function (existingAggregate) {
                     var aggregated = aggregate(events, normalizeEvent)
                     if (existingAggregate) {
                       aggregated = mergeAggregates([existingAggregate, aggregated])
                     }
-                    return storage.putAggregate(accountId, timestamp, aggregated)
+                    return crypto.encryptSymmetricWith(aggregationSecret)(aggregated)
                   })
-              })
+                  .then(function (encryptedAggregate) {
+                    return storage.putAggregate(accountId, timestamp, encryptedAggregate)
+                  })
+              }))
               .value())
           })
       })
@@ -82,11 +100,22 @@ function EventStore (storage) {
     if (!accountId) {
       result = storage.getAllEvents(accountId, lowerBoundAsId, upperBoundAsId)
     } else {
-      result = storage.getAggregates(
-        accountId,
-        lowerBound && startOfHour(lowerBound).toJSON(),
-        upperBound && endOfHour(upperBound).toJSON()
-      )
+      result = Promise.all([
+        storage.getAggregates(
+          accountId,
+          lowerBound && startOfHour(lowerBound).toJSON(),
+          upperBound && endOfHour(upperBound).toJSON()
+        ),
+        this.ensureAggregationSecret(accountId)
+      ])
+        .then(function (results) {
+          var encryptedAggregates = results[0]
+          var aggregationSecret = results[1]
+          return Promise.all(_.map(encryptedAggregates, bindCrypto(function (encryptedAggregate) {
+            var crypto = this
+            return crypto.decryptSymmetricWith(aggregationSecret)(encryptedAggregate)
+          })))
+        })
         .then(function (aggregates) {
           return inflateAggregate(mergeAggregates(aggregates), denormalizeEvent)
         })
