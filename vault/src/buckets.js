@@ -9,7 +9,7 @@ module.exports = mapToBuckets
 
 var buckets = [
   {
-    re: /^www\.google\./,
+    re: /^(www\.)?google\.[a-z]/,
     name: 'Google'
   },
   {
