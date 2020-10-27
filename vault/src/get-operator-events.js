@@ -68,28 +68,31 @@ function ensureSyncWith (eventStore, storage, api) {
           })
           .then(function (_privateJwk) {
             privateJwk = _privateJwk
-            return eventStore.ensureAggregationSecret(accountId, payload.account.publicKey, privateJwk)
+            return Promise.all([
+              storage.putEncryptedSecrets.apply(
+                null, [accountId].concat(payload.encryptedSecrets)
+              ),
+              eventStore.ensureAggregationSecret(accountId, payload.account.publicKey, privateJwk)
+            ])
           })
-          .then(function (results) {
-            return Promise
-              .all([
-                eventStore.putEvents(accountId, payload.events, privateJwk),
-                storage.putEncryptedSecrets.apply(
-                  null, [accountId].concat(payload.encryptedSecrets)
-                ),
-                payload.account.deletedEvents
-                  ? eventStore.deleteEvents(accountId, payload.account.deletedEvents)
-                  : null,
-                payload.account.sequence
-                  ? storage.updateLastKnownCheckpoint(accountId, payload.account.sequence)
-                  : null
-              ])
-              .then(function () {
-                var result = Object.assign(payload.account, {
-                  privateJwk: privateJwk
-                })
-                return result
-              })
+          .then(function () {
+            return Promise.all([
+              eventStore.putEvents(accountId, payload.events, privateJwk),
+              payload.account.sequence
+                ? storage.updateLastKnownCheckpoint(accountId, payload.account.sequence)
+                : null
+            ])
+          })
+          .then(function () {
+            return payload.account.deletedEvents
+              ? eventStore.deleteEvents(accountId, payload.account.deletedEvents)
+              : null
+          })
+          .then(function () {
+            var result = Object.assign(payload.account, {
+              privateJwk: privateJwk
+            })
+            return result
           })
       })
   })
