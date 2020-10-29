@@ -77,7 +77,7 @@ const AuditoriumView = (props) => {
   if (!model) {
     return (
       <HighlightBox>
-        {__('Fetching and decrypting the latest data')}
+        {__('Fetching and aggregating the latest data')}
         <Dots />
       </HighlightBox>
     )
