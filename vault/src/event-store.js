@@ -51,6 +51,7 @@ function EventStore (storage) {
   }
 
   var aggregatesCache = new LockedCache()
+
   this.putEvents = function (accountId, events, privateJwk) {
     return Promise.all([
       storage.putEvents(accountId, events),
@@ -61,35 +62,57 @@ function EventStore (storage) {
           return
         }
         var aggregationSecret = results[1]
+        var accountCache
         return storage.getEncryptedSecrets(accountId)
           .then(function (encryptedSecrets) {
             return decryptEvents(events, encryptedSecrets, privateJwk)
           })
           .then(function (events) {
-            return Promise.all(_.chain(events)
-              .groupBy(function (event) {
-                var time = ULID.decodeTime(event.eventId)
-                return startOfHour(new Date(time)).toJSON()
-              })
-              .pairs()
-              .map(bindCrypto(function (pair) {
+            return aggregatesCache.acquireCache(accountId)
+              .then(bindCrypto(function (_accountCache) {
+                accountCache = _accountCache
                 var crypto = this
-                var timestamp = pair[0]
-                var events = pair[1]
+                var decryptAggregate = crypto.decryptSymmetricWith(aggregationSecret)
+                var encryptAggregate = crypto.encryptSymmetricWith(aggregationSecret)
 
-                return storage.getAggregate(accountId, timestamp)
-                  .then(function (existingAggregate) {
-                    var aggregated = aggregate(events, normalizeEvent)
-                    if (existingAggregate) {
-                      aggregated = mergeAggregates([existingAggregate, aggregated])
-                    }
-                    return crypto.encryptSymmetricWith(aggregationSecret)(aggregated)
+                return Promise.all(_.chain(events)
+                  .groupBy(function (event) {
+                    var time = ULID.decodeTime(event.eventId)
+                    return startOfHour(new Date(time)).toJSON()
                   })
-                  .then(function (encryptedAggregate) {
-                    return storage.putAggregate(accountId, timestamp, encryptedAggregate)
-                  })
+                  .pairs()
+                  .map(function (pair) {
+                    var timestamp = pair[0]
+                    var events = pair[1]
+
+                    var cachedItem = _.findWhere(accountCache, { timestamp: timestamp })
+                    return Promise.resolve(cachedItem || storage.getAggregate(accountId, timestamp)
+                      .then(function (encryptedAggregate) {
+                        if (!encryptedAggregate) {
+                          return null
+                        }
+                        return decryptAggregate(encryptedAggregate.value)
+                          .then(function (decryptedValue) {
+                            return _.extend(encryptedAggregate, { value: decryptedValue })
+                          })
+                      }))
+                      .then(function (existingAggregate) {
+                        var aggregated = aggregate(events, normalizeEvent)
+                        if (existingAggregate) {
+                          aggregated = mergeAggregates([existingAggregate, aggregated])
+                        }
+                        accountCache[timestamp] = aggregated
+                        encryptAggregate(aggregated)
+                          .then(function (encryptedAggregate) {
+                            return storage.putAggregate(accountId, timestamp, encryptedAggregate)
+                          })
+                      })
+                  }).value())
               }))
-              .value())
+          })
+          .then(function (result) {
+            aggregatesCache.releaseCache(accountId, accountCache)
+            return result
           })
       })
   }
@@ -126,6 +149,9 @@ function EventStore (storage) {
           var missingAggregates = _.filter(encryptedAggregates, function (agg) {
             return _.contains(missing, agg.timestamp)
           })
+          if (!missingAggregates.length) {
+            aggregatesCache.releaseCache()
+          }
 
           return Promise.all(_.map(missingAggregates, function (aggregate) {
             return decryptAggregate(aggregate.value).then(function (decryptedValue) {
@@ -135,6 +161,9 @@ function EventStore (storage) {
         }))
         .then(function (decryptedAggregates) {
           accountCache = accountCache.concat(decryptedAggregates)
+          if (decryptedAggregates.length) {
+            aggregatesCache.releaseCache(accountId, accountCache)
+          }
           var values = _.pluck(accountCache, 'value')
           return inflateAggregate(mergeAggregates(values), denormalizeEvent)
         })
@@ -144,7 +173,6 @@ function EventStore (storage) {
           })
         })
         .then(function (events) {
-          aggregatesCache.releaseCache(accountId, accountCache)
           return events
         })
     }
@@ -161,30 +189,58 @@ function EventStore (storage) {
         if (!accountId || !eventIds.length) {
           return
         }
-        Promise.all(_.chain(eventIds)
-          .groupBy(function (eventId) {
-            var time = ULID.decodeTime(eventId)
-            return startOfHour(new Date(time)).toJSON()
-          })
-          .pairs()
-          .map(function (pair) {
-            var timestamp = pair[0]
-            var eventIds = pair[1]
-            return storage.getAggregate(accountId, timestamp)
-              .then(function (aggregate) {
-                if (!aggregate) {
-                  return {}
-                }
-                return removeFromAggregate(aggregate, 'eventId', eventIds)
+        return Promise.all([
+          aggregatesCache.acquireCache(accountId),
+          this.ensureAggregationSecret(accountId)
+        ])
+          .then(bindCrypto(function (results) {
+            var crypto = this
+            var accountCache = results[0]
+            var aggregationSecret = results[1]
+            var decryptAggregate = crypto.decryptSymmetricWith(aggregationSecret)
+            var encryptAggregate = crypto.encryptSymmetricWith(aggregationSecret)
+
+            return Promise.all(_.chain(eventIds)
+              .groupBy(function (eventId) {
+                var time = ULID.decodeTime(eventId)
+                return startOfHour(new Date(time)).toJSON()
               })
-              .then(function (updatedAggregate) {
-                if (!_.size(updatedAggregate)) {
-                  return storage.deleteAggregate(accountId, timestamp)
-                }
-                return storage.putAggregate(accountId, timestamp, updatedAggregate)
+              .pairs()
+              .map(function (pair) {
+                var timestamp = pair[0]
+                var eventIds = pair[1]
+
+                var cachedItem = _.findWhere(accountCache, { timestamp: timestamp })
+                return Promise.resolve(cachedItem || storage.getAggregate(accountId, timestamp)
+                  .then(function (encryptedAggregate) {
+                    if (!encryptedAggregate) {
+                      return null
+                    }
+                    return decryptAggregate(encryptedAggregate.value)
+                      .then(function (decryptedValue) {
+                        return _.extend(encryptedAggregate, { value: decryptedValue })
+                      })
+                  }))
+                  .then(function (aggregate) {
+                    if (!aggregate) {
+                      return {}
+                    }
+                    return removeFromAggregate(aggregate, 'eventId', eventIds)
+                  })
+                  .then(function (updatedAggregate) {
+                    aggregatesCache.releaseCache(accountId, updatedAggregate)
+
+                    if (!_.size(updatedAggregate)) {
+                      storage.deleteAggregate(accountId, timestamp)
+                    } else {
+                      encryptAggregate(updatedAggregate).then(function (encryptedValue) {
+                        storage.putAggregate(accountId, timestamp, encryptedValue)
+                      })
+                    }
+                  })
               })
-          })
-          .value())
+              .value())
+          }))
       })
   }
 
@@ -339,24 +395,26 @@ function normalizedURL (urlString) {
 function LockedCache () {
   var cache = {}
   var locks = []
-  var resolutions = []
 
   this.acquireCache = function (key) {
     cache[key] = cache[key] || []
     var pendingLock = _.head(locks)
 
+    var resolveLock
     var lock = new Promise(function (resolve) {
-      resolutions.unshift(function () {
+      resolveLock = function () {
         resolve(cache[key])
-      })
+      }
     })
-    locks.unshift(lock)
-    return pendingLock || Promise.resolve(cache[key])
+    locks.unshift({ promise: lock, resolve: resolveLock })
+    return (pendingLock && pendingLock.promise) || Promise.resolve(cache[key])
   }
 
   this.releaseCache = function (key, value) {
-    cache[key] = value
-    locks.pop()
-    resolutions.pop()()
+    if (key && value) {
+      cache[key] = value
+    }
+    var lock = locks.pop()
+    lock.resolve()
   }
 }
