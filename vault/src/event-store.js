@@ -50,6 +50,7 @@ function EventStore (storage) {
     return aggregationSecrets[accountId]
   }
 
+  var aggregatesCache = new LockedCache()
   this.putEvents = function (accountId, events, privateJwk) {
     return Promise.all([
       storage.putEvents(accountId, events),
@@ -100,34 +101,58 @@ function EventStore (storage) {
     if (!accountId) {
       result = storage.getAllEvents(accountId, lowerBoundAsId, upperBoundAsId)
     } else {
-      result = Promise.all([
-        storage.getAggregates(
-          accountId,
-          lowerBound && startOfHour(lowerBound).toJSON(),
-          upperBound && endOfHour(upperBound).toJSON()
-        ),
-        this.ensureAggregationSecret(accountId)
-      ])
-        .then(function (results) {
+      var accountCache
+      result = aggregatesCache.acquireCache(accountId)
+        .then(function (_accountCache) {
+          accountCache = _accountCache
+          return Promise.all([
+            storage.getAggregates(
+              accountId,
+              lowerBound && startOfHour(lowerBound).toJSON(),
+              upperBound && endOfHour(upperBound).toJSON()
+            ),
+            this.ensureAggregationSecret(accountId)
+          ])
+        }.bind(this))
+        .then(bindCrypto(function (results) {
+          var crypto = this
           var encryptedAggregates = results[0]
           var aggregationSecret = results[1]
-          return Promise.all(_.map(encryptedAggregates, bindCrypto(function (encryptedAggregate) {
-            var crypto = this
-            return crypto.decryptSymmetricWith(aggregationSecret)(encryptedAggregate)
-          })))
-        })
-        .then(function (aggregates) {
-          return inflateAggregate(mergeAggregates(aggregates), denormalizeEvent)
+          var decryptAggregate = crypto.decryptSymmetricWith(aggregationSecret)
+
+          var timestampsInDb = _.pluck(encryptedAggregates, 'timestamp')
+          var timestampsInCache = _.pluck(accountCache, 'timestamp')
+          var missing = _.difference(timestampsInDb, timestampsInCache)
+          var missingAggregates = _.filter(encryptedAggregates, function (agg) {
+            return _.contains(missing, agg.timestamp)
+          })
+
+          return Promise.all(_.map(missingAggregates, function (aggregate) {
+            return decryptAggregate(aggregate.value).then(function (decryptedValue) {
+              return _.extend(aggregate, { value: decryptedValue })
+            })
+          }))
+        }))
+        .then(function (decryptedAggregates) {
+          accountCache = accountCache.concat(decryptedAggregates)
+          var values = _.pluck(accountCache, 'value')
+          return inflateAggregate(mergeAggregates(values), denormalizeEvent)
         })
         .then(function (events) {
           return events.filter(function (event) {
             return lowerBoundAsId <= event.eventId && event.eventId <= upperBoundAsId
           })
         })
+        .then(function (events) {
+          aggregatesCache.releaseCache(accountId, accountCache)
+          return events
+        })
     }
-    return result.then(function (events) {
-      return _.compact(_.map(events, validateAndParseEvent))
-    })
+
+    return result
+      .then(function (events) {
+        return _.compact(_.map(events, validateAndParseEvent))
+      })
   }
 
   this.deleteEvents = function (accountId, eventIds) {
@@ -309,4 +334,29 @@ function normalizedURL (urlString) {
     url.pathname += '/'
   }
   return url
+}
+
+function LockedCache () {
+  var cache = {}
+  var locks = []
+  var resolutions = []
+
+  this.acquireCache = function (key) {
+    cache[key] = cache[key] || []
+    var pendingLock = _.head(locks)
+
+    var lock = new Promise(function (resolve) {
+      resolutions.unshift(function () {
+        resolve(cache[key])
+      })
+    })
+    locks.unshift(lock)
+    return pendingLock || Promise.resolve(cache[key])
+  }
+
+  this.releaseCache = function (key, value) {
+    cache[key] = value
+    locks.pop()
+    resolutions.pop()()
+  }
 }
