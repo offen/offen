@@ -142,23 +142,12 @@ function Storage (getDatabase, fallbackStore) {
   this.getAggregates = function (accountId, lowerBound, upperBound) {
     var table = getDatabase(accountId).aggregates
     if (!lowerBound || !upperBound) {
-      return table
-        .toArray()
-        .then(function (records) {
-          return records.map(function (record) {
-            return record.value
-          })
-        })
+      return table.toArray()
     }
     return table
       .where('timestamp')
       .between(lowerBound, upperBound)
       .toArray()
-      .then(function (records) {
-        return records.map(function (record) {
-          return record.value
-        })
-      })
   }
 
   this.getUserSecret = function (accountId) {

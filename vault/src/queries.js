@@ -20,6 +20,7 @@ var subMonths = require('date-fns/sub_months')
 
 var stats = require('./stats')
 var eventStore = require('./event-store')
+var storage = require('./storage')
 
 var startOf = {
   hours: startOfHour,
@@ -46,10 +47,10 @@ var subtract = {
   months: subMonths
 }
 
-module.exports = new Queries(eventStore)
+module.exports = new Queries(eventStore, storage)
 module.exports.Queries = Queries
 
-function Queries (eventStore) {
+function Queries (eventStore, storage) {
   this.getDefaultStats = function (accountId, query, privateJwk) {
     if (accountId && !privateJwk) {
       return Promise.reject(
@@ -70,7 +71,7 @@ function Queries (eventStore) {
     var lowerBound = startOf[resolution](subtract[resolution](now, range - 1))
     var upperBound = endOf[resolution](now)
 
-    var allEvents = eventStore.getEvents(accountId)
+    var allEvents = storage.getAllEvents(accountId)
     var eventsInBounds = eventStore.getEvents(accountId, lowerBound, upperBound)
     var realtimeLowerBound = subMinutes(now, 15)
     var realtimeUpperBound = now
@@ -125,23 +126,21 @@ function Queries (eventStore) {
         return stats.retention.apply(stats, chunks)
       })
 
-    var decryptedEvents = eventsInBounds
-    var realtime = realtimeEvents
-    var loss = stats.loss(decryptedEvents)
-    var uniqueSessions = stats.uniqueSessions(decryptedEvents)
-    var bounceRate = stats.bounceRate(decryptedEvents)
-    var referrers = stats.referrers(decryptedEvents)
-    var pages = stats.pages(decryptedEvents)
-    var campaigns = stats.campaigns(decryptedEvents)
-    var sources = stats.sources(decryptedEvents)
-    var avgPageload = stats.avgPageload(decryptedEvents)
-    var avgPageDepth = stats.avgPageDepth(decryptedEvents)
-    var landingPages = stats.landingPages(decryptedEvents)
-    var exitPages = stats.exitPages(decryptedEvents)
-    var mobileShare = stats.mobileShare(decryptedEvents)
+    var loss = stats.loss(eventsInBounds)
+    var uniqueSessions = stats.uniqueSessions(eventsInBounds)
+    var bounceRate = stats.bounceRate(eventsInBounds)
+    var referrers = stats.referrers(eventsInBounds)
+    var pages = stats.pages(eventsInBounds)
+    var campaigns = stats.campaigns(eventsInBounds)
+    var sources = stats.sources(eventsInBounds)
+    var avgPageload = stats.avgPageload(eventsInBounds)
+    var avgPageDepth = stats.avgPageDepth(eventsInBounds)
+    var landingPages = stats.landingPages(eventsInBounds)
+    var exitPages = stats.exitPages(eventsInBounds)
+    var mobileShare = stats.mobileShare(eventsInBounds)
 
-    var livePages = stats.activePages(realtime)
-    var liveUsers = stats.visitors(realtime)
+    var livePages = stats.activePages(realtimeEvents)
+    var liveUsers = stats.visitors(realtimeEvents)
 
     return Promise
       .all([
