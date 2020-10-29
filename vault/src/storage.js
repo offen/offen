@@ -126,11 +126,6 @@ function Storage (getDatabase, fallbackStore) {
     return getDatabase(accountId)
       .aggregates
       .get(timestamp)
-      .then(function (result) {
-        if (result) {
-          return result.value
-        }
-      })
   }
 
   this.deleteAggregate = function (accountId, timestamp) {

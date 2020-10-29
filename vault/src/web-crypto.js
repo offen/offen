@@ -15,8 +15,9 @@ exports._impl = 'native'
 exports.decryptSymmetricWith = decryptSymmetricWith
 
 function decryptSymmetricWith (jwk) {
+  var importedKey = importSymmetricKey(jwk)
   return function (encryptedValue) {
-    return importSymmetricKey(jwk)
+    return importedKey
       .then(function (cryptoKey) {
         var chunks = cipher.deserialize(encryptedValue)
         if (chunks.error) {
@@ -47,8 +48,9 @@ function decryptSymmetricWith (jwk) {
 exports.encryptSymmetricWith = encryptSymmetricWith
 
 function encryptSymmetricWith (jwk) {
+  var importedKey = importSymmetricKey(jwk)
   return function (unencryptedValue) {
-    return importSymmetricKey(jwk)
+    return importedKey
       .then(function (cryptoKey) {
         var bytes
         try {
@@ -80,8 +82,9 @@ function encryptSymmetricWith (jwk) {
 exports.decryptAsymmetricWith = decryptAsymmetricWith
 
 function decryptAsymmetricWith (privateJwk) {
+  var importedKey = importPrivateKey(privateJwk)
   return function (encryptedValue) {
-    return importPrivateKey(privateJwk)
+    return importedKey
       .then(function (privateCryptoKey) {
         var chunks = cipher.deserialize(encryptedValue)
         if (chunks.error) {
@@ -110,8 +113,9 @@ function decryptAsymmetricWith (privateJwk) {
 exports.encryptAsymmetricWith = encryptAsymmetricWith
 
 function encryptAsymmetricWith (publicJwk) {
+  var importedKey = importPublicKey(publicJwk)
   return function (unencryptedValue) {
-    return importPublicKey(publicJwk)
+    return importedKey
       .then(function (publicCryptoKey) {
         var bytes
         try {
