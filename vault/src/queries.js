@@ -109,7 +109,7 @@ function Queries (eventStore, storage) {
     var uniqueAccounts = stats.accounts(eventsInBounds)
     var returningUsers = stats.returningUsers(eventsInBounds, allEvents)
 
-    var empty = eventStore.countEvents(accountId).then(function (count) {
+    var empty = storage.countEvents(accountId).then(function (count) {
       return count === 0
     })
 
