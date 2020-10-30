@@ -7,7 +7,7 @@ var assert = require('assert')
 
 var aggregatingStorage = require('./aggregating-storage')
 
-describe('src/event-store.js', function () {
+describe('src/aggregating-storage.js', function () {
   describe('validateAndParseEvent', function () {
     it('parses referrer values into a URL', function () {
       const result = aggregatingStorage.validateAndParseEvent({
@@ -258,6 +258,51 @@ describe('src/event-store.js', function () {
         type: ['a', 'b', 'y'],
         value: [true, false, 2]
       })
+    })
+  })
+
+  describe('LockedAggregatesCache', function () {
+    it('enables callers to lock a value until released', function () {
+      var cache = new aggregatingStorage.LockedAggregatesCache()
+
+      function a () {
+        var obj
+        return cache.acquireCache('test')
+          .then(function (_obj) {
+            obj = _obj
+            obj.value = 'a'
+            return sleep(500)
+          })
+          .then(function () {
+            obj.value += 'z'
+            cache.releaseCache('test', obj)
+          })
+      }
+
+      function b () {
+        var obj
+        return cache.acquireCache('test')
+          .then(function (_obj) {
+            obj = _obj
+            obj.value += 'b'
+            obj.value += 'x'
+            cache.releaseCache('test', obj)
+          })
+      }
+
+      function sleep (int) {
+        return new Promise(function (resolve) {
+          setTimeout(resolve, int)
+        })
+      }
+
+      return Promise.all([a(), b()])
+        .then(function () {
+          return cache.acquireCache('test')
+        })
+        .then(function (cache) {
+          assert.strictEqual(cache.value, 'azbx')
+        })
     })
   })
 })
