@@ -73,9 +73,7 @@ describe('src/get-operator-events', function () {
           updateLastKnownCheckpoint: sinon.stub().resolves(),
           putEncryptedSecrets: sinon.stub().resolves(),
           getEncryptedSecrets: sinon.stub().resolves([]),
-          getAggregationSecret: sinon.stub().resolves('ok')
-        }
-        var mockEventStore = {
+          getAggregationSecret: sinon.stub().resolves('ok'),
           ensureAggregationSecret: sinon.stub().resolves(true),
           deleteEvents: sinon.stub().resolves(true),
           putEvents: sinon.stub().resolves(true)
@@ -89,7 +87,7 @@ describe('src/get-operator-events', function () {
             encryptedPrivateKey: encryptedPrivateKey
           })
         }
-        var getOperatorEvents = getOperatorEventsWith(mockQueries, mockEventStore, mockStorage, mockApi)
+        var getOperatorEvents = getOperatorEventsWith(mockQueries, mockStorage, mockApi)
         return getOperatorEvents(
           { accountId: 'account-a' },
           {
@@ -221,9 +219,7 @@ describe('src/get-operator-events', function () {
           getEventsByIds: sinon.stub().resolves([]),
           getAggregate: sinon.stub().resolves({}),
           putAggregate: sinon.stub().resolves({}),
-          deleteAggregate: sinon.stub().resolves()
-        }
-        var mockEventStore = {
+          deleteAggregate: sinon.stub().resolves(),
           deleteEvents: sinon.stub().resolves(true),
           putEvents: sinon.stub().resolves(true),
           ensureAggregationSecret: sinon.stub().resolves(true)
@@ -250,7 +246,7 @@ describe('src/get-operator-events', function () {
             encryptedPrivateKey: encryptedPrivateKey
           })
         }
-        var getOperatorEvents = getOperatorEventsWith(mockQueries, mockEventStore, mockStorage, mockApi)
+        var getOperatorEvents = getOperatorEventsWith(mockQueries, mockStorage, mockApi)
         return getOperatorEvents(
           { accountId: 'account-a' },
           {
@@ -263,8 +259,8 @@ describe('src/get-operator-events', function () {
             assert(mockApi.getAccount.calledOnce)
             assert(mockApi.getAccount.calledWith('account-a'))
 
-            assert(mockEventStore.deleteEvents.calledOnce)
-            assert(mockEventStore.deleteEvents.calledWith('account-a', ['01BX5ZZKBKACTAV9WEVGEMMVRZ', '01BX5ZZKBKACTAV9WEVGEMMVS0']))
+            assert(mockStorage.deleteEvents.calledOnce)
+            assert(mockStorage.deleteEvents.calledWith('account-a', ['01BX5ZZKBKACTAV9WEVGEMMVRZ', '01BX5ZZKBKACTAV9WEVGEMMVS0']))
 
             assert(mockStorage.getLastKnownCheckpoint.calledOnce)
             assert(mockStorage.getLastKnownCheckpoint.calledWith('account-a'))
@@ -272,8 +268,8 @@ describe('src/get-operator-events', function () {
             assert(mockStorage.updateLastKnownCheckpoint.calledOnce)
             assert(mockStorage.updateLastKnownCheckpoint.calledWith('account-a', 'sequence-b'))
 
-            assert(mockEventStore.putEvents.calledOnce)
-            assert(mockEventStore.putEvents.calledWith('account-a', [{
+            assert(mockStorage.putEvents.calledOnce)
+            assert(mockStorage.putEvents.calledWith('account-a', [{
               eventId: '01BX5ZZKBKACTAV9WEVGEMMVRY',
               secretId: 'user-a',
               payload: encryptedEventPayload

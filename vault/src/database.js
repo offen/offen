@@ -40,7 +40,7 @@ function createDatabase (name) {
     checkpoints: 'type',
     aggregates: 'timestamp'
   }).upgrade(function (txn) {
-    return Dexie.Promise.all([
+    return Promise.all([
       txn.table('events').clear(),
       txn.table('checkpoints').clear()
     ])

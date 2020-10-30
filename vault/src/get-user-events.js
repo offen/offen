@@ -6,29 +6,28 @@
 var api = require('./api')
 var bindCrypto = require('./bind-crypto')
 var queries = require('./queries')
-var storage = require('./storage')
-var eventStore = require('./event-store')
+var storage = require('./aggregating-storage')
 
 var LOCAL_SECRET_ID = 'local'
 
-module.exports = getUserEventsWith(queries, eventStore, storage, api)
+module.exports = getUserEventsWith(queries, storage, api)
 module.exports.getUserEventsWith = getUserEventsWith
 
 // getEvents queries the server API for events using the given query parameters.
 // Once the server has responded, it looks up the matching UserSecrets in the
 // local database and decrypts and parses the previously encrypted event payloads.
-function getUserEventsWith (queries, eventStore, storage, api) {
+function getUserEventsWith (queries, eventStore, api) {
   return function (query) {
-    return ensureSyncWith(eventStore, storage, api)()
+    return ensureSyncWith(eventStore, api)()
       .then(function () {
         return queries.getDefaultStats(null, query)
       })
   }
 }
 
-function ensureSyncWith (eventStore, storage, api) {
+function ensureSyncWith (eventStore, api) {
   return function () {
-    return storage.getLastKnownCheckpoint(null)
+    return eventStore.getLastKnownCheckpoint(null)
       .then(function (checkpoint) {
         var params = checkpoint
           ? { since: checkpoint }
@@ -45,9 +44,9 @@ function ensureSyncWith (eventStore, storage, api) {
           .then(function (payload) {
             var events = payload.events
             return Promise.all([
-              decryptUserEventsWith(storage)(events),
+              decryptUserEventsWith(eventStore)(events),
               payload.sequence
-                ? storage.updateLastKnownCheckpoint(null, payload.sequence)
+                ? eventStore.updateLastKnownCheckpoint(null, payload.sequence)
                 : null,
               payload.deletedEvents
                 ? eventStore.deleteEvents(null, payload.deletedEvents)
@@ -71,12 +70,12 @@ function ensureSyncWith (eventStore, storage, api) {
   }
 }
 
-function decryptUserEventsWith (storage) {
+function decryptUserEventsWith (eventStore) {
   return bindCrypto(function (eventsByAccountId) {
     var crypto = this
     var decrypted = Object.keys(eventsByAccountId)
       .map(function (accountId) {
-        var withSecret = storage.getUserSecret(accountId)
+        var withSecret = eventStore.getUserSecret(accountId)
           .then(function (jwk) {
             if (!jwk) {
               return function () {

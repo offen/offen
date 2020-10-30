@@ -14,11 +14,18 @@ var bindCrypto = require('./bind-crypto')
 var eventSchema = require('./event.schema')
 var payloadSchema = require('./payload.schema')
 
-module.exports = new EventStore(storage)
-module.exports.EventStore = EventStore
+module.exports = new AggregatingStorage(storage)
+module.exports.EventStore = AggregatingStorage
 
-function EventStore (storage) {
+// AggregatingStorage adds aggregation logic on top of the plain atomic
+// Storage that reads from IndexedDB. Consumers should not be affected by
+// implementation details, but expect plain lists of events to be returned.
+function AggregatingStorage (storage) {
+  _.extend(this, storage)
+
+  var aggregatesCache = new LockedAggregatesCache()
   var aggregationSecrets = {}
+
   this.ensureAggregationSecret = function (accountId, publicKey, privateJwk) {
     if (accountId === null) {
       return Promise.resolve(null)
@@ -49,8 +56,6 @@ function EventStore (storage) {
       }))
     return aggregationSecrets[accountId]
   }
-
-  var aggregatesCache = new LockedAggregatesCache()
 
   this.putEvents = function (accountId, events, privateJwk) {
     return Promise.all([
@@ -84,17 +89,21 @@ function EventStore (storage) {
                     var timestamp = pair[0]
                     var events = pair[1]
 
-                    var cachedItem = accountCache[timestamp]
-                    return Promise.resolve(cachedItem || storage.getAggregate(accountId, timestamp)
-                      .then(function (encryptedAggregate) {
-                        if (!encryptedAggregate) {
-                          return null
-                        }
-                        return decryptAggregate(encryptedAggregate.value)
-                          .then(function (decryptedValue) {
-                            return _.extend(encryptedAggregate, { value: decryptedValue })
-                          })
-                      }))
+                    return Promise.resolve(
+                      accountCache[timestamp] ||
+                      storage.getAggregate(accountId, timestamp)
+                        .then(function (encryptedAggregate) {
+                          if (!encryptedAggregate) {
+                            return null
+                          }
+                          return decryptAggregate(encryptedAggregate.value)
+                            .then(function (decryptedValue) {
+                              return _.extend(
+                                encryptedAggregate,
+                                { value: decryptedValue }
+                              )
+                            })
+                        }))
                       .then(function (existingAggregate) {
                         var aggregated = aggregate(events, normalizeEvent)
                         if (existingAggregate) {
@@ -122,20 +131,23 @@ function EventStore (storage) {
     var lowerBoundAsId = lowerBound && toLowerBound(lowerBound)
     var upperBoundAsId = upperBound && toUpperBound(upperBound)
     if (!accountId) {
-      result = storage.getAllEvents(accountId, lowerBoundAsId, upperBoundAsId)
+      result = storage.getRawEvents(accountId, lowerBoundAsId, upperBoundAsId)
     } else {
       var accountCache
-      result = aggregatesCache.acquireCache(accountId)
-        .then(function (_accountCache) {
-          accountCache = _accountCache
-          return Promise.all([
-            storage.getAggregates(
-              accountId,
-              lowerBound && startOfHour(lowerBound).toJSON(),
-              upperBound && endOfHour(upperBound).toJSON()
-            ),
-            self.ensureAggregationSecret(accountId)
-          ])
+      result = Promise.all([
+        storage.getAggregates(
+          accountId,
+          lowerBound && startOfHour(lowerBound).toJSON(),
+          upperBound && endOfHour(upperBound).toJSON()
+        ),
+        self.ensureAggregationSecret(accountId)
+      ])
+        .then(function (results) {
+          return aggregatesCache.acquireCache(accountId)
+            .then(function (_accountCache) {
+              accountCache = _accountCache
+              return results
+            })
         })
         .then(bindCrypto(function (results) {
           var crypto = this
@@ -198,11 +210,10 @@ function EventStore (storage) {
           self.ensureAggregationSecret(accountId)
         ])
           .then(bindCrypto(function (results) {
-            var crypto = this
             var accountCache = results[0]
             var aggregationSecret = results[1]
-            var decryptAggregate = crypto.decryptSymmetricWith(aggregationSecret)
-            var encryptAggregate = crypto.encryptSymmetricWith(aggregationSecret)
+            var decryptAggregate = this.decryptSymmetricWith(aggregationSecret)
+            var encryptAggregate = this.encryptSymmetricWith(aggregationSecret)
 
             return Promise.all(_.chain(eventIds)
               .groupBy(function (eventId) {
@@ -214,17 +225,21 @@ function EventStore (storage) {
                 var timestamp = pair[0]
                 var eventIds = pair[1]
 
-                var cachedItem = accountCache[timestamp]
-                return Promise.resolve(cachedItem || storage.getAggregate(accountId, timestamp)
-                  .then(function (encryptedAggregate) {
-                    if (!encryptedAggregate) {
-                      return null
-                    }
-                    return decryptAggregate(encryptedAggregate.value)
-                      .then(function (decryptedValue) {
-                        return _.extend(encryptedAggregate, { value: decryptedValue })
-                      })
-                  }))
+                return Promise.resolve(
+                  accountCache[timestamp] ||
+                  storage.getAggregate(accountId, timestamp)
+                    .then(function (encryptedAggregate) {
+                      if (!encryptedAggregate) {
+                        return null
+                      }
+                      return decryptAggregate(encryptedAggregate.value)
+                        .then(function (decryptedValue) {
+                          return _.extend(
+                            encryptedAggregate,
+                            { value: decryptedValue }
+                          )
+                        })
+                    }))
                   .then(function (aggregate) {
                     if (!aggregate) {
                       return {}
@@ -241,10 +256,13 @@ function EventStore (storage) {
                         storage.putAggregate(accountId, timestamp, encryptedValue)
                       })
                     }
-                    aggregatesCache.releaseCache(accountId, accountCache)
                   })
               })
               .value())
+              .then(function (result) {
+                aggregatesCache.releaseCache(accountId, accountCache)
+                return result
+              })
           }))
       })
   }
