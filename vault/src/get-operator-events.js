@@ -7,20 +7,19 @@ var _ = require('underscore')
 
 var api = require('./api')
 var queries = require('./queries')
-var storage = require('./storage')
-var eventStore = require('./event-store')
+var storage = require('./aggregating-storage')
 var bindCrypto = require('./bind-crypto')
 
-module.exports = getOperatorEventsWith(queries, eventStore, storage, api)
+module.exports = getOperatorEventsWith(queries, storage, api)
 module.exports.getOperatorEventsWith = getOperatorEventsWith
 
-function getOperatorEventsWith (queries, eventStore, storage, api) {
+function getOperatorEventsWith (queries, eventStore, api) {
   return function (query, authenticatedUser) {
     var matchingAccount = _.findWhere(authenticatedUser.accounts, { accountId: query.accountId })
     if (!matchingAccount) {
       return Promise.reject(new Error('No matching key found for account with id ' + query.accountId))
     }
-    return ensureSyncWith(eventStore, storage, api)(query.accountId, matchingAccount.keyEncryptionKey)
+    return ensureSyncWith(eventStore, api)(query.accountId, matchingAccount.keyEncryptionKey)
       .then(function (account) {
         return queries.getDefaultStats(query.accountId, query, account.privateJwk)
           .then(function (stats) {
@@ -51,12 +50,12 @@ function fetchOperatorEventsWith (api) {
   }
 }
 
-function ensureSyncWith (eventStore, storage, api) {
+function ensureSyncWith (eventStore, api) {
   return bindCrypto(function (accountId, keyEncryptionJWK) {
     var crypto = this
     var payload
     var privateJwk
-    return storage.getLastKnownCheckpoint(accountId)
+    return eventStore.getLastKnownCheckpoint(accountId)
       .then(function (checkpoint) {
         var params = checkpoint
           ? { since: checkpoint }
@@ -69,9 +68,7 @@ function ensureSyncWith (eventStore, storage, api) {
           .then(function (_privateJwk) {
             privateJwk = _privateJwk
             return Promise.all([
-              storage.putEncryptedSecrets.apply(
-                null, [accountId].concat(payload.encryptedSecrets)
-              ),
+              eventStore.putEncryptedSecrets(accountId, payload.encryptedSecrets),
               eventStore.ensureAggregationSecret(accountId, payload.account.publicKey, privateJwk)
             ])
           })
@@ -79,7 +76,7 @@ function ensureSyncWith (eventStore, storage, api) {
             return Promise.all([
               eventStore.putEvents(accountId, payload.events, privateJwk),
               payload.account.sequence
-                ? storage.updateLastKnownCheckpoint(accountId, payload.account.sequence)
+                ? eventStore.updateLastKnownCheckpoint(accountId, payload.account.sequence)
                 : null
             ])
           })

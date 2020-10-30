@@ -5,12 +5,12 @@
 
 var assert = require('assert')
 
-var eventStore = require('./event-store')
+var aggregatingStorage = require('./aggregating-storage')
 
 describe('src/event-store.js', function () {
   describe('validateAndParseEvent', function () {
     it('parses referrer values into a URL', function () {
-      const result = eventStore.validateAndParseEvent({
+      const result = aggregatingStorage.validateAndParseEvent({
         payload: {
           type: 'PAGEVIEW',
           referrer: 'https://blog.foo.bar',
@@ -24,7 +24,7 @@ describe('src/event-store.js', function () {
       assert.strictEqual(result.payload.referrer.toString(), 'https://blog.foo.bar/')
     })
     it('skips bad referrer values', function () {
-      const result = eventStore.validateAndParseEvent({
+      const result = aggregatingStorage.validateAndParseEvent({
         payload: {
           type: 'PAGEVIEW',
           referrer: '<script>alert("ZALGO")</script>',
@@ -37,7 +37,7 @@ describe('src/event-store.js', function () {
     })
 
     it('parses href values into a URL', function () {
-      const result = eventStore.validateAndParseEvent({
+      const result = aggregatingStorage.validateAndParseEvent({
         payload: {
           type: 'PAGEVIEW',
           href: 'https://www.offen.dev/foo/',
@@ -50,7 +50,7 @@ describe('src/event-store.js', function () {
     })
 
     it('skips bad href values', function () {
-      const result = eventStore.validateAndParseEvent({
+      const result = aggregatingStorage.validateAndParseEvent({
         payload: {
           type: 'PAGEVIEW',
           referrer: 'https://shady.business',
@@ -63,7 +63,7 @@ describe('src/event-store.js', function () {
     })
 
     it('skips unkown event types', function () {
-      const result = eventStore.validateAndParseEvent({
+      const result = aggregatingStorage.validateAndParseEvent({
         payload: {
           type: 'ZALGO',
           href: 'https://www.offen.dev/foo/',
@@ -75,7 +75,7 @@ describe('src/event-store.js', function () {
     })
 
     it('skips bad timestamps', function () {
-      const result = eventStore.validateAndParseEvent({
+      const result = aggregatingStorage.validateAndParseEvent({
         payload: {
           type: 'PAGEVIEW',
           href: 'https://www.offen.dev/foo/',
@@ -87,7 +87,7 @@ describe('src/event-store.js', function () {
     })
 
     it('normalizes trailing slashes on URLs', function () {
-      let result = eventStore.validateAndParseEvent({
+      let result = aggregatingStorage.validateAndParseEvent({
         payload: {
           type: 'PAGEVIEW',
           href: 'https://www.offen.dev/foo',
@@ -97,7 +97,7 @@ describe('src/event-store.js', function () {
       })
       assert.strictEqual(result.payload.href.toString(), 'https://www.offen.dev/foo/')
 
-      result = eventStore.validateAndParseEvent({
+      result = aggregatingStorage.validateAndParseEvent({
         payload: {
           type: 'PAGEVIEW',
           href: 'https://www.offen.dev/foo/',
@@ -107,7 +107,7 @@ describe('src/event-store.js', function () {
       })
       assert.strictEqual(result.payload.href.toString(), 'https://www.offen.dev/foo/')
 
-      result = eventStore.validateAndParseEvent({
+      result = aggregatingStorage.validateAndParseEvent({
         payload: {
           type: 'PAGEVIEW',
           href: 'https://www.offen.dev/foo/?bar-baz',
@@ -117,7 +117,7 @@ describe('src/event-store.js', function () {
       })
       assert.strictEqual(result.payload.href.toString(), 'https://www.offen.dev/foo/?bar-baz')
 
-      result = eventStore.validateAndParseEvent({
+      result = aggregatingStorage.validateAndParseEvent({
         payload: {
           type: 'PAGEVIEW',
           href: 'https://www.offen.dev/foo?bar-baz',
@@ -131,7 +131,7 @@ describe('src/event-store.js', function () {
 
   describe('aggregate(...events)', function () {
     it('aggregates objects of the same shape', function () {
-      var result = eventStore.aggregate([
+      var result = aggregatingStorage.aggregate([
         { type: 'foo', value: 12 },
         { type: 'bar', value: 44 }
       ])
@@ -142,7 +142,7 @@ describe('src/event-store.js', function () {
     })
 
     it('supports passing a normalization function', function () {
-      var result = eventStore.aggregate([
+      var result = aggregatingStorage.aggregate([
         { type: 'foo', payload: { value: 12 } },
         { type: 'bar', payload: { value: 44 } }
       ], function (item) {
@@ -158,7 +158,7 @@ describe('src/event-store.js', function () {
     })
 
     it('adds padding for undefined values', function () {
-      var result = eventStore.aggregate([
+      var result = aggregatingStorage.aggregate([
         { solo: [99] },
         { type: 'bar', value: 12, other: 'ok' },
         { type: 'baz', value: 14, extra: true }
@@ -175,7 +175,7 @@ describe('src/event-store.js', function () {
 
   describe('mergeAggregates(aggregates)', function () {
     it('merges aggregates of the same shape', function () {
-      var result = eventStore.mergeAggregates([
+      var result = aggregatingStorage.mergeAggregates([
         { type: ['a', 'b'], value: [true, false] },
         { type: ['x', 'y', 'z'], value: [1, 2, 3] }
       ])
@@ -186,7 +186,7 @@ describe('src/event-store.js', function () {
     })
 
     it('adds padding at the head', function () {
-      var result = eventStore.mergeAggregates([
+      var result = aggregatingStorage.mergeAggregates([
         { type: ['a', 'b'] },
         { type: ['x', 'y', 'z'], value: [1, 2, 3] }
       ])
@@ -197,7 +197,7 @@ describe('src/event-store.js', function () {
     })
 
     it('adds padding at the tail', function () {
-      var result = eventStore.mergeAggregates([
+      var result = aggregatingStorage.mergeAggregates([
         { type: ['a', 'b'], value: [1, 2] },
         { type: ['x', 'y', 'z'] },
         { other: [['ok']] }
@@ -212,7 +212,7 @@ describe('src/event-store.js', function () {
 
   describe('inflateAggregate(aggregates)', function () {
     it('deflates an aggregate into an array of objects', function () {
-      var result = eventStore.inflateAggregate({
+      var result = aggregatingStorage.inflateAggregate({
         type: ['thing', 'widget', 'roomba'],
         value: [[0], null, 'foo']
       })
@@ -224,14 +224,14 @@ describe('src/event-store.js', function () {
     })
     it('throws on asymmetric input', function () {
       assert.throws(function () {
-        eventStore.inflateAggregate({
+        aggregatingStorage.inflateAggregate({
           type: ['thing', 'widget', 'roomba'],
           value: [[0], null, 'foo', 'whoops']
         })
       })
     })
     it('supports passing a function for denormalizing items', function () {
-      var result = eventStore.inflateAggregate({
+      var result = aggregatingStorage.inflateAggregate({
         type: ['thing', 'widget', 'roomba'],
         value: [[0], null, 'foo']
       }, function (item) {
@@ -250,7 +250,7 @@ describe('src/event-store.js', function () {
 
   describe('removeFromAggregate(aggregate, keyRef, values)', function () {
     it('removes the matching indices from the given aggregate', function () {
-      var result = eventStore.removeFromAggregate({
+      var result = aggregatingStorage.removeFromAggregate({
         type: ['a', 'b', 'x', 'y', 'z'],
         value: [true, false, 1, 2, 3]
       }, 'type', ['x', 'z'])

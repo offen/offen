@@ -45,7 +45,7 @@ function Storage (getDatabase, fallbackStore) {
       })
   }
 
-  this.getAllEvents = function (accountId, lowerBound, upperBound) {
+  this.getRawEvents = function (accountId, lowerBound, upperBound) {
     var table = getDatabase(accountId).events
     if (!lowerBound || !upperBound) {
       return table
@@ -219,14 +219,11 @@ function Storage (getDatabase, fallbackStore) {
       })
   }
 
-  // user secrets are expected to be passed in [secretUd, secret] tuples
-  this.putEncryptedSecrets = function (/* accountId, ...userSecrets */) {
-    var args = [].slice.call(arguments)
-    var accountId = args.shift()
-
+  // user secrets are expected to be passed in [secretId, secret] tuples
+  this.putEncryptedSecrets = function (accountId, userSecrets) {
     var db = getDatabase(accountId)
     var records
-    var newKeys = args.map(function (pair) {
+    var newKeys = userSecrets.map(function (pair) {
       return {
         type: TYPE_ENCRYPTED_SECRET,
         secretId: pair[0],
