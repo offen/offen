@@ -19,8 +19,7 @@ var subWeeks = require('date-fns/sub_weeks')
 var subMonths = require('date-fns/sub_months')
 
 var stats = require('./stats')
-var eventStore = require('./event-store')
-var storage = require('./storage')
+var storage = require('./aggregating-storage')
 
 var startOf = {
   hours: startOfHour,
@@ -47,10 +46,10 @@ var subtract = {
   months: subMonths
 }
 
-module.exports = new Queries(eventStore, storage)
+module.exports = new Queries(storage)
 module.exports.Queries = Queries
 
-function Queries (eventStore, storage) {
+function Queries (storage) {
   this.getDefaultStats = function (accountId, query, privateJwk) {
     if (accountId && !privateJwk) {
       return Promise.reject(
@@ -71,11 +70,11 @@ function Queries (eventStore, storage) {
     var lowerBound = startOf[resolution](subtract[resolution](now, range - 1))
     var upperBound = endOf[resolution](now)
 
-    var allEvents = storage.getAllEvents(accountId)
-    var eventsInBounds = eventStore.getEvents(accountId, lowerBound, upperBound)
+    var allEvents = storage.getRawEvents(accountId)
+    var eventsInBounds = storage.getEvents(accountId, lowerBound, upperBound)
     var realtimeLowerBound = subMinutes(now, 15)
     var realtimeUpperBound = now
-    var realtimeEvents = eventStore.getEvents(accountId, realtimeLowerBound, realtimeUpperBound)
+    var realtimeEvents = storage.getEvents(accountId, realtimeLowerBound, realtimeUpperBound)
     // `pageviews` is a list of basic metrics grouped by the given range
     // and resolution. It contains the number of pageviews, unique visitors
     // for operators and accounts for users.
@@ -85,7 +84,7 @@ function Queries (eventStore, storage) {
 
         var lowerBound = startOf[resolution](date)
         var upperBound = endOf[resolution](date)
-        var eventsInBounds = eventStore.getEvents(accountId, lowerBound, upperBound)
+        var eventsInBounds = storage.getEvents(accountId, lowerBound, upperBound)
 
         var pageviews = stats.pageviews(eventsInBounds)
         var visitors = stats.visitors(eventsInBounds)
@@ -117,7 +116,7 @@ function Queries (eventStore, storage) {
     for (var i = 0; i < 4; i++) {
       var currentChunkLowerBound = subtract.days(now, (i + 1) * 7)
       var currentChunkUpperBound = subtract.days(now, i * 7)
-      var chunk = eventStore.getEvents(accountId, currentChunkLowerBound, currentChunkUpperBound)
+      var chunk = storage.getEvents(accountId, currentChunkLowerBound, currentChunkUpperBound)
       retentionChunks.push(chunk)
     }
     retentionChunks = retentionChunks.reverse()
