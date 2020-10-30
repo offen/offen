@@ -110,12 +110,13 @@ function Storage (getDatabase, fallbackStore) {
       })
   }
 
-  this.putAggregate = function (accountId, timestamp, aggregate) {
+  this.putAggregate = function (accountId, timestamp, aggregate, compressed) {
     return getDatabase(accountId)
       .aggregates
       .put({
         timestamp: timestamp,
-        value: aggregate
+        value: aggregate,
+        compressed: compressed
       })
       .catch(dexie.OpenFailedError, function () {
         return null

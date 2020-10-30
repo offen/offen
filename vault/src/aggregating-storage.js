@@ -13,6 +13,9 @@ var decryptEvents = require('./decrypt-events')
 var bindCrypto = require('./bind-crypto')
 var eventSchema = require('./event.schema')
 var payloadSchema = require('./payload.schema')
+var compression = require('./compression')
+
+var supportsCompression = compression.supported()
 
 module.exports = new AggregatingStorage(storage)
 module.exports.EventStore = AggregatingStorage
@@ -96,7 +99,7 @@ function AggregatingStorage (storage) {
                           if (!encryptedAggregate) {
                             return null
                           }
-                          return decryptAggregate(encryptedAggregate.value)
+                          return decryptAggregate(encryptedAggregate.value, encryptedAggregate.compressed)
                             .then(function (decryptedValue) {
                               return _.extend(
                                 encryptedAggregate,
@@ -110,9 +113,9 @@ function AggregatingStorage (storage) {
                           aggregated = mergeAggregates([existingAggregate, aggregated])
                         }
                         accountCache[timestamp] = aggregated
-                        encryptAggregate(aggregated)
+                        encryptAggregate(aggregated, supportsCompression)
                           .then(function (encryptedAggregate) {
-                            return storage.putAggregate(accountId, timestamp, encryptedAggregate)
+                            return storage.putAggregate(accountId, timestamp, encryptedAggregate, supportsCompression)
                           })
                       })
                   }).value())
@@ -166,7 +169,7 @@ function AggregatingStorage (storage) {
           }
 
           return Promise.all(_.map(missingAggregates, function (aggregate) {
-            return decryptAggregate(aggregate.value).then(function (decryptedValue) {
+            return decryptAggregate(aggregate.value, aggregate.compressed).then(function (decryptedValue) {
               return _.extend(aggregate, { value: decryptedValue })
             })
           }))
@@ -232,7 +235,7 @@ function AggregatingStorage (storage) {
                       if (!encryptedAggregate) {
                         return null
                       }
-                      return decryptAggregate(encryptedAggregate.value)
+                      return decryptAggregate(encryptedAggregate.value, encryptedAggregate.compressed)
                         .then(function (decryptedValue) {
                           return _.extend(
                             encryptedAggregate,
@@ -252,8 +255,8 @@ function AggregatingStorage (storage) {
                       storage.deleteAggregate(accountId, timestamp)
                     } else {
                       accountCache[timestamp] = updatedAggregate
-                      encryptAggregate(updatedAggregate).then(function (encryptedValue) {
-                        storage.putAggregate(accountId, timestamp, encryptedValue)
+                      encryptAggregate(updatedAggregate, supportsCompression).then(function (encryptedValue) {
+                        storage.putAggregate(accountId, timestamp, encryptedValue, supportsCompression)
                       })
                     }
                   })
