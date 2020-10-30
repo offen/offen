@@ -414,6 +414,7 @@ function normalizedURL (urlString) {
   return url
 }
 
+module.exports.LockedAggregatesCache = LockedAggregatesCache
 function LockedAggregatesCache () {
   var cache = {}
   var locks = []
