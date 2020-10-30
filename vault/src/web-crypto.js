@@ -6,6 +6,7 @@
 var Unibabel = require('unibabel').Unibabel
 
 var cipher = require('./versioned-cipher')
+var compression = require('./compression')
 
 var SYMMETRIC_ALGO_AESGCM = 1
 var ASYMMETRIC_ALGO_RSA_OAEP = 1
@@ -16,7 +17,7 @@ exports.decryptSymmetricWith = decryptSymmetricWith
 
 function decryptSymmetricWith (jwk) {
   var importedKey = importSymmetricKey(jwk)
-  return function (encryptedValue) {
+  return function (encryptedValue, inflate) {
     return importedKey
       .then(function (cryptoKey) {
         var chunks = cipher.deserialize(encryptedValue)
@@ -34,7 +35,9 @@ function decryptSymmetricWith (jwk) {
               cryptoKey,
               chunks.cipher
             )
-              .then(parseDecrypted)
+              .then(function (v) {
+                return parseDecrypted(v, inflate)
+              })
           }
           default:
             return Promise.reject(
@@ -49,25 +52,32 @@ exports.encryptSymmetricWith = encryptSymmetricWith
 
 function encryptSymmetricWith (jwk) {
   var importedKey = importSymmetricKey(jwk)
-  return function (unencryptedValue) {
+  return function (unencryptedValue, deflate) {
     return importedKey
       .then(function (cryptoKey) {
         var bytes
         try {
-          bytes = Unibabel.utf8ToBuffer(JSON.stringify(unencryptedValue))
+          var jsonString = JSON.stringify(unencryptedValue)
+          if (deflate) {
+            bytes = compression.compress(jsonString)
+          } else {
+            bytes = Promise.resolve(Unibabel.utf8ToBuffer(jsonString))
+          }
         } catch (err) {
           return Promise.reject(err)
         }
         var nonce = window.crypto.getRandomValues(new Uint8Array(12)).buffer
-        return window.crypto.subtle.encrypt(
-          {
-            name: 'AES-GCM',
-            iv: nonce,
-            tagLength: 128
-          },
-          cryptoKey,
-          bytes
-        )
+        return bytes.then(function (b) {
+          return window.crypto.subtle.encrypt(
+            {
+              name: 'AES-GCM',
+              iv: nonce,
+              tagLength: 128
+            },
+            cryptoKey,
+            b
+          )
+        })
           .then(function (encrypted) {
             return cipher.serialize(
               encrypted,
@@ -195,7 +205,14 @@ function importSymmetricKey (jwk) {
   )
 }
 
-function parseDecrypted (decrypted) {
-  var payloadAsString = Unibabel.utf8ArrToStr(new Uint8Array(decrypted))
-  return JSON.parse(payloadAsString)
+function parseDecrypted (decrypted, inflate) {
+  var payloadAsString
+  if (inflate) {
+    payloadAsString = compression.decompress(decrypted)
+  } else {
+    payloadAsString = Promise.resolve(Unibabel.utf8ArrToStr(new Uint8Array(decrypted)))
+  }
+  return payloadAsString.then(function (s) {
+    return JSON.parse(s)
+  })
 }

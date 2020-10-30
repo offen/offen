@@ -18,7 +18,7 @@ exports._impl = 'forge'
 exports.decryptSymmetricWith = decryptSymmetricWith
 
 function decryptSymmetricWith (jwk) {
-  return asyncify(function (encryptedValue) {
+  return asyncify(function (encryptedValue, inflate) {
     var keyBytes = importSymmetricKey(jwk)
     var chunks = cipher.deserialize(encryptedValue)
     if (chunks.error) {
@@ -51,7 +51,7 @@ function decryptSymmetricWith (jwk) {
 exports.encryptSymmetricWith = encryptSymmetricWith
 
 function encryptSymmetricWith (jwk) {
-  return function (unencryptedValue) {
+  return function (unencryptedValue, deflate) {
     var keyBytes = importSymmetricKey(jwk)
     return randomBytes(12)
       .then(function (nonce) {
