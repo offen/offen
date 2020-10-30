@@ -43,11 +43,13 @@ describe('src/get-user-events', function () {
     })
 
     it('ensures sync and then returns the generated default stats', function () {
+      var mockEventStore = {
+        deleteEvents: sinon.stub().resolves(true),
+        putEvents: sinon.stub().resolves(true)
+      }
       var mockStorage = {
         getLastKnownCheckpoint: sinon.stub().resolves('sequence-a'),
         updateLastKnownCheckpoint: sinon.stub().resolves(),
-        deleteEvents: sinon.stub().resolves(true),
-        putEvents: sinon.stub().resolves(true),
         getUserSecret: sinon.stub().resolves(window.crypto.subtle.exportKey('jwk', userSecret))
       }
       var mockQueries = {
@@ -67,14 +69,14 @@ describe('src/get-user-events', function () {
           sequence: 'sequence-b'
         })
       }
-      var getUserEvents = getUserEventsWith(mockQueries, mockStorage, mockApi)
+      var getUserEvents = getUserEventsWith(mockQueries, mockEventStore, mockStorage, mockApi)
       return getUserEvents()
         .then(function (result) {
           assert(mockStorage.getLastKnownCheckpoint.calledOnce)
           assert(mockStorage.getLastKnownCheckpoint.calledWith(null))
 
-          assert(mockStorage.deleteEvents.calledOnce)
-          assert(mockStorage.deleteEvents.calledWith(null, 'k'))
+          assert(mockEventStore.deleteEvents.calledOnce)
+          assert(mockEventStore.deleteEvents.calledWith(null, ['k']))
 
           assert(mockApi.getEvents.calledOnce)
           assert(mockApi.getEvents.calledWith({ since: 'sequence-a' }))
@@ -85,15 +87,15 @@ describe('src/get-user-events', function () {
           assert(mockStorage.updateLastKnownCheckpoint.calledOnce)
           assert(mockStorage.updateLastKnownCheckpoint.calledWith(null, 'sequence-b'))
 
-          assert(mockStorage.putEvents.calledOnce)
-          assert(mockStorage.putEvents.calledWith(
+          assert(mockEventStore.putEvents.calledOnce)
+          assert(mockEventStore.putEvents.calledWith(
             null,
-            {
+            [{
               eventId: 'z',
               secretId: 'local',
               accountId: 'account-a',
               payload: { type: 'TEST', timestamp: 'timestamp-fixture' }
-            }
+            }]
           ))
 
           assert(mockQueries.getDefaultStats.calledOnce)
