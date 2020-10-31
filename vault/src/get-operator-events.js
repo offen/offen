@@ -51,45 +51,41 @@ function fetchOperatorEventsWith (api) {
 }
 
 function ensureSyncWith (eventStore, api) {
-  return bindCrypto(function (accountId, keyEncryptionJWK) {
-    var crypto = this
-    var payload
-    var privateJwk
+  return bindCrypto(function (accountId, keyEncryptionJwk) {
+    var decryptKey = this.decryptSymmetricWith(keyEncryptionJwk)
     return eventStore.getLastKnownCheckpoint(accountId)
       .then(function (checkpoint) {
         var params = checkpoint
           ? { since: checkpoint }
           : null
+
         return fetchOperatorEventsWith(api)(accountId, params)
-          .then(function (_payload) {
-            payload = _payload
+          .then(function (payload) {
             return Promise.all([
-              crypto.decryptSymmetricWith(keyEncryptionJWK)(payload.account.encryptedPrivateKey),
+              decryptKey(payload.account.encryptedPrivateKey),
+              eventStore.putEvents(accountId, payload.events),
               payload.account.sequence
                 ? eventStore.updateLastKnownCheckpoint(accountId, payload.account.sequence)
+                : null,
+              eventStore.putEncryptedSecrets(accountId, payload.encryptedSecrets),
+              payload.account.deletedEvents
+                ? eventStore.deleteEvents(accountId, payload.account.deletedEvents)
                 : null
             ])
-          })
-          .then(function (results) {
-            privateJwk = results[0]
-            return Promise.all([
-              eventStore.putEncryptedSecrets(accountId, payload.encryptedSecrets),
-              eventStore.ensureAggregationSecret(accountId, payload.account.publicKey, privateJwk)
-            ])
-          })
-          .then(function () {
-            return eventStore.putEvents(accountId, payload.events, privateJwk)
-          })
-          .then(function () {
-            return payload.account.deletedEvents
-              ? eventStore.deleteEvents(accountId, payload.account.deletedEvents)
-              : null
-          })
-          .then(function () {
-            var result = Object.assign(payload.account, {
-              privateJwk: privateJwk
-            })
-            return result
+              .then(function (results) {
+                var privateJwk = results[0]
+                return eventStore.ensureAggregationSecret(
+                  accountId,
+                  payload.account.publicKey,
+                  privateJwk
+                )
+                  .then(function () {
+                    var result = Object.assign(payload.account, {
+                      privateJwk: privateJwk
+                    })
+                    return result
+                  })
+              })
           })
       })
   })

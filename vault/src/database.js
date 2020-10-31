@@ -19,9 +19,11 @@ function getDatabase (name) {
 function createDatabase (name) {
   var db = new Dexie(name)
 
-  db.version(1).stores({
+  db.version(3).stores({
     keys: '++,type',
-    events: 'eventId,timestamp'
+    events: 'eventId',
+    checkpoints: 'type',
+    aggregates: 'timestamp'
   })
 
   // Version 2 removes the timestamp index from the events table as it's not
@@ -34,16 +36,9 @@ function createDatabase (name) {
     return txn.table('events').clear()
   })
 
-  db.version(3).stores({
+  db.version(1).stores({
     keys: '++,type',
-    events: 'eventId',
-    checkpoints: 'type',
-    aggregates: 'timestamp'
-  }).upgrade(function (txn) {
-    return Promise.all([
-      txn.table('events').clear(),
-      txn.table('checkpoints').clear()
-    ])
+    events: 'eventId,timestamp'
   })
 
   return db
