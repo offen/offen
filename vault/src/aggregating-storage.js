@@ -125,131 +125,73 @@ function AggregatingStorage (storage) {
           })
           return inflateAggregate(
             mergeAggregates(_.values(accountCache)), denormalizeEvent
-          )
+          ).filter(function (event) {
+            return lowerBoundAsId <= event.eventId && event.eventId <= upperBoundAsId
+          })
         })
-        .then(function (events) {
-          var eventIds = _.pluck(events, 'eventId')
+        .then(function (eventsFromExistingAggregates) {
+          var eventIds = _.pluck(eventsFromExistingAggregates, 'eventId')
+          var encryptedEventIds = _.pluck(encryptedEvents, 'eventId')
           var missingEvents = _.filter(encryptedEvents, function (event) {
             return !_.contains(eventIds, event.eventId)
           })
+          var extraneousIds = _.difference(eventIds, _.pluck(encryptedEvents, 'eventId'))
+          var knownEvents = _.filter(eventsFromExistingAggregates, function (event) {
+            return _.contains(encryptedEventIds, event.eventId)
+          })
           return Promise.all([
             decryptEvents(missingEvents, encryptedSecrets, privateJwk),
-            events
+            knownEvents,
+            extraneousIds
           ])
         })
         .then(function (results) {
           var decryptedEvents = results[0]
           var events = results[1]
+          var extraneousIds = results[2]
+          var requiresUpdate = []
 
           var grouped = _.groupBy(decryptedEvents, function (event) {
             var time = ULID.decodeTime(event.eventId)
             return startOfHour(new Date(time)).toJSON()
           })
-          var updates = _.map(grouped, function (value, timestamp) {
+          _.each(grouped, function (value, timestamp) {
             var agg = aggregate(value, normalizeEvent)
             accountCache[timestamp] = accountCache[timestamp]
               ? mergeAggregates([agg, accountCache[timestamp]])
               : agg
-            return encryptAggregate(accountCache[timestamp], supportsCompression)
+            requiresUpdate.push(timestamp)
+          })
+
+          var deleted = _.groupBy(extraneousIds, function (eventId) {
+            var time = ULID.decodeTime(eventId)
+            return startOfHour(new Date(time)).toJSON()
+          })
+          _.each(deleted, function (eventIds, timestamp) {
+            accountCache[timestamp] = removeFromAggregate(accountCache[timestamp], 'eventId', eventIds)
+            requiresUpdate.push(timestamp)
+          })
+
+          _.each(requiresUpdate, function (timestamp) {
+            if (!_.size(accountCache[timestamp])) {
+              storage.deleteAggregate(accountId, timestamp)
+              return
+            }
+            encryptAggregate(accountCache[timestamp], supportsCompression)
               .then(function (encryptedAggregate) {
-                return storage.putAggregate(
+                storage.putAggregate(
                   accountId, timestamp, encryptedAggregate, supportsCompression
                 )
               })
           })
-          return Promise.all(updates).then(function () {
-            return decryptedEvents.concat(events)
-          })
-        })
-        .then(function (events) {
           aggregatesCache.releaseCache(accountId, accountCache)
-          return events.filter(function (event) {
-            return lowerBoundAsId <= event.eventId && event.eventId <= upperBoundAsId
-          })
+          return decryptedEvents.concat(events)
         })
     }
 
     return result
       .then(function (events) {
         return _.compact(_.map(events, validateAndParseEvent))
-      })
-  }
-
-  this.deleteEvents = function (accountId, eventIds) {
-    var self = this
-    return storage.deleteEvents(accountId, eventIds)
-      .then(function () {
-        if (!accountId || !eventIds.length) {
-          return
-        }
-        return Promise.all([
-          aggregatesCache.acquireCache(accountId),
-          self.ensureAggregationSecret(accountId)
-        ])
-          .then(bindCrypto(function (results) {
-            var accountCache = results[0]
-            var aggregationSecret = results[1]
-            var decryptAggregate = this.decryptSymmetricWith(aggregationSecret)
-            var encryptAggregate = this.encryptSymmetricWith(aggregationSecret)
-
-            return Promise.all(_.chain(eventIds)
-              .groupBy(function (eventId) {
-                var time = ULID.decodeTime(eventId)
-                return startOfHour(new Date(time)).toJSON()
-              })
-              .pairs()
-              .map(function (pair) {
-                var timestamp = pair[0]
-                var eventIds = pair[1]
-
-                return Promise.resolve(
-                  accountCache[timestamp] ||
-                  storage.getAggregate(accountId, timestamp)
-                    .then(function (encryptedAggregate) {
-                      if (!encryptedAggregate) {
-                        return null
-                      }
-                      return Promise.all([decryptAggregate(
-                        encryptedAggregate.value,
-                        encryptedAggregate.compressed
-                      ), encryptedAggregate])
-                    })
-                    .then(function (results) {
-                      var decryptedValue = results[0]
-                      var encryptedAggregate = results[1]
-                      return _.extend(
-                        encryptedAggregate,
-                        { value: decryptedValue }
-                      )
-                    })
-                )
-                  .then(function (aggregate) {
-                    if (!aggregate) {
-                      return {}
-                    }
-                    return removeFromAggregate(aggregate, 'eventId', eventIds)
-                  })
-                  .then(function (updatedAggregate) {
-                    if (!_.size(updatedAggregate)) {
-                      delete accountCache[timestamp]
-                      storage.deleteAggregate(accountId, timestamp)
-                    } else {
-                      accountCache[timestamp] = updatedAggregate
-                      encryptAggregate(updatedAggregate, supportsCompression)
-                        .then(function (encryptedValue) {
-                          storage.putAggregate(
-                            accountId, timestamp, encryptedValue, supportsCompression
-                          )
-                        })
-                    }
-                  })
-              })
-              .value())
-              .then(function (result) {
-                aggregatesCache.releaseCache(accountId, accountCache)
-                return result
-              })
-          }))
       })
   }
 }
