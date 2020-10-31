@@ -110,13 +110,17 @@ function AggregatingStorage (storage) {
                       .then(function (existingAggregate) {
                         var aggregated = aggregate(events, normalizeEvent)
                         if (existingAggregate) {
-                          aggregated = mergeAggregates([existingAggregate, aggregated])
+                          aggregated = mergeAggregates([existingAggregate, aggregated], 'eventId')
                         }
                         accountCache[timestamp] = aggregated
-                        encryptAggregate(aggregated, supportsCompression)
-                          .then(function (encryptedAggregate) {
-                            return storage.putAggregate(accountId, timestamp, encryptedAggregate, supportsCompression)
-                          })
+                        _.defer(function () {
+                          encryptAggregate(aggregated, supportsCompression)
+                            .then(function (encryptedAggregate) {
+                              return storage.putAggregate(
+                                accountId, timestamp, encryptedAggregate, supportsCompression
+                              )
+                            })
+                        })
                       })
                   }).value())
               }))
@@ -255,8 +259,13 @@ function AggregatingStorage (storage) {
                       storage.deleteAggregate(accountId, timestamp)
                     } else {
                       accountCache[timestamp] = updatedAggregate
-                      encryptAggregate(updatedAggregate, supportsCompression).then(function (encryptedValue) {
-                        storage.putAggregate(accountId, timestamp, encryptedValue, supportsCompression)
+                      _.defer(function () {
+                        encryptAggregate(updatedAggregate, supportsCompression)
+                          .then(function (encryptedValue) {
+                            storage.putAggregate(
+                              accountId, timestamp, encryptedValue, supportsCompression
+                            )
+                          })
                       })
                     }
                   })
@@ -307,8 +316,24 @@ function aggregate (events, normalizeFn) {
 }
 
 module.exports.mergeAggregates = mergeAggregates
-function mergeAggregates (aggregates) {
+function mergeAggregates (aggregates, uniqueConstraint) {
   return _.reduce(aggregates, function (acc, aggregate) {
+    if (uniqueConstraint) {
+      var duplicates = _.intersection(
+        acc[uniqueConstraint],
+        aggregate[uniqueConstraint]
+      )
+      if (duplicates.length) {
+        var indexes = _.map(duplicates, function (value) {
+          return _.indexOf(aggregate[uniqueConstraint], value)
+        })
+        aggregate = _.mapObject(aggregate, function (value) {
+          return _.filter(value, function (v, index) {
+            return !_.contains(indexes, index)
+          })
+        })
+      }
+    }
     var givenKeys = _.keys(aggregate)
     var knownKeys = _.keys(acc)
 
