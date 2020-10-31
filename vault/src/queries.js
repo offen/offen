@@ -71,10 +71,10 @@ function Queries (storage) {
     var upperBound = endOf[resolution](now)
 
     var allEvents = storage.getRawEvents(accountId)
-    var eventsInBounds = storage.getEvents(accountId, lowerBound, upperBound)
+    var eventsInBounds = storage.getEvents({ accountId, privateJwk }, lowerBound, upperBound)
     var realtimeLowerBound = subMinutes(now, 15)
     var realtimeUpperBound = now
-    var realtimeEvents = storage.getEvents(accountId, realtimeLowerBound, realtimeUpperBound)
+    var realtimeEvents = storage.getEvents({ accountId, privateJwk }, realtimeLowerBound, realtimeUpperBound)
     // `pageviews` is a list of basic metrics grouped by the given range
     // and resolution. It contains the number of pageviews, unique visitors
     // for operators and accounts for users.
@@ -84,7 +84,7 @@ function Queries (storage) {
 
         var lowerBound = startOf[resolution](date)
         var upperBound = endOf[resolution](date)
-        var eventsInBounds = storage.getEvents(accountId, lowerBound, upperBound)
+        var eventsInBounds = storage.getEvents({ accountId, privateJwk }, lowerBound, upperBound)
 
         var pageviews = stats.pageviews(eventsInBounds)
         var visitors = stats.visitors(eventsInBounds)
@@ -116,7 +116,7 @@ function Queries (storage) {
     for (var i = 0; i < 4; i++) {
       var currentChunkLowerBound = subtract.days(now, (i + 1) * 7)
       var currentChunkUpperBound = subtract.days(now, i * 7)
-      var chunk = storage.getEvents(accountId, currentChunkLowerBound, currentChunkUpperBound)
+      var chunk = storage.getEvents({ accountId, privateJwk }, currentChunkLowerBound, currentChunkUpperBound)
       retentionChunks.push(chunk)
     }
     retentionChunks = retentionChunks.reverse()

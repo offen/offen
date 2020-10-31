@@ -60,80 +60,10 @@ function AggregatingStorage (storage) {
     return aggregationSecrets[accountId]
   }
 
-  this.putEvents = function (accountId, events, privateJwk) {
-    return Promise.all([
-      storage.putEvents(accountId, events),
-      this.ensureAggregationSecret(accountId)
-    ])
-      .then(function (results) {
-        if (!accountId) {
-          return
-        }
-        var aggregationSecret = results[1]
-        var accountCache
-        return storage.getEncryptedSecrets(accountId)
-          .then(function (encryptedSecrets) {
-            return decryptEvents(events, encryptedSecrets, privateJwk)
-          })
-          .then(function (events) {
-            return aggregatesCache.acquireCache(accountId)
-              .then(bindCrypto(function (_accountCache) {
-                accountCache = _accountCache
-                var crypto = this
-                var decryptAggregate = crypto.decryptSymmetricWith(aggregationSecret)
-                var encryptAggregate = crypto.encryptSymmetricWith(aggregationSecret)
-                return Promise.all(_.chain(events)
-                  .groupBy(function (event) {
-                    var time = ULID.decodeTime(event.eventId)
-                    return startOfHour(new Date(time)).toJSON()
-                  })
-                  .pairs()
-                  .map(function (pair) {
-                    var timestamp = pair[0]
-                    var events = pair[1]
-
-                    return Promise.resolve(
-                      accountCache[timestamp] ||
-                      storage.getAggregate(accountId, timestamp)
-                        .then(function (encryptedAggregate) {
-                          if (!encryptedAggregate) {
-                            return null
-                          }
-                          return decryptAggregate(encryptedAggregate.value, encryptedAggregate.compressed)
-                            .then(function (decryptedValue) {
-                              return _.extend(
-                                encryptedAggregate,
-                                { value: decryptedValue }
-                              )
-                            })
-                        }))
-                      .then(function (existingAggregate) {
-                        var aggregated = aggregate(events, normalizeEvent)
-                        if (existingAggregate) {
-                          aggregated = mergeAggregates([existingAggregate, aggregated], 'eventId')
-                        }
-                        accountCache[timestamp] = aggregated
-                        _.defer(function () {
-                          encryptAggregate(aggregated, supportsCompression)
-                            .then(function (encryptedAggregate) {
-                              return storage.putAggregate(
-                                accountId, timestamp, encryptedAggregate, supportsCompression
-                              )
-                            })
-                        })
-                      })
-                  }).value())
-              }))
-          })
-          .then(function (result) {
-            aggregatesCache.releaseCache(accountId, accountCache)
-            return result
-          })
-      })
-  }
-
-  this.getEvents = function (accountId, lowerBound, upperBound) {
+  this.getEvents = function (account, lowerBound, upperBound) {
     var self = this
+    var accountId = account && account.accountId
+    var privateJwk = account && account.privateJwk
     var result
     var lowerBoundAsId = lowerBound && toLowerBound(lowerBound)
     var upperBoundAsId = upperBound && toUpperBound(upperBound)
@@ -141,12 +71,22 @@ function AggregatingStorage (storage) {
       result = storage.getRawEvents(accountId, lowerBoundAsId, upperBoundAsId)
     } else {
       var accountCache
+      var encryptedEvents
+      var encryptAggregate
+      var encryptedSecrets
+
       result = Promise.all([
+        storage.getRawEvents(
+          accountId,
+          lowerBoundAsId,
+          upperBoundAsId
+        ),
         storage.getAggregates(
           accountId,
           lowerBound && startOfHour(lowerBound).toJSON(),
           upperBound && endOfHour(upperBound).toJSON()
         ),
+        storage.getEncryptedSecrets(accountId),
         self.ensureAggregationSecret(accountId)
       ])
         .then(function (results) {
@@ -158,9 +98,12 @@ function AggregatingStorage (storage) {
         })
         .then(bindCrypto(function (results) {
           var crypto = this
-          var encryptedAggregates = results[0]
-          var aggregationSecret = results[1]
+          encryptedEvents = results[0]
+          var encryptedAggregates = results[1]
+          encryptedSecrets = results[2]
+          var aggregationSecret = results[3]
           var decryptAggregate = crypto.decryptSymmetricWith(aggregationSecret)
+          encryptAggregate = crypto.encryptSymmetricWith(aggregationSecret)
 
           var timestampsInDb = _.pluck(encryptedAggregates, 'timestamp')
           var timestampsInCache = _.keys(accountCache)
@@ -168,34 +111,61 @@ function AggregatingStorage (storage) {
           var missingAggregates = _.filter(encryptedAggregates, function (agg) {
             return _.contains(missing, agg.timestamp)
           })
-          if (!missingAggregates.length) {
-            aggregatesCache.releaseCache()
-          }
 
           return Promise.all(_.map(missingAggregates, function (aggregate) {
-            return decryptAggregate(aggregate.value, aggregate.compressed).then(function (decryptedValue) {
-              return _.extend(aggregate, { value: decryptedValue })
-            })
+            return decryptAggregate(aggregate.value, aggregate.compressed)
+              .then(function (decryptedValue) {
+                return _.extend(aggregate, { value: decryptedValue })
+              })
           }))
         }))
         .then(function (decryptedAggregates) {
           _.each(decryptedAggregates, function (aggregate) {
             accountCache[aggregate.timestamp] = aggregate.value
           })
-          if (decryptedAggregates.length) {
-            aggregatesCache.releaseCache(accountId, accountCache)
-          }
           return inflateAggregate(
             mergeAggregates(_.values(accountCache)), denormalizeEvent
           )
         })
         .then(function (events) {
-          return events.filter(function (event) {
-            return lowerBoundAsId <= event.eventId && event.eventId <= upperBoundAsId
+          var eventIds = _.pluck(events, 'eventId')
+          var missingEvents = _.filter(encryptedEvents, function (event) {
+            return !_.contains(eventIds, event.eventId)
+          })
+          return Promise.all([
+            decryptEvents(missingEvents, encryptedSecrets, privateJwk),
+            events
+          ])
+        })
+        .then(function (results) {
+          var decryptedEvents = results[0]
+          var events = results[1]
+
+          var grouped = _.groupBy(decryptedEvents, function (event) {
+            var time = ULID.decodeTime(event.eventId)
+            return startOfHour(new Date(time)).toJSON()
+          })
+          var updates = _.map(grouped, function (value, timestamp) {
+            var agg = aggregate(value, normalizeEvent)
+            accountCache[timestamp] = accountCache[timestamp]
+              ? mergeAggregates([agg, accountCache[timestamp]])
+              : agg
+            return encryptAggregate(accountCache[timestamp], supportsCompression)
+              .then(function (encryptedAggregate) {
+                return storage.putAggregate(
+                  accountId, timestamp, encryptedAggregate, supportsCompression
+                )
+              })
+          })
+          return Promise.all(updates).then(function () {
+            return decryptedEvents.concat(events)
           })
         })
         .then(function (events) {
-          return events
+          aggregatesCache.releaseCache(accountId, accountCache)
+          return events.filter(function (event) {
+            return lowerBoundAsId <= event.eventId && event.eventId <= upperBoundAsId
+          })
         })
     }
 
@@ -239,14 +209,20 @@ function AggregatingStorage (storage) {
                       if (!encryptedAggregate) {
                         return null
                       }
-                      return decryptAggregate(encryptedAggregate.value, encryptedAggregate.compressed)
-                        .then(function (decryptedValue) {
-                          return _.extend(
-                            encryptedAggregate,
-                            { value: decryptedValue }
-                          )
-                        })
-                    }))
+                      return Promise.all([decryptAggregate(
+                        encryptedAggregate.value,
+                        encryptedAggregate.compressed
+                      ), encryptedAggregate])
+                    })
+                    .then(function (results) {
+                      var decryptedValue = results[0]
+                      var encryptedAggregate = results[1]
+                      return _.extend(
+                        encryptedAggregate,
+                        { value: decryptedValue }
+                      )
+                    })
+                )
                   .then(function (aggregate) {
                     if (!aggregate) {
                       return {}
@@ -259,14 +235,12 @@ function AggregatingStorage (storage) {
                       storage.deleteAggregate(accountId, timestamp)
                     } else {
                       accountCache[timestamp] = updatedAggregate
-                      _.defer(function () {
-                        encryptAggregate(updatedAggregate, supportsCompression)
-                          .then(function (encryptedValue) {
-                            storage.putAggregate(
-                              accountId, timestamp, encryptedValue, supportsCompression
-                            )
-                          })
-                      })
+                      encryptAggregate(updatedAggregate, supportsCompression)
+                        .then(function (encryptedValue) {
+                          storage.putAggregate(
+                            accountId, timestamp, encryptedValue, supportsCompression
+                          )
+                        })
                     }
                   })
               })
@@ -316,24 +290,8 @@ function aggregate (events, normalizeFn) {
 }
 
 module.exports.mergeAggregates = mergeAggregates
-function mergeAggregates (aggregates, uniqueConstraint) {
+function mergeAggregates (aggregates) {
   return _.reduce(aggregates, function (acc, aggregate) {
-    if (uniqueConstraint) {
-      var duplicates = _.intersection(
-        acc[uniqueConstraint],
-        aggregate[uniqueConstraint]
-      )
-      if (duplicates.length) {
-        var indexes = _.map(duplicates, function (value) {
-          return _.indexOf(aggregate[uniqueConstraint], value)
-        })
-        aggregate = _.mapObject(aggregate, function (value) {
-          return _.filter(value, function (v, index) {
-            return !_.contains(indexes, index)
-          })
-        })
-      }
-    }
     var givenKeys = _.keys(aggregate)
     var knownKeys = _.keys(acc)
 
