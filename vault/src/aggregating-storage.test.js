@@ -208,6 +208,28 @@ describe('src/aggregating-storage.js', function () {
         other: [undefined, undefined, undefined, undefined, undefined, ['ok']]
       })
     })
+
+    it('prevents duplicates when given a constraint', function () {
+      var result = aggregatingStorage.mergeAggregates([
+        { id: ['a', 'b'], value: [1, 2] },
+        { id: ['x', 'y', 'a'], value: [4, 3, 1] }
+      ], 'id')
+      assert.deepStrictEqual(result, {
+        id: ['a', 'b', 'x', 'y'],
+        value: [1, 2, 4, 3]
+      })
+    })
+
+    it('allows duplicates when not given a constraint', function () {
+      var result = aggregatingStorage.mergeAggregates([
+        { id: ['a', 'b'], value: [1, 2] },
+        { id: ['x', 'y', 'a'], value: [4, 3, 1] }
+      ])
+      assert.deepStrictEqual(result, {
+        id: ['a', 'b', 'x', 'y', 'a'],
+        value: [1, 2, 4, 3, 1]
+      })
+    })
   })
 
   describe('inflateAggregate(aggregates)', function () {

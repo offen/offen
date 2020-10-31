@@ -63,22 +63,22 @@ function ensureSyncWith (eventStore, api) {
         return fetchOperatorEventsWith(api)(accountId, params)
           .then(function (_payload) {
             payload = _payload
-            return crypto.decryptSymmetricWith(keyEncryptionJWK)(payload.account.encryptedPrivateKey)
+            return Promise.all([
+              crypto.decryptSymmetricWith(keyEncryptionJWK)(payload.account.encryptedPrivateKey),
+              payload.account.sequence
+                ? eventStore.updateLastKnownCheckpoint(accountId, payload.account.sequence)
+                : null
+            ])
           })
-          .then(function (_privateJwk) {
-            privateJwk = _privateJwk
+          .then(function (results) {
+            privateJwk = results[0]
             return Promise.all([
               eventStore.putEncryptedSecrets(accountId, payload.encryptedSecrets),
               eventStore.ensureAggregationSecret(accountId, payload.account.publicKey, privateJwk)
             ])
           })
           .then(function () {
-            return Promise.all([
-              eventStore.putEvents(accountId, payload.events, privateJwk),
-              payload.account.sequence
-                ? eventStore.updateLastKnownCheckpoint(accountId, payload.account.sequence)
-                : null
-            ])
+            return eventStore.putEvents(accountId, payload.events, privateJwk)
           })
           .then(function () {
             return payload.account.deletedEvents
