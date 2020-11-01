@@ -164,11 +164,11 @@ describe('src/aggregating-storage.js', function () {
         { type: 'baz', value: 14, extra: true }
       ])
       assert.deepStrictEqual(result, {
-        type: [undefined, 'bar', 'baz'],
-        value: [undefined, 12, 14],
-        extra: [undefined, undefined, true],
-        other: [undefined, 'ok', undefined],
-        solo: [[99], undefined, undefined]
+        type: [null, 'bar', 'baz'],
+        value: [null, 12, 14],
+        extra: [null, null, true],
+        other: [null, 'ok', null],
+        solo: [[99], null, null]
       })
     })
   })
@@ -192,7 +192,7 @@ describe('src/aggregating-storage.js', function () {
       ])
       assert.deepStrictEqual(result, {
         type: ['a', 'b', 'x', 'y', 'z'],
-        value: [undefined, undefined, 1, 2, 3]
+        value: [null, null, 1, 2, 3]
       })
     })
 
@@ -203,9 +203,9 @@ describe('src/aggregating-storage.js', function () {
         { other: [['ok']] }
       ])
       assert.deepStrictEqual(result, {
-        type: ['a', 'b', 'x', 'y', 'z', undefined],
-        value: [1, 2, undefined, undefined, undefined, undefined],
-        other: [undefined, undefined, undefined, undefined, undefined, ['ok']]
+        type: ['a', 'b', 'x', 'y', 'z', null],
+        value: [1, 2, null, null, null, null],
+        other: [null, null, null, null, null, ['ok']]
       })
     })
   })
