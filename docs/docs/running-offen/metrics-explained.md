@@ -15,8 +15,6 @@ SPDX-License-Identifier: Apache-2.0
 # Metrics explained
 {: .no_toc }
 
----
-
 ## Table of contents
 {: .no_toc }
 
