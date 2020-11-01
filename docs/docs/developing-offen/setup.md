@@ -31,6 +31,12 @@ You should now be able to start your local version of Offen using:
 make up
 ```
 
+To log into the development backend use the following credentials:
+```
+Email: develop@offen.dev
+Password: development
+```
+
 To see if the application is working as intended visit <http://localhost:8080> in your browser or use the application's health check:
 
 ```
