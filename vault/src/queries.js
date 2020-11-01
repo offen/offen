@@ -70,11 +70,13 @@ function Queries (storage) {
     var lowerBound = startOf[resolution](subtract[resolution](now, range - 1))
     var upperBound = endOf[resolution](now)
 
+    var proxy = new GetEventsProxy(storage, accountId, privateJwk)
+
     var allEvents = storage.getRawEvents(accountId)
-    var eventsInBounds = storage.getEvents({ accountId, privateJwk }, lowerBound, upperBound)
+    var eventsInBounds = proxy.getEvents(lowerBound, upperBound)
     var realtimeLowerBound = subMinutes(now, 15)
     var realtimeUpperBound = now
-    var realtimeEvents = storage.getEvents({ accountId, privateJwk }, realtimeLowerBound, realtimeUpperBound)
+    var realtimeEvents = proxy.getEvents(realtimeLowerBound, realtimeUpperBound)
     // `pageviews` is a list of basic metrics grouped by the given range
     // and resolution. It contains the number of pageviews, unique visitors
     // for operators and accounts for users.
@@ -84,7 +86,7 @@ function Queries (storage) {
 
         var lowerBound = startOf[resolution](date)
         var upperBound = endOf[resolution](date)
-        var eventsInBounds = storage.getEvents({ accountId, privateJwk }, lowerBound, upperBound)
+        var eventsInBounds = proxy.getEvents(lowerBound, upperBound)
 
         var pageviews = stats.pageviews(eventsInBounds)
         var visitors = stats.visitors(eventsInBounds)
@@ -116,7 +118,7 @@ function Queries (storage) {
     for (var i = 0; i < 4; i++) {
       var currentChunkLowerBound = subtract.days(now, (i + 1) * 7)
       var currentChunkUpperBound = subtract.days(now, i * 7)
-      var chunk = storage.getEvents({ accountId, privateJwk }, currentChunkLowerBound, currentChunkUpperBound)
+      var chunk = proxy.getEvents(currentChunkLowerBound, currentChunkUpperBound)
       retentionChunks.push(chunk)
     }
     retentionChunks = retentionChunks.reverse()
@@ -140,6 +142,8 @@ function Queries (storage) {
 
     var livePages = stats.activePages(realtimeEvents)
     var liveUsers = stats.visitors(realtimeEvents)
+
+    proxy.call()
 
     return Promise
       .all([
@@ -190,5 +194,36 @@ function Queries (storage) {
           range: range
         }
       })
+  }
+}
+
+function GetEventsProxy (storage, accountId, privateJwk) {
+  var calls = []
+  this.getEvents = function (lowerBound, upperBound) {
+    return new Promise(function (resolve) {
+      calls.push({
+        lowerBound: lowerBound,
+        upperBound: upperBound,
+        resolve: resolve
+      })
+    })
+  }
+
+  this.call = function () {
+    var maxUpperBound = _.last(_.sortBy(_.pluck(calls, 'upperBound'), _.identity))
+    var minLowerBound = _.head(_.sortBy(_.pluck(calls, 'lowerBound'), _.identity))
+    var allEvents = storage.getEvents({
+      accountId: accountId,
+      privateJwk: privateJwk
+    }, minLowerBound, maxUpperBound)
+    _.each(calls, function (call) {
+      call.resolve(allEvents.then(function (events) {
+        var upperBoundAsId = call.upperBound && storage.toUpperBound(call.upperBound)
+        var lowerBoundAsId = call.lowerBound && storage.toLowerBound(call.lowerBound)
+        return _.filter(events, function (event) {
+          return lowerBoundAsId <= event.eventId && event.eventId <= upperBoundAsId
+        })
+      }))
+    })
   }
 }

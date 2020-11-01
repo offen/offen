@@ -196,10 +196,12 @@ function AggregatingStorage (storage) {
   }
 }
 
+module.exports.toUpperBound = toUpperBound
 function toUpperBound (date) {
   return ULID.ulid(date.getTime() + 1)
 }
 
+module.exports.toLowerBound = toLowerBound
 function toLowerBound (date) {
   return ULID.ulid(date.getTime() - 1)
 }
