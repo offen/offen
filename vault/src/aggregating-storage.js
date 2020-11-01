@@ -218,7 +218,7 @@ function aggregate (events, normalizeFn) {
     var currentLength = _.size(_.head(_.values(acc)))
     var newKeys = _.without.apply(_, [givenKeys].concat(knownKeys))
     _.each(newKeys, function (key) {
-      acc[key] = _.times(currentLength, _.constant(undefined))
+      acc[key] = _.times(currentLength, _.constant(null))
     })
 
     for (var key in event) {
@@ -227,7 +227,7 @@ function aggregate (events, normalizeFn) {
 
     var missingKeys = _.difference(knownKeys, givenKeys)
     _.each(missingKeys, function (key) {
-      acc[key].push(undefined)
+      acc[key].push(null)
     })
     return acc
   }, {})
@@ -242,7 +242,7 @@ function mergeAggregates (aggregates) {
     var currentLength = _.size(_.head(_.values(acc)))
     var newKeys = _.without.apply(_, [givenKeys].concat(knownKeys))
     _.each(newKeys, function (key) {
-      acc[key] = _.times(currentLength, _.constant(undefined))
+      acc[key] = _.times(currentLength, _.constant(null))
     })
 
     for (var key in aggregate) {
@@ -252,7 +252,7 @@ function mergeAggregates (aggregates) {
     var missingKeys = _.difference(knownKeys, givenKeys)
     var aggregateLength = _.size(_.head(_.values(aggregate)))
     _.each(missingKeys, function (key) {
-      acc[key] = acc[key].concat(_.times(aggregateLength, _.constant(undefined)))
+      acc[key] = acc[key].concat(_.times(aggregateLength, _.constant(null)))
     })
     return acc
   }, {})
