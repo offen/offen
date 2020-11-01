@@ -111,7 +111,6 @@ function AggregatingStorage (storage) {
           var missingAggregates = _.filter(encryptedAggregates, function (agg) {
             return _.contains(missing, agg.timestamp)
           })
-
           return Promise.all(_.map(missingAggregates, function (aggregate) {
             return decryptAggregate(aggregate.value, aggregate.compressed)
               .then(function (decryptedValue) {
@@ -139,6 +138,7 @@ function AggregatingStorage (storage) {
           var knownEvents = _.filter(eventsFromExistingAggregates, function (event) {
             return _.contains(encryptedEventIds, event.eventId)
           })
+
           return Promise.all([
             decryptEvents(missingEvents, encryptedSecrets, privateJwk),
             knownEvents,
@@ -150,7 +150,6 @@ function AggregatingStorage (storage) {
           var events = results[1]
           var extraneousIds = results[2]
           var requiresUpdate = []
-
           var grouped = _.groupBy(decryptedEvents, function (event) {
             var time = ULID.decodeTime(event.eventId)
             return startOfHour(new Date(time)).toJSON()
@@ -172,19 +171,23 @@ function AggregatingStorage (storage) {
             requiresUpdate.push(timestamp)
           })
 
-          _.each(requiresUpdate, function (timestamp) {
+          var updates = _.map(requiresUpdate, function (timestamp) {
             if (!_.size(accountCache[timestamp])) {
               storage.deleteAggregate(accountId, timestamp)
               return
             }
-            encryptAggregate(accountCache[timestamp], supportsCompression)
+            return encryptAggregate(accountCache[timestamp], supportsCompression)
               .then(function (encryptedAggregate) {
                 storage.putAggregate(
                   accountId, timestamp, encryptedAggregate, supportsCompression
                 )
               })
           })
-          aggregatesCache.releaseCache(accountId, accountCache)
+          // returning the result does not require to wait for the updates to
+          // happen as queries will do a single call only
+          Promise.all(updates).then(function () {
+            aggregatesCache.releaseCache(accountId, accountCache)
+          })
           return decryptedEvents.concat(events)
         })
     }
