@@ -28,7 +28,7 @@ https://www.yourpage.org/?utm_campaign=Newsletter-October
 ```
 https://www.yourpage.org/blog/article/?utm_source=Messenger
 ```
-The traffic resulting from these URLs would then displayed in the respective category as "Newsletter-October" and "Messenger".
+The traffic resulting from these URLs would then displayed in the respective category as "Newsletter-October" or "Messenger".
 
 <span class="label label-green">Note</span>
 
