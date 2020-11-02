@@ -30,11 +30,7 @@ function AggregatingStorage (storage) {
   var aggregatesCache = new LockedAggregatesCache()
   var aggregationSecrets = {}
 
-  this.ensureAggregationSecret = function (accountId, publicKey, privateJwk) {
-    if (accountId === null) {
-      return Promise.resolve(null)
-    }
-
+  function ensureAggregationSecret (accountId, publicKey, privateJwk) {
     if ((!publicKey || !privateJwk) && !aggregationSecrets[accountId]) {
       throw new Error('Could not find matching aggregation secret for account "' + accountId + '".')
     }
@@ -62,9 +58,9 @@ function AggregatingStorage (storage) {
   }
 
   this.getEvents = function (account, lowerBound, upperBound) {
-    var self = this
     var accountId = account && account.accountId
     var privateJwk = account && account.privateJwk
+    var publicKey = account && account.publicKey
     var result
     var lowerBoundAsId = lowerBound && toLowerBound(lowerBound)
     var upperBoundAsId = upperBound && toUpperBound(upperBound)
@@ -75,21 +71,25 @@ function AggregatingStorage (storage) {
       var encryptedEvents
       var encryptAggregate
       var encryptedSecrets
+      var aggregationSecret
 
-      result = Promise.all([
-        storage.getRawEvents(
-          accountId,
-          lowerBoundAsId,
-          upperBoundAsId
-        ),
-        storage.getAggregates(
-          accountId,
-          lowerBound && startOfHour(lowerBound).toJSON(),
-          upperBound && endOfHour(upperBound).toJSON()
-        ),
-        storage.getEncryptedSecrets(accountId),
-        self.ensureAggregationSecret(accountId)
-      ])
+      result = ensureAggregationSecret(accountId, publicKey, privateJwk)
+        .then(function (_aggregationSecret) {
+          aggregationSecret = _aggregationSecret
+          return Promise.all([
+            storage.getRawEvents(
+              accountId,
+              lowerBoundAsId,
+              upperBoundAsId
+            ),
+            storage.getAggregates(
+              accountId,
+              lowerBound && startOfHour(lowerBound).toJSON(),
+              upperBound && endOfHour(upperBound).toJSON()
+            ),
+            storage.getEncryptedSecrets(accountId)
+          ])
+        })
         .then(function (results) {
           return aggregatesCache.acquireCache(accountId)
             .then(function (_accountCache) {
@@ -102,7 +102,6 @@ function AggregatingStorage (storage) {
           encryptedEvents = results[0]
           var encryptedAggregates = results[1]
           encryptedSecrets = results[2]
-          var aggregationSecret = results[3]
           var decryptAggregate = crypto.decryptSymmetricWith(aggregationSecret)
           // an aggregate is JSON.stringified before passing it to the encryption
           // function as compression happens depending on the raw string size

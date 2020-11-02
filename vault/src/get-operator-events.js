@@ -21,7 +21,7 @@ function getOperatorEventsWith (queries, eventStore, api) {
     }
     return ensureSyncWith(eventStore, api)(query.accountId, matchingAccount.keyEncryptionKey)
       .then(function (account) {
-        return queries.getDefaultStats(query.accountId, query, account.privateJwk)
+        return queries.getDefaultStats(query.accountId, query, account.publicKey, account.privateJwk)
           .then(function (stats) {
             return Object.assign(stats, { account: account })
           })
@@ -74,17 +74,10 @@ function ensureSyncWith (eventStore, api) {
             ])
               .then(function (results) {
                 var privateJwk = results[0]
-                return eventStore.ensureAggregationSecret(
-                  accountId,
-                  payload.account.publicKey,
-                  privateJwk
-                )
-                  .then(function () {
-                    var result = Object.assign(payload.account, {
-                      privateJwk: privateJwk
-                    })
-                    return result
-                  })
+                var result = Object.assign(payload.account, {
+                  privateJwk: privateJwk
+                })
+                return result
               })
           })
       })
