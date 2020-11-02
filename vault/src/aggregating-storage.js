@@ -16,6 +16,7 @@ var payloadSchema = require('./payload.schema')
 var compression = require('./compression')
 
 var supportsCompression = compression.supported()
+var compressionThreshold = 1024
 
 module.exports = new AggregatingStorage(storage)
 module.exports.EventStore = AggregatingStorage
@@ -103,7 +104,9 @@ function AggregatingStorage (storage) {
           encryptedSecrets = results[2]
           var aggregationSecret = results[3]
           var decryptAggregate = crypto.decryptSymmetricWith(aggregationSecret)
-          encryptAggregate = crypto.encryptSymmetricWith(aggregationSecret)
+          // an aggregate is JSON.stringified before passing it to the encryption
+          // function as compression happens depending on the raw string size
+          encryptAggregate = crypto.encryptSymmetricWith(aggregationSecret, _.identity)
 
           var timestampsInDb = _.pluck(encryptedAggregates, 'timestamp')
           var timestampsInCache = _.keys(accountCache)
@@ -176,10 +179,14 @@ function AggregatingStorage (storage) {
               storage.deleteAggregate(accountId, timestamp)
               return
             }
-            return encryptAggregate(accountCache[timestamp], supportsCompression)
+
+            var asJsonString = JSON.stringify(accountCache[timestamp])
+            var compress = supportsCompression &&
+              asJsonString.length > compressionThreshold
+            return encryptAggregate(asJsonString, compress)
               .then(function (encryptedAggregate) {
                 storage.putAggregate(
-                  accountId, timestamp, encryptedAggregate, supportsCompression
+                  accountId, timestamp, encryptedAggregate, compress
                 )
               })
           })

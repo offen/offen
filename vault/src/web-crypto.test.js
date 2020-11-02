@@ -41,6 +41,70 @@ function enqueueCryptoTests (crypto, src) {
             assert.strictEqual(result, 'alice – bob ✔️')
           })
       })
+
+      it('encrypts and decrypts string values without serializing', function () {
+        var jwk
+        return crypto
+          .createSymmetricKey()
+          .then(function (_jwk) {
+            jwk = _jwk
+            return crypto.encryptSymmetricWith(jwk, identity)('alice – bob ✔️')
+          })
+          .then(function (cipher) {
+            return crypto.decryptSymmetricWith(jwk, identity)(cipher)
+          })
+          .then(function (result) {
+            assert.strictEqual(result, 'alice – bob ✔️')
+          })
+      })
+
+      it('encrypts and decrypts string values using compression', function () {
+        var jwk
+        return crypto
+          .createSymmetricKey()
+          .then(function (_jwk) {
+            jwk = _jwk
+            return crypto.encryptSymmetricWith(jwk, identity)('alice – bob ✔️', true)
+          })
+          .then(function (cipher) {
+            return crypto.decryptSymmetricWith(jwk, identity)(cipher, true)
+          })
+          .then(function (result) {
+            assert.strictEqual(result, 'alice – bob ✔️')
+          })
+      })
+
+      it('encrypts and decrypts string values using compression', function () {
+        var jwk
+        return crypto
+          .createSymmetricKey()
+          .then(function (_jwk) {
+            jwk = _jwk
+            return crypto.encryptSymmetricWith(jwk, identity)('alice – bob ✔️', true)
+          })
+          .then(function (cipher) {
+            return crypto.decryptSymmetricWith(jwk, identity)(cipher, true)
+          })
+          .then(function (result) {
+            assert.strictEqual(result, 'alice – bob ✔️')
+          })
+      })
+
+      it('encrypts and decrypts javascript objects by default', function () {
+        var jwk
+        return crypto
+          .createSymmetricKey()
+          .then(function (_jwk) {
+            jwk = _jwk
+            return crypto.encryptSymmetricWith(jwk)({ value: [12, 90] })
+          })
+          .then(function (cipher) {
+            return crypto.decryptSymmetricWith(jwk)(cipher)
+          })
+          .then(function (result) {
+            assert.deepStrictEqual(result, { value: [12, 90] })
+          })
+      })
     })
 
     describe('assymmetric encryption', function () {
@@ -73,4 +137,8 @@ function enqueueCryptoTests (crypto, src) {
       })
     })
   })
+}
+
+function identity (v) {
+  return v
 }
