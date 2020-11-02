@@ -15,7 +15,8 @@ exports._impl = 'native'
 
 exports.decryptSymmetricWith = decryptSymmetricWith
 
-function decryptSymmetricWith (jwk) {
+function decryptSymmetricWith (jwk, deserializer) {
+  deserializer = deserializer || JSON.parse
   var importedKey = importSymmetricKey(jwk)
   return function (encryptedValue, inflate) {
     return importedKey
@@ -38,6 +39,7 @@ function decryptSymmetricWith (jwk) {
               .then(function (v) {
                 return parseDecrypted(v, inflate)
               })
+              .then(deserializer)
           }
           default:
             return Promise.reject(
@@ -50,18 +52,19 @@ function decryptSymmetricWith (jwk) {
 
 exports.encryptSymmetricWith = encryptSymmetricWith
 
-function encryptSymmetricWith (jwk) {
+function encryptSymmetricWith (jwk, serializer) {
+  serializer = serializer || JSON.stringify
   var importedKey = importSymmetricKey(jwk)
   return function (unencryptedValue, deflate) {
     return importedKey
       .then(function (cryptoKey) {
         var bytes
         try {
-          var jsonString = JSON.stringify(unencryptedValue)
+          var serializedString = serializer(unencryptedValue)
           if (deflate) {
-            bytes = compression.compress(jsonString)
+            bytes = compression.compress(serializedString)
           } else {
-            bytes = Promise.resolve(Unibabel.utf8ToBuffer(jsonString))
+            bytes = Promise.resolve(Unibabel.utf8ToBuffer(serializedString))
           }
         } catch (err) {
           return Promise.reject(err)
@@ -91,7 +94,8 @@ function encryptSymmetricWith (jwk) {
 
 exports.decryptAsymmetricWith = decryptAsymmetricWith
 
-function decryptAsymmetricWith (privateJwk) {
+function decryptAsymmetricWith (privateJwk, deserializer) {
+  deserializer = deserializer || JSON.parse
   var importedKey = importPrivateKey(privateJwk)
   return function (encryptedValue) {
     return importedKey
@@ -110,6 +114,7 @@ function decryptAsymmetricWith (privateJwk) {
               chunks.cipher
             )
               .then(parseDecrypted)
+              .then(deserializer)
           }
           default:
             return Promise.reject(
@@ -122,14 +127,15 @@ function decryptAsymmetricWith (privateJwk) {
 
 exports.encryptAsymmetricWith = encryptAsymmetricWith
 
-function encryptAsymmetricWith (publicJwk) {
+function encryptAsymmetricWith (publicJwk, serializer) {
+  serializer = serializer || JSON.stringify
   var importedKey = importPublicKey(publicJwk)
   return function (unencryptedValue) {
     return importedKey
       .then(function (publicCryptoKey) {
         var bytes
         try {
-          bytes = Unibabel.utf8ToBuffer(JSON.stringify(unencryptedValue))
+          bytes = Unibabel.utf8ToBuffer(serializer(unencryptedValue))
         } catch (err) {
           return Promise.reject(err)
         }
@@ -206,13 +212,9 @@ function importSymmetricKey (jwk) {
 }
 
 function parseDecrypted (decrypted, inflate) {
-  var payloadAsString
   if (inflate) {
-    payloadAsString = compression.decompress(decrypted)
+    return compression.decompress(decrypted)
   } else {
-    payloadAsString = Promise.resolve(Unibabel.utf8ArrToStr(new Uint8Array(decrypted)))
+    return Promise.resolve(Unibabel.utf8ArrToStr(new Uint8Array(decrypted)))
   }
-  return payloadAsString.then(function (s) {
-    return JSON.parse(s)
-  })
 }
