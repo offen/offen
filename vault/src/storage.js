@@ -135,6 +135,15 @@ function Storage (getDatabase, fallbackStore) {
       })
   }
 
+  this.purgeAggregates = function (accountId) {
+    return getDatabase(accountId)
+      .aggregates
+      .clear()
+      .catch(dexie.OpenFailedError, function () {
+        fallbackStore.aggregates[accountId] = {}
+      })
+  }
+
   this.deleteAggregate = function (accountId, timestamp) {
     return getDatabase(accountId)
       .aggregates
