@@ -48,11 +48,19 @@ const AuditoriumView = (props) => {
     'This view failed to update automatically, data may be out of date. Check your network connection if the problem persists.'
   )
 
+  useEffect(function () {
+    if (model === null) {
+      handleQuery({ accountId, range, resolution, now }, authenticatedUser)
+    }
+  }, [model])
+
   useEffect(function fetchDataAndScheduleRefresh () {
     if (!focus) {
       return null
     }
-    handleQuery({ accountId, range, resolution, now }, authenticatedUser)
+    if (model !== null) {
+      handleQuery({ accountId, range, resolution, now }, authenticatedUser)
+    }
 
     const tick = window.setInterval(() => {
       handleQuery({ accountId, range, resolution, now }, authenticatedUser, softFailure, true)

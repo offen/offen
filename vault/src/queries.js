@@ -50,7 +50,7 @@ module.exports = new Queries(storage)
 module.exports.Queries = Queries
 
 function Queries (storage) {
-  this.getDefaultStats = function (accountId, query, publicKey, privateJwk) {
+  this.getDefaultStats = function (accountId, query, publicJwk, privateJwk) {
     if (accountId && !privateJwk) {
       return Promise.reject(
         new Error('Got account id but no private key, cannot continue.')
@@ -70,7 +70,7 @@ function Queries (storage) {
     var lowerBound = startOf[resolution](subtract[resolution](now, range - 1))
     var upperBound = endOf[resolution](now)
 
-    var proxy = new GetEventsProxy(storage, accountId, publicKey, privateJwk)
+    var proxy = new GetEventsProxy(storage, accountId, publicJwk, privateJwk)
 
     var allEvents = storage.getRawEvents(accountId)
     var eventsInBounds = proxy.getEvents(lowerBound, upperBound)
@@ -197,7 +197,7 @@ function Queries (storage) {
   }
 }
 
-function GetEventsProxy (storage, accountId, publicKey, privateJwk) {
+function GetEventsProxy (storage, accountId, publicJwk, privateJwk) {
   var calls = []
   this.getEvents = function (lowerBound, upperBound) {
     return new Promise(function (resolve) {
@@ -215,7 +215,7 @@ function GetEventsProxy (storage, accountId, publicKey, privateJwk) {
     var allEvents = storage.getEvents({
       accountId: accountId,
       privateJwk: privateJwk,
-      publicKey: publicKey
+      publicJwk: publicJwk
     }, minLowerBound, maxUpperBound)
     _.each(calls, function (call) {
       call.resolve(allEvents.then(function (events) {

@@ -17,11 +17,15 @@ function getOperatorEventsWith (queries, eventStore, api) {
   return function (query, authenticatedUser) {
     var matchingAccount = _.findWhere(authenticatedUser.accounts, { accountId: query.accountId })
     if (!matchingAccount) {
-      return Promise.reject(new Error('No matching key found for account with id ' + query.accountId))
+      return Promise.reject(
+        new Error('No matching key found for account with id ' + query.accountId)
+      )
     }
     return ensureSyncWith(eventStore, api)(query.accountId, matchingAccount.keyEncryptionKey)
       .then(function (account) {
-        return queries.getDefaultStats(query.accountId, query, account.publicKey, account.privateJwk)
+        return queries.getDefaultStats(
+          query.accountId, query, account.publicKey, account.privateKey
+        )
           .then(function (stats) {
             return Object.assign(stats, { account: account })
           })
@@ -73,9 +77,9 @@ function ensureSyncWith (eventStore, api) {
                 : null
             ])
               .then(function (results) {
-                var privateJwk = results[0]
+                var privateKey = results[0]
                 var result = Object.assign(payload.account, {
-                  privateJwk: privateJwk
+                  privateKey: privateKey
                 })
                 return result
               })
