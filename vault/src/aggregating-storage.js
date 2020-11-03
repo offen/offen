@@ -24,43 +24,63 @@ module.exports.EventStore = AggregatingStorage
 // AggregatingStorage adds aggregation logic on top of the plain atomic
 // Storage that reads from IndexedDB. Consumers should not be affected by
 // implementation details, but expect plain lists of events to be returned.
+//
+// In order to prevent conflicting updates on read, write and delete, aggregates
+// are materialized on read only, using the following procedure:
+// 1. all relevant events for the given query are looked up in their encrypted
+//    form
+// 2. all relevant aggregates for the given query are looked up in memory
+// 3. aggregates that are not present in memory yet, but are present in the
+//    local database are retrieved, decrypted and added to the in-memory cache
+// 4. comparing the updated in-memory aggregates and the list of encrypted
+//    events allows us to compute a list of event ids that are missing from
+//    the aggregates
+// 5. the missing events are decrypted and added to the in-memory aggregates
+// 6. the in-memory aggregates are encrypted and persisted to the local
+//    database (this can happen after returning the result)
+// 7. the list of relevant events for the query can be returned
+
 function AggregatingStorage (storage) {
   _.extend(this, storage)
 
   var aggregatesCache = new LockedAggregatesCache()
   var aggregationSecrets = {}
 
-  function ensureAggregationSecret (accountId, publicKey, privateJwk) {
-    if ((!publicKey || !privateJwk) && !aggregationSecrets[accountId]) {
-      throw new Error('Could not find matching aggregation secret for account "' + accountId + '".')
+  function ensureAggregationSecret (accountId, publicJwk, privateJwk) {
+    if ((!publicJwk || !privateJwk) && !aggregationSecrets[accountId]) {
+      throw new Error(
+        'Could not find matching aggregation secret for account "' + accountId + '".'
+      )
     }
 
-    aggregationSecrets[accountId] = aggregationSecrets[accountId] || storage.getAggregationSecret(accountId)
-      .then(bindCrypto(function (secret) {
-        var crypto = this
-        if (secret) {
-          return crypto.decryptAsymmetricWith(privateJwk)(secret)
-        }
-        var cryptoKey
-        return crypto.createSymmetricKey()
-          .then(function (_cryptoKey) {
-            cryptoKey = _cryptoKey
-            return crypto.encryptAsymmetricWith(publicKey)(cryptoKey)
-          })
-          .then(function (encryptedSecret) {
-            return storage.putAggregationSecret(accountId, encryptedSecret)
-          })
-          .then(function () {
-            return cryptoKey
-          })
-      }))
+    if (!aggregationSecrets[accountId]) {
+      aggregationSecrets[accountId] = storage.getAggregationSecret(accountId)
+        .then(bindCrypto(function (secret) {
+          var crypto = this
+          if (secret) {
+            return crypto.decryptAsymmetricWith(privateJwk)(secret)
+          }
+          var cryptoKey
+          return crypto.createSymmetricKey()
+            .then(function (_cryptoKey) {
+              cryptoKey = _cryptoKey
+              return crypto.encryptAsymmetricWith(publicJwk)(cryptoKey)
+            })
+            .then(function (encryptedSecret) {
+              return storage.putAggregationSecret(accountId, encryptedSecret)
+            })
+            .then(function () {
+              return cryptoKey
+            })
+        }))
+    }
     return aggregationSecrets[accountId]
   }
 
   this.getEvents = function (account, lowerBound, upperBound) {
     var accountId = account && account.accountId
     var privateJwk = account && account.privateJwk
-    var publicKey = account && account.publicKey
+    var publicJwk = account && account.publicJwk
     var result
     var lowerBoundAsId = lowerBound && toLowerBound(lowerBound)
     var upperBoundAsId = upperBound && toUpperBound(upperBound)
@@ -73,7 +93,7 @@ function AggregatingStorage (storage) {
       var encryptedSecrets
       var aggregationSecret
 
-      result = ensureAggregationSecret(accountId, publicKey, privateJwk)
+      result = ensureAggregationSecret(accountId, publicJwk, privateJwk)
         .then(function (_aggregationSecret) {
           aggregationSecret = _aggregationSecret
           return Promise.all([
@@ -149,13 +169,11 @@ function AggregatingStorage (storage) {
         })
         .then(function (results) {
           var decryptedEvents = results[0]
-          var events = results[1]
-          var extraneousIds = results[2]
+          var eventsFromAggregates = results[1]
+          var extraneousEventIds = results[2]
           var requiresUpdate = []
-          var grouped = _.groupBy(decryptedEvents, function (event) {
-            var time = ULID.decodeTime(event.eventId)
-            return startOfHour(new Date(time)).toJSON()
-          })
+
+          var grouped = _.groupBy(decryptedEvents, groupByUTC(_.property(['eventId'])))
           _.each(grouped, function (value, timestamp) {
             var agg = aggregate(value, normalizeEvent)
             accountCache[timestamp] = accountCache[timestamp]
@@ -164,19 +182,17 @@ function AggregatingStorage (storage) {
             requiresUpdate.push(timestamp)
           })
 
-          var deleted = _.groupBy(extraneousIds, function (eventId) {
-            var time = ULID.decodeTime(eventId)
-            return startOfHour(new Date(time)).toJSON()
-          })
+          var deleted = _.groupBy(extraneousEventIds, groupByUTC(_.identity))
           _.each(deleted, function (eventIds, timestamp) {
-            accountCache[timestamp] = removeFromAggregate(accountCache[timestamp], 'eventId', eventIds)
+            accountCache[timestamp] = removeFromAggregate(
+              accountCache[timestamp], 'eventId', eventIds
+            )
             requiresUpdate.push(timestamp)
           })
 
           var updates = _.map(requiresUpdate, function (timestamp) {
             if (!_.size(accountCache[timestamp])) {
-              storage.deleteAggregate(accountId, timestamp)
-              return
+              return storage.deleteAggregate(accountId, timestamp)
             }
 
             var asJsonString = JSON.stringify(accountCache[timestamp])
@@ -194,7 +210,7 @@ function AggregatingStorage (storage) {
           Promise.all(updates).then(function () {
             aggregatesCache.releaseCache(accountId, accountCache)
           })
-          return decryptedEvents.concat(events)
+          return decryptedEvents.concat(eventsFromAggregates)
         })
     }
 
@@ -374,5 +390,12 @@ function LockedAggregatesCache () {
       cache[key] = value
     }
     locks.pop().resolve()
+  }
+}
+
+function groupByUTC (mapFn) {
+  return function (v) {
+    var time = ULID.decodeTime(mapFn(v))
+    return startOfHour(new Date(time)).toJSON()
   }
 }

@@ -101,7 +101,7 @@ describe('src/get-operator-events', function () {
               mock: 'result',
               account: {
                 accountId: 'account-a',
-                privateJwk: accountPrivateJWK,
+                privateKey: accountPrivateJWK,
                 encryptedPrivateKey: encryptedPrivateKey
               }
             })
