@@ -8,6 +8,17 @@ var assert = require('assert')
 var aggregatingStorage = require('./aggregating-storage')
 
 describe('src/aggregating-storage.js', function () {
+  describe('AggregatingStorage', function () {
+    it('creates and persists aggregates of events ad-hoc', function () {
+      // 1. encrypt set of events
+      // 2. prep mocks
+      // 3. 1st call (no aggregates)
+      // 4. check calls
+      // 5. 2nd call (aggregates exist)
+      // 5. check calls
+    })
+  })
+
   describe('validateAndParseEvent', function () {
     it('parses referrer values into a URL', function () {
       const result = aggregatingStorage.validateAndParseEvent({
@@ -267,26 +278,28 @@ describe('src/aggregating-storage.js', function () {
 
       function a () {
         var obj
+        var release
         return cache.acquireCache('test')
           .then(function (_obj) {
-            obj = _obj
+            obj = _obj.cache
+            release = _obj.release
             obj.value = 'a'
             return sleep(500)
           })
           .then(function () {
             obj.value += 'z'
-            cache.releaseCache('test', obj)
+            release('test', obj)
           })
       }
 
       function b () {
-        var obj
         return cache.acquireCache('test')
           .then(function (_obj) {
-            obj = _obj
+            var obj = _obj.cache
+            var release = _obj.release
             obj.value += 'b'
             obj.value += 'x'
-            cache.releaseCache('test', obj)
+            release('test', obj)
           })
       }
 
@@ -300,8 +313,8 @@ describe('src/aggregating-storage.js', function () {
         .then(function () {
           return cache.acquireCache('test')
         })
-        .then(function (cache) {
-          assert.strictEqual(cache.value, 'azbx')
+        .then(function (_obj) {
+          assert.strictEqual(_obj.cache.value, 'azbx')
         })
     })
   })
