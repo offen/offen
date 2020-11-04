@@ -92,6 +92,7 @@ function AggregatingStorage (storage) {
       var encryptAggregate
       var encryptedSecrets
       var aggregationSecret
+      var releaseCache
 
       result = ensureAggregationSecret(accountId, publicJwk, privateJwk)
         .then(function (_aggregationSecret) {
@@ -113,7 +114,8 @@ function AggregatingStorage (storage) {
         .then(function (results) {
           return aggregatesCache.acquireCache(accountId)
             .then(function (_accountCache) {
-              accountCache = _accountCache
+              accountCache = _accountCache.cache
+              releaseCache = _accountCache.release
               return results
             })
         })
@@ -208,7 +210,7 @@ function AggregatingStorage (storage) {
           // returning the result does not require to wait for the updates to
           // happen as queries will do a single call only
           Promise.all(updates).then(function () {
-            aggregatesCache.releaseCache(accountId, accountCache)
+            releaseCache(accountId, accountCache)
           })
           return decryptedEvents.concat(eventsFromAggregates)
         })
@@ -374,22 +376,25 @@ function LockedAggregatesCache () {
   this.acquireCache = function (key) {
     cache[key] = cache[key] || {}
     var pendingLock = _.head(locks)
-
     var resolveLock
     var lock = new Promise(function (resolve) {
       resolveLock = function () {
-        resolve(cache[key])
+        resolve({
+          cache: cache[key],
+          release: release
+        })
       }
     })
-    locks.unshift({ promise: lock, resolve: resolveLock })
-    return (pendingLock && pendingLock.promise) || Promise.resolve(cache[key])
-  }
 
-  this.releaseCache = function (key, value) {
-    if (key && value) {
-      cache[key] = value
+    locks.unshift({ promise: lock, resolve: resolveLock })
+    return (pendingLock && pendingLock.promise) || Promise.resolve({ cache: cache[key], release: release })
+
+    function release (key, value) {
+      if (key && value) {
+        cache[key] = value
+      }
+      locks.pop().resolve()
     }
-    locks.pop().resolve()
   }
 }
 
