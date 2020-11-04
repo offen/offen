@@ -20,6 +20,8 @@ var subMonths = require('date-fns/sub_months')
 
 var stats = require('./stats')
 var storage = require('./aggregating-storage')
+var eventSchema = require('./event.schema')
+var payloadSchema = require('./payload.schema')
 
 var startOf = {
   hours: startOfHour,
@@ -71,7 +73,6 @@ function Queries (storage) {
     var upperBound = endOf[resolution](now)
 
     var proxy = new GetEventsProxy(storage, accountId, publicJwk, privateJwk)
-
     var allEvents = storage.getRawEvents(accountId)
     var eventsInBounds = proxy.getEvents(lowerBound, upperBound)
     var realtimeLowerBound = subMinutes(now, 15)
@@ -217,6 +218,9 @@ function GetEventsProxy (storage, accountId, publicJwk, privateJwk) {
       privateJwk: privateJwk,
       publicJwk: publicJwk
     }, minLowerBound, maxUpperBound)
+      .then(function (events) {
+        return _.compact(_.map(events, validateAndParseEvent))
+      })
     _.each(calls, function (call) {
       call.resolve(allEvents.then(function (events) {
         var upperBoundAsId = call.upperBound && storage.toUpperBound(call.upperBound)
@@ -227,4 +231,30 @@ function GetEventsProxy (storage, accountId, publicJwk, privateJwk) {
       }))
     })
   }
+}
+
+module.exports.validateAndParseEvent = validateAndParseEvent
+function validateAndParseEvent (event) {
+  if (!eventSchema(event) || !payloadSchema(event.payload)) {
+    return null
+  }
+  var clone = JSON.parse(JSON.stringify(event))
+  if (clone.payload.href) {
+    clone.payload.href = normalizedURL(clone.payload.href)
+  }
+  if (clone.payload.rawHref) {
+    clone.payload.rawHref = normalizedURL(clone.payload.rawHref)
+  }
+  if (clone.payload.referrer) {
+    clone.payload.referrer = normalizedURL(clone.payload.referrer)
+  }
+  return clone
+}
+
+function normalizedURL (urlString) {
+  var url = new window.URL(urlString)
+  if (!/\/$/.test(url.pathname)) {
+    url.pathname += '/'
+  }
+  return url
 }
