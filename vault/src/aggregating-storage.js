@@ -11,8 +11,6 @@ var endOfHour = require('date-fns/end_of_hour')
 var storage = require('./storage')
 var decryptEvents = require('./decrypt-events')
 var bindCrypto = require('./bind-crypto')
-var eventSchema = require('./event.schema')
-var payloadSchema = require('./payload.schema')
 var compression = require('./compression')
 
 var supportsCompression = compression.supported()
@@ -79,146 +77,140 @@ function AggregatingStorage (storage) {
 
   this.getEvents = function (account, lowerBound, upperBound) {
     var accountId = account && account.accountId
-    var privateJwk = account && account.privateJwk
-    var publicJwk = account && account.publicJwk
-    var result
     var lowerBoundAsId = lowerBound && toLowerBound(lowerBound)
     var upperBoundAsId = upperBound && toUpperBound(upperBound)
     if (!accountId) {
-      result = storage.getRawEvents(accountId, lowerBoundAsId, upperBoundAsId)
-    } else {
-      var accountCache
-      var encryptedEvents
-      var encryptAggregate
-      var encryptedSecrets
-      var aggregationSecret
-      var releaseCache
-
-      result = ensureAggregationSecret(accountId, publicJwk, privateJwk)
-        .then(function (_aggregationSecret) {
-          aggregationSecret = _aggregationSecret
-          return Promise.all([
-            storage.getRawEvents(
-              accountId,
-              lowerBoundAsId,
-              upperBoundAsId
-            ),
-            storage.getAggregates(
-              accountId,
-              lowerBound && startOfHour(lowerBound).toJSON(),
-              upperBound && endOfHour(upperBound).toJSON()
-            ),
-            storage.getEncryptedSecrets(accountId)
-          ])
-        })
-        .then(function (results) {
-          return aggregatesCache.acquireCache(accountId)
-            .then(function (_accountCache) {
-              accountCache = _accountCache.cache
-              releaseCache = _accountCache.release
-              return results
-            })
-        })
-        .then(bindCrypto(function (results) {
-          var crypto = this
-          encryptedEvents = results[0]
-          var encryptedAggregates = results[1]
-          encryptedSecrets = results[2]
-          var decryptAggregate = crypto.decryptSymmetricWith(aggregationSecret)
-          // an aggregate is JSON.stringified before passing it to the encryption
-          // function as compression happens depending on the raw string size
-          encryptAggregate = crypto.encryptSymmetricWith(aggregationSecret, _.identity)
-
-          var timestampsInDb = _.pluck(encryptedAggregates, 'timestamp')
-          var timestampsInCache = _.keys(accountCache)
-          var missing = _.difference(timestampsInDb, timestampsInCache)
-          var missingAggregates = _.filter(encryptedAggregates, function (agg) {
-            return _.contains(missing, agg.timestamp)
-          })
-          return Promise.all(_.map(missingAggregates, function (aggregate) {
-            return decryptAggregate(aggregate.value, aggregate.compressed)
-              .then(function (decryptedValue) {
-                return _.extend(aggregate, { value: decryptedValue })
-              })
-          }))
-        }))
-        .then(function (decryptedAggregates) {
-          _.each(decryptedAggregates, function (aggregate) {
-            accountCache[aggregate.timestamp] = aggregate.value
-          })
-          return inflateAggregate(
-            mergeAggregates(_.values(accountCache)), denormalizeEvent
-          ).filter(function (event) {
-            return lowerBoundAsId <= event.eventId && event.eventId <= upperBoundAsId
-          })
-        })
-        .then(function (eventsFromExistingAggregates) {
-          var eventIds = _.pluck(eventsFromExistingAggregates, 'eventId')
-          var encryptedEventIds = _.pluck(encryptedEvents, 'eventId')
-          var missingEvents = _.filter(encryptedEvents, function (event) {
-            return !_.contains(eventIds, event.eventId)
-          })
-          var extraneousIds = _.difference(eventIds, _.pluck(encryptedEvents, 'eventId'))
-          var knownEvents = _.filter(eventsFromExistingAggregates, function (event) {
-            return _.contains(encryptedEventIds, event.eventId)
-          })
-
-          return Promise.all([
-            decryptEvents(missingEvents, encryptedSecrets, privateJwk),
-            knownEvents,
-            extraneousIds
-          ])
-        })
-        .then(function (results) {
-          var decryptedEvents = results[0]
-          var eventsFromAggregates = results[1]
-          var extraneousEventIds = results[2]
-          var requiresUpdate = []
-
-          var grouped = _.groupBy(decryptedEvents, groupByUTC(_.property(['eventId'])))
-          _.each(grouped, function (value, timestamp) {
-            var agg = aggregate(value, normalizeEvent)
-            accountCache[timestamp] = accountCache[timestamp]
-              ? mergeAggregates([agg, accountCache[timestamp]])
-              : agg
-            requiresUpdate.push(timestamp)
-          })
-
-          var deleted = _.groupBy(extraneousEventIds, groupByUTC(_.identity))
-          _.each(deleted, function (eventIds, timestamp) {
-            accountCache[timestamp] = removeFromAggregate(
-              accountCache[timestamp], 'eventId', eventIds
-            )
-            requiresUpdate.push(timestamp)
-          })
-
-          var updates = _.map(requiresUpdate, function (timestamp) {
-            if (!_.size(accountCache[timestamp])) {
-              return storage.deleteAggregate(accountId, timestamp)
-            }
-
-            var asJsonString = JSON.stringify(accountCache[timestamp])
-            var compress = supportsCompression &&
-              asJsonString.length > compressionThreshold
-            return encryptAggregate(asJsonString, compress)
-              .then(function (encryptedAggregate) {
-                storage.putAggregate(
-                  accountId, timestamp, encryptedAggregate, compress
-                )
-              })
-          })
-          // returning the result does not require to wait for the updates to
-          // happen as queries will do a single call only
-          Promise.all(updates).then(function () {
-            releaseCache(accountId, accountCache)
-          })
-          return decryptedEvents.concat(eventsFromAggregates)
-        })
+      return storage.getRawEvents(accountId, lowerBoundAsId, upperBoundAsId)
     }
 
-    return result
-      .then(function (events) {
-        return _.compact(_.map(events, validateAndParseEvent))
+    var privateJwk = account && account.privateJwk
+    var publicJwk = account && account.publicJwk
+    var accountCache
+    var encryptedEvents
+    var encryptAggregate
+    var encryptedSecrets
+    var aggregationSecret
+    var releaseCache
+
+    return ensureAggregationSecret(accountId, publicJwk, privateJwk)
+      .then(function (_aggregationSecret) {
+        aggregationSecret = _aggregationSecret
+        return Promise.all([
+          storage.getRawEvents(
+            accountId,
+            lowerBoundAsId,
+            upperBoundAsId
+          ),
+          storage.getAggregates(
+            accountId,
+            lowerBound && startOfHour(lowerBound).toJSON(),
+            upperBound && endOfHour(upperBound).toJSON()
+          ),
+          storage.getEncryptedSecrets(accountId)
+        ])
+      })
+      .then(function (results) {
+        return aggregatesCache.acquireCache(accountId)
+          .then(function (_accountCache) {
+            accountCache = _accountCache.cache
+            releaseCache = _accountCache.release
+            return results
+          })
+      })
+      .then(bindCrypto(function (results) {
+        var crypto = this
+        encryptedEvents = results[0]
+        var encryptedAggregates = results[1]
+        encryptedSecrets = results[2]
+        var decryptAggregate = crypto.decryptSymmetricWith(aggregationSecret)
+        // an aggregate is JSON.stringified before passing it to the encryption
+        // function as compression happens depending on the raw string size
+        encryptAggregate = crypto.encryptSymmetricWith(aggregationSecret, _.identity)
+
+        var timestampsInDb = _.pluck(encryptedAggregates, 'timestamp')
+        var timestampsInCache = _.keys(accountCache)
+        var missing = _.difference(timestampsInDb, timestampsInCache)
+        var missingAggregates = _.filter(encryptedAggregates, function (agg) {
+          return _.contains(missing, agg.timestamp)
+        })
+        return Promise.all(_.map(missingAggregates, function (aggregate) {
+          return decryptAggregate(aggregate.value, aggregate.compressed)
+            .then(function (decryptedValue) {
+              return _.extend(aggregate, { value: decryptedValue })
+            })
+        }))
+      }))
+      .then(function (decryptedAggregates) {
+        _.each(decryptedAggregates, function (aggregate) {
+          accountCache[aggregate.timestamp] = aggregate.value
+        })
+        return inflateAggregate(
+          mergeAggregates(_.values(accountCache)), denormalizeEvent
+        ).filter(function (event) {
+          return lowerBoundAsId <= event.eventId && event.eventId <= upperBoundAsId
+        })
+      })
+      .then(function (eventsFromExistingAggregates) {
+        var eventIds = _.pluck(eventsFromExistingAggregates, 'eventId')
+        var encryptedEventIds = _.pluck(encryptedEvents, 'eventId')
+        var missingEvents = _.filter(encryptedEvents, function (event) {
+          return !_.contains(eventIds, event.eventId)
+        })
+        var extraneousIds = _.difference(eventIds, _.pluck(encryptedEvents, 'eventId'))
+        var knownEvents = _.filter(eventsFromExistingAggregates, function (event) {
+          return _.contains(encryptedEventIds, event.eventId)
+        })
+
+        return Promise.all([
+          decryptEvents(missingEvents, encryptedSecrets, privateJwk),
+          knownEvents,
+          extraneousIds
+        ])
+      })
+      .then(function (results) {
+        var decryptedEvents = results[0]
+        var eventsFromAggregates = results[1]
+        var extraneousEventIds = results[2]
+        var requiresUpdate = []
+
+        var grouped = _.groupBy(decryptedEvents, groupByUTC(_.property(['eventId'])))
+        _.each(grouped, function (value, timestamp) {
+          var agg = aggregate(value, normalizeEvent)
+          accountCache[timestamp] = accountCache[timestamp]
+            ? mergeAggregates([agg, accountCache[timestamp]])
+            : agg
+          requiresUpdate.push(timestamp)
+        })
+
+        var deleted = _.groupBy(extraneousEventIds, groupByUTC(_.identity))
+        _.each(deleted, function (eventIds, timestamp) {
+          accountCache[timestamp] = removeFromAggregate(
+            accountCache[timestamp], 'eventId', eventIds
+          )
+          requiresUpdate.push(timestamp)
+        })
+
+        var updates = _.map(requiresUpdate, function (timestamp) {
+          if (!_.size(accountCache[timestamp])) {
+            return storage.deleteAggregate(accountId, timestamp)
+          }
+
+          var asJsonString = JSON.stringify(accountCache[timestamp])
+          var compress = supportsCompression &&
+            asJsonString.length > compressionThreshold
+          return encryptAggregate(asJsonString, compress)
+            .then(function (encryptedAggregate) {
+              storage.putAggregate(
+                accountId, timestamp, encryptedAggregate, compress
+              )
+            })
+        })
+        // returning the result does not require to wait for the updates to
+        // happen as queries will do a single call only
+        Promise.all(updates).then(function () {
+          releaseCache(accountId, accountCache)
+        })
+        return decryptedEvents.concat(eventsFromAggregates)
       })
   }
 }
@@ -340,32 +332,6 @@ function denormalizeEvent (evt) {
     _.pick(evt, 'accountId', 'eventId', 'secretId'),
     { payload: _.omit(evt, 'accountId', 'eventId', 'secretId') }
   )
-}
-
-module.exports.validateAndParseEvent = validateAndParseEvent
-function validateAndParseEvent (event) {
-  if (!eventSchema(event) || !payloadSchema(event.payload)) {
-    return null
-  }
-  var clone = JSON.parse(JSON.stringify(event))
-  if (clone.payload.href) {
-    clone.payload.href = normalizedURL(clone.payload.href)
-  }
-  if (clone.payload.rawHref) {
-    clone.payload.rawHref = normalizedURL(clone.payload.rawHref)
-  }
-  if (clone.payload.referrer) {
-    clone.payload.referrer = normalizedURL(clone.payload.referrer)
-  }
-  return clone
-}
-
-function normalizedURL (urlString) {
-  var url = new window.URL(urlString)
-  if (!/\/$/.test(url.pathname)) {
-    url.pathname += '/'
-  }
-  return url
 }
 
 module.exports.LockedAggregatesCache = LockedAggregatesCache
