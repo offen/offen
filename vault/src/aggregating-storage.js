@@ -137,6 +137,8 @@ function AggregatingStorage (storage) {
           return decryptAggregate(aggregate.value, aggregate.compressed)
             .then(function (decryptedValue) {
               return _.extend(aggregate, { value: decryptedValue })
+            }, function () {
+              return _.extend(aggregate, { value: {} })
             })
         }))
       }))
@@ -160,7 +162,6 @@ function AggregatingStorage (storage) {
         var knownEvents = _.filter(eventsFromExistingAggregates, function (event) {
           return _.contains(encryptedEventIds, event.eventId)
         })
-
         return Promise.all([
           decryptEvents(missingEvents, encryptedSecrets, privateJwk),
           knownEvents,
@@ -200,16 +201,18 @@ function AggregatingStorage (storage) {
             asJsonString.length > compressionThreshold
           return encryptAggregate(asJsonString, compress)
             .then(function (encryptedAggregate) {
-              storage.putAggregate(
+              return storage.putAggregate(
                 accountId, timestamp, encryptedAggregate, compress
               )
             })
+            .catch(Function.prototype)
         })
         // returning the result does not require to wait for the updates to
         // happen as queries will do a single call only
-        Promise.all(updates).then(function () {
-          releaseCache(accountId, accountCache)
-        })
+        Promise.all(updates)
+          .then(function () {
+            releaseCache(accountId, accountCache)
+          })
         return decryptedEvents.concat(eventsFromAggregates)
       })
   }
