@@ -13,9 +13,9 @@ module.exports = new DecryptingStorage(storage)
 module.exports.EventStore = DecryptingStorage
 
 // This class is currently not in use and is just used to make sure
-// the functionality AggregatingStorage remains entirely optional. This
+// the functionality in AggregatingStorage remains entirely optional. This
 // can be tested by swapping out instances of that class with instances of
-// DecryptingStorage, seeing the same results, albeit a lot slower.
+// DecryptingStorage, seeing the same results, albeit slower.
 function DecryptingStorage (storage) {
   _.extend(this, storage)
 

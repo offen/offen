@@ -17,7 +17,7 @@ var supportsCompression = compression.supported()
 var compressionThreshold = 1024
 
 module.exports = new AggregatingStorage(storage)
-module.exports.EventStore = AggregatingStorage
+module.exports.AggregatingStorage = AggregatingStorage
 
 // AggregatingStorage adds aggregation logic on top of the plain atomic
 // Storage that reads from IndexedDB. Consumers should not be affected by
@@ -41,39 +41,8 @@ module.exports.EventStore = AggregatingStorage
 function AggregatingStorage (storage) {
   _.extend(this, storage)
 
+  var ensureAggregationSecret = ensureAggregationSecretWith(storage)
   var aggregatesCache = new LockedAggregatesCache()
-  var aggregationSecrets = {}
-
-  function ensureAggregationSecret (accountId, publicJwk, privateJwk) {
-    if ((!publicJwk || !privateJwk) && !aggregationSecrets[accountId]) {
-      throw new Error(
-        'Could not find matching aggregation secret for account "' + accountId + '".'
-      )
-    }
-
-    if (!aggregationSecrets[accountId]) {
-      aggregationSecrets[accountId] = storage.getAggregationSecret(accountId)
-        .then(bindCrypto(function (secret) {
-          var crypto = this
-          if (secret) {
-            return crypto.decryptAsymmetricWith(privateJwk)(secret)
-          }
-          var cryptoKey
-          return crypto.createSymmetricKey()
-            .then(function (_cryptoKey) {
-              cryptoKey = _cryptoKey
-              return crypto.encryptAsymmetricWith(publicJwk)(cryptoKey)
-            })
-            .then(function (encryptedSecret) {
-              return storage.putAggregationSecret(accountId, encryptedSecret)
-            })
-            .then(function () {
-              return cryptoKey
-            })
-        }))
-    }
-    return aggregationSecrets[accountId]
-  }
 
   this.getEvents = function (account, lowerBound, upperBound) {
     var accountId = account && account.accountId
@@ -215,6 +184,41 @@ function AggregatingStorage (storage) {
           })
         return decryptedEvents.concat(eventsFromAggregates)
       })
+  }
+}
+
+module.exports.ensureAggregationSecretWith = ensureAggregationSecretWith
+function ensureAggregationSecretWith (storage, cache) {
+  cache = cache || {}
+  return function (accountId, publicJwk, privateJwk) {
+    if ((!publicJwk || !privateJwk) && !cache[accountId]) {
+      return Promise.reject(new Error(
+        'Could not find matching aggregation secret for account "' + accountId + '".'
+      ))
+    }
+
+    if (!cache[accountId]) {
+      cache[accountId] = storage.getAggregationSecret(accountId)
+        .then(bindCrypto(function (secret) {
+          var crypto = this
+          if (secret) {
+            return crypto.decryptAsymmetricWith(privateJwk)(secret)
+          }
+          var cryptoKey
+          return crypto.createSymmetricKey()
+            .then(function (_cryptoKey) {
+              cryptoKey = _cryptoKey
+              return crypto.encryptAsymmetricWith(publicJwk)(cryptoKey)
+            })
+            .then(function (encryptedSecret) {
+              return storage.putAggregationSecret(accountId, encryptedSecret)
+            })
+            .then(function () {
+              return cryptoKey
+            })
+        }))
+    }
+    return cache[accountId]
   }
 }
 
