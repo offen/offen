@@ -89,6 +89,7 @@ function makeScriptTask (dest, locale) {
         filename: function (entry) {
           return 'chunk-' + entry.index + '.js'
         },
+        sri: 'sha384',
         output: function (bundleName) {
           var buf = ''
           return to(onwrite, onend)

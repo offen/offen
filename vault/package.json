@@ -4,7 +4,7 @@
   "private": true,
   "main": "index.js",
   "scripts": {
-    "start": "budo index.js --port $PORT -- -p split-require",
+    "start": "budo index.js --port $PORT -- -p [ split-require --sri sha384 ]",
     "pretest": "dependency-check package.json",
     "test": "mochify --chrome $(which google-chrome) --allow-chrome-as-root src/{,**}/*.test.js",
     "posttest": "standard",
