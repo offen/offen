@@ -3,6 +3,17 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+
+ .delay-overlay {
+   animation: fadein 400ms ease-in;
+ }
+
+@keyframes fadein {
+  0% { opacity: 0; }
+  50% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
 .loading-overlay {
   width: 150px;
   height: 9.375em;
