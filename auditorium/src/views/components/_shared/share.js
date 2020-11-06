@@ -60,7 +60,7 @@ const Share = (props) => {
         tabindex={collapsible ? '0' : '-1'}
         role='button'
         onclick={handleToggle}
-        class={classnames('pa3', 'flex', 'justify-between', { pointer: collapsible })}
+        class={classnames('flex', 'justify-between', { pointer: collapsible })}
       >
         <h4 class='f4 normal ma0'>
           {headline}
@@ -80,7 +80,7 @@ const Share = (props) => {
   const renderBody = (props = {}) => {
     return (
       <MultiStepForm
-        class='mw6 center pb4 pt3 ph3 ph0-ns'
+        class='mw6 center mt3 mb4'
         onsubmit={handleSubmit}
         steps={[
           (props) => {
@@ -160,7 +160,7 @@ const Share = (props) => {
     )
   }
   return (
-    <div class='pa0 bg-black-05 flex-auto'>
+    <div class='pa3 bg-black-05 flex-auto'>
       {collapsible
         ? <Collapsible header={renderHeader} body={renderBody} />
         : (

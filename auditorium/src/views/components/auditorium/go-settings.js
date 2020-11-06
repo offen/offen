@@ -11,14 +11,14 @@ const classnames = require('classnames')
 
 const GoSettings = (props) => {
   return (
-    <div class='pa0 bg-black-05 flex-auto'>
+    <div class='flex-auto bg-black-05 pa3'>
       <Collapsible
         header={(props) => {
           const { isCollapsed, handleToggle } = props
           return (
             <div
               data-testid='auditorium/console-headline'
-              class='pa3 flex justify-between pointer'
+              class='flex justify-between pointer'
               onclick={handleToggle}
               onkeypress={(e) => {
                 if (e.which === 13) {
@@ -40,7 +40,7 @@ const GoSettings = (props) => {
         }}
         body={(props) => {
           return (
-            <div class='mw6 center mb4 mt3 ph3 ph0-ns'>
+            <div class='mw6 center mt3 mb4'>
               <p class='ma0 mb3'>
                 {__('Share all accounts, create a new one, change your email address and password, log out from Offen')}
               </p>
