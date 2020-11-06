@@ -16,6 +16,7 @@ var sriHash = require('gulp-sri-hash')
 var gap = require('gulp-append-prepend')
 var to = require('flush-write-stream')
 var tinyify = require('tinyify')
+var minifyStream = require('minify-stream')
 
 var defaultLocale = 'en'
 var linguas = fs.readFileSync('./locales/LINGUAS', 'utf-8').split(' ').filter(Boolean)
@@ -83,7 +84,6 @@ function makeScriptTask (dest, locale) {
 
     return b
       .exclude('dexie')
-      .plugin('tinyify')
       .plugin('split-require', {
         dir: dest,
         filename: function (entry) {
@@ -107,7 +107,10 @@ function makeScriptTask (dest, locale) {
           }
         }
       })
+      .transform('envify', { global: true })
+      .transform('uglifyify', { global: true })
       .bundle()
+      .pipe(minifyStream({ sourceMap: false }))
       .pipe(source('index.js'))
       .pipe(buffer())
       .pipe(gap.prependText('*/'))
