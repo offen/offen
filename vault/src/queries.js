@@ -4,7 +4,6 @@
  */
 
 var _ = require('underscore')
-var ULID = require('ulid')
 var startOfHour = require('date-fns/start_of_hour')
 var startOfDay = require('date-fns/start_of_day')
 var startOfWeek = require('date-fns/start_of_week')
@@ -19,9 +18,8 @@ var subDays = require('date-fns/sub_days')
 var subWeeks = require('date-fns/sub_weeks')
 var subMonths = require('date-fns/sub_months')
 
-var decryptEvents = require('./decrypt-events')
 var stats = require('./stats')
-var storage = require('./storage')
+var storage = require('./aggregating-storage')
 var eventSchema = require('./event.schema')
 var payloadSchema = require('./payload.schema')
 
@@ -54,21 +52,7 @@ module.exports = new Queries(storage)
 module.exports.Queries = Queries
 
 function Queries (storage) {
-  function getAllEvents () {
-    return storage.getAllEvents
-      .apply(storage, arguments)
-      .then(function (events) {
-        return events.filter(eventSchema)
-      })
-  }
-
-  this.getDefaultStats = function (accountId, query, privateJwk) {
-    if (!accountId && accountId !== null) {
-      return Promise.reject(
-        new Error('Expected either an account id or null to be given, got: ' + accountId)
-      )
-    }
-
+  this.getDefaultStats = function (accountId, query, publicJwk, privateJwk) {
     if (accountId && !privateJwk) {
       return Promise.reject(
         new Error('Got account id but no private key, cannot continue.')
@@ -85,14 +69,15 @@ function Queries (storage) {
     }
 
     var now = (query && query.now && new Date(query.now)) || new Date()
-    var lowerBound = toLowerBound(startOf[resolution](subtract[resolution](now, range - 1)))
-    var upperBound = toUpperBound(endOf[resolution](now))
+    var lowerBound = startOf[resolution](subtract[resolution](now, range - 1))
+    var upperBound = endOf[resolution](now)
 
-    var allEvents = getAllEvents(accountId)
-    var eventsInBounds = getAllEvents(accountId, lowerBound, upperBound)
-    var realtimeLowerBound = toLowerBound(subMinutes(now, 15))
-    var realtimeUpperBound = toUpperBound(now)
-    var realtimeEvents = getAllEvents(accountId, realtimeLowerBound, realtimeUpperBound)
+    var proxy = new GetEventsProxy(storage, accountId, publicJwk, privateJwk)
+    var allEvents = storage.getRawEvents(accountId)
+    var eventsInBounds = proxy.getEvents(lowerBound, upperBound)
+    var realtimeLowerBound = subMinutes(now, 15)
+    var realtimeUpperBound = now
+    var realtimeEvents = proxy.getEvents(realtimeLowerBound, realtimeUpperBound)
     // `pageviews` is a list of basic metrics grouped by the given range
     // and resolution. It contains the number of pageviews, unique visitors
     // for operators and accounts for users.
@@ -100,9 +85,9 @@ function Queries (storage) {
       .map(function (num, distance) {
         var date = subtract[resolution](now, distance)
 
-        var lowerBound = toLowerBound(startOf[resolution](date))
-        var upperBound = toUpperBound(endOf[resolution](date))
-        var eventsInBounds = getAllEvents(accountId, lowerBound, upperBound)
+        var lowerBound = startOf[resolution](date)
+        var upperBound = endOf[resolution](date)
+        var eventsInBounds = proxy.getEvents(lowerBound, upperBound)
 
         var pageviews = stats.pageviews(eventsInBounds)
         var visitors = stats.visitors(eventsInBounds)
@@ -132,9 +117,9 @@ function Queries (storage) {
 
     var retentionChunks = []
     for (var i = 0; i < 4; i++) {
-      var currentChunkLowerBound = toLowerBound(subtract.days(now, (i + 1) * 7))
-      var currentChunkUpperBound = toUpperBound(subtract.days(now, i * 7))
-      var chunk = getAllEvents(accountId, currentChunkLowerBound, currentChunkUpperBound)
+      var currentChunkLowerBound = subtract.days(now, (i + 1) * 7)
+      var currentChunkUpperBound = subtract.days(now, i * 7)
+      var chunk = proxy.getEvents(currentChunkLowerBound, currentChunkUpperBound)
       retentionChunks.push(chunk)
     }
     retentionChunks = retentionChunks.reverse()
@@ -143,42 +128,23 @@ function Queries (storage) {
         return stats.retention.apply(stats, chunks)
       })
 
-    // There are two types of queries happening here: those that rely solely
-    // on the IndexedDB indices, and those that require the event payload
-    // (which might be encrypted and therefore not indexable).
-    // Theoretically *all* queries could be done on the set of events after
-    // encryption, yet it seems using the IndexedDB API where possible makes
-    // more sense and performs better.
-    var decryptions = [eventsInBounds, realtimeEvents]
-      .map(function (asyncSet) {
-        return asyncSet
-          .then(function (set) {
-            return accountId && privateJwk
-              ? doDecrypt(set, accountId, privateJwk)
-              : set
-          })
-          .then(function (events) {
-            return _.compact(events.map(validateAndParseEvent))
-          })
-      })
+    var loss = stats.loss(eventsInBounds)
+    var uniqueSessions = stats.uniqueSessions(eventsInBounds)
+    var bounceRate = stats.bounceRate(eventsInBounds)
+    var referrers = stats.referrers(eventsInBounds)
+    var pages = stats.pages(eventsInBounds)
+    var campaigns = stats.campaigns(eventsInBounds)
+    var sources = stats.sources(eventsInBounds)
+    var avgPageload = stats.avgPageload(eventsInBounds)
+    var avgPageDepth = stats.avgPageDepth(eventsInBounds)
+    var landingPages = stats.landingPages(eventsInBounds)
+    var exitPages = stats.exitPages(eventsInBounds)
+    var mobileShare = stats.mobileShare(eventsInBounds)
 
-    var decryptedEvents = decryptions[0]
-    var realtime = decryptions[1]
-    var loss = stats.loss(decryptedEvents)
-    var uniqueSessions = stats.uniqueSessions(decryptedEvents)
-    var bounceRate = stats.bounceRate(decryptedEvents)
-    var referrers = stats.referrers(decryptedEvents)
-    var pages = stats.pages(decryptedEvents)
-    var campaigns = stats.campaigns(decryptedEvents)
-    var sources = stats.sources(decryptedEvents)
-    var avgPageload = stats.avgPageload(decryptedEvents)
-    var avgPageDepth = stats.avgPageDepth(decryptedEvents)
-    var landingPages = stats.landingPages(decryptedEvents)
-    var exitPages = stats.exitPages(decryptedEvents)
-    var mobileShare = stats.mobileShare(decryptedEvents)
+    var livePages = stats.activePages(realtimeEvents)
+    var liveUsers = stats.visitors(realtimeEvents)
 
-    var livePages = stats.activePages(realtime)
-    var liveUsers = stats.visitors(realtime)
+    proxy.call()
 
     return Promise
       .all([
@@ -230,18 +196,46 @@ function Queries (storage) {
         }
       })
   }
+}
 
-  function doDecrypt (events, accountId, privateJwk) {
-    return storage.getEncryptedSecrets(accountId)
-      .then(function (secrets) {
-        return decryptEvents(events, secrets, privateJwk)
+function GetEventsProxy (storage, accountId, publicJwk, privateJwk) {
+  var calls = []
+  this.getEvents = function (lowerBound, upperBound) {
+    return new Promise(function (resolve) {
+      calls.push({
+        lowerBound: lowerBound,
+        upperBound: upperBound,
+        resolve: resolve
       })
+    })
+  }
+
+  this.call = function () {
+    var maxUpperBound = _.last(_.sortBy(_.pluck(calls, 'upperBound'), _.identity))
+    var minLowerBound = _.head(_.sortBy(_.pluck(calls, 'lowerBound'), _.identity))
+    var allEvents = storage.getEvents({
+      accountId: accountId,
+      privateJwk: privateJwk,
+      publicJwk: publicJwk
+    }, minLowerBound, maxUpperBound)
+      .then(function (events) {
+        return _.compact(_.map(events, validateAndParseEvent))
+      })
+    _.each(calls, function (call) {
+      call.resolve(allEvents.then(function (events) {
+        var upperBoundAsId = call.upperBound && storage.toUpperBound(call.upperBound)
+        var lowerBoundAsId = call.lowerBound && storage.toLowerBound(call.lowerBound)
+        return _.filter(events, function (event) {
+          return lowerBoundAsId <= event.eventId && event.eventId <= upperBoundAsId
+        })
+      }))
+    })
   }
 }
 
 module.exports.validateAndParseEvent = validateAndParseEvent
 function validateAndParseEvent (event) {
-  if (!payloadSchema(event.payload)) {
+  if (!eventSchema(event) || !payloadSchema(event.payload)) {
     return null
   }
   var clone = JSON.parse(JSON.stringify(event))
@@ -263,12 +257,4 @@ function normalizedURL (urlString) {
     url.pathname += '/'
   }
   return url
-}
-
-function toUpperBound (date) {
-  return ULID.ulid(date.getTime() + 1)
-}
-
-function toLowerBound (date) {
-  return ULID.ulid(date.getTime() - 1)
 }

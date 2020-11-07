@@ -22,6 +22,7 @@ const URLTables = require('./components/auditorium/url-tables')
 const EmbedCode = require('./components/auditorium/embed-code')
 const Share = require('./components/auditorium/share')
 const GoSettings = require('./components/auditorium/go-settings')
+const DatabaseSettings = require('./components/auditorium/database-settings')
 const LoadingOverlay = require('./components/auditorium/loading-overlay')
 const AccountPicker = require('./components/auditorium/account-picker')
 const RetireAccount = require('./components/auditorium/retire-account')
@@ -29,13 +30,15 @@ const Live = require('./components/auditorium/live')
 const model = require('./../action-creators/model')
 const errors = require('./../action-creators/errors')
 const management = require('./../action-creators/management')
+const database = require('./../action-creators/database')
 
 const ADMIN_LEVEL_ALLOW_EDIT = 1
 
 const AuditoriumView = (props) => {
   const {
     matches, authenticatedUser, model, stale,
-    handleQuery, handleShare, handleValidationError, handleRetire, handleCopy
+    handleQuery, handleShare, handleValidationError, handleRetire, handleCopy,
+    handlePurgeAggregates
   } = props
   const { accountId, range, resolution, now } = matches
   const { adminLevel } = authenticatedUser
@@ -45,11 +48,19 @@ const AuditoriumView = (props) => {
     'This view failed to update automatically, data may be out of date. Check your network connection if the problem persists.'
   )
 
+  useEffect(function () {
+    if (model === null) {
+      handleQuery({ accountId, range, resolution, now }, authenticatedUser)
+    }
+  }, [model])
+
   useEffect(function fetchDataAndScheduleRefresh () {
     if (!focus) {
       return null
     }
-    handleQuery({ accountId, range, resolution, now }, authenticatedUser)
+    if (model !== null) {
+      handleQuery({ accountId, range, resolution, now }, authenticatedUser)
+    }
 
     const tick = window.setInterval(() => {
       handleQuery({ accountId, range, resolution, now }, authenticatedUser, softFailure, true)
@@ -77,7 +88,7 @@ const AuditoriumView = (props) => {
   if (!model) {
     return (
       <HighlightBox>
-        {__('Fetching and decrypting the latest data')}
+        {__('Fetching and aggregating the latest data')}
         <Dots />
       </HighlightBox>
     )
@@ -187,6 +198,14 @@ const AuditoriumView = (props) => {
         )
         : null}
       <div class='flex flex-column flex-row-l'>
+        <div class='w-100 flex br0 br2-ns mb2'>
+          <DatabaseSettings
+            onPurge={handlePurgeAggregates}
+            accountId={accountId}
+          />
+        </div>
+      </div>
+      <div class='flex flex-column flex-row-l'>
         <div class='w-100 flex br0 br2-ns'>
           <GoSettings />
         </div>
@@ -206,7 +225,8 @@ const mapDispatchToProps = {
   handleValidationError: errors.formValidation,
   handleShare: management.shareAccount,
   handleRetire: management.retireAccount,
-  handleCopy: management.handleCopy
+  handleCopy: management.handleCopy,
+  handlePurgeAggregates: database.purgeAggregates
 }
 
 const ConnectedAuditoriumView = connect(mapStateToProps, mapDispatchToProps)(AuditoriumView)

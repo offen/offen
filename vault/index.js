@@ -46,6 +46,7 @@ register('CREATE_ACCOUNT', middleware.sameOrigin, callHandler(handler.handleCrea
 register('RETIRE_ACCOUNT', middleware.sameOrigin, callHandler(handler.handleRetireAccount))
 register('SETUP_STATUS', middleware.sameOrigin, callHandler(handler.handleSetupStatus))
 register('SETUP', middleware.sameOrigin, callHandler(handler.handleSetup))
+register('PURGE_AGGREGATES', middleware.sameOrigin, callHandler(handler.handlePurgeAggregates))
 
 module.exports = register
 
