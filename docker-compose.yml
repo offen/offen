@@ -25,6 +25,7 @@ services:
       - serverdata:/var/opt/offen
       - .:/offen
       - serverdeps:/go/pkg
+      - servercache:/data
     environment:
       OFFEN_APP_DEVELOPMENT: '1'
       OFFEN_SERVER_REVERSEPROXY: '1'
@@ -33,41 +34,36 @@ services:
       OFFEN_APP_ROOTACCOUNT: 3c8e3495-17c5-4be3-836c-e56fc562ace0
     command: refresh run
 
-  vault:
+  vault: &budo_app
     build:
       context: '.'
       dockerfile: Dockerfile.node
+    command: npm start
+    restart: on-failure
     working_dir: /offen/vault
     environment:
       PORT: 9977
     volumes:
       - .:/offen
       - vaultdeps:/offen/vault/node_modules
-    command: npm start
 
   script:
-    build:
-      context: '.'
-      dockerfile: Dockerfile.node
+    <<: *budo_app
     working_dir: /offen/script
     environment:
       PORT: 9966
     volumes:
       - .:/offen
       - scriptdeps:/offen/script/node_modules
-    command: npm start
 
   auditorium:
-    build:
-      context: '.'
-      dockerfile: Dockerfile.node
+    <<: *budo_app
     working_dir: /offen/auditorium
     environment:
       PORT: 9955
     volumes:
       - .:/offen
       - auditoriumdeps:/offen/auditorium/node_modules
-    command: npm start
 
   test_site:
     image: nginx:1.17-alpine
@@ -79,6 +75,7 @@ services:
 volumes:
   serverdata:
   serverdeps:
+  servercache:
   scriptdeps:
   auditoriumdeps:
   vaultdeps:
