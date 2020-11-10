@@ -13,11 +13,9 @@ fi
 
 for locale in $locales
 do
-	for f in $(ls public/*.go.html)
-	do
-		touch locales/$locale.po
-		# Heads up: this does **not** match fmt args right now
-		sed 's/{{\([^}]*\)__ \("[^{^}]*"\) }}/{{\1gettext(\2) }}/g' $f | xgettext --from-code=UTF-8 --join-existing --language=c --output=locales/$locale.po -
-	done
+	touch locales/$locale.po
+	go run cmd/extract-strings/main.go public/*.go.html | xgettext -c~ --no-location --from-code=UTF-8 --language=python --output=locales/$locale-update.po -
+	msgmerge "locales/$locale.po" "locales/$locale-update.po" -o "locales/$locale.po"
+	rm "locales/$locale-update.po"
 	echo "Extracted strings for locale $locale"
 done
