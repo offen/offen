@@ -19,7 +19,12 @@ var tinyify = require('tinyify')
 var minifyStream = require('minify-stream')
 
 var defaultLocale = 'en'
-var linguas = fs.readFileSync('./locales/LINGUAS', 'utf-8').split(' ').filter(Boolean)
+var linguas = fs.readFileSync('./locales/LINGUAS', 'utf-8')
+  .split(' ')
+  .filter(Boolean)
+  .map(function (s) {
+    return s.trim()
+  })
 
 var pkg = require('./package.json')
 
