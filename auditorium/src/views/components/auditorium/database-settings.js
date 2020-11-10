@@ -16,7 +16,7 @@ const DatabaseSettings = (props) => {
   }
 
   return (
-    <div class='pa0 bg-black-05 flex-auto'>
+    <div class='bg-black-05 flex-auto'>
       <Collapsible
         header={(props) => {
           const { isCollapsed, handleToggle } = props
@@ -44,7 +44,7 @@ const DatabaseSettings = (props) => {
         }}
         body={(props) => {
           return (
-            <div class='mw6 center mb4 mt3 ph3 ph0-ns'>
+            <div class='mw6 center ph3 mt3 mb4'>
               <p class='ma0 mb3'>
                 {__('Purge aggregates from local database and rebuild. This operation is non-destructive and can be performed at any time.')}
               </p>
