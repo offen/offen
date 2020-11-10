@@ -47,8 +47,8 @@ const AccountPicker = (props) => {
         )
       })
     body = (
-      <div class='mw6 center mb2'>
-        <ul class='flex flex-wrap list pl0 mt0 mb3 b--moon-gray'>
+      <div class='mw6 center ph3 mt3'>
+        <ul class='flex flex-wrap list pl0 ma0 b--moon-gray'>
           {availableAccounts}
         </ul>
       </div>
@@ -56,9 +56,9 @@ const AccountPicker = (props) => {
   }
 
   return (
-    <div class='flex-auto bg-black-05 pa3'>
+    <div class='flex-auto bg-black-05 pb4'>
       <h2
-        class='f4 normal mt0 mb3'
+        class='f4 normal pa3 ma0'
         dangerouslySetInnerHTML={{
           __html: headline
         }}

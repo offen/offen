@@ -22,7 +22,7 @@ const EmbedCode = (props) => {
     const { handleToggle = null, isCollapsed } = props
     return (
       <div
-        class='flex flex-wrap justify-between'
+        class='flex flex-wrap justify-between pa3'
         onclick={collapsible ? handleToggle : null}
         onkeypress={(e) => {
           if (!collapsible) {
@@ -49,7 +49,7 @@ const EmbedCode = (props) => {
   }
 
   const renderBody = (props = {}) => (
-    <div class='mw6 center mt3 mb4'>
+    <div class='mw6 center ph3 mt3 mb4'>
       <Paragraph class='ma0 mb3'>
         {__('To use Offen with the account <em class="%s">%s</em> on your website, embed the following script on each page you want to appear in your statistics.', 'i tracked', model.account.name)}
       </Paragraph>
@@ -71,7 +71,7 @@ const EmbedCode = (props) => {
         }
       >
         <div class='link dim'>
-          <button class='pointer w-100 w-auto-ns f5 tc bn dib br1 ph3 pv2 mt3 white bg-mid-gray'>
+          <button class='pointer w-100 w-auto-ns f5 tc bn dib br1 ph3 pv2 mv3 white bg-mid-gray'>
             {__('Copy code')}
           </button>
         </div>
@@ -80,7 +80,7 @@ const EmbedCode = (props) => {
   )
 
   return (
-    <div class='flex-auto bg-black-05 pa3'>
+    <div class='flex-auto bg-black-05'>
       {collapsible
         ? <Collapsible header={renderHeader} body={renderBody} />
         : (
