@@ -25,7 +25,7 @@ jobs:
         with:
           token: ${{ secrets.PERSONAL_TOKEN }}
           commit-message: Update version to ${{ github.event.release.tag_name }}
-          committer: Offen <hioffen@posteo.de>
+          committer: Offen Bot <hioffen@posteo.de>
           author: ${{ github.actor }} <hioffen@posteo.de>
           branch: bump-version-${{ github.event.release.tag_name }}
           title: Update version to ${{ github.event.release.tag_name }}
