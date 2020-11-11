@@ -24,9 +24,9 @@ const AccountPicker = (props) => {
       })
       .map(function (account, idx) {
         const isCurrent = account.accountId === selectedId
-        let buttonClass = 'b link dim dib pv2 mt1 mb2 mr3 mid-gray'
+        let buttonClass = 'link dim dib br1 ph3 pv2 mb2 mr2 white bg-mid-gray'
         if (isCurrent) {
-          buttonClass = 'b link dim dib bt bw2 b--mid-gray ph2 pv2 mb2 mr3 mid-gray'
+          buttonClass = 'link dim dib br1 ph3 pv2 mb2 mr2 white bg-black-30'
         }
 
         let query = null
@@ -35,7 +35,7 @@ const AccountPicker = (props) => {
         }
 
         return (
-          <li class='bt b--moon-gray' key={idx}>
+          <li key={idx}>
             <a
               href={`/auditorium/${account.accountId}/${query ? `?${query}` : ''}`}
               class={buttonClass}
@@ -47,16 +47,18 @@ const AccountPicker = (props) => {
         )
       })
     body = (
-      <ul class='flex flex-wrap list pl0 mt0 mb3 grow-list b--moon-gray'>
-        {availableAccounts}
-      </ul>
+      <div class='mw6 center ph3 mt3'>
+        <ul class='flex flex-wrap list pl0 ma0 b--moon-gray'>
+          {availableAccounts}
+        </ul>
+      </div>
     )
   }
 
   return (
-    <div class='flex-auto bg-black-05 pa3'>
+    <div class='flex-auto bg-black-05 pb4'>
       <h2
-        class='f4 normal mt0 mb3'
+        class='f4 normal pa3 ma0'
         dangerouslySetInnerHTML={{
           __html: headline
         }}
