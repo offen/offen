@@ -5,7 +5,7 @@
 
 
  .delay-overlay {
-   animation: fadein 600ms ease-in;
+   animation: fadein 400ms ease-in;
  }
 
 @keyframes fadein {
