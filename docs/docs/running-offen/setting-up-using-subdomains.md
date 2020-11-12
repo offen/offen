@@ -15,8 +15,6 @@ SPDX-License-Identifier: Apache-2.0
 # Setting up and using subdomains
 {: .no_toc }
 
----
-
 ## Table of contents
 {: .no_toc }
 
@@ -82,4 +80,3 @@ __Heads Up__
 {: .label .label-red }
 
 Offen __cannot__ acquire certificates for you when it is running behind a loadbalancer. We recommend __exposing Offen to the public internet directly, opening ports 80 and 443 and using the AutoTLS feature__.
-

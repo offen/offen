@@ -106,15 +106,15 @@ test:
 	@docker-compose run --rm server make test
 
 integration:
-	@docker-compose -f docker-compose.integration.yml run --rm integration npm t
+	@docker-compose -p offen_integration -f docker-compose.integration.yml run --rm integration npm t
 
 setup-docs:
-	@docker-compose -f docker-compose.docs.yml build
-	@docker-compose -f docker-compose.docs.yml run --rm docs_jekyll bundle install
-	@docker-compose -f docker-compose.docs.yml run --rm docs_jekyll bundle exec just-the-docs rake search:init
+	@docker-compose -p offen_docs -f docker-compose.docs.yml build
+	@docker-compose -p offen_docs -f docker-compose.docs.yml run --rm docs_jekyll bundle install
+	@docker-compose -p offen_docs -f docker-compose.docs.yml run --rm docs_jekyll bundle exec just-the-docs rake search:init
 
 docs:
-	@docker-compose -f docker-compose.docs.yml up
+	@docker-compose -p offen_docs -f docker-compose.docs.yml up
 
 build-docs:
 	@docker build -t offen/docs -f build/Dockerfile.docs .

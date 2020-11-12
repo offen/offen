@@ -9,11 +9,20 @@ module.exports = (store) => (next) => (action) => {
   switch (action.type) {
     case 'LOGIN_SUCCESS':
       next(action)
+      var currentUrl = new window.URL(window.location.href)
+      if (currentUrl.searchParams.get('next')) {
+        route(currentUrl.searchParams.get('next'))
+        return
+      }
       if (!Array.isArray(action.payload.accounts) || !action.payload.accounts.length) {
         route('/console/')
         return
       }
       route(`/auditorium/${action.payload.accounts[0].accountId}/`)
+      return
+    case 'SESSION_AUTHENTICATION_FAILURE':
+      next(action)
+      route('/login/?next=' + window.encodeURIComponent(window.location.pathname + window.location.search))
       return
     case 'AUTHENTICATION_FAILURE':
     case 'LOGOUT_SUCCESS':

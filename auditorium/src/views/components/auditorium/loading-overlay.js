@@ -8,7 +8,12 @@ const { h } = require('preact')
 
 const LoadingOverlay = (props) => {
   return (
-    <div class='fixed top-0 right-0 bottom-0 left-0 bg-white o-40' />
+    <div class='delay-overlay'>
+      <div class='fixed top-0 right-0 bottom-0 left-0 flex items-center z-2'>
+        <div class='loading-overlay' />
+      </div>
+      <div class='fixed top-0 right-0 bottom-0 left-0 bg-white o-70 flex items-center z-1' />
+    </div>
   )
 }
 

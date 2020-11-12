@@ -43,4 +43,16 @@ a:not([class]):hover,
 .btn:hover {
   background-image: none;
 }
+
+/* fix headline "Table of contents" of an article folder (e.g. "Running Offen") */
+h2.text-delta {
+  font-size: 24px !important;
+  text-transform: none;
+  letter-spacing: normal;
+}
+@media (max-width: 31.25rem) {
+  h2.text-delta {
+    font-size: 18px !important;
+  }
+}
 </style>

@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Metrics explained
-nav_order: 9
+nav_order: 10
 description: "Explanations of the key metrics displayed in Offen."
 permalink: /running-offen/metrics-explained/
 parent: Running Offen
@@ -14,8 +14,6 @@ SPDX-License-Identifier: Apache-2.0
 
 # Metrics explained
 {: .no_toc }
-
----
 
 ## Table of contents
 {: .no_toc }
@@ -81,7 +79,7 @@ Full form: Average page depth. The average number of pages that a unique user ha
 
 ## Bounce rate
 
-The percentage of unique sessions that contain only one page visit. An account with only one page will always have a bounce rate of 100%. This metric is more relevant for accounts with a large number of pages that are linked to each other. The length of visits is not measured by Offen. The definition of bounce is therefore rather broad. 
+The percentage of unique sessions that contain only one page visit. An account with only one page will always have a bounce rate of 100%. This metric is more relevant for accounts with a large number of pages that are linked to each other. The length of visits is not measured by Offen. The definition of bounce is therefore rather broad.
 
 ---
 
@@ -117,13 +115,13 @@ A list of referrer values that directed users to pages. Popular referrers like, 
 
 ## Campaigns
 
-A list of special referrer values that directed users to pages. For this metric, referrers will be grouped by the `utm_campaign` values contained in their querystring parameters.
+A list of special referrer values that directed users to pages. For this metric, referrers will be grouped by the `utm_campaign` values contained in their querystring parameters. Check ["Tagging campaigns and sources (UTM)"][campaigns sources] for how URLs have to be tagged for this feature.
 
 ---
 
 ## Sources
 
-A list of special referrer values that directed users to pages. For this metric, referrers will be grouped by the `utm_source` values contained in their querystring parameters.
+A list of special referrer values that directed users to pages. For this metric, referrers will be grouped by the `utm_source` values contained in their querystring parameters. Check ["Tagging campaigns and sources (UTM)"][campaigns sources] for how URLs have to be tagged for this feature.
 
 ---
 
@@ -142,3 +140,5 @@ A list of exit pages for all unique sessions. Only sessions with more than one p
 ## Weekly retention
 
 This panel displays a matrix visualizing user retention over the course of the last 4 weeks. For each of the previous weeks, the percentage is calculated from the value of the current week.
+
+[campaigns sources]: /running-offen/campaigns-sources/

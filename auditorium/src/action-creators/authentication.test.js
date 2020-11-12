@@ -147,7 +147,7 @@ describe('src/action-creators/authentication.js', function () {
           })
 
           assert.deepStrictEqual(actions[1], {
-            type: 'AUTHENTICATION_FAILURE',
+            type: 'SESSION_AUTHENTICATION_FAILURE',
             payload: {
               flash: 'failure message'
             }

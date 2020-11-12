@@ -1,0 +1,27 @@
+/**
+ * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+
+ .delay-overlay {
+   animation: fadein 400ms ease-in;
+ }
+
+@keyframes fadein {
+  0% { opacity: 0; }
+  80% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+.loading-overlay {
+  width: 150px;
+  height: 9.375em;
+  margin: 0 auto 2em auto;
+  background: transparent url('/offen-loading-animation.svg') 0 0 no-repeat;
+  animation: timepassing 0.8s steps(10) infinite;
+}
+
+@keyframes timepassing {
+  100% { background-position: 0 -1500px; }
+}

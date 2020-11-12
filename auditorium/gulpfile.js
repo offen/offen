@@ -15,7 +15,12 @@ var gap = require('gulp-append-prepend')
 var pkg = require('./package.json')
 
 var defaultLocale = 'en'
-var linguas = fs.readFileSync('./locales/LINGUAS', 'utf-8').split(' ').filter(Boolean)
+var linguas = fs.readFileSync('./locales/LINGUAS', 'utf-8')
+  .split(' ')
+  .filter(Boolean)
+  .map(function (s) {
+    return s.trim()
+  })
 
 gulp.task('clean:pre', function () {
   return gulp

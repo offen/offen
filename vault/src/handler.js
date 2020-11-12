@@ -138,6 +138,28 @@ function handlePurgeWith (api, storage, getUserEvents, getOperatorEvents) {
   }
 }
 
+exports.handlePurgeAggregates = handlePurgeAggregatesWith(storage)
+exports.handlePurgeAggregatesWith = handlePurgeAggregatesWith
+
+function handlePurgeAggregatesWith (storage) {
+  return function handlePurgeAggregates (message) {
+    return storage.purgeAggregates(message.payload.accountId)
+      .then(function () {
+        return {
+          type: 'PURGE_AGGREGATES_SUCCESS',
+          payload: null
+        }
+      }, function (err) {
+        return {
+          type: 'PURGE_AGGREGATES_FAILURE',
+          payload: {
+            message: err.message
+          }
+        }
+      })
+  }
+}
+
 exports.handleLogout = handleLogoutWith(api)
 exports.handleLogoutWith = handleLogoutWith
 

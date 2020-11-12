@@ -9,11 +9,12 @@ var addHours = require('date-fns/add_hours')
 var getDatabase = require('./database')
 var cookies = require('./cookie-tools')
 
-var fallbackStore = { events: {}, keys: {}, checkpoints: {} }
+var fallbackStore = { events: {}, encryptedSecrets: {}, checkpoints: {}, aggregates: {}, aggregationSecrets: {} }
 
 var TYPE_LAST_KNOWN_CHECKPOINT = 'LAST_KNOWN_CHECKPOINT'
 var TYPE_USER_SECRET = 'USER_SECRET'
 var TYPE_ENCRYPTED_SECRET = 'ENCRYPTED_SECRET'
+var TYPE_ENCRYPTED_AGGREGATION_SECRET = 'ENCRYPTED_AGGREGATION_SECRET'
 
 module.exports = new Storage(getDatabase, fallbackStore)
 module.exports.Storage = Storage
@@ -44,7 +45,7 @@ function Storage (getDatabase, fallbackStore) {
       })
   }
 
-  this.getAllEvents = function (accountId, lowerBound, upperBound) {
+  this.getRawEvents = function (accountId, lowerBound, upperBound) {
     var table = getDatabase(accountId).events
     if (!lowerBound || !upperBound) {
       return table
@@ -66,12 +67,115 @@ function Storage (getDatabase, fallbackStore) {
       })
   }
 
+  this.getEventsByIds = function (accountId, eventIds) {
+    var table = getDatabase(accountId).events
+    return table
+      .where('eventId')
+      .anyOf(eventIds)
+      .toArray()
+  }
+
   this.countEvents = function (accountId) {
     var table = getDatabase(accountId).events
     return table.count()
       .catch(dexie.OpenFailedError, function () {
         fallbackStore.events[accountId] = fallbackStore.events[accountId] || []
         return fallbackStore.events[accountId].length
+      })
+  }
+
+  this.getAggregationSecret = function (accountId) {
+    var db = getDatabase(accountId)
+    return db.keys
+      .get({ type: TYPE_ENCRYPTED_AGGREGATION_SECRET })
+      .then(function (result) {
+        if (result) {
+          return result.value
+        }
+      })
+      .catch(dexie.OpenFailedError, function () {
+        return fallbackStore.aggregationSecrets[accountId]
+      })
+  }
+
+  this.putAggregationSecret = function (accountId, aggregationSecret) {
+    var db = getDatabase(accountId)
+    return db.keys
+      .put({
+        type: TYPE_ENCRYPTED_AGGREGATION_SECRET,
+        value: aggregationSecret
+      })
+      .catch(dexie.OpenFailedError, function () {
+        fallbackStore.aggregationSecrets[accountId] = aggregationSecret
+        return null
+      })
+  }
+
+  this.putAggregate = function (accountId, timestamp, aggregate, compressed) {
+    return getDatabase(accountId)
+      .aggregates
+      .put({
+        timestamp: timestamp,
+        value: aggregate,
+        compressed: compressed
+      })
+      .catch(dexie.OpenFailedError, function () {
+        fallbackStore.aggregates[accountId] = fallbackStore.aggregates[accountId] || {}
+        return fallbackStore.aggregates[accountId][timestamp]
+      })
+  }
+
+  this.getAggregate = function (accountId, timestamp) {
+    return getDatabase(accountId)
+      .aggregates
+      .get(timestamp)
+      .catch(dexie.OpenFailedError, function () {
+        fallbackStore.aggregates[accountId] = fallbackStore.aggregates[accountId] || {}
+        return fallbackStore.aggregates[accountId][timestamp]
+      })
+  }
+
+  this.purgeAggregates = function (accountId) {
+    return getDatabase(accountId)
+      .aggregates
+      .clear()
+      .catch(dexie.OpenFailedError, function () {
+        fallbackStore.aggregates[accountId] = {}
+      })
+  }
+
+  this.deleteAggregate = function (accountId, timestamp) {
+    return getDatabase(accountId)
+      .aggregates
+      .delete(timestamp)
+      .catch(function () {
+        fallbackStore.aggregates[accountId] = fallbackStore.aggregates[accountId] || {}
+        delete fallbackStore.aggregates[accountId][timestamp]
+      })
+  }
+
+  this.getAggregates = function (accountId, lowerBound, upperBound) {
+    var table = getDatabase(accountId).aggregates
+    if (!lowerBound || !upperBound) {
+      return table.toArray()
+        .catch(dexie.OpenFailedError, function () {
+          fallbackStore.aggregates[accountId] = fallbackStore.aggregates[accountId] || {}
+          return fallbackStore.aggregates[accountId]
+        })
+    }
+    return table
+      .where('timestamp')
+      .between(lowerBound, upperBound)
+      .toArray()
+      .catch(dexie.OpenFailedError, function () {
+        fallbackStore.aggregates[accountId] = fallbackStore.aggregates[accountId] || {}
+        var result = {}
+        Object.keys(fallbackStore.aggregates[accountId]).forEach(function (timestamp) {
+          if ((!lowerBound || lowerBound <= timestamp) && (timestamp <= upperBound || !upperBound)) {
+            result[timestamp] = fallbackStore.aggregates[accountId][timestamp]
+          }
+        })
+        return result
       })
   }
 
@@ -149,14 +253,48 @@ function Storage (getDatabase, fallbackStore) {
       })
   }
 
-  // user secrets are expected to be passed in [secretUd, secret] tuples
-  this.putEncryptedSecrets = function (/* accountId, ...userSecrets */) {
-    var args = [].slice.call(arguments)
-    var accountId = args.shift()
+  this.putEvents = function (accountId, events) {
+    var db = getDatabase(accountId)
+    // events data is saved in the shape supplied by the server
+    return db.events.bulkPut(events)
+      .catch(dexie.OpenFailedError, function () {
+        fallbackStore.events[accountId] = fallbackStore.events[accountId] || []
+        fallbackStore.events[accountId] = fallbackStore.events[accountId].concat(events)
+        return fallbackStore.events[accountId]
+      })
+  }
 
+  this.deleteEvents = function (accountId, eventIds) {
+    var db = getDatabase(accountId)
+    return db.events.bulkDelete(eventIds)
+      .catch(dexie.OpenFailedError, function () {
+        fallbackStore.events[accountId] = fallbackStore.events[accountId] || []
+        fallbackStore.events[accountId] = fallbackStore.events[accountId].filter(function (event) {
+          return eventIds.indexOf(event.eventId) === -1
+        })
+        return null
+      })
+  }
+
+  this.purge = function () {
+    var db = getDatabase(null)
+    return Promise.all([
+      db.events.clear(),
+      db.checkpoints.clear()
+    ])
+      .catch(dexie.OpenFailedError, function () {
+        fallbackStore.events = {}
+        fallbackStore.checkpoints = {}
+        fallbackStore.aggregates = {}
+        return null
+      })
+  }
+
+  // user secrets are expected to be passed in [secretId, secret] tuples
+  this.putEncryptedSecrets = function (accountId, userSecrets) {
     var db = getDatabase(accountId)
     var records
-    var newKeys = args.map(function (pair) {
+    var newKeys = userSecrets.map(function (pair) {
       return {
         type: TYPE_ENCRYPTED_SECRET,
         secretId: pair[0],
@@ -176,49 +314,9 @@ function Storage (getDatabase, fallbackStore) {
         return db.keys.bulkPut(records)
       })
       .catch(dexie.OpenFailedError, function () {
-        fallbackStore.keys[accountId] = fallbackStore.keys[accountId] || []
-        fallbackStore.keys[accountId] = fallbackStore.keys[accountId].concat(records)
+        fallbackStore.encryptedSecrets[accountId] = fallbackStore.encryptedSecrets[accountId] || []
+        fallbackStore.encryptedSecrets[accountId] = fallbackStore.encryptedSecrets[accountId].concat(newKeys)
         return records
-      })
-  }
-
-  this.putEvents = function (/* accountId, ...events */) {
-    var args = [].slice.call(arguments)
-    var accountId = args.shift()
-    var db = getDatabase(accountId)
-    // events data is saved in the shape supplied by the server
-    return db.events.bulkPut(args)
-      .catch(dexie.OpenFailedError, function () {
-        fallbackStore.events[accountId] = fallbackStore.events[accountId] || []
-        fallbackStore.events[accountId] = fallbackStore.events[accountId].concat(args)
-        return fallbackStore.events[accountId]
-      })
-  }
-
-  this.deleteEvents = function (/* accountId, ...eventIds */) {
-    var args = [].slice.call(arguments)
-    var accountId = args.shift()
-    var db = getDatabase(accountId)
-    return db.events.bulkDelete(args)
-      .catch(dexie.OpenFailedError, function () {
-        fallbackStore.events[accountId] = fallbackStore.events[accountId] || []
-        fallbackStore.events[accountId] = fallbackStore.events[accountId].filter(function (event) {
-          return args.indexOf(event.eventId) === -1
-        })
-        return null
-      })
-  }
-
-  this.purge = function () {
-    var db = getDatabase(null)
-    return Promise.all([
-      db.events.clear(),
-      db.checkpoints.clear()
-    ])
-      .catch(dexie.OpenFailedError, function () {
-        fallbackStore.events = {}
-        fallbackStore.checkpoints = {}
-        return null
       })
   }
 
@@ -229,7 +327,7 @@ function Storage (getDatabase, fallbackStore) {
       .equals(TYPE_ENCRYPTED_SECRET)
       .toArray()
       .catch(dexie.OpenFailedError, function () {
-        return fallbackStore.keys[accountId] || []
+        return fallbackStore.encryptedSecrets[accountId] || []
       })
   }
 }

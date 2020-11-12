@@ -35,12 +35,12 @@ const ChangePassword = (props) => {
   }
 
   return (
-    <div class='pa3 bg-black-05'>
-      <h4 class='f4 normal mt0 mb3'>
+    <div class='bg-black-05 pb4'>
+      <h4 class='f4 normal pa3 ma0'>
         {__('Change password')}
       </h4>
       <form
-        class='mw6 center mb4'
+        class='mw6 center ph3 mt3'
         onsubmit={handleSubmit}
         data-testid='console/reset-password/form'
       >

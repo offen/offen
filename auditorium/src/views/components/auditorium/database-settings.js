@@ -5,20 +5,24 @@
 
 /** @jsx h */
 const { h } = require('preact')
-
-const Collapsible = require('./../_shared/collapsible')
 const classnames = require('classnames')
 
-const GoSettings = (props) => {
+const Collapsible = require('./../_shared/collapsible')
+const SubmitButton = require('./../_shared/submit-button')
+
+const DatabaseSettings = (props) => {
+  function handleClick () {
+    props.onPurge(props.accountId, __('Failed to purge local aggregates, please try again.'))
+  }
+
   return (
-    <div class='flex-auto bg-black-05'>
+    <div class='bg-black-05 flex-auto'>
       <Collapsible
         header={(props) => {
           const { isCollapsed, handleToggle } = props
           return (
             <div
-              data-testid='auditorium/console-headline'
-              class='flex justify-between pointer pa3'
+              class='pa3 flex justify-between pointer'
               onclick={handleToggle}
               onkeypress={(e) => {
                 if (e.which === 13) {
@@ -29,10 +33,10 @@ const GoSettings = (props) => {
               role='button'
             >
               <h4 class='f4 normal ma0'>
-                {__('Admin console')}
+                {__('Database settings')}
               </h4>
               <a
-                aria-label={__('Toggle display of Admin console navigation')}
+                aria-label={__('Toggle display of Database settings')}
                 class={classnames('dib', 'label-toggle', isCollapsed ? 'label-toggle--rotate' : null)}
               />
             </div>
@@ -42,16 +46,14 @@ const GoSettings = (props) => {
           return (
             <div class='mw6 center ph3 mt3 mb4'>
               <p class='ma0 mb3'>
-                {__('Share all accounts, create a new one, change your email address and password, log out from Offen')}
+                {__('Purge aggregates from local database and rebuild. This operation is non-destructive and can be performed at any time.')}
               </p>
               <div class='link dim'>
-                <a
-                  href='/console/'
-                  data-testid='auditorium/console-link'
-                  class='w-100 w-auto-ns f5 tc no-underline bn dib br1 ph3 pv2 mr0 mr2-ns mb3 white bg-mid-gray'
+                <SubmitButton
+                  onclick={handleClick}
                 >
-                  {__('Open admin console')}
-                </a>
+                  {__('Rebuild aggregates')}
+                </SubmitButton>
               </div>
             </div>
           )
@@ -61,4 +63,4 @@ const GoSettings = (props) => {
   )
 }
 
-module.exports = GoSettings
+module.exports = DatabaseSettings

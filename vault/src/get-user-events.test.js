@@ -44,10 +44,10 @@ describe('src/get-user-events', function () {
 
     it('ensures sync and then returns the generated default stats', function () {
       var mockStorage = {
-        getLastKnownCheckpoint: sinon.stub().resolves('sequence-a'),
-        updateLastKnownCheckpoint: sinon.stub().resolves(),
         deleteEvents: sinon.stub().resolves(true),
         putEvents: sinon.stub().resolves(true),
+        getLastKnownCheckpoint: sinon.stub().resolves('sequence-a'),
+        updateLastKnownCheckpoint: sinon.stub().resolves(),
         getUserSecret: sinon.stub().resolves(window.crypto.subtle.exportKey('jwk', userSecret))
       }
       var mockQueries = {
@@ -74,7 +74,7 @@ describe('src/get-user-events', function () {
           assert(mockStorage.getLastKnownCheckpoint.calledWith(null))
 
           assert(mockStorage.deleteEvents.calledOnce)
-          assert(mockStorage.deleteEvents.calledWith(null, 'k'))
+          assert(mockStorage.deleteEvents.calledWith(null, ['k']))
 
           assert(mockApi.getEvents.calledOnce)
           assert(mockApi.getEvents.calledWith({ since: 'sequence-a' }))
@@ -88,12 +88,12 @@ describe('src/get-user-events', function () {
           assert(mockStorage.putEvents.calledOnce)
           assert(mockStorage.putEvents.calledWith(
             null,
-            {
+            [{
               eventId: 'z',
               secretId: 'local',
               accountId: 'account-a',
               payload: { type: 'TEST', timestamp: 'timestamp-fixture' }
-            }
+            }]
           ))
 
           assert(mockQueries.getDefaultStats.calledOnce)

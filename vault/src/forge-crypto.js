@@ -9,6 +9,7 @@ var forge = require('node-forge')
 forge.options.usePureJavaScript = true
 
 var cipher = require('./versioned-cipher')
+var compression = require('./compression')
 
 var SYMMETRIC_ALGO_AESGCM = 1
 var ASYMMETRIC_ALGO_RSA_OAEP = 1
@@ -17,9 +18,10 @@ exports._impl = 'forge'
 
 exports.decryptSymmetricWith = decryptSymmetricWith
 
-function decryptSymmetricWith (jwk) {
-  return asyncify(function (encryptedValue) {
-    var keyBytes = importSymmetricKey(jwk)
+function decryptSymmetricWith (jwk, deserializer) {
+  deserializer = deserializer || JSON.parse
+  var keyBytes = importSymmetricKey(jwk)
+  return asyncify(function (encryptedValue, inflate) {
     var chunks = cipher.deserialize(encryptedValue)
     if (chunks.error) {
       return Promise.reject(chunks.error)
@@ -38,7 +40,14 @@ function decryptSymmetricWith (jwk) {
         })
         op.update(forge.util.createBuffer(body))
         if (op.finish()) {
-          return JSON.parse(forge.util.decodeUtf8(op.output.data))
+          if (inflate) {
+            return compression.decompress(Unibabel.binaryStringToBuffer(op.output.getBytes()))
+              .then(function (serializedString) {
+                return deserializer(serializedString)
+              })
+          } else {
+            return deserializer(forge.util.decodeUtf8(op.output.data))
+          }
         }
         throw new Error('Unable to finish decipher.')
       }
@@ -50,9 +59,10 @@ function decryptSymmetricWith (jwk) {
 
 exports.encryptSymmetricWith = encryptSymmetricWith
 
-function encryptSymmetricWith (jwk) {
-  return function (unencryptedValue) {
-    var keyBytes = importSymmetricKey(jwk)
+function encryptSymmetricWith (jwk, serializer) {
+  serializer = serializer || JSON.stringify
+  var keyBytes = importSymmetricKey(jwk)
+  return function (unencryptedValue, deflate) {
     return randomBytes(12)
       .then(function (nonce) {
         var op = forge.cipher.createCipher('AES-GCM', keyBytes)
@@ -60,29 +70,37 @@ function encryptSymmetricWith (jwk) {
           iv: nonce,
           tagLength: 128
         })
-        var serialized = forge.util.encodeUtf8(JSON.stringify(unencryptedValue))
-        op.update(forge.util.createBuffer(serialized, 'utf-8'))
-        if (op.finish()) {
-          var result = cipher.serialize(
-            // web crypto simply appends the authentication tag to the ciphertext
-            // so this is what we are doing here as well
-            Unibabel.binaryStringToBuffer(op.output.data + op.mode.tag.data),
-            Unibabel.binaryStringToBuffer(nonce),
-            SYMMETRIC_ALGO_AESGCM
-          )
-          return result
-        }
-        throw new Error('Unable to finish encryption.')
+        var serializedString = serializer(unencryptedValue)
+        var bytes = deflate
+          ? compression.compress(serializedString)
+          : Promise.resolve(forge.util.encodeUtf8(serializedString))
+
+        return bytes
+          .then(function (buffer) {
+            op.update(forge.util.createBuffer(buffer))
+            if (op.finish()) {
+              var result = cipher.serialize(
+                // web crypto simply appends the authentication tag to the ciphertext
+                // so this is what we are doing here as well
+                Unibabel.binaryStringToBuffer(op.output.data + op.mode.tag.data),
+                Unibabel.binaryStringToBuffer(nonce),
+                SYMMETRIC_ALGO_AESGCM
+              )
+              return result
+            }
+            throw new Error('Unable to finish encryption.')
+          })
       })
   }
 }
 
 exports.decryptAsymmetricWith = decryptAsymmetricWith
 
-function decryptAsymmetricWith (privateJwk) {
+function decryptAsymmetricWith (privateJwk, deserializer) {
+  deserializer = deserializer || JSON.parse
+  var privatePEM = importPrivateKey(privateJwk)
+  var privateKey = forge.pki.privateKeyFromPem(privatePEM)
   return asyncify(function (encryptedValue) {
-    var privatePEM = importPrivateKey(privateJwk)
-    var privateKey = forge.pki.privateKeyFromPem(privatePEM)
     var chunks = cipher.deserialize(encryptedValue)
     if (chunks.error) {
       throw chunks.error
@@ -92,7 +110,7 @@ function decryptAsymmetricWith (privateJwk) {
         var data = privateKey.decrypt(chunks.cipher, 'RSA-OAEP', {
           md: forge.md.sha256.create()
         })
-        return JSON.parse(forge.util.decodeUtf8(data))
+        return deserializer(forge.util.decodeUtf8(data))
       }
       default:
         throw new Error('Unknown asymmetric algo version "' + chunks.algoVersion + '"')
@@ -102,11 +120,12 @@ function decryptAsymmetricWith (privateJwk) {
 
 exports.encryptAsymmetricWith = encryptAsymmetricWith
 
-function encryptAsymmetricWith (publicJwk) {
+function encryptAsymmetricWith (publicJwk, serializer) {
+  serializer = serializer || JSON.stringify
   return asyncify(function (unencryptedValue) {
     var publicPEM = importPublicKey(publicJwk)
     var publicKey = forge.pki.publicKeyFromPem(publicPEM)
-    var enc = publicKey.encrypt(forge.util.encodeUtf8(JSON.stringify(unencryptedValue)), 'RSA-OAEP', {
+    var enc = publicKey.encrypt(forge.util.encodeUtf8(serializer(unencryptedValue)), 'RSA-OAEP', {
       md: forge.md.sha256.create()
     })
     var result = cipher.serialize(

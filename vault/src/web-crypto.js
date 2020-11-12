@@ -6,6 +6,7 @@
 var Unibabel = require('unibabel').Unibabel
 
 var cipher = require('./versioned-cipher')
+var compression = require('./compression')
 
 var SYMMETRIC_ALGO_AESGCM = 1
 var ASYMMETRIC_ALGO_RSA_OAEP = 1
@@ -14,9 +15,11 @@ exports._impl = 'native'
 
 exports.decryptSymmetricWith = decryptSymmetricWith
 
-function decryptSymmetricWith (jwk) {
-  return function (encryptedValue) {
-    return importSymmetricKey(jwk)
+function decryptSymmetricWith (jwk, deserializer) {
+  deserializer = deserializer || JSON.parse
+  var importedKey = importSymmetricKey(jwk)
+  return function (encryptedValue, inflate) {
+    return importedKey
       .then(function (cryptoKey) {
         var chunks = cipher.deserialize(encryptedValue)
         if (chunks.error) {
@@ -33,7 +36,10 @@ function decryptSymmetricWith (jwk) {
               cryptoKey,
               chunks.cipher
             )
-              .then(parseDecrypted)
+              .then(function (v) {
+                return parseDecrypted(v, inflate)
+              })
+              .then(deserializer)
           }
           default:
             return Promise.reject(
@@ -46,26 +52,35 @@ function decryptSymmetricWith (jwk) {
 
 exports.encryptSymmetricWith = encryptSymmetricWith
 
-function encryptSymmetricWith (jwk) {
-  return function (unencryptedValue) {
-    return importSymmetricKey(jwk)
+function encryptSymmetricWith (jwk, serializer) {
+  serializer = serializer || JSON.stringify
+  var importedKey = importSymmetricKey(jwk)
+  return function (unencryptedValue, deflate) {
+    return importedKey
       .then(function (cryptoKey) {
         var bytes
         try {
-          bytes = Unibabel.utf8ToBuffer(JSON.stringify(unencryptedValue))
+          var serializedString = serializer(unencryptedValue)
+          if (deflate) {
+            bytes = compression.compress(serializedString)
+          } else {
+            bytes = Promise.resolve(Unibabel.utf8ToBuffer(serializedString))
+          }
         } catch (err) {
           return Promise.reject(err)
         }
         var nonce = window.crypto.getRandomValues(new Uint8Array(12)).buffer
-        return window.crypto.subtle.encrypt(
-          {
-            name: 'AES-GCM',
-            iv: nonce,
-            tagLength: 128
-          },
-          cryptoKey,
-          bytes
-        )
+        return bytes.then(function (b) {
+          return window.crypto.subtle.encrypt(
+            {
+              name: 'AES-GCM',
+              iv: nonce,
+              tagLength: 128
+            },
+            cryptoKey,
+            b
+          )
+        })
           .then(function (encrypted) {
             return cipher.serialize(
               encrypted,
@@ -79,9 +94,11 @@ function encryptSymmetricWith (jwk) {
 
 exports.decryptAsymmetricWith = decryptAsymmetricWith
 
-function decryptAsymmetricWith (privateJwk) {
+function decryptAsymmetricWith (privateJwk, deserializer) {
+  deserializer = deserializer || JSON.parse
+  var importedKey = importPrivateKey(privateJwk)
   return function (encryptedValue) {
-    return importPrivateKey(privateJwk)
+    return importedKey
       .then(function (privateCryptoKey) {
         var chunks = cipher.deserialize(encryptedValue)
         if (chunks.error) {
@@ -97,6 +114,7 @@ function decryptAsymmetricWith (privateJwk) {
               chunks.cipher
             )
               .then(parseDecrypted)
+              .then(deserializer)
           }
           default:
             return Promise.reject(
@@ -109,13 +127,15 @@ function decryptAsymmetricWith (privateJwk) {
 
 exports.encryptAsymmetricWith = encryptAsymmetricWith
 
-function encryptAsymmetricWith (publicJwk) {
+function encryptAsymmetricWith (publicJwk, serializer) {
+  serializer = serializer || JSON.stringify
+  var importedKey = importPublicKey(publicJwk)
   return function (unencryptedValue) {
-    return importPublicKey(publicJwk)
+    return importedKey
       .then(function (publicCryptoKey) {
         var bytes
         try {
-          bytes = Unibabel.utf8ToBuffer(JSON.stringify(unencryptedValue))
+          bytes = Unibabel.utf8ToBuffer(serializer(unencryptedValue))
         } catch (err) {
           return Promise.reject(err)
         }
@@ -191,7 +211,10 @@ function importSymmetricKey (jwk) {
   )
 }
 
-function parseDecrypted (decrypted) {
-  var payloadAsString = Unibabel.utf8ArrToStr(new Uint8Array(decrypted))
-  return JSON.parse(payloadAsString)
+function parseDecrypted (decrypted, inflate) {
+  if (inflate) {
+    return compression.decompress(decrypted)
+  } else {
+    return Promise.resolve(Unibabel.utf8ArrToStr(new Uint8Array(decrypted)))
+  }
 }

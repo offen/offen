@@ -18,8 +18,8 @@ const Logout = (props) => {
       .then(() => setIsDisabled(false))
   }
   return (
-    <div class='bg-black-05 pa3'>
-      <div class='mw6 center mb4'>
+    <div class='bg-black-05 pb4'>
+      <div class='mw6 center ph3 pt3'>
         <div class='w-100 w-auto-ns link dim tr-ns mt3'>
           <button
             class='pointer w-100 w-auto-ns f5 tc bn dib br1 ph3 pv2 white bg-mid-gray'
