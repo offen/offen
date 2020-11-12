@@ -45,6 +45,7 @@ services:
       PORT: 9977
     volumes:
       - .:/offen
+      - ./locales:/offen/locales
       - vaultdeps:/offen/vault/node_modules
 
   script:
@@ -54,6 +55,7 @@ services:
       PORT: 9966
     volumes:
       - .:/offen
+      - ./locales:/offen/locales
       - scriptdeps:/offen/script/node_modules
 
   auditorium:
@@ -63,6 +65,7 @@ services:
       PORT: 9955
     volumes:
       - .:/offen
+      - ./locales:/offen/locales
       - auditoriumdeps:/offen/auditorium/node_modules
 
   test_site:
