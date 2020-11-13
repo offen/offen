@@ -29,6 +29,8 @@ func main() {
 		if err != nil {
 			panic(err)
 		}
+		fmt.Printf("# -*- coding: utf-8 -*-\n")
+		fmt.Printf("\n")
 		for _, token := range tokens {
 			fmt.Printf("#~ line %d \"%s\"\n", token.line, token.filename)
 			fmt.Printf("gettext(%s)\n", token.token)

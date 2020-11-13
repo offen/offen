@@ -29,7 +29,6 @@ Copyright: 2020 Offen Authors <hioffen@posteo.de>
 License: Apache-2.0
 
 # l10n related files
-Files: **/locales/LINGUAS
+Files: locales/*
 Copyright: 2020 Offen Authors <hioffen@posteo.de>
 License: Apache-2.0
-
