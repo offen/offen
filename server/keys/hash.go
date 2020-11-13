@@ -8,7 +8,9 @@ import (
 	"crypto/sha256"
 	"errors"
 	"fmt"
+	"os"
 	"runtime"
+	"strconv"
 
 	"golang.org/x/crypto/argon2"
 )
@@ -18,7 +20,12 @@ const (
 	// hungry, which is why new users are now receiving an updated config
 	// that is slower, but consumes less memory.
 	passwordAlgoArgon2HighMemoryConsumptionDEPRECATED = 1
-	passwordAlgoArgon2                                = 2
+	// This version turned out to be buggy as it was looking up the number of
+	// CPUs at runtime for determining the number of threads, which meant
+	// a database could not be migrated to a setup that would use a different
+	// number of CPUs. See the function body for an explanation of the workaround.
+	passwordAlgoArgon2NUMCPUBUG = 2
+	passwordAlgoArgon2          = 3
 )
 
 // DeriveKey wraps package argon2 in order to derive a symmetric key from the
@@ -31,6 +38,9 @@ func DeriveKey(value, versionedSalt string) ([]byte, error) {
 	switch salt.algoVersion {
 	case passwordAlgoArgon2:
 		key := defaultArgon2Hash([]byte(value), salt.cipher, DefaultEncryptionKeySize)
+		return key, nil
+	case passwordAlgoArgon2NUMCPUBUG:
+		key := defaultArgon2HashNUMCPUBUG([]byte(value), salt.cipher, DefaultEncryptionKeySize)
 		return key, nil
 	case passwordAlgoArgon2HighMemoryConsumptionDEPRECATED:
 		key := highMemoryArgon2HashDEPRECATED([]byte(value), salt.cipher, DefaultEncryptionKeySize)
@@ -79,6 +89,13 @@ func CompareString(s, versionedCipher string) error {
 			return errors.New("keys: could not match passwords")
 		}
 		return nil
+	case passwordAlgoArgon2NUMCPUBUG:
+
+		hashedInput := defaultArgon2HashNUMCPUBUG([]byte(s), cipher.nonce, DefaultPasswordHashSize)
+		if bytes.Compare(hashedInput, cipher.cipher) != 0 {
+			return errors.New("keys: could not match passwords")
+		}
+		return nil
 	case passwordAlgoArgon2HighMemoryConsumptionDEPRECATED:
 		hashedInput := highMemoryArgon2HashDEPRECATED([]byte(s), cipher.nonce, DefaultPasswordHashSize)
 		if bytes.Compare(hashedInput, cipher.cipher) != 0 {
@@ -91,7 +108,26 @@ func CompareString(s, versionedCipher string) error {
 }
 
 func defaultArgon2Hash(val, salt []byte, size uint32) []byte {
-	return argon2.IDKey(val, salt, 4, 16*1024, uint8(runtime.NumCPU()), size)
+	return argon2.IDKey(val, salt, 4, 16*1024, 4, size)
+}
+
+func defaultArgon2HashNUMCPUBUG(val, salt []byte, size uint32) []byte {
+	// This version of the function contained a terrible bug:
+	// By binding the number of threads to the number of available CPUs
+	// it meant generated hashes would not be portable to machines with a
+	// different number of CPUs available.
+	// To work around this issue, an environment variable of OFFEN_NUMCPUOVERRIDE
+	// can be set to the number of CPUs available at the time of setup.
+	// All future hashes need to work against a fixed number of threads.
+	numThreads := uint8(runtime.NumCPU())
+	if override := os.Getenv("OFFEN_ARGONNUMCPUOVERRIDE"); override != "" {
+		asInt, err := strconv.ParseInt(override, 10, 8)
+		if err != nil {
+			panic("OFFEN_ARGONNUMCPUOVERRIDE needs to be a numeric value.")
+		}
+		numThreads = uint8(asInt)
+	}
+	return argon2.IDKey(val, salt, 4, 16*1024, numThreads, size)
 }
 
 func highMemoryArgon2HashDEPRECATED(val, salt []byte, size uint32) []byte {
