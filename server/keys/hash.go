@@ -24,8 +24,8 @@ const (
 	// CPUs at runtime for determining the number of threads, which meant
 	// a database could not be migrated to a setup that would use a different
 	// number of CPUs. See the function body for an explanation of the workaround.
-	passwordAlgoArgon2NUMCPUBUG = 2
-	passwordAlgoArgon2          = 3
+	numCPUBugPasswordAlgoArgon2DEPRECATED = 2
+	passwordAlgoArgon2                    = 3
 )
 
 // DeriveKey wraps package argon2 in order to derive a symmetric key from the
@@ -39,8 +39,8 @@ func DeriveKey(value, versionedSalt string) ([]byte, error) {
 	case passwordAlgoArgon2:
 		key := defaultArgon2Hash([]byte(value), salt.cipher, DefaultEncryptionKeySize)
 		return key, nil
-	case passwordAlgoArgon2NUMCPUBUG:
-		key := defaultArgon2HashNUMCPUBUG([]byte(value), salt.cipher, DefaultEncryptionKeySize)
+	case numCPUBugPasswordAlgoArgon2DEPRECATED:
+		key := numCPUBugArgon2HashDEPRECATED([]byte(value), salt.cipher, DefaultEncryptionKeySize)
 		return key, nil
 	case passwordAlgoArgon2HighMemoryConsumptionDEPRECATED:
 		key := highMemoryArgon2HashDEPRECATED([]byte(value), salt.cipher, DefaultEncryptionKeySize)
@@ -87,8 +87,8 @@ func CompareString(s, versionedCipher string) error {
 	switch cipher.algoVersion {
 	case passwordAlgoArgon2:
 		hashedInput = defaultArgon2Hash([]byte(s), cipher.nonce, DefaultPasswordHashSize)
-	case passwordAlgoArgon2NUMCPUBUG:
-		hashedInput = defaultArgon2HashNUMCPUBUG([]byte(s), cipher.nonce, DefaultPasswordHashSize)
+	case numCPUBugPasswordAlgoArgon2DEPRECATED:
+		hashedInput = numCPUBugArgon2HashDEPRECATED([]byte(s), cipher.nonce, DefaultPasswordHashSize)
 	case passwordAlgoArgon2HighMemoryConsumptionDEPRECATED:
 		hashedInput = highMemoryArgon2HashDEPRECATED([]byte(s), cipher.nonce, DefaultPasswordHashSize)
 	default:
@@ -104,7 +104,7 @@ func defaultArgon2Hash(val, salt []byte, size uint32) []byte {
 	return argon2.IDKey(val, salt, 4, 16*1024, 4, size)
 }
 
-func defaultArgon2HashNUMCPUBUG(val, salt []byte, size uint32) []byte {
+func numCPUBugArgon2HashDEPRECATED(val, salt []byte, size uint32) []byte {
 	// This version of the function contained a terrible bug:
 	// By binding the number of threads to the number of available CPUs
 	// it meant generated hashes would not be portable to machines with a

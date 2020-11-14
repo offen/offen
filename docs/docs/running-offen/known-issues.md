@@ -36,7 +36,7 @@ Assuming you have installed an Offen version in between `v0.1.1` and `v0.2.0`, y
 
 1. Find out the number of CPUs available to your host system when you first installed Offen. If you are using a VPS to host Offen, you can look up this value in your server specs. Alternatively you can use commands like `lscpu`, run from the host system.
 1. Upgrade to Offen `v0.2.1` or later
-1. In your setup, define an environment variable called `OFFEN_ARGONNUMCPUOVERRIDE` and set its value to the number of CPUs you found out in step 1.
+1. In your setup, define an environment variable called `OFFEN_ARGONNUMCPUOVERRIDE` (this has to be a proper environment variable and cannot go into an `offen.env` file or similar) and set its value to the number of CPUs you found out in step 1.
 
 You can now move your instance between hosts of any size. The environment variable needs to be set as long as any logins that have been created before the upgrade are still in use.
 
