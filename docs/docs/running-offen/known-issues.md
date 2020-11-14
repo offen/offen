@@ -28,7 +28,7 @@ GitHub issue [506][login-issue]
 
 Starting with Offen version `v0.1.1` a bug got introduced that inadvertently tied hashed passwords and derived keys to the number of CPUs available on the host system. This means you would be able to move your instance to a host with the same number of CPUs easily, but once the new host had less or more CPUs, operator login would stop working.
 
-While we can fix this issue for future versions and installs easily, there is no way for us to simply fix this for existing installs. We have, however implemented a workaround that allows you to migrate your instance to any new host without losing your ability login.
+While we can fix this issue for future versions and installs easily, there is no way for us to simply fix this for existing installs. We have, however implemented a workaround that allows you to migrate your instance to any new host without losing your ability to log in.
 
 ### Workaround
 

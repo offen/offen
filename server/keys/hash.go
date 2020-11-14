@@ -82,29 +82,22 @@ func CompareString(s, versionedCipher string) error {
 	if err != nil {
 		return fmt.Errorf("keys: error parsing versioned cipher: %w", err)
 	}
+
+	var hashedInput []byte
 	switch cipher.algoVersion {
 	case passwordAlgoArgon2:
-		hashedInput := defaultArgon2Hash([]byte(s), cipher.nonce, DefaultPasswordHashSize)
-		if bytes.Compare(hashedInput, cipher.cipher) != 0 {
-			return errors.New("keys: could not match passwords")
-		}
-		return nil
+		hashedInput = defaultArgon2Hash([]byte(s), cipher.nonce, DefaultPasswordHashSize)
 	case passwordAlgoArgon2NUMCPUBUG:
-
-		hashedInput := defaultArgon2HashNUMCPUBUG([]byte(s), cipher.nonce, DefaultPasswordHashSize)
-		if bytes.Compare(hashedInput, cipher.cipher) != 0 {
-			return errors.New("keys: could not match passwords")
-		}
-		return nil
+		hashedInput = defaultArgon2HashNUMCPUBUG([]byte(s), cipher.nonce, DefaultPasswordHashSize)
 	case passwordAlgoArgon2HighMemoryConsumptionDEPRECATED:
-		hashedInput := highMemoryArgon2HashDEPRECATED([]byte(s), cipher.nonce, DefaultPasswordHashSize)
-		if bytes.Compare(hashedInput, cipher.cipher) != 0 {
-			return errors.New("keys: could not match passwords")
-		}
-		return nil
+		hashedInput = highMemoryArgon2HashDEPRECATED([]byte(s), cipher.nonce, DefaultPasswordHashSize)
 	default:
 		return fmt.Errorf("keys: received unknown algo version %d for comparing passwords", cipher.algoVersion)
 	}
+	if bytes.Compare(hashedInput, cipher.cipher) != 0 {
+		return errors.New("keys: could not match passwords")
+	}
+	return nil
 }
 
 func defaultArgon2Hash(val, salt []byte, size uint32) []byte {
