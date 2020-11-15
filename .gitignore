@@ -15,7 +15,6 @@ dist/
 bin/
 statik.go
 
-*.po
 package-lock.json
 !*/package-lock.json
 

@@ -14,6 +14,7 @@ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 RUN npm ci
 COPY ./auditorium /code/auditorium
 COPY ./banner.txt /code/banner.txt
+COPY ./locales /code/auditorium/locales
 WORKDIR /code/auditorium
 RUN cp -a /code/deps/node_modules /code/auditorium/
 ENV NODE_ENV production
@@ -33,6 +34,7 @@ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 RUN npm ci
 COPY ./script /code/script
 COPY ./banner.txt /code/banner.txt
+COPY ./locales /code/script/locales
 WORKDIR /code/script
 RUN cp -a /code/deps/node_modules /code/script/
 ENV NODE_ENV production
@@ -52,6 +54,7 @@ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 RUN npm ci
 COPY ./vault /code/vault
 COPY ./banner.txt /code/banner.txt
+COPY ./locales /code/vault/locales
 WORKDIR /code/vault
 RUN cp -a /code/deps/node_modules /code/vault/
 ENV NODE_ENV production
@@ -113,6 +116,7 @@ FROM golang:1.15-alpine as statik
 
 WORKDIR /code/server
 COPY ./server /code/server
+COPY ./locales/* /code/server/locales/
 
 COPY --from=script /code/script/dist /code/server/public
 COPY --from=vault /code/vault/dist /code/server/public
