@@ -54,7 +54,7 @@ __Your job__
 __Benefits for your users__
 - Opt in to data collection or decide to not participate at all.  
 - Review own data with detailed explanations of metrics and terms.  
-- Only delete usage data or opt out completly at any time.  
+- Only delete usage data or opt out completely at any time.  
 
 __What you see__  
 Data of all pages where your Offen installation is active. For example:
@@ -87,7 +87,7 @@ __Secure__
 Data in Offen is encrypted End-To-End. Clients encrypt usage data before it leaves the browser and there is no way for the server storing this data to decrypt it. Attackers have no means to compromise an instance, accidental data leaks cannot expose user data.
 
 __Self hosted and lightweight__  
-You can run Offen on-premises, or in any other deployment scenario that fits your need. All you need to do is download a single binary file or pull a Docker image, and run it on your server. Offen will automatically install and renew SSL certficates for you if you want it to. If you do not want to deploy a database, you can use SQLite to store data directly on the server.
+You can run Offen on-premises, or in any other deployment scenario that fits your need. All you need to do is download a single binary file or pull a Docker image, and run it on your server. Offen will automatically install and renew SSL certificates for you if you want it to. If you do not want to deploy a database, you can use SQLite to store data directly on the server.
 
 __Transparent and fair__  
 Offen treats the user as a party of equal importance in the collection of usage data. Users have access to the same set of tools for analyzing their own data and they can delete their data at any time.
@@ -135,7 +135,7 @@ $ make up
 
 which should enable you to access <http://localhost:8080/auditorium/> and use the `Auditorium`
 
-Run the tests for all subapplicatons using
+Run the tests for all subapplications using
 
 ```sh
 $ make test
