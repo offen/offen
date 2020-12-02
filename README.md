@@ -29,6 +29,7 @@ Offen is an open alternative to common web analytics tools. Gain insights while 
 - [Contributions welcome](#contributions-welcome)
 - [Kind support](#kind-support)
 - [Give feedback](#give-feedback)
+- [Who's using Offen?](#whos-using-offen)
 - [License](#license)
 - [Links](#links)
  
@@ -165,6 +166,10 @@ Cross-Browser testing provided by [BrowserStack](https://www.browserstack.com/).
 ## Give feedback
 
 Found an issue or want to add something? Please do not hesitate to file an issue or open a pull request. For details head to our [contributing guideline.](https://github.com/offen/offen/blob/development/CONTRIBUTING.md)
+
+## Who's using Offen?
+
+Are you using Offen? We're happy to feature you in this README. Send a PR adding your site or app to this section.
 
 ## License
 
