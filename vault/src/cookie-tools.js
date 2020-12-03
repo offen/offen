@@ -30,3 +30,19 @@ function parse (cookieString) {
       return acc
     }, {})
 }
+
+exports.defaultCookie = defaultCookie
+
+function defaultCookie (name, value, expires) {
+  var isLocalhost = window.location.hostname === 'localhost'
+  var cookie = {}
+  cookie[name] = value
+  cookie.expires = expires.toUTCString()
+  return Object.assign(cookie, {
+    // it is important not to lock this cookie down to `/vault` as the
+    // server checks for it before accepting events
+    path: '/',
+    SameSite: isLocalhost ? 'Lax' : 'None',
+    Secure: !isLocalhost
+  })
+}

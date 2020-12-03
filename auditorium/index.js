@@ -30,9 +30,11 @@ const authenticatedUserReducer = require('./src/reducers/authenticated-user')
 const flashReducer = require('./src/reducers/flash')
 const staleReducer = require('./src/reducers/stale')
 const modelReducer = require('./src/reducers/model')
+const onboardingCompletedReducer = require('./src/reducers/onboarding-completed')
 const redirectMiddleware = require('./src/middleware/redirect')
 const pushStateMiddleware = require('./src/middleware/push-state')
 const flashMessagesMiddleware = require('./src/middleware/flash-messages')
+const onboardingMiddleware = require('./src/middleware/onboarding')
 const navigation = require('./src/action-creators/navigation')
 const errors = require('./src/action-creators/errors')
 
@@ -51,7 +53,8 @@ const middlewares = [
   ),
   pushStateMiddleware,
   redirectMiddleware,
-  flashMessagesMiddleware
+  flashMessagesMiddleware,
+  onboardingMiddleware
 ]
 
 if (process.env.NODE_ENV !== 'production') {
@@ -67,7 +70,8 @@ const store = createStore(
     flash: flashReducer,
     model: modelReducer,
     stale: staleReducer,
-    setupStatus: setupStatusReducer
+    setupStatus: setupStatusReducer,
+    onboardingCompleted: onboardingCompletedReducer
   }),
   applyMiddleware(
     ...middlewares

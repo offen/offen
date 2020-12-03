@@ -228,35 +228,14 @@ function hostStylesHidden (selector) {
 exports.get = getConsentStatus
 
 function getConsentStatus () {
-  var matches = document.cookie.split(';')
-    .map(function (s) {
-      return s.trim()
-    })
-    .map(function (pair) {
-      return pair.split('=')
-    })
-    .filter(function (pair) {
-      return pair[0] === COOKIE_NAME
-    })
-    .map(function (pair) {
-      return pair[1]
-    })
-  return matches.length ? matches[0] : null
+  var matches = cookies.parse(document.cookie)
+  return matches[COOKIE_NAME] || null
 }
 
 exports.set = setConsentStatus
 
 function setConsentStatus (status) {
-  var isLocalhost = window.location.hostname === 'localhost'
   var expires = new Date(Date.now() + 100 * 365 * 24 * 60 * 60 * 1000)
-  var cookie = {
-    consent: status,
-    expires: expires.toUTCString(),
-    // it is important not to lock this cookie down to `/vault` as the
-    // server checks for it before accepting events
-    path: '/',
-    SameSite: isLocalhost ? 'Lax' : 'None',
-    Secure: !isLocalhost
-  }
+  var cookie = cookies.defaultCookie(COOKIE_NAME, status, expires)
   document.cookie = cookies.serialize(cookie)
 }
