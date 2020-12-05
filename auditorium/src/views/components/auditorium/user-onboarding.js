@@ -15,10 +15,10 @@ const UserOnboarding = (props) => {
     <Fragment>
       <div class='flex flex-column flex-row-l mt4'>
         <div class='w-100 flex bt bb ba-ns b--black-10 br0 br2-ns mb2-ns'>
-          <div class='pa3 bg-white w-100'>
+          <div class='pa3 pa4-m pa5-l bg-white w-100'>
 
 
-            <div class='cf'>
+            <div class='cf mb0 mb4-m mb5-l'>
               <a
                 class='fr f5 b normal link dim dib dark-green pointer'
                 role='button'
@@ -37,22 +37,26 @@ const UserOnboarding = (props) => {
                     return (
                       <Fragment>
                         <div class='flex flex-column flex-row-ns justify-center'>
-                          <div class=''>
-                            IMAGE
+                          <div class='w-100 w-25-ns tc tr-ns mr0 mr4-m mr5-l'>
+                            <img src='/offen-onboarding-1.svg' alt='Onboarding illustration 1' width='180' height='190' class='ma0' />
                           </div>
-                          <div class=''>
-                            <p class='ma0'>
-                              {__('Welcome to the Auditorium. You opted in for fair web analytics, this is how it works.')}
-                            </p>
-                            <p class='ma0'>
-                              {__('What coolblog.com knows about you.')}
-                            </p>
-                            <p class='ma0'>
-                              {__('You just have visited the page coolblog.com/nice-article. It is probably your first time on coolblog.com. You came here by a link on GitHub. Most likely your are on a deskop device.')}
-                            </p>
+                          <div class='w-100 w-75-ns mt3 mt0-ns mb4 mb5-l'>
+
+                            <div class='w-100 w-80-l lh-title'>
+                              <p class='ma0 mb3'>
+                                {__('Welcome to the Auditorium. You opted in for fair web analytics, this is how it works.')}
+                              </p>
+                              <p class='f3 ma0 mb3'>
+                                {__('What coolblog.com knows about you.')}
+                              </p>
+                              <p class='ma0'>
+                                {__('You just have visited the page coolblog.com/nice-article. It is probably your first time on coolblog.com. You came here by a link on GitHub. Most likely your are on a deskop device.')}
+                              </p>
+                            </div>
+
                           </div>
                         </div>
-                        <div class='flex justify-center'>
+                        <div class='flex justify-center mb4'>
                           <button onclick={onNext} class='w-100 w-20-ns f5 tc dim bn ph3 pv2 dib br1 white bg-dark-green pointer'>
                             {__('Next')}
                           </button>
@@ -89,13 +93,14 @@ const UserOnboarding = (props) => {
                   return (
                     <div class='flex justify-center'>
 
-                      <ul>
+                      <ul class='flex justify-center list pa0 ma0'>
                         {Array.from({ length: numItems }).map(function (el, index) {
                           return (
                             <li key={`slider-item-${index}`} onclick={() => onChange(index)}>
                               <a
                                 class={classnames({
                                   pointer: true,
+                                  mh2: true,
                                   b: index === activeItem
                                 })}
                                 role='button'
