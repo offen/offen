@@ -102,10 +102,10 @@ const UserOnboarding = (props) => {
                           <div class='w-100 w-75-ns mt3 mt0-ns mb4 mb5-l'>
                             <div class='w-100 w-80-l lh-copy mt3-m mt4-l'>
                               <p class='f3 ma0 mb3'>
-                                {__('Review how you use coolblog.com over time.')}
+                                {__('Bookmark this page to come back later.')}
                               </p>
                               <p class='ma0 mb1'>
-                                {__('To get an overall picture about your data collected here over time, bookmark this page and come back later.')}
+                                {__('Get an overall picture of your data collected over time. Come back here anytime to see what coolblog.com knows about you.')}
                               </p>
                               <p class='ma0'>
                                 {__('Now let\'s get started!')}
