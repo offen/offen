@@ -61,11 +61,11 @@ const AuditoriumView = (props) => {
       </HighlightBox>
     )
   }
-
   if (!onboardingCompleted || forceOnboarding) {
     return (
       <UserOnboading
         onComplete={completeOnboarding}
+        stats={model.onboardingStats}
       />
     )
   }

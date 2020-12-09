@@ -441,6 +441,28 @@ function countKeys (keys, unique) {
   }
 }
 
+exports.onboardingStats = consumeAsync(onboardingStats)
+
+function onboardingStats (events) {
+  var lastEvent = _.chain(events)
+    .sortBy(_.property('eventId'))
+    .last()
+    .value()
+
+  var numVisits = _.chain(events)
+    .where({ accountId: lastEvent.accountId })
+    .size()
+    .value()
+
+  return {
+    domain: lastEvent.payload.href.host,
+    url: lastEvent.payload.href.host + lastEvent.payload.href.pathname,
+    referrer: lastEvent.payload.referrer || null,
+    numVisits: numVisits,
+    isMobile: lastEvent.payload.isMobile
+  }
+}
+
 // `consumeAsync` ensures the given function can be called with both
 // synchronous and asynchronous values as arguments. The return value
 // will be wrapped in a Promise.

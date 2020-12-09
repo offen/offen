@@ -10,7 +10,7 @@ const Slides = require('./slides')
 const ExplainerIcon = require('./explainer-icon')
 
 const UserOnboarding = (props) => {
-  const { onComplete } = props
+  const { onComplete, stats } = props
   return (
     <div class='flex flex-column flex-row-l mt4-m mt4-l'>
       <div class='w-100 flex bt bb ba-ns b--black-10 br0 br2-ns mb2-ns'>
@@ -41,10 +41,19 @@ const UserOnboarding = (props) => {
                             {__('Welcome to the Auditorium, this is how it works.')}
                           </p>
                           <p class='f3 ma0 mb3'>
-                            {__('What coolblog.com knows about you.')}
+                            {__('What %s knows about you.', stats.domain)}
                           </p>
                           <p class='ma0'>
-                            {__('You just visited the page coolblog.com/nice-article. It is probably your first time on coolblog.com. You came by a link on GitHub. Most likely your are on a deskop device.')}
+                            {__('You just visited the page %s.', stats.url)}&nbsp;
+                            {__('It is probably your %dth time on %s.', stats.numVisits, stats.domain)}&nbsp;
+                            {stats.referrer
+                              ? (
+                                <Fragment>
+                                  {__('You came via %s.', stats.referrer)}&nbsp;
+                                </Fragment>
+                              )
+                              : null}
+                            {__('Most likely your are on a %s device.', stats.isMobile ? __('mobile') : __('desktop'))}
                           </p>
                         </Content>
                       </Wrapper>
