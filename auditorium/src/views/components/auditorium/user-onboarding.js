@@ -12,7 +12,7 @@ const ExplainerIcon = require('./explainer-icon')
 const UserOnboarding = (props) => {
   const { onComplete, stats } = props
   return (
-    <div class='flex flex-column flex-row-l mt4-m mt4-l'>
+    <div class='flex flex-column flex-row-l mt4-m mt4-l' data-testid='auditorium/onboarding-wrapper'>
       <div class='w-100 flex bt bb ba-ns b--black-10 br0 br2-ns mb2-ns'>
         <div class='pa3 pa4-m pa5-l bg-white w-100'>
           <div class='cf mb0 mb4-m mb5-l'>
@@ -197,7 +197,11 @@ function Wrapper (props) {
 function Button (props) {
   return (
     <div class='flex justify-center mb4'>
-      <button onClick={props.onClick} class={props.class || 'w-100 w-20-ns f5 tc dim bn ph3 pv2 dib br1 white bg-dark-green pointer'}>
+      <button
+        onClick={props.onClick}
+        class={props.class || 'w-100 w-20-ns f5 tc dim bn ph3 pv2 dib br1 white bg-dark-green pointer'}
+        data-testid='auditorium/onboarding-advance'
+      >
         {props.children}
       </button>
     </div>

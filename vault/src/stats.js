@@ -449,6 +449,10 @@ function onboardingStats (events) {
     .last()
     .value()
 
+  if (!lastEvent) {
+    return null
+  }
+
   var numVisits = _.chain(events)
     .where({ accountId: lastEvent.accountId })
     .size()
