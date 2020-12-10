@@ -460,8 +460,12 @@ function onboardingStats (events) {
 
   return {
     domain: lastEvent.payload.href.host,
-    url: lastEvent.payload.href.host + lastEvent.payload.href.pathname,
-    referrer: lastEvent.payload.referrer.toString() || null,
+    url: lastEvent.payload.href.pathname !== '/'
+      ? lastEvent.payload.href.host + lastEvent.payload.href.pathname
+      : null,
+    referrer: lastEvent.payload.referrer.host !== lastEvent.payload.href.host
+      ? lastEvent.payload.referrer.toString() || null
+      : null,
     numVisits: numVisits,
     isMobile: lastEvent.payload.isMobile
   }

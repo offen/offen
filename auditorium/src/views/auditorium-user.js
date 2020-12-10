@@ -69,8 +69,8 @@ const AuditoriumView = (props) => {
     }, [])
     return (
       <UserOnboading
-        onClose={() => setOnboardingClosed(true)}
         stats={model.onboardingStats}
+        onClose={() => setOnboardingClosed(true)}
       />
     )
   }

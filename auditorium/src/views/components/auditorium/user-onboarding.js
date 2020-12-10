@@ -45,8 +45,28 @@ const UserOnboarding = (props) => {
                             {__('What %s knows about you.', stats.domain)}
                           </p>
                           <p class='ma0'>
-                            {__('You just visited the page %s.', stats.url)}&nbsp;
-                            {__('It is probably your %dth time on %s.', stats.numVisits, stats.domain)}&nbsp;
+                            {stats.url
+                              ? (
+                                <Fragment>
+                                  {__('You just visited the page %s.', stats.url)}&nbsp;
+                                </Fragment>
+                              )
+                              : (
+                                <Fragment>
+                                  {__('You just visited this website.')}&nbsp;
+                                </Fragment>
+                              )}
+                            {stats.numVisits > 1
+                              ? (
+                                <Fragment>
+                                  {__('You have visited %s %d times.', stats.domain, stats.numVisits)}&nbsp;
+                                </Fragment>
+                              )
+                              : (
+                                <Fragment>
+                                  {__('It is probably your first time visiting %s.', stats.domain)}&nbsp;
+                                </Fragment>
+                              )}
                             {stats.referrer
                               ? (
                                 <Fragment>
