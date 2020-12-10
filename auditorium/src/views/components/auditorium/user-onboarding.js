@@ -5,6 +5,8 @@
 
 /** @jsx h */
 const { h, Fragment } = require('preact')
+const urify = require('urify')
+const path = require('path')
 
 const Slides = require('./slides')
 const ExplainerIcon = require('./explainer-icon')
@@ -34,7 +36,7 @@ const UserOnboarding = (props) => {
                     <Fragment>
                       <Wrapper>
                         <Illustration
-                          src={require('./offen-onboarding-1.svg')}
+                          src={urify(path.join(__dirname, 'offen-onboarding-1.svg'))}
                           alt='Onboarding illustration 1'
                         />
                         <Content>
@@ -93,7 +95,7 @@ const UserOnboarding = (props) => {
                     <Fragment>
                       <Wrapper>
                         <Illustration
-                          src={require('./offen-onboarding-2.svg')}
+                          src={urify(path.join(__dirname, 'offen-onboarding-2.svg'))}
                           alt='Onboarding illustration 2'
                         />
                         <Content>
@@ -123,7 +125,7 @@ const UserOnboarding = (props) => {
                     <Fragment>
                       <Wrapper>
                         <Illustration
-                          src={require('./offen-onboarding-3.svg')}
+                          src={urify(path.join(__dirname, 'offen-onboarding-3.svg'))}
                           alt='Onboarding illustration 3'
                         />
                         <Content>
