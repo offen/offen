@@ -23,7 +23,8 @@ const Privacy = (props) => {
   let deleteButton = null
   if (userHasOptedIn) {
     deleteButton = (
-      <div>
+
+      <div class='w-100 w-50-m w-25-l bl-ns b--moon-gray pl4-ns pb3 pb4-l'>
         <div class='flex flex-column-ns'>
           <Paragraph class='ma0 mb1'>
             {__('Stay opted in,&nbsp;')}
@@ -42,6 +43,7 @@ const Privacy = (props) => {
           </button>
         </div>
       </div>
+
     )
   }
 
@@ -58,7 +60,7 @@ const Privacy = (props) => {
       <div class='flex flex-column flex-wrap-m flex-row-ns'>
 
 
-        <div class='w-100 w-50-m w-25-l pr3-m pr4-l pb3 pb4-l'>
+        <div class='w-100 w-50-m w-25-l pr3-m pr4-l pb4'>
           <div class='flex flex-column-ns'>
             <Paragraph class='ma0 mb1'>
               {userHasOptedIn
@@ -83,10 +85,7 @@ const Privacy = (props) => {
         </div>
 
 
-
-        <div class='w-100 w-50-m w-25-l bl-ns b--moon-gray pl4-ns pb3 pb4-l'>
-          {deleteButton}
-        </div>
+        {deleteButton}
 
 
         <div class='w-100 w-50-l bl-l b--moon-gray pl4-l mt3 mt0-l'>
