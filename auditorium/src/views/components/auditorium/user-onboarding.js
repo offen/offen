@@ -8,6 +8,8 @@ const { h, Fragment } = require('preact')
 const urify = require('urify')
 const path = require('path')
 
+const Paragraph = require('./../_shared/paragraph')
+const Span = require('./../_shared/span')
 const Slides = require('./slides')
 const ExplainerIcon = require('./explainer-icon')
 
@@ -43,40 +45,42 @@ const UserOnboarding = (props) => {
                           <p class='ma0 mb3'>
                             {__('Welcome to the Auditorium, this is how it works.')}
                           </p>
-                          <p class='f3 ma0 mb3'>
-                            {__('What %s knows about you.', stats.domain)}
-                          </p>
+                          <Paragraph class='f3 ma0 mb3'>
+                            {__('What <span class="i tracked">%s</span> knows about you.', stats.domain)}
+                          </Paragraph>
                           <p class='ma0'>
                             {stats.url
                               ? (
-                                <Fragment>
-                                  {__('You just visited the page %s.', stats.url)}&nbsp;
-                                </Fragment>
+                                <Span>
+                                  {__('You just visited the page <span class="i tracked">%s</span> .&nbsp;', stats.url)}
+                                </Span>
                               )
                               : (
-                                <Fragment>
-                                  {__('You just visited this website.')}&nbsp;
-                                </Fragment>
+                                <Span>
+                                  {__('You just visited this website.&nbsp;')}
+                                </Span>
                               )}
                             {stats.numVisits > 1
                               ? (
-                                <Fragment>
-                                  {__('You have visited %s %d times.', stats.domain, stats.numVisits)}&nbsp;
-                                </Fragment>
+                                <Span>
+                                  {__('You have visited <span class="i tracked">%s %d</span> times.&nbsp;', stats.domain, stats.numVisits)}
+                                </Span>
                               )
                               : (
-                                <Fragment>
-                                  {__('It is probably your first time visiting %s.', stats.domain)}&nbsp;
-                                </Fragment>
+                                <Span>
+                                  {__('It is probably your first time visiting <span class="i tracked">%s</span> .&nbsp;', stats.domain)}
+                                </Span>
                               )}
                             {stats.referrer
                               ? (
-                                <Fragment>
-                                  {__('You came via %s.', stats.referrer)}&nbsp;
-                                </Fragment>
+                                <Span>
+                                  {__('You came via <span class="i tracked">%s</span> .&nbsp;', stats.referrer)}
+                                </Span>
                               )
                               : null}
-                            {__('Most likely your are on a %s device.', stats.isMobile ? __('mobile') : __('desktop'))}
+                            <Span>
+                              {__('Most likely your are on a <span class="i tracked">%s</span>.', stats.isMobile ? __('mobile device') : __('desktop device'))}
+                            </Span>
                           </p>
                         </Content>
                       </Wrapper>
@@ -132,9 +136,9 @@ const UserOnboarding = (props) => {
                           <p class='f3 ma0 mb3'>
                             {__('Bookmark this page to come back later.')}
                           </p>
-                          <p class='ma0 mb1'>
-                            {__('Get an overall picture of your data collected over time. Come back here anytime to see what coolblog.com knows about you.')}
-                          </p>
+                          <Paragraph class='ma0 mb1'>
+                            {__('Get an overall picture of your data collected over time. Come back here anytime to see what <span class="i tracked">%s</span> knows about you.', stats.domain)}
+                          </Paragraph>
                           <p class='ma0'>
                             {__("Now let's get started!")}
                           </p>
@@ -153,7 +157,6 @@ const UserOnboarding = (props) => {
               navigation={Navigation}
             />
           </div>
-
         </div>
       </div>
     </div>
@@ -193,7 +196,7 @@ function Dot (props) {
 function Illustration (props) {
   const { src, alt } = props
   return (
-    <div class='w-100 w-25-ns mr0 mr4-m mr5-l mt4 mt0-ns'>
+    <div class='w-100 w-25-ns mr0 mr4-m mr5-l mt3 mt0-ns'>
       <img src={src} alt={alt} width='180' height='190' class='onboarding-image-height db center' />
     </div>
   )
