@@ -5,7 +5,7 @@
 
 /** @jsx h */
 const { h, Fragment } = require('preact')
-const { useEffect } = require('preact/hooks')
+const { useEffect, useState } = require('preact/hooks')
 const { connect } = require('react-redux')
 
 const withTitle = require('./components/_shared/with-title')
@@ -61,10 +61,15 @@ const AuditoriumView = (props) => {
       </HighlightBox>
     )
   }
-  if ((!onboardingCompleted || forceOnboarding) && model.onboardingStats) {
+
+  const [onboardingClosed, setOnboardingClosed] = useState(false)
+  if (!onboardingClosed && (!onboardingCompleted || forceOnboarding) && model.onboardingStats) {
+    useEffect(function () {
+      completeOnboarding()
+    }, [])
     return (
       <UserOnboading
-        onComplete={completeOnboarding}
+        onClose={() => setOnboardingClosed(true)}
         stats={model.onboardingStats}
       />
     )

@@ -10,7 +10,8 @@ const Slides = require('./slides')
 const ExplainerIcon = require('./explainer-icon')
 
 const UserOnboarding = (props) => {
-  const { onComplete, stats } = props
+  const { onClose, stats } = props
+
   return (
     <div class='flex flex-column flex-row-l mt4-m mt4-l' data-testid='auditorium/onboarding-wrapper'>
       <div class='w-100 flex bt bb ba-ns b--black-10 br0 br2-ns mb2-ns'>
@@ -19,7 +20,7 @@ const UserOnboarding = (props) => {
             <a
               class='fr f5 b normal link dim dib dark-green pointer'
               role='button'
-              onclick={onComplete}
+              onclick={onClose}
             >
               {__('Skip')}
             </a>
@@ -118,7 +119,7 @@ const UserOnboarding = (props) => {
                         </Content>
                       </Wrapper>
                       <Button
-                        onClick={onComplete}
+                        onClick={onClose}
                         class='w-100 w-30-m w-20-l f5 tc dim bn ph3 pv2 dib br1 white bg-dark-green pointer'
                       >
                         {__('Open Auditorium')}

@@ -461,7 +461,7 @@ function onboardingStats (events) {
   return {
     domain: lastEvent.payload.href.host,
     url: lastEvent.payload.href.host + lastEvent.payload.href.pathname,
-    referrer: lastEvent.payload.referrer || null,
+    referrer: lastEvent.payload.referrer.toString() || null,
     numVisits: numVisits,
     isMobile: lastEvent.payload.isMobile
   }

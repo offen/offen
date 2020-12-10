@@ -8,20 +8,14 @@ const consentStatus = require('./user-consent')
 
 const COOKIE_NAME = 'onboarding-completed'
 
-exports.get = getOnboardingStatus
+exports.get = consentStatus.withConsentGiven(getOnboardingStatus, true)
 
 function getOnboardingStatus () {
-  var consent = consentStatus.get()
-  if (consent !== 'allow') {
-    return true
-  }
   var values = cookies.parse(document.cookie)
-  var isPreviouslySet = COOKIE_NAME in values
-  if (!isPreviouslySet) {
-    setOnboardingCompleted()
-  }
-  return isPreviouslySet
+  return COOKIE_NAME in values
 }
+
+exports.complete = consentStatus.withConsentGiven(setOnboardingCompleted, true)
 
 function setOnboardingCompleted () {
   var expires = new Date(Date.now() + 100 * 365 * 24 * 60 * 60 * 1000)

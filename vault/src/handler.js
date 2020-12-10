@@ -349,6 +349,17 @@ function handleOnboardingStatusWith (onboardingStatus) {
   }
 }
 
+exports.handleSetOnboardingCompleted = handleSetOnboardingCompletedWith(onboardingStatus)
+exports.handleSetOnboardingCompletedWith = handleSetOnboardingCompletedWith
+
+function handleSetOnboardingCompletedWith (onboardingStatus) {
+  return proxyThunk(function () {
+    return new Promise(function (resolve) {
+      resolve(onboardingStatus.complete())
+    })
+  })
+}
+
 // proxyThunk can be used to create a handler that simply calls through
 // to an api method without needing any further logic other than signalling
 // success or failure

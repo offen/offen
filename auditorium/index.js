@@ -34,7 +34,6 @@ const onboardingCompletedReducer = require('./src/reducers/onboarding-completed'
 const redirectMiddleware = require('./src/middleware/redirect')
 const pushStateMiddleware = require('./src/middleware/push-state')
 const flashMessagesMiddleware = require('./src/middleware/flash-messages')
-const onboardingMiddleware = require('./src/middleware/onboarding')
 const navigation = require('./src/action-creators/navigation')
 const errors = require('./src/action-creators/errors')
 
@@ -54,8 +53,7 @@ const middlewares = [
   ),
   pushStateMiddleware,
   redirectMiddleware,
-  flashMessagesMiddleware,
-  onboardingMiddleware
+  flashMessagesMiddleware
 ]
 
 if (process.env.NODE_ENV !== 'production') {

@@ -239,3 +239,16 @@ function setConsentStatus (status) {
   var cookie = cookies.defaultCookie(COOKIE_NAME, status, expires)
   document.cookie = cookies.serialize(cookie)
 }
+
+exports.withConsentGiven = withConsentGiven
+
+function withConsentGiven (fn, returnVal) {
+  return function () {
+    var args = [].slice.call(arguments)
+    var consent = getConsentStatus()
+    if (consent !== ALLOW) {
+      return returnVal
+    }
+    return fn.apply(null, args)
+  }
+}

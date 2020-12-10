@@ -24,9 +24,21 @@ exports.getStatus = () => (dispatch, getState, postMessage) => {
     .catch((err) => dispatch(errors.unrecoverable(err)))
 }
 
-exports.setCompleted = () => {
-  return {
-    type: 'ONBOARDING_COMPLETED',
+exports.setCompleted = () => (dispatch, getState, postMessage) => {
+  dispatch({
+    type: 'COMPLETE_ONBOARDING_REQUEST',
     payload: null
-  }
+  })
+
+  return postMessage({
+    type: 'COMPLETE_ONBOARDING',
+    payload: null
+  })
+    .then((response) => {
+      dispatch({
+        type: 'COMPLETE_ONBOARDING_SUCCESS',
+        payload: response.payload
+      })
+    })
+    .catch((err) => dispatch(errors.unrecoverable(err)))
 }

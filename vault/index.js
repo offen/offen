@@ -48,6 +48,7 @@ register('SETUP_STATUS', middleware.sameOrigin, callHandler(handler.handleSetupS
 register('SETUP', middleware.sameOrigin, callHandler(handler.handleSetup))
 register('PURGE_AGGREGATES', middleware.sameOrigin, callHandler(handler.handlePurgeAggregates))
 register('ONBOARDING_STATUS', middleware.sameOrigin, callHandler(handler.handleOnboardingStatus))
+register('COMPLETE_ONBOARDING', middleware.sameOrigin, callHandler(handler.handleSetOnboardingCompleted))
 
 module.exports = register
 
