@@ -7,8 +7,6 @@ module.exports = (state = null, action) => {
   switch (action.type) {
     case 'ONBOARDING_STATUS_SUCCESS':
       return action.payload.status
-    case 'ONBOARDING_COMPLETED':
-      return true
     default:
       return state
   }
