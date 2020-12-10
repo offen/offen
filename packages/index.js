@@ -5,3 +5,4 @@
 
 exports.vault = require('./vault')
 exports.handleFetchResponse = require('./fetch-response')
+exports.svgBase64ify = require('./svg-base64ify')

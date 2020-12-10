@@ -30,7 +30,7 @@ const Layout = (props) => {
       <div class='w-100 bg-black-05'>
         <div class='mw8 center flex pa3 pt2' id='headline'>
           <a href='/' class='dim link flex'>
-            <img src='/offen-icon-black.svg' alt='Offen logo' width='37' height='40' class='ma0 mt1 mr3' />
+            <img src={require('./offen-icon-black.svg')} alt='Offen logo' width='37' height='40' class='ma0 mt1 mr3' />
             <h1 class='dib dark-gray f2 normal ma0 mt1'>{props.headline || __('Offen Auditorium')}</h1>
           </a>
         </div>
@@ -80,7 +80,7 @@ const Layout = (props) => {
                 onclick={() => props.handleExpire(message.id)}
                 role='alert'
               >
-                <img src='/offen-icon-black.svg' alt='Offen logo' height='30' class='ma0 mr3' />
+                <img src={require('./offen-icon-black.svg')} alt='Offen logo' height='30' class='ma0 mr3' />
                 <span
                   dangerouslySetInnerHTML={{ __html: message.content }}
                 />

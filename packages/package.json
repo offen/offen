@@ -13,7 +13,8 @@
     "licenses": "npm-license-crawler --production --onlyDirectDependencies --omitVersion --csv dependencies.csv"
   },
   "dependencies": {
-    "envify": "^4.1.0"
+    "envify": "^4.1.0",
+    "through2": "^4.0.2"
   },
   "devDependencies": {
     "dependency-check": "^3.4.0",

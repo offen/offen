@@ -62,6 +62,7 @@
   },
   "browserify": {
     "transform": [
+      "offen/svg-base64ify",
       "babelify",
       [
         "envify",

@@ -34,7 +34,7 @@ const UserOnboarding = (props) => {
                     <Fragment>
                       <Wrapper>
                         <Illustration
-                          src='/offen-onboarding-1.svg'
+                          src={require('./offen-onboarding-1.svg')}
                           alt='Onboarding illustration 1'
                         />
                         <Content>
@@ -93,7 +93,7 @@ const UserOnboarding = (props) => {
                     <Fragment>
                       <Wrapper>
                         <Illustration
-                          src='/offen-onboarding-2.svg'
+                          src={require('./offen-onboarding-2.svg')}
                           alt='Onboarding illustration 2'
                         />
                         <Content>
@@ -123,7 +123,7 @@ const UserOnboarding = (props) => {
                     <Fragment>
                       <Wrapper>
                         <Illustration
-                          src='/offen-onboarding-3.svg'
+                          src={require('./offen-onboarding-3.svg')}
                           alt='Onboarding illustration 3'
                         />
                         <Content>
