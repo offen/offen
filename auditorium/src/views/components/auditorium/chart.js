@@ -172,9 +172,14 @@ const Chart = (props) => {
             />
           )
           : (
-            <Paragraph class='f6 normal i'>
-              {__('No data available for the selected time range.')}
-            </Paragraph>
+            <div class='w-100 h-100 db bg-near-white br2'>
+              <div class='tc'>
+                <img src='/offen-empty-state.svg' alt='empty state' width='180' height='190' class='ma0' />
+                <Paragraph class='f6 normal i lh-copy ma0'>
+                  {__('No data available <br>for the selected time range.')}
+                </Paragraph>
+              </div>
+            </div>
           )}
       </div>
     </div>
