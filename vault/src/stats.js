@@ -458,16 +458,17 @@ function onboardingStats (events) {
     .size()
     .value()
 
+  var payload = lastEvent.payload
   return {
-    domain: lastEvent.payload.href.host,
-    url: lastEvent.payload.href.pathname !== '/'
-      ? lastEvent.payload.href.host + lastEvent.payload.href.pathname
+    domain: payload.href.host,
+    url: payload.href.pathname !== '/'
+      ? payload.href.host + payload.href.pathname
       : null,
-    referrer: lastEvent.payload.referrer.host !== lastEvent.payload.href.host
-      ? lastEvent.payload.referrer.toString() || null
+    referrer: payload.referrer && payload.referrer.host !== payload.href.host
+      ? payload.referrer.host || null
       : null,
     numVisits: numVisits,
-    isMobile: lastEvent.payload.isMobile
+    isMobile: payload.isMobile
   }
 }
 

@@ -146,7 +146,9 @@ function Queries (storage) {
 
     var onboardingStats = accountId
       ? null
-      : stats.onboardingStats(eventsInBounds)
+      : stats.onboardingStats(allEvents.then(function (result) {
+        return _.map(result, validateAndParseEvent)
+      }))
 
     proxy.call()
 
