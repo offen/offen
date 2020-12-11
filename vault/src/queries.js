@@ -144,6 +144,12 @@ function Queries (storage) {
     var livePages = stats.activePages(realtimeEvents)
     var liveUsers = stats.visitors(realtimeEvents)
 
+    var onboardingStats = accountId
+      ? null
+      : stats.onboardingStats(allEvents.then(function (result) {
+        return _.map(result, validateAndParseEvent)
+      }))
+
     proxy.call()
 
     return Promise
@@ -167,7 +173,8 @@ function Queries (storage) {
         sources,
         retentionMatrix,
         empty,
-        returningUsers
+        returningUsers,
+        onboardingStats
       ])
       .then(function (results) {
         return {
@@ -191,6 +198,7 @@ function Queries (storage) {
           retentionMatrix: results[17],
           empty: results[18],
           returningUsers: results[19],
+          onboardingStats: results[20],
           resolution: resolution,
           range: range
         }

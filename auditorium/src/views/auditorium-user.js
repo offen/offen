@@ -5,7 +5,7 @@
 
 /** @jsx h */
 const { h, Fragment } = require('preact')
-const { useEffect } = require('preact/hooks')
+const { useEffect, useState } = require('preact/hooks')
 const { connect } = require('react-redux')
 
 const withTitle = require('./components/_shared/with-title')
@@ -21,21 +21,24 @@ const Chart = require('./components/auditorium/chart')
 const Privacy = require('./components/auditorium/privacy')
 const RetentionChart = require('./components/auditorium/retention-chart')
 const URLTables = require('./components/auditorium/url-tables')
+const UserOnboading = require('./components/auditorium/user-onboarding')
 const BasicTerms = require('./components/auditorium/basic-terms')
 const FrequentlyAskedQuestions = require('./components/auditorium/frequently-asked-questions')
 const model = require('./../action-creators/model')
 const consent = require('./../action-creators/consent-status')
+const onboarding = require('./../action-creators/onboarding')
 
 const AuditoriumView = (props) => {
-  const { matches, model, consentStatus } = props
-  const { handlePurge, handleQuery, expressConsent, getConsentStatus } = props
-  const { range, resolution } = matches
+  const { matches, model, consentStatus, onboardingCompleted } = props
+  const { handlePurge, handleQuery, expressConsent, getConsentStatus, getOnboardingStatus, completeOnboarding } = props
+  const { range, resolution, onboarding: forceOnboarding } = matches
 
   useEffect(function fetchConsentStatus () {
     getConsentStatus()
+    getOnboardingStatus()
   }, [])
 
-  if (!consentStatus) {
+  if (!consentStatus || onboardingCompleted === null) {
     return (
       <HighlightBox>
         {__('Checking your consent status')}
@@ -56,6 +59,19 @@ const AuditoriumView = (props) => {
         {__('Fetching and decrypting the latest data')}
         <Dots />
       </HighlightBox>
+    )
+  }
+
+  const [onboardingClosed, setOnboardingClosed] = useState(false)
+  if (!onboardingClosed && (!onboardingCompleted || forceOnboarding) && model.onboardingStats) {
+    useEffect(function () {
+      completeOnboarding()
+    }, [])
+    return (
+      <UserOnboading
+        stats={model.onboardingStats}
+        onClose={() => setOnboardingClosed(true)}
+      />
     )
   }
 
@@ -142,14 +158,17 @@ const AuditoriumView = (props) => {
 
 const mapStateToProps = (state) => ({
   consentStatus: state.consentStatus,
-  model: state.model
+  model: state.model,
+  onboardingCompleted: state.onboardingCompleted
 })
 
 const mapDispatchToProps = {
   handleQuery: model.query,
   handlePurge: model.purge,
   getConsentStatus: consent.get,
-  expressConsent: consent.express
+  expressConsent: consent.express,
+  getOnboardingStatus: onboarding.getStatus,
+  completeOnboarding: onboarding.setCompleted
 }
 
 const ConnectedAuditoriumView = connect(mapStateToProps, mapDispatchToProps)(AuditoriumView)

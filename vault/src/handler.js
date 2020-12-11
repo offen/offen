@@ -7,6 +7,7 @@ var api = require('./api')
 var storage = require('./storage')
 var relayEvent = require('./relay-event')
 var consentStatus = require('./user-consent')
+var onboardingStatus = require('./onboarding-status')
 var allowsCookies = require('./allows-cookies')
 var getUserEvents = require('./get-user-events')
 var getOperatorEvents = require('./get-operator-events')
@@ -332,6 +333,31 @@ function handleSetupStatusWith (api) {
         }
       })
   }
+}
+
+exports.handleOnboardingStatus = handleOnboardingStatusWith(onboardingStatus)
+exports.handleOnboardingStatusWith = handleOnboardingStatusWith
+
+function handleOnboardingStatusWith (onboardingStatus) {
+  return function () {
+    return {
+      type: 'ONBOARDING_STATUS',
+      payload: {
+        status: onboardingStatus.get()
+      }
+    }
+  }
+}
+
+exports.handleSetOnboardingCompleted = handleSetOnboardingCompletedWith(onboardingStatus)
+exports.handleSetOnboardingCompletedWith = handleSetOnboardingCompletedWith
+
+function handleSetOnboardingCompletedWith (onboardingStatus) {
+  return proxyThunk(function () {
+    return new Promise(function (resolve) {
+      resolve(onboardingStatus.complete())
+    })
+  })
 }
 
 // proxyThunk can be used to create a handler that simply calls through
