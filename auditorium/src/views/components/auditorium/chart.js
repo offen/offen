@@ -14,6 +14,8 @@ const getISOWeek = require('date-fns/get_iso_week')
 const getHours = require('date-fns/get_hours')
 const _ = require('underscore')
 const classnames = require('classnames')
+const path = require('path')
+const urify = require('urify')
 
 const ExplainerIcon = require('./explainer-icon')
 const Paragraph = require('./../_shared/paragraph')
@@ -174,7 +176,7 @@ const Chart = (props) => {
           : (
             <div class='w-100 h-100 db bg-near-white br2'>
               <div class='tc pt5'>
-                <img src='/offen-empty-state.svg' alt='empty state' width='180' height='190' class='ma0' />
+                <img src={urify(path.join(__dirname, 'offen-empty-state.svg'))} alt={__('Empty state')} width='180' height='190' class='ma0' />
                 <Paragraph class='i lh-copy ma0 mt3'>
                   {__('No data available <br>for the selected time range.')}
                 </Paragraph>

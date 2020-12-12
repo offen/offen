@@ -25,11 +25,8 @@ const Privacy = (props) => {
     deleteButton = (
       <div class='w-100 w-50-m w-25-l bl-ns b--moon-gray pl4-ns pb3 pb4-l'>
         <div class='flex flex-column-ns'>
-          <Paragraph class='ma0 mb1'>
-            {__('Stay opted in,&nbsp;')}
-          </Paragraph>
           <Paragraph class='ma0 mb3'>
-            {__('only delete usage data.')}
+            {__('Stay opted in,<br>only delete usage data')}
           </Paragraph>
         </div>
         <div class='link dim'>
@@ -53,15 +50,10 @@ const Privacy = (props) => {
       <div class='flex flex-column flex-wrap-m flex-row-ns'>
         <div class='w-100 w-50-m w-25-l pr3-m pr4-l pb4'>
           <div class='flex flex-column-ns'>
-            <Paragraph class='ma0 mb1'>
-              {userHasOptedIn
-                ? __('Opt out&nbsp;')
-                : __('Opt in and grant&nbsp;')}
-            </Paragraph>
             <Paragraph class='ma0 mb3'>
               {userHasOptedIn
-                ? __('and delete usage data.')
-                : __('access to your usage data.')}
+                ? __('Opt out<br>and delete usage data.')
+                : __('Opt in and grant<br>access to your usage data.')}
             </Paragraph>
           </div>
           <div class='link dim'>
@@ -85,10 +77,7 @@ const Privacy = (props) => {
             </div>
             <div class='h2 flex flex-wrap items-center'>
               <Paragraph class='ma0 mb1'>
-                {__('To review your data collected over time,&nbsp;')}
-              </Paragraph>
-              <Paragraph class='ma0 mb1'>
-                {__('set a bookmark for this page.')}
+                {__('To review your data collected over time,<br>set a bookmark for this page')}
               </Paragraph>
             </div>
           </div>
