@@ -46,14 +46,14 @@ const UserOnboarding = (props) => {
                             {__('Welcome to the Auditorium, this is how it works.')}
                           </p>
                           <Paragraph class='f3 ma0 mb3'>
-                            {__('What <span class="i tracked">%s</span> knows about you.', stats.domain)}
+                            {__('What <span class="%s">%s</span> knows about you.', 'i tracked', stats.domain)}
                           </Paragraph>
                           <p class='ma0'>
                             {stats.url
                               ? (
                                 <Fragment>
                                   <Span>
-                                    {__('You just visited the page <span class="i tracked">%s</span> .', stats.url)}
+                                    {__('You just visited the page <span class="%s">%s</span> .', 'i tracked', stats.url)}
                                   </Span>
                                   &nbsp;
                                 </Fragment>
@@ -70,7 +70,7 @@ const UserOnboarding = (props) => {
                               ? (
                                 <Fragment>
                                   <Span>
-                                    {__('You have visited <span class="i tracked">%s %d</span> times.', stats.domain, stats.numVisits)}
+                                    {__('You have visited <span class="%s">%s %d</span> times.', 'i tracked', stats.domain, stats.numVisits)}
                                   </Span>
                                   &nbsp;
                                 </Fragment>
@@ -78,7 +78,7 @@ const UserOnboarding = (props) => {
                               : (
                                 <Fragment>
                                   <Span>
-                                    {__('It is probably your first time visiting <span class="i tracked">%s</span> .', stats.domain)}&nbsp;
+                                    {__('It is probably your first time visiting <span class="%s">%s</span> .', 'i tracked', stats.domain)}
                                   </Span>
                                   &nbsp;
                                 </Fragment>
@@ -87,14 +87,14 @@ const UserOnboarding = (props) => {
                               ? (
                                 <Fragment>
                                   <Span>
-                                    {__('You came via <span class="i tracked">%s</span> .', stats.referrer)}
+                                    {__('You came via <span class="%s">%s</span> .', 'i tracked', stats.referrer)}
                                   </Span>
                                   &nbsp;
                                 </Fragment>
                               )
                               : null}
                             <Span>
-                              {__('Most likely you are on a <span class="i tracked">%s</span>.', stats.isMobile ? __('mobile device') : __('desktop device'))}
+                              {__('Most likely you are on a <span class="%s">%s</span>.', 'i tracked', stats.isMobile ? __('mobile device') : __('desktop device'))}
                             </Span>
                           </p>
                         </Content>
@@ -152,7 +152,7 @@ const UserOnboarding = (props) => {
                             {__('Bookmark this page to come back later.')}
                           </p>
                           <Paragraph class='ma0 mb1'>
-                            {__('Get an overall picture of your data collected over time. Come back here anytime to see what <span class="i tracked">%s</span> knows about you.', stats.domain)}
+                            {__('Get an overall picture of your data collected over time. Come back here anytime to see what <span class="%s">%s</span> knows about you.', 'i tracked', stats.domain)}
                           </Paragraph>
                           <p class='ma0'>
                             {__("Now let's get started!")}
