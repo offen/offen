@@ -73,6 +73,10 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
+# src/views/components/console/account-picker.js:14
+msgid "Open account"
+msgstr ""
+
 # src/views/components/console/share-accounts.js:15
 msgid "Share all accounts"
 msgstr ""
@@ -82,54 +86,6 @@ msgid ""
 "Share all your Offen accounts via email invitation. When granted Admin "
 "privilges, invited users have full access to shared accounts and can create "
 "new accounts on this Offen instance."
-msgstr ""
-
-# src/views/components/console/change-email.js:24
-msgid "Please log in again, using your updated email."
-msgstr ""
-
-# src/views/components/console/change-email.js:25
-msgid "Could not change email. Try again."
-msgstr ""
-
-# #-#-#-#-#  auditorium.po  #-#-#-#-#
-# src/views/components/console/change-email.js:36
-# #-#-#-#-#  auditorium.po  #-#-#-#-#
-# src/views/components/console/change-email.js:55
-msgid "Change email address"
-msgstr ""
-
-# src/views/components/console/change-email.js:52
-msgid "New email address"
-msgstr ""
-
-# src/views/components/console/change-email.js:72
-msgid "Current email address"
-msgstr ""
-
-# #-#-#-#-#  auditorium.po  #-#-#-#-#
-# src/views/components/console/change-email.js:80
-# #-#-#-#-#  auditorium.po  #-#-#-#-#
-# src/views/components/login/form.js:51
-# #-#-#-#-#  auditorium.po  #-#-#-#-#
-# src/views/components/join/form.js:55
-msgid "Password"
-msgstr ""
-
-# src/views/components/console/logout.js:15
-msgid "You have been logged out."
-msgstr ""
-
-# src/views/components/console/logout.js:16
-msgid "There was an error terminating your session, please try again."
-msgstr ""
-
-# src/views/components/console/logout.js:29
-msgid "Logout"
-msgstr ""
-
-# src/views/components/console/account-picker.js:14
-msgid "Open account"
 msgstr ""
 
 # #-#-#-#-#  auditorium.po  #-#-#-#-#
@@ -172,8 +128,52 @@ msgstr ""
 msgid "Repeat new password"
 msgstr ""
 
+# src/views/components/console/change-email.js:24
+msgid "Please log in again, using your updated email."
+msgstr ""
+
+# src/views/components/console/change-email.js:25
+msgid "Could not change email. Try again."
+msgstr ""
+
+# #-#-#-#-#  auditorium.po  #-#-#-#-#
+# src/views/components/console/change-email.js:36
+# #-#-#-#-#  auditorium.po  #-#-#-#-#
+# src/views/components/console/change-email.js:55
+msgid "Change email address"
+msgstr ""
+
+# src/views/components/console/change-email.js:52
+msgid "New email address"
+msgstr ""
+
+# src/views/components/console/change-email.js:72
+msgid "Current email address"
+msgstr ""
+
+# #-#-#-#-#  auditorium.po  #-#-#-#-#
+# src/views/components/console/change-email.js:80
+# #-#-#-#-#  auditorium.po  #-#-#-#-#
+# src/views/components/login/form.js:51
+# #-#-#-#-#  auditorium.po  #-#-#-#-#
+# src/views/components/join/form.js:55
+msgid "Password"
+msgstr ""
+
 # src/views/components/console/header.js:15
 msgid "You are logged in as operator."
+msgstr ""
+
+# src/views/components/console/logout.js:15
+msgid "You have been logged out."
+msgstr ""
+
+# src/views/components/console/logout.js:16
+msgid "There was an error terminating your session, please try again."
+msgstr ""
+
+# src/views/components/console/logout.js:29
+msgid "Logout"
 msgstr ""
 
 # src/views/components/login/form.js:23
@@ -375,11 +375,6 @@ msgstr ""
 msgid "Reset Password"
 msgstr ""
 
-# src/views/components/index/operator-login.js:14
-msgid ""
-"Are you the operator of this Offen installation? Log in to your account."
-msgstr ""
-
 # src/views/components/index/consent-status-display.js:14
 msgid "You are opted in."
 msgstr ""
@@ -451,6 +446,23 @@ msgstr ""
 # #-#-#-#-#  vault.po  #-#-#-#-#
 # src/user-consent.js:135
 msgid "I don't allow"
+msgstr ""
+
+# src/views/components/index/operator-login.js:14
+msgid ""
+"Are you the operator of this Offen installation? Log in to your account."
+msgstr ""
+
+# src/views/components/auditorium/tables.js:30
+msgid "No data available for this view."
+msgstr ""
+
+# src/views/components/auditorium/tables.js:101
+msgid "Show top %d only"
+msgstr ""
+
+# src/views/components/auditorium/tables.js:111
+msgid "Show all entries"
 msgstr ""
 
 # src/views/components/index/main-card.js:19
@@ -562,18 +574,6 @@ msgid ""
 "using a cookie. Offen handles these IDs in an unrecognizable form. <a href="
 "\"https://en.wikipedia.org/wiki/HTTP_cookie\" class=\"%s\" target=\"_blank\" "
 "rel=\"noreferer noopener\">Learn more about cookies here.</a>"
-msgstr ""
-
-# src/views/components/auditorium/tables.js:30
-msgid "No data available for this view."
-msgstr ""
-
-# src/views/components/auditorium/tables.js:101
-msgid "Show top %d only"
-msgstr ""
-
-# src/views/components/auditorium/tables.js:111
-msgid "Show all entries"
 msgstr ""
 
 # src/views/components/auditorium/basic-terms.js:15
@@ -736,8 +736,88 @@ msgid ""
 "value of the current week."
 msgstr ""
 
-# src/views/components/auditorium/privacy.js:28
-msgid "Stay opted in, only delete usage data"
+# src/views/components/auditorium/user-onboarding.js:29
+msgid "Skip"
+msgstr ""
+
+# src/views/components/auditorium/user-onboarding.js:46
+msgid "Welcome to the Auditorium, this is how it works."
+msgstr ""
+
+# src/views/components/auditorium/user-onboarding.js:49
+msgid "What <span class=\"%s\">%s</span> knows about you."
+msgstr ""
+
+# src/views/components/auditorium/user-onboarding.js:56
+msgid "You just visited the page <span class=\"%s\">%s</span> ."
+msgstr ""
+
+# src/views/components/auditorium/user-onboarding.js:64
+msgid "You just visited this website."
+msgstr ""
+
+# src/views/components/auditorium/user-onboarding.js:73
+msgid "You have visited <span class=\"%s\">%s %d</span> times."
+msgstr ""
+
+# src/views/components/auditorium/user-onboarding.js:81
+msgid "It is probably your first time visiting <span class=\"%s\">%s</span> ."
+msgstr ""
+
+# src/views/components/auditorium/user-onboarding.js:90
+msgid "You came via <span class=\"%s\">%s</span> ."
+msgstr ""
+
+# src/views/components/auditorium/user-onboarding.js:97
+msgid "Most likely you are on a <span class=\"%s\">%s</span>."
+msgstr ""
+
+# src/views/components/auditorium/user-onboarding.js:97
+msgid "mobile device"
+msgstr ""
+
+# src/views/components/auditorium/user-onboarding.js:97
+msgid "desktop device"
+msgstr ""
+
+# #-#-#-#-#  auditorium.po  #-#-#-#-#
+# src/views/components/auditorium/user-onboarding.js:106
+# #-#-#-#-#  auditorium.po  #-#-#-#-#
+# src/views/components/auditorium/user-onboarding.js:137
+msgid "Next"
+msgstr ""
+
+# src/views/components/auditorium/user-onboarding.js:122
+msgid "Your data always stays yours."
+msgstr ""
+
+# src/views/components/auditorium/user-onboarding.js:125
+msgid ""
+"Review your data in the Auditorium. You can delete your data or opt out "
+"completly at any time in the Privacy tab."
+msgstr ""
+
+# src/views/components/auditorium/user-onboarding.js:129
+msgid ""
+"Click this symbol to display detailed explanations of the respective terms."
+msgstr ""
+
+# src/views/components/auditorium/user-onboarding.js:152
+msgid "Bookmark this page to come back later."
+msgstr ""
+
+# src/views/components/auditorium/user-onboarding.js:155
+msgid ""
+"Get an overall picture of your data collected over time. Come back here "
+"anytime to see what <span class=\"%s\">%s</span> knows about you."
+msgstr ""
+
+# src/views/components/auditorium/user-onboarding.js:158
+msgid "Now let's get started!"
+msgstr ""
+
+# src/views/components/auditorium/privacy.js:29
+msgid "Stay opted in,<br>only delete usage data"
 msgstr ""
 
 # src/views/components/auditorium/privacy.js:36
@@ -748,12 +828,12 @@ msgstr ""
 msgid "Privacy"
 msgstr ""
 
-# src/views/components/auditorium/privacy.js:52
-msgid "Opt out and delete usage data"
+# src/views/components/auditorium/privacy.js:55
+msgid "Opt out<br>and delete usage data."
 msgstr ""
 
-# src/views/components/auditorium/privacy.js:53
-msgid "Opt in and grant access to your usage data"
+# src/views/components/auditorium/privacy.js:56
+msgid "Opt in and grant<br>access to your usage data."
 msgstr ""
 
 # src/views/components/auditorium/privacy.js:61
@@ -762,6 +842,11 @@ msgstr ""
 
 # src/views/components/auditorium/privacy.js:61
 msgid "Opt in"
+msgstr ""
+
+# src/views/components/auditorium/privacy.js:80
+msgid ""
+"To review your data collected over time,<br>set a bookmark for this page"
 msgstr ""
 
 # src/views/components/auditorium/account-picker.js:14
@@ -795,8 +880,12 @@ msgid ""
 "\">ID.</a>"
 msgstr ""
 
-# src/views/components/auditorium/chart.js:176
-msgid "No data available for the selected time range."
+# src/views/components/auditorium/chart.js:179
+msgid "Empty state"
+msgstr ""
+
+# src/views/components/auditorium/chart.js:181
+msgid "No data available <br>for the selected time range."
 msgstr ""
 
 # src/views/components/auditorium/metrics.js:44
@@ -887,10 +976,6 @@ msgid ""
 "a> you visited to become interactive."
 msgstr ""
 
-# src/views/components/auditorium/explainer-header.js:16
-msgid "Click this symbol to display an explanation of a metric."
-msgstr ""
-
 # src/views/components/auditorium/embed-code.js:18
 msgid "Successfully copied embed code to clipboard."
 msgstr ""
@@ -918,96 +1003,6 @@ msgstr ""
 
 # src/views/components/auditorium/embed-code.js:75
 msgid "Copy code"
-msgstr ""
-
-# src/views/components/auditorium/frequently-asked-questions.js:15
-msgid "FAQ"
-msgstr ""
-
-# src/views/components/auditorium/frequently-asked-questions.js:23
-msgid ""
-"Only page views, sessions, referrer and the visited URL are collected. From "
-"this, other metrics such as for example the bounce rate are calculated."
-msgstr ""
-
-# src/views/components/auditorium/frequently-asked-questions.js:26
-msgid "What kind of data isn't collected?"
-msgstr ""
-
-# src/views/components/auditorium/frequently-asked-questions.js:35
-msgid ""
-"Your usage data is encrypted end-to-end. It will be automatically deleted "
-"after 6 months. You can delete your usage data yourself at any time in the "
-"privacy panel."
-msgstr ""
-
-# src/views/components/auditorium/frequently-asked-questions.js:49
-msgid ""
-"Yes, in particular cookies are used to store your decision about granting "
-"access to your usage data. If you opt in, we also use <a href=\"#terms-"
-"cookies\" class=\"%s\">cookies</a> to store a user and a session <a href="
-"\"#terms-id\" class=\"%s\">ID</a> for you."
-msgstr ""
-
-# src/views/components/auditorium/frequently-asked-questions.js:55
-msgid ""
-"After opening a website where a <a href=\"#terms-offen-installation\" class="
-"\"%s\">Offen installation</a> is active, you can explicitly opt in to the "
-"data collection and thereby help to improve the services you use. Only then "
-"you will be assigned a user and a session <a href=\"#terms-id\" class=\"%s"
-"\">ID</a> using a <a href=\"#terms-cookies\" class=\"%s\">cookie.</a> Offen "
-"handles these <a href=\"#terms-id\" class=\"%s\">IDs</a> in an "
-"unrecognizable form, i.e. no server will ever store this identifier."
-msgstr ""
-
-# src/views/components/auditorium/relative-time.js:13
-msgid "Now"
-msgstr ""
-
-# src/views/components/auditorium/relative-time.js:15
-msgid "%d days later"
-msgstr ""
-
-# src/views/components/auditorium/relative-time.js:15
-msgid "%d days earlier"
-msgstr ""
-
-# src/views/components/auditorium/retire-account.js:21
-msgid ""
-"If you retire the account <em class=\"%s\">%s,</em> it will not appear in "
-"your statistics anymore. Users will be able to access and manage their data "
-"for the account for another 6 months until data expires."
-msgstr ""
-
-# src/views/components/auditorium/retire-account.js:24
-msgid "<em class=\"%s\">Danger zone! This action cannot be undone.</em>"
-msgstr ""
-
-# #-#-#-#-#  auditorium.po  #-#-#-#-#
-# src/views/components/auditorium/retire-account.js:29
-# #-#-#-#-#  auditorium.po  #-#-#-#-#
-# src/views/components/auditorium/retire-account.js:100
-msgid "Retire account"
-msgstr ""
-
-# src/views/components/auditorium/retire-account.js:45
-msgid ""
-"To permanently retire the account, type its name <em class=\"%s\">\"%s\"</"
-"em> into the form below:"
-msgstr ""
-
-# src/views/components/auditorium/retire-account.js:77
-msgid ""
-"The account <em class=\"%s\">\"%s\"</em> has been retired successfully. Log "
-"in again to continue."
-msgstr ""
-
-# src/views/components/auditorium/retire-account.js:78
-msgid "There was an error retiring the account, please try again."
-msgstr ""
-
-# src/views/components/auditorium/retire-account.js:104
-msgid "Toggle display of Retire account functionality"
 msgstr ""
 
 # src/views/components/auditorium/url-tables.js:25
@@ -1137,12 +1132,118 @@ msgid ""
 "you must have visited at least two pages."
 msgstr ""
 
+# src/views/components/auditorium/frequently-asked-questions.js:15
+msgid "FAQ"
+msgstr ""
+
+# src/views/components/auditorium/frequently-asked-questions.js:23
+msgid ""
+"Only page views, sessions, referrer and the visited URL are collected. From "
+"this, other metrics such as for example the bounce rate are calculated."
+msgstr ""
+
+# src/views/components/auditorium/frequently-asked-questions.js:26
+msgid "What kind of data isn't collected?"
+msgstr ""
+
+# src/views/components/auditorium/frequently-asked-questions.js:35
+msgid ""
+"Your usage data is encrypted end-to-end. It will be automatically deleted "
+"after 6 months. You can delete your usage data yourself at any time in the "
+"privacy panel."
+msgstr ""
+
+# src/views/components/auditorium/frequently-asked-questions.js:49
+msgid ""
+"Yes, in particular cookies are used to store your decision about granting "
+"access to your usage data. If you opt in, we also use <a href=\"#terms-"
+"cookies\" class=\"%s\">cookies</a> to store a user and a session <a href="
+"\"#terms-id\" class=\"%s\">ID</a> for you."
+msgstr ""
+
+# src/views/components/auditorium/frequently-asked-questions.js:55
+msgid ""
+"After opening a website where a <a href=\"#terms-offen-installation\" class="
+"\"%s\">Offen installation</a> is active, you can explicitly opt in to the "
+"data collection and thereby help to improve the services you use. Only then "
+"you will be assigned a user and a session <a href=\"#terms-id\" class=\"%s"
+"\">ID</a> using a <a href=\"#terms-cookies\" class=\"%s\">cookie.</a> Offen "
+"handles these <a href=\"#terms-id\" class=\"%s\">IDs</a> in an "
+"unrecognizable form, i.e. no server will ever store this identifier."
+msgstr ""
+
+# src/views/components/auditorium/retire-account.js:21
+msgid ""
+"If you retire the account <em class=\"%s\">%s,</em> it will not appear in "
+"your statistics anymore. Users will be able to access and manage their data "
+"for the account for another 6 months until data expires."
+msgstr ""
+
+# src/views/components/auditorium/retire-account.js:24
+msgid "<em class=\"%s\">Danger zone! This action cannot be undone.</em>"
+msgstr ""
+
+# #-#-#-#-#  auditorium.po  #-#-#-#-#
+# src/views/components/auditorium/retire-account.js:29
+# #-#-#-#-#  auditorium.po  #-#-#-#-#
+# src/views/components/auditorium/retire-account.js:100
+msgid "Retire account"
+msgstr ""
+
+# src/views/components/auditorium/retire-account.js:45
+msgid ""
+"To permanently retire the account, type its name <em class=\"%s\">\"%s\"</"
+"em> into the form below:"
+msgstr ""
+
+# src/views/components/auditorium/retire-account.js:77
+msgid ""
+"The account <em class=\"%s\">\"%s\"</em> has been retired successfully. Log "
+"in again to continue."
+msgstr ""
+
+# src/views/components/auditorium/retire-account.js:78
+msgid "There was an error retiring the account, please try again."
+msgstr ""
+
+# src/views/components/auditorium/retire-account.js:104
+msgid "Toggle display of Retire account functionality"
+msgstr ""
+
 # src/views/components/auditorium/header.js:15
 msgid "You are viewing data as operator with account <em class=\"%s\">%s</em>."
 msgstr ""
 
 # src/views/components/auditorium/header.js:20
 msgid "You are viewing your usage data."
+msgstr ""
+
+# src/views/components/auditorium/relative-time.js:13
+msgid "Now"
+msgstr ""
+
+# src/views/components/auditorium/relative-time.js:15
+msgid "%d days later"
+msgstr ""
+
+# src/views/components/auditorium/relative-time.js:15
+msgid "%d days earlier"
+msgstr ""
+
+# src/views/components/auditorium/live.js:19
+msgid "Real time"
+msgstr ""
+
+# src/views/components/auditorium/live.js:23
+msgid "Active users on site"
+msgstr ""
+
+# src/views/components/auditorium/live.js:29
+msgid "Active pages"
+msgstr ""
+
+# src/views/components/auditorium/live.js:36
+msgid "Visitors"
 msgstr ""
 
 # src/views/components/auditorium/go-settings.js:32
@@ -1161,22 +1262,6 @@ msgstr ""
 
 # src/views/components/auditorium/go-settings.js:53
 msgid "Open admin console"
-msgstr ""
-
-# src/views/components/auditorium/live.js:19
-msgid "Real time"
-msgstr ""
-
-# src/views/components/auditorium/live.js:23
-msgid "Active users on site"
-msgstr ""
-
-# src/views/components/auditorium/live.js:29
-msgid "Active pages"
-msgstr ""
-
-# src/views/components/auditorium/live.js:36
-msgid "Visitors"
 msgstr ""
 
 # src/views/components/auditorium/share.js:15
