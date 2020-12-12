@@ -51,35 +51,50 @@ const UserOnboarding = (props) => {
                           <p class='ma0'>
                             {stats.url
                               ? (
-                                <Span>
-                                  {__('You just visited the page <span class="i tracked">%s</span> .&nbsp;', stats.url)}
-                                </Span>
+                                <Fragment>
+                                  <Span>
+                                    {__('You just visited the page <span class="i tracked">%s</span> .', stats.url)}
+                                  </Span>
+                                  &nbsp;
+                                </Fragment>
                               )
                               : (
-                                <Span>
-                                  {__('You just visited this website.&nbsp;')}
-                                </Span>
+                                <Fragment>
+                                  <Span>
+                                    {__('You just visited this website.')}
+                                  </Span>
+                                  &nbsp;
+                                </Fragment>
                               )}
                             {stats.numVisits > 1
                               ? (
-                                <Span>
-                                  {__('You have visited <span class="i tracked">%s %d</span> times.&nbsp;', stats.domain, stats.numVisits)}
-                                </Span>
+                                <Fragment>
+                                  <Span>
+                                    {__('You have visited <span class="i tracked">%s %d</span> times.', stats.domain, stats.numVisits)}
+                                  </Span>
+                                  &nbsp;
+                                </Fragment>
                               )
                               : (
-                                <Span>
-                                  {__('It is probably your first time visiting <span class="i tracked">%s</span> .&nbsp;', stats.domain)}
-                                </Span>
+                                <Fragment>
+                                  <Span>
+                                    {__('It is probably your first time visiting <span class="i tracked">%s</span> .', stats.domain)}&nbsp;
+                                  </Span>
+                                  &nbsp;
+                                </Fragment>
                               )}
                             {stats.referrer
                               ? (
-                                <Span>
-                                  {__('You came via <span class="i tracked">%s</span> .&nbsp;', stats.referrer)}
-                                </Span>
+                                <Fragment>
+                                  <Span>
+                                    {__('You came via <span class="i tracked">%s</span> .', stats.referrer)}
+                                  </Span>
+                                  &nbsp;
+                                </Fragment>
                               )
                               : null}
                             <Span>
-                              {__('Most likely your are on a <span class="i tracked">%s</span>.', stats.isMobile ? __('mobile device') : __('desktop device'))}
+                              {__('Most likely you are on a <span class="i tracked">%s</span>.', stats.isMobile ? __('mobile device') : __('desktop device'))}
                             </Span>
                           </p>
                         </Content>

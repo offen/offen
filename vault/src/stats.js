@@ -465,7 +465,7 @@ function onboardingStats (events) {
       ? payload.href.host + payload.href.pathname
       : null,
     referrer: payload.referrer && payload.referrer.host !== payload.href.host
-      ? payload.referrer.host || null
+      ? placeInBucket(payload.referrer.host)
       : null,
     numVisits: numVisits,
     isMobile: payload.isMobile

@@ -425,7 +425,7 @@ describe('src/stats.js', function () {
   })
 
   describe('stats.onboardingStats(...events)', function () {
-    it('returns a retention matrix for the given event chunks', function () {
+    it('returns data about the last event in the set and the associated account', function () {
       return stats.onboardingStats([
         {
           eventId: 'event-a',
