@@ -248,9 +248,6 @@ jobs:
           path: /tmp/artifacts
 
   release_docs:
-    environment:
-      BUCKET: offen-docs
-      DISTRIBUTION: E2Q11JP684XRCO
     docker:
       - image: cimg/python:3.7
         auth: *docker-pull-creds
