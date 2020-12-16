@@ -1,0 +1,20 @@
+/**
+ * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+.onboarding-height { height: 28rem; }
+@media screen and (min-width: 30em) and (max-width: 45em) {
+  .onboarding-height { height: 22rem; }
+}
+@media screen and (min-width: 45em) {
+  .onboarding-height { height: 16rem; }
+}
+
+.onboarding-image-height { max-height: 8rem; }
+@media screen and (min-width: 30em) and (max-width: 45em) {
+  .onboarding-image-height { max-height: 100%; }
+}
+@media screen and (min-width: 45em) {
+  .onboarding-image-height { max-height: 100%; }
+}

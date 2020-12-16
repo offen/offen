@@ -423,4 +423,46 @@ describe('src/stats.js', function () {
         })
     })
   })
+
+  describe('stats.onboardingStats(...events)', function () {
+    it('returns data about the last event in the set and the associated account', function () {
+      return stats.onboardingStats([
+        {
+          eventId: 'event-a',
+          accountId: 'account-a',
+          payload: { referrer: new window.URL('https://www.coolblog.com/nice-article'), href: new window.URL('https://www.offen.dev'), isMobile: false }
+        },
+        {
+          eventId: 'event-z',
+          accountId: 'account-a',
+          payload: { referrer: new window.URL('https://www.coolblog.com/ok'), href: new window.URL('https://www.offen.dev/get-started'), isMobile: false }
+        },
+        {
+          eventId: 'event-b',
+          accountId: 'account-b',
+          payload: { referrer: new window.URL('https://www.coolblog.com/other'), href: new window.URL('https://www.example.com'), isMobile: true }
+        },
+        {
+          eventId: 'event-x',
+          accountId: 'account-a',
+          payload: { referrer: new window.URL('https://www.coolblog.com/something'), href: new window.URL('https://www.offen.dev'), isMobile: false }
+        }
+      ])
+        .then(function (result) {
+          assert.deepStrictEqual(result, {
+            domain: 'www.offen.dev',
+            url: 'www.offen.dev/get-started',
+            referrer: 'www.coolblog.com',
+            numVisits: 3,
+            isMobile: false
+          })
+        })
+    })
+    it('returns null when given no events', function () {
+      return stats.onboardingStats([])
+        .then(function (result) {
+          assert.deepStrictEqual(result, null)
+        })
+    })
+  })
 })

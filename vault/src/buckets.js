@@ -33,6 +33,14 @@ var buckets = [
     name: 'DuckDuckGo'
   },
   {
+    re: /(www\.)?ecosia\.org($|\/)*/,
+    name: 'Ecosia'
+  },
+  {
+    re: /(www\.)?qwant\.com($|\/)*/,
+    name: 'Qwant'
+  },
+  {
     re: /(www\.)?baidu\.com($|\/)/,
     name: 'Baidu'
   },
