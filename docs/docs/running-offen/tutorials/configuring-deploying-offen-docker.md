@@ -58,7 +58,7 @@ Keeping these files available at any time is required for running the applicatio
 
 ---
 
-First we need to create two Docker volumes for persisiting the SQLite database and SSL certificates:
+First we need to create two Docker volumes for persisting the SQLite database and SSL certificates:
 
 ```
 docker volume create offen_data
