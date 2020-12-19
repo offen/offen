@@ -65,7 +65,7 @@ In case you do have a SSL certificate for the domain you are planning to run Off
 
 While Offen can take care of itself being run using SSL, the protocol used to serve the host document also matters, as it defines whether browsers [consider the execution context secure][secure-context] or not. This means that in case you serve your website using plain `http`, Offen will not be able to use native cryptographic methods for encrypting usage data and will fall back to userland implementations instead. This approach is heavy and slow and is __not recommended__.
 
-__Using SSL for your own site will be benefitial regarding lots of other aspects as well.__ You can check the [LetsEncrypt website][lets-encrypt] for plenty of information on how to get free and robust SSL for any setup.
+__Using SSL for your own site will be beneficial regarding lots of other aspects as well.__ You can check the [LetsEncrypt website][lets-encrypt] for plenty of information on how to get free and robust SSL for any setup.
 
 [lets-encrypt]: https://letsencrypt.org/
 [secure-context]: https://developer.mozilla.org/en-US/docs/Web/Security/Secure_Contexts/features_restricted_to_secure_contexts
