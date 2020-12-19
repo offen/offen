@@ -2,7 +2,7 @@
 layout: default
 title: Known issues
 nav_order: 12
-description: "Known issues when runnning Offen and their possible workarounds"
+description: "Known issues when running Offen and their possible workarounds"
 permalink: /running-offen/known-issues/
 parent: Running Offen
 ---
