@@ -96,7 +96,7 @@ In case you own a SSL certificate that is valid for the domain you are planning 
 ### OFFEN_SERVER_AUTOTLS
 {: .no_toc }
 
-In case you want Offen to automatically request a free SSL certifcate from LetsEncrypt you can use this parameter and assign a comma separated list of supported domain names (e.g. `offen.mydomain.org,offen.otherdomain.org`) you are planning to serve Offen from. This will have the application automatically handle certificate issuing and renewal.
+In case you want Offen to automatically request a free SSL certificate from LetsEncrypt you can use this parameter and assign a comma separated list of supported domain names (e.g. `offen.mydomain.org,offen.otherdomain.org`) you are planning to serve Offen from. This will have the application automatically handle certificate issuing and renewal.
 
 __Heads Up__
 {: .label .label-red }

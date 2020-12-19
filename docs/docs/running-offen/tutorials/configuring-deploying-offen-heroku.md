@@ -39,7 +39,7 @@ If you get stuck or need help, [file an issue][gh-issues], [tweet (@hioffen)][tw
 
 ---
 
-## Prerequistes
+## Prerequisites
 
 To follow the steps in this tutorial you will need to have created an account with Heroku.
 
