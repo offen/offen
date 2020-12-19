@@ -60,14 +60,14 @@ Keeping these files available at any time is required for running the applicatio
 
 First we need to create two Docker volumes for persisiting the SQLite database and SSL certificates:
 
-```
+```bash
 docker volume create offen_data
 docker volume create offen_certs
 ```
 
 Next, we create an empty file for holding the runtime configuration:
 
-```
+```bash
 mkdir -p ~/.config
 touch ~/.config/offen.env
 ```
@@ -85,7 +85,7 @@ Offen lets you setup a new instance using the `setup` command.
 
 The value provided to the `email` flag will be your login, `name` is the name of the first account to be created. The password for your login will be requested in a prompt. Passing `-populate` will create required secrets in the `offen.env` file.
 
-```
+```bash
 docker run -it --rm \
   -v offen_data:/var/opt/offen \
   -v offen_certs:/var/www/.cache \
@@ -100,7 +100,7 @@ When finished, the command has created an account for you, using the given name 
 
 Your `offen.env` file will now look something like this:
 
-```
+```properties
 OFFEN_SECRET="uNrZP7r5fY3sfS35tbzR9w==" # do not use this secret in production
 ```
 
@@ -119,7 +119,7 @@ The official Docker image is available as [`offen/offen`][docker-hub] on Docker 
 
 Offen requires a secure connection and can automatically acquire a renew SSL certificates from LetsEncrypt for your domain. All you need to do is add the domain you want to serve Offen from to your `offen.env` file:
 
-```
+```properties
 OFFEN_SERVER_AUTOTLS="offen.mysite.com"
 ```
 
@@ -136,7 +136,7 @@ Offen needs to send transactional email for the following features:
 
 To enable this, you can add SMTP credentials, namely __Host, User, Password and Port__ to the `offen.env` file:
 
-```
+```properties
 OFFEN_SMTP_HOST="smtp.mysite.com"
 OFFEN_SMTP_USER="me"
 OFFEN_SMTP_PASSWORD="my-password"
@@ -156,7 +156,7 @@ Offen will start without these values being set, but you will not be able to res
 
 Before you start the application, it's a good idea to double check the setup. Your config file should now contain an entry for each of these values:
 
-```
+```properties
 OFFEN_SECRET="uNrZP7r5fY3sfS35tbzR9w==" # do not use this secret in production
 OFFEN_SERVER_AUTOTLS="offen.mysite.com"
 OFFEN_SMTP_HOST="smtp.mysite.com"
@@ -173,7 +173,7 @@ If all of this is populated with the values you expect, you're ready to use Offe
 
 To start Offen use the Docker image's default command:
 
-```
+```bash
 docker run -d \
   -p 80:80 -p 443:443 \
   --name offen \
@@ -185,7 +185,7 @@ docker run -d \
 
 Once the application has started, you can use `docker ps` to check if it's up and running:
 
-```
+```console
 $ docker ps
 CONTAINER ID        IMAGE                        COMMAND                  CREATED             STATUS              PORTS                    NAMES
 70653aca75b4        offen/offen:{{ site.offen_version }}   "offen"                  5 minutes ago       Up 5 minutes        80/tcp, 443/tcp          offen
@@ -198,7 +198,7 @@ Your instance is now ready to use. Once you have setup DNS to point at your host
 
 To stop the running container, run `stop`:
 
-```
+```bash
 docker stop offen
 ```
 
@@ -207,6 +207,6 @@ docker stop offen
 
 To read log output, use `logs`:
 
-```
+```bash
 docker logs offen
 ```
