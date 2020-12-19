@@ -46,24 +46,26 @@ This tutorial assumes the machine you are planning to run Offen on is connected 
 
 Offen version v0.1.6 and later is packaged as a Debian package, so installation on Ubuntu (and other Debian based distributions) is easy. First, download the package for the latest release:
 
-```
+```bash
 curl -sSL https://get.offen.dev/deb -o offen.deb
 ```
 
 Next, you can verify the package's signature using `gpg` and `dpkg-sig` (this step is optional, but recommended):
-```
+
+```bash
 curl https://keybase.io/hioffen/pgp_keys.asc | gpg --import
 dpkg-sig --verify offen.deb
 ```
 
 The package itself can be installed using `dpkg`:
 
-```
+```bash
 sudo dpkg -i offen.deb
 ```
 
 You can confirm that your installation is working as expected like this:
-```
+
+```console
 $ which offen
 /usr/local/bin/offen
 $ offen version
@@ -72,7 +74,7 @@ INFO[0000] Current build created using                   revision={{ site.offen_
 
 You can now safely remove the download:
 
-```
+```bash
 rm offen.deb
 ```
 
@@ -88,14 +90,14 @@ In this setup, Offen stores its runtime configuration in `/etc/offen/offen.env`.
 
 Offen is using a secret to sign login cookies and tokens for resetting passwords or inviting users. You can generate a unique secret for your installation using the `offen secret` subcommand:
 
-```
+```console
 $ offen secret
 INFO[0000] Created 16 bytes secret                       secret="S2dR9JYYTNG3+5QN+jxiwA=="
 ```
 
 Populate the `OFFEN_SECRET` key with the value you just generated:
 
-```
+```properties
 OFFEN_SECRET="S2dR9JYYTNG3+5QN+jxiwA==" # do not use this secret in production
 ```
 
@@ -108,7 +110,7 @@ If you do not set this config value, Offen will generate a random one every time
 
 Offen requires a secure connection and can automatically acquire a renew SSL certificates from LetsEncrypt for your domain. Add the domain you want to use to serve Offen to `OFFEN_SERVER_AUTOTLS`:
 
-```
+```properties
 OFFEN_SERVER_AUTOTLS="offen.mysite.com"
 ```
 
@@ -123,7 +125,7 @@ Offen needs to send transactional email for the following features:
 
 To enable this, you can add SMTP credentials, namely __Host, Sender, User, Password and Port__ to the `offen.env` file:
 
-```
+```properties
 OFFEN_SMTP_HOST="smtp.mysite.com"
 OFFEN_SMTP_SENDER="offen@mysite.com"
 OFFEN_SMTP_USER="me"
@@ -142,7 +144,7 @@ Offen will run without these values being set and try to fall back to a local `s
 
 Before you start the application, it's a good idea to double check the setup. Your config file at `/etc/offen/offen.env` should now contain an entry for each of these values:
 
-```
+```properties
 OFFEN_SECRET="uNrZP7r5fY3sfS35tbzR9w==" # do not use this secret in production
 OFFEN_SERVER_AUTOTLS="offen.mysite.com"
 OFFEN_SMTP_HOST="smtp.mysite.com"
@@ -159,14 +161,14 @@ If all of this is populated with the values you expect, you're ready to use Offe
 
 `systemd` is used to make sure Offen is up and running at all times (e.g. after rebooting or crashing) and accepts events. The `deb` package has already creating a `systemd` service for you on installation, so all you need to do now is start it:
 
-```
+```bash
 sudo systemctl enable offen
 sudo systemctl start offen
 ```
 
 You can check whether this worked correctly using `status:`
 
-```
+```console
 $ sudo systemctl status offen
 ● offen.service - Offen Service
    Loaded: loaded (/etc/systemd/system/offen.service; enabled; vendor preset: enabled)
@@ -194,7 +196,7 @@ After submitting the form, your Offen instance is ready to use.
 
 The easiest way for accessing application logs in this setup is using `journald`
 
-```
+```console
 $ sudo journalctl -u offen
 offen[6573]: time="2020-01-27T15:57:41+01:00" level=info msg="Successfully applied database migrations"
 offen[6573]: time="2020-01-27T15:57:41+01:00" level=info msg="Server now listening on port 80 and 443 using AutoTLS"
@@ -205,7 +207,7 @@ offen[6573]: time="2020-01-27T15:57:41+01:00" level=info msg="Cron successfully 
 
 If you want to uninstall the service from your system, stop and disable the `offen` service:
 
-```
+```bash
 sudo systemctl stop offen
 sudo systemctl disable offen
 ```
@@ -214,7 +216,7 @@ sudo systemctl disable offen
 
 To update to a new version of Offen, download the package for the newer version and install:
 
-```
+```bash
 curl https://get.offen.dev/deb -o offen.deb
 dpkg-sig --verify offen.deb
 sudo dpkg -i offen.deb
@@ -222,13 +224,13 @@ sudo dpkg -i offen.deb
 
 Confirm that this worked by having `offen` print its updated version:
 
-```
+```console
 $ offen version
 INFO[0000] Current build created using                   revision=v0.2.12
 ```
 
 You can now restart your service to pick up the changes:
 
-```
+```bash
 sudo systemctl restart offen
 ```
