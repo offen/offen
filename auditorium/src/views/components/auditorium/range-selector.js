@@ -12,12 +12,11 @@ const ExplainerIcon = require('./explainer-icon')
 const RangeSelector = (props) => {
   const { resolution, range: currentRange, showExplainer, onExplain, explainerActive } = props
   const ranges = [
-    { display: __('24 hours'), query: { range: '24', resolution: 'hours' } },
-    { display: __('7 days'), query: null },
-    { display: __('28 days'), query: { range: '28', resolution: 'days' } },
-    { display: __('6 weeks'), query: { range: '6', resolution: 'weeks' } },
-    { display: __('12 weeks'), query: { range: '12', resolution: 'weeks' } },
-    { display: __('6 months'), query: { range: '6', resolution: 'months' } }
+    { display: __('Yesterday'), query: { range: 'yesterday', resolution: 'hours' } },
+    { display: __('Last 24 hours'), query: { range: '24', resolution: 'hours' } },
+    { display: __('Last 7 days'), query: null },
+    { display: __('Last 30 days'), query: { range: '30', resolution: 'days' } },
+    { display: __('All time'), query: { range: '6', resolution: 'months' } }
   ]
 
   const items = ranges.map(function (range, index) {
@@ -55,7 +54,7 @@ const RangeSelector = (props) => {
         class={classnames('pa2', 'ma-1', explainerActive ? 'bg-light-yellow' : null)}
       >
         <h4 class='f4 normal ma0'>
-          {__('Show data from the last')}
+          {__('Show data from')}
           {showExplainer
             ? (
               <ExplainerIcon
