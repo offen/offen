@@ -81,7 +81,7 @@ function Queries (storage) {
     var fromParam
     var toParam
     try {
-      fromParam = query && query.from && startOf[resolution](new Date(query.param))
+      fromParam = query && query.from && startOf[resolution](new Date(query.from))
       toParam = query && query.to && endOf[resolution](new Date(query.to))
     } catch (err) {
       return Promise.reject(new Error('Error parsing given date ranges: ' + err.message))
@@ -97,17 +97,17 @@ function Queries (storage) {
     // start day
     var range = parseInt((query && query.range) || 7, 10)
     if (fromParam) {
-      range = difference[resolution](fromParam, toParam)
+      range = Math.abs(difference[resolution](toParam, fromParam)) + 1
     }
     if (range === 'yesterday') {
-      fromParam = subHours(startOfYesterday(), 1)
-      toParam = subHours(endOfYesterday(), 1)
+      fromParam = startOfYesterday()
+      toParam = endOfYesterday()
       range = Math.abs(difference[resolution](toParam, fromParam)) + 1
     }
 
     var now = (query && query.now && new Date(query.now)) || new Date()
-    var lowerBound = toParam || startOf[resolution](subtract[resolution](now, range - 1))
-    var upperBound = fromParam || endOf[resolution](now)
+    var lowerBound = fromParam || startOf[resolution](subtract[resolution](now, range - 1))
+    var upperBound = toParam || endOf[resolution](now)
 
     var proxy = new GetEventsProxy(storage, accountId, publicJwk, privateJwk)
     var allEvents = storage.getRawEvents(accountId)

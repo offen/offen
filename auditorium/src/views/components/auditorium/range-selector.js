@@ -5,12 +5,17 @@
 
 /** @jsx h */
 const { h } = require('preact')
+const { useState } = require('preact/hooks')
 const classnames = require('classnames')
 
 const ExplainerIcon = require('./explainer-icon')
+const DatePicker = require('./date-picker')
 
 const RangeSelector = (props) => {
-  const { resolution, range: currentRange, showExplainer, onExplain, explainerActive } = props
+  const {
+    resolution, range: currentRange, showExplainer, onExplain, explainerActive,
+    from, to
+  } = props
   const ranges = [
     { display: __('Yesterday'), query: { range: 'yesterday', resolution: 'hours' } },
     { display: __('Last 24 hours'), query: { range: '24', resolution: 'hours' } },
@@ -19,9 +24,10 @@ const RangeSelector = (props) => {
     { display: __('All time'), query: { range: '6', resolution: 'months' } }
   ]
 
+  const [showDatepicker, setShowDatepicker] = useState(false)
+
   const items = ranges.map(function (range, index) {
     let url = window.location.pathname
-    const activeRange = JSON.stringify({ range: currentRange, resolution }) === JSON.stringify(range.query || {})
     if (range.query) {
       url += '?' + new window.URLSearchParams(range.query)
     }
@@ -30,6 +36,9 @@ const RangeSelector = (props) => {
         {range.display}
       </a>
     )
+
+    const activeRange = !(from && to) &&
+      JSON.stringify({ range: currentRange, resolution }) === JSON.stringify(range.query || {})
 
     return (
       <li key={index} class='pr3 bt b--light-gray'>
@@ -47,6 +56,28 @@ const RangeSelector = (props) => {
       </li>
     )
   })
+
+  items.push((() => {
+    const isActive = from && to
+    return (
+      <li key='custom-daterange'>
+        <span
+          class={isActive
+            ? 'b link dim dib bt bw2 b--dark-green ph2 pv2 mb2 mr3 dark-green'
+            : 'b dim dib pv2 dark-green mt1 mb2 mr3 pointer'}
+          aria-current='time'
+          onclick={() => setShowDatepicker(!showDatepicker)}
+        >
+          {__('Custom')}
+          <span class={classnames(
+            'ml4 dib label-toggle',
+            showDatepicker ? null : 'label-toggle--rotate'
+          )}
+          />
+        </span>
+      </li>
+    )
+  })())
 
   return (
     <div class='pa3 bg-white flex-auto'>
@@ -76,6 +107,15 @@ const RangeSelector = (props) => {
       <ul class='flex flex-wrap list pa0 mh0 mt3 mb3 grow-list b--light-gray'>
         {items}
       </ul>
+      {showDatepicker
+        ? (
+          <DatePicker
+            from={from}
+            to={to}
+            onClose={() => setShowDatepicker(false)}
+          />
+        )
+        : null}
     </div>
   )
 }
