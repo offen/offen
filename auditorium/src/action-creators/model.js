@@ -4,6 +4,8 @@
  */
 
 const errors = require('./errors')
+const differenceInWeeks = require('date-fns/difference_in_weeks')
+const differenceInMonths = require('date-fns/difference_in_months')
 
 exports.query = (data, authenticatedUser, softFailureMessage, inBackground) => (dispatch, getState, postMessage) => {
   if (!inBackground) {
@@ -12,6 +14,33 @@ exports.query = (data, authenticatedUser, softFailureMessage, inBackground) => (
       payload: null
     })
   }
+
+  // in case a from and a to date are given but no resolution value, we try to
+  // infer a value that makes sense to display
+  if (data && data.from && data.to && !data.resolution) {
+    var toDate = new Date(data.to)
+    var fromDate = new Date(data.from)
+    var weeks = differenceInWeeks(toDate, fromDate)
+    var months = differenceInMonths(toDate, fromDate)
+
+    // mobile and desktop screens use different rules
+    if (window.matchMedia('screen and (min-width: 30em)')) {
+      if (weeks >= 6) {
+        data.resolution = 'weeks'
+      }
+      if (months >= 3) {
+        data.resolution = 'months'
+      }
+    } else {
+      if (weeks >= 4) {
+        data.resolution = 'weeks'
+      }
+      if (months >= 3) {
+        data.resolution = 'months'
+      }
+    }
+  }
+
   const payload = data
     ? { query: data, authenticatedUser: authenticatedUser }
     : { authenticatedUser: authenticatedUser }

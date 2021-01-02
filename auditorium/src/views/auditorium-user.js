@@ -94,7 +94,7 @@ const AuditoriumView = (props) => {
       <div class='flex flex-column flex-row-l'>
         <div class='w-100 flex bt ba-ns b--black-10 br0 br2-ns mb2-ns'>
           <RangeSelector
-            resolution={resolution}
+            resolution={model.resolution}
             range={range}
             {...explainerPropsFor('range-selector')}
           />
@@ -105,7 +105,6 @@ const AuditoriumView = (props) => {
           <Chart
             model={model}
             isOperator={false}
-            resolution={resolution}
             {...explainerPropsFor('chart')}
           />
         </div>
