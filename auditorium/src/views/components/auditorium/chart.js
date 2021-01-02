@@ -29,8 +29,9 @@ const barColorViews = '#19A974'
 const barColorViewsFade = '#19A974'
 
 const Chart = (props) => {
-  const { model, isOperator, showExplainer, onExplain, explainerActive, resolution = 'days' } = props
-  const { pageviews } = model
+  const { model, isOperator, showExplainer, onExplain, explainerActive } = props
+  const { pageviews, resolution } = model
+
   const x = pageviews.map(function (item) {
     return item.date
   })
