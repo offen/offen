@@ -11,6 +11,7 @@ var source = require('vinyl-source-stream')
 var rev = require('gulp-rev')
 var buffer = require('vinyl-buffer')
 var gap = require('gulp-append-prepend')
+var Readable = require('stream').Readable
 
 var pkg = require('./package.json')
 
@@ -54,7 +55,7 @@ function makeScriptTask (dest, locale) {
       entries: './index.js',
       // See: https://github.com/nikku/karma-browserify/issues/130#issuecomment-120036815
       postFilter: function (id, file, currentPkg) {
-        if (currentPkg.name === pkg.name) {
+        if (currentPkg && currentPkg.name === pkg.name) {
           currentPkg.browserify.transform = []
         }
         return true
@@ -74,6 +75,7 @@ function makeScriptTask (dest, locale) {
     return b
       .exclude('plotly.js-basic-dist')
       .exclude('zxcvbn')
+      .add(configureDatepickerLocale(locale))
       .plugin('tinyify')
       .bundle()
       .pipe(source('index.js'))
@@ -106,4 +108,17 @@ function makeVendorTask (dest) {
       .pipe(rev.manifest(dest + '/rev-manifest.json', { base: dest, merge: true }))
       .pipe(gulp.dest(dest))
   }
+}
+
+// This function creates a module that registers the given locale with
+// `react-datepicker`. Handling this at build time allows us to avoid including
+// unused locales for non-English bundles. At development time, the default
+// locale (en) will be included implicitly.
+function configureDatepickerLocale (locale) {
+  return Readable.from([`
+const { registerLocale } = require('react-datepicker')
+const locale = require('date-fns/locale/${locale}')
+
+registerLocale('${locale}', locale)
+  `])
 }

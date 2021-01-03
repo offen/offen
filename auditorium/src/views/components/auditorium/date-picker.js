@@ -35,6 +35,7 @@ module.exports = (props) => {
     <div class='flex flex-column'>
       <div class='flex justify-center'>
         <DatePicker
+          locale={process.env.LOCALE || 'en'}
           selected={startDate}
           onChange={onChange}
           startDate={startDate}
