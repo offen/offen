@@ -12,7 +12,7 @@ const format = require('date-fns/format')
 const isFuture = require('date-fns/is_future')
 const differenceInDays = require('date-fns/difference_in_days')
 
-sf('react-datepicker/dist/react-datepicker.css')
+sf('./../../../../styles/react-datepicker/datepicker.scss')
 
 module.exports = (props) => {
   const { onClose, from, to } = props
