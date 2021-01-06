@@ -18,11 +18,6 @@ module.exports = (props) => {
   const { onClose, from, to } = props
   const [startDate, setStartDate] = useState(from ? new Date(from) : new Date())
   const [endDate, setEndDate] = useState(to ? new Date(to) : null)
-  const onChange = dates => {
-    const [start, end] = dates
-    setStartDate(start)
-    setEndDate(end)
-  }
 
   let url = window.location.pathname
   if (startDate && endDate) {
@@ -37,10 +32,21 @@ module.exports = (props) => {
         <DatePicker
           locale={process.env.LOCALE || 'en'}
           selected={startDate}
-          onChange={onChange}
+          onChange={(date) => setStartDate(date)}
           startDate={startDate}
           endDate={endDate}
-          selectsRange
+          selectsStart
+          inline
+          filterDate={(date) => !isFuture(date) && differenceInDays(now, date) <= 6 * 31}
+        />
+        <DatePicker
+          locale={process.env.LOCALE || 'en'}
+          selected={endDate}
+          onChange={(date) => setEndDate(date)}
+          startDate={startDate}
+          endDate={endDate}
+          selectsEnd
+          minDate={startDate}
           inline
           filterDate={(date) => !isFuture(date) && differenceInDays(now, date) <= 6 * 31}
         />
