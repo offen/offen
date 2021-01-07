@@ -257,7 +257,7 @@ msgstr ""
 msgid "Setup instance"
 msgstr ""
 
-# src/views/components/_shared/with-layout.js:34
+# src/views/components/_shared/with-layout.js:36
 msgid "Offen Auditorium"
 msgstr ""
 
@@ -265,20 +265,20 @@ msgstr ""
 msgid "An error occurred: %s"
 msgstr ""
 
-# src/views/components/_shared/with-layout.js:55
+# src/views/components/_shared/with-layout.js:57
 msgid ""
 "<a href=\"https://www.offen.dev/\" class=\"%s\" target=\"_blank\" rel="
 "\"noreferer noopener\">Offen</a>"
 msgstr ""
 
 # #-#-#-#-#  auditorium.po  #-#-#-#-#
-# src/views/components/_shared/with-layout.js:62
+# src/views/components/_shared/with-layout.js:64
 #. #-#-#-#-#  server.po  #-#-#-#-#
 #. ~ line 54 "public/index.go.html"
 msgid "Fair web analytics"
 msgstr ""
 
-# src/views/components/_shared/with-layout.js:69
+# src/views/components/_shared/with-layout.js:71
 msgid ""
 "Found an issue, need help or want to add something?<br><a href=\"https://"
 "twitter.com/hioffen\" class=\"%s\" target=\"_blank\" rel=\"noreferer noopener"
@@ -411,7 +411,10 @@ msgstr ""
 msgid "Manage your usage data this website has collected."
 msgstr ""
 
+# #-#-#-#-#  auditorium.po  #-#-#-#-#
 # src/views/components/index/header-card.js:39
+# #-#-#-#-#  auditorium.po  #-#-#-#-#
+# src/views/components/auditorium/user-onboarding.js:166
 msgid "Open Auditorium"
 msgstr ""
 
@@ -820,7 +823,7 @@ msgstr ""
 msgid "Stay opted in,<br>only delete usage data"
 msgstr ""
 
-# src/views/components/auditorium/privacy.js:36
+# src/views/components/auditorium/privacy.js:38
 msgid "Delete"
 msgstr ""
 
@@ -836,11 +839,11 @@ msgstr ""
 msgid "Opt in and grant<br>access to your usage data."
 msgstr ""
 
-# src/views/components/auditorium/privacy.js:61
+# src/views/components/auditorium/privacy.js:65
 msgid "Opt out"
 msgstr ""
 
-# src/views/components/auditorium/privacy.js:61
+# src/views/components/auditorium/privacy.js:65
 msgid "Opt in"
 msgstr ""
 
@@ -853,25 +856,25 @@ msgstr ""
 msgid "Choose account"
 msgstr ""
 
-# src/views/components/auditorium/chart.js:140
+# src/views/components/auditorium/chart.js:142
 msgid "Page views and %s"
 msgstr ""
 
 # #-#-#-#-#  auditorium.po  #-#-#-#-#
-# src/views/components/auditorium/chart.js:140
+# src/views/components/auditorium/chart.js:142
 # #-#-#-#-#  auditorium.po  #-#-#-#-#
 # src/views/components/auditorium/metrics.js:36
 msgid "users"
 msgstr ""
 
 # #-#-#-#-#  auditorium.po  #-#-#-#-#
-# src/views/components/auditorium/chart.js:140
+# src/views/components/auditorium/chart.js:142
 # #-#-#-#-#  auditorium.po  #-#-#-#-#
 # src/views/components/auditorium/metrics.js:37
 msgid "websites"
 msgstr ""
 
-# src/views/components/auditorium/chart.js:154
+# src/views/components/auditorium/chart.js:156
 msgid ""
 "This panel displays the number of pages (bright green) and websites (dark "
 "green) you have visited where the <a href=\"#terms-offen-installation\" "
@@ -1318,18 +1321,18 @@ msgid "Not found..."
 msgstr ""
 
 # #-#-#-#-#  auditorium.po  #-#-#-#-#
-# src/views/auditorium-user.js:41
+# src/views/auditorium-user.js:43
 # #-#-#-#-#  auditorium.po  #-#-#-#-#
 # src/views/index.js:29
 msgid "Checking your consent status"
 msgstr ""
 
-# src/views/auditorium-user.js:56
+# src/views/auditorium-user.js:58
 msgid "Fetching and decrypting the latest data"
 msgstr ""
 
 # #-#-#-#-#  auditorium.po  #-#-#-#-#
-# src/views/auditorium-user.js:157
+# src/views/auditorium-user.js:170
 # #-#-#-#-#  auditorium.po  #-#-#-#-#
 # src/views/auditorium-operator.js:234
 msgid "Auditorium | Offen"
@@ -1469,7 +1472,7 @@ msgstr ""
 # #-#-#-#-#  vault.po  #-#-#-#-#
 # index.js:27
 # #-#-#-#-#  vault.po  #-#-#-#-#
-# index.js:57
+# index.js:59
 # #-#-#-#-#  vault.po  #-#-#-#-#
 # src/middleware.js:36
 msgid "This page is using Offen to collect usage statistics."
@@ -1484,17 +1487,17 @@ msgstr ""
 # #-#-#-#-#  vault.po  #-#-#-#-#
 # index.js:29
 # #-#-#-#-#  vault.po  #-#-#-#-#
-# index.js:60
+# index.js:62
 msgid "Find out more about Offen at \"https://www.offen.dev\"."
 msgstr ""
 
-# index.js:58
+# index.js:60
 msgid ""
 "Your setup prevents third party cookies or you have disabled it in your "
 "browser's settings."
 msgstr ""
 
-# index.js:59
+# index.js:61
 msgid "No usage data will be collected."
 msgstr ""
 
