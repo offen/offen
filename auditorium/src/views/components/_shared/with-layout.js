@@ -42,7 +42,7 @@ const Layout = (props) => {
           ? (
             <Fragment>
               <HighlightBox>
-                {__('An error occured: %s', props.error.message)}
+                {__('An error occurred: %s', props.error.message)}
               </HighlightBox>
               <pre>{props.error.stack}</pre>
             </Fragment>

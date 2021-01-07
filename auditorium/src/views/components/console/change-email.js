@@ -21,7 +21,7 @@ const ChangeEmail = (props) => {
         emailAddress: formData['email-address'],
         emailCurrent: formData['email-current']
       },
-      __('Please log in again, using your updated email.'),
+      __('Please log in again using your updated email.'),
       __('Could not change email. Try again.')
     )
       .then(() => {

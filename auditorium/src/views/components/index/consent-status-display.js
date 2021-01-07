@@ -11,8 +11,8 @@ const HighlightBox = require('./../_shared/highlight-box')
 module.exports = (props) => {
   if (props.consentStatus) {
     const text = props.consentStatus === 'allow'
-      ? __('You are opted in.')
-      : __('You are opted out.')
+      ? __('You have opted in.')
+      : __('You have opted out.')
     return (
       <HighlightBox
         dangerouslySetInnerHTML={{ __html: text }}

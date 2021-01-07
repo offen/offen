@@ -40,7 +40,7 @@ const EmbedCode = (props) => {
           ? (
             <a
               class={classnames('dib', 'label-toggle', !isCollapsed ? null : 'label-toggle--rotate')}
-              aria-label={__('Toggle display of Embed code')}
+              aria-label={__('Toggle display of embed code')}
             />
           )
           : null}
