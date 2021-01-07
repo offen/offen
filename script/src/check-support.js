@@ -12,7 +12,7 @@ module.exports = checkSupport
 function checkSupport (callback) {
   var err = null
   if (!supportsIndexedDb()) {
-    err = new Error(__('Browser does not support IndexedDB which is required'))
+    err = new Error(__('Browser does not support IndexedDB which is required.'))
   }
   setTimeout(function () {
     callback(err)

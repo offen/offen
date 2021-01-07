@@ -24,7 +24,7 @@ const Share = (props) => {
 
     if (invitee === emailAddress) {
       onValidationError(
-        new Error(__('You cannot invite yourself'))
+        new Error(__('You cannot invite yourself.'))
       )
       resetForm()
       return

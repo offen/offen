@@ -101,7 +101,7 @@ const RetireAccount = (props) => {
               </h4>
               <a
                 class={classnames('dib', 'label-toggle', isCollapsed ? 'label-toggle--rotate' : null)}
-                aria-label={__('Toggle display of Retire account functionality')}
+                aria-label={__('Toggle display of retire account functionality')}
               />
             </div>
           )

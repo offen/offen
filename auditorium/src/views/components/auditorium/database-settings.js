@@ -36,7 +36,7 @@ const DatabaseSettings = (props) => {
                 {__('Database settings')}
               </h4>
               <a
-                aria-label={__('Toggle display of Database settings')}
+                aria-label={__('Toggle display of database settings')}
                 class={classnames('dib', 'label-toggle', isCollapsed ? 'label-toggle--rotate' : null)}
               />
             </div>
