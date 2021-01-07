@@ -122,7 +122,7 @@ const UserOnboarding = (props) => {
                             {__('Your data always stays yours.')}
                           </p>
                           <p class='ma0 mb3'>
-                            {__('Review your data in the Auditorium. You can delete your data or opt out completly at any time in the Privacy tab.')}
+                            {__('Review your data in the Auditorium. You can delete your data or opt out completely at any time in the Privacy tab.')}
                           </p>
                           <ExplainerIcon />
                           <p class='di ma0 ml2'>

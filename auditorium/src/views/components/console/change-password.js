@@ -28,8 +28,8 @@ const ChangePassword = (props) => {
         currentPassword: formData.get('current'),
         changedPassword: formData.get('changed')
       },
-      __('Please log in again, using your new password.'),
-      __('Could not change passwords. Try again.')
+      __('Please log in again using your new password.'),
+      __('Could not change password. Try again.')
     )
       .then(() => setIsDisabled(false))
   }
