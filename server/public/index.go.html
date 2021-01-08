@@ -9,7 +9,10 @@
     <link rel="stylesheet" type="text/css" href="/tachyons.min.css">
     {{ template "meta" . }}
     {{ with .rootAccount }}
-      <script src="/script.js" data-no-banner data-account-id="{{ . }}"></script>
+      <script src="/script.js" data-use-api data-account-id="{{ . }}"></script>
+      <script>
+        window.__offen__.pageview({ skipConsent: true })
+      </script>
     {{ end }}
   </head>
   <body class="bg-washed-yellow">

@@ -14,10 +14,9 @@ function optIn (event, respond, next) {
       if (status) {
         return status
       }
-      if (event.data.meta && event.data.meta.noBanner) {
-        var err = new Error('Skipping consent banner.')
-        err.ok = true
-        throw err
+      if (event.data.meta && event.data.meta.skipConsent) {
+        respond(null)
+        return
       }
       function styleHost (payload) {
         return respond({
@@ -36,12 +35,7 @@ function optIn (event, respond, next) {
       console.log(__('This page is using Offen to collect usage statistics.'))
       console.log(__('You have opted out of data collection, no data is being collected.'))
       console.log(__('Find out more about Offen at "%s"', window.location.origin))
-    })
-    .catch(function (err) {
-      if (err && err.ok) {
-        return
-      }
-      throw err
+      respond(null)
     })
 }
 

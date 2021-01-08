@@ -17,7 +17,7 @@ import (
 )
 
 var (
-	defaultCSP             = "default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:"
+	defaultCSP             = "default-src 'self'; script-src 'self' 'sha256-6Fe68Ob0Bq9OnBK8TD8PnOGxktcKP6O3nGDHvesgJZ8='; style-src 'self' 'unsafe-inline'; img-src 'self' data:"
 	defaultSTS             = "max-age=15768000"
 	revisionedJSRe         = regexp.MustCompile("-[0-9a-z]{10}\\.js$")
 	webfontRe              = regexp.MustCompile("\\.(woff|woff2|ttf)$")

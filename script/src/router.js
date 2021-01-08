@@ -9,18 +9,33 @@ var vault = require('offen/vault')
 module.exports = router
 
 function router (vaultUrl) {
-  function send (message, expectResponse) {
-    return vault(vaultUrl)
-      .then(function (postMessage) {
-        return new Promise(function (resolve) {
-          onIdle(function () {
-            resolve(postMessage(message, expectResponse))
+  var registeredEvents = {}
+  var callbacks = {}
+
+  function makeSend (callbackId) {
+    return function send (message) {
+      var result = vault(vaultUrl)
+        .then(function (postMessage) {
+          return new Promise(function (resolve) {
+            onIdle(function () {
+              resolve(postMessage(message))
+            })
           })
         })
-      })
-  }
 
-  var registeredEvents = {}
+      if (callbackId) {
+        var cb = callbacks[callbackId]
+        delete callbacks[callbackId]
+        result.then(function (val) {
+          cb(null, val)
+        }, function (err) {
+          cb(err)
+        })
+      }
+
+      return result
+    }
+  }
 
   var channel = new window.MessageChannel()
   channel.port2.onmessage = function (event) {
@@ -44,7 +59,7 @@ function router (vaultUrl) {
         next(new Error('Event of type "' + event.data.type + '" not handled.'))
       }
       try {
-        nextHandler(context, send, next)
+        nextHandler(context, makeSend(event.data.callbackId), next)
       } catch (err) {
         next(err)
       }
@@ -58,11 +73,17 @@ function router (vaultUrl) {
       var stack = [].slice.call(arguments, 1)
       registeredEvents[eventType] = stack
     },
-    dispatch: function (eventType, context) {
+    dispatch: function (eventType, context, callback) {
       context = context || {}
+      var callbackId
+      if (callback) {
+        callbackId = Math.random().toString(36).slice(2)
+        callbacks[callbackId] = callback
+      }
       channel.port1.postMessage({
         type: eventType,
-        context: context
+        context: context,
+        callbackId: callbackId
       })
     }
   }

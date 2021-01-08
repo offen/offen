@@ -13,7 +13,7 @@ var events = require('./src/events')
 // again when being accessed from inside a function body
 var accountId = document.currentScript && document.currentScript.dataset.accountId
 var scriptHost = document.currentScript && document.currentScript.src
-var noBanner = document.currentScript && 'noBanner' in document.currentScript.dataset
+var useApi = document.currentScript && 'useApi' in document.currentScript.dataset
 
 var scriptUrl = ''
 try {
@@ -27,30 +27,45 @@ function main () {
       type: 'EVENT',
       payload: {
         accountId: accountId,
-        event: events.pageview(context === 'initial')
+        event: events.pageview(context && context.subsequent)
       },
       meta: {
-        noBanner: noBanner
+        skipConsent: context && context.skipConsent
       }
     }
     send(message)
   })
 
-  switch (document.readyState) {
-    case 'complete':
-    case 'loaded':
-    case 'interactive':
-      app.dispatch('PAGEVIEW', 'initial')
-      break
-    default:
-      document.addEventListener('DOMContentLoaded', function () {
-        app.dispatch('PAGEVIEW', 'initial')
-      })
+  app.on('ACQUIRE_CONSENT', supportMiddleware, function (context, send, next) {
+    var message = {
+      type: 'ACQUIRE_CONSENT',
+      payload: null
+    }
+    send(message)
+  })
+
+  if (useApi) {
+    app.pageview = function (context, callback) {
+      if (!callback && Object.prototype.toString.call(context) === '[object Function]') {
+        callback = context
+        context = null
+      }
+      app.dispatch('PAGEVIEW', context, callback)
+    }
+
+    app.acquireConsent = function (callback) {
+      app.dispatch('ACQUIRE_CONSENT', null, callback)
+    }
+    return app
   }
 
-  historyEvents.addEventListener(window, 'changestate', function () {
+  onReady(function () {
     app.dispatch('PAGEVIEW')
   })
+  historyEvents.addEventListener(window, 'changestate', function () {
+    app.dispatch('PAGEVIEW', { subsequent: true })
+  })
+
   return app
 }
 
@@ -66,4 +81,20 @@ function supportMiddleware (context, send, next) {
     }
     next()
   })
+}
+
+function onReady (callback) {
+  switch (document.readyState) {
+    case 'complete':
+    case 'loaded':
+    case 'interactive':
+      window.setTimeout(function () {
+        callback()
+      }, 0)
+      break
+    default:
+      document.addEventListener('DOMContentLoaded', function () {
+        callback()
+      })
+  }
 }
