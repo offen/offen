@@ -76,7 +76,7 @@ function makeScriptTask (dest, locale) {
         return true
       },
       transform: transforms.map(function (transform) {
-        if (transform === '@offen/l10nify') {
+        if (transform === '@offen/l10nify' || (Array.isArray(transform) && transform[0] === '@offen/l10nify')) {
           return ['@offen/l10nify', { locale: locale }]
         }
         return transform
