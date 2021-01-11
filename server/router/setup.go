@@ -5,6 +5,7 @@ package router
 
 import (
 	"fmt"
+	"html"
 	"net/http"
 	"time"
 
@@ -56,7 +57,7 @@ func (rt *router) postSetup(c *gin.Context) {
 	if err := rt.db.Bootstrap(persistence.BootstrapConfig{
 		Accounts: []persistence.BootstrapAccount{
 			{
-				Name:      rt.sanitizer.Sanitize(req.AccountName),
+				Name:      html.UnescapeString(rt.sanitizer.Sanitize(req.AccountName)),
 				AccountID: accountID.String(),
 			},
 		},

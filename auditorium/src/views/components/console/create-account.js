@@ -6,6 +6,7 @@
 /** @jsx h */
 const { h, Fragment } = require('preact')
 const { useState } = require('preact/hooks')
+const escapeHtml = require('escape-html')
 
 const LabeledInput = require('./../_shared/labeled-input')
 const SubmitButton = require('./../_shared/submit-button')
@@ -21,7 +22,7 @@ const CreateAccount = (props) => {
         emailAddress: formData['email-address'],
         password: formData.password
       },
-      __('Log in again to use the newly created account <em class="%s">"%s"</em>.', 'i tracked', formData['account-name']),
+      __('Log in again to use the newly created account <em class="%s">"%s"</em>.', 'i tracked', escapeHtml(formData['account-name'])),
       __('There was an error creating the account, please try again.')
     )
       .then(() => {
