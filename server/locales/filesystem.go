@@ -10,7 +10,7 @@ import (
 	"net/http"
 
 	"github.com/leonelquinteros/gotext"
-	_ "github.com/offen/offen/server/locales/statik"
+	_ "github.com/offen/offen/server/statik"
 	"github.com/rakyll/statik/fs"
 )
 
@@ -26,7 +26,7 @@ func getFS() http.FileSystem {
 		// been populated. The filesystem will likely not match the requested
 		// files. In development live-reloading static assets will be routed through
 		// nginx instead.
-		return http.Dir("./locales")
+		return http.Dir("./locales/messages")
 	}
 	return fileSystem
 }

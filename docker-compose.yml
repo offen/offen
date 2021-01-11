@@ -26,6 +26,7 @@ services:
       - .:/offen
       - serverdeps:/go/pkg
       - servercache:/data
+      - ./locales:/offen/server/locales/messages
     environment:
       OFFEN_APP_DEVELOPMENT: '1'
       OFFEN_SERVER_REVERSEPROXY: '1'
