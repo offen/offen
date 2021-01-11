@@ -6,6 +6,7 @@ package router
 import (
 	"errors"
 	"fmt"
+	"html"
 	"net/http"
 	"time"
 
@@ -164,7 +165,7 @@ func (rt *router) postAccount(c *gin.Context) {
 		return
 	}
 
-	if err := rt.db.CreateAccount(rt.sanitizer.Sanitize(req.AccountName), req.EmailAddress, req.Password); err != nil {
+	if err := rt.db.CreateAccount(html.UnescapeString(rt.sanitizer.Sanitize(req.AccountName)), req.EmailAddress, req.Password); err != nil {
 		newJSONError(
 			fmt.Errorf("router: error creating account %s: %w", req.AccountName, err),
 			http.StatusInternalServerError,

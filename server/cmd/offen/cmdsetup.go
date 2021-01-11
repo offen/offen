@@ -6,6 +6,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"html"
 	"io/ioutil"
 	"os"
 	"time"
@@ -86,10 +87,10 @@ func cmdSetup(subcommand string, flags []string) {
 			a.logger.WithError(err).Fatalf("Error parsing content of given source file %s", *source)
 		}
 		for idx, account := range conf.Accounts {
-			conf.Accounts[idx].Name = sanitizer.Sanitize(account.Name)
+			conf.Accounts[idx].Name = html.UnescapeString(sanitizer.Sanitize(account.Name))
 		}
 	} else {
-		sanitizedAccountName := sanitizer.Sanitize(*accountName)
+		sanitizedAccountName := html.UnescapeString(sanitizer.Sanitize(*accountName))
 		if *email == "" || pw == "" || sanitizedAccountName == "" {
 			a.logger.Fatal("Missing required parameters to create initial account, use the -help flag for reference on parameters")
 		}
