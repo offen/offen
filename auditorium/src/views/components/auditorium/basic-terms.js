@@ -20,7 +20,7 @@ module.exports = (props) => {
             {__('Auditorium')}
           </Paragraph>
           <Paragraph class='mt0 mb4'>
-            {__('You are viewing the Auditorium right now. Only available after opt in, it is the interface where you can review and delete your usage data or opt out entirely.')}
+            {__('You are viewing the Auditorium right now. Only available after opt-in, it is the interface where you can review and delete your usage data or opt out entirely.')}
           </Paragraph>
           <Paragraph class='i mt0 mb2' id='terms-offen-installation'>
             {__('Offen installation')}
@@ -46,7 +46,7 @@ module.exports = (props) => {
             {__('Unique user')}
           </Paragraph>
           <Paragraph class='mt0 mb4'>
-            {__('You are defined as a unique user after your opt in to data collection. To measure this, a <a href="#terms-cookies" class="%s">cookie</a> is used to assign a user <a href="#terms-id" class="%s">ID</a> to you.', 'b link dim dark-green', 'b link dim dark-green')}
+            {__('You are defined as a unique user after your opt-in to data collection. To measure this, a <a href="#terms-cookies" class="%s">cookie</a> is used to assign a user <a href="#terms-id" class="%s">ID</a> to you.', 'b link dim dark-green', 'b link dim dark-green')}
           </Paragraph>
           <Paragraph class='i mt0 mb2' id='terms-unique-session'>
             {__('Unique session')}

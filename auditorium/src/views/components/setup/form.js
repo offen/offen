@@ -40,7 +40,7 @@ const Form = forwardRef((props, ref) => {
   return (
     <div class='pa3 bg-black-05'>
       <h4 class='f4 normal mt0 mb3'>
-        {__('Set up your instance by creating your first account')}
+        {__('Set up your instance by creating your first account.')}
       </h4>
       <form class='mw6 center' onsubmit={handleSubmit}>
         <LabeledInput

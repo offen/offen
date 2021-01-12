@@ -1,17 +1,12 @@
 # Copyright 2020 - Offen Authors <hioffen@posteo.de>
 # SPDX-License-Identifier: Apache-2.0
 
-x-docker-pull-creds: &docker-pull-creds
-  username: offen
-  password: $DOCKER_ACCESSTOKEN
 
 version: 2.1
 
 jobs:
   server:
-    docker:
-      - image: circleci/golang:1.15
-        auth: *docker-pull-creds
+    executor: golang
     working_directory: ~/offen/server
     steps:
       - checkout:
@@ -30,45 +25,35 @@ jobs:
           command: make test
 
   vault:
-    docker:
-      - image: circleci/node:14-browsers
-        auth: *docker-pull-creds
+    executor: node
     working_directory: ~/offen/vault
     steps:
       - test_node_app:
           app: vault
 
   script:
-    docker:
-      - image: circleci/node:14-browsers
-        auth: *docker-pull-creds
+    executor: node
     working_directory: ~/offen/script
     steps:
       - test_node_app:
           app: script
 
   auditorium:
-    docker:
-      - image: circleci/node:14-browsers
-        auth: *docker-pull-creds
+    executor: node
     working_directory: ~/offen/auditorium
     steps:
       - test_node_app:
           app: auditorium
 
   packages:
-    docker:
-      - image: circleci/node:14-browsers
-        auth: *docker-pull-creds
+    executor: node
     working_directory: ~/offen/packages
     steps:
       - test_node_app:
           app: packages
 
   reuse:
-    docker:
-      - image: cimg/python:3.7
-        auth: *docker-pull-creds
+    executor: python
     working_directory: ~/offen
     steps:
       - checkout:
@@ -81,12 +66,11 @@ jobs:
           command: reuse lint
 
   build:
-    docker:
-      - image: circleci/python:3.7
-        auth: *docker-pull-creds
+    executor: python
     working_directory: ~/offen
     environment:
       DOCKER_LOGIN: offen
+      DOCKER_BUILDKIT: '1'
     steps:
       - checkout
       - setup_remote_docker:
@@ -116,6 +100,7 @@ jobs:
             - bin/*
 
   integration_sqlite:
+    executor: node
     environment: &integration_env
       CYPRESS_BASE_URL: http://localhost:3000
       CYPRESS_OPERATOR_USERNAME: circle@offen.dev
@@ -124,9 +109,6 @@ jobs:
       CYPRESS_RUN_LIGHTHOUSE_AUDIT: 1
       OFFEN_SERVER_PORT: 3000
       OFFEN_DATABASE_CONNECTIONSTRING: /tmp/offen.sqlite3
-    docker:
-      - image: circleci/node:14-browsers
-        auth: *docker-pull-creds
     working_directory: ~/offen
     steps:
       - run:
@@ -140,14 +122,7 @@ jobs:
       <<: *integration_env
       OFFEN_DATABASE_DIALECT: postgres
       OFFEN_DATABASE_CONNECTIONSTRING: postgres://circle:test@localhost:5432/circle_test?sslmode=disable
-    docker:
-      - image: circleci/node:14-browsers
-        auth: *docker-pull-creds
-      - image: circleci/postgres:11.2-alpine
-        auth: *docker-pull-creds
-        environment:
-          POSTGRES_USER: circle
-          POSTGRES_PASSWORD: test
+    executor: node-postgres
     working_directory: ~/offen
     steps:
       - wait_for:
@@ -160,14 +135,7 @@ jobs:
       <<: *integration_env
       OFFEN_DATABASE_DIALECT: mysql
       OFFEN_DATABASE_CONNECTIONSTRING: root:test@tcp(localhost:3306)/circle_test?parseTime=true
-    docker:
-      - image: circleci/node:14-browsers
-        auth: *docker-pull-creds
-      - image: circleci/mysql:5.7
-        auth: *docker-pull-creds
-        environment:
-          MYSQL_DATABASE: circle_test
-          MYSQL_ROOT_PASSWORD: test
+    executor: node-mysql
     working_directory: ~/offen
     steps:
       - wait_for:
@@ -176,12 +144,10 @@ jobs:
       - run_integration_tests
 
   release:
+    executor: python
     environment:
       DOCKER_LOGIN: offen
       MINIO_STORAGE: https://storage.offen.dev
-    docker:
-      - image: circleci/python:3.7
-        auth: *docker-pull-creds
     working_directory: ~/offen
     steps:
       - checkout
@@ -248,9 +214,7 @@ jobs:
           path: /tmp/artifacts
 
   release_docs:
-    docker:
-      - image: cimg/python:3.7
-        auth: *docker-pull-creds
+    executor: python
     working_directory: ~/offen
     steps:
       - checkout
@@ -349,7 +313,13 @@ commands:
               sleep 1
             done
             echo Failed waiting for << parameters.service >> && exit 1
+
   run_integration_tests:
+    parameters:
+      cypress_version:
+        type: string
+        description: The version of Cypress to use
+        default: '4.5.0'
     steps:
       - checkout
       - attach_workspace:
@@ -368,7 +338,7 @@ commands:
           service: Offen
           port: 3000
       - restore_cache:
-          key: offen-integration-cy4.5.0-{{ checksum "./integration/package.json" }}
+          key: offen-integration-cy<< parameters.cypress_version >>-{{ checksum "./integration/package.json" }}
       - run:
           name: Install cypress and dependencies
           working_directory: ~/offen/integration
@@ -376,7 +346,7 @@ commands:
             sudo apt-get install libxss1
             mkdir -p ~/.npm-global
             npm config set prefix '~/.npm-global'
-            npm install cypress@4.5.0 -g
+            npm install cypress@<< parameters.cypress_version >> -g
             npm ci
             echo 'export PATH=~/.npm-global/bin/:$PATH' >> $BASH_ENV
       - save_cache:
@@ -384,7 +354,7 @@ commands:
             - ~/offen/integration/node_modules
             - ~/.cache/Cypress
             - ~/.npm-global
-          key: offen-integration-cy4.5.0-{{ checksum "./integration/package.json" }}-{{ epoch }}
+          key: offen-integration-cy<< parameters.cypress_version >>-{{ checksum "./integration/package.json" }}-{{ epoch }}
       - run:
           working_directory: ~/offen/integration
           name: Run integration tests
@@ -432,3 +402,39 @@ commands:
 
 orbs:
   docker: circleci/docker@1.0.1
+
+x-docker-pull-creds: &docker-pull-creds
+  username: offen
+  password: $DOCKER_ACCESSTOKEN
+
+executors:
+  golang:
+    docker:
+      - image: circleci/golang:1.15
+        auth: *docker-pull-creds
+  node:
+    docker:
+      - image: circleci/node:14-browsers
+        auth: *docker-pull-creds
+  node-postgres:
+    docker:
+      - image: circleci/node:14-browsers
+        auth: *docker-pull-creds
+      - image: circleci/postgres:11.2-alpine
+        auth: *docker-pull-creds
+        environment:
+          POSTGRES_USER: circle
+          POSTGRES_PASSWORD: test
+  node-mysql:
+    docker:
+      - image: circleci/node:14-browsers
+        auth: *docker-pull-creds
+      - image: circleci/mysql:5.7
+        auth: *docker-pull-creds
+        environment:
+          MYSQL_DATABASE: circle_test
+          MYSQL_ROOT_PASSWORD: test
+  python:
+    docker:
+      - image: cimg/python:3.7
+        auth: *docker-pull-creds

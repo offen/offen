@@ -24,7 +24,7 @@ const Form = forwardRef((props, ref) => {
       token: formData.get('token')
     },
     null,
-    __('There has been an error resetting your password. Please try again.')
+    __('There has been an error resetting your password, please try again.')
     )
       .then(() => setIsDisabled(false))
   }
