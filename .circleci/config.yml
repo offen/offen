@@ -70,6 +70,7 @@ jobs:
     working_directory: ~/offen
     environment:
       DOCKER_LOGIN: offen
+      DOCKER_BUILDKIT: '1'
     steps:
       - checkout
       - setup_remote_docker:
