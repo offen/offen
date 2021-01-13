@@ -52,7 +52,7 @@ module.exports = (props) => {
   return (
     <div class='ph3 ph4-ns pv4 bg-black-05' data-testid='index/faq'>
       <div class='flex flex-column flex-row-ns w-100'>
-        <div class='w-100 w-50-ns mr2-ns'>
+        <div class='w-100 w-50-ns mr2-ns mb4 mb0-ns'>
           {mainQuestion}
           <Headline level={3} class='f5 i normal mt0 mb2'>
             {__('What data is collected?')}

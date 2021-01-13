@@ -68,7 +68,7 @@ const Privacy = (props) => {
         </div>
         {deleteButton}
         <div class='w-100 w-50-l bl-l b--moon-gray pl4-l mt3 mt0-l'>
-          <div class='cf mb3'>
+          <div class='cf mb4'>
             <div class='fl mr3'>
               <svg width='30' height='30' fill='none' viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'>
                 <circle cx='15' cy='15' r='14.25' stroke='#555' stroke-width='1.5' />
@@ -77,7 +77,7 @@ const Privacy = (props) => {
             </div>
             <div class='h2 flex flex-wrap items-center'>
               <Paragraph class='ma0 mb1'>
-                {__('To review your data collected over time,<br>set a bookmark for this page')}
+                {__('To review your data collected over time, <br class="dn db-l">set a bookmark for this page.')}
               </Paragraph>
             </div>
           </div>
