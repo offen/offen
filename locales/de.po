@@ -1,1498 +1,1355 @@
 msgid ""
 msgstr ""
+"Project-Id-Version: Offen\n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: POEditor.com\n"
-"Project-Id-Version: Offen\n"
-"Language: de\n"
 
-#. src/views/components/console/create-account.js:24
-#: 
-msgid "Log in again to use the newly created account <em class=\"%s\">\"%s\"</em>."
-msgstr "Melde dich erneut an, um den neuen Account <em class=\"%s\">\"%s\"</em> zu verwenden."
-
-#. src/views/components/console/create-account.js:25
-#: 
-msgid "There was an error creating the account, please try again."
-msgstr "Beim Erstellen des Accounts ist ein Fehler aufgetreten, bitte versuche es noch einmal."
-
-#. src/views/components/console/create-account.js:36
-#: 
-msgid "Create new account"
-msgstr "Neuen Account erstellen"
-
-#. src/views/components/console/create-account.js:51
-#: 
-msgid "Account name"
-msgstr "Account Name"
-
-#. src/views/components/console/create-account.js:54
-#: 
-msgid "Create account"
-msgstr "Account anlegen"
-
-#. src/views/components/_shared/share.js:124
-#: 
-msgid "You need to confirm this action with your credentials."
-msgstr "Du musst diese Aktion mit deinen Anmeldedaten bestätigen."
-
-#. src/views/components/console/create-account.js:72
-#: 
-msgid "Your email"
-msgstr "Deine E-Mail"
-
-#. src/views/components/_shared/share.js:141
-#: 
-msgid "Your password"
-msgstr "Dein Passwort"
-
-#. src/views/components/auditorium/retire-account.js:52
-#. src/views/components/auditorium/retire-account.js:55
-#: 
-msgid "Confirm"
-msgstr "Bestätigen"
-
-#. src/views/components/auditorium/retire-account.js:59
-#. src/views/components/auditorium/retire-account.js:63
-#: 
-msgid "Cancel"
-msgstr "Abbrechen"
-
-#. src/views/components/console/share-accounts.js:15
-#: 
-msgid "Share all accounts"
-msgstr "Alle Accounts teilen"
-
-#. src/views/components/console/share-accounts.js:16
-#: 
-msgid "Share all your Offen accounts via email invitation. When granted Admin privilges, invited users have full access to shared accounts and can create new accounts on this Offen instance."
-msgstr "Gib alle deine Offen Accounts per E-Mail Einladung frei. Eingeladene mit Admin Rechten haben vollen Zugriff auf die freigegebenen Konten und können neue Konten auf dieser Offen Instanz erstellen."
-
-#. src/views/components/console/account-picker.js:14
-#: 
-msgid "Open account"
-msgstr "Account öffnen"
-
-#. src/views/components/console/change-email.js:25
-#: 
-msgid "Could not change email. Try again."
-msgstr "E-Mail konnte nicht geändert werden. Versuche es noch einmal."
-
-#. src/views/components/console/change-email.js:36
-#. src/views/components/console/change-email.js:55
-#: 
-msgid "Change email address"
-msgstr "E-Mail Adresse ändern"
-
-#. src/views/components/console/change-email.js:52
-#: 
-msgid "New email address"
-msgstr "Neue E-Mail Adresse"
-
-#. src/views/components/console/change-email.js:72
-#: 
-msgid "Current email address"
-msgstr "Aktuelle E-Mail Adresse"
-
-#. src/views/components/join/form.js:55
-#: 
-msgid "Password"
-msgstr "Passwort"
-
-#. src/views/components/setup/form.js:23
-#: 
-msgid "Passwords did not match. Please try again."
-msgstr "Die Passwörter stimmen nicht überein. Versuche es noch einmal."
-
-#. src/views/components/console/change-password.js:40
-#. src/views/components/console/change-password.js:76
-#: 
-msgid "Change password"
-msgstr "Passwort ändern"
-
-#. src/views/components/console/change-password.js:54
-#: 
-msgid "Current password"
-msgstr "Aktuelles Passwort"
-
-#. src/views/components/reset-password/form.js:52
-#: 
-msgid "New password"
-msgstr "Neues Passwort"
-
-#. src/views/components/reset-password/form.js:60
-#: 
-msgid "Repeat new password"
-msgstr "Neues Passwort wiederholen"
-
-#. src/views/components/console/logout.js:15
-#: 
-msgid "You have been logged out."
-msgstr "Du wurdest abgemeldet."
-
-#. src/views/components/console/logout.js:16
-#: 
-msgid "There was an error terminating your session, please try again."
-msgstr "Es ist ein Fehler beim Beenden der Session aufgetreten, bitte versuche es noch einmal."
-
-#. src/views/components/console/logout.js:29
-#: 
-msgid "Logout"
-msgstr "Abmelden"
-
-#. src/views/components/console/header.js:15
-#: 
-msgid "You are logged in as operator."
-msgstr "Du bist angemeldet."
-
-#. src/views/components/login/form.js:23
-#: 
-msgid "Could not log in using the given credentials. Try again."
-msgstr "Du konntest mit diesen Daten nicht angemeldet werden. Versuche es noch einmal."
-
-#. src/views/components/index/operator-login.js:19
-#: 
-msgid "Log in as operator"
-msgstr "Anmelden"
-
-#. src/views/components/join/form.js:48
-#: 
-msgid "Email address"
-msgstr "E-Mail Adresse"
-
-#. src/views/components/login/form.js:54
-#: 
-msgid "Log in"
-msgstr "Anmelden"
-
-#. src/views/components/login/form.js:58
-#: 
-msgid "Forgot password?"
-msgstr "Passwort vergessen?"
-
-#. src/views/components/forgot-password/form.js:25
-#: 
-msgid "Check your inbox and follow the instructions in the email."
-msgstr "Schau in deinen Posteingang und folge der Anleitung in unserer E-Mail."
-
-#. src/views/components/join/form.js:32
-#: 
-msgid "Could not handle your request, please try again."
-msgstr "Deine Anfrage konnte nicht bearbeitet werden, bitte versuche es noch einmal."
-
-#. src/views/components/forgot-password/form.js:34
-#: 
-msgid "Request link to reset password"
-msgstr "Link zum Zurücksetzen des Passworts anfordern"
-
-#. src/views/components/forgot-password/form.js:48
-#: 
-msgid "Send Email"
-msgstr "E-Mail senden"
-
-#. src/views/components/setup/form.js:34
-#: 
-msgid "You can now log in using the provided credentials."
-msgstr "Du kannst dich jetzt mit den bereitgestellten Daten anmelden."
-
-#. src/views/components/setup/form.js:52
-#: 
-msgid "The account name"
-msgstr "Account Name"
-
-#. src/views/components/_shared/share.js:133
-#: 
-msgid "Your email address"
-msgstr "Deine E-Mail Adresse"
-
-#. src/views/components/join/form.js:63
-#: 
-msgid "Repeat password"
-msgstr "Passwort wiederholen"
-
-#. src/views/components/setup/form.js:78
-#: 
-msgid "Setup instance"
-msgstr "Instanz einrichten"
-
-#. src/views/components/_shared/with-layout.js:34
-#: 
-msgid "Offen Auditorium"
-msgstr ""
-
-#. src/views/components/_shared/with-layout.js:55
-#: 
-msgid "<a href=\"https://www.offen.dev/\" class=\"%s\" target=\"_blank\" rel=\"noreferer noopener\">Offen</a>"
-msgstr "<a href=\"https://www.offen.dev/\" class=\"%s\" target=\"_blank\" rel=\"noreferer noopener\">Offen</a>"
-
-#. src/views/components/_shared/with-layout.js:62
-#: 
-msgid "Fair web analytics"
-msgstr ""
-
-#. src/views/components/_shared/with-layout.js:69
-#: 
-msgid "Found an issue, need help or want to add something?<br><a href=\"https://twitter.com/hioffen\" class=\"%s\" target=\"_blank\" rel=\"noreferer noopener\">Tweet,</a> <a href=\"mailto:hioffen@posteo.de\" class=\"%s\" target=\"_blank\">email</a> or file an <a href=\"https://github.com/offen/offen\" class=\"%s\" target=\"_blank\" rel=\"noreferer noopener\">issue.</a>"
-msgstr "Hast du einen Fehler gefunden, brauchst Hilfe oder möchtest etwas hinzufügen?<br><a href=\"https://twitter.com/hioffen\" class=\"%s\" target=\"_blank\" rel=\"noreferer noopener\">Twitter,</a> <a href=\"mailto:hioffen@posteo.de\" class=\"%s\" target=\"_blank\">E-Mail</a> oder erstelle eine <a href=\"https://github.com/offen/offen\" class=\"%s\" target=\"_blank\" rel=\"noreferer noopener\">Issue.</a>"
-
-#. src/views/components/_shared/new-password-input.js:14
-#: 
-msgid "weak"
-msgstr "schwach"
-
-#. src/views/components/_shared/new-password-input.js:15
-#: 
-msgid "low"
-msgstr "niedrig"
-
-#. src/views/components/_shared/new-password-input.js:16
-#: 
-msgid "ok"
-msgstr "ok"
-
-#. src/views/components/_shared/new-password-input.js:17
-#: 
-msgid "strong"
-msgstr "hoch"
-
-#. src/views/components/_shared/new-password-input.js:18
-#: 
-msgid "very strong"
-msgstr "sehr hoch"
-
-#. src/views/components/_shared/new-password-input.js:26
-#. src/views/components/_shared/new-password-input.js:67
-#: 
-msgid "Your password needs to be at least 8 characters long."
-msgstr "Dein Passwort muss mindestens 8 Zeichen lang sein."
-
-#. src/views/components/_shared/new-password-input.js:32
-#: 
-msgid "Password strength: %s"
-msgstr "Passwortsicherheit"
-
-#. src/views/components/_shared/with-auth.js:19
-#: 
-msgid "Please log in using your credentials."
-msgstr "Bitte melden dich mit deinen Daten an."
-
-#. src/views/components/_shared/with-auth.js:23
-#: 
-msgid "Checking authentication"
-msgstr "Authentifikation überprüfen"
-
-#. src/views/components/_shared/account-picker.js:16
-#: 
-msgid "You currently do not have any active accounts. You can create one below."
-msgstr "Du hast derzeit keine aktiven Accounts. Weiter unten kannst du einen erstellen."
-
-#. src/views/components/_shared/submit-button.js:29
-#: 
-msgid "One moment..."
-msgstr "Einen Moment..."
-
-#. src/views/components/_shared/share.js:42
-#: 
-msgid "An invite email has been sent to <em class=\"%s\">%s</em>."
-msgstr "Eine E-Mail Einladung wurde gesendet an <em class=\"%s\">%s</em>."
-
-#. src/views/components/_shared/share.js:43
-#: 
-msgid "There was an error inviting the user, please try again."
-msgstr "Bei der Einladung ist ein Fehler aufgetreten, bitte versuche es noch einmal."
-
-#. src/views/components/_shared/share.js:71
-#: 
-msgid "Toggle display of %s functionality"
-msgstr "Umschalten der Anzeige %s Funktion"
-
-#. src/views/components/_shared/share.js:103
-#: 
-msgid "Email address to send invite to"
-msgstr "E-Mail Adresse, an die eine Einladung gesendet werden soll"
-
-#. src/views/components/_shared/share.js:110
-#: 
-msgid "Grant Admin privileges"
-msgstr "Admin Rechte vergeben"
-
-#. src/views/components/_shared/share.js:115
-#: 
-msgid "Invite user"
-msgstr "Andere einladen"
-
-#. src/views/components/reset-password/form.js:34
-#: 
-msgid "Reset password"
-msgstr "Passwort zurücksetzen"
-
-#. src/views/components/reset-password/form.js:63
-#: 
-msgid "Reset Password"
-msgstr "Passwort zurücksetzen"
-
-#. src/views/components/index/consent-status-display.js:25
-#: 
-msgid "It seems like your browser is blocking cookies."
-msgstr "Anscheinend blockiert dein Browser Cookies."
-
-#. src/views/components/index/operator-login.js:14
-#: 
-msgid "Are you the operator of this Offen installation? Log in to your account."
-msgstr "Betreibst du diese Offen Installation? Melde dich hier an."
-
-#. src/views/components/index/header-card.js:15
-#: 
-msgid "Offen requires cookies to function properly."
-msgstr "Offen benötigt Cookies, um richtig zu funktionieren."
-
-#. src/views/components/index/header-card.js:18
-#: 
-msgid "Offen is a fair and open source analytics software. It is installed on the website that linked you here."
-msgstr "Offen ist eine faire Analysesoftware. Sie ist auf der Webseite installiert, die dich hierher verlinkt hat."
-
-#. src/views/components/index/header-card.js:21
-#: 
-msgid "For Offen to work, your browser has to accept cookies. Please change your browsers settings and reload this page. Subsequently, you will be asked for consent to collect your usage data."
-msgstr "Damit Offen funktioniert, muss dein Browser Cookies akzeptieren. Bitte ändere die Einstellungen deines Browsers und lade diese Seite neu. Anschließend wirst du um die Zustimmung zur Erhebung deiner Nutzungsdaten gebeten."
-
-#. src/views/components/index/header-card.js:30
-#: 
-msgid "Manage your usage data this website has collected."
-msgstr "Verwalten deine von dieser Webseite gesammelten Nutzungsdaten."
-
-#. src/views/components/index/header-card.js:39
-#: 
-msgid "Open Auditorium"
-msgstr "Auditorium öffnen"
-
-#. src/views/components/index/header-card.js:50
-#: 
-msgid "We only access usage data with your consent."
-msgstr "Wir greifen nur mit deiner Zustimmung auf Nutzungsdaten zu."
-
-#. src/views/components/index/header-card.js:53
-#: 
-msgid "Offen is a fair and open source analytics software. Help the website that linked you here by allowing access to your usage data."
-msgstr "Offen ist eine faire Analysesoftware. Hilf der Webseite, die dich hierher verlinkt hat, indem du den Zugriff auf deine Nutzungsdaten erlaubst."
-
-#. src/views/components/index/header-card.js:56
-#: 
-msgid "Your data always remains yours. You can review and delete it at any time. Opt out again whenever you want."
-msgstr "Deine Daten gehören weiter dir. Du kannst sie jederzeit einsehen und löschen. Widerrufe deine Zustimmung jederzeit."
-
-#. src/views/components/index/header-card.js:65
-#: 
-msgid "I allow"
-msgstr "Ich stimme zu"
-
-#. src/views/components/index/header-card.js:74
-#: 
-msgid "I don't allow"
-msgstr "Ich stimme nicht zu"
-
-#. src/views/components/index/main-card.js:19
-#: 
-msgid "How can I review and delete my usage data or opt out?"
-msgstr "Wie kann ich meine Nutzungsdaten einsehen, löschen oder mich abmelden?"
-
-#. src/views/components/index/main-card.js:22
-#: 
-msgid "<a href=\"%s\" class=\"%s\">Go to the Auditorium.</a>"
-msgstr "<a href=\"%s\" class=\"%s\">Öffne das Auditorium.</a>"
-
-#. src/views/components/index/main-card.js:29
-#: 
-msgid "Your usage data is encrypted end-to-end. It will be automatically deleted after 6 months. <a href=\"/auditorium/\" class=\"%s\">You can delete your usage data yourself at any time in the Auditorium.</a>"
-msgstr "Deine Nutzungsdaten werden Ende-zu-Ende verschlüsselt und nach 6 Monaten automatisch gelöscht. <a href=\"/auditorium/\" class=\"%s\">Du kannst deine Nutzungsdaten jederzeit selbst im Auditorium löschen.</a>"
-
-#. src/views/components/index/main-card.js:37
-#: 
-msgid "How can I review and delete my usage data?"
-msgstr "Wie kann ich meine Nutzungsdaten einsehen und löschen?"
-
-#. src/views/components/index/main-card.js:40
-#: 
-msgid "For data to be collected you need to opt in first. <a href=\"%s\" class=\"%s\">You can do this in the consent banner.</a>"
-msgstr "Damit Daten gesammelt werden können musst du dem erst einmal zustimmen. <a href=\"%s\" class=\"%s\">Du kannst das in unserem Banner tun.</a>"
-
-#. src/views/components/index/main-card.js:47
-#: 
-msgid "Your usage data is encrypted end-to-end. It will be automatically deleted after 6 months. You can delete your usage data yourself at any time."
-msgstr "Deine Nutzungsdaten werden Ende-zu-Ende verschlüsselt und nach 6 Monaten automatisch gelöscht. Du kannst deine Nutzungsdaten auch jederzeit selbst löschen."
-
-#. src/views/components/auditorium/frequently-asked-questions.js:20
-#: 
-msgid "What data is collected?"
-msgstr "Welche Daten werden gesammelt?"
-
-#. src/views/components/index/main-card.js:64
-#: 
-msgid "What data isn't collected?"
-msgstr "Welche Daten werden nicht gesammelt?"
-
-#. src/views/components/auditorium/frequently-asked-questions.js:29
-#: 
-msgid "Location data, device information and engagement are not collected. There are also no fingerprinting technologies in use."
-msgstr "Standortdaten, Geräteinformationen und Interaktionsbereitschaft werden nicht erfasst. Es sind auch keine Fingerprinting-Technologien im Einsatz."
-
-#. src/views/components/auditorium/frequently-asked-questions.js:32
-#: 
-msgid "How is my data handled?"
-msgstr "Wie wird mit meinen Daten umgegangen?"
-
-#. src/views/components/auditorium/frequently-asked-questions.js:40
-#: 
-msgid "Why do I need to opt in or opt out?"
-msgstr "Warum muss ich zustimmen oder nicht zustimmen?"
-
-#. src/views/components/auditorium/frequently-asked-questions.js:43
-#: 
-msgid "Our banner serves two purposes: We ask you to access your usage data and would like to obtain your consent for its use."
-msgstr "Unser Banner hat zwei Funktionen: Wir bitten dich um den Zugriff auf deine Nutzungsdaten und möchten dein Einverständnis für deren Verwendung einholen."
-
-#. src/views/components/auditorium/frequently-asked-questions.js:46
-#: 
-msgid "Do you use cookies?"
-msgstr "Verwendet ihr Cookies?"
-
-#. src/views/components/index/main-card.js:85
-#: 
-msgid "Yes, in particular cookies are used to store your decision about granting access to your usage data. If you opt in, we also use cookies to store a user and a session ID for you."
-msgstr "Ja, insbesondere verwenden wir Cookies, um deine Entscheidung über die Zustimmung zum Sammeln deiner Nutzungsdaten zu speichern. Wenn du zustimmst, verwenden wir Cookies auch, um eine Nutzungs und Sitzungs ID für dich zu speichern."
-
-#. src/views/components/auditorium/frequently-asked-questions.js:52
-#: 
-msgid "How does it all work?"
-msgstr "Wie funktioniert das alles?"
-
-#. src/views/components/auditorium/tables.js:30
-#: 
-msgid "No data available for this view."
-msgstr "Für diese Ansicht gibt es keine Daten."
-
-#. src/views/components/auditorium/tables.js:101
-#: 
-msgid "Show top %d only"
-msgstr "Nur Top %d anzeigen"
-
-#. src/views/components/auditorium/tables.js:111
-#: 
-msgid "Show all entries"
-msgstr "Alles anzeigen"
-
-#. src/views/components/auditorium/basic-terms.js:15
-#: 
-msgid "Basic Terms"
-msgstr "Allgemeine Begriffe"
-
-#. src/views/components/auditorium/basic-terms.js:20
-#: 
-msgid "Auditorium"
-msgstr ""
-
-#. src/views/components/auditorium/basic-terms.js:26
-#: 
-msgid "Offen installation"
-msgstr "Offen Installation"
-
-#. src/views/components/auditorium/basic-terms.js:29
-#: 
-msgid "One Offen installation can include several websites. All metrics of all websites in this installation are displayed in the <a href=\"#terms-auditorium\" class=\"%s\">Auditorium.</a> Metrics generated on websites of other installations can only be viewed in the associated <a href=\"#terms-auditorium\" class=\"%s\">Auditorium.</a>"
-msgstr "Eine Offen Installation kann mehrere Webseiten umfassen. Die Metriken aller Webseiten der Installation werden im <a href=\"#terms-auditorium\" class=\"%s\">Auditorium</a> angezeigt. Metriken, die auf Webseiten anderer Installationen erzeugt wurden, können nur im zugehörigen <a href=\"#terms-auditorium\" class=\"%s\">Auditorium</a> eingesehen werden."
-
-#. src/views/components/auditorium/basic-terms.js:32
-#: 
-msgid "Cookies"
-msgstr ""
-
-#. src/views/components/auditorium/basic-terms.js:35
-#: 
-msgid "When you visit a website where a <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation</a> is active, small amounts of data are stored on your computer. These data elements are known as cookies. <a href=\"https://en.wikipedia.org/wiki/HTTP_cookie\" class=\"%s\" target=\"_blank\" rel=\"noreferer noopener\">Learn more.</a>"
-msgstr "Wenn du eine Webseite besuchst, auf der eine <a href=\"#terms-offen-installation\" class=\"%s\">Offen Installation</a> aktiv ist, werden kleine Datenmengen auf deinem Computer gespeichert. Diese Elemente werden als Cookies bezeichnet. <a href=\"https://en.wikipedia.org/wiki/HTTP_cookie\" class=\"%s\" target=\"_blank\" rel=\"noreferer noopener\">Mehr erfahren.</a>"
-
-#. src/views/components/auditorium/basic-terms.js:38
-#: 
-msgid "Operator"
-msgstr "Betreiberinnen und Betreiber"
-
-#. src/views/components/auditorium/basic-terms.js:41
-#: 
-msgid "Operators are the owners of <a href=\"#terms-offen-installation\" class=\"%s\">Offen installations.</a> Only after you opted in, your usage data of a website is collected. Operators than can view it for maximum 6 months."
-msgstr "Betreiberinnen und Betreiber verwalten <a href=\"#terms-offen-installation\" class=\"%s\">Offen Installationen.</a> Erst nachdem du zugestimmt hast, werden deine Nutzungsdaten einer Webseite gesammelt. Betreibende können diese dann für maximal 6 Monate einsehen."
-
-#. src/views/components/auditorium/basic-terms.js:46
-#: 
-msgid "Unique user"
-msgstr "Eindeutige Nutzerinnen und Nutzer"
-
-#. src/views/components/auditorium/basic-terms.js:52
-#: 
-msgid "Unique session"
-msgstr "Eindeutige Sitzung"
-
-#. src/views/components/auditorium/basic-terms.js:55
-#: 
-msgid "A unique session is defined as a <a href=\"#terms-unique-user\" class=\"%s\">unique user</a> being actively engaged with a page during a browser session. To measure this, a <a href=\"#terms-cookies\" class=\"%s\">cookie</a> is used to assign a session <a href=\"#terms-id\" class=\"%s\">ID</a> to you."
-msgstr "Eine eindeutige Sitzung ist definiert wenn <a href=\"#terms-unique-user\" class=\"%s\">eindeutige Nutzerinnen und Nutzer</a> sich während einer Browser-Sitzung aktiv mit einer Seite beschäftigen. Zur Messung werden <a href=\"#terms-cookies\" class=\"%s\">Cookies</a> verwendet um jeweils eine Sitzungs <a href=\"#terms-id\" class=\"%s\">ID</a> zuzuordnen."
-
-#. src/views/components/auditorium/basic-terms.js:58
-#: 
-msgid "ID"
-msgstr ""
-
-#. src/views/components/auditorium/basic-terms.js:61
-#: 
-msgid "Originally: UUID. Full form: Universally unique identifier. Offen uses UUID of version 4. These IDs are generated randomly, unique and without using any personal data. On the individual Offen server, they are handled in an unrecognizable form. <a href=\"https://en.wikipedia.org/wiki/Universally_unique_identifier\" class=\"%s\" target=\"_blank\" rel=\"noreferer noopener\">Learn more.</a>"
-msgstr "Original: UUID. Ausgeschrieben: Universally unique identifier. Offen verwendet UUID der Version 4. Diese IDs werden zufällig, eindeutig und ohne Verwendung von persönlichen Daten generiert. Auf dem jeweiligen Offen-Server werden sie in einer nicht zuordenbaren Form verarbeitet. <a href=\"https://en.wikipedia.org/wiki/Universally_unique_identifier\" class=\"%s\" target=\"_blank\" rel=\"noreferer noopener\">Mehr erfahren.</a>"
-
-#. src/views/components/auditorium/format.js:16
-#: 
-msgid "No"
-msgstr "Nein"
-
-#. src/views/components/auditorium/format.js:16
-#: 
-msgid "Yes"
-msgstr "Ja"
-
-#. src/views/components/auditorium/format.js:45
-#: 
-msgid "s"
-msgstr "s"
-
-#. src/views/components/auditorium/format.js:47
-#: 
-msgid "ms"
-msgstr "ms"
-
-#. src/views/components/auditorium/format.js:53
-#: 
-msgid "M"
-msgstr "Mio."
-
-#. src/views/components/auditorium/format.js:56
-#: 
-msgid "k"
-msgstr "Tsd."
-
-#. src/views/components/auditorium/range-selector.js:15
-#: 
-msgid "24 hours"
-msgstr "24 Stunden"
-
-#. src/views/components/auditorium/range-selector.js:16
-#: 
-msgid "7 days"
-msgstr "7 Tage"
-
-#. src/views/components/auditorium/range-selector.js:17
-#: 
-msgid "28 days"
-msgstr "28 Tage"
-
-#. src/views/components/auditorium/range-selector.js:18
-#: 
-msgid "6 weeks"
-msgstr "6 Wochen"
-
-#. src/views/components/auditorium/range-selector.js:19
-#: 
-msgid "12 weeks"
-msgstr "12 Wochen"
-
-#. src/views/components/auditorium/range-selector.js:20
-#: 
-msgid "6 months"
-msgstr "6 Monate"
-
-#. src/views/components/auditorium/range-selector.js:58
-#: 
-msgid "Show data from the last"
-msgstr "Daten der letzten"
-
-#. src/views/components/auditorium/range-selector.js:72
-#: 
-msgid "Here you can set the time frame for all displayed metrics. As all data is generally deleted after 6 months, the selection is limited to this duration."
-msgstr "Hier könnst du den Zeitrahmen für alle angezeigten Metriken einstellen. Da alle Daten prinzipiell nach 6 Monaten gelöscht werden, ist die Auswahl auf diese Dauer beschränkt."
-
-#. src/views/components/auditorium/retention-chart.js:69
-#: 
-msgid "Weekly retention"
-msgstr "Wöchentliche Retention"
-
-#. src/views/components/auditorium/retention-chart.js:75
-#: 
-msgid "This panel displays your recurring visits of pages of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation</a> during the last 4 weeks. For each of the previous weeks, the percentage is calculated from the value of the current week."
-msgstr "Dieses Panel zeigt die wiederkehrenden Besuche von Seiten der <a href=\"#terms-offen-installation\" class=\"%s\">Offen Installation</a> während der letzten 4 Wochen an. Für jede der vergangenen Wochen wird der Prozentsatz aus dem Wert der aktuellen Woche berechnet."
-
-#. src/views/components/auditorium/privacy.js:36
-#: 
-msgid "Delete"
-msgstr "Löschen"
-
-#. src/views/components/auditorium/privacy.js:48
-#: 
-msgid "Privacy"
-msgstr ""
-
-#. src/views/components/auditorium/privacy.js:61
-#: 
-msgid "Opt out"
-msgstr "Zustimmung entziehen"
-
-#. src/views/components/auditorium/privacy.js:61
-#: 
-msgid "Opt in"
-msgstr "Zustimmung geben"
-
-#. src/views/components/auditorium/account-picker.js:14
-#: 
-msgid "Choose account"
-msgstr "Account wählen"
-
-#. src/views/components/auditorium/chart.js:140
-#: 
-msgid "Page views and %s"
-msgstr "Seitenaufrufe und %s"
-
-#. src/views/components/auditorium/metrics.js:36
-#: 
-msgid "users"
-msgstr "Nutzerinnen und Nutzer"
-
-#. src/views/components/auditorium/metrics.js:37
-#: 
-msgid "websites"
-msgstr "Webseiten"
-
-#. src/views/components/auditorium/chart.js:154
-#: 
-msgid "This panel displays the number of pages (bright green) and websites (dark green) you have visited where the <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation</a> is active. To measure this, a cookie is used to assign you a user and a session <a href=\"#terms-id\" class=\"%s\">ID.</a>"
-msgstr "Dieses Panel zeigt die Anzahl der Seiten (hellgrün) und Webseiten (dunkelgrün) an, die du besucht hast, auf denen die <a href=\"#terms-offen-installation\" class=\"%s\">Offen Installation</a> aktiv ist. Um dies zu messen, wird ein Cookie verwendet, das dir eine Nutzungs und Sitzungs <a href=\"#terms-id\" class=\"%s\">ID</a> zuweist."
-
-#. src/views/components/auditorium/metrics.js:44
-#: 
-msgid "Key metrics"
-msgstr "Kennzahlen"
-
-#. src/views/components/auditorium/metrics.js:50
-#: 
-msgid "This panel displays the most significant metrics at a glance."
-msgstr "Dieses Panel zeigt die wichtigsten Metriken auf einen Blick an."
-
-#. src/views/components/auditorium/metrics.js:60
-#: 
-msgid "Unique %s"
-msgstr "Eindeutige %s"
-
-#. src/views/components/auditorium/metrics.js:69
-#: 
-msgid "The number of websites you have visited where the <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation</a> is active. This value will be 1 in many cases."
-msgstr "Die Anzahl von Webseiten die du besucht hast, auf denen die <a href=\"#terms-offen-installation\" class=\"%s\">Offen Installation</a> aktiv ist. Dieser Wert wird in vielen Fällen 1 sein."
-
-#. src/views/components/auditorium/metrics.js:77
-#: 
-msgid "Unique sessions"
-msgstr "Eindeutige Sitzungen"
-
-#. src/views/components/auditorium/metrics.js:86
-#: 
-msgid "The number of <a href=\"#terms-unique-session\" class=\"%s\">unique sessions</a> you have created on pages where the <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation</a> is active."
-msgstr "Die Anzahl von <a href=\"#terms-unique-session\" class=\"%s\">Eindeutigen Sitzungen</a>, die du auf Seiten erzeugt hast, auf denen die <a href=\"#terms-offen-installation\" class=\"%s\">Offen Installation</a> aktiv ist."
-
-#. src/views/components/auditorium/metrics.js:94
-#: 
-msgid "Avg. page depth"
-msgstr "Durchschnittliche Seitentiefe"
-
-#. src/views/components/auditorium/metrics.js:104
-#: 
-msgid "Full form: Average page depth. The average number of pages you have visited during all <a href=\"#terms-unique-session\" class=\"%s\">unique sessions</a> on all websites where the <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation</a> is active."
-msgstr "Die durchschnittliche Anzahl von Seiten, die du während aller <a href=\"#terms-unique-session\" class=\"%s\">Eindeutigen Sitzungen</a> auf allen Webseiten besucht hast, auf denen die <a href=\"#terms-offen-installation\" class=\"%s\">Offen Installation</a> aktiv ist."
-
-#. src/views/components/auditorium/metrics.js:112
-#: 
-msgid "Bounce rate"
-msgstr "Absprungrate"
-
-#. src/views/components/auditorium/metrics.js:122
-#: 
-msgid "The percentage of <a href=\"#terms-unique-session\" class=\"%s\">unique sessions</a> where you only visited one page of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation.</a> Therefore a website with only one page will always have a bounce rate of 100%."
-msgstr "Der Prozentsatz von <a href=\"#terms-unique-session\" class=\"%s\">Eindeutigen Sitzungen</a>, bei denen du nur eine Seite der <a href=\"#terms-offen-installation\" class=\"%s\">Offen Installation</a> besucht hast. Eine Webseite mit nur einer Seite hat daher immer eine Absprungrate von 100 %."
-
-#. src/views/components/auditorium/metrics.js:130
-#: 
-msgid "Returning users"
-msgstr "Nutzerinnen und Nutzer, die zurückkehren"
-
-#. src/views/components/auditorium/metrics.js:140
-#: 
-msgid "Plus"
-msgstr ""
-
-#. src/views/components/auditorium/metrics.js:152
-#: 
-msgid "Mobile users"
-msgstr "Mobil Nutzerinnen und Nutzer"
-
-#. src/views/components/auditorium/metrics.js:152
-#: 
-msgid "Mobile user"
-msgstr "Mobil nutzend"
-
-#. src/views/components/auditorium/metrics.js:162
-#: 
-msgid "Shows whether you are considered to be using a mobile device. A check is made to see if your device thinks it can change its orientation. If so, it is considered mobile."
-msgstr "Zeigt an, ob davon ausgegangen wird, dass du ein mobiles Gerät verwendest. Dabei wird geprüft, ob dein Gerät annimmt, dass es seine Bildschirmausrichtung ändern kann. Wenn dies der Fall ist, wird es als mobil betrachtet."
-
-#. src/views/components/auditorium/metrics.js:170
-#: 
-msgid "Avg. page load time"
-msgstr "Durchschnittliche Seitenladezeit"
-
-#. src/views/components/auditorium/metrics.js:180
-#: 
-msgid "Full form: Average page load time. The average time it took for all pages of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation</a> you visited to become interactive."
-msgstr "Die durchschnittliche Zeit, die es dauerte, bis alle Seiten der <a href=\"#terms-offen-installation\" class=\"%s\">Offen Installation</a>, die du besucht hast, interaktiv wurden."
-
-#. src/views/components/auditorium/embed-code.js:18
-#: 
-msgid "Successfully copied embed code to clipboard."
-msgstr "Erfolgreich den Embed Code in die Zwischenablage kopiert."
-
-#. src/views/components/auditorium/embed-code.js:38
-#: 
-msgid "Embed code"
-msgstr "Embed Code"
-
-#. src/views/components/auditorium/embed-code.js:54
-#: 
-msgid "To use Offen with the account <em class=\"%s\">%s</em> on your website, embed the following script on each page you want to appear in your statistics."
-msgstr "Um Offen mit dem Account <em class=\"%s\">%s</em> auf deiner Webseite zu verwenden, füge den folgenden Code auf jeder Seite ein, die in deiner Statistik erscheinen soll."
-
-#. src/views/components/auditorium/embed-code.js:57
-#: 
-msgid "In case you are serving multiple domains from your Offen instance, please double check that the domain in this snippet matches the target account."
-msgstr "Falls du mehrere Domains von deiner Offen Installation aus bedienst, überprüfe bitte, ob die Domain in diesem Code mit dem Ziel Account übereinstimmt."
-
-#. src/views/components/auditorium/embed-code.js:75
-#: 
-msgid "Copy code"
-msgstr "Code kopieren"
-
-#. src/views/components/auditorium/retire-account.js:21
-#: 
-msgid "If you retire the account <em class=\"%s\">%s,</em> it will not appear in your statistics anymore. Users will be able to access and manage their data for the account for another 6 months until data expires."
-msgstr "Wenn du den Account <em class=\"%s\">%s,</em> stilllegst, wird er nicht mehr in deiner Statistik angezeigt. Nutzerinnen und Nutzer können jedoch noch 6 Monate lang auf die Daten dieses Accounts zugreifen und diese verwalten, bis die Daten automatisch gelöscht werden."
-
-#. src/views/components/auditorium/retire-account.js:24
-#: 
-msgid "<em class=\"%s\">Danger zone! This action cannot be undone.</em>"
-msgstr "<em class=\"%s\">Achtung! Diese Aktion kann nicht rückgängig gemacht werden.</em>"
-
-#. src/views/components/auditorium/retire-account.js:29
-#. src/views/components/auditorium/retire-account.js:100
-#: 
-msgid "Retire account"
-msgstr "Account stilllegen"
-
-#. src/views/components/auditorium/retire-account.js:45
-#: 
-msgid "To permanently retire the account, type its name <em class=\"%s\">\"%s\"</em> into the form below:"
-msgstr "Um den Account stillzulegen, gib seinen Namen <em class=\"%s\">\"%s\"</em> in das Feld unten ein:"
-
-#. src/views/components/auditorium/retire-account.js:77
-#: 
-msgid "The account <em class=\"%s\">\"%s\"</em> has been retired successfully. Log in again to continue."
-msgstr "Der Account <em class=\"%s\">\"%s\"</em> wurde erfolgreich stillgelegt. Melde dich erneut an, um fortzufahren."
-
-#. src/views/components/auditorium/retire-account.js:78
-#: 
-msgid "There was an error retiring the account, please try again."
-msgstr "Es gab einen Fehler beim Stilllegen des Accounts, bitte versuche es noch einmal."
-
-#. src/views/components/auditorium/url-tables.js:25
-#: 
-msgid "Top pages"
-msgstr "Wichtigste Seiten"
-
-#. src/views/components/auditorium/url-tables.js:31
-#: 
-msgid "This panel displays several page lists that count the total number of your page views of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation</a> per URL in different categories."
-msgstr "Dieses Panel beinhaltet Listen, die die Gesamtzahl deiner Seitenaufrufe der <a href=\"#terms-offen-installation\" class=\"%s\">Offen Installation</a> pro URL in verschiedenen Kategorien anzeigen."
-
-#. src/views/components/auditorium/live.js:36
-#: 
-msgid "URL"
-msgstr ""
-
-#. src/views/components/auditorium/url-tables.js:39
-#: 
-msgid "Pageviews"
-msgstr "Seitenaufrufe"
-
-#. src/views/components/auditorium/url-tables.js:49
-#: 
-msgid "Referrers"
-msgstr "Referrer"
-
-#. src/views/components/auditorium/url-tables.js:50
-#: 
-msgid "Host"
-msgstr ""
-
-#. src/views/components/auditorium/url-tables.js:50
-#. src/views/components/auditorium/url-tables.js:63
-#. src/views/components/auditorium/url-tables.js:76
-#: 
-msgid "Sessions"
-msgstr "Sitzungen"
-
-#. src/views/components/auditorium/url-tables.js:50
-#. src/views/components/auditorium/url-tables.js:63
-#: 
-msgid "Page depth"
-msgstr "Seitentiefe"
-
-#. src/views/components/auditorium/url-tables.js:56
-#: 
-msgid "A list of referrers that directed you to pages of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation.</a> Popular referrers like, for example, Google or Twitter display their proper name, others their domain."
-msgstr "Eine Liste von Referrern, die dich auf Seiten der <a href=\"#terms-offen-installation\" class=\"%s\">Offen Installation</a> verwiesen haben. Gängige Referenz Domains wie z.B. Google oder Twitter werden mit ihren Eigennamen dargestellt, alle anderen mit ihrer vollen Domain."
-
-#. src/views/components/auditorium/url-tables.js:62
-#: 
-msgid "Campaigns"
-msgstr "Kampagnen"
-
-#. src/views/components/auditorium/url-tables.js:63
-#: 
-msgid "Campaign"
-msgstr "Kampagne"
-
-#. src/views/components/auditorium/url-tables.js:69
-#: 
-msgid "A list of special referrers that directed you to pages of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation.</a> <a href=\"#terms-operator\" class=\"%s\">Operators</a> can mark links to their pages with a campaign tag. This is used, for example, to measure the success of online advertising campaigns."
-msgstr "Eine Liste von speziellen Referrern, die dich auf Seiten der <a href=\"#terms-offen-installation\" class=\"%s\">Offen Installation</a> verwiesen haben. <a href=\"#terms-operator\" class=\"%s\">Betreiberinnen und Betreiber</a> können Links zu ihren Seiten mit einem Kampagnen Tag markieren. Dies dient z.B. dazu, den Erfolg von Online Werbekampagnen zu messen."
-
-#. src/views/components/auditorium/url-tables.js:75
-#: 
-msgid "Sources"
-msgstr "Quellen"
-
-#. src/views/components/auditorium/url-tables.js:76
-#: 
-msgid "Source"
-msgstr "Quelle"
-
-#. src/views/components/auditorium/url-tables.js:76
-#: 
-msgid "Views per session"
-msgstr "Aufrufe pro Sitzung"
-
-#. src/views/components/auditorium/url-tables.js:82
-#: 
-msgid "A list of special referrers that directed you to pages of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation.</a> <a href=\"#terms-operator\" class=\"%s\">Operators</a> can mark links to their pages with a source tag. This is used, for example, to measure the success of online advertising campaigns."
-msgstr "Eine Liste von speziellen Referrern, die dich auf Seiten der <a href=\"#terms-offen-installation\" class=\"%s\">Offen Installation</a> verwiesen haben. <a href=\"#terms-operator\" class=\"%s\">Betreiberinnen und Betreiber</a> können Links zu ihren Seiten mit einem Quellen Tag markieren. Dies dient z.B. dazu, den Erfolg von Online Werbekampagnen zu messen."
-
-#. src/views/components/auditorium/url-tables.js:94
-#: 
-msgid "Landing pages"
-msgstr "Einstiegssteiten"
-
-#. src/views/components/auditorium/url-tables.js:95
-#: 
-msgid "Landings"
-msgstr "Einstiege"
-
-#. src/views/components/auditorium/url-tables.js:100
-#: 
-msgid "A list of pages of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation</a> that you have opened first in all <a href=\"#terms-unique-session\" class=\"%s\">unique sessions.</a>"
-msgstr "Eine Liste der Seiten der <a href=\"#terms-offen-installation\" class=\"%s\">Offen Installation</a>, die du in allen <a href=\"#terms-unique-session\" class=\"%s\">Eindeutigen Sitzungen</a> zuerst geöffnet hast."
-
-#. src/views/components/auditorium/url-tables.js:106
-#: 
-msgid "Exit pages"
-msgstr "Ausstiegsseiten"
-
-#. src/views/components/auditorium/url-tables.js:107
-#: 
-msgid "Exits"
-msgstr "Ausstiege"
-
-#. src/views/components/auditorium/url-tables.js:112
-#: 
-msgid "A list of pages of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation</a> that you have opened last in all <a href=\"#terms-unique-session\" class=\"%s\">unique sessions.</a> For this to be counted you must have visited at least two pages."
-msgstr "Eine Liste der Seiten der <a href=\"#terms-offen-installation\" class=\"%s\">Offen Installation</a>, die du in allen <a href=\"#terms-unique-session\" class=\"%s\">Eindeutigen Sitzungen</a> zuletzt geöffnet hast.</a> Damit dies ausgewertet wird, musst du mindestens zwei Seiten besucht haben."
-
-#. src/views/components/auditorium/frequently-asked-questions.js:15
-#: 
-msgid "FAQ"
-msgstr ""
-
-#. src/views/components/auditorium/frequently-asked-questions.js:23
-#: 
-msgid "Only page views, sessions, referrer and the visited URL are collected. From this, other metrics such as for example the bounce rate are calculated."
-msgstr "Es werden nur Seitenaufrufe, Sitzungen, Referrer und die besuchte URL gesammelt. Daraus werden weitere Metriken wie z.B. die Absprungrate berechnet."
-
-#. src/views/components/auditorium/frequently-asked-questions.js:26
-#: 
-msgid "What kind of data isn't collected?"
-msgstr "Welche Art von Daten wird nicht gesammelt?"
-
-#. src/views/components/auditorium/frequently-asked-questions.js:35
-#: 
-msgid "Your usage data is encrypted end-to-end. It will be automatically deleted after 6 months. You can delete your usage data yourself at any time in the privacy panel."
-msgstr "Deine Nutzungsdaten werden Ende-zu-Ende verschlüsselt. Sie werden nach 6 Monaten automatisch gelöscht. Du kannst deine Nutzungsdaten jederzeit selbst im Privacy Panel löschen."
-
-#. src/views/components/auditorium/frequently-asked-questions.js:49
-#: 
-msgid "Yes, in particular cookies are used to store your decision about granting access to your usage data. If you opt in, we also use <a href=\"#terms-cookies\" class=\"%s\">cookies</a> to store a user and a session <a href=\"#terms-id\" class=\"%s\">ID</a> for you."
-msgstr "Ja, insbesondere werden Cookies verwendet, um deine Entscheidung über die Zustimmung zum Zugriff auf deine Nutzungsdaten zu speichern. Wenn du zustimmst, verwenden wir außerdem <a href=\"#terms-cookies\" class=\"%s\">Cookies</a>, um eine Nutzungs und Sitzungs <a href=\"#terms-id\" class=\"%s\">ID</a> für dich zu speichern."
-
-#. src/views/components/auditorium/frequently-asked-questions.js:55
-#: 
-msgid "After opening a website where a <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation</a> is active, you can explicitly opt in to the data collection and thereby help to improve the services you use. Only then you will be assigned a user and a session <a href=\"#terms-id\" class=\"%s\">ID</a> using a <a href=\"#terms-cookies\" class=\"%s\">cookie.</a> Offen handles these <a href=\"#terms-id\" class=\"%s\">IDs</a> in an unrecognizable form, i.e. no server will ever store this identifier."
-msgstr "Nach dem Aufruf einer Webseite, auf der eine <a href=\"#terms-offen-installation\" class=\"%s\">Offen Installation</a> aktiv ist, kannst du der Datenerhebung explizit zustimmen und damit helfen, die von dir genutzten Dienste zu verbessern. Nur dann wird dir über einen <a href=\"#terms-cookies\" class=\"%s\">Cookie</a> eine Nutzungs und Sitzungs<a href=\"#terms-id\" class=\"%s\">ID</a> zugewiesen.</a> Offen behandelt diese <a href=\"#terms-id\" class=\"%s\">IDs</a> in einer nicht zuordenbaren Form, d.h. kein Server wird diese Kennung jemals speichern."
-
-#. src/views/components/auditorium/relative-time.js:13
-#: 
-msgid "Now"
-msgstr "Jetzt"
-
-#. src/views/components/auditorium/relative-time.js:15
-#: 
-msgid "%d days later"
-msgstr "%d Tage später"
-
-#. src/views/components/auditorium/relative-time.js:15
-#: 
-msgid "%d days earlier"
-msgstr "%d Tage eher"
-
-#. src/views/components/auditorium/header.js:15
-#: 
-msgid "You are viewing data as operator with account <em class=\"%s\">%s</em>."
-msgstr "Du siehst hier Daten des Accounts <em class=\"%s\">%s</em>."
-
-#. src/views/components/auditorium/header.js:20
-#: 
-msgid "You are viewing your usage data."
-msgstr "Du siehst deine Nutzungsdaten."
-
-#. src/views/components/auditorium/go-settings.js:32
-#: 
-msgid "Admin console"
-msgstr "Admin Konsole"
-
-#. src/views/components/auditorium/go-settings.js:45
-#: 
-msgid "Share all accounts, create a new one, change your email address and password, log out from Offen"
-msgstr "Alle Accounts freigeben, einen neuen Account erstellen, deine E-Mail Adresse und dein Passwort ändern, aus Offen abmelden"
-
-#. src/views/components/auditorium/go-settings.js:53
-#: 
-msgid "Open admin console"
-msgstr "Admin Konsole öffnen"
-
-#. src/views/components/auditorium/live.js:19
-#: 
-msgid "Real time"
-msgstr "Echtzeit"
-
-#. src/views/components/auditorium/live.js:23
-#: 
-msgid "Active users on site"
-msgstr "Aktive Nutzerinnen und Nutzer auf der Webseite"
-
-#. src/views/components/auditorium/live.js:29
-#: 
-msgid "Active pages"
-msgstr "Aktive Seiten"
-
-#. src/views/components/auditorium/live.js:36
-#: 
-msgid "Visitors"
-msgstr "Besuchende"
-
-#. src/views/components/auditorium/share.js:15
-#: 
-msgid "Share this account"
-msgstr "Diesen Account teilen"
-
-#. src/views/components/auditorium/database-settings.js:15
-#: 
-msgid "Failed to purge local aggregates, please try again."
-msgstr "Das Bereinigen lokaler Aggregate ist fehlgeschlagen, bitte versuchen es noch einmal."
-
-#. src/views/components/auditorium/database-settings.js:36
-#: 
-msgid "Database settings"
-msgstr "Datenbank Einstellungen"
-
-#. src/views/components/auditorium/database-settings.js:49
-#: 
-msgid "Purge aggregates from local database and rebuild. This operation is non-destructive and can be performed at any time."
-msgstr "Aggregate aus der lokalen Datenbank bereinigen und neu aufbauen. Dieser Vorgang ist nicht destruktiv und kann zu jeder Zeit durchgeführt werden."
-
-#. src/views/components/auditorium/database-settings.js:55
-#: 
-msgid "Rebuild aggregates"
-msgstr "Aggregate neu aufbauen"
-
-#. src/views/components/join/form.js:22
-#: 
-msgid "Passwords did not match"
-msgstr "Passwörter stimmten nicht überein"
-
-#. src/views/components/join/form.js:31
-#: 
-msgid "Your account has been set up, you can now log in."
-msgstr "Dein Account wurde eingerichtet, du kannst dich jetzt anmelden."
-
-#. src/views/components/join/form.js:39
-#: 
-msgid "Join Offen"
-msgstr "Bei Offen mitmachen"
-
-#. src/views/components/join/form.js:66
-#: 
-msgid "Accept invite"
-msgstr "Einladung annehmen"
-
-#. src/views/index.js:29
-#: 
-msgid "Checking your consent status"
-msgstr "Prüfe deinen Zustimmung"
-
-#. src/views/auditorium-user.js:56
-#: 
-msgid "Fetching and decrypting the latest data"
-msgstr "Abrufen und Entschlüsseln der aktuellen Daten"
-
-#. src/views/auditorium-operator.js:234
-#: 
-msgid "Auditorium | Offen"
-msgstr ""
-
-#. src/views/setup.js:20
-#: 
 msgid "This instance is already set up."
 msgstr "Diese Instanz ist bereits eingerichtet."
 
-#. src/views/setup.js:24
-#: 
 msgid "Preparing setup..."
 msgstr "Einrichtung vorbereiten..."
 
-#. src/views/auditorium-operator.js:47
-#: 
-msgid "This view failed to update automatically, data may be out of date. Check your network connection if the problem persists."
-msgstr "Diese Ansicht konnte nicht automatisch aktualisiert werden, möglicherweise sind die Daten veraltet. Überprüfe deine Netzwerkverbindung, falls das Problem weiterhin auftritt."
+msgid "Not found..."
+msgstr "Nicht gefunden..."
 
-#. src/views/auditorium-operator.js:91
-#: 
-msgid "Fetching and aggregating the latest data"
-msgstr "Abrufen und Zusammenstellen der neuesten Daten"
-
-#. src/views/console.js:97
-#: 
 msgid "Console | Offen"
 msgstr "Konsole | Offen"
 
-#. index.js:63
-#: 
+msgid "You cannot invite yourself."
+msgstr "Du kannst dich nicht selbst einladen."
+
+msgid "An invite email has been sent to <em class=\"%s\">%s</em>."
+msgstr "Eine E-Mail Einladung wurde gesendet an <em class=\"%s\">%s</em>."
+
+msgid "There was an error inviting the user, please try again."
+msgstr ""
+"Bei der Einladung ist ein Fehler aufgetreten, bitte versuche es noch einmal."
+
+msgid "Toggle display of %s functionality"
+msgstr "Umschalten der Anzeige %s Funktion"
+
+msgid "Email address to send invite to"
+msgstr "E-Mail Adresse, an die eine Einladung gesendet werden soll"
+
+msgid "Grant Admin privileges"
+msgstr "Admin Rechte vergeben"
+
+msgid "Invite user"
+msgstr "Andere einladen"
+
+msgid "You need to confirm this action with your credentials."
+msgstr "Du musst diese Aktion mit deinen Anmeldedaten bestätigen."
+
+msgid "Your email address"
+msgstr "Deine E-Mail Adresse"
+
+msgid "Your password"
+msgstr "Dein Passwort"
+
+msgid "Confirm"
+msgstr "Bestätigen"
+
+msgid "Cancel"
+msgstr "Abbrechen"
+
+msgid "One moment..."
+msgstr "Einen Moment..."
+
+msgid "Please log in using your credentials."
+msgstr "Bitte melden dich mit deinen Daten an."
+
+msgid "Checking authentication"
+msgstr "Authentifikation überprüfen"
+
+msgid ""
+"You currently do not have any active accounts. You can create one below."
+msgstr ""
+"Du hast derzeit keine aktiven Accounts. Weiter unten kannst du einen "
+"erstellen."
+
+msgid "Offen Auditorium"
+msgstr ""
+
+msgid "An error occurred: %s"
+msgstr "Ein Fehler ist aufgetreten: %s"
+
+msgid ""
+"<a href=\"https://www.offen.dev/\" class=\"%s\" target=\"_blank\" rel="
+"\"noreferer noopener\">Offen</a>"
+msgstr ""
+"<a href=\"https://www.offen.dev/\" class=\"%s\" target=\"_blank\" rel="
+"\"noreferer noopener\">Offen</a>"
+
+#. #-#-#-#-#  server.po  #-#-#-#-#
+#. ~ line 54 "public/index.go.html"
+msgid "Fair web analytics"
+msgstr ""
+
+msgid ""
+"Found an issue, need help or want to add something?<br><a href=\"https://"
+"twitter.com/hioffen\" class=\"%s\" target=\"_blank\" rel=\"noreferer noopener"
+"\">Tweet,</a> <a href=\"mailto:hioffen@posteo.de\" class=\"%s\" target="
+"\"_blank\">email</a> or file an <a href=\"https://github.com/offen/offen\" "
+"class=\"%s\" target=\"_blank\" rel=\"noreferer noopener\">issue.</a>"
+msgstr ""
+"Hast du einen Fehler gefunden, brauchst Hilfe oder möchtest etwas hinzufügen?"
+"<br><a href=\"https://twitter.com/hioffen\" class=\"%s\" target=\"_blank\" "
+"rel=\"noreferer noopener\">Twitter,</a> <a href=\"mailto:hioffen@posteo.de\" "
+"class=\"%s\" target=\"_blank\">E-Mail</a> oder erstelle eine <a href="
+"\"https://github.com/offen/offen\" class=\"%s\" target=\"_blank\" rel="
+"\"noreferer noopener\">Issue.</a>"
+
+msgid "Check your inbox and follow the instructions in the email."
+msgstr "Schau in deinen Posteingang und folge der Anleitung in unserer E-Mail."
+
+msgid "Could not handle your request, please try again."
+msgstr ""
+"Deine Anfrage konnte nicht bearbeitet werden, bitte versuche es noch einmal."
+
+msgid "Request link to reset password"
+msgstr "Link zum Zurücksetzen des Passworts anfordern"
+
+msgid "Email address"
+msgstr "E-Mail Adresse"
+
+msgid "Send Email"
+msgstr "E-Mail senden"
+
+msgid "You are logged in as operator."
+msgstr "Du bist angemeldet."
+
+msgid ""
+"Log in again to use the newly created account <em class=\"%s\">\"%s\"</em>."
+msgstr ""
+"Melde dich erneut an, um den neuen Account <em class=\"%s\">\"%s\"</em> zu "
+"verwenden."
+
+msgid "There was an error creating the account, please try again."
+msgstr ""
+"Beim Erstellen des Accounts ist ein Fehler aufgetreten, bitte versuche es "
+"noch einmal."
+
+msgid "Create new account"
+msgstr "Neuen Account erstellen"
+
+msgid "Account name"
+msgstr "Account Name"
+
+msgid "Create account"
+msgstr "Account anlegen"
+
+msgid "Your email"
+msgstr "Deine E-Mail"
+
+msgid "You have been logged out."
+msgstr "Du wurdest abgemeldet."
+
+msgid "There was an error terminating your session, please try again."
+msgstr ""
+"Es ist ein Fehler beim Beenden der Session aufgetreten, bitte versuche es "
+"noch einmal."
+
+msgid "Logout"
+msgstr "Abmelden"
+
+msgid "Please log in again using your updated email."
+msgstr "Bitte melde dich mit deiner aktualisierten E-Mail erneut an."
+
+msgid "Could not change email. Try again."
+msgstr "E-Mail konnte nicht geändert werden. Versuche es noch einmal."
+
+msgid "Change email address"
+msgstr "E-Mail Adresse ändern"
+
+msgid "New email address"
+msgstr "Neue E-Mail Adresse"
+
+msgid "Current email address"
+msgstr "Aktuelle E-Mail Adresse"
+
+msgid "Password"
+msgstr "Passwort"
+
+msgid "Open account"
+msgstr "Account öffnen"
+
+msgid "Passwords did not match. Please try again."
+msgstr "Die Passwörter stimmen nicht überein. Versuche es noch einmal."
+
+msgid "Please log in again using your new password."
+msgstr "Bitte melden dich mit deinem aktualisierten Passwort erneut an."
+
+msgid "Could not change password. Try again."
+msgstr ""
+"Das Passwort konnte nicht geändert werden, bitte versuche es noch einmal."
+
+msgid "Change password"
+msgstr "Passwort ändern"
+
+msgid "Current password"
+msgstr "Aktuelles Passwort"
+
+msgid "New password"
+msgstr "Neues Passwort"
+
+msgid "Repeat new password"
+msgstr "Neues Passwort wiederholen"
+
+msgid "You can now log in using the provided credentials."
+msgstr "Du kannst dich jetzt mit den bereitgestellten Daten anmelden."
+
+msgid "Set up your instance by creating your first account."
+msgstr "Richte deine Instanz ein, indem du deinen ersten Account erstellst."
+
+msgid "The account name"
+msgstr "Account Name"
+
+msgid "Repeat password"
+msgstr "Passwort wiederholen"
+
+msgid "Setup instance"
+msgstr "Instanz einrichten"
+
+msgid "Share all accounts"
+msgstr "Alle Accounts teilen"
+
+msgid ""
+"Share all your Offen accounts via email invitation. When granted Admin "
+"privilges, invited users have full access to shared accounts and can create "
+"new accounts on this Offen instance."
+msgstr ""
+"Gib alle deine Offen Accounts per E-Mail Einladung frei. Eingeladene mit "
+"Admin Rechten haben vollen Zugriff auf die freigegebenen Konten und können "
+"neue Konten auf dieser Offen Instanz erstellen."
+
+msgid "24 hours"
+msgstr "24 Stunden"
+
+msgid "7 days"
+msgstr "7 Tage"
+
+msgid "28 days"
+msgstr "28 Tage"
+
+msgid "6 weeks"
+msgstr "6 Wochen"
+
+msgid "12 weeks"
+msgstr "12 Wochen"
+
+msgid "6 months"
+msgstr "6 Monate"
+
+msgid "Show data from the last"
+msgstr "Daten der letzten"
+
+msgid ""
+"Here you can set the time frame for all displayed metrics. As all data is "
+"generally deleted after 6 months, the selection is limited to this duration."
+msgstr ""
+"Hier könnst du den Zeitrahmen für alle angezeigten Metriken einstellen. Da "
+"alle Daten prinzipiell nach 6 Monaten gelöscht werden, ist die Auswahl auf "
+"diese Dauer beschränkt."
+
+msgid "You are viewing data as operator with account <em class=\"%s\">%s</em>."
+msgstr "Du siehst hier Daten des Accounts <em class=\"%s\">%s</em>."
+
+msgid "You are viewing your usage data."
+msgstr "Du siehst deine Nutzungsdaten."
+
+msgid "Share this account"
+msgstr "Diesen Account teilen"
+
+msgid ""
+"Share your Offen account <em class=\"%s\">%s</em> via email invitation. If "
+"granted admin privileges, invited users have full access to a shared account "
+"and can also create further accounts for this Offen instance."
+msgstr ""
+"Teile deinen Offen Account <em class=\"%s\">%s</em> per E-Mail Einladung. "
+"Eingeladene Nutzerinnen und Nutzer haben, wenn sie über Admin Rechte "
+"verfügen, vollen Zugriff auf einen freigegebenen Account und können auch "
+"weitere Accounts für diese Offen Instanz erstellen."
+
+msgid "users"
+msgstr "Nutzerinnen und Nutzer"
+
+msgid "websites"
+msgstr "Webseiten"
+
+msgid "Key metrics"
+msgstr "Kennzahlen"
+
+msgid "This panel displays the most significant metrics at a glance."
+msgstr "Dieses Panel zeigt die wichtigsten Metriken auf einen Blick an."
+
+msgid "Unique %s"
+msgstr "Eindeutige %s"
+
+msgid ""
+"The number of websites you have visited where the <a href=\"#terms-offen-"
+"installation\" class=\"%s\">Offen installation</a> is active. This value "
+"will be 1 in many cases."
+msgstr ""
+"Die Anzahl von Webseiten die du besucht hast, auf denen die <a href=\"#terms-"
+"offen-installation\" class=\"%s\">Offen Installation</a> aktiv ist. Dieser "
+"Wert wird in vielen Fällen 1 sein."
+
+msgid "Unique sessions"
+msgstr "Eindeutige Sitzungen"
+
+msgid ""
+"The number of <a href=\"#terms-unique-session\" class=\"%s\">unique "
+"sessions</a> you have created on pages where the <a href=\"#terms-offen-"
+"installation\" class=\"%s\">Offen installation</a> is active."
+msgstr ""
+"Die Anzahl von <a href=\"#terms-unique-session\" class=\"%s\">Eindeutigen "
+"Sitzungen</a>, die du auf Seiten erzeugt hast, auf denen die <a href="
+"\"#terms-offen-installation\" class=\"%s\">Offen Installation</a> aktiv ist."
+
+msgid "Avg. page depth"
+msgstr "Durchschnittliche Seitentiefe"
+
+msgid ""
+"Full form: Average page depth. The average number of pages you have visited "
+"during all <a href=\"#terms-unique-session\" class=\"%s\">unique sessions</"
+"a> on all websites where the <a href=\"#terms-offen-installation\" class=\"%s"
+"\">Offen installation</a> is active."
+msgstr ""
+"Die durchschnittliche Anzahl von Seiten, die du während aller <a href="
+"\"#terms-unique-session\" class=\"%s\">Eindeutigen Sitzungen</a> auf allen "
+"Webseiten besucht hast, auf denen die <a href=\"#terms-offen-installation\" "
+"class=\"%s\">Offen Installation</a> aktiv ist."
+
+msgid "Bounce rate"
+msgstr "Absprungrate"
+
+msgid ""
+"The percentage of <a href=\"#terms-unique-session\" class=\"%s\">unique "
+"sessions</a> where you only visited one page of the <a href=\"#terms-offen-"
+"installation\" class=\"%s\">Offen installation.</a> Therefore a website with "
+"only one page will always have a bounce rate of 100%."
+msgstr ""
+"Der Prozentsatz von <a href=\"#terms-unique-session\" class=\"%s"
+"\">Eindeutigen Sitzungen</a>, bei denen du nur eine Seite der <a href="
+"\"#terms-offen-installation\" class=\"%s\">Offen Installation</a> besucht "
+"hast. Eine Webseite mit nur einer Seite hat daher immer eine Absprungrate "
+"von 100 %."
+
+msgid "Returning users"
+msgstr "Nutzerinnen und Nutzer, die zurückkehren"
+
+msgid "Plus"
+msgstr ""
+
+msgid "Mobile users"
+msgstr "Mobil Nutzerinnen und Nutzer"
+
+msgid "Mobile user"
+msgstr "Mobil nutzend"
+
+msgid ""
+"Shows whether you are considered to be using a mobile device. A check is "
+"made to see if your device thinks it can change its orientation. If so, it "
+"is considered mobile."
+msgstr ""
+"Zeigt an, ob davon ausgegangen wird, dass du ein mobiles Gerät verwendest. "
+"Dabei wird geprüft, ob dein Gerät annimmt, dass es seine "
+"Bildschirmausrichtung ändern kann. Wenn dies der Fall ist, wird es als mobil "
+"betrachtet."
+
+msgid "Avg. page load time"
+msgstr "Durchschnittliche Seitenladezeit"
+
+msgid ""
+"Full form: Average page load time. The average time it took for all pages of "
+"the <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation</"
+"a> you visited to become interactive."
+msgstr ""
+"Die durchschnittliche Zeit, die es dauerte, bis alle Seiten der <a href="
+"\"#terms-offen-installation\" class=\"%s\">Offen Installation</a>, die du "
+"besucht hast, interaktiv wurden."
+
+msgid "No data available for this view."
+msgstr "Für diese Ansicht gibt es keine Daten."
+
+msgid "Show top %d only"
+msgstr "Nur Top %d anzeigen"
+
+msgid "Show all entries"
+msgstr "Alles anzeigen"
+
+msgid "Admin console"
+msgstr "Admin Konsole"
+
+msgid "Toggle display of admin console navigation"
+msgstr "Anzeige Admin Konsolen Navigation umschalten"
+
+msgid ""
+"Share all accounts, create a new one, change your email address and "
+"password, log out from Offen"
+msgstr ""
+"Alle Accounts freigeben, einen neuen Account erstellen, deine E-Mail Adresse "
+"und dein Passwort ändern, aus Offen abmelden"
+
+msgid "Open admin console"
+msgstr "Admin Konsole öffnen"
+
+msgid "Top pages"
+msgstr "Wichtigste Seiten"
+
+msgid ""
+"This panel displays several page lists that count the total number of your "
+"page views of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen "
+"installation</a> per URL in different categories."
+msgstr ""
+"Dieses Panel beinhaltet Listen, die die Gesamtzahl deiner Seitenaufrufe der "
+"<a href=\"#terms-offen-installation\" class=\"%s\">Offen Installation</a> "
+"pro URL in verschiedenen Kategorien anzeigen."
+
+msgid "URL"
+msgstr ""
+
+msgid "Pageviews"
+msgstr "Seitenaufrufe"
+
+msgid "Referrers"
+msgstr "Referrer"
+
+msgid "Host"
+msgstr ""
+
+msgid "Sessions"
+msgstr "Sitzungen"
+
+msgid "Page depth"
+msgstr "Seitentiefe"
+
+msgid ""
+"A list of referrers that directed you to pages of the <a href=\"#terms-offen-"
+"installation\" class=\"%s\">Offen installation.</a> Popular referrers like, "
+"for example, Google or Twitter display their proper name, others their "
+"domain."
+msgstr ""
+"Eine Liste von Referrern, die dich auf Seiten der <a href=\"#terms-offen-"
+"installation\" class=\"%s\">Offen Installation</a> verwiesen haben. Gängige "
+"Referenz Domains wie z.B. Google oder Twitter werden mit ihren Eigennamen "
+"dargestellt, alle anderen mit ihrer vollen Domain."
+
+msgid "Campaigns"
+msgstr "Kampagnen"
+
+msgid "Campaign"
+msgstr "Kampagne"
+
+msgid ""
+"A list of special referrers that directed you to pages of the <a href="
+"\"#terms-offen-installation\" class=\"%s\">Offen installation.</a> <a href="
+"\"#terms-operator\" class=\"%s\">Operators</a> can mark links to their pages "
+"with a campaign tag. This is used, for example, to measure the success of "
+"online advertising campaigns."
+msgstr ""
+"Eine Liste von speziellen Referrern, die dich auf Seiten der <a href="
+"\"#terms-offen-installation\" class=\"%s\">Offen Installation</a> verwiesen "
+"haben. <a href=\"#terms-operator\" class=\"%s\">Betreiberinnen und "
+"Betreiber</a> können Links zu ihren Seiten mit einem Kampagnen Tag "
+"markieren. Dies dient z.B. dazu, den Erfolg von Online Werbekampagnen zu "
+"messen."
+
+msgid "Sources"
+msgstr "Quellen"
+
+msgid "Source"
+msgstr "Quelle"
+
+msgid "Views per session"
+msgstr "Aufrufe pro Sitzung"
+
+msgid ""
+"A list of special referrers that directed you to pages of the <a href="
+"\"#terms-offen-installation\" class=\"%s\">Offen installation.</a> <a href="
+"\"#terms-operator\" class=\"%s\">Operators</a> can mark links to their pages "
+"with a source tag. This is used, for example, to measure the success of "
+"online advertising campaigns."
+msgstr ""
+"Eine Liste von speziellen Referrern, die dich auf Seiten der <a href="
+"\"#terms-offen-installation\" class=\"%s\">Offen Installation</a> verwiesen "
+"haben. <a href=\"#terms-operator\" class=\"%s\">Betreiberinnen und "
+"Betreiber</a> können Links zu ihren Seiten mit einem Quellen Tag markieren. "
+"Dies dient z.B. dazu, den Erfolg von Online Werbekampagnen zu messen."
+
+msgid "Landing pages"
+msgstr "Einstiegssteiten"
+
+msgid "Landings"
+msgstr "Einstiege"
+
+msgid ""
+"A list of pages of the <a href=\"#terms-offen-installation\" class=\"%s"
+"\">Offen installation</a> that you have opened first in all <a href=\"#terms-"
+"unique-session\" class=\"%s\">unique sessions.</a>"
+msgstr ""
+"Eine Liste der Seiten der <a href=\"#terms-offen-installation\" class=\"%s"
+"\">Offen Installation</a>, die du in allen <a href=\"#terms-unique-session\" "
+"class=\"%s\">Eindeutigen Sitzungen</a> zuerst geöffnet hast."
+
+msgid "Exit pages"
+msgstr "Ausstiegsseiten"
+
+msgid "Exits"
+msgstr "Ausstiege"
+
+msgid ""
+"A list of pages of the <a href=\"#terms-offen-installation\" class=\"%s"
+"\">Offen installation</a> that you have opened last in all <a href=\"#terms-"
+"unique-session\" class=\"%s\">unique sessions.</a> For this to be counted "
+"you must have visited at least two pages."
+msgstr ""
+"Eine Liste der Seiten der <a href=\"#terms-offen-installation\" class=\"%s"
+"\">Offen Installation</a>, die du in allen <a href=\"#terms-unique-session\" "
+"class=\"%s\">Eindeutigen Sitzungen</a> zuletzt geöffnet hast.</a> Damit dies "
+"ausgewertet wird, musst du mindestens zwei Seiten besucht haben."
+
+msgid "Failed to purge local aggregates, please try again."
+msgstr ""
+"Das Bereinigen lokaler Aggregate ist fehlgeschlagen, bitte versuchen es noch "
+"einmal."
+
+msgid "Database settings"
+msgstr "Datenbank Einstellungen"
+
+msgid "Toggle display of database settings"
+msgstr "Anzeige Datenbank Einstellungen umschalten"
+
+msgid ""
+"Purge aggregates from local database and rebuild. This operation is non-"
+"destructive and can be performed at any time."
+msgstr ""
+"Aggregate aus der lokalen Datenbank bereinigen und neu aufbauen. Dieser "
+"Vorgang ist nicht destruktiv und kann zu jeder Zeit durchgeführt werden."
+
+msgid "Rebuild aggregates"
+msgstr "Aggregate neu aufbauen"
+
+msgid "FAQ"
+msgstr ""
+
+msgid "What data is collected?"
+msgstr "Welche Daten werden gesammelt?"
+
+msgid ""
+"Only page views, sessions, referrer and the visited URL are collected. From "
+"this, other metrics such as for example the bounce rate are calculated."
+msgstr ""
+"Es werden nur Seitenaufrufe, Sitzungen, Referrer und die besuchte URL "
+"gesammelt. Daraus werden weitere Metriken wie z.B. die Absprungrate "
+"berechnet."
+
+msgid "What kind of data isn't collected?"
+msgstr "Welche Art von Daten wird nicht gesammelt?"
+
+msgid ""
+"Location data, device information and engagement are not collected. There "
+"are also no fingerprinting technologies in use."
+msgstr ""
+"Standortdaten, Geräteinformationen und Interaktionsbereitschaft werden nicht "
+"erfasst. Es sind auch keine Fingerprinting-Technologien im Einsatz."
+
+msgid "How is my data handled?"
+msgstr "Wie wird mit meinen Daten umgegangen?"
+
+msgid ""
+"Your usage data is encrypted end-to-end. It will be automatically deleted "
+"after 6 months. You can delete your usage data yourself at any time in the "
+"privacy panel."
+msgstr ""
+"Deine Nutzungsdaten werden Ende-zu-Ende verschlüsselt. Sie werden nach 6 "
+"Monaten automatisch gelöscht. Du kannst deine Nutzungsdaten jederzeit selbst "
+"im Privacy Panel löschen."
+
+msgid "Why do I need to opt in or opt out?"
+msgstr "Warum muss ich zustimmen oder nicht zustimmen?"
+
+msgid ""
+"Our banner serves two purposes: We ask you to access your usage data and "
+"would like to obtain your consent for its use."
+msgstr ""
+"Unser Banner hat zwei Funktionen: Wir bitten dich um den Zugriff auf deine "
+"Nutzungsdaten und möchten dein Einverständnis für deren Verwendung einholen."
+
+msgid "Do you use cookies?"
+msgstr "Verwendet ihr Cookies?"
+
+msgid ""
+"Yes, in particular cookies are used to store your decision about granting "
+"access to your usage data. If you opt in, we also use <a href=\"#terms-"
+"cookies\" class=\"%s\">cookies</a> to store a user and a session <a href="
+"\"#terms-id\" class=\"%s\">ID</a> for you."
+msgstr ""
+"Ja, insbesondere werden Cookies verwendet, um deine Entscheidung über die "
+"Zustimmung zum Zugriff auf deine Nutzungsdaten zu speichern. Wenn du "
+"zustimmst, verwenden wir außerdem <a href=\"#terms-cookies\" class=\"%s"
+"\">Cookies</a>, um eine Nutzungs und Sitzungs <a href=\"#terms-id\" class="
+"\"%s\">ID</a> für dich zu speichern."
+
+msgid "How does it all work?"
+msgstr "Wie funktioniert das alles?"
+
+msgid ""
+"After opening a website where a <a href=\"#terms-offen-installation\" class="
+"\"%s\">Offen installation</a> is active, you can explicitly opt in to the "
+"data collection and thereby help to improve the services you use. Only then "
+"you will be assigned a user and a session <a href=\"#terms-id\" class=\"%s"
+"\">ID</a> using a <a href=\"#terms-cookies\" class=\"%s\">cookie.</a> Offen "
+"handles these <a href=\"#terms-id\" class=\"%s\">IDs</a> in an "
+"unrecognizable form, i.e. no server will ever store this identifier."
+msgstr ""
+"Nach dem Aufruf einer Webseite, auf der eine <a href=\"#terms-offen-"
+"installation\" class=\"%s\">Offen Installation</a> aktiv ist, kannst du der "
+"Datenerhebung explizit zustimmen und damit helfen, die von dir genutzten "
+"Dienste zu verbessern. Nur dann wird dir über einen <a href=\"#terms-cookies"
+"\" class=\"%s\">Cookie</a> eine Nutzungs und Sitzungs<a href=\"#terms-id\" "
+"class=\"%s\">ID</a> zugewiesen.</a> Offen behandelt diese <a href=\"#terms-id"
+"\" class=\"%s\">IDs</a> in einer nicht zuordenbaren Form, d.h. kein Server "
+"wird diese Kennung jemals speichern."
+
+msgid "Real time"
+msgstr "Echtzeit"
+
+msgid "Active users on site"
+msgstr "Aktive Nutzerinnen und Nutzer auf der Webseite"
+
+msgid "Active pages"
+msgstr "Aktive Seiten"
+
+msgid "Visitors"
+msgstr "Besuchende"
+
+msgid "Successfully copied embed code to clipboard."
+msgstr "Erfolgreich den Embed Code in die Zwischenablage kopiert."
+
+msgid "Embed code"
+msgstr "Embed Code"
+
+msgid "Toggle display of embed code"
+msgstr "Anzeige Embed Code umschalten"
+
+msgid ""
+"To use Offen with the account <em class=\"%s\">%s</em> on your website, "
+"embed the following script on each page you want to appear in your "
+"statistics."
+msgstr ""
+"Um Offen mit dem Account <em class=\"%s\">%s</em> auf deiner Webseite zu "
+"verwenden, füge den folgenden Code auf jeder Seite ein, die in deiner "
+"Statistik erscheinen soll."
+
+msgid ""
+"In case you are serving multiple domains from your Offen instance, please "
+"double check that the domain in this snippet matches the target account."
+msgstr ""
+"Falls du mehrere Domains von deiner Offen Installation aus bedienst, "
+"überprüfe bitte, ob die Domain in diesem Code mit dem Ziel Account "
+"übereinstimmt."
+
+msgid "Copy code"
+msgstr "Code kopieren"
+
+msgid "Weekly retention"
+msgstr "Wöchentliche Retention"
+
+msgid ""
+"This panel displays your recurring visits of pages of the <a href=\"#terms-"
+"offen-installation\" class=\"%s\">Offen installation</a> during the last 4 "
+"weeks. For each of the previous weeks, the percentage is calculated from the "
+"value of the current week."
+msgstr ""
+"Dieses Panel zeigt die wiederkehrenden Besuche von Seiten der <a href="
+"\"#terms-offen-installation\" class=\"%s\">Offen Installation</a> während "
+"der letzten 4 Wochen an. Für jede der vergangenen Wochen wird der "
+"Prozentsatz aus dem Wert der aktuellen Woche berechnet."
+
+msgid ""
+"If you retire the account <em class=\"%s\">%s,</em> it will not appear in "
+"your statistics anymore. Users will be able to access and manage their data "
+"for the account for another 6 months until data expires."
+msgstr ""
+"Wenn du den Account <em class=\"%s\">%s,</em> stilllegst, wird er nicht mehr "
+"in deiner Statistik angezeigt. Nutzerinnen und Nutzer können jedoch noch 6 "
+"Monate lang auf die Daten dieses Accounts zugreifen und diese verwalten, bis "
+"die Daten automatisch gelöscht werden."
+
+msgid "<em class=\"%s\">Danger zone! This action cannot be undone.</em>"
+msgstr ""
+"<em class=\"%s\">Achtung! Diese Aktion kann nicht rückgängig gemacht werden."
+"</em>"
+
+msgid "Retire account"
+msgstr "Account stilllegen"
+
+msgid ""
+"To permanently retire the account, type its name <em class=\"%s\">\"%s\"</"
+"em> into the form below:"
+msgstr ""
+"Um den Account stillzulegen, gib seinen Namen <em class=\"%s\">\"%s\"</em> "
+"in das Feld unten ein:"
+
+msgid ""
+"The account <em class=\"%s\">\"%s\"</em> has been retired successfully. Log "
+"in again to continue."
+msgstr ""
+"Der Account <em class=\"%s\">\"%s\"</em> wurde erfolgreich stillgelegt. "
+"Melde dich erneut an, um fortzufahren."
+
+msgid "There was an error retiring the account, please try again."
+msgstr ""
+"Es gab einen Fehler beim Stilllegen des Accounts, bitte versuche es noch "
+"einmal."
+
+msgid "Toggle display of retire account functionality"
+msgstr "Anzeige Account stillegen umschalten"
+
+msgid "Basic Terms"
+msgstr "Allgemeine Begriffe"
+
+msgid "Auditorium"
+msgstr ""
+
+msgid ""
+"You are viewing the Auditorium right now. Only available after opt-in, it is "
+"the interface where you can review and delete your usage data or opt out "
+"entirely."
+msgstr ""
+"Du bist gerade im Auditorium. Es ist nur nach Zustimmung verfügbar und die "
+"Seite, auf der du deine Nutzungsdaten einsehen, löschen und deine Zustimmung "
+"widerrufen kannst."
+
+msgid "Offen installation"
+msgstr "Offen Installation"
+
+msgid ""
+"One Offen installation can include several websites. All metrics of all "
+"websites in this installation are displayed in the <a href=\"#terms-"
+"auditorium\" class=\"%s\">Auditorium.</a> Metrics generated on websites of "
+"other installations can only be viewed in the associated <a href=\"#terms-"
+"auditorium\" class=\"%s\">Auditorium.</a>"
+msgstr ""
+"Eine Offen Installation kann mehrere Webseiten umfassen. Die Metriken aller "
+"Webseiten der Installation werden im <a href=\"#terms-auditorium\" class=\"%s"
+"\">Auditorium</a> angezeigt. Metriken, die auf Webseiten anderer "
+"Installationen erzeugt wurden, können nur im zugehörigen <a href=\"#terms-"
+"auditorium\" class=\"%s\">Auditorium</a> eingesehen werden."
+
+msgid "Cookies"
+msgstr ""
+
+msgid ""
+"When you visit a website where a <a href=\"#terms-offen-installation\" class="
+"\"%s\">Offen installation</a> is active, small amounts of data are stored on "
+"your computer. These data elements are known as cookies. <a href=\"https://"
+"en.wikipedia.org/wiki/HTTP_cookie\" class=\"%s\" target=\"_blank\" rel="
+"\"noreferer noopener\">Learn more.</a>"
+msgstr ""
+"Wenn du eine Webseite besuchst, auf der eine <a href=\"#terms-offen-"
+"installation\" class=\"%s\">Offen Installation</a> aktiv ist, werden kleine "
+"Datenmengen auf deinem Computer gespeichert. Diese Elemente werden als "
+"Cookies bezeichnet. <a href=\"https://en.wikipedia.org/wiki/HTTP_cookie\" "
+"class=\"%s\" target=\"_blank\" rel=\"noreferer noopener\">Mehr erfahren.</a>"
+
+msgid "Operator"
+msgstr "Betreiberinnen und Betreiber"
+
+msgid ""
+"Operators are the owners of <a href=\"#terms-offen-installation\" class=\"%s"
+"\">Offen installations.</a> Only after you opted in, your usage data of a "
+"website is collected. Operators than can view it for maximum 6 months."
+msgstr ""
+"Betreiberinnen und Betreiber verwalten <a href=\"#terms-offen-installation\" "
+"class=\"%s\">Offen Installationen.</a> Erst nachdem du zugestimmt hast, "
+"werden deine Nutzungsdaten einer Webseite gesammelt. Betreibende können "
+"diese dann für maximal 6 Monate einsehen."
+
+msgid "Unique user"
+msgstr "Eindeutige Nutzerinnen und Nutzer"
+
+msgid ""
+"You are defined as a unique user after your opt-in to data collection. To "
+"measure this, a <a href=\"#terms-cookies\" class=\"%s\">cookie</a> is used "
+"to assign a user <a href=\"#terms-id\" class=\"%s\">ID</a> to you."
+msgstr ""
+"Du wirst nach der Zustimmung zur Sammlung von Nutzungsdaten als eindeutig "
+"definiert. Dafür wird ein <a href=\"#terms-cookies\" class=\"%s\">Cookie</a> "
+"verwendet, um dir eine Nutzungs <a href=\"#terms-id\" class=\"%s\">ID</a> "
+"zuzuordnen."
+
+msgid "Unique session"
+msgstr "Eindeutige Sitzung"
+
+msgid ""
+"A unique session is defined as a <a href=\"#terms-unique-user\" class=\"%s"
+"\">unique user</a> being actively engaged with a page during a browser "
+"session. To measure this, a <a href=\"#terms-cookies\" class=\"%s\">cookie</"
+"a> is used to assign a session <a href=\"#terms-id\" class=\"%s\">ID</a> to "
+"you."
+msgstr ""
+"Eine eindeutige Sitzung ist definiert wenn <a href=\"#terms-unique-user\" "
+"class=\"%s\">eindeutige Nutzerinnen und Nutzer</a> sich während einer "
+"Browser-Sitzung aktiv mit einer Seite beschäftigen. Zur Messung werden <a "
+"href=\"#terms-cookies\" class=\"%s\">Cookies</a> verwendet um jeweils eine "
+"Sitzungs <a href=\"#terms-id\" class=\"%s\">ID</a> zuzuordnen."
+
+msgid "ID"
+msgstr ""
+
+msgid ""
+"Originally: UUID. Full form: Universally unique identifier. Offen uses UUID "
+"of version 4. These IDs are generated randomly, unique and without using any "
+"personal data. On the individual Offen server, they are handled in an "
+"unrecognizable form. <a href=\"https://en.wikipedia.org/wiki/"
+"Universally_unique_identifier\" class=\"%s\" target=\"_blank\" rel="
+"\"noreferer noopener\">Learn more.</a>"
+msgstr ""
+"Original: UUID. Ausgeschrieben: Universally unique identifier. Offen "
+"verwendet UUID der Version 4. Diese IDs werden zufällig, eindeutig und ohne "
+"Verwendung von persönlichen Daten generiert. Auf dem jeweiligen Offen-Server "
+"werden sie in einer nicht zuordenbaren Form verarbeitet. <a href=\"https://"
+"en.wikipedia.org/wiki/Universally_unique_identifier\" class=\"%s\" target="
+"\"_blank\" rel=\"noreferer noopener\">Mehr erfahren.</a>"
+
+msgid "Choose account"
+msgstr "Account wählen"
+
+msgid "No"
+msgstr "Nein"
+
+msgid "Yes"
+msgstr "Ja"
+
+msgid "s"
+msgstr "s"
+
+msgid "ms"
+msgstr "ms"
+
+msgid "M"
+msgstr "Mio."
+
+msgid "k"
+msgstr "Tsd."
+
+msgid "Skip"
+msgstr ""
+
+msgid "Welcome to the Auditorium, this is how it works."
+msgstr "Willkommen im Auditorium, so funktionierts."
+
+msgid "What <span class=\"%s\">%s</span> knows about you."
+msgstr "Was <span class=\"%s\">%s</span> über dich weiß."
+
+msgid "You just visited the page <span class=\"%s\">%s</span> ."
+msgstr "Du hast gerade die Seite <span class=\"%s\">%s</span> besucht."
+
+msgid "You just visited this website."
+msgstr "Du hast gerade diese Webseite besucht."
+
+msgid "You have visited <span class=\"%s\">%s %d</span> times."
+msgstr "Du hast <span class=\"%s\">%s %d</span> mal besucht."
+
+msgid "It is probably your first time visiting <span class=\"%s\">%s</span> ."
+msgstr ""
+"Es ist wahrscheinlich dein erster Besuch bei <span class=\"%s\">%s</span> ."
+
+msgid "You came via <span class=\"%s\">%s</span> ."
+msgstr "Du bist über <span class=\"%s\">%s</span> hierher gekommen."
+
+msgid "Most likely you are on a <span class=\"%s\">%s</span>."
+msgstr "Vermutlich benutzt du gerade ein <span class=\"%s\">%s</span>."
+
+msgid "mobile device"
+msgstr "Mobiles Gerät"
+
+msgid "desktop device"
+msgstr "Desktop Gerät"
+
+msgid "Next"
+msgstr "Weiter"
+
+msgid "Your data always stays yours."
+msgstr "Deine Daten gehören weiter dir."
+
+msgid ""
+"Review your data in the Auditorium. You can delete your data or opt out "
+"completely at any time in the Privacy tab."
+msgstr ""
+"Sehen deine Daten im Auditorium ein. Du kannst deine Daten jederzeit im "
+"Privacy Panel löschen oder deine Zustimmung widerrufen."
+
+msgid ""
+"Click this symbol to display detailed explanations of the respective terms."
+msgstr ""
+"Klicke auf dieses Symbol, um detaillierte Erklärungen zu den jeweiligen "
+"Begriffen anzuzeigen."
+
+msgid "Bookmark this page to come back later."
+msgstr "Setze ein Lesezeichen für diese Seite, um später wiederzukommen."
+
+msgid ""
+"Get an overall picture of your data collected over time. Come back here "
+"anytime to see what <span class=\"%s\">%s</span> knows about you."
+msgstr ""
+"Gewinnen einen Gesamteindruck über deine im Laufe der Zeit gesammelten "
+"Daten. Komme jederzeit hierher zurück, um zu sehen, was <span class=\"%s\">"
+"%s</span> über dich weiß."
+
+msgid "Now let's get started!"
+msgstr "Lass uns beginnen!"
+
+msgid "Open Auditorium"
+msgstr "Auditorium öffnen"
+
+msgid "Page views and %s"
+msgstr "Seitenaufrufe und %s"
+
+msgid ""
+"This panel displays the number of pages (bright green) and websites (dark "
+"green) you have visited where the <a href=\"#terms-offen-installation\" "
+"class=\"%s\">Offen installation</a> is active. To measure this, a cookie is "
+"used to assign you a user and a session <a href=\"#terms-id\" class=\"%s"
+"\">ID.</a>"
+msgstr ""
+"Dieses Panel zeigt die Anzahl der Seiten (hellgrün) und Webseiten "
+"(dunkelgrün) an, die du besucht hast, auf denen die <a href=\"#terms-offen-"
+"installation\" class=\"%s\">Offen Installation</a> aktiv ist. Um dies zu "
+"messen, wird ein Cookie verwendet, das dir eine Nutzungs und Sitzungs <a "
+"href=\"#terms-id\" class=\"%s\">ID</a> zuweist."
+
+msgid "Empty state"
+msgstr "Leerzustand"
+
+msgid "No data available <br>for the selected time range."
+msgstr "Keine Daten verfügbar <br>für den gewählten Zeitraum."
+
+msgid "Stay opted in,<br>only delete usage data"
+msgstr "Weiter zustimmen,<br>nur Nutzungsdaten löschen"
+
+msgid "Delete"
+msgstr "Löschen"
+
+msgid "Privacy"
+msgstr ""
+
+msgid "Opt out<br>and delete usage data."
+msgstr "Zustimmung widerrufen<br>und Nutzungsdaten löschen"
+
+msgid "Opt in and grant<br>access to your usage data."
+msgstr "Zustimmen und<br>Zugang zu deinen Nutzungsdaten gewähren."
+
+msgid "Opt out"
+msgstr "Zustimmung entziehen"
+
+msgid "Opt in"
+msgstr "Zustimmung geben"
+
+msgid ""
+"To review your data collected over time, <br class=\"dn db-l\">set a "
+"bookmark for this page."
+msgstr ""
+"Setze ein Lesezeichen für diese Seite, <br class=\"dn db-l\">um deine im "
+"Laufe der Zeit gesammelten Daten einzusehen."
+
+msgid "Now"
+msgstr "Jetzt"
+
+msgid "%d days later"
+msgstr "%d Tage später"
+
+msgid "%d days earlier"
+msgstr "%d Tage eher"
+
+msgid "Could not log in using the given credentials. Try again."
+msgstr ""
+"Du konntest mit diesen Daten nicht angemeldet werden. Versuche es noch "
+"einmal."
+
+msgid "Log in as operator"
+msgstr "Anmelden"
+
+msgid "Log in"
+msgstr "Anmelden"
+
+msgid "Forgot password?"
+msgstr "Passwort vergessen?"
+
+msgid "There has been an error resetting your password, please try again."
+msgstr ""
+"Beim Zurücksetzen deines Passworts ist ein Fehler aufgetreten, bitte "
+"versuche es noch einmal."
+
+msgid "Reset password"
+msgstr "Passwort zurücksetzen"
+
+msgid "Reset Password"
+msgstr "Passwort zurücksetzen"
+
+msgid "Passwords did not match"
+msgstr "Passwörter stimmten nicht überein"
+
+msgid "Your account has been set up, you can now log in."
+msgstr "Dein Account wurde eingerichtet, du kannst dich jetzt anmelden."
+
+msgid "Join Offen"
+msgstr "Bei Offen mitmachen"
+
+msgid "Accept invite"
+msgstr "Einladung annehmen"
+
+msgid "You have opted in."
+msgstr "Du hast zugestimmt."
+
+msgid "You have opted out."
+msgstr "Du hast nicht zugestimmt."
+
+msgid "It seems like your browser is blocking cookies."
+msgstr "Anscheinend blockiert dein Browser Cookies."
+
+msgid "Offen requires cookies to function properly."
+msgstr "Offen benötigt Cookies, um richtig zu funktionieren."
+
+#. #-#-#-#-#  server.po  #-#-#-#-#
+#. ~ line 39 "public/index.go.html"
+msgid ""
+"Offen is a fair and open source analytics software. It is installed on the "
+"website that linked you here."
+msgstr ""
+"Offen ist eine faire Analysesoftware. Sie ist auf der Webseite installiert, "
+"die dich hierher verlinkt hat."
+
+msgid ""
+"For Offen to work, your browser has to accept cookies. Please change your "
+"browsers settings and reload this page. Subsequently, you will be asked for "
+"consent to collect your usage data."
+msgstr ""
+"Damit Offen funktioniert, muss dein Browser Cookies akzeptieren. Bitte "
+"ändere die Einstellungen deines Browsers und lade diese Seite neu. "
+"Anschließend wirst du um die Zustimmung zur Erhebung deiner Nutzungsdaten "
+"gebeten."
+
+msgid "Manage your usage data this website has collected."
+msgstr "Verwalten deine von dieser Webseite gesammelten Nutzungsdaten."
+
+msgid "We only access usage data with your consent."
+msgstr "Wir greifen nur mit deiner Zustimmung auf Nutzungsdaten zu."
+
+msgid ""
+"Offen is a fair and open source analytics software. Help the website that "
+"linked you here by allowing access to your usage data."
+msgstr ""
+"Offen ist eine faire Analysesoftware. Hilf der Webseite, die dich hierher "
+"verlinkt hat, indem du den Zugriff auf deine Nutzungsdaten erlaubst."
+
+msgid ""
+"Your data always remains yours. You can review and delete it at any time. "
+"Opt out again whenever you want."
+msgstr ""
+"Deine Daten gehören weiter dir. Du kannst sie jederzeit einsehen und "
+"löschen. Widerrufe deine Zustimmung jederzeit."
+
+msgid "I allow"
+msgstr "Ich stimme zu"
+
+msgid "I don't allow"
+msgstr "Ich stimme nicht zu"
+
+msgid ""
+"Are you the operator of this Offen installation? Log in to your account."
+msgstr "Betreibst du diese Offen Installation? Melde dich hier an."
+
+msgid "How can I review and delete my usage data or opt out?"
+msgstr "Wie kann ich meine Nutzungsdaten einsehen, löschen oder mich abmelden?"
+
+msgid "<a href=\"%s\" class=\"%s\">Go to the Auditorium.</a>"
+msgstr "<a href=\"%s\" class=\"%s\">Öffne das Auditorium.</a>"
+
+msgid ""
+"Your usage data is encrypted end-to-end. It will be automatically deleted "
+"after 6 months. <a href=\"/auditorium/\" class=\"%s\">You can delete your "
+"usage data yourself at any time in the Auditorium.</a>"
+msgstr ""
+"Deine Nutzungsdaten werden Ende-zu-Ende verschlüsselt und nach 6 Monaten "
+"automatisch gelöscht. <a href=\"/auditorium/\" class=\"%s\">Du kannst deine "
+"Nutzungsdaten jederzeit selbst im Auditorium löschen.</a>"
+
+msgid "How can I review and delete my usage data?"
+msgstr "Wie kann ich meine Nutzungsdaten einsehen und löschen?"
+
+msgid ""
+"For data to be collected you need to opt in first. <a href=\"%s\" class=\"%s"
+"\">You can do this in the consent banner.</a>"
+msgstr ""
+"Damit Daten gesammelt werden können musst du dem erst einmal zustimmen. <a "
+"href=\"%s\" class=\"%s\">Du kannst das in unserem Banner tun.</a>"
+
+msgid ""
+"Your usage data is encrypted end-to-end. It will be automatically deleted "
+"after 6 months. You can delete your usage data yourself at any time."
+msgstr ""
+"Deine Nutzungsdaten werden Ende-zu-Ende verschlüsselt und nach 6 Monaten "
+"automatisch gelöscht. Du kannst deine Nutzungsdaten auch jederzeit selbst "
+"löschen."
+
+msgid ""
+"Only page views, sessions, referrer and visited URLs are collected. From "
+"this, other metrics such as the bounce rate are calculated."
+msgstr ""
+"Es werden nur Seitenaufrufe, Sitzungen, Referrer und die besuchten URLs "
+"gesammelt. Daraus werden weitere Metriken wie z.B. die Absprungrate "
+"berechnet."
+
+msgid "What data isn't collected?"
+msgstr "Welche Daten werden nicht gesammelt?"
+
+msgid ""
+"Yes, in particular cookies are used to store your decision about granting "
+"access to your usage data. If you opt in, we also use cookies to store a "
+"user and a session ID for you."
+msgstr ""
+"Ja, insbesondere verwenden wir Cookies, um deine Entscheidung über die "
+"Zustimmung zum Sammeln deiner Nutzungsdaten zu speichern. Wenn du zustimmst, "
+"verwenden wir Cookies auch, um eine Nutzungs und Sitzungs ID für dich zu "
+"speichern."
+
+msgid ""
+"After opening a website where an Offen installation is active, you can "
+"explicitly opt in to the data collection and thereby help to improve the "
+"services you use. Only then you will be assigned a user and a session ID "
+"using a cookie. Offen handles these IDs in an unrecognizable form. <a href="
+"\"https://en.wikipedia.org/wiki/HTTP_cookie\" class=\"%s\" target=\"_blank\" "
+"rel=\"noreferer noopener\">Learn more about cookies here.</a>"
+msgstr ""
+"Nach dem Aufruf einer Webseite, auf der eine Offen Installation aktiv ist, "
+"kannst du der Datenerhebung explizit zustimmen und damit helfen, die von dir "
+"genutzten Dienste zu verbessern. Nur dann wird dir über einen Cookie eine "
+"Nutzungs und Sitzungs ID zugewiesen. Offen behandelt diese IDs in einer "
+"nicht zuordenbaren Form. <a href=\"https://en.wikipedia.org/wiki/HTTP_cookie"
+"\" class=\"%s\" target=\"_blank\" rel=\"noreferer noopener\">Erfahre hier "
+"mehr über Cookies.</a>"
+
+msgid "Checking your consent status"
+msgstr "Prüfe deinen Zustimmung"
+
+msgid "Fetching and decrypting the latest data"
+msgstr "Abrufen und Entschlüsseln der aktuellen Daten"
+
+msgid "Auditorium | Offen"
+msgstr ""
+
+msgid ""
+"This view failed to update automatically, data may be out of date. Check "
+"your network connection if the problem persists."
+msgstr ""
+"Diese Ansicht konnte nicht automatisch aktualisiert werden, möglicherweise "
+"sind die Daten veraltet. Überprüfe deine Netzwerkverbindung, falls das "
+"Problem weiterhin auftritt."
+
+msgid "Fetching and aggregating the latest data"
+msgstr "Abrufen und Zusammenstellen der neuesten Daten"
+
+msgid "weak"
+msgstr "schwach"
+
+msgid "low"
+msgstr "niedrig"
+
+msgid "ok"
+msgstr "ok"
+
+msgid "strong"
+msgstr "hoch"
+
+msgid "very strong"
+msgstr "sehr hoch"
+
+msgid "Your password needs to be at least 8 characters long."
+msgstr "Dein Passwort muss mindestens 8 Zeichen lang sein."
+
+msgid "Password strength: %s"
+msgstr "Passwortsicherheit"
+
 msgid "Offen does not support this site: %s"
 msgstr "Diese Seite wird von Offen nicht unterstützt: %s"
 
-#. index.js:64
-#: 
 msgid "No data will be collected. Find out more at \"https://www.offen.dev\"."
-msgstr "Es werden keine Daten gesammelt. Erfahre mehr unter \"https://www.offen.dev\"."
+msgstr ""
+"Es werden keine Daten gesammelt. Erfahre mehr unter \"https://www.offen.dev"
+"\"."
+
+msgid "Browser does not support IndexedDB which is required."
+msgstr "Dein Browser unterstützt nicht die erforderliche IndexedDB."
 
 #. ~ line 5 "public/emails.go.html"
-#: 
 msgid "Reset your password"
 msgstr "Dein Passwort zurücksetzen"
 
 #. ~ line 9 "public/emails.go.html"
 #. ~ line 23 "public/emails.go.html"
 #. ~ line 37 "public/emails.go.html"
-#: 
 msgid "Hi!"
 msgstr "Hallo!"
 
 #. ~ line 11 "public/emails.go.html"
-#: 
-msgid "You have requested to reset your password. To do so, visit the following link:"
-msgstr "Du hast die Zurücksetzung deines Passworts angefragt. Besuche dazu den folgenden Link:"
+msgid ""
+"You have requested to reset your password. To do so, visit the following "
+"link:"
+msgstr ""
+"Du hast die Zurücksetzung deines Passworts angefragt. Besuche dazu den "
+"folgenden Link:"
 
 #. ~ line 15 "public/emails.go.html"
-#: 
-msgid "The link is valid for 24 hours after this email has been sent. In case you have missed this deadline, you can always request a new link."
-msgstr "Der Link ist bis 24 Stunden nach Versand dieser E-Mail gültig. Solltest du diese Frist verpasst haben, kannst du jederzeit einen neuen Link anfordern."
+msgid ""
+"The link is valid for 24 hours after this email has been sent. In case you "
+"have missed this deadline, you can always request a new link."
+msgstr ""
+"Der Link ist bis 24 Stunden nach Versand dieser E-Mail gültig. Solltest du "
+"diese Frist verpasst haben, kannst du jederzeit einen neuen Link anfordern."
+
+#. ~ line 19 "public/emails.go.html"
+msgid "You have been invited to join Offen."
+msgstr "Du wurdest zu Offen eingeladen."
 
 #. ~ line 25 "public/emails.go.html"
-#: 
-msgid "You have been invited to Offen. To accept your invite, visit the following link:"
-msgstr "Du bist zu Offen eingeladen worden. Um deine Einladung anzunehmen, besuche den folgenden Link:"
+msgid ""
+"You have been invited to Offen. To accept your invite, visit the following "
+"link:"
+msgstr ""
+"Du bist zu Offen eingeladen worden. Um deine Einladung anzunehmen, besuche "
+"den folgenden Link:"
 
 #. ~ line 29 "public/emails.go.html"
-#: 
-msgid "The link is valid for 7 days after this email has been sent. In case you have missed this deadline, request a new invite."
-msgstr "Der Link ist bis 7 Tage nach Versand dieser E-Mail gültig. Falls du diese Frist verpasst hast, fordere eine neue Einladung an."
+msgid ""
+"The link is valid for 7 days after this email has been sent. In case you "
+"have missed this deadline, request a new invite."
+msgstr ""
+"Der Link ist bis 7 Tage nach Versand dieser E-Mail gültig. Falls du diese "
+"Frist verpasst hast, fordere eine neue Einladung an."
+
+#. ~ line 33 "public/emails.go.html"
+msgid "You have been added to additional accounts on Offen."
+msgstr "Du wurdest zu weiteren Accounts auf Offen hinzugefügt."
 
 #. ~ line 39 "public/emails.go.html"
-#: 
 msgid "You have been added to the following new accounts on Offen:"
 msgstr "Du wurdest zu den folgenden neuen Accounts auf Offen hinzugefügt:"
 
 #. ~ line 45 "public/emails.go.html"
-#: 
-msgid "You automatically gain access to these accounts the next time you log in."
-msgstr "Du erhälst automatisch Zugriff auf diese Accounts, wenn du dich das nächste Mal anmeldest."
+msgid ""
+"You automatically gain access to these accounts the next time you log in."
+msgstr ""
+"Du erhälst automatisch Zugriff auf diese Accounts, wenn du dich das nächste "
+"Mal anmeldest."
 
 #. ~ line 31 "public/index.go.html"
-#: 
 msgid "It seems like your browser has JavaScript disabled."
 msgstr "Scheinbar hat dein Browser JavaScript deaktiviert."
 
 #. ~ line 36 "public/index.go.html"
-#: 
 msgid "Offen requires JavaScript to function properly."
 msgstr "Offen benötigt JavaScript, um richtig zu funktionieren."
 
 #. ~ line 42 "public/index.go.html"
-#: 
-msgid "For Offen to work, your browser has to allow JavaScript and accept cookies. Please change your browser settings and reload this page. Subsequently, Offen will ask for your consent before collecting any usage data."
-msgstr "Damit Offen funktioniert, muss dein Browser JavaScript zulassen und Cookies akzeptieren. Bitte ändere deine Browsereinstellungen und lade diese Seite neu. Anschließend bittet dich Offen um deine Zustimmung, bevor es Nutzungsdaten sammelt."
+msgid ""
+"For Offen to work, your browser has to allow JavaScript and accept cookies. "
+"Please change your browser settings and reload this page. Subsequently, "
+"Offen will ask for your consent before collecting any usage data."
+msgstr ""
+"Damit Offen funktioniert, muss dein Browser JavaScript zulassen und Cookies "
+"akzeptieren. Bitte ändere deine Browsereinstellungen und lade diese Seite "
+"neu. Anschließend bittet dich Offen um deine Zustimmung, bevor es "
+"Nutzungsdaten sammelt."
 
 #. ~ line 49 "public/index.go.html"
-#: 
 msgid "Offen"
 msgstr ""
 
 #. ~ line 59 "public/index.go.html"
-#: 
 msgid "Found an issue, need help or want to add something?"
-msgstr "Hast du einen Fehler gefunden, brauchst Hilfe oder möchtest etwas hinzufügen?"
+msgstr ""
+"Hast du einen Fehler gefunden, brauchst Hilfe oder möchtest etwas hinzufügen?"
 
 #. ~ line 59 "public/index.go.html"
-#: 
-msgid "issue."
-msgstr "Issue."
-
-#. ~ line 169 "public/index.go.html"
-#: 
-msgid "Offen is an open alternative to common web analytics tools. Operators gain insights while users have full access to their data. Lightweight, self hosted and free."
-msgstr "Offen ist eine freie Software Alternative zu gängigen Webanalysetools. Betreiberinnen und Betreiber erhalten Einblicke, während Nutzerinnen und Nutzer vollen Zugriff auf ihre Daten haben. Einfach, selbst gehostet und gratis."
-
-#. src/middleware.js:36
-#: 
-msgid "This page is using Offen to collect usage statistics."
-msgstr "Diese Seite verwendet Offen, um Nutzungsstatistiken zu erstellen."
-
-#. index.js:28
-#: 
-msgid "You can access and manage all of your personal data or opt-out at \"%s/auditorium/\"."
-msgstr "Im \"%s/auditorium/\" kannst du alle deine persönlichen Daten einsehen und verwalten oder deine Zustimmung entziehen."
-
-#. index.js:29
-#. index.js:60
-#: 
-msgid "Find out more about Offen at \"https://www.offen.dev\"."
-msgstr "Erfahre mehr über Offen unter \"https://www.offen.dev\"."
-
-#. index.js:58
-#: 
-msgid "Your setup prevents third party cookies or you have disabled it in your browser's settings."
-msgstr "Deine Einstellungen blockieren Cookies von Drittanbietern oder du hast sie in den Einstellungen deines Browsers deaktiviert."
-
-#. index.js:59
-#: 
-msgid "No usage data will be collected."
-msgstr "Es werden keine Nutzungsdaten gesammelt."
-
-#. src/user-consent.js:102
-#: 
-msgid "Thanks for your help to make this website better."
-msgstr "Danke für deine Hilfe, diese Webseite besser zu machen."
-
-#. src/user-consent.js:105
-#: 
-msgid "To manage your usage data <a class=\"b normal link dim dark-gray\" target=\"_blank\" rel=\"noopener\" href=\"%s\">open the Auditorium.</a>"
-msgstr "Um deine Nutzungsdaten zu verwalten, <a class=\"b normal link dim dark-gray\" target=\"_blank\" rel=\"noopener\" href=\"%s\">öffnen das Auditorium.</a>"
-
-#. src/user-consent.js:109
-#: 
-msgid "Continue"
-msgstr "Weiter"
-
-#. src/user-consent.js:116
-#: 
-msgid "Learn more"
-msgstr "Mehr erfahren"
-
-#. src/user-consent.js:124
-#: 
-msgid "You can opt out and delete any time."
-msgstr "Du kannst jederzeit löschen und deine Zustimmung entziehen."
-
-#. src/middleware.js:37
-#: 
-msgid "You have opted out of data collection, no data is being collected."
-msgstr "Du hast der Sammlung von Daten widersprochen, es werden keine Daten gesammelt."
-
-#. src/middleware.js:38
-#: 
-msgid "Find out more about Offen at \"%s\""
-msgstr "Erfahren mehr über Offen unter \"%s\""
-
-#. src/views/404.js:15
-#: 
-msgid "Not found..."
-msgstr "Nicht gefunden..."
-
-#. ~ line 59 "public/index.go.html"
-#: 
 msgid "Tweet,"
 msgstr "Twitter,"
 
 #. ~ line 59 "public/index.go.html"
-#: 
 msgid "email"
 msgstr "E-Mail"
 
 #. ~ line 59 "public/index.go.html"
-#: 
 msgid "or file an"
 msgstr "oder eine"
 
-#. src/views/components/auditorium/user-onboarding.js:29
-#: 
-msgid "Skip"
+#. ~ line 59 "public/index.go.html"
+msgid "issue."
+msgstr "Issue."
+
+#. ~ line 169 "public/index.go.html"
+msgid ""
+"Offen is an open alternative to common web analytics tools. Operators gain "
+"insights while users have full access to their data. Lightweight, self "
+"hosted and free."
 msgstr ""
+"Offen ist eine freie Software Alternative zu gängigen Webanalysetools. "
+"Betreiberinnen und Betreiber erhalten Einblicke, während Nutzerinnen und "
+"Nutzer vollen Zugriff auf ihre Daten haben. Einfach, selbst gehostet und "
+"gratis."
 
-#. src/views/components/auditorium/user-onboarding.js:46
-#: 
-msgid "Welcome to the Auditorium, this is how it works."
-msgstr "Willkommen im Auditorium, so funktionierts."
+msgid "This page is using Offen to collect usage statistics."
+msgstr "Diese Seite verwendet Offen, um Nutzungsstatistiken zu erstellen."
 
-#. src/views/components/auditorium/user-onboarding.js:49
-#: 
-msgid "What <span class=\"%s\">%s</span> knows about you."
-msgstr "Was <span class=\"%s\">%s</span> über dich weiß."
+msgid ""
+"You can access and manage all of your personal data or opt-out at \"%s/"
+"auditorium/\"."
+msgstr ""
+"Im \"%s/auditorium/\" kannst du alle deine persönlichen Daten einsehen und "
+"verwalten oder deine Zustimmung entziehen."
 
-#. src/views/components/auditorium/user-onboarding.js:56
-#: 
-msgid "You just visited the page <span class=\"%s\">%s</span> ."
-msgstr "Du hast gerade die Seite <span class=\"%s\">%s</span> besucht."
+msgid "Find out more about Offen at \"https://www.offen.dev\"."
+msgstr "Erfahre mehr über Offen unter \"https://www.offen.dev\"."
 
-#. src/views/components/auditorium/user-onboarding.js:64
-#: 
-msgid "You just visited this website."
-msgstr "Du hast gerade diese Webseite besucht."
+msgid ""
+"Your setup prevents third party cookies or you have disabled it in your "
+"browser's settings."
+msgstr ""
+"Deine Einstellungen blockieren Cookies von Drittanbietern oder du hast sie "
+"in den Einstellungen deines Browsers deaktiviert."
 
-#. src/views/components/auditorium/user-onboarding.js:73
-#: 
-msgid "You have visited <span class=\"%s\">%s %d</span> times."
-msgstr "Du hast <span class=\"%s\">%s %d</span> mal besucht."
+msgid "No usage data will be collected."
+msgstr "Es werden keine Nutzungsdaten gesammelt."
 
-#. src/views/components/auditorium/user-onboarding.js:81
-#: 
-msgid "It is probably your first time visiting <span class=\"%s\">%s</span> ."
-msgstr "Es ist wahrscheinlich dein erster Besuch bei <span class=\"%s\">%s</span> ."
+msgid "You have opted out of data collection, no data is being collected."
+msgstr ""
+"Du hast der Sammlung von Daten widersprochen, es werden keine Daten "
+"gesammelt."
 
-#. src/views/components/auditorium/user-onboarding.js:90
-#: 
-msgid "You came via <span class=\"%s\">%s</span> ."
-msgstr "Du bist über <span class=\"%s\">%s</span> hierher gekommen."
+msgid "Find out more about Offen at \"%s\""
+msgstr "Erfahren mehr über Offen unter \"%s\""
 
-#. src/views/components/auditorium/user-onboarding.js:97
-#: 
-msgid "Most likely you are on a <span class=\"%s\">%s</span>."
-msgstr "Vermutlich benutzt du gerade ein <span class=\"%s\">%s</span>."
+msgid "Thanks for your help to make this website better."
+msgstr "Danke für deine Hilfe, diese Webseite besser zu machen."
 
-#. src/views/components/auditorium/user-onboarding.js:97
-#: 
-msgid "mobile device"
-msgstr "Mobiles Gerät"
+msgid ""
+"To manage your usage data <a class=\"b normal link dim dark-gray\" target="
+"\"_blank\" rel=\"noopener\" href=\"%s\">open the Auditorium.</a>"
+msgstr ""
+"Um deine Nutzungsdaten zu verwalten, <a class=\"b normal link dim dark-gray"
+"\" target=\"_blank\" rel=\"noopener\" href=\"%s\">öffnen das Auditorium.</a>"
 
-#. src/views/components/auditorium/user-onboarding.js:97
-#: 
-msgid "desktop device"
-msgstr "Desktop Gerät"
-
-#. #-#-#-#-#  auditorium.po  #-#-#-#-#
-#. src/views/components/auditorium/user-onboarding.js:106
-#. #-#-#-#-#  auditorium.po  #-#-#-#-#
-#. src/views/components/auditorium/user-onboarding.js:137
-#: 
-msgid "Next"
+msgid "Continue"
 msgstr "Weiter"
 
-#. src/views/components/auditorium/user-onboarding.js:122
-#: 
-msgid "Your data always stays yours."
-msgstr "Deine Daten gehören weiter dir."
+msgid "Learn more"
+msgstr "Mehr erfahren"
 
-#. src/views/components/auditorium/user-onboarding.js:129
-#: 
-msgid "Click this symbol to display detailed explanations of the respective terms."
-msgstr "Klicke auf dieses Symbol, um detaillierte Erklärungen zu den jeweiligen Begriffen anzuzeigen."
-
-#. src/views/components/auditorium/user-onboarding.js:152
-#: 
-msgid "Bookmark this page to come back later."
-msgstr "Setze ein Lesezeichen für diese Seite, um später wiederzukommen."
-
-#. src/views/components/auditorium/user-onboarding.js:155
-#: 
-msgid "Get an overall picture of your data collected over time. Come back here anytime to see what <span class=\"%s\">%s</span> knows about you."
-msgstr "Gewinnen einen Gesamteindruck über deine im Laufe der Zeit gesammelten Daten. Komme jederzeit hierher zurück, um zu sehen, was <span class=\"%s\">%s</span> über dich weiß."
-
-#. src/views/components/auditorium/user-onboarding.js:158
-#: 
-msgid "Now let's get started!"
-msgstr "Lass uns beginnen!"
-
-#. src/views/components/auditorium/privacy.js:29
-#: 
-msgid "Stay opted in,<br>only delete usage data"
-msgstr "Weiter zustimmen,<br>nur Nutzungsdaten löschen"
-
-#. src/views/components/auditorium/privacy.js:55
-#: 
-msgid "Opt out<br>and delete usage data."
-msgstr "Zustimmung widerrufen<br>und Nutzungsdaten löschen"
-
-#. src/views/components/auditorium/privacy.js:56
-#: 
-msgid "Opt in and grant<br>access to your usage data."
-msgstr "Zustimmen und<br>Zugang zu deinen Nutzungsdaten gewähren."
-
-#. src/views/components/auditorium/chart.js:179
-#: 
-msgid "Empty state"
-msgstr "Leerzustand"
-
-#. src/views/components/auditorium/chart.js:181
-#: 
-msgid "No data available <br>for the selected time range."
-msgstr "Keine Daten verfügbar <br>für den gewählten Zeitraum."
-
-#. src/views/components/console/change-email.js:24
-#: 
-msgid "Please log in again using your updated email."
-msgstr "Bitte melde dich mit deiner aktualisierten E-Mail erneut an."
-
-#. src/views/components/console/change-password.js:31
-#: 
-msgid "Please log in again using your new password."
-msgstr "Bitte melden dich mit deinem aktualisierten Passwort erneut an."
-
-#. src/views/components/console/change-password.js:32
-#: 
-msgid "Could not change password. Try again."
-msgstr "Das Passwort konnte nicht geändert werden, bitte versuche es noch einmal."
-
-#. src/views/components/setup/form.js:43
-#: 
-msgid "Set up your instance by creating your first account."
-msgstr "Richte deine Instanz ein, indem du deinen ersten Account erstellst."
-
-#. src/views/components/_shared/with-layout.js:45
-#: 
-msgid "An error occurred: %s"
-msgstr "Ein Fehler ist aufgetreten: %s"
-
-#. src/views/components/_shared/share.js:27
-#: 
-msgid "You cannot invite yourself."
-msgstr "Du kannst dich nicht selbst einladen."
-
-#. src/views/components/reset-password/form.js:27
-#: 
-msgid "There has been an error resetting your password, please try again."
-msgstr "Beim Zurücksetzen deines Passworts ist ein Fehler aufgetreten, bitte versuche es noch einmal."
-
-#. src/views/components/index/consent-status-display.js:14
-#: 
-msgid "You have opted in."
-msgstr "Du hast zugestimmt."
-
-#. src/views/components/index/consent-status-display.js:15
-#: 
-msgid "You have opted out."
-msgstr "Du hast nicht zugestimmt."
-
-#. src/views/components/index/main-card.js:61
-#: 
-msgid "Only page views, sessions, referrer and visited URLs are collected. From this, other metrics such as the bounce rate are calculated."
-msgstr "Es werden nur Seitenaufrufe, Sitzungen, Referrer und die besuchten URLs gesammelt. Daraus werden weitere Metriken wie z.B. die Absprungrate berechnet."
-
-#. src/views/components/index/main-card.js:91
-#: 
-msgid "After opening a website where an Offen installation is active, you can explicitly opt in to the data collection and thereby help to improve the services you use. Only then you will be assigned a user and a session ID using a cookie. Offen handles these IDs in an unrecognizable form. <a href=\"https://en.wikipedia.org/wiki/HTTP_cookie\" class=\"%s\" target=\"_blank\" rel=\"noreferer noopener\">Learn more about cookies here.</a>"
-msgstr "Nach dem Aufruf einer Webseite, auf der eine Offen Installation aktiv ist, kannst du der Datenerhebung explizit zustimmen und damit helfen, die von dir genutzten Dienste zu verbessern. Nur dann wird dir über einen Cookie eine Nutzungs und Sitzungs ID zugewiesen. Offen behandelt diese IDs in einer nicht zuordenbaren Form. <a href=\"https://en.wikipedia.org/wiki/HTTP_cookie\" class=\"%s\" target=\"_blank\" rel=\"noreferer noopener\">Erfahre hier mehr über Cookies.</a>"
-
-#. src/views/components/auditorium/basic-terms.js:23
-#: 
-msgid "You are viewing the Auditorium right now. Only available after opt-in, it is the interface where you can review and delete your usage data or opt out entirely."
-msgstr "Du bist gerade im Auditorium. Es ist nur nach Zustimmung verfügbar und die Seite, auf der du deine Nutzungsdaten einsehen, löschen und deine Zustimmung widerrufen kannst."
-
-#. src/views/components/auditorium/basic-terms.js:49
-#: 
-msgid "You are defined as a unique user after your opt-in to data collection. To measure this, a <a href=\"#terms-cookies\" class=\"%s\">cookie</a> is used to assign a user <a href=\"#terms-id\" class=\"%s\">ID</a> to you."
-msgstr "Du wirst nach der Zustimmung zur Sammlung von Nutzungsdaten als eindeutig definiert. Dafür wird ein <a href=\"#terms-cookies\" class=\"%s\">Cookie</a> verwendet, um dir eine Nutzungs <a href=\"#terms-id\" class=\"%s\">ID</a> zuzuordnen."
-
-#. src/views/components/auditorium/user-onboarding.js:125
-#: 
-msgid "Review your data in the Auditorium. You can delete your data or opt out completely at any time in the Privacy tab."
-msgstr "Sehen deine Daten im Auditorium ein. Du kannst deine Daten jederzeit im Privacy Panel löschen oder deine Zustimmung widerrufen."
-
-#. src/views/components/auditorium/retire-account.js:104
-#: 
-msgid "Toggle display of retire account functionality"
-msgstr "Anzeige Account stillegen umschalten"
-
-#. src/views/components/auditorium/embed-code.js:43
-#: 
-msgid "Toggle display of embed code"
-msgstr "Anzeige Embed Code umschalten"
-
-#. src/views/components/auditorium/go-settings.js:35
-#: 
-msgid "Toggle display of admin console navigation"
-msgstr "Anzeige Admin Konsolen Navigation umschalten"
-
-#. src/views/components/auditorium/database-settings.js:39
-#: 
-msgid "Toggle display of database settings"
-msgstr "Anzeige Datenbank Einstellungen umschalten"
-
-#. src/views/components/auditorium/share.js:16
-#: 
-msgid "Share your Offen account <em class=\"%s\">%s</em> via email invitation. If granted admin privileges, invited users have full access to a shared account and can also create further accounts for this Offen instance."
-msgstr "Teile deinen Offen Account <em class=\"%s\">%s</em> per E-Mail Einladung. Eingeladene Nutzerinnen und Nutzer haben, wenn sie über Admin Rechte verfügen, vollen Zugriff auf einen freigegebenen Account und können auch weitere Accounts für diese Offen Instanz erstellen."
-
-#. src/check-support.js:15
-#: 
-msgid "Browser does not support IndexedDB which is required."
-msgstr "Dein Browser unterstützt nicht die erforderliche IndexedDB."
-
-#. ~ line 19 "public/emails.go.html"
-#: 
-msgid "You have been invited to join Offen."
-msgstr "Du wurdest zu Offen eingeladen."
-
-#. ~ line 33 "public/emails.go.html"
-#: 
-msgid "You have been added to additional accounts on Offen."
-msgstr "Du wurdest zu weiteren Accounts auf Offen hinzugefügt."
-
-#: 
-msgid "To review your data collected over time, <br class=\"dn db-l\">set a bookmark for this page."
-msgstr "Setze ein Lesezeichen für diese Seite, <br class=\"dn db-l\">um deine im Laufe der Zeit gesammelten Daten einzusehen."
-
+msgid "You can opt out and delete any time."
+msgstr "Du kannst jederzeit löschen und deine Zustimmung entziehen."
