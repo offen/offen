@@ -4,14 +4,15 @@
 name: Extract translation strings
 
 on:
-  push:
-    branches: [development]
+  workflow_dispatch:
 
 jobs:
   extract_strings:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          ref: development
       - name: Extract strings
         run: |
           make extract-strings
