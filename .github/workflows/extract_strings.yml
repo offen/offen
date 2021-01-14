@@ -1,0 +1,30 @@
+# Copyright 2020 - Offen Authors <hioffen@posteo.de>
+# SPDX-License-Identifier: Apache-2.0
+
+name: Extract translation strings
+
+on:
+  push:
+    branch: [auto-extract]
+
+jobs:
+  update_heroku:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Extract strings
+        run: |
+          make extract-strings
+      - name: Create Pull Request
+        id: cpr
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.PERSONAL_TOKEN }}
+          commit-message: Update message files
+          committer: Offen Bot <hioffen@posteo.de>
+          author: ${{ github.actor }} <hioffen@posteo.de>
+          branch: extract-strings-${{ github.event.release.tag_name }}
+          title: Update message files
+          body: |
+            Update strings for ${{ github.sha }}
+          draft: false
