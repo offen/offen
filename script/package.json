@@ -41,7 +41,12 @@
   "browserify": {
     "transform": [
       "envify",
-      "@offen/l10nify"
+      [
+        "@offen/l10nify",
+        {
+          "locale": "en"
+        }
+      ]
     ]
   },
   "standard": {

@@ -72,7 +72,12 @@
           "LOCALE": "en"
         }
       ],
-      "@offen/l10nify",
+      [
+        "@offen/l10nify",
+        {
+          "locale": "en"
+        }
+      ],
       "sheetify"
     ]
   },

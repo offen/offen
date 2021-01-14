@@ -58,7 +58,12 @@
     "transform": [
       "@offen/schemaify",
       "envify",
-      "@offen/l10nify",
+      [
+        "@offen/l10nify",
+        {
+          "locale": "en"
+        }
+      ],
       "nanohtml"
     ]
   },
