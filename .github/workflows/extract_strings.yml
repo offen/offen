@@ -11,8 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-        with:
-          ref: development
       - name: Extract strings
         run: |
           make extract-strings
@@ -25,10 +23,17 @@ jobs:
           commit-message: Update message files
           committer: Offen Bot <hioffen@posteo.de>
           author: ${{ github.actor }} <hioffen@posteo.de>
-          branch: extract-strings-${{ github.sha }}
+          branch: extract-new-strings
           title: Update message files
           body: |
-            Pushing ${{ github.sha }} to `development` updated translation
-            strings. You can merge this PR to update known .po files to the
-            latest state.
+            Merge this PR to update the `.po` files  for all defined LINGUAS to
+            the latest state as of ${{ github.sha }}.
+
+            After merging, the webhook integration will upload the new messages
+            to [POEditor](https://poeditor.com/projects/).
+
+            ---
+
+            Are you interested in contributing translations for Offen? Get in
+            touch: hioffen@posteo.de
           draft: false
