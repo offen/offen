@@ -64,9 +64,6 @@ msgstr "Authentifikation überprüfen"
 msgid "One moment..."
 msgstr "Einen Moment..."
 
-msgid "You currently do not have any active accounts. You can create one below."
-msgstr "Du hast derzeit keine aktiven Accounts. Weiter unten kannst du einen erstellen."
-
 msgid "Offen Auditorium"
 msgstr ""
 
@@ -83,6 +80,9 @@ msgstr ""
 
 msgid "Found an issue, need help or want to add something?<br><a href=\"https://twitter.com/hioffen\" class=\"%s\" target=\"_blank\" rel=\"noreferer noopener\">Tweet,</a> <a href=\"mailto:hioffen@posteo.de\" class=\"%s\" target=\"_blank\">email</a> or file an <a href=\"https://github.com/offen/offen\" class=\"%s\" target=\"_blank\" rel=\"noreferer noopener\">issue.</a>"
 msgstr "Hast du einen Fehler gefunden, brauchst Hilfe oder möchtest etwas hinzufügen?<br><a href=\"https://twitter.com/hioffen\" class=\"%s\" target=\"_blank\" rel=\"noreferer noopener\">Twitter,</a> <a href=\"mailto:hioffen@posteo.de\" class=\"%s\" target=\"_blank\">E-Mail</a> oder erstelle eine <a href=\"https://github.com/offen/offen\" class=\"%s\" target=\"_blank\" rel=\"noreferer noopener\">Issue.</a>"
+
+msgid "You currently do not have any active accounts. You can create one below."
+msgstr "Du hast derzeit keine aktiven Accounts. Weiter unten kannst du einen erstellen."
 
 msgid "Check your inbox and follow the instructions in the email."
 msgstr "Schau in deinen Posteingang und folge der Anleitung in unserer E-Mail."
@@ -426,6 +426,12 @@ msgstr "Wie funktioniert das alles?"
 msgid "After opening a website where a <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation</a> is active, you can explicitly opt in to the data collection and thereby help to improve the services you use. Only then you will be assigned a user and a session <a href=\"#terms-id\" class=\"%s\">ID</a> using a <a href=\"#terms-cookies\" class=\"%s\">cookie.</a> Offen handles these <a href=\"#terms-id\" class=\"%s\">IDs</a> in an unrecognizable form, i.e. no server will ever store this identifier."
 msgstr "Nach dem Aufruf einer Webseite, auf der eine <a href=\"#terms-offen-installation\" class=\"%s\">Offen Installation</a> aktiv ist, kannst du der Datenerhebung explizit zustimmen und damit helfen, die von dir genutzten Dienste zu verbessern. Nur dann wird dir über einen <a href=\"#terms-cookies\" class=\"%s\">Cookie</a> eine Nutzungs und Sitzungs<a href=\"#terms-id\" class=\"%s\">ID</a> zugewiesen.</a> Offen behandelt diese <a href=\"#terms-id\" class=\"%s\">IDs</a> in einer nicht zuordenbaren Form, d.h. kein Server wird diese Kennung jemals speichern."
 
+msgid "Weekly retention"
+msgstr "Wöchentliche Retention"
+
+msgid "This panel displays your recurring visits of pages of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation</a> during the last 4 weeks. For each of the previous weeks, the percentage is calculated from the value of the current week."
+msgstr "Dieses Panel zeigt die wiederkehrenden Besuche von Seiten der <a href=\"#terms-offen-installation\" class=\"%s\">Offen Installation</a> während der letzten 4 Wochen an. Für jede der vergangenen Wochen wird der Prozentsatz aus dem Wert der aktuellen Woche berechnet."
+
 msgid "Real time"
 msgstr "Echtzeit"
 
@@ -437,12 +443,6 @@ msgstr "Aktive Seiten"
 
 msgid "Visitors"
 msgstr "Besuchende"
-
-msgid "Weekly retention"
-msgstr "Wöchentliche Retention"
-
-msgid "This panel displays your recurring visits of pages of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation</a> during the last 4 weeks. For each of the previous weeks, the percentage is calculated from the value of the current week."
-msgstr "Dieses Panel zeigt die wiederkehrenden Besuche von Seiten der <a href=\"#terms-offen-installation\" class=\"%s\">Offen Installation</a> während der letzten 4 Wochen an. Für jede der vergangenen Wochen wird der Prozentsatz aus dem Wert der aktuellen Woche berechnet."
 
 msgid "Successfully copied embed code to clipboard."
 msgstr "Erfolgreich den Embed Code in die Zwischenablage kopiert."
@@ -651,15 +651,6 @@ msgstr "%d Tage später"
 msgid "%d days earlier"
 msgstr "%d Tage eher"
 
-msgid "There has been an error resetting your password, please try again."
-msgstr "Beim Zurücksetzen deines Passworts ist ein Fehler aufgetreten, bitte versuche es noch einmal."
-
-msgid "Reset password"
-msgstr "Passwort zurücksetzen"
-
-msgid "Reset Password"
-msgstr "Passwort zurücksetzen"
-
 msgid "Could not log in using the given credentials. Try again."
 msgstr "Du konntest mit diesen Daten nicht angemeldet werden. Versuche es noch einmal."
 
@@ -672,6 +663,15 @@ msgstr "Anmelden"
 msgid "Forgot password?"
 msgstr "Passwort vergessen?"
 
+msgid "There has been an error resetting your password, please try again."
+msgstr "Beim Zurücksetzen deines Passworts ist ein Fehler aufgetreten, bitte versuche es noch einmal."
+
+msgid "Reset password"
+msgstr "Passwort zurücksetzen"
+
+msgid "Reset Password"
+msgstr "Passwort zurücksetzen"
+
 msgid "Passwords did not match"
 msgstr "Passwörter stimmten nicht überein"
 
@@ -683,6 +683,15 @@ msgstr "Bei Offen mitmachen"
 
 msgid "Accept invite"
 msgstr "Einladung annehmen"
+
+msgid "You have opted in."
+msgstr "Du hast zugestimmt."
+
+msgid "You have opted out."
+msgstr "Du hast nicht zugestimmt."
+
+msgid "It seems like your browser is blocking cookies."
+msgstr "Anscheinend blockiert dein Browser Cookies."
 
 msgid "Offen requires cookies to function properly."
 msgstr "Offen benötigt Cookies, um richtig zu funktionieren."
@@ -713,18 +722,6 @@ msgstr "Ich stimme zu"
 msgid "I don't allow"
 msgstr "Ich stimme nicht zu"
 
-msgid "You have opted in."
-msgstr "Du hast zugestimmt."
-
-msgid "You have opted out."
-msgstr "Du hast nicht zugestimmt."
-
-msgid "It seems like your browser is blocking cookies."
-msgstr "Anscheinend blockiert dein Browser Cookies."
-
-msgid "Are you the operator of this Offen installation? Log in to your account."
-msgstr "Betreibst du diese Offen Installation? Melde dich hier an."
-
 msgid "How can I review and delete my usage data or opt out?"
 msgstr "Wie kann ich meine Nutzungsdaten einsehen, löschen oder mich abmelden?"
 
@@ -754,6 +751,9 @@ msgstr "Ja, insbesondere verwenden wir Cookies, um deine Entscheidung über die 
 
 msgid "After opening a website where an Offen installation is active, you can explicitly opt in to the data collection and thereby help to improve the services you use. Only then you will be assigned a user and a session ID using a cookie. Offen handles these IDs in an unrecognizable form. <a href=\"https://en.wikipedia.org/wiki/HTTP_cookie\" class=\"%s\" target=\"_blank\" rel=\"noreferer noopener\">Learn more about cookies here.</a>"
 msgstr "Nach dem Aufruf einer Webseite, auf der eine Offen Installation aktiv ist, kannst du der Datenerhebung explizit zustimmen und damit helfen, die von dir genutzten Dienste zu verbessern. Nur dann wird dir über einen Cookie eine Nutzungs und Sitzungs ID zugewiesen. Offen behandelt diese IDs in einer nicht zuordenbaren Form. <a href=\"https://en.wikipedia.org/wiki/HTTP_cookie\" class=\"%s\" target=\"_blank\" rel=\"noreferer noopener\">Erfahre hier mehr über Cookies.</a>"
+
+msgid "Are you the operator of this Offen installation? Log in to your account."
+msgstr "Betreibst du diese Offen Installation? Melde dich hier an."
 
 msgid "Checking your consent status"
 msgstr "Prüfe deinen Zustimmung"
