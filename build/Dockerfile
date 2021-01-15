@@ -1,7 +1,7 @@
 # Copyright 2020 - Offen Authors <hioffen@posteo.de>
 # SPDX-License-Identifier: Apache-2.0
 
-FROM alpine:3.12
+FROM alpine:3.13
 LABEL maintainer="offen <hioffen@posteo.de>"
 
 RUN apk add -U --no-cache ca-certificates
