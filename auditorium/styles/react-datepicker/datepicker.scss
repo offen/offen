@@ -3,25 +3,33 @@
  * SPDX-License-Identifier: MIT
  */
 
-$datepicker__background-color: #f0f0f0 !default;
-$datepicker__border-color: #aeaeae !default;
-$datepicker__highlighted-color: #3dcc4a !default;
-$datepicker__muted-color: #ccc !default;
-$datepicker__selected-color: #216ba5 !default;
+$datepicker__background-color: #f0f0f0 !default; /* remove ? */
+$datepicker__border-color: #aeaeae !default; /* remove ? */
+$datepicker__highlighted-color: #0000ff !default; /* ??? */
+$datepicker__muted-color: #EEEEEE !default; /* Nicht mögliche Tage */
+$datepicker__selected-color: #ff0000 !default; /* Augewählte Tage */
 $datepicker__text-color: #000 !default;
 $datepicker__header-color: #000 !default;
-$datepicker__navigation-disabled-color: lighten($datepicker__muted-color, 10%)
-  !default;
+$datepicker__navigation-disabled-color: lighten($datepicker__muted-color, 10%) !default;
 
-$datepicker__border-radius: 0.3rem !default;
+$datepicker__border-radius: 0.3rem !default; /* remove ? */
 $datepicker__day-margin: 0.166rem !default;
-$datepicker__font-size: 0.8rem !default;
-$datepicker__font-family: "Helvetica Neue", Helvetica, Arial,
-  sans-serif !default;
+$datepicker__font-size: 0.8rem !default; /* remove? */
+$datepicker__font-family: "Helvetica Neue", Helvetica, Arial,sans-serif !default; /* remove? */
 $datepicker__item-size: 1.7rem !default;
 $datepicker__margin: 0.4rem !default;
 $datepicker__navigation-size: 0.45rem !default;
 $datepicker__triangle-size: 8px !default;
+
+/* ----------------------------------------------------------
+Added variables */
+
+$datepicker__font-size-small: 0.875rem !default;
+
+
+
+/* ----------------------------------------------------------
+*/
 
 @import "mixins.scss";
 
@@ -32,12 +40,16 @@ $datepicker__triangle-size: 8px !default;
 }
 
 .react-datepicker {
+  /*
   font-family: $datepicker__font-family;
   font-size: $datepicker__font-size;
+  */
   background-color: #fff;
   color: $datepicker__text-color;
+  /*
   border: 1px solid $datepicker__border-color;
   border-radius: $datepicker__border-radius;
+  */
   display: inline-block;
   position: relative;
 }
@@ -110,9 +122,11 @@ $datepicker__triangle-size: 8px !default;
 
 .react-datepicker__header {
   text-align: center;
+  /*
   background-color: $datepicker__background-color;
   border-bottom: 1px solid $datepicker__border-color;
   border-top-left-radius: $datepicker__border-radius;
+  */
   padding-top: 8px;
   position: relative;
 
@@ -146,8 +160,10 @@ $datepicker__triangle-size: 8px !default;
 .react-datepicker-year-header {
   margin-top: 0;
   color: $datepicker__header-color;
+  /*
   font-weight: bold;
   font-size: $datepicker__font-size * 1.18;
+  */
 }
 
 .react-datepicker-time__header {
@@ -341,7 +357,9 @@ $datepicker__triangle-size: 8px !default;
           &--selected {
             background-color: $datepicker__selected-color;
             color: white;
+            /*
             font-weight: bold;
+            */
             &:hover {
               background-color: $datepicker__selected-color;
             }
@@ -378,6 +396,7 @@ $datepicker__triangle-size: 8px !default;
 
 .react-datepicker__day-names,
 .react-datepicker__week {
+  font-size: $datepicker__font-size-small;
   white-space: nowrap;
 }
 
@@ -427,7 +446,9 @@ $datepicker__triangle-size: 8px !default;
   }
 
   &--today {
+    /*
     font-weight: bold;
+    */
   }
 
   &--highlighted {
@@ -623,7 +644,9 @@ $datepicker__triangle-size: 8px !default;
     height: 16px;
     width: 16px;
     padding: 2px;
+    /*
     font-size: 12px;
+    */
     line-height: 1;
     text-align: center;
     display: table-cell;
@@ -637,7 +660,9 @@ $datepicker__triangle-size: 8px !default;
   border-top: 1px solid $datepicker__border-color;
   cursor: pointer;
   text-align: center;
+  /*
   font-weight: bold;
+  */
   padding: 5px 0;
   clear: left;
 }
@@ -673,7 +698,9 @@ $datepicker__triangle-size: 8px !default;
 
   .react-datepicker__current-month,
   .react-datepicker-time__header {
+    /*
     font-size: $datepicker__font-size * 1.8;
+    */
   }
 
   .react-datepicker__navigation {

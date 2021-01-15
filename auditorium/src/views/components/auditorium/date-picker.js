@@ -28,28 +28,32 @@ module.exports = (props) => {
 
   return (
     <div class='flex flex-column'>
-      <div class='flex justify-center'>
-        <DatePicker
-          locale={process.env.LOCALE || 'en'}
-          selected={startDate}
-          onChange={(date) => setStartDate(date)}
-          startDate={startDate}
-          endDate={endDate}
-          selectsStart
-          inline
-          filterDate={(date) => !isFuture(date) && differenceInDays(now, date) <= 6 * 31}
-        />
-        <DatePicker
-          locale={process.env.LOCALE || 'en'}
-          selected={endDate}
-          onChange={(date) => setEndDate(date)}
-          startDate={startDate}
-          endDate={endDate}
-          selectsEnd
-          minDate={startDate}
-          inline
-          filterDate={(date) => !isFuture(date) && differenceInDays(now, date) <= 6 * 31}
-        />
+      <div class='flex justify-center mb3'>
+        <div class='mr3'>
+          <DatePicker
+            locale={process.env.LOCALE || 'en'}
+            selected={startDate}
+            onChange={(date) => setStartDate(date)}
+            startDate={startDate}
+            endDate={endDate}
+            selectsStart
+            inline
+            filterDate={(date) => !isFuture(date) && differenceInDays(now, date) <= 6 * 31}
+          />
+        </div>
+        <div class='ml3'>
+          <DatePicker
+            locale={process.env.LOCALE || 'en'}
+            selected={endDate}
+            onChange={(date) => setEndDate(date)}
+            startDate={startDate}
+            endDate={endDate}
+            selectsEnd
+            minDate={startDate}
+            inline
+            filterDate={(date) => !isFuture(date) && differenceInDays(now, date) <= 6 * 31}
+          />
+        </div>
       </div>
       <div class='flex justify-center'>
         <a
