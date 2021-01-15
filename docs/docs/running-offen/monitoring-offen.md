@@ -19,7 +19,7 @@ SPDX-License-Identifier: Apache-2.0
 
 If you want to make sure your Offen instance is always up and running by monitoring it - either yourself, or using a service such as Pingdom or similar - you can use the `/healthz/` endpoint that should always respond with a `200` status code:
 
-```
+```console
 $ curl -I https://offen.yoursite.org/healthz
 HTTP/2 200 
 cache-control: no-store
@@ -31,7 +31,7 @@ date: Tue, 30 Jun 2020 06:33:59 GMT
 
 and a payload like this:
 
-```
+```console
 $ curl -X GET https://offen.yoursite.org/healthz
 {"ok":true}
 ```

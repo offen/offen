@@ -72,7 +72,7 @@ When embedding the Offen script on sites in such a setup, __make sure it is usin
 
 If your Offen installation serves multiple domains, you will need to provide SSL certificates for each of them. Offen can acquire free and self-renewing certificates from LetsEncrypt for you when you specify these as a comma separated list in the `OFFEN_SERVER_AUTOTLS` configuration value:
 
-```
+```properties
 OFFEN_SERVER_AUTOTLS="offen.yoursite.org,offen.anothersite.org,offen.somethingelse.org"
 ```
 

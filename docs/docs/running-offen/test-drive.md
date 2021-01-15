@@ -18,21 +18,21 @@ If you just want to experiment with Offen or give it a quick test drive, you can
 
 Open your terminal and type:
 
-```
+```bash
 curl -sS https://demo.offen.dev | bash  
 ```
 {: .mb-8 }
 
 You can do the same using our official Docker image:
 
-```
+```bash
 docker run --rm -it -p 9876:9876 offen/offen:latest demo -port 9876  
 ```
 {: .mb-8 }
 
 If you have already downloaded the binaries use:
 
-```
+```bash
 ./offen demo  
 ```
 {: .mb-8 }

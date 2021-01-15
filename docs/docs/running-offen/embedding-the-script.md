@@ -46,6 +46,6 @@ When displaying the consent banner, Offen injects an inline stylesheet to positi
 
 A minimal Content-Security-Policy to use Offen on your site could look like:
 
-```
+```http
 Content-Security-Policy: default-src 'self'; script-src 'self' offen.mysite.org; frame-src 'self' offen.mysite.org; style-src 'self' 'unsafe-inline'
 ```
