@@ -10,11 +10,11 @@ $datepicker__muted-color: #EEEEEE !default; /* Nicht mögliche Tage */
 /*
 $datepicker__selected-color: #ff0000 !default; /* Augewählte Tage original
 */
-$datepicker__text-color: #000 !default;
+
 $datepicker__header-color: #000 !default;
 $datepicker__navigation-disabled-color: lighten($datepicker__muted-color, 10%) !default;
 
-$datepicker__border-radius: 0.3rem !default; /* remove ? */
+$datepicker__border-radius: 0.125rem !default; /* remove ? */
 $datepicker__day-margin: 0.166rem !default;
 $datepicker__font-size: 0.8rem !default; /* remove? */
 $datepicker__font-family: "Helvetica Neue", Helvetica, Arial,sans-serif !default; /* remove? */
@@ -32,15 +32,12 @@ $datepicker__selected-color: #555555 !default; /* Grau - Voreingestellt */
 
 $datepicker__selected-color-0: #000000 !default; /* Schwarz - nicht benutzt */
 
-$datepicker__selected-color-1: #dddddd !default; /* Grau - Voreingestellt */
-$datepicker__selected-color-2: #bbbbbb !default; /* Grau dunkel - Voreingestellt Mouseover */
+$datepicker__selected-color-3: #EEEEEE !default; /* selected range */
+$datepicker__selected-color-4: #137752 !default; /* selected range mouseover */
 
-$datepicker__selected-color-3: #ff0000 !default; /* Rot - Range */
-$datepicker__selected-color-4: #ff00ff !default; /* Pink - Range Mouseover */
+$datepicker__text-color: #333 !default;
 
-$datepicker__selected-color-5: #ffff00 !default; /* Gelb -  */
-$datepicker__selected-color-6: #00ff00 !default; /* Grün -  */
-
+$datepicker__text-color-clickable: #137752 !default;
 
 
 /* ----------------------------------------------------------
@@ -426,6 +423,15 @@ $datepicker__selected-color-6: #00ff00 !default; /* Grün -  */
   margin: $datepicker__day-margin;
 }
 
+/* added */
+.react-datepicker__day {
+    color: $datepicker__text-color-clickable;
+    font-weight: 700;
+    &--disabled {
+      font-weight: 400;
+    }
+}
+
 .react-datepicker__month,
 .react-datepicker__quarter {
   &--selected,
@@ -433,7 +439,9 @@ $datepicker__selected-color-6: #00ff00 !default; /* Grün -  */
   &--in-range {
     border-radius: $datepicker__border-radius;
     background-color: $datepicker__selected-color-0;
+    /*
     color: #fff;
+    */
 
     &:hover {
       background-color: $datepicker__selected-color-0;
@@ -472,7 +480,9 @@ $datepicker__selected-color-6: #00ff00 !default; /* Grün -  */
   &--highlighted {
     border-radius: $datepicker__border-radius;
     background-color: $datepicker__highlighted-color;
+    /*
     color: #fff;
+    */
 
     &:hover {
       background-color: darken($datepicker__highlighted-color, 5%);
@@ -492,19 +502,24 @@ $datepicker__selected-color-6: #00ff00 !default; /* Grün -  */
   &--in-range {
     border-radius: $datepicker__border-radius;
     background-color: $datepicker__selected-color-3;
+    /*
     color: #fff;
+    */
     &:hover {
       background-color: $datepicker__selected-color-4;
+      color: #fff;
     }
   }
 
   &--keyboard-selected {
     border-radius: $datepicker__border-radius;
-    background-color: $datepicker__selected-color-1;
+    background-color: $datepicker__selected-color-0;
+    /*
     color: #fff;
+    */
 
     &:hover {
-      background-color: $datepicker__selected-color-2;
+      background-color: $datepicker__selected-color-0;
     }
   }
 
@@ -659,7 +674,9 @@ $datepicker__selected-color-6: #00ff00 !default; /* Grün -  */
   &::after {
     cursor: pointer;
     background-color: $datepicker__selected-color;
+    /*
     color: #fff;
+    */
     border-radius: 50%;
     height: 16px;
     width: 16px;
@@ -759,10 +776,17 @@ $datepicker__selected-color-6: #00ff00 !default; /* Grün -  */
 
 /* ----------------------------------------------------------
 Added css */
+
+/* style static text bevore select button */
 input {
     pointer-events: none;
     text-align: center;
     border-width: 0;
+}
+
+/* hide days outside of month */
+.react-datepicker__day--outside-month {
+visibility: hidden;
 }
 
 

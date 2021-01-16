@@ -30,6 +30,7 @@ module.exports = (props) => {
   }
 
   const now = new Date()
+  const subDays = require('date-fns/sub_days')
 
   return (
     <div class='flex flex-column'>
@@ -44,13 +45,9 @@ module.exports = (props) => {
             startDate={startDate}
             endDate={endDate}
             selectsStart
-            /*
-            selected={startDate}
-            onChange={date => setStartDate(date)}
-            selectsStart
-            startDate={startDate}
-            endDate={endDate}
-            */
+            minDate={subDays(now, 6 * 31)}
+            maxDate={now}
+            disabledKeyboardNavigation
           />
         </div>
         <div class='ml3'>
@@ -64,14 +61,7 @@ module.exports = (props) => {
             endDate={endDate}
             selectsEnd
             minDate={startDate}
-            /*
-            selected={endDate}
-            onChange={date => setEndDate(date)}
-            selectsEnd
-            startDate={startDate}
-            endDate={endDate}
-            minDate={startDate}
-            */
+            maxDate={now}
           />
         </div>
       </div>
