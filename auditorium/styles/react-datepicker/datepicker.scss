@@ -755,3 +755,15 @@ $datepicker__selected-color-6: #00ff00 !default; /* Grün -  */
     }
   }
 }
+
+
+/* ----------------------------------------------------------
+Added css */
+input {
+    pointer-events: none;
+    text-align: center;
+    border-width: 0;
+}
+
+
+/* ----------------------------------------------------------*/
