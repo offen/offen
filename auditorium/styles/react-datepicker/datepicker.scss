@@ -7,7 +7,9 @@ $datepicker__background-color: #f0f0f0 !default; /* remove ? */
 $datepicker__border-color: #aeaeae !default; /* remove ? */
 $datepicker__highlighted-color: #0000ff !default; /* ??? */
 $datepicker__muted-color: #EEEEEE !default; /* Nicht mögliche Tage */
-$datepicker__selected-color: #ff0000 !default; /* Augewählte Tage */
+/*
+$datepicker__selected-color: #ff0000 !default; /* Augewählte Tage original
+*/
 $datepicker__text-color: #000 !default;
 $datepicker__header-color: #000 !default;
 $datepicker__navigation-disabled-color: lighten($datepicker__muted-color, 10%) !default;
@@ -25,6 +27,11 @@ $datepicker__triangle-size: 8px !default;
 Added variables */
 
 $datepicker__font-size-small: 0.875rem !default;
+$datepicker__selected-color: #ff0000 !default; /* Rot - Augewählte Tage */
+
+$datepicker__selected-color-0: #000000 !default; /* Schwarz - nicht benutzt */
+$datepicker__selected-color-2: #ff00ff !default; /* Pink - ? */
+$datepicker__selected-color-3: #ffff00 !default; /* Gelb - ? */
 
 
 
@@ -421,7 +428,10 @@ $datepicker__font-size-small: 0.875rem !default;
     color: #fff;
 
     &:hover {
+      background-color: $datepicker__selected-color-0;
+      /*
       background-color: darken($datepicker__selected-color, 5%);
+      */
     }
   }
   &--disabled {
@@ -476,9 +486,12 @@ $datepicker__font-size-small: 0.875rem !default;
     background-color: $datepicker__selected-color;
     color: #fff;
 
+    background-color: $datepicker__selected-color-2;
+    /*
     &:hover {
       background-color: darken($datepicker__selected-color, 5%);
     }
+    */
   }
 
   &--keyboard-selected {
@@ -492,7 +505,10 @@ $datepicker__font-size-small: 0.875rem !default;
   }
 
   &--in-selecting-range:not(&--in-range) {
+    background-color: $datepicker__selected-color-2;
+    /*
     background-color: rgba($datepicker__selected-color, 0.5);
+    */
   }
 
   &--in-range:not(&--in-selecting-range) {

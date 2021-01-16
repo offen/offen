@@ -18,6 +18,10 @@ module.exports = (props) => {
   const { onClose, from, to } = props
   const [startDate, setStartDate] = useState(from ? new Date(from) : new Date())
   const [endDate, setEndDate] = useState(to ? new Date(to) : null)
+  /*
+  const [startDate, setStartDate] = useState(new Date("2021/01/01"));
+  const [endDate, setEndDate] = useState(new Date("2021/01/15"));
+  */
 
   let url = window.location.pathname
   if (startDate && endDate) {
@@ -32,26 +36,41 @@ module.exports = (props) => {
         <div class='mr3'>
           <DatePicker
             locale={process.env.LOCALE || 'en'}
+            filterDate={(date) => !isFuture(date) && differenceInDays(now, date) <= 6 * 31}
+            inline
+            /*
             selected={startDate}
             onChange={(date) => setStartDate(date)}
             startDate={startDate}
             endDate={endDate}
             selectsStart
-            inline
-            filterDate={(date) => !isFuture(date) && differenceInDays(now, date) <= 6 * 31}
+            */
+            selected={startDate}
+            onChange={date => setStartDate(date)}
+            selectsStart
+            startDate={startDate}
+            endDate={endDate}
           />
         </div>
         <div class='ml3'>
           <DatePicker
             locale={process.env.LOCALE || 'en'}
+            filterDate={(date) => !isFuture(date) && differenceInDays(now, date) <= 6 * 31}
+            inline
+            /*
             selected={endDate}
             onChange={(date) => setEndDate(date)}
             startDate={startDate}
             endDate={endDate}
             selectsEnd
             minDate={startDate}
-            inline
-            filterDate={(date) => !isFuture(date) && differenceInDays(now, date) <= 6 * 31}
+            */
+            selected={endDate}
+            onChange={date => setEndDate(date)}
+            selectsEnd
+            startDate={startDate}
+            endDate={endDate}
+            minDate={startDate}
           />
         </div>
       </div>
