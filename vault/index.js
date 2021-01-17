@@ -27,8 +27,16 @@ register('EVENT',
         console.log(__('This page is using Offen to collect usage statistics.'))
         console.log(__('You can access and manage all of your personal data or opt-out at "%s/auditorium/".', window.location.origin))
         console.log(__('Find out more about Offen at "https://www.offen.dev".'))
+        respond(null)
       })
       .catch(next)
+  })
+
+register('ACQUIRE_CONSENT',
+  allowsCookiesMiddleware,
+  middleware.optIn,
+  function (event, respond, next) {
+    respond(null)
   })
 
 register('QUERY', middleware.sameOrigin, callHandler(handler.handleQuery))

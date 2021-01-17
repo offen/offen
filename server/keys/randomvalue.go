@@ -5,6 +5,7 @@ package keys
 
 import (
 	"encoding/base64"
+	"fmt"
 )
 
 // StringEncoder can encode a byte slice into a printable string.
@@ -15,7 +16,7 @@ type StringEncoder interface {
 func randomBytesWithEncoding(length int, e StringEncoder) (string, error) {
 	b, err := GenerateRandomBytes(length)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("keys: error generating random bytes: %w", err)
 	}
 	return e.EncodeToString(b), nil
 }

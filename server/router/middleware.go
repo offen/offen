@@ -100,6 +100,22 @@ func headerMiddleware(valueProvider map[string]func() string) gin.HandlerFunc {
 	}
 }
 
+func cspMiddleware(getNonce func() (string, error)) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		nonce, err := getNonce()
+		if err != nil {
+			newJSONError(
+				fmt.Errorf("router: error generating csp nonce: %w", err),
+				http.StatusInternalServerError,
+			).Pipe(c)
+			return
+		}
+		c.Set("csp-nonce", nonce)
+		c.Header("Content-Security-Policy", fmt.Sprintf(indexCSP, nonce))
+		c.Next()
+	}
+}
+
 type bufferingGinWriter struct {
 	gin.ResponseWriter
 	buf bytes.Buffer

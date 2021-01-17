@@ -51,6 +51,9 @@ function createVault (host) {
                 Object.keys(payload.attributes || {}).forEach(function (attribute) {
                   vault.setAttribute(attribute, payload.attributes[attribute])
                 })
+                // it's important not to settle the promise here as it allows
+                // consumers to pass styles and still deliver a result in a
+                // second step
                 break
               case 'ERROR':
                 var err = new Error(responseMessage.payload.error)

@@ -10,4 +10,5 @@ const (
 	DefaultSaltLength        = 8
 	DefaultEncryptionKeySize = 32
 	DefaultPasswordHashSize  = 32
+	DefaultNonceSize         = 16
 )

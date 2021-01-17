@@ -5,7 +5,7 @@
 
 exports.pageview = pageview
 
-function pageview (initial) {
+function pageview (subsequent) {
   var canonicalLink = document.head.querySelector('link[rel="canonical"]')
   var canonicalHref = canonicalLink && canonicalLink.getAttribute('href')
   var event = {
@@ -14,7 +14,7 @@ function pageview (initial) {
     title: document.title,
     referrer: document.referrer,
     pageload: (function () {
-      if (initial && window.performance && window.performance.timing) {
+      if (!subsequent && window.performance && window.performance.timing) {
         return Math.round(
           window.performance.timing.domContentLoadedEventEnd - window.performance.timing.navigationStart
         )

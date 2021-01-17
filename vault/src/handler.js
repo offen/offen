@@ -59,7 +59,7 @@ function handleExpressConsentWith (api, storage, getConsentStatus) {
       return Promise.reject(new Error('Received invalid consent status: ' + status))
     }
     consentStatus.set(status)
-    var purge = status === consentStatus.ALLOW
+    var maybePurge = status === consentStatus.ALLOW
       ? Promise.resolve()
       : Promise.all([
         api
@@ -74,7 +74,7 @@ function handleExpressConsentWith (api, storage, getConsentStatus) {
           }),
         storage.purge()
       ])
-    return purge.then(function () {
+    return maybePurge.then(function () {
       return {
         type: 'EXPRESS_CONSENT_SUCCESS',
         payload: {
