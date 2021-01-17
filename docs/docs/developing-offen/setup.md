@@ -8,33 +8,37 @@ parent: Developing Offen
 ---
 
 <!--
-Copyright 2020 - Offen Authors <hioffen@posteo.de>
+Copyright 2020-2021 - Offen Authors <hioffen@posteo.de>
 SPDX-License-Identifier: Apache-2.0
 -->
 
 # Setup
+{: .no_toc }
+
+## Table of contents
+{: .no_toc }
+
+1. TOC
+{:toc}
 
 ## First run
 
 After cloning the [repository][], you will need to do two things:
 
 1. Pull the required Docker images and install each container's dependencies:
-  ```
-  make setup
-  ```
+```
+make setup
+```
 1. Bootstrap the development database:
-  ```
-  make bootstrap
-  ```
+```
+make bootstrap
+```
+
+---
+
 You should now be able to start your local version of Offen using:
 ```
 make up
-```
-
-To log into the development backend use the following credentials:
-```
-Email: develop@offen.dev
-Password: development
 ```
 
 To see if the application is working as intended visit <http://localhost:8080> in your browser or use the application's health check:
@@ -42,6 +46,12 @@ To see if the application is working as intended visit <http://localhost:8080> i
 ```
 ➜  ~ curl -X GET http://localhost:8080/healthz
 {"ok":true}
+```
+
+To log into the development backend use the following credentials:
+```
+Email: develop@offen.dev
+Password: development
 ```
 
 You can stop the application using `Ctrl+C`, in case you want to tear down the current environment and delete the data stored in the local database you can use:
