@@ -273,3 +273,28 @@ func TestEtagMiddleware(t *testing.T) {
 		t.Errorf("Unexpected status code %v", w2.Code)
 	}
 }
+
+func TestCSPMiddleware(t *testing.T) {
+	m := gin.New()
+	m.GET("/", cspMiddleware(func() (string, error) {
+		return "a-nonce", nil
+	}), func(c *gin.Context) {
+		c.String(http.StatusOK, "nonce is %v", c.GetString("csp-nonce"))
+	})
+
+	t.Run("ok", func(t *testing.T) {
+		w := httptest.NewRecorder()
+		r := httptest.NewRequest(http.MethodGet, "/", nil)
+		m.ServeHTTP(w, r)
+		if w.Code != http.StatusOK {
+			t.Errorf("Unexpected status code %v", w.Code)
+		}
+		if w.Body.String() != "nonce is a-nonce" {
+			t.Errorf("Unexpected response body %v", w.Body.String())
+		}
+		if !strings.Contains(w.Header().Get("Content-Security-Policy"), "nonce-a-nonce") {
+			t.Errorf("Unexpected Content-Security-Policy header %v", w.Header().Get("Content-Security-Policy"))
+		}
+	})
+
+}

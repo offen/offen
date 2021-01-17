@@ -39,6 +39,8 @@ module.exports = (store) => (next) => (action) => {
       next(action)
       route('/')
       return
+    case 'EXPRESS_CONSENT_SUCCESS':
+      return window.location.reload()
     default:
       next(action)
   }

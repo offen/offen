@@ -8,11 +8,13 @@
     <title>Offen</title>
     <link rel="stylesheet" type="text/css" href="/tachyons.min.css">
     {{ template "meta" . }}
-    {{ with .rootAccount }}
-      <script src="/script.js" data-use-api data-account-id="{{ . }}"></script>
-      <script>
-        window.__offen__.pageview({ skipConsent: true })
-      </script>
+    {{ if .rootAccount }}
+      <script src="/script.js" data-use-api data-account-id="{{ .rootAccount }}"></script>
+      {{ if .cspNonce }}
+        <script nonce="{{ .cspNonce }}">
+          window.__offen__.pageview({ skipConsent: true })
+        </script>
+      {{ end }}
     {{ end }}
   </head>
   <body class="bg-washed-yellow">
