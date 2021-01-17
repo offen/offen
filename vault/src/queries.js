@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * Copyright 2020-2021 - Offen Authors <hioffen@posteo.de>
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -61,7 +61,7 @@ function Queries (storage) {
 
     // range is the number of units the query looks back from the given
     // start day
-    var range = (query && query.range) || 7
+    var range = parseInt((query && query.range) || 7, 10)
     // resolution is the unit to group by when looking back
     var resolution = (query && query.resolution) || 'days'
     if (['hours', 'days', 'weeks', 'months'].indexOf(resolution) < 0) {
@@ -203,6 +203,16 @@ function Queries (storage) {
           range: range
         }
       })
+      .then(postProcessResult(query.resolution, range))
+  }
+}
+
+function postProcessResult (resolution, range) {
+  return function (result) {
+    if (resolution === 'months' && range === 6) {
+      result.returningUsers = null
+    }
+    return result
   }
 }
 
