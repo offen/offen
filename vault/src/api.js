@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * Copyright 2020-2021 - Offen Authors <hioffen@posteo.de>
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -53,11 +53,8 @@ exports.postEvent = postEventWith(window.location.origin + '/api/events')
 exports.postEventWith = postEventWith
 
 function postEventWith (eventsUrl) {
-  return function (accountId, payload, anonymous) {
+  return function (accountId, payload) {
     var url = new window.URL(eventsUrl)
-    if (anonymous) {
-      url.pathname += '/anonymous'
-    }
     return window
       .fetch(url, {
         method: 'POST',

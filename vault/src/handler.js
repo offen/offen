@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * Copyright 2020-2021 - Offen Authors <hioffen@posteo.de>
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -20,17 +20,6 @@ function handleAnalyticsEventWith (relayEvent) {
     var accountId = message.payload.accountId
     var event = message.payload.event
     return relayEvent(accountId, event, false)
-  }
-}
-
-exports.handleAnonymousEvent = handleAnonymousEventWith(relayEvent)
-exports.handleAnonymousEventWith = handleAnonymousEventWith
-
-function handleAnonymousEventWith (relayEvent) {
-  return function (message) {
-    var accountId = message.payload.accountId
-    var event = message.payload.event
-    return relayEvent(accountId, event, true)
   }
 }
 

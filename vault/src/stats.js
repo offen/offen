@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * Copyright 2020-2021 - Offen Authors <hioffen@posteo.de>
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -7,17 +7,13 @@ var _ = require('underscore')
 
 var placeInBucket = require('./buckets')
 
-// `loss` is the percentage of anonymous events (i.e. events without a
-// user identifier) in the given set of events.
-exports.loss = consumeAsync(loss)
-
-function loss (events) {
-  var totalCount = events.length
-  if (totalCount === 0) {
-    return 0
-  }
-  var nonNullCount = countKeys('secretId', false)(events)
-  return 1 - (nonNullCount / totalCount)
+var propertyAccessors = {
+  sessionId: _.property(['payload', 'sessionId']),
+  href: _.property(['payload', 'href']),
+  timestamp: _.property(['payload', 'timestamp']),
+  pageload: _.property(['payload', 'pageload']),
+  isMobile: _.property(['payload', 'isMobile']),
+  eventId: _.property('eventId')
 }
 
 // The bounce rate is calculated as the percentage of session identifiers
@@ -28,7 +24,7 @@ exports.bounceRate = consumeAsync(bounceRate)
 function bounceRate (events) {
   var sessionCounts = 0
   var bounces = _.chain(events)
-    .map(_.property(['payload', 'sessionId']))
+    .map(propertyAccessors.sessionId)
     .compact()
     .countBy(_.identity)
     .values()
@@ -71,7 +67,7 @@ exports.campaigns = consumeAsync(_queryParam('utm_campaign'))
 function _queryParam (key) {
   return function (events) {
     return _.chain(events)
-      .filter(_.property(['payload', 'href']))
+      .filter(propertyAccessors.href)
       .map(function (event) {
         return {
           sessionId: event.payload.sessionId,
@@ -136,7 +132,7 @@ function _referrers (events, groupFn) {
       return acc
     }, [])
 
-  var sessionIds = _.map(uniqueForeign, _.property(['payload', 'sessionId']))
+  var sessionIds = _.map(uniqueForeign, propertyAccessors.sessionId)
   var values = groupFn(uniqueForeign)
   return _.chain(values)
     .zip(sessionIds)
@@ -191,13 +187,12 @@ function _pages (events, perUser) {
   if (perUser) {
     // in this branch, only the most recent event for each user
     // will be considered
-    var sortBy = _.property(['payload', 'timestamp'])
     result = result
       .groupBy('secretId')
       .pairs()
       .map(function (pair) {
         return _.last(
-          _.sortBy(pair[1], sortBy)
+          _.sortBy(pair[1], propertyAccessors.timestamp)
         )
       })
       .flatten(true)
@@ -232,7 +227,7 @@ exports.avgPageload = consumeAsync(avgPageload)
 function avgPageload (events) {
   var count
   var total = _.chain(events)
-    .map(_.property(['payload', 'pageload']))
+    .map(propertyAccessors.pageload)
     .compact()
     .filter(function (value) { return value > 0 })
     .tap(function (entries) {
@@ -343,7 +338,7 @@ function mobileShare (events) {
     .tap(function (events) {
       allEvents = events.length
     })
-    .filter(_.property(['payload', 'isMobile']))
+    .filter(propertyAccessors.isMobile)
     .size()
     .value()
 
@@ -445,7 +440,7 @@ exports.onboardingStats = consumeAsync(onboardingStats)
 
 function onboardingStats (events) {
   var lastEvent = _.chain(events)
-    .sortBy(_.property('eventId'))
+    .sortBy(propertyAccessors.eventId)
     .last()
     .value()
 

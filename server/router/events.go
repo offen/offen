@@ -1,4 +1,4 @@
-// Copyright 2020 - Offen Authors <hioffen@posteo.de>
+// Copyright 2020-2021 - Offen Authors <hioffen@posteo.de>
 // SPDX-License-Identifier: Apache-2.0
 
 package router
@@ -33,6 +33,7 @@ func (rt *router) postEvents(c *gin.Context) {
 		).Pipe(c)
 		return
 	}
+
 	evt := inboundEventPayload{}
 	if err := c.BindJSON(&evt); err != nil {
 		newJSONError(
@@ -68,15 +69,10 @@ func (rt *router) postEvents(c *gin.Context) {
 		return
 	}
 
-	// this handler might be called without a cookie / i.e. receiving an
-	// anonymous event, in which case it is important **NOT** to re-issue
-	// the user cookie.
-	if userID != "" {
-		http.SetCookie(
-			c.Writer,
-			rt.userCookie(userID, c.GetBool(contextKeySecureContext)),
-		)
-	}
+	http.SetCookie(
+		c.Writer,
+		rt.userCookie(userID, c.GetBool(contextKeySecureContext)),
+	)
 	c.JSON(http.StatusCreated, ackResponse{true})
 }
 
