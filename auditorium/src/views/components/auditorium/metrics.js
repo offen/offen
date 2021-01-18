@@ -222,7 +222,7 @@ const Metrics = (props) => {
           {metricUniqueSessions}
         </div>
       </div>
-      <div class='flex flex-wrap mb3 bb b--light-gray'>
+      <div class='flex flex-wrap mb4 bb b--light-gray'>
         <div class='w-50 w-100-ns mb4 pl2'>
           {metricAveragePageDepth}
         </div>
