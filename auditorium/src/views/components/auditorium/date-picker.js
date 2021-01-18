@@ -17,7 +17,7 @@ sf('./../../../../styles/react-datepicker/datepicker.scss')
 module.exports = (props) => {
   const { onClose, from, to } = props
   const [startDate, setStartDate] = useState(from ? new Date(from) : new Date())
-  const [endDate, setEndDate] = useState(from ? new Date(from) : new Date())
+  const [endDate, setEndDate] = useState(from ? new Date(to) : new Date())
     /*
   const [endDate, setEndDate] = useState(to ? new Date(to) : null)
   const [startDate, setStartDate] = useState(new Date("2021/01/01"));
@@ -33,7 +33,7 @@ module.exports = (props) => {
   const subDays = require('date-fns/sub_days')
 
   return (
-    <div class='flex flex-column'>
+    <div class='datepicker-display flex flex-column'>
       <div class='flex justify-center mb3'>
         <div class='mr3'>
           <DatePicker
@@ -47,7 +47,9 @@ module.exports = (props) => {
             selectsStart
             minDate={subDays(now, 6 * 31)}
             maxDate={now}
+            /*
             disabledKeyboardNavigation
+            */
           />
         </div>
         <div class='ml3'>
@@ -67,22 +69,10 @@ module.exports = (props) => {
       </div>
       <div class='flex justify-center mb3'>
         <div class='mr3'>
-          <DatePicker
-            selected={startDate}
-            onChange={date => setStartDate(date)}
-            placeholderText="This is readOnly"
-            readOnly
-            dateFormat="d, MMMM, yyyy"
-          />
+          <span>{startDate.toLocaleDateString(process.env.LOCALE)}</span>
         </div>
-        <div class='mrl'>
-          <DatePicker
-            selected={endDate}
-            onChange={date => setEndDate(date)}
-            placeholderText="This is readOnly"
-            readOnly
-            dateFormat="d, MMMM, yyyy"
-          />
+        <div class='ml3'>
+          <span>{endDate.toLocaleDateString(process.env.LOCALE)}</span>
         </div>
       </div>
       <div class='flex justify-center'>
