@@ -128,7 +128,6 @@ function Queries (storage) {
         return stats.retention.apply(stats, chunks)
       })
 
-    var loss = stats.loss(eventsInBounds)
     var uniqueSessions = stats.uniqueSessions(eventsInBounds)
     var bounceRate = stats.bounceRate(eventsInBounds)
     var referrers = stats.referrers(eventsInBounds)
@@ -161,7 +160,6 @@ function Queries (storage) {
         pages,
         pageviews,
         bounceRate,
-        loss,
         avgPageload,
         avgPageDepth,
         landingPages,
@@ -185,20 +183,19 @@ function Queries (storage) {
           pages: results[4],
           pageviews: results[5],
           bounceRate: results[6],
-          loss: results[7],
-          avgPageload: results[8],
-          avgPageDepth: results[9],
-          landingPages: results[10],
-          exitPages: results[11],
-          mobileShare: results[12],
-          livePages: results[13],
-          liveUsers: results[14],
-          campaigns: results[15],
-          sources: results[16],
-          retentionMatrix: results[17],
-          empty: results[18],
-          returningUsers: results[19],
-          onboardingStats: results[20],
+          avgPageload: results[7],
+          avgPageDepth: results[8],
+          landingPages: results[9],
+          exitPages: results[10],
+          mobileShare: results[11],
+          livePages: results[12],
+          liveUsers: results[13],
+          campaigns: results[14],
+          sources: results[15],
+          retentionMatrix: results[16],
+          empty: results[17],
+          returningUsers: results[18],
+          onboardingStats: results[19],
           resolution: resolution,
           range: range
         }

@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * Copyright 2020-2021 - Offen Authors <hioffen@posteo.de>
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -20,7 +20,7 @@ function getSessionId (accountId) {
     sessionId = cookieData[lookupKey] || null
     if (!sessionId) {
       sessionId = uuid()
-      document.cookie = [lookupKey, sessionId].join('=') + '; SameSite=Lax'
+      document.cookie = cookies.serialize(cookies.defaultCookie(lookupKey, sessionId))
     }
   } catch (err) {
     sessionId = uuid()

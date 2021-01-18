@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * Copyright 2020-2021 - Offen Authors <hioffen@posteo.de>
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -8,35 +8,6 @@ var assert = require('assert')
 var stats = require('./stats')
 
 describe('src/stats.js', function () {
-  describe('stats.loss(events)', function () {
-    it('calculates the percentage of anoynmous events in the given set', function () {
-      return stats.loss([
-        { secretId: 'user-a' },
-        { secretId: 'user-b' },
-        { timestamp: new Date().toJSON() },
-        { secretId: 'user-d' }
-      ])
-        .then(function (result) {
-          assert.strictEqual(result, 0.25)
-        })
-    })
-    it('returns 0 on empty events', function () {
-      return stats.loss([])
-        .then(function (result) {
-          assert.strictEqual(result, 0)
-        })
-    })
-    it('returns 1 on anonymous events only', function () {
-      return stats.loss([
-        { timestamp: new Date().toJSON() },
-        { timestamp: new Date().toJSON() }
-      ])
-        .then(function (result) {
-          assert.strictEqual(result, 1)
-        })
-    })
-  })
-
   describe('stats.uniqueSessions(events)', function () {
     it('counts the number of unique session identifiers', function () {
       return stats.uniqueSessions([
