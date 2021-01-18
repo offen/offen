@@ -20,7 +20,8 @@ function getSessionId (accountId) {
     sessionId = cookieData[lookupKey] || null
     if (!sessionId) {
       sessionId = uuid()
-      document.cookie = cookies.serialize(cookies.defaultCookie(lookupKey, sessionId))
+      var cookie = cookies.defaultCookie(lookupKey, sessionId)
+      document.cookie = cookies.serialize(cookie)
     }
   } catch (err) {
     sessionId = uuid()
