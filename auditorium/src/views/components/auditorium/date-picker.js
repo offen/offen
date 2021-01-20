@@ -18,6 +18,7 @@ module.exports = (props) => {
   const { onClose, from, to } = props
   const [startDate, setStartDate] = useState(from ? new Date(from) : new Date())
   const [endDate, setEndDate] = useState(from ? new Date(to) : new Date())
+  const options = { year: 'numeric', month: 'long', day: 'numeric' };
     /*
   const [endDate, setEndDate] = useState(to ? new Date(to) : null)
   const [startDate, setStartDate] = useState(new Date("2021/01/01"));
@@ -68,11 +69,11 @@ module.exports = (props) => {
         </div>
       </div>
       <div class='flex justify-center mb3'>
-        <div class='mr3'>
-          <span>{startDate.toLocaleDateString(process.env.LOCALE)}</span>
+        <div class='mr4'>
+          <span>{startDate.toLocaleDateString(process.env.LOCALE, options)}</span>
         </div>
-        <div class='ml3'>
-          <span>{endDate.toLocaleDateString(process.env.LOCALE)}</span>
+        <div class='ml4'>
+          <span>{endDate.toLocaleDateString(process.env.LOCALE, options)}</span>
         </div>
       </div>
       <div class='flex justify-center'>
