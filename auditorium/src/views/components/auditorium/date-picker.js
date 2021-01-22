@@ -67,7 +67,7 @@ module.exports = (props) => {
             <div class='w-40 tr mr2'>
               <span>{startDate.toLocaleDateString(process.env.LOCALE, options)}</span>
             </div>
-            <div class='bt b--dark-gray ph3 mt2'></div>
+            <div class='bt b--dark-gray ph3 mt2' />
             <div class='w-40 tl ml2'>
               <span>{endDate.toLocaleDateString(process.env.LOCALE, options)}</span>
             </div>
