@@ -18,12 +18,7 @@ module.exports = (props) => {
   const { onClose, from, to } = props
   const [startDate, setStartDate] = useState(from ? new Date(from) : new Date())
   const [endDate, setEndDate] = useState(from ? new Date(to) : new Date())
-  const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    /*
-  const [endDate, setEndDate] = useState(to ? new Date(to) : null)
-  const [startDate, setStartDate] = useState(new Date("2021/01/01"));
-  const [endDate, setEndDate] = useState(new Date("2021/01/15"));
-  */
+  const options = { year: 'numeric', month: 'long', day: 'numeric' }
 
   let url = window.location.pathname
   if (startDate && endDate) {
@@ -48,9 +43,6 @@ module.exports = (props) => {
             selectsStart
             minDate={subDays(now, 6 * 31)}
             maxDate={endDate}
-            /*
-            disabledKeyboardNavigation
-            */
           />
         </div>
         <div class='pl3'>
@@ -69,15 +61,13 @@ module.exports = (props) => {
         </div>
       </div>
 
-      <div class='flex justify-center'>
-        <div class='w-40 bg-near-white pv3'>
+      <div class='flex justify-center mb3'>
+        <div class='w-60-m w-40-l bg-near-white pv3'>
           <div class='flex justify-center mb3'>
             <div class='w-40 tr mr2'>
               <span>{startDate.toLocaleDateString(process.env.LOCALE, options)}</span>
             </div>
-            <div class='bt b--dark-gray ph3 mt2'>
-
-            </div>
+            <div class='bt b--dark-gray ph3 mt2'></div>
             <div class='w-40 tl ml2'>
               <span>{endDate.toLocaleDateString(process.env.LOCALE, options)}</span>
             </div>
@@ -93,7 +83,6 @@ module.exports = (props) => {
           </div>
         </div>
       </div>
-
     </div>
   )
 }
