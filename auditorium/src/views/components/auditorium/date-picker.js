@@ -36,7 +36,7 @@ module.exports = (props) => {
   return (
     <div class='datepicker-display flex flex-column'>
       <div class='flex justify-center mb3'>
-        <div class='mr3'>
+        <div class='br b--light-gray pr3'>
           <DatePicker
             locale={process.env.LOCALE || 'en'}
             filterDate={(date) => !isFuture(date) && differenceInDays(now, date) <= 6 * 31}
@@ -47,13 +47,13 @@ module.exports = (props) => {
             endDate={endDate}
             selectsStart
             minDate={subDays(now, 6 * 31)}
-            maxDate={now}
+            maxDate={endDate}
             /*
             disabledKeyboardNavigation
             */
           />
         </div>
-        <div class='ml3'>
+        <div class='pl3'>
           <DatePicker
             locale={process.env.LOCALE || 'en'}
             filterDate={(date) => !isFuture(date) && differenceInDays(now, date) <= 6 * 31}
@@ -68,23 +68,32 @@ module.exports = (props) => {
           />
         </div>
       </div>
-      <div class='flex justify-center mb3'>
-        <div class='mr4'>
-          <span>{startDate.toLocaleDateString(process.env.LOCALE, options)}</span>
-        </div>
-        <div class='ml4'>
-          <span>{endDate.toLocaleDateString(process.env.LOCALE, options)}</span>
-        </div>
-      </div>
+
       <div class='flex justify-center'>
-        <a
-          onclick={onClose}
-          href={url}
-          class='w-100 w-auto-ns f5 bn ph3 pv2 mb3 mr2 dib br1 white bg-mid-gray'
-        >
-          {__('Select')}
-        </a>
+        <div class='w-40 bg-near-white pv3'>
+          <div class='flex justify-center mb3'>
+            <div class='w-40 tr mr2'>
+              <span>{startDate.toLocaleDateString(process.env.LOCALE, options)}</span>
+            </div>
+            <div class='bt b--dark-gray ph3 mt2'>
+
+            </div>
+            <div class='w-40 tl ml2'>
+              <span>{endDate.toLocaleDateString(process.env.LOCALE, options)}</span>
+            </div>
+          </div>
+          <div class='flex justify-center'>
+            <a
+              onclick={onClose}
+              href={url}
+              class='f5 tc no-underline dim bn ph4 pv2 dib br1 white bg-dark-green'
+            >
+              {__('Select')}
+            </a>
+          </div>
+        </div>
       </div>
+
     </div>
   )
 }

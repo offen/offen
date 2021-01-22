@@ -804,7 +804,9 @@ $datepicker__day-line-height: 1.8rem !default;
   }
 
   .react-datepicker__navigation {
+    /*
     border: 1.8 * $datepicker__navigation-size solid transparent;
+    */
   }
 
   .react-datepicker__navigation--previous {
@@ -888,4 +890,29 @@ visibility: hidden;
   border-color: $datepicker__selected-color-4;
 }
 
+
+/* hide focus outline button month, dim Tachyons style */
+.react-datepicker {
+  & button {
+    opacity: 1;
+    transition: opacity .15s ease-in;
+  }
+  & button:hover {
+    opacity: .5;
+    transition: opacity .15s ease-in;
+  }
+  & button:active {
+    opacity: .8;
+    transition: opacity .15s ease-out;
+  }
+  & button:focus {
+    outline: none;
+  }
+}
+
+/*
+.dim { opacity: 1; transition: opacity .15s ease-in; }
+.dim:hover, .dim:focus { opacity: .5; transition: opacity .15s ease-in; }
+.dim:active { opacity: .8; transition: opacity .15s ease-out; }
+*/
 /* ----------------------------------------------------------*/
