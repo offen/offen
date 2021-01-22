@@ -140,17 +140,21 @@ function _referrers (events, groupFn) {
     .groupBy(_.head)
     .pairs()
     .map(function (pair) {
-      var sessions = _.map(pair[1], _.last)
+      var sessions = _.reduce(pair[1], function (acc, next) {
+        acc[_.last(next)] = true
+        return acc
+      }, {})
+      var numSessions = _.size(sessions)
       var associatedViews = _.filter(events, function (event) {
         return event.payload &&
           event.payload.sessionId &&
-          _.contains(sessions, event.payload.sessionId)
+          sessions[event.payload.sessionId]
       })
       return {
         key: pair[0],
         count: [
-          sessions.length,
-          associatedViews.length / sessions.length
+          numSessions,
+          associatedViews.length / numSessions
         ]
       }
     })
@@ -390,17 +394,18 @@ function returningUsers (events, allEvents) {
 
   var usersBeforeRange = _.chain(allEvents)
     .filter(function (event) {
-      return event.eventId < oldestEventIdInRange
+      return event.secretId && event.eventId < oldestEventIdInRange
     })
-    .pluck('secretId')
-    .compact()
-    .uniq()
+    .reduce(function (acc, next) {
+      acc[next.secretId] = true
+      return acc
+    }, {})
     .value()
 
   var usersInRange = _.chain(events)
     .pluck('secretId')
-    .compact()
     .uniq()
+    .compact()
     .value()
 
   if (usersInRange.length === 0) {
@@ -409,7 +414,7 @@ function returningUsers (events, allEvents) {
 
   var newUsers = _.chain(usersInRange)
     .filter(function (secretId) {
-      return !_.contains(usersBeforeRange, secretId)
+      return !usersBeforeRange[secretId]
     })
     .value()
 
