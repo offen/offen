@@ -254,19 +254,15 @@ function validateAndParseEvent (event) {
     return null
   }
   var clone = JSON.parse(JSON.stringify(event))
-  if (clone.payload.href) {
-    clone.payload.href = normalizedURL(clone.payload.href)
-  }
-  if (clone.payload.rawHref) {
-    clone.payload.rawHref = normalizedURL(clone.payload.rawHref)
-  }
-  if (clone.payload.referrer) {
-    clone.payload.referrer = normalizedURL(clone.payload.referrer)
-  }
+
+  ;['href', 'rawHref', 'referrer'].forEach(function (key) {
+    clone.payload[key] = clone.payload[key] && normalizeURL(clone.payload[key])
+  })
+
   return clone
 }
 
-function normalizedURL (urlString) {
+function normalizeURL (urlString) {
   var url = new window.URL(urlString)
   if (!/\/$/.test(url.pathname)) {
     url.pathname += '/'

@@ -55,9 +55,10 @@ function referrers (events) {
   return _referrers(events, function (set) {
     return set
       .map(function (event) {
-        return event.payload.referrer.host || event.payload.referrer.href
+        return placeInBucket(
+          event.payload.referrer.host || event.payload.referrer.href
+        )
       })
-      .map(placeInBucket)
   })
 }
 
@@ -115,22 +116,15 @@ function _queryParam (key) {
 exports.sources = consumeAsync(_queryParam('utm_source'))
 
 function _referrers (events, groupFn) {
-  var uniqueForeign = events
+  var uniqueForeign = _.chain(events)
     .filter(function (event) {
       if (event.secretId === null || !event.payload || !event.payload.referrer) {
         return false
       }
       return event.payload.referrer.host !== event.payload.href.host
     })
-    .reduce(function (acc, event) {
-      function unknownSession (knownEvent) {
-        return knownEvent.payload.sessionId !== event.payload.sessionId
-      }
-      if (_.every(acc, unknownSession)) {
-        acc.push(event)
-      }
-      return acc
-    }, [])
+    .uniq(false, propertyAccessors.sessionId)
+    .value()
 
   var sessionIds = _.map(uniqueForeign, propertyAccessors.sessionId)
   var values = groupFn(uniqueForeign)
@@ -213,9 +207,7 @@ function _pages (events, perUser) {
       return _.chain(pageviewsPerAccount)
         .countBy('href')
         .pairs()
-        .map(function (pair) {
-          return { key: pair[0], count: pair[1] }
-        })
+        .map(pairToRow)
         .value()
     })
     .flatten(true)
@@ -232,8 +224,7 @@ function avgPageload (events) {
   var count
   var total = _.chain(events)
     .map(propertyAccessors.pageload)
-    .compact()
-    .filter(function (value) { return value > 0 })
+    .filter(function (value) { return value && value > 0 })
     .tap(function (entries) {
       count = entries.length
     })
@@ -273,13 +264,11 @@ function exitPages (events) {
     .filter(function (e) {
       return e.secretId !== null && e.payload && e.payload.sessionId && e.payload.href
     })
-    .groupBy(function (e) {
-      return e.payload.sessionId
+    .groupBy(propertyAccessors.sessionId)
+    .filter(function (el) {
+      return el.length >= 2
     })
     .map(function (events, key) {
-      if (events.length < 2) {
-        return null
-      }
       // for each session, we are only interested in the first
       // event and its href value
       var landing = _.chain(events)
@@ -288,12 +277,9 @@ function exitPages (events) {
         .value()
       return landing.payload.href.origin + landing.payload.href.pathname
     })
-    .compact()
     .countBy(_.identity)
     .pairs()
-    .map(function (pair) {
-      return { key: pair[0], count: pair[1] }
-    })
+    .map(pairToRow)
     .sortBy('count')
     .reverse()
     .value()
@@ -309,11 +295,9 @@ function landingPages (events) {
     .filter(function (e) {
       return e.secretId !== null && e.payload && e.payload.sessionId && e.payload.href
     })
-    .groupBy(function (e) {
-      return e.payload.sessionId
-    })
+    .groupBy(propertyAccessors.sessionId)
     .map(function (events, key) {
-      // for each session, we are only interested in the first
+      // for each session, we are only interested in the earliest
       // event and its href value
       var landing = _.chain(events)
         .sortBy('timestamp')
@@ -323,9 +307,7 @@ function landingPages (events) {
     })
     .countBy(_.identity)
     .pairs()
-    .map(function (pair) {
-      return { key: pair[0], count: pair[1] }
-    })
+    .map(pairToRow)
     .sortBy('count')
     .reverse()
     .value()
@@ -484,4 +466,8 @@ function consumeAsync (fn, ctx) {
         return fn.apply(ctx, resolvedArgs)
       })
   }
+}
+
+function pairToRow (pair) {
+  return { key: pair[0], count: pair[1] }
 }
