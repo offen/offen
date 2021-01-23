@@ -262,7 +262,8 @@ function validateAndParseEvent (event) {
   return clone
 }
 
-function normalizeURL (urlString) {
+var normalizeURL = _.memoize(_normalizeURL)
+function _normalizeURL (urlString) {
   var url = new window.URL(urlString)
   if (!/\/$/.test(url.pathname)) {
     url.pathname += '/'
