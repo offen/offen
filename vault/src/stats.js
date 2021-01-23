@@ -91,7 +91,7 @@ function _queryParam (key) {
           .uniq()
           .map(function (sessionId) {
             return events.filter(function (event) {
-              return event.payload && event.payload.sessionId === sessionId
+              return event.payload.sessionId === sessionId
             })
           })
           .flatten(true)
@@ -118,7 +118,7 @@ exports.sources = consumeAsync(_queryParam('utm_source'))
 function _referrers (events, groupFn) {
   var uniqueForeign = _.chain(events)
     .filter(function (event) {
-      if (event.secretId === null || !event.payload || !event.payload.referrer) {
+      if (event.secretId === null || !event.payload.referrer) {
         return false
       }
       return event.payload.referrer.host !== event.payload.href.host
@@ -140,8 +140,7 @@ function _referrers (events, groupFn) {
       }, {})
       var numSessions = _.size(sessions)
       var associatedViews = _.filter(events, function (event) {
-        return event.payload &&
-          event.payload.sessionId &&
+        return event.payload.sessionId &&
           sessions[event.payload.sessionId]
       })
       return {
@@ -179,7 +178,7 @@ function activePages (events) {
 function _pages (events, perUser) {
   var result = _.chain(events)
     .filter(function (event) {
-      return event.secretId !== null && event.payload && event.payload.href
+      return event.secretId !== null && event.payload.href
     })
 
   if (perUser) {
@@ -262,7 +261,7 @@ exports.exitPages = consumeAsync(exitPages)
 function exitPages (events) {
   return _.chain(events)
     .filter(function (e) {
-      return e.secretId !== null && e.payload && e.payload.sessionId && e.payload.href
+      return e.secretId !== null && e.payload.sessionId && e.payload.href
     })
     .groupBy(propertyAccessors.sessionId)
     .filter(function (el) {
@@ -293,7 +292,7 @@ exports.landingPages = consumeAsync(landingPages)
 function landingPages (events) {
   return _.chain(events)
     .filter(function (e) {
-      return e.secretId !== null && e.payload && e.payload.sessionId && e.payload.href
+      return e.secretId !== null && e.payload.sessionId && e.payload.href
     })
     .groupBy(propertyAccessors.sessionId)
     .map(function (events, key) {

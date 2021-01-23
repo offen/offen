@@ -183,7 +183,7 @@ describe('src/stats.js', function () {
   describe('stats.referrers(events)', function () {
     it('returns sorted referrer values from foreign domains grouped by host', function () {
       return stats.referrers([
-        {},
+        { payload: {} },
         { payload: { sessionId: 'session-a', href: new window.URL('https://www.mysite.com/x'), referrer: new window.URL('https://www.example.net/foo') } },
         { payload: { sessionId: 'session-a', href: new window.URL('https://www.mysite.com/y'), referrer: new window.URL('https://www.example.net/bar') } },
         { payload: { sessionId: 'session-b', href: new window.URL('https://www.mysite.com/z'), referrer: new window.URL('https://www.example.net/baz') } },
@@ -209,7 +209,7 @@ describe('src/stats.js', function () {
   describe('stats.campaigns(events)', function () {
     it('returns sorted referrer campaigns from foreign domains grouped by host', function () {
       return stats.campaigns([
-        {},
+        { payload: {} },
         { payload: { sessionId: 'session-a', href: new window.URL('https://www.example.net/foo?utm_campaign=beep') } },
         { payload: { sessionId: 'session-b', href: new window.URL('https://www.example.net/bar?something=12&utm_campaign=boop') } },
         { payload: { sessionId: 'session-b', href: new window.URL('https://www.example.net/baz') } },
@@ -235,7 +235,7 @@ describe('src/stats.js', function () {
   describe('stats.pages(events)', function () {
     it('returns a sorted list of pages grouped by a clean URL', function () {
       return stats.pages([
-        {},
+        { payload: {} },
         { accountId: 'account-a', secretId: 'user-a', payload: { href: new window.URL('https://www.example.net/foo') } },
         { accountId: 'account-a', secretId: 'user-a', payload: { href: new window.URL('https://www.example.net/foo?param=bar') } },
         { accountId: 'account-b', secretId: 'user-z', payload: { href: new window.URL('https://beep.boop/site#!/foo') } },
@@ -259,7 +259,7 @@ describe('src/stats.js', function () {
   describe('stats.activePages(events)', function () {
     it('returns a sorted list of active pages grouped by a clean URL', function () {
       return stats.activePages([
-        {},
+        { payload: {} },
         { accountId: 'account-a', secretId: 'user-a', payload: { timestamp: '100', href: new window.URL('https://www.example.net/bar') } },
         { accountId: 'account-a', secretId: 'user-a', payload: { timestamp: '120', href: new window.URL('https://www.example.net/foo?param=bar') } },
         { accountId: 'account-b', secretId: 'user-z', payload: { timestamp: '200', href: new window.URL('https://beep.boop/site#!/foo') } },
@@ -283,7 +283,7 @@ describe('src/stats.js', function () {
   describe('stats.landingPages(events)', function () {
     it('returns a sorted list of landing pages grouped by a clean URL', function () {
       return stats.landingPages([
-        {},
+        { payload: {} },
         { secretId: 'user-a', payload: { timestamp: '0', sessionId: 'session-a', href: new window.URL('https://www.example.net/foo') } },
         { secretId: 'user-a', payload: { timestamp: '1', sessionId: 'session-a', href: new window.URL('https://www.example.net/bar') } },
         { secretId: 'user-a', payload: { timestamp: '2', sessionId: 'session-a', href: new window.URL('https://www.example.net/baz') } },
@@ -310,7 +310,7 @@ describe('src/stats.js', function () {
   describe('stats.exitPages(events)', function () {
     it('returns a sorted list of exit pages grouped by a clean URL', function () {
       return stats.exitPages([
-        {},
+        { payload: {} },
         { secretId: 'user-a', payload: { timestamp: '0', sessionId: 'session-a', href: new window.URL('https://www.example.net/foo') } },
         { secretId: 'user-a', payload: { timestamp: '1', sessionId: 'session-a', href: new window.URL('https://www.example.net/bar') } },
         { secretId: 'user-a', payload: { timestamp: '2', sessionId: 'session-a', href: new window.URL('https://www.example.net/baz') } },
