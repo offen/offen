@@ -61,9 +61,6 @@ RUN apt-get update \
 
 WORKDIR /code/server
 COPY ./server /code/server
-RUN ls -l /code/server
-RUN pwd
-RUN chmod +x extract-strings.sh
 RUN ./extract-strings.sh > /root/server.po
 
 WORKDIR /root

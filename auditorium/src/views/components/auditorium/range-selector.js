@@ -16,6 +16,9 @@ const RangeSelector = (props) => {
     resolution, range: currentRange, showExplainer, onExplain, explainerActive,
     from, to
   } = props
+
+  const [showDatepicker, setShowDatepicker] = useState(false)
+
   const ranges = [
     { display: __('Yesterday'), query: { range: 'yesterday', resolution: 'hours' } },
     { display: __('Last 24 hours'), query: { range: '24', resolution: 'hours' } },
@@ -24,21 +27,23 @@ const RangeSelector = (props) => {
     { display: __('All time'), query: { range: '6', resolution: 'months' } }
   ]
 
-  const [showDatepicker, setShowDatepicker] = useState(false)
-
   const items = ranges.map(function (range, index) {
     let url = window.location.pathname
+    const activeRange = !from && !to &&
+      JSON.stringify({ range: currentRange, resolution }) === JSON.stringify(range.query || {})
+
     if (range.query) {
       url += '?' + new window.URLSearchParams(range.query)
     }
     var anchorRange = (
-      <a href={url} class='b link dim dib pv2 dark-green mt1 mb2 mr3'>
+      <a
+        onclick={() => setShowDatepicker(false)}
+        href={url}
+        class='b link dim dib pv2 dark-green mt1 mb2 mr3'
+      >
         {range.display}
       </a>
     )
-
-    const activeRange = !(from && to) &&
-      JSON.stringify({ range: currentRange, resolution }) === JSON.stringify(range.query || {})
 
     return (
       <li key={index} class='pr3 bt b--light-gray'>
@@ -48,6 +53,7 @@ const RangeSelector = (props) => {
               href={url}
               class='b link dim dib bt bw2 b--dark-green ph2 pv2 mb2 mr3 dark-green'
               aria-current='time'
+              onclick={() => setShowDatepicker(false)}
             >
               {range.display}
             </a>

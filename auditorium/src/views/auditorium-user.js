@@ -96,6 +96,8 @@ const AuditoriumView = (props) => {
           <RangeSelector
             resolution={model.resolution}
             range={range}
+            from={from}
+            to={to}
             {...explainerPropsFor('range-selector')}
           />
         </div>
