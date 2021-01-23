@@ -31,7 +31,7 @@ module.exports = (props) => {
   return (
     <div class='datepicker-display flex flex-column'>
       <div class='flex justify-center mb3'>
-        <div class='br b--light-gray pr3'>
+        <div class='br b--light-gray pr4'>
           <DatePicker
             locale={process.env.LOCALE || 'en'}
             filterDate={(date) => !isFuture(date) && differenceInDays(now, date) <= 6 * 31}
@@ -45,7 +45,7 @@ module.exports = (props) => {
             maxDate={endDate}
           />
         </div>
-        <div class='pl3'>
+        <div class='pl4'>
           <DatePicker
             locale={process.env.LOCALE || 'en'}
             filterDate={(date) => !isFuture(date) && differenceInDays(now, date) <= 6 * 31}
@@ -62,7 +62,7 @@ module.exports = (props) => {
       </div>
 
       <div class='flex justify-center mb3'>
-        <div class='w-60-m w-40-l bg-near-white pv3'>
+        <div class='w-60-m w-40-l br2 bg-near-white pv3'>
           <div class='flex justify-center mb3'>
             <div class='w-40 tr mr2'>
               <span>{startDate.toLocaleDateString(process.env.LOCALE, options)}</span>
