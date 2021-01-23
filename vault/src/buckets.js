@@ -5,7 +5,7 @@
 
 var _ = require('underscore')
 
-module.exports = mapToBuckets
+module.exports = _.memoize(mapToBuckets)
 
 var buckets = [
   {
