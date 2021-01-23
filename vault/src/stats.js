@@ -3,6 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+// All functions in this module are written with the expectation of given
+// events conforming to the schemas defined in event.schema and payload.schema,
+// meaning there is no need to perform safety checks for the existence of props
+// which are already guaranteed by an event conforming to the schema. This
+// matters as these functions can process a lot of events in certain cases
+// so any check can have a real world performance impact.
+
 var _ = require('underscore')
 
 var placeInBucket = require('./buckets')
@@ -118,7 +125,7 @@ exports.sources = consumeAsync(_queryParam('utm_source'))
 function _referrers (events, groupFn) {
   var uniqueForeign = _.chain(events)
     .filter(function (event) {
-      if (event.secretId === null || !event.payload.referrer) {
+      if (!event.payload.referrer) {
         return false
       }
       return event.payload.referrer.host !== event.payload.href.host
@@ -177,9 +184,7 @@ function activePages (events) {
 
 function _pages (events, perUser) {
   var result = _.chain(events)
-    .filter(function (event) {
-      return event.secretId !== null && event.payload.href
-    })
+    .filter(propertyAccessors.href)
 
   if (perUser) {
     // in this branch, only the most recent event for each user
@@ -260,8 +265,8 @@ exports.exitPages = consumeAsync(exitPages)
 // a single page will be excluded.
 function exitPages (events) {
   return _.chain(events)
-    .filter(function (e) {
-      return e.secretId !== null && e.payload.sessionId && e.payload.href
+    .filter(function (event) {
+      return event.payload.sessionId && event.payload.href
     })
     .groupBy(propertyAccessors.sessionId)
     .filter(function (el) {
@@ -292,7 +297,7 @@ exports.landingPages = consumeAsync(landingPages)
 function landingPages (events) {
   return _.chain(events)
     .filter(function (e) {
-      return e.secretId !== null && e.payload.sessionId && e.payload.href
+      return e.payload.sessionId && e.payload.href
     })
     .groupBy(propertyAccessors.sessionId)
     .map(function (events, key) {
@@ -317,12 +322,8 @@ function landingPages (events) {
 exports.mobileShare = consumeAsync(mobileShare)
 
 function mobileShare (events) {
-  var allEvents
+  var allEvents = events.length
   var mobileEvents = _.chain(events)
-    .filter('secretId')
-    .tap(function (events) {
-      allEvents = events.length
-    })
     .filter(propertyAccessors.isMobile)
     .size()
     .value()
@@ -343,14 +344,14 @@ function retention (/* ...events */) {
   var result = []
   while (chunks.length) {
     var head = chunks.shift()
-    var referenceIds = _.chain(head).pluck('secretId').compact().uniq().value()
+    var referenceIds = _.chain(head).pluck('secretId').uniq().value()
     var innerResult = chunks.reduce(function (acc, next) {
       var share
       if (referenceIds.length === 0) {
         share = 0
       } else {
         var matching = _.chain(next)
-          .pluck('secretId').compact().uniq()
+          .pluck('secretId').uniq()
           .intersection(referenceIds).size().value()
         share = matching / referenceIds.length
       }
@@ -362,8 +363,8 @@ function retention (/* ...events */) {
   return result
 }
 
-// `returningUsers` calculates the percentage of returning visitors in the given range
-// as compared to the list of all known events
+// `returningUsers` calculates the percentage of returning visitors in the given
+// range as compared to the list of all known events
 exports.returningUsers = consumeAsync(returningUsers)
 
 function returningUsers (events, allEvents) {
@@ -375,7 +376,7 @@ function returningUsers (events, allEvents) {
 
   var usersBeforeRange = _.chain(allEvents)
     .filter(function (event) {
-      return event.secretId && event.eventId < oldestEventIdInRange
+      return event.eventId < oldestEventIdInRange
     })
     .reduce(function (acc, next) {
       acc[next.secretId] = true
@@ -386,7 +387,6 @@ function returningUsers (events, allEvents) {
   var usersInRange = _.chain(events)
     .pluck('secretId')
     .uniq()
-    .compact()
     .value()
 
   if (usersInRange.length === 0) {

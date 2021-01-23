@@ -368,9 +368,9 @@ describe('src/stats.js', function () {
   describe('stats.retention(...events)', function () {
     it('returns a retention matrix for the given event chunks', function () {
       return stats.retention(
-        [{}, { secretId: 'user-a' }, { secretId: 'user-b' }, { secretId: 'user-y' }, { secretId: 'user-z' }],
-        [{}, { secretId: 'user-m' }, { secretId: 'user-a' }, { secretId: 'user-z' }],
-        [{}, { secretId: 'user-k' }, { secretId: 'user-m' }, { secretId: 'user-z' }],
+        [{ secretId: 'user-a' }, { secretId: 'user-b' }, { secretId: 'user-y' }, { secretId: 'user-z' }],
+        [{ secretId: 'user-m' }, { secretId: 'user-a' }, { secretId: 'user-z' }],
+        [{ secretId: 'user-k' }, { secretId: 'user-m' }, { secretId: 'user-z' }],
         []
       )
         .then(function (result) {
