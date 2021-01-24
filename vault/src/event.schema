@@ -9,7 +9,7 @@
       "maxLength": 26
     },
     "secretId": {
-      "type": ["string", "null"]
+      "type": "string"
     },
     "payload": {
       "type": ["string", "object"]
