@@ -1,4 +1,4 @@
-# Copyright 2020 - Offen Authors <hioffen@posteo.de>
+# Copyright 2020-2021 - Offen Authors <hioffen@posteo.de>
 # SPDX-License-Identifier: Apache-2.0
 
 import csv
@@ -16,7 +16,7 @@ dependencies) and `license_finder` (for Go modules) [1] is supported.
 
 
 def normalize_row(row):
-    is_versioned_go_module = re.compile(r".*v\d$")
+    is_versioned_go_module = re.compile(r".*/v\d$")
     result = {}
     try:
         result["name"] = row["module name"]
@@ -24,7 +24,7 @@ def normalize_row(row):
         repository = row["repository"]
         chunks = repository.split("/")
         if is_versioned_go_module.match(repository):
-            result["name"] = chunks[-2:-1][0]
+            result["name"] = chunks[-2]
         else:
             result["name"] = chunks[-1]
 
@@ -67,7 +67,7 @@ def main(**kwargs):
             print("\n{} side:\n=========\n".format(key.title()))
             for dep in deps:
                 print(
-                    '"{}" licensed under {}, available at {}'.format(
+                    '"{}" licensed under {}, available at <{}>'.format(
                         dep["name"].strip(), dep["licenses"].strip(), dep["source"].strip(),
                     )
                 )
