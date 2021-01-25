@@ -72,10 +72,13 @@ function makeScriptTask (dest, locale) {
     })
       .transform('aliasify', { global: true })
 
+    if (locale !== defaultLocale) {
+      b.add(configureDatepickerLocale(locale))
+    }
+
     return b
       .exclude('plotly.js-basic-dist')
       .exclude('zxcvbn')
-      .add(configureDatepickerLocale(locale))
       .plugin('tinyify')
       .bundle()
       .pipe(source('index.js'))
@@ -118,7 +121,6 @@ function configureDatepickerLocale (locale) {
   return Readable.from([`
 const { registerLocale } = require('react-datepicker')
 const locale = require('date-fns/locale/${locale}')
-
 registerLocale('${locale}', locale)
   `])
 }

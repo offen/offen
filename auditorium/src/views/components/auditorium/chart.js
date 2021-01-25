@@ -8,10 +8,10 @@ const { h } = require('preact')
 const { memo } = require('preact/compat')
 const Plotly = require('plotly.js-basic-dist')
 const createPlotlyComponent = require('react-plotly.js/factory').default
-const isFirstDayOfMonth = require('date-fns/is_first_day_of_month')
-const isWeekend = require('date-fns/is_weekend')
-const getISOWeek = require('date-fns/get_iso_week')
-const getHours = require('date-fns/get_hours')
+const isFirstDayOfMonth = require('date-fns/isFirstDayOfMonth')
+const isWeekend = require('date-fns/isWeekend')
+const getISOWeek = require('date-fns/getISOWeek')
+const getHours = require('date-fns/getHours')
 const _ = require('underscore')
 const classnames = require('classnames')
 const path = require('path')
@@ -75,7 +75,8 @@ const Chart = (props) => {
       y: yVisitors,
       hoverinfo: 'y',
       marker: {
-        color: x.map(function (date) {
+        color: x.map(function (value) {
+          const date = new Date(value)
           if (resolution !== 'days') {
             return barColorVisitors
           }
@@ -93,7 +94,8 @@ const Chart = (props) => {
       }),
       hovertemplate: '%{text}<extra></extra>',
       marker: {
-        color: x.map(function (date) {
+        color: x.map(function (value) {
+          const date = new Date(value)
           if (resolution !== 'days') {
             return barColorViews
           }

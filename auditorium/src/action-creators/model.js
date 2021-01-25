@@ -4,8 +4,8 @@
  */
 
 const errors = require('./errors')
-const differenceInWeeks = require('date-fns/difference_in_weeks')
-const differenceInMonths = require('date-fns/difference_in_months')
+const differenceInWeeks = require('date-fns/differenceInWeeks')
+const differenceInMonths = require('date-fns/differenceInMonths')
 
 exports.query = (data, authenticatedUser, softFailureMessage, inBackground) => (dispatch, getState, postMessage) => {
   if (!inBackground) {

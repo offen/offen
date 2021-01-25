@@ -9,6 +9,7 @@ const { useState } = require('preact/hooks')
 const sf = require('sheetify')
 const DatePicker = require('react-datepicker').default
 const format = require('date-fns/format')
+const subDays = require('date-fns/subDays')
 
 const LocalizedDate = require('./../_shared/localized-date')
 
@@ -22,11 +23,10 @@ module.exports = (props) => {
 
   let url = window.location.pathname
   if (startDate && endDate) {
-    url = `${url}?from=${format(startDate, 'YYYY-MM-DD')}&to=${format(endDate, 'YYYY-MM-DD')}`
+    url = `${url}?from=${format(startDate, 'yyyy-MM-dd')}&to=${format(endDate, 'yyyy-MM-dd')}`
   }
 
   const now = new Date()
-  const subDays = require('date-fns/sub_days')
 
   return (
     <div class='datepicker-display flex flex-column'>
