@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * Copyright 2020-2021 - Offen Authors <hioffen@posteo.de>
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -19,6 +19,7 @@ const urify = require('urify')
 
 const ExplainerIcon = require('./explainer-icon')
 const Paragraph = require('./../_shared/paragraph')
+const LocalizedDate = require('./../_shared/localized-date')
 
 const Plot = createPlotlyComponent(Plotly)
 
@@ -54,11 +55,11 @@ const Chart = (props) => {
       case 'weeks':
         return 'W' + getISOWeek(date)
       case 'months':
-        return date.toLocaleDateString(process.env.LOCALE, { month: 'short' })
+        return LocalizedDate.localize(date, { month: 'short' })
       default:
-        var result = date.toLocaleDateString(process.env.LOCALE, { day: 'numeric' })
+        var result = LocalizedDate.localize(date, { day: 'numeric' })
         if (index === 0 || isFirstDayOfMonth(date)) {
-          result = date.toLocaleDateString(process.env.LOCALE, { month: 'short' }) + ' ' + result
+          result = LocalizedDate.localize(date, { month: 'short' }) + ' ' + result
         }
         if (isWeekend(date)) {
           return `<span style="font-style: italic; color: ${tickColorFade}; font-size: 130%">${result}</span>`

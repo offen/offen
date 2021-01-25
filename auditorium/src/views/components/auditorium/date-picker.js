@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * Copyright 2020-2021 - Offen Authors <hioffen@posteo.de>
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -9,8 +9,8 @@ const { useState } = require('preact/hooks')
 const sf = require('sheetify')
 const DatePicker = require('react-datepicker').default
 const format = require('date-fns/format')
-const isFuture = require('date-fns/is_future')
-const differenceInDays = require('date-fns/difference_in_days')
+
+const LocalizedDate = require('./../_shared/localized-date')
 
 sf('./../../../../styles/react-datepicker/datepicker.scss')
 
@@ -18,7 +18,7 @@ module.exports = (props) => {
   const { onClose, from, to } = props
   const [startDate, setStartDate] = useState(from ? new Date(from) : new Date())
   const [endDate, setEndDate] = useState(from ? new Date(to) : new Date())
-  const options = { year: 'numeric', month: 'long', day: 'numeric' }
+  const dateFormatProps = { year: 'numeric', month: 'long', day: 'numeric' }
 
   let url = window.location.pathname
   if (startDate && endDate) {
@@ -34,7 +34,6 @@ module.exports = (props) => {
         <div class='br b--light-gray pr4'>
           <DatePicker
             locale={process.env.LOCALE || 'en'}
-            filterDate={(date) => !isFuture(date) && differenceInDays(now, date) <= 6 * 31}
             inline
             selected={startDate}
             onChange={(date) => setStartDate(date)}
@@ -48,7 +47,6 @@ module.exports = (props) => {
         <div class='pl4'>
           <DatePicker
             locale={process.env.LOCALE || 'en'}
-            filterDate={(date) => !isFuture(date) && differenceInDays(now, date) <= 6 * 31}
             inline
             selected={endDate}
             onChange={(date) => setEndDate(date)}
@@ -65,11 +63,15 @@ module.exports = (props) => {
         <div class='w-60-m w-40-l br2 bg-near-white pv3'>
           <div class='flex justify-center mb3'>
             <div class='w-40 tr mr2'>
-              <span>{startDate.toLocaleDateString(process.env.LOCALE, options)}</span>
+              <LocalizedDate {...dateFormatProps}>
+                {startDate}
+              </LocalizedDate>
             </div>
             <div class='bt b--dark-gray ph3 mt2' />
             <div class='w-40 tl ml2'>
-              <span>{endDate.toLocaleDateString(process.env.LOCALE, options)}</span>
+              <LocalizedDate {...dateFormatProps}>
+                {endDate}
+              </LocalizedDate>
             </div>
           </div>
           <div class='flex justify-center'>

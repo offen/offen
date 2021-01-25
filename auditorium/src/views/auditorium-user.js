@@ -94,7 +94,7 @@ const AuditoriumView = (props) => {
       <div class='flex flex-column flex-row-l'>
         <div class='w-100 flex bt ba-ns b--black-10 br0 br2-ns mb2-ns'>
           <RangeSelector
-            resolution={model.resolution}
+            resolution={resolution}
             range={range}
             from={from}
             to={to}
