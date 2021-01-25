@@ -200,7 +200,7 @@ function Queries (storage) {
           range: range
         }
       })
-      .then(postProcessResult(query.resolution, range))
+      .then(postProcessResult(query && query.resolution, range))
   }
 }
 
