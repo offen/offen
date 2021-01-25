@@ -15,6 +15,10 @@ const LocalizedDate = require('./../_shared/localized-date')
 
 sf('./../../../../styles/react-datepicker/datepicker.scss')
 
+const localeMap = {
+  en: require('date-fns/locale/en-GB')
+}
+
 module.exports = (props) => {
   const { onClose, from, to } = props
   const [startDate, setStartDate] = useState(from ? new Date(from) : new Date())
@@ -33,7 +37,7 @@ module.exports = (props) => {
       <div class='flex justify-center mb3'>
         <div class='br b--light-gray pr4'>
           <DatePicker
-            locale={process.env.LOCALE || 'en'}
+            locale={localeMap[process.env.LOCALE] || process.env.LOCALE || 'en-GB'}
             inline
             selected={startDate}
             onChange={(date) => setStartDate(date)}
@@ -46,7 +50,7 @@ module.exports = (props) => {
         </div>
         <div class='pl4'>
           <DatePicker
-            locale={process.env.LOCALE || 'en'}
+            locale={localeMap[process.env.LOCALE] || process.env.LOCALE || 'en-GB'}
             inline
             selected={endDate}
             onChange={(date) => setEndDate(date)}
