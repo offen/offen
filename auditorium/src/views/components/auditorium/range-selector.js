@@ -20,11 +20,15 @@ const RangeSelector = (props) => {
   const [showDatepicker, setShowDatepicker] = useState(false)
 
   const ranges = [
+    /*
     { display: __('Yesterday'), query: { range: 'yesterday', resolution: 'hours' } },
-    { display: __('Last 24 hours'), query: { range: '24', resolution: 'hours' } },
-    { display: __('Last 7 days'), query: null },
-    { display: __('Last 30 days'), query: { range: '30', resolution: 'days' } },
-    { display: __('All time'), query: { range: '6', resolution: 'months' } }
+    */
+    { display: __('24 hours'), query: { range: '24', resolution: 'hours' } },
+    { display: __('7 days'), query: null },
+    { display: __('30 days'), query: { range: '30', resolution: 'days' } },
+    { display: __('6 weeks'), query: { range: '6', resolution: 'weeks' } },
+    { display: __('12 weeks'), query: { range: '12', resolution: 'weeks' } },
+    { display: __('6 months'), query: { range: '6', resolution: 'months' } }
   ]
 
   const items = ranges.map(function (range, index) {
@@ -63,10 +67,30 @@ const RangeSelector = (props) => {
     )
   })
 
+  items.unshift((() => {
+    const isActive = from && to
+    return (
+      <li key='yesterday' class='cf pr3 bt b--light-gray'>
+        <span
+          class={isActive
+            ? 'b link dim dib bt bw2 b--dark-green ph2 pv2 mb2 mr3 dark-green'
+            : 'b dim dib pv2 dark-green mt1 mb2 mr3 pointer'}
+          aria-current='time'
+          onclick={() => setShowDatepicker(false)}
+        >
+          {__('Yesterday')}
+        </span>
+        <span class='fr h-100 bl b--light-gray pl4 pr2'>
+          <p class='pv2 ma0 mt1'>Last</p>
+        </span>
+      </li>
+    )
+  })())
+
   items.push((() => {
     const isActive = from && to
     return (
-      <li key='custom-daterange' class='datepicker-display pr3 bt b--light-gray'>
+      <li key='custom-daterange' class='datepicker-display bt bl b--light-gray ph3'>
         <span
           class={isActive
             ? 'b link dim dib bt bw2 b--dark-green ph2 pv2 mb2 mr3 dark-green'
