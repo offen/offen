@@ -90,7 +90,7 @@ const RangeSelector = (props) => {
   items.push((() => {
     const isActive = from && to
     return (
-      <li key='custom-daterange' class='datepicker-display bt bl b--light-gray ph3'>
+      <li key='custom-daterange' class='datepicker-display bt bl b--light-gray pl4 pr3'>
         <span
           class={isActive
             ? 'b link dim dib bt bw2 b--dark-green ph2 pv2 mb2 mr3 dark-green'
