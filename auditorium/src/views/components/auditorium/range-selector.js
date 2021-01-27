@@ -4,7 +4,7 @@
  */
 
 /** @jsx h */
-const { h } = require('preact')
+const { h, Fragment } = require('preact')
 const { useState } = require('preact/hooks')
 const classnames = require('classnames')
 
@@ -20,9 +20,6 @@ const RangeSelector = (props) => {
   const [showDatepicker, setShowDatepicker] = useState(false)
 
   const ranges = [
-    /*
-    { display: __('Yesterday'), query: { range: 'yesterday', resolution: 'hours' } },
-    */
     { display: __('24 hours'), query: { range: '24', resolution: 'hours' } },
     { display: __('7 days'), query: null },
     { display: __('30 days'), query: { range: '30', resolution: 'days' } },
@@ -68,22 +65,33 @@ const RangeSelector = (props) => {
   })
 
   items.unshift((() => {
-    const isActive = from && to
+    const query = { range: 'yesterday', resolution: 'hours' }
+    const isActive = !from && !to &&
+      JSON.stringify({ range: currentRange, resolution }) === JSON.stringify(query || {})
+
+    let url = window.location.pathname
+    url += '?' + new window.URLSearchParams(query)
+
     return (
-      <li key='yesterday' class='cf pr3 bt b--light-gray'>
-        <span
-          class={isActive
-            ? 'b link dim dib bt bw2 b--dark-green ph2 pv2 mb2 mr3 dark-green'
-            : 'b dim dib pv2 dark-green mt1 mb2 mr3 pointer'}
-          aria-current='time'
-          onclick={() => setShowDatepicker(false)}
-        >
-          {__('Yesterday')}
-        </span>
-        <span class='fr h-100 bl b--light-gray pl4 pr2'>
-          <p class='pv2 ma0 mt1'>Last</p>
-        </span>
-      </li>
+      <Fragment>
+        <li key='yesterday' class='cf pr3 bt b--light-gray'>
+          <a
+            class={isActive
+              ? 'b link dim dib bt bw2 b--dark-green ph2 pv2 mb2 mr3 dark-green'
+              : 'b link dim dib pv2 dark-green mt1 mb2 mr3 pointer'}
+            aria-current='time'
+            href={url}
+            onclick={() => setShowDatepicker(false)}
+          >
+            {__('Yesterday')}
+          </a>
+        </li>
+        <li key='yesterday' class='bl b--light-gray cf pr3 bt b--light-gray'>
+          <p class='pl4 pr2 pv2 ma0 mt1'>
+            {__('Last')}
+          </p>
+        </li>
+      </Fragment>
     )
   })())
 
