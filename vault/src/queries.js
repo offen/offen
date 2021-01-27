@@ -95,7 +95,10 @@ function Queries (storage) {
 
     // range is the number of units the query looks back from the given
     // start day
-    var range = parseInt((query && query.range) || 7, 10)
+    var range = query && query.range
+    if (range !== 'yesterday') {
+      range = parseInt(range || 7, 10)
+    }
     if (fromParam) {
       range = Math.abs(difference[resolution](toParam, fromParam)) + 1
     }
