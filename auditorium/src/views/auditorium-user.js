@@ -30,7 +30,7 @@ const onboarding = require('./../action-creators/onboarding')
 const AuditoriumView = (props) => {
   const { matches, model, consentStatus, onboardingCompleted } = props
   const { handlePurge, handleQuery, expressConsent, getConsentStatus, getOnboardingStatus, completeOnboarding } = props
-  const { range, resolution, onboarding: forceOnboarding } = matches
+  const { range, resolution, onboarding: forceOnboarding, from, to } = matches
 
   useEffect(function fetchConsentStatus () {
     getConsentStatus()
@@ -49,8 +49,8 @@ const AuditoriumView = (props) => {
   // it's important to keep this hook below the check for the consent status so
   // that it does not create a race condition between consentStatus and events
   useEffect(function fetchData () {
-    handleQuery({ accountId: null, range, resolution }, null)
-  }, [range, resolution, consentStatus])
+    handleQuery({ accountId: null, range, resolution, from, to }, null)
+  }, [range, resolution, consentStatus, from, to])
 
   if (!model) {
     return (
@@ -96,6 +96,8 @@ const AuditoriumView = (props) => {
           <RangeSelector
             resolution={resolution}
             range={range}
+            from={from}
+            to={to}
             {...explainerPropsFor('range-selector')}
           />
         </div>
@@ -105,7 +107,6 @@ const AuditoriumView = (props) => {
           <Chart
             model={model}
             isOperator={false}
-            resolution={resolution}
             {...explainerPropsFor('chart')}
           />
         </div>

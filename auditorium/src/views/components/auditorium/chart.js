@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * Copyright 2020-2021 - Offen Authors <hioffen@posteo.de>
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -8,10 +8,10 @@ const { h } = require('preact')
 const { memo } = require('preact/compat')
 const Plotly = require('plotly.js-basic-dist')
 const createPlotlyComponent = require('react-plotly.js/factory').default
-const isFirstDayOfMonth = require('date-fns/is_first_day_of_month')
-const isWeekend = require('date-fns/is_weekend')
-const getISOWeek = require('date-fns/get_iso_week')
-const getHours = require('date-fns/get_hours')
+const isFirstDayOfMonth = require('date-fns/isFirstDayOfMonth')
+const isWeekend = require('date-fns/isWeekend')
+const getISOWeek = require('date-fns/getISOWeek')
+const getHours = require('date-fns/getHours')
 const _ = require('underscore')
 const classnames = require('classnames')
 const path = require('path')
@@ -19,6 +19,7 @@ const urify = require('urify')
 
 const ExplainerIcon = require('./explainer-icon')
 const Paragraph = require('./../_shared/paragraph')
+const LocalizedDate = require('./../_shared/localized-date')
 
 const Plot = createPlotlyComponent(Plotly)
 
@@ -29,8 +30,9 @@ const barColorViews = '#19A974'
 const barColorViewsFade = '#19A974'
 
 const Chart = (props) => {
-  const { model, isOperator, showExplainer, onExplain, explainerActive, resolution = 'days' } = props
-  const { pageviews } = model
+  const { model, isOperator, showExplainer, onExplain, explainerActive } = props
+  const { pageviews, resolution } = model
+
   const x = pageviews.map(function (item) {
     return item.date
   })
@@ -53,11 +55,11 @@ const Chart = (props) => {
       case 'weeks':
         return 'W' + getISOWeek(date)
       case 'months':
-        return date.toLocaleDateString(process.env.LOCALE, { month: 'short' })
+        return LocalizedDate.localize(date, { month: 'short' })
       default:
-        var result = date.toLocaleDateString(process.env.LOCALE, { day: 'numeric' })
+        var result = LocalizedDate.localize(date, { day: 'numeric' })
         if (index === 0 || isFirstDayOfMonth(date)) {
-          result = date.toLocaleDateString(process.env.LOCALE, { month: 'short' }) + ' ' + result
+          result = LocalizedDate.localize(date, { month: 'short' }) + ' ' + result
         }
         if (isWeekend(date)) {
           return `<span style="font-style: italic; color: ${tickColorFade}; font-size: 130%">${result}</span>`
@@ -73,7 +75,8 @@ const Chart = (props) => {
       y: yVisitors,
       hoverinfo: 'y',
       marker: {
-        color: x.map(function (date) {
+        color: x.map(function (value) {
+          const date = new Date(value)
           if (resolution !== 'days') {
             return barColorVisitors
           }
@@ -91,7 +94,8 @@ const Chart = (props) => {
       }),
       hovertemplate: '%{text}<extra></extra>',
       marker: {
-        color: x.map(function (date) {
+        color: x.map(function (value) {
+          const date = new Date(value)
           if (resolution !== 'days') {
             return barColorViews
           }

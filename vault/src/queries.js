@@ -17,6 +17,12 @@ var subHours = require('date-fns/sub_hours')
 var subDays = require('date-fns/sub_days')
 var subWeeks = require('date-fns/sub_weeks')
 var subMonths = require('date-fns/sub_months')
+var diffHours = require('date-fns/difference_in_hours')
+var diffDays = require('date-fns/difference_in_days')
+var diffWeeks = require('date-fns/difference_in_weeks')
+var diffMonths = require('date-fns/difference_in_months')
+var startOfYesterday = require('date-fns/start_of_yesterday')
+var endOfYesterday = require('date-fns/end_of_yesterday')
 
 var stats = require('./stats')
 var storage = require('./aggregating-storage')
@@ -48,6 +54,13 @@ var subtract = {
   months: subMonths
 }
 
+var difference = {
+  hours: diffHours,
+  days: diffDays,
+  weeks: diffWeeks,
+  months: diffMonths
+}
+
 module.exports = new Queries(storage)
 module.exports.Queries = Queries
 
@@ -59,18 +72,42 @@ function Queries (storage) {
       )
     }
 
-    // range is the number of units the query looks back from the given
-    // start day
-    var range = parseInt((query && query.range) || 7, 10)
     // resolution is the unit to group by when looking back
     var resolution = (query && query.resolution) || 'days'
     if (['hours', 'days', 'weeks', 'months'].indexOf(resolution) < 0) {
       return Promise.reject(new Error('Unknown resolution value: ' + resolution))
     }
 
+    var fromParam
+    var toParam
+    try {
+      fromParam = query && query.from && startOf[resolution](new Date(query.from))
+      toParam = query && query.to && endOf[resolution](new Date(query.to))
+    } catch (err) {
+      return Promise.reject(new Error('Error parsing given date ranges: ' + err.message))
+    }
+
+    if ((fromParam && !toParam) || (toParam && !fromParam)) {
+      return Promise.reject(new Error(
+        'Received either `from` or `to` parameter only. Both are required for querying a date range.'
+      ))
+    }
+
+    // range is the number of units the query looks back from the given
+    // start day
+    var range = parseInt((query && query.range) || 7, 10)
+    if (fromParam) {
+      range = Math.abs(difference[resolution](toParam, fromParam)) + 1
+    }
+    if (range === 'yesterday') {
+      fromParam = startOfYesterday()
+      toParam = endOfYesterday()
+      range = Math.abs(difference[resolution](toParam, fromParam)) + 1
+    }
+
     var now = (query && query.now && new Date(query.now)) || new Date()
-    var lowerBound = startOf[resolution](subtract[resolution](now, range - 1))
-    var upperBound = endOf[resolution](now)
+    var lowerBound = fromParam || startOf[resolution](subtract[resolution](now, range - 1))
+    var upperBound = toParam || endOf[resolution](now)
 
     var proxy = new GetEventsProxy(storage, accountId, publicJwk, privateJwk)
     var allEvents = storage.getRawEvents(accountId)
@@ -83,7 +120,7 @@ function Queries (storage) {
     // for operators and accounts for users.
     var pageviews = Promise.all(Array.from({ length: range })
       .map(function (num, distance) {
-        var date = subtract[resolution](now, distance)
+        var date = subtract[resolution](toParam || now, distance)
 
         var lowerBound = startOf[resolution](date)
         var upperBound = endOf[resolution](date)

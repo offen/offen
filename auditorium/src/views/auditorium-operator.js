@@ -40,7 +40,7 @@ const AuditoriumView = (props) => {
     handleQuery, handleShare, handleValidationError, handleRetire, handleCopy,
     handlePurgeAggregates
   } = props
-  const { accountId, range, resolution, now } = matches
+  const { accountId, range, resolution, now, from, to } = matches
   const { adminLevel } = authenticatedUser
   const [focus, setFocus] = useState(true)
 
@@ -50,7 +50,7 @@ const AuditoriumView = (props) => {
 
   useEffect(function () {
     if (model === null) {
-      handleQuery({ accountId, range, resolution, now }, authenticatedUser)
+      handleQuery({ accountId, range, resolution, now, from, to }, authenticatedUser)
     }
   }, [model])
 
@@ -59,16 +59,16 @@ const AuditoriumView = (props) => {
       return null
     }
     if (model !== null) {
-      handleQuery({ accountId, range, resolution, now }, authenticatedUser)
+      handleQuery({ accountId, range, resolution, now, from, to }, authenticatedUser)
     }
 
     const tick = window.setInterval(() => {
-      handleQuery({ accountId, range, resolution, now }, authenticatedUser, softFailure, true)
+      handleQuery({ accountId, range, resolution, now, from, to }, authenticatedUser, softFailure, true)
     }, 15000)
     return function cancelAutoRefresh () {
       window.clearInterval(tick)
     }
-  }, [accountId, range, resolution, focus])
+  }, [accountId, range, resolution, focus, from, to, now])
 
   useEffect(function detectFocusChange () {
     function focus () {
@@ -108,6 +108,8 @@ const AuditoriumView = (props) => {
             selectedId={accountId}
             range={range}
             resolution={resolution}
+            from={from}
+            to={to}
           />
         </div>
         {!model.empty
@@ -127,6 +129,8 @@ const AuditoriumView = (props) => {
           <RangeSelector
             resolution={resolution}
             range={range}
+            from={from}
+            to={to}
           />
         </div>
       </div>
@@ -135,7 +139,6 @@ const AuditoriumView = (props) => {
           <Chart
             isOperator
             model={model}
-            resolution={resolution}
           />
         </div>
         <div class='w-100 w-30-m w-25-l flex bt ba-ns br0 br2-ns b--black-10 mb2-ns'>
