@@ -1,15 +1,25 @@
 /**
- * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * Copyright 2020-2021 - Offen Authors <hioffen@posteo.de>
  * SPDX-License-Identifier: Apache-2.0
  */
 
 /** @jsx h */
-const { h, Fragment } = require('preact')
+const { h } = require('preact')
 const { useState } = require('preact/hooks')
 const classnames = require('classnames')
 
 const ExplainerIcon = require('./explainer-icon')
 const DatePicker = require('./date-picker')
+
+const predefinedRanges = [
+  { display: __('Yesterday'), query: { range: 'yesterday', resolution: 'hours' }, endsFirstBlock: true },
+  { display: __('24 hours'), query: { range: '24', resolution: 'hours' }, opensSecondBlock: true },
+  { display: __('7 days'), query: null },
+  { display: __('30 days'), query: { range: '30', resolution: 'days' } },
+  { display: __('6 weeks'), query: { range: '6', resolution: 'weeks' } },
+  { display: __('12 weeks'), query: { range: '12', resolution: 'weeks' } },
+  { display: __('6 months'), query: { range: '6', resolution: 'months' } }
+]
 
 const RangeSelector = (props) => {
   const {
@@ -19,16 +29,7 @@ const RangeSelector = (props) => {
 
   const [showDatepicker, setShowDatepicker] = useState(false)
 
-  const ranges = [
-    { display: __('24 hours'), query: { range: '24', resolution: 'hours' } },
-    { display: __('7 days'), query: null },
-    { display: __('30 days'), query: { range: '30', resolution: 'days' } },
-    { display: __('6 weeks'), query: { range: '6', resolution: 'weeks' } },
-    { display: __('12 weeks'), query: { range: '12', resolution: 'weeks' } },
-    { display: __('6 months'), query: { range: '6', resolution: 'months' } }
-  ]
-
-  const items = ranges.map(function (range, index) {
+  const items = predefinedRanges.map(function (range, index) {
     let url = window.location.pathname
     const activeRange = !from && !to &&
       JSON.stringify({ range: currentRange, resolution }) === JSON.stringify(range.query || {})
@@ -36,64 +37,30 @@ const RangeSelector = (props) => {
     if (range.query) {
       url += '?' + new window.URLSearchParams(range.query)
     }
-    var anchorRange = (
-      <a
-        onclick={() => setShowDatepicker(false)}
-        href={url}
-        class='b link dim dib pv2 dark-green mt1 mb2 mr3'
-      >
-        {range.display}
-      </a>
-    )
 
     return (
-      <li key={index} class='pr3 bt b--light-gray'>
-        {activeRange
-          ? (
-            <a
-              href={url}
-              class='b link dim dib bt bw2 b--dark-green ph2 pv2 mb2 mr3 dark-green'
-              aria-current='time'
-              onclick={() => setShowDatepicker(false)}
-            >
-              {range.display}
-            </a>
-          )
-          : anchorRange}
+      <li
+        key={`fixed-range-${index}`}
+        class={classnames(
+          'pr3 bt b--light-gray',
+          range.opensSecondBlock ? 'fixed-ranges-start pl4' : null,
+          range.endsFirstBlock ? 'br' : null
+
+        )}
+      >
+        <a
+          href={url}
+          class={activeRange
+            ? 'dark-green b link dim dib mb2 mr3 pa2 bt bw2 b--dark-green'
+            : 'dark-green b link dim dib mb2 mr3 pv2 mt1'}
+          aria-current={activeRange ? 'time' : null}
+          onclick={() => setShowDatepicker(false)}
+        >
+          {range.display}
+        </a>
       </li>
     )
   })
-
-  items.unshift((() => {
-    const query = { range: 'yesterday', resolution: 'hours' }
-    const isActive = !from && !to &&
-      JSON.stringify({ range: currentRange, resolution }) === JSON.stringify(query || {})
-
-    let url = window.location.pathname
-    url += '?' + new window.URLSearchParams(query)
-
-    return (
-      <Fragment>
-        <li key='yesterday' class='cf pr3 bt b--light-gray'>
-          <a
-            class={isActive
-              ? 'b link dim dib bt bw2 b--dark-green ph2 pv2 mb2 mr3 dark-green'
-              : 'b link dim dib pv2 dark-green mt1 mb2 mr3 pointer'}
-            aria-current='time'
-            href={url}
-            onclick={() => setShowDatepicker(false)}
-          >
-            {__('Yesterday')}
-          </a>
-        </li>
-        <li key='yesterday' class='bl b--light-gray cf pr3 bt b--light-gray'>
-          <p class='pl4 pr2 pv2 ma0 mt1'>
-            {__('Last')}
-          </p>
-        </li>
-      </Fragment>
-    )
-  })())
 
   items.push((() => {
     const isActive = from && to
@@ -101,9 +68,9 @@ const RangeSelector = (props) => {
       <li key='custom-daterange' class='datepicker-display bt bl b--light-gray pl4 pr3'>
         <span
           class={isActive
-            ? 'b link dim dib bt bw2 b--dark-green ph2 pv2 mb2 mr3 dark-green'
-            : 'b dim dib pv2 dark-green mt1 mb2 mr3 pointer'}
-          aria-current='time'
+            ? 'pointer dark-green b link dim dib mb2 mr3 pa2 bt bw2 b--dark-green'
+            : 'pointer dark-green b link dim dib mb2 mr3 pv2 mt1'}
+          aria-current={isActive ? 'time' : null}
           onclick={() => setShowDatepicker(!showDatepicker)}
         >
           {__('Custom')}
@@ -119,6 +86,17 @@ const RangeSelector = (props) => {
 
   return (
     <div class='pa3 bg-white flex-auto'>
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
+          .fixed-ranges-start::before {
+            content: '${__('Last')}';
+            display: inline-block;
+            margin-right: 1.5em;
+          }
+        `
+        }}
+      />
       <div
         class={classnames('pa2', 'ma-1', explainerActive ? 'bg-light-yellow' : null)}
       >
