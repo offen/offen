@@ -18,7 +18,7 @@ const predefinedRanges = [
   { display: __('30 days'), query: { range: '30', resolution: 'days' } },
   { display: __('6 weeks'), query: { range: '6', resolution: 'weeks' } },
   { display: __('12 weeks'), query: { range: '12', resolution: 'weeks' } },
-  { display: __('6 months'), query: { range: '6', resolution: 'months' } }
+  { display: __('6 months'), query: { range: '6', resolution: 'months' }, endsSecondBlock: true }
 ]
 
 const RangeSelector = (props) => {
@@ -43,8 +43,9 @@ const RangeSelector = (props) => {
         key={`fixed-range-${index}`}
         class={classnames(
           'pr3 bt b--light-gray',
-          range.opensSecondBlock ? 'fixed-ranges-start pl4' : null,
-          range.endsFirstBlock ? 'br' : null
+          range.opensSecondBlock ? 'fixed-ranges-start pl4-ns' : null,
+          range.endsFirstBlock ? 'br-ns' : null,
+          range.endsSecondBlock ? 'pr4' : null
 
         )}
       >
@@ -65,7 +66,7 @@ const RangeSelector = (props) => {
   items.push((() => {
     const isActive = from && to
     return (
-      <li key='custom-daterange' class='datepicker-display bt bl b--light-gray pl4 pr3'>
+      <li key='custom-daterange' class='datepicker-display bt b--light-gray pr3'>
         <span
           class={isActive
             ? 'pointer dark-green b link dim dib mb2 mr3 pa2 bt bw2 b--dark-green'
@@ -89,10 +90,12 @@ const RangeSelector = (props) => {
       <style
         dangerouslySetInnerHTML={{
           __html: `
-          .fixed-ranges-start::before {
-            content: '${__('Last')}';
-            display: inline-block;
-            margin-right: 1.5em;
+          @media screen and (min-width: 30em) {
+            .fixed-ranges-start::before {
+              content: '${__('Last')}';
+              display: inline-block;
+              margin-right: 1.5em;
+            }
           }
         `
         }}
