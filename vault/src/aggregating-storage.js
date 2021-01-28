@@ -206,20 +206,26 @@ function ensureAggregationSecretWith (storage, cache) {
       cache[accountId] = storage.getAggregationSecret(accountId)
         .then(bindCrypto(function (secret) {
           var crypto = this
-          if (secret) {
-            return crypto.decryptAsymmetricWith(privateJwk)(secret)
-          }
-          var cryptoKey
-          return crypto.createSymmetricKey()
-            .then(function (_cryptoKey) {
-              cryptoKey = _cryptoKey
-              return crypto.encryptAsymmetricWith(publicJwk)(cryptoKey)
-            })
-            .then(function (encryptedSecret) {
-              return storage.putAggregationSecret(accountId, encryptedSecret)
-            })
-            .then(function () {
-              return cryptoKey
+          var existingSecret = secret
+            ? crypto.decryptAsymmetricWith(privateJwk)(secret)
+            : Promise.reject(new Error('No secret yet'))
+
+          return existingSecret
+            .catch(function () {
+              // A secret might either not exist at all or its decryption failed
+              // which means a new one will need to be created.
+              var cryptoKey
+              return crypto.createSymmetricKey()
+                .then(function (_cryptoKey) {
+                  cryptoKey = _cryptoKey
+                  return crypto.encryptAsymmetricWith(publicJwk)(cryptoKey)
+                })
+                .then(function (encryptedSecret) {
+                  return storage.putAggregationSecret(accountId, encryptedSecret)
+                })
+                .then(function () {
+                  return cryptoKey
+                })
             })
         }))
     }
