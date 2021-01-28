@@ -234,7 +234,7 @@ msgstr "Fair web analytics"
 #. src/views/components/_shared/with-layout.js:69
 #: 
 msgid "Found an issue, need help or want to add something?<br><a href=\"https://twitter.com/hioffen\" class=\"%s\" target=\"_blank\" rel=\"noreferer noopener\">Tweet,</a> <a href=\"mailto:hioffen@posteo.de\" class=\"%s\" target=\"_blank\">email</a> or file an <a href=\"https://github.com/offen/offen\" class=\"%s\" target=\"_blank\" rel=\"noreferer noopener\">issue.</a>"
-msgstr "Hast du einen Fehler gefunden, brauchst Hilfe oder möchtest etwas hinzufügen?<br><a href=\"https://twitter.com/hioffen\" class=\"%s\" target=\"_blank\" rel=\"noreferer noopener\">Twitter,</a> <a href=\"mailto:hioffen@posteo.de\" class=\"%s\" target=\"_blank\">E-Mail</a> oder erstelle eine <a href=\"https://github.com/offen/offen\" class=\"%s\" target=\"_blank\" rel=\"noreferer noopener\">Issue.</a>"
+msgstr "Hast du einen Fehler gefunden,<br>brauchst Hilfe oder möchtest etwas hinzufügen?<br><a href=\"https://twitter.com/hioffen\" class=\"%s\" target=\"_blank\" rel=\"noreferer noopener\">Twitter,</a> <a href=\"mailto:hioffen@posteo.de\" class=\"%s\" target=\"_blank\">E-Mail</a> oder erstelle eine <a href=\"https://github.com/offen/offen\" class=\"%s\" target=\"_blank\" rel=\"noreferer noopener\">Issue.</a>"
 
 #. src/views/components/_shared/new-password-input.js:14
 #: 
@@ -320,7 +320,7 @@ msgstr "Admin Rechte vergeben"
 #. src/views/components/_shared/share.js:115
 #: 
 msgid "Invite user"
-msgstr "Andere einladen"
+msgstr "Einladen"
 
 #. src/views/components/reset-password/form.js:34
 #: 
@@ -370,7 +370,7 @@ msgstr "Auditorium öffnen"
 #. src/views/components/index/header-card.js:50
 #: 
 msgid "We only access usage data with your consent."
-msgstr "Wir greifen nur mit deiner Zustimmung auf Nutzungsdaten zu."
+msgstr "Wir greifen nur mit deiner Zustimmung auf deine Nutzungsdaten zu."
 
 #. src/views/components/index/header-card.js:53
 #: 
@@ -520,7 +520,7 @@ msgstr "Betreiberinnen und Betreiber"
 #. src/views/components/auditorium/basic-terms.js:41
 #: 
 msgid "Operators are the owners of <a href=\"#terms-offen-installation\" class=\"%s\">Offen installations.</a> Only after you opted in, your usage data of a website is collected. Operators than can view it for maximum 6 months."
-msgstr "Betreiberinnen und Betreiber verwalten <a href=\"#terms-offen-installation\" class=\"%s\">Offen Installationen.</a> Erst nachdem du zugestimmt hast, werden deine Nutzungsdaten einer Webseite gesammelt. Betreibende können diese dann für maximal 6 Monate einsehen."
+msgstr "Betreiberinnen und Betreiber verwalten <a href=\"#terms-offen-installation\" class=\"%s\">Offen Installationen.</a> Erst nachdem du zugestimmt hast, werden deine Nutzungsdaten einer Webseite gesammelt. Betreiberinnen und Betreiber können diese dann für maximal 6 Monate einsehen."
 
 #. src/views/components/auditorium/basic-terms.js:46
 #: 
@@ -545,7 +545,7 @@ msgstr "ID"
 #. src/views/components/auditorium/basic-terms.js:61
 #: 
 msgid "Originally: UUID. Full form: Universally unique identifier. Offen uses UUID of version 4. These IDs are generated randomly, unique and without using any personal data. On the individual Offen server, they are handled in an unrecognizable form. <a href=\"https://en.wikipedia.org/wiki/Universally_unique_identifier\" class=\"%s\" target=\"_blank\" rel=\"noreferer noopener\">Learn more.</a>"
-msgstr "Original: UUID. Ausgeschrieben: Universally unique identifier. Offen verwendet UUID der Version 4. Diese IDs werden zufällig, eindeutig und ohne Verwendung von persönlichen Daten generiert. Auf dem jeweiligen Offen-Server werden sie in einer nicht zuordenbaren Form verarbeitet. <a href=\"https://en.wikipedia.org/wiki/Universally_unique_identifier\" class=\"%s\" target=\"_blank\" rel=\"noreferer noopener\">Mehr erfahren.</a>"
+msgstr "Original: UUID. Ausgeschrieben: Universally unique identifier. Offen verwendet UUID der Version 4. Diese IDs werden zufällig, eindeutig und ohne Verwendung von persönlichen Daten generiert. Auf dem jeweiligen Offen Server werden sie in einer nicht zuordenbaren Form verarbeitet. <a href=\"https://en.wikipedia.org/wiki/Universally_unique_identifier\" class=\"%s\" target=\"_blank\" rel=\"noreferer noopener\">Mehr erfahren.</a>"
 
 #. src/views/components/auditorium/format.js:16
 #: 
@@ -605,7 +605,7 @@ msgstr "6 Monate"
 #. src/views/components/auditorium/range-selector.js:72
 #: 
 msgid "Here you can set the time frame for all displayed metrics. As all data is generally deleted after 6 months, the selection is limited to this duration."
-msgstr "Hier könnst du den Zeitrahmen für alle angezeigten Metriken einstellen. Da alle Daten prinzipiell nach 6 Monaten gelöscht werden, ist die Auswahl auf diese Dauer beschränkt."
+msgstr "Hier kannst du den Zeitrahmen für alle angezeigten Metriken einstellen. Da alle Daten prinzipiell nach 6 Monaten gelöscht werden, ist die Auswahl auf diese Dauer beschränkt."
 
 #. src/views/components/auditorium/retention-chart.js:69
 #: 
@@ -645,7 +645,7 @@ msgstr "Account wählen"
 #. src/views/components/auditorium/chart.js:140
 #: 
 msgid "Page views and %s"
-msgstr "Seitenaufrufe und %s"
+msgstr "Seitenaufrufe sowie %s"
 
 #. src/views/components/auditorium/metrics.js:36
 #: 
@@ -660,7 +660,7 @@ msgstr "Webseiten"
 #. src/views/components/auditorium/chart.js:154
 #: 
 msgid "This panel displays the number of pages (bright green) and websites (dark green) you have visited where the <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation</a> is active. To measure this, a cookie is used to assign you a user and a session <a href=\"#terms-id\" class=\"%s\">ID.</a>"
-msgstr "Dieses Panel zeigt die Anzahl der Seiten (hellgrün) und Webseiten (dunkelgrün) an, die du besucht hast, auf denen die <a href=\"#terms-offen-installation\" class=\"%s\">Offen Installation</a> aktiv ist. Um dies zu messen, wird ein Cookie verwendet, das dir eine Nutzungs und Sitzungs <a href=\"#terms-id\" class=\"%s\">ID</a> zuweist."
+msgstr "Dieses Panel zeigt die Anzahl der Seiten (hellgrün) und Webseiten (dunkelgrün) an, die du besucht hast, auf denen die <a href=\"#terms-offen-installation\" class=\"%s\">Offen Installation</a> aktiv ist. Um dies zu messen, wird ein Cookie verwendet, der dir eine Nutzungs und Sitzungs <a href=\"#terms-id\" class=\"%s\">ID</a> zuweist."
 
 #. src/views/components/auditorium/metrics.js:44
 #: 
@@ -725,7 +725,7 @@ msgstr "Mobil Nutzerinnen und Nutzer"
 #. src/views/components/auditorium/metrics.js:152
 #: 
 msgid "Mobile user"
-msgstr "Mobil nutzend"
+msgstr "Mobilgerät"
 
 #. src/views/components/auditorium/metrics.js:162
 #: 
@@ -1019,12 +1019,12 @@ msgstr "Datenbank Einstellungen"
 #. src/views/components/auditorium/database-settings.js:49
 #: 
 msgid "Purge aggregates from local database and rebuild. This operation is non-destructive and can be performed at any time."
-msgstr "Aggregate aus der lokalen Datenbank bereinigen und neu aufbauen. Dieser Vorgang ist nicht destruktiv und kann zu jeder Zeit durchgeführt werden."
+msgstr "Aggregate aus der lokalen Datenbank löschen und neu erstellen. Dieser Vorgang ist nicht destruktiv und kann zu jeder Zeit durchgeführt werden."
 
 #. src/views/components/auditorium/database-settings.js:55
 #: 
 msgid "Rebuild aggregates"
-msgstr "Aggregate neu aufbauen"
+msgstr "Aggregate neu erstellen"
 
 #. src/views/components/join/form.js:22
 #: 
@@ -1161,7 +1161,7 @@ msgstr "Offen"
 #. ~ line 59 "public/index.go.html"
 #: 
 msgid "Found an issue, need help or want to add something?"
-msgstr "Hast du einen Fehler gefunden, brauchst Hilfe oder möchtest etwas hinzufügen?"
+msgstr "Hast du einen Fehler gefunden,<br>brauchst Hilfe oder möchtest etwas hinzufügen?"
 
 #. ~ line 59 "public/index.go.html"
 #: 
@@ -1202,12 +1202,12 @@ msgstr "Es werden keine Nutzungsdaten gesammelt."
 #. src/user-consent.js:102
 #: 
 msgid "Thanks for your help to make this website better."
-msgstr "Danke für deine Hilfe, diese Webseite besser zu machen."
+msgstr "Danke für deine Hilfe, diese Webseite zu verbessern."
 
 #. src/user-consent.js:105
 #: 
 msgid "To manage your usage data <a class=\"b normal link dim dark-gray\" target=\"_blank\" rel=\"noopener\" href=\"%s\">open the Auditorium.</a>"
-msgstr "Um deine Nutzungsdaten zu verwalten, <a class=\"b normal link dim dark-gray\" target=\"_blank\" rel=\"noopener\" href=\"%s\">öffnen das Auditorium.</a>"
+msgstr "Um deine Daten zu sehen, <a class=\"b normal link dim dark-gray\" target=\"_blank\" rel=\"noopener\" href=\"%s\">öffne das Auditorium.</a>"
 
 #. src/user-consent.js:109
 #: 
@@ -1222,7 +1222,7 @@ msgstr "Mehr erfahren"
 #. src/user-consent.js:124
 #: 
 msgid "You can opt out and delete any time."
-msgstr "Du kannst jederzeit löschen und deine Zustimmung entziehen."
+msgstr "Du kannst sie jederzeit löschen und deine Zustimmung wieder entziehen."
 
 #. src/middleware.js:37
 #: 
@@ -1287,7 +1287,7 @@ msgstr "Du hast <span class=\"%s\">%s %d</span> mal besucht."
 #. src/views/components/auditorium/user-onboarding.js:81
 #: 
 msgid "It is probably your first time visiting <span class=\"%s\">%s</span> ."
-msgstr "Es ist wahrscheinlich dein erster Besuch bei <span class=\"%s\">%s</span> ."
+msgstr "Es ist wahrscheinlich dein erster Besuch bei <span class=\"%s\">%s</span>&nbsp;."
 
 #. src/views/components/auditorium/user-onboarding.js:90
 #: 
@@ -1302,7 +1302,7 @@ msgstr "Vermutlich benutzt du gerade ein <span class=\"%s\">%s</span>."
 #. src/views/components/auditorium/user-onboarding.js:97
 #: 
 msgid "mobile device"
-msgstr "Mobiles Gerät"
+msgstr "Mobilgerät"
 
 #. src/views/components/auditorium/user-onboarding.js:97
 #: 
@@ -1335,12 +1335,12 @@ msgstr "Setze ein Lesezeichen für diese Seite, um später wiederzukommen."
 #. src/views/components/auditorium/user-onboarding.js:155
 #: 
 msgid "Get an overall picture of your data collected over time. Come back here anytime to see what <span class=\"%s\">%s</span> knows about you."
-msgstr "Gewinnen einen Gesamteindruck über deine im Laufe der Zeit gesammelten Daten. Komme jederzeit hierher zurück, um zu sehen, was <span class=\"%s\">%s</span> über dich weiß."
+msgstr "Gewinne einen Gesamteindruck über deine im Laufe der Zeit gesammelten Daten. Komme jederzeit hierher zurück, um zu sehen, was <span class=\"%s\">%s</span> über dich weiß."
 
 #. src/views/components/auditorium/user-onboarding.js:158
 #: 
 msgid "Now let's get started!"
-msgstr "Lass uns beginnen!"
+msgstr "Lass uns anfangen!"
 
 #. src/views/components/auditorium/privacy.js:29
 #: 
@@ -1435,7 +1435,7 @@ msgstr "Du wirst nach der Zustimmung zur Sammlung von Nutzungsdaten als eindeuti
 #. src/views/components/auditorium/user-onboarding.js:125
 #: 
 msgid "Review your data in the Auditorium. You can delete your data or opt out completely at any time in the Privacy tab."
-msgstr "Sehen deine Daten im Auditorium ein. Du kannst deine Daten jederzeit im Privacy Panel löschen oder deine Zustimmung widerrufen."
+msgstr "Sieh deine Daten im Auditorium ein. Du kannst deine Daten jederzeit im Privacy Panel löschen oder deine Zustimmung widerrufen."
 
 #. src/views/components/auditorium/retire-account.js:104
 #: 
@@ -1460,7 +1460,7 @@ msgstr "Anzeige Datenbank Einstellungen umschalten"
 #. src/views/components/auditorium/share.js:16
 #: 
 msgid "Share your Offen account <em class=\"%s\">%s</em> via email invitation. If granted admin privileges, invited users have full access to a shared account and can also create further accounts for this Offen instance."
-msgstr "Teile deinen Offen Account <em class=\"%s\">%s</em> per E-Mail Einladung. Eingeladene Nutzerinnen und Nutzer haben, wenn sie über Admin Rechte verfügen, vollen Zugriff auf einen freigegebenen Account und können auch weitere Accounts für diese Offen Instanz erstellen."
+msgstr "Gib deinen Offen Account <em class=\"%s\">%s</em> per E-Mail Einladung frei. Eingeladene Nutzerinnen und Nutzer haben, wenn sie über Admin Rechte verfügen, vollen Zugriff auf einen freigegebenen Account und können auch weitere Accounts für diese Offen Instanz erstellen."
 
 #. src/check-support.js:15
 #: 
