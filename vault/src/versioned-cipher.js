@@ -3,21 +3,21 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-var Unibabel = require('unibabel').Unibabel
+const Unibabel = require('unibabel').Unibabel
 
-var cipherRE = /{(\d+?),(\d*?)}\s(.+)/
+const cipherRE = /{(\d+?),(\d*?)}\s(.+)/
 
 exports.deserialize = deserializeCipher
 
 function deserializeCipher (cipher) {
-  var match = cipher.match(cipherRE)
+  const match = cipher.match(cipherRE)
   if (!match) {
     return { error: new Error('Could not match given cipher "' + cipher + '"') }
   }
 
-  var chunks = match[3].split(' ')
-  var cipherBytes = null
-  var nonceBytes = null
+  const chunks = match[3].split(' ')
+  let cipherBytes = null
+  let nonceBytes = null
 
   try {
     cipherBytes = Unibabel.base64ToArr(chunks[0])
@@ -44,8 +44,8 @@ function deserializeCipher (cipher) {
 exports.serialize = serializeCipher
 
 function serializeCipher (cipher, nonce, algoVersion, keyVersion) {
-  var keyRepr = keyVersion || ''
-  var chunks = ['{' + algoVersion + ',' + keyRepr + '}', encodeEncrypted(cipher)]
+  const keyRepr = keyVersion || ''
+  const chunks = ['{' + algoVersion + ',' + keyRepr + '}', encodeEncrypted(cipher)]
   if (nonce) {
     chunks.push(encodeEncrypted(nonce))
   }

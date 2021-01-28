@@ -15,7 +15,7 @@ const ChangePassword = (props) => {
   const [isDisabled, setIsDisabled] = useState(false)
   function handleSubmit (e) {
     e.preventDefault()
-    var formData = new window.FormData(e.currentTarget)
+    const formData = new window.FormData(e.currentTarget)
     if (formData.get('changed') !== formData.get('repeat')) {
       props.onValidationError(
         __('Passwords did not match. Please try again.')

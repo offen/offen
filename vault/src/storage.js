@@ -3,25 +3,25 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-var dexie = require('dexie')
-var addHours = require('date-fns/add_hours')
+const dexie = require('dexie')
+const addHours = require('date-fns/add_hours')
 
-var getDatabase = require('./database')
-var cookies = require('./cookie-tools')
+const getDatabase = require('./database')
+const cookies = require('./cookie-tools')
 
-var fallbackStore = { events: {}, encryptedSecrets: {}, checkpoints: {}, aggregates: {}, aggregationSecrets: {} }
+const fallbackStore = { events: {}, encryptedSecrets: {}, checkpoints: {}, aggregates: {}, aggregationSecrets: {} }
 
-var TYPE_LAST_KNOWN_CHECKPOINT = 'LAST_KNOWN_CHECKPOINT'
-var TYPE_USER_SECRET = 'USER_SECRET'
-var TYPE_ENCRYPTED_SECRET = 'ENCRYPTED_SECRET'
-var TYPE_ENCRYPTED_AGGREGATION_SECRET = 'ENCRYPTED_AGGREGATION_SECRET'
+const TYPE_LAST_KNOWN_CHECKPOINT = 'LAST_KNOWN_CHECKPOINT'
+const TYPE_USER_SECRET = 'USER_SECRET'
+const TYPE_ENCRYPTED_SECRET = 'ENCRYPTED_SECRET'
+const TYPE_ENCRYPTED_AGGREGATION_SECRET = 'ENCRYPTED_AGGREGATION_SECRET'
 
 module.exports = new Storage(getDatabase, fallbackStore)
 module.exports.Storage = Storage
 
 function Storage (getDatabase, fallbackStore) {
   this.updateLastKnownCheckpoint = function (accountId, sequence) {
-    var table = getDatabase(accountId).checkpoints
+    const table = getDatabase(accountId).checkpoints
     return table.put({
       type: TYPE_LAST_KNOWN_CHECKPOINT,
       sequence: sequence
@@ -32,7 +32,7 @@ function Storage (getDatabase, fallbackStore) {
   }
 
   this.getLastKnownCheckpoint = function (accountId) {
-    var table = getDatabase(accountId).checkpoints
+    const table = getDatabase(accountId).checkpoints
     return table.get({ type: TYPE_LAST_KNOWN_CHECKPOINT })
       .then(function (result) {
         if (!result) {
@@ -46,7 +46,7 @@ function Storage (getDatabase, fallbackStore) {
   }
 
   this.getRawEvents = function (accountId, lowerBound, upperBound) {
-    var table = getDatabase(accountId).events
+    const table = getDatabase(accountId).events
     if (!lowerBound || !upperBound) {
       return table
         .toArray()
@@ -68,7 +68,7 @@ function Storage (getDatabase, fallbackStore) {
   }
 
   this.getEventsByIds = function (accountId, eventIds) {
-    var table = getDatabase(accountId).events
+    const table = getDatabase(accountId).events
     return table
       .where('eventId')
       .anyOf(eventIds)
@@ -76,7 +76,7 @@ function Storage (getDatabase, fallbackStore) {
   }
 
   this.countEvents = function (accountId) {
-    var table = getDatabase(accountId).events
+    const table = getDatabase(accountId).events
     return table.count()
       .catch(dexie.OpenFailedError, function () {
         fallbackStore.events[accountId] = fallbackStore.events[accountId] || []
@@ -85,7 +85,7 @@ function Storage (getDatabase, fallbackStore) {
   }
 
   this.getAggregationSecret = function (accountId) {
-    var db = getDatabase(accountId)
+    const db = getDatabase(accountId)
     return db.keys
       .get({ type: TYPE_ENCRYPTED_AGGREGATION_SECRET })
       .then(function (result) {
@@ -99,7 +99,7 @@ function Storage (getDatabase, fallbackStore) {
   }
 
   this.putAggregationSecret = function (accountId, aggregationSecret) {
-    var db = getDatabase(accountId)
+    const db = getDatabase(accountId)
     return db.keys
       .put({
         type: TYPE_ENCRYPTED_AGGREGATION_SECRET,
@@ -155,7 +155,7 @@ function Storage (getDatabase, fallbackStore) {
   }
 
   this.getAggregates = function (accountId, lowerBound, upperBound) {
-    var table = getDatabase(accountId).aggregates
+    const table = getDatabase(accountId).aggregates
     if (!lowerBound || !upperBound) {
       return table.toArray()
         .catch(dexie.OpenFailedError, function () {
@@ -169,7 +169,7 @@ function Storage (getDatabase, fallbackStore) {
       .toArray()
       .catch(dexie.OpenFailedError, function () {
         fallbackStore.aggregates[accountId] = fallbackStore.aggregates[accountId] || {}
-        var result = {}
+        const result = {}
         Object.keys(fallbackStore.aggregates[accountId]).forEach(function (timestamp) {
           if ((!lowerBound || lowerBound <= timestamp) && (timestamp <= upperBound || !upperBound)) {
             result[timestamp] = fallbackStore.aggregates[accountId][timestamp]
@@ -180,7 +180,7 @@ function Storage (getDatabase, fallbackStore) {
   }
 
   this.getUserSecret = function (accountId) {
-    var db = getDatabase(accountId)
+    const db = getDatabase(accountId)
     return db.keys
       .get({ type: TYPE_USER_SECRET })
       .then(function (result) {
@@ -198,8 +198,8 @@ function Storage (getDatabase, fallbackStore) {
         throw new dexie.OpenFailedError('Trying to fall back to cookie based persistence.')
       })
       .catch(dexie.OpenFailedError, function () {
-        var cookieData = cookies.parse(document.cookie)
-        var lookupKey = TYPE_USER_SECRET + '-' + accountId
+        const cookieData = cookies.parse(document.cookie)
+        const lookupKey = TYPE_USER_SECRET + '-' + accountId
         if (cookieData[lookupKey]) {
           return JSON.parse(cookieData[lookupKey])
         }
@@ -208,7 +208,7 @@ function Storage (getDatabase, fallbackStore) {
   }
 
   this.putUserSecret = function (accountId, userSecret) {
-    var db = getDatabase(accountId)
+    const db = getDatabase(accountId)
     return db.keys
       .where({ type: TYPE_USER_SECRET })
       .first()
@@ -223,9 +223,9 @@ function Storage (getDatabase, fallbackStore) {
           })
       })
       .catch(dexie.OpenFailedError, function () {
-        var key = TYPE_USER_SECRET + '-' + accountId
-        var value = JSON.stringify(userSecret)
-        var cookie = cookies.defaultCookie(key, value, {
+        const key = TYPE_USER_SECRET + '-' + accountId
+        const value = JSON.stringify(userSecret)
+        const cookie = cookies.defaultCookie(key, value, {
           expires: addHours(new Date(), 4464),
           path: '/vault'
         })
@@ -234,13 +234,13 @@ function Storage (getDatabase, fallbackStore) {
   }
 
   this.deleteUserSecret = function (accountId) {
-    var db = getDatabase(accountId)
+    const db = getDatabase(accountId)
     return db.keys
       .where({ type: TYPE_USER_SECRET })
       .delete()
       .catch(dexie.OpenFailedError, function () {
-        var key = TYPE_USER_SECRET + '-' + accountId
-        var cookie = cookies.defaultCookie(key, '', {
+        const key = TYPE_USER_SECRET + '-' + accountId
+        const cookie = cookies.defaultCookie(key, '', {
           expires: new Date(0)
         })
         document.cookie = cookies.serialize(cookie)
@@ -248,7 +248,7 @@ function Storage (getDatabase, fallbackStore) {
   }
 
   this.putEvents = function (accountId, events) {
-    var db = getDatabase(accountId)
+    const db = getDatabase(accountId)
     // events data is saved in the shape supplied by the server
     return db.events.bulkPut(events)
       .catch(dexie.OpenFailedError, function () {
@@ -259,7 +259,7 @@ function Storage (getDatabase, fallbackStore) {
   }
 
   this.deleteEvents = function (accountId, eventIds) {
-    var db = getDatabase(accountId)
+    const db = getDatabase(accountId)
     return db.events.bulkDelete(eventIds)
       .catch(dexie.OpenFailedError, function () {
         fallbackStore.events[accountId] = fallbackStore.events[accountId] || []
@@ -271,7 +271,7 @@ function Storage (getDatabase, fallbackStore) {
   }
 
   this.purge = function () {
-    var db = getDatabase(null)
+    const db = getDatabase(null)
     return Promise.all([
       db.events.clear(),
       db.checkpoints.clear()
@@ -286,9 +286,9 @@ function Storage (getDatabase, fallbackStore) {
 
   // user secrets are expected to be passed in [secretId, secret] tuples
   this.putEncryptedSecrets = function (accountId, userSecrets) {
-    var db = getDatabase(accountId)
-    var records
-    var newKeys = userSecrets.map(function (pair) {
+    const db = getDatabase(accountId)
+    let records
+    const newKeys = userSecrets.map(function (pair) {
       return {
         type: TYPE_ENCRYPTED_SECRET,
         secretId: pair[0],
@@ -315,7 +315,7 @@ function Storage (getDatabase, fallbackStore) {
   }
 
   this.getEncryptedSecrets = function (accountId) {
-    var db = getDatabase(accountId)
+    const db = getDatabase(accountId)
     return db.keys
       .where('type')
       .equals(TYPE_ENCRYPTED_SECRET)

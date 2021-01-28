@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-var bindCrypto = require('./bind-crypto')
-var api = require('./api')
-var storage = require('./storage')
+const bindCrypto = require('./bind-crypto')
+const api = require('./api')
+const storage = require('./storage')
 
 module.exports = ensureUserSecretWith(api, storage)
 module.exports.ensureUserSecretWith = ensureUserSecretWith
@@ -15,7 +15,7 @@ module.exports.ensureUserSecretWith = ensureUserSecretWith
 // new exchange of secrets and stores the result in the local database.
 function ensureUserSecretWith (api, storage) {
   return function (accountId, flush) {
-    var before = Promise.resolve()
+    let before = Promise.resolve()
     if (flush) {
       before = storage.deleteUserSecret(accountId)
     }
@@ -41,9 +41,9 @@ function ensureUserSecretWith (api, storage) {
   }
 }
 
-var generateNewUserSecret = bindCrypto(function (publicJwk) {
-  var crypto = this
-  var userSecretJwk
+const generateNewUserSecret = bindCrypto(function (publicJwk) {
+  const crypto = this
+  let userSecretJwk
   return crypto.createSymmetricKey()
     .then(function (_userSecretJwk) {
       userSecretJwk = _userSecretJwk
@@ -61,7 +61,7 @@ function exchangeUserSecret (api, accountId) {
   return api.getPublicKey(accountId)
     .then(generateNewUserSecret)
     .then(function (result) {
-      var body = {
+      const body = {
         accountId: accountId,
         encryptedSecret: result.encryptedUserSecret
       }

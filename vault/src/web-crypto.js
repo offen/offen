@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-var Unibabel = require('unibabel').Unibabel
+const Unibabel = require('unibabel').Unibabel
 
-var cipher = require('./versioned-cipher')
-var compression = require('./compression')
+const cipher = require('./versioned-cipher')
+const compression = require('./compression')
 
-var SYMMETRIC_ALGO_AESGCM = 1
-var ASYMMETRIC_ALGO_RSA_OAEP = 1
+const SYMMETRIC_ALGO_AESGCM = 1
+const ASYMMETRIC_ALGO_RSA_OAEP = 1
 
 exports._impl = 'native'
 
@@ -17,11 +17,11 @@ exports.decryptSymmetricWith = decryptSymmetricWith
 
 function decryptSymmetricWith (jwk, deserializer) {
   deserializer = deserializer || JSON.parse
-  var importedKey = importSymmetricKey(jwk)
+  const importedKey = importSymmetricKey(jwk)
   return function (encryptedValue, inflate) {
     return importedKey
       .then(function (cryptoKey) {
-        var chunks = cipher.deserialize(encryptedValue)
+        const chunks = cipher.deserialize(encryptedValue)
         if (chunks.error) {
           return Promise.reject(chunks.error)
         }
@@ -54,13 +54,13 @@ exports.encryptSymmetricWith = encryptSymmetricWith
 
 function encryptSymmetricWith (jwk, serializer) {
   serializer = serializer || JSON.stringify
-  var importedKey = importSymmetricKey(jwk)
+  const importedKey = importSymmetricKey(jwk)
   return function (unencryptedValue, deflate) {
     return importedKey
       .then(function (cryptoKey) {
-        var bytes
+        let bytes
         try {
-          var serializedString = serializer(unencryptedValue)
+          const serializedString = serializer(unencryptedValue)
           if (deflate) {
             bytes = compression.compress(serializedString)
           } else {
@@ -69,7 +69,7 @@ function encryptSymmetricWith (jwk, serializer) {
         } catch (err) {
           return Promise.reject(err)
         }
-        var nonce = window.crypto.getRandomValues(new Uint8Array(12)).buffer
+        const nonce = window.crypto.getRandomValues(new Uint8Array(12)).buffer
         return bytes.then(function (b) {
           return window.crypto.subtle.encrypt(
             {
@@ -96,11 +96,11 @@ exports.decryptAsymmetricWith = decryptAsymmetricWith
 
 function decryptAsymmetricWith (privateJwk, deserializer) {
   deserializer = deserializer || JSON.parse
-  var importedKey = importPrivateKey(privateJwk)
+  const importedKey = importPrivateKey(privateJwk)
   return function (encryptedValue) {
     return importedKey
       .then(function (privateCryptoKey) {
-        var chunks = cipher.deserialize(encryptedValue)
+        const chunks = cipher.deserialize(encryptedValue)
         if (chunks.error) {
           return Promise.reject(chunks.error)
         }
@@ -129,11 +129,11 @@ exports.encryptAsymmetricWith = encryptAsymmetricWith
 
 function encryptAsymmetricWith (publicJwk, serializer) {
   serializer = serializer || JSON.stringify
-  var importedKey = importPublicKey(publicJwk)
+  const importedKey = importPublicKey(publicJwk)
   return function (unencryptedValue) {
     return importedKey
       .then(function (publicCryptoKey) {
-        var bytes
+        let bytes
         try {
           bytes = Unibabel.utf8ToBuffer(serializer(unencryptedValue))
         } catch (err) {

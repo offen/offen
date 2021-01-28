@@ -10,7 +10,7 @@ exports.login = (username, password, onFailureMessage) => (dispatch, getState, p
     type: 'AUTHENTICATION_REQUEST',
     payload: null
   })
-  var credentials = username && password
+  const credentials = username && password
     ? { username: username, password: password }
     : null
 

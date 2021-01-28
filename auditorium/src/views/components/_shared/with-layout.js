@@ -46,7 +46,7 @@ const Layout = (props) => {
               </HighlightBox>
               <pre>{props.error.stack}</pre>
             </Fragment>
-          )
+            )
           : props.children}
       </div>
       <div class='mw8 center flex flex-wrap flex-column flex-row-ns justify-between f6 lh-title ph3 pb5 pb7-ns mid-gray'>
@@ -89,7 +89,8 @@ const Layout = (props) => {
               </p>
             ))}
           </div>
-        ) : null}
+          )
+        : null}
     </div>
   )
 }

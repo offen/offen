@@ -33,7 +33,7 @@ const Format = (props) => {
       <span title={tooltip}>
         {value}
       </span>
-    )
+      )
     : value
 }
 

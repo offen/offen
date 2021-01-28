@@ -3,20 +3,20 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-var assert = require('assert')
-var sinon = require('sinon')
-var Unibabel = require('unibabel').Unibabel
-var ULID = require('ulid')
+const assert = require('assert')
+const sinon = require('sinon')
+const Unibabel = require('unibabel').Unibabel
+const ULID = require('ulid')
 
-var aggregatingStorage = require('./aggregating-storage')
+const aggregatingStorage = require('./aggregating-storage')
 
 describe('src/aggregating-storage.js', function () {
   describe('AggregatingStorage', function () {
-    var privateJwk
-    var publicJwk
-    var publicKey
-    var encrpytedEvents
-    var encryptedSecrets
+    let privateJwk
+    let publicJwk
+    let publicKey
+    let encrpytedEvents
+    let encryptedSecrets
     before(function () {
       return window.crypto.subtle.generateKey(
         {
@@ -39,8 +39,8 @@ describe('src/aggregating-storage.js', function () {
           privateJwk = results[0]
           publicJwk = results[1]
 
-          var userSecretsById = {}
-          var userSecrets = ['test-user-1', 'test-user-2']
+          const userSecretsById = {}
+          const userSecrets = ['test-user-1', 'test-user-2']
             .map(function (userId) {
               return window.crypto.subtle
                 .generateKey(
@@ -65,7 +65,7 @@ describe('src/aggregating-storage.js', function () {
                       Unibabel.utf8ToBuffer(JSON.stringify(jwk))
                     )
                     .then(function (encrypted) {
-                      var value = '{1,} ' + Unibabel.arrToBase64(new Uint8Array(encrypted))
+                      const value = '{1,} ' + Unibabel.arrToBase64(new Uint8Array(encrypted))
                       return {
                         secretId: userId,
                         value: value,
@@ -80,10 +80,10 @@ describe('src/aggregating-storage.js', function () {
               encryptedSecrets = _encryptedSecrets
             })
             .then(function (res) {
-              var now = new Date('2019-07-14T10:01:00.000Z')
-              var minuteAgo = new Date('2019-07-14T10:00:30.000Z')
-              var twoHoursAgo = new Date('2019-07-12T10:15:30.000Z')
-              var events = [
+              const now = new Date('2019-07-14T10:01:00.000Z')
+              const minuteAgo = new Date('2019-07-14T10:00:30.000Z')
+              const twoHoursAgo = new Date('2019-07-12T10:15:30.000Z')
+              const events = [
                 {
                   accountId: 'test-account-1',
                   secretId: 'test-user-1',
@@ -130,7 +130,7 @@ describe('src/aggregating-storage.js', function () {
                   }
                 }
               ].map(function (event) {
-                var nonce = window.crypto.getRandomValues(new Uint8Array(12))
+                const nonce = window.crypto.getRandomValues(new Uint8Array(12))
                 return window.crypto.subtle
                   .encrypt(
                     {
@@ -155,7 +155,7 @@ describe('src/aggregating-storage.js', function () {
     })
 
     it('skips aggregation when no account info is given', function () {
-      var mockStorage = {
+      const mockStorage = {
         getAggregationSecret: sinon.stub().resolves(null),
         putAggregationSecret: sinon.stub().resolves(null),
         getRawEvents: sinon.stub().resolves(['ok']),
@@ -163,7 +163,7 @@ describe('src/aggregating-storage.js', function () {
         getEncryptedSecrets: sinon.stub().resolves(null),
         putAggregate: sinon.stub().resolves(null)
       }
-      var storage = new aggregatingStorage.AggregatingStorage(mockStorage)
+      const storage = new aggregatingStorage.AggregatingStorage(mockStorage)
       return storage.getEvents(null)
         .then(function (result) {
           assert.deepStrictEqual(result, ['ok'])
@@ -177,7 +177,7 @@ describe('src/aggregating-storage.js', function () {
     })
 
     it('returns a list of unencrypted events, materializing aggregates when needed', function () {
-      var mockStorage = {
+      const mockStorage = {
         getAggregationSecret: sinon.stub().resolves(null),
         putAggregationSecret: sinon.stub().resolves(null),
         getRawEvents: sinon.stub().resolves(encrpytedEvents),
@@ -185,7 +185,7 @@ describe('src/aggregating-storage.js', function () {
         getEncryptedSecrets: sinon.stub().resolves(encryptedSecrets),
         putAggregate: sinon.stub().resolves(null)
       }
-      var storage = new aggregatingStorage.AggregatingStorage(mockStorage)
+      const storage = new aggregatingStorage.AggregatingStorage(mockStorage)
       return storage.getEvents({ accountId: 'account-id', publicJwk: publicJwk, privateJwk: privateJwk })
         .then(function (result) {
           assert.strictEqual(result.length, 3)
@@ -194,8 +194,8 @@ describe('src/aggregating-storage.js', function () {
   })
 
   describe('ensureAggregationSecret', function () {
-    var publicJwk
-    var privateJwk
+    let publicJwk
+    let privateJwk
     before(function () {
       return window.crypto.subtle.generateKey(
         {
@@ -220,11 +220,11 @@ describe('src/aggregating-storage.js', function () {
     })
 
     it('rejects when trying to look up an inexistent key without passing keys', function () {
-      var mockStorage = {
+      const mockStorage = {
         getAggregationSecret: sinon.stub().resolves(null),
         putAggregationSecret: sinon.stub().resolves(null)
       }
-      var ensureAggregationSecret = aggregatingStorage.ensureAggregationSecretWith(mockStorage)
+      const ensureAggregationSecret = aggregatingStorage.ensureAggregationSecretWith(mockStorage)
       return ensureAggregationSecret('account-id')
         .then(function () {
           throw new Error('Promise should not resolve')
@@ -236,11 +236,11 @@ describe('src/aggregating-storage.js', function () {
     })
 
     it('creates, persists and returns secrets per accountId', function () {
-      var mockStorage = {
+      const mockStorage = {
         getAggregationSecret: sinon.stub().resolves(null),
         putAggregationSecret: sinon.stub().resolves(null)
       }
-      var ensureAggregationSecret = aggregatingStorage.ensureAggregationSecretWith(mockStorage)
+      const ensureAggregationSecret = aggregatingStorage.ensureAggregationSecretWith(mockStorage)
       return ensureAggregationSecret('account-id', publicJwk, privateJwk)
         .then(function (key1) {
           return ensureAggregationSecret('account-id')
@@ -264,7 +264,7 @@ describe('src/aggregating-storage.js', function () {
 
   describe('aggregate(...events)', function () {
     it('aggregates objects of the same shape', function () {
-      var result = aggregatingStorage.aggregate([
+      const result = aggregatingStorage.aggregate([
         { type: 'foo', value: 12 },
         { type: 'bar', value: 44 }
       ])
@@ -275,7 +275,7 @@ describe('src/aggregating-storage.js', function () {
     })
 
     it('supports passing a normalization function', function () {
-      var result = aggregatingStorage.aggregate([
+      const result = aggregatingStorage.aggregate([
         { type: 'foo', payload: { value: 12 } },
         { type: 'bar', payload: { value: 44 } }
       ], function (item) {
@@ -291,7 +291,7 @@ describe('src/aggregating-storage.js', function () {
     })
 
     it('adds padding for undefined values', function () {
-      var result = aggregatingStorage.aggregate([
+      const result = aggregatingStorage.aggregate([
         { solo: [99] },
         { type: 'bar', value: 12, other: 'ok' },
         { type: 'baz', value: 14, extra: true }
@@ -308,7 +308,7 @@ describe('src/aggregating-storage.js', function () {
 
   describe('mergeAggregates(aggregates)', function () {
     it('merges aggregates of the same shape', function () {
-      var result = aggregatingStorage.mergeAggregates([
+      const result = aggregatingStorage.mergeAggregates([
         { type: ['a', 'b'], value: [true, false] },
         { type: ['x', 'y', 'z'], value: [1, 2, 3] }
       ])
@@ -319,7 +319,7 @@ describe('src/aggregating-storage.js', function () {
     })
 
     it('adds padding at the head', function () {
-      var result = aggregatingStorage.mergeAggregates([
+      const result = aggregatingStorage.mergeAggregates([
         { type: ['a', 'b'] },
         { type: ['x', 'y', 'z'], value: [1, 2, 3] }
       ])
@@ -330,7 +330,7 @@ describe('src/aggregating-storage.js', function () {
     })
 
     it('adds padding at the tail', function () {
-      var result = aggregatingStorage.mergeAggregates([
+      const result = aggregatingStorage.mergeAggregates([
         { type: ['a', 'b'], value: [1, 2] },
         { type: ['x', 'y', 'z'] },
         { other: [['ok']] }
@@ -345,7 +345,7 @@ describe('src/aggregating-storage.js', function () {
 
   describe('inflateAggregate(aggregates)', function () {
     it('deflates an aggregate into an array of objects', function () {
-      var result = aggregatingStorage.inflateAggregate({
+      const result = aggregatingStorage.inflateAggregate({
         type: ['thing', 'widget', 'roomba'],
         value: [[0], null, 'foo']
       })
@@ -364,7 +364,7 @@ describe('src/aggregating-storage.js', function () {
       })
     })
     it('supports passing a function for denormalizing items', function () {
-      var result = aggregatingStorage.inflateAggregate({
+      const result = aggregatingStorage.inflateAggregate({
         type: ['thing', 'widget', 'roomba'],
         value: [[0], null, 'foo']
       }, function (item) {
@@ -383,7 +383,7 @@ describe('src/aggregating-storage.js', function () {
 
   describe('removeFromAggregate(aggregate, keyRef, values)', function () {
     it('removes the matching indices from the given aggregate', function () {
-      var result = aggregatingStorage.removeFromAggregate({
+      const result = aggregatingStorage.removeFromAggregate({
         type: ['a', 'b', 'x', 'y', 'z'],
         value: [true, false, 1, 2, 3]
       }, 'type', ['x', 'z'])
@@ -396,11 +396,11 @@ describe('src/aggregating-storage.js', function () {
 
   describe('LockedAggregatesCache', function () {
     it('enables callers to lock a value until released', function () {
-      var cache = new aggregatingStorage.LockedAggregatesCache()
+      const cache = new aggregatingStorage.LockedAggregatesCache()
 
       function a () {
-        var obj
-        var release
+        let obj
+        let release
         return cache.acquireCache('test')
           .then(function (_obj) {
             obj = _obj.cache
@@ -417,8 +417,8 @@ describe('src/aggregating-storage.js', function () {
       function b () {
         return cache.acquireCache('test')
           .then(function (_obj) {
-            var obj = _obj.cache
-            var release = _obj.release
+            const obj = _obj.cache
+            const release = _obj.release
             obj.value += 'b'
             obj.value += 'x'
             release('test', obj)

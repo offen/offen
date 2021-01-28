@@ -47,7 +47,7 @@ const ConsoleView = (props) => {
               onValidationError={handleValidationError}
             />
           </div>
-        )
+          )
         : null}
       {adminLevel === ADMIN_LEVEL_ALLOW_EDIT
         ? (
@@ -56,7 +56,7 @@ const ConsoleView = (props) => {
               onCreateAccount={handleCreateAccount}
             />
           </div>
-        )
+          )
         : null}
       <div class='w-100 br0 br2-ns mb2'>
         <ChangeEmail

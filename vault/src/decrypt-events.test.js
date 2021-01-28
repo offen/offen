@@ -3,22 +3,22 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-var assert = require('assert')
-var Unibabel = require('unibabel').Unibabel
+const assert = require('assert')
+const Unibabel = require('unibabel').Unibabel
 
-var decryptEventsWith = require('./decrypt-events').decryptEventsWith
+const decryptEventsWith = require('./decrypt-events').decryptEventsWith
 
 describe('src/decrypt-events.js', function () {
   describe('decryptEvents', function () {
-    var decryptEvents = decryptEventsWith(null)
+    const decryptEvents = decryptEventsWith(null)
 
-    var encryptedEventPayload
-    var encryptedUserSecret
-    var accountKey
-    var privateJwk
-    var userSecret
-    var userJWK
-    var nonce
+    let encryptedEventPayload
+    let encryptedUserSecret
+    let accountKey
+    let privateJwk
+    let userSecret
+    let userJWK
+    let nonce
     before(function () {
       return window.crypto.subtle.generateKey(
         {

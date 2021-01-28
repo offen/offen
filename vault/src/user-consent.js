@@ -3,14 +3,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-var html = require('nanohtml')
-var raw = require('nanohtml/raw')
+const html = require('nanohtml')
+const raw = require('nanohtml/raw')
 
-var cookies = require('./cookie-tools')
+const cookies = require('./cookie-tools')
 
-var ALLOW = 'allow'
-var DENY = 'deny'
-var COOKIE_NAME = 'consent'
+const ALLOW = 'allow'
+const DENY = 'deny'
+const COOKIE_NAME = 'consent'
 
 exports.ALLOW = ALLOW
 exports.DENY = DENY
@@ -19,9 +19,9 @@ exports.askForConsent = askForConsent
 
 function askForConsent (styleHost) {
   return new Promise(function (resolve) {
-    var consentGiven = false
-    var stylesReady = new Promise(function (resolve) {
-      var styleSheet = html`
+    let consentGiven = false
+    const stylesReady = new Promise(function (resolve) {
+      const styleSheet = html`
         <link rel="stylesheet" href="/fonts.css">
         <link rel="stylesheet" href="/tachyons.min.css" onload="${resolve}">
         ${bannerStyles()}
@@ -67,16 +67,16 @@ function askForConsent (styleHost) {
     }
 
     function render () {
-      var host = document.body.querySelector('#host')
+      const host = document.body.querySelector('#host')
       stylesReady.then(function () {
-        var banner = bannerView(
+        const banner = bannerView(
           consentGiven,
           allowHandler,
           denyHandler,
           closeHandler
         )
         if (host.firstChild) {
-          var current = host.firstChild
+          const current = host.firstChild
           host.insertBefore(banner, current)
           adjustHostStyles(
             hostStylesVisible(styleHost.selector).innerHTML,
@@ -95,7 +95,7 @@ function askForConsent (styleHost) {
 }
 
 function bannerView (consentGiven, handleAllow, handleDeny, handleClose) {
-  var content
+  let content
   if (consentGiven) {
     content = html`
       <p class="tc mt0 mb2">
@@ -111,7 +111,7 @@ function bannerView (consentGiven, handleAllow, handleDeny, handleClose) {
       </div>
     `
   } else {
-    var learnMore = html`
+    const learnMore = html`
       <a target="_blank" rel="noopener" href="/" class="b normal link dim dark-gray">
         ${__('Learn more')}
       </a>
@@ -228,15 +228,15 @@ function hostStylesHidden (selector) {
 exports.get = getConsentStatus
 
 function getConsentStatus () {
-  var matches = cookies.parse(document.cookie)
+  const matches = cookies.parse(document.cookie)
   return matches[COOKIE_NAME] || null
 }
 
 exports.set = setConsentStatus
 
 function setConsentStatus (status) {
-  var expires = new Date(Date.now() + 100 * 365 * 24 * 60 * 60 * 1000)
-  var cookie = cookies.defaultCookie(COOKIE_NAME, status, { expires: expires })
+  const expires = new Date(Date.now() + 100 * 365 * 24 * 60 * 60 * 1000)
+  const cookie = cookies.defaultCookie(COOKIE_NAME, status, { expires: expires })
   document.cookie = cookies.serialize(cookie)
 }
 
@@ -244,8 +244,8 @@ exports.withConsentGiven = withConsentGiven
 
 function withConsentGiven (fn, returnVal) {
   return function () {
-    var args = [].slice.call(arguments)
-    var consent = getConsentStatus()
+    const args = [].slice.call(arguments)
+    const consent = getConsentStatus()
     if (consent !== ALLOW) {
       return returnVal
     }

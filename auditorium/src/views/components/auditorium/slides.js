@@ -15,10 +15,10 @@ const Slides = (props) => {
   })
   const nav = navigation
     ? navigation({
-      onChange: (idx) => setIndex(idx),
-      activeItem: index,
-      numItems: slides.length
-    })
+        onChange: (idx) => setIndex(idx),
+        activeItem: index,
+        numItems: slides.length
+      })
     : null
   return (
     <Fragment>

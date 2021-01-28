@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-var assert = require('assert')
+const assert = require('assert')
 
-var relayEventWith = require('./relay-event').relayEventWith
+const relayEventWith = require('./relay-event').relayEventWith
 
 describe('src/relay-event.js', function () {
   describe('relayEvent(accountId, event)', function () {
@@ -32,7 +32,7 @@ describe('src/relay-event.js', function () {
 
     it('sends an augmented and encrypted event payload to the server', function (done) {
       let err
-      var mockApi = {
+      const mockApi = {
         postEvent: function (accountId, payload) {
           try {
             assert(payload)
@@ -44,7 +44,7 @@ describe('src/relay-event.js', function () {
           return Promise.resolve()
         }
       }
-      var relayEvent = relayEventWith(mockApi, mockEnsureUserSecret)
+      const relayEvent = relayEventWith(mockApi, mockEnsureUserSecret)
       relayEvent('account-id-token', { payload: 'data' })
         .then(function () {
           done(err)
@@ -52,19 +52,19 @@ describe('src/relay-event.js', function () {
     })
 
     it('retries on a 400 error', function () {
-      var numCalled = 0
-      var mockApi = {
+      let numCalled = 0
+      const mockApi = {
         postEvent: function (event) {
           numCalled++
           if (numCalled === 1) {
-            var err = new Error('bad request')
+            const err = new Error('bad request')
             err.status = 400
             return Promise.reject(err)
           }
           return Promise.resolve()
         }
       }
-      var relayEvent = relayEventWith(mockApi, mockEnsureUserSecret)
+      const relayEvent = relayEventWith(mockApi, mockEnsureUserSecret)
       return relayEvent('account-id-token', { payload: 'data' })
         .then(function () {
           assert.strictEqual(numCalled, 2)
@@ -72,12 +72,12 @@ describe('src/relay-event.js', function () {
     })
 
     it('rejects on api failing', function (done) {
-      var mockApi = {
+      const mockApi = {
         postEvent: function (event) {
           return Promise.reject(new Error('Does not work.'))
         }
       }
-      var relayEvent = relayEventWith(mockApi, mockEnsureUserSecret)
+      const relayEvent = relayEventWith(mockApi, mockEnsureUserSecret)
       relayEvent('account-id-token', { payload: 'data' })
         .then(function () {
           done(new Error('Unexpected Promise resolution'))

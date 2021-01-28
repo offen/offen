@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-var assert = require('assert')
-var router = require('./router')
+const assert = require('assert')
+const router = require('./router')
 
 describe('src/router.js', function () {
   describe('router(vaultUrl)', function () {
     it('exposes a middleware enabled event emitter', function (done) {
-      var app = router(process.env.VAULT_HOST)
+      const app = router(process.env.VAULT_HOST)
       app.on('TEST', function (context, send, next) {
         context.other = true
         next()
@@ -34,9 +34,9 @@ describe('src/router.js', function () {
     })
 
     it('skips the stack on error', function (done) {
-      var app = router(process.env.VAULT_HOST)
+      const app = router(process.env.VAULT_HOST)
 
-      var timeout = setTimeout(function () {
+      const timeout = setTimeout(function () {
         done()
       }, 50)
 

@@ -18,10 +18,10 @@ exports.query = (data, authenticatedUser, softFailureMessage, inBackground) => (
   // in case a from and a to date are given but no resolution value, we try to
   // infer a value that makes sense to display
   if (data && data.from && data.to && !data.resolution) {
-    var toDate = new Date(data.to)
-    var fromDate = new Date(data.from)
-    var weeks = differenceInWeeks(toDate, fromDate)
-    var months = differenceInMonths(toDate, fromDate)
+    const toDate = new Date(data.to)
+    const fromDate = new Date(data.from)
+    const weeks = differenceInWeeks(toDate, fromDate)
+    const months = differenceInMonths(toDate, fromDate)
 
     // mobile and desktop screens use different rules
     if (window.matchMedia('screen and (min-width: 30em)')) {

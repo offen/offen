@@ -3,33 +3,33 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-var _ = require('underscore')
-var startOfHour = require('date-fns/start_of_hour')
-var startOfDay = require('date-fns/start_of_day')
-var startOfWeek = require('date-fns/start_of_week')
-var startOfMonth = require('date-fns/start_of_month')
-var endOfHour = require('date-fns/end_of_hour')
-var endOfDay = require('date-fns/end_of_day')
-var endOfWeek = require('date-fns/end_of_week')
-var endOfMonth = require('date-fns/end_of_month')
-var subMinutes = require('date-fns/sub_minutes')
-var subHours = require('date-fns/sub_hours')
-var subDays = require('date-fns/sub_days')
-var subWeeks = require('date-fns/sub_weeks')
-var subMonths = require('date-fns/sub_months')
-var diffHours = require('date-fns/difference_in_hours')
-var diffDays = require('date-fns/difference_in_days')
-var diffWeeks = require('date-fns/difference_in_weeks')
-var diffMonths = require('date-fns/difference_in_months')
-var startOfYesterday = require('date-fns/start_of_yesterday')
-var endOfYesterday = require('date-fns/end_of_yesterday')
+const _ = require('underscore')
+const startOfHour = require('date-fns/start_of_hour')
+const startOfDay = require('date-fns/start_of_day')
+const startOfWeek = require('date-fns/start_of_week')
+const startOfMonth = require('date-fns/start_of_month')
+const endOfHour = require('date-fns/end_of_hour')
+const endOfDay = require('date-fns/end_of_day')
+const endOfWeek = require('date-fns/end_of_week')
+const endOfMonth = require('date-fns/end_of_month')
+const subMinutes = require('date-fns/sub_minutes')
+const subHours = require('date-fns/sub_hours')
+const subDays = require('date-fns/sub_days')
+const subWeeks = require('date-fns/sub_weeks')
+const subMonths = require('date-fns/sub_months')
+const diffHours = require('date-fns/difference_in_hours')
+const diffDays = require('date-fns/difference_in_days')
+const diffWeeks = require('date-fns/difference_in_weeks')
+const diffMonths = require('date-fns/difference_in_months')
+const startOfYesterday = require('date-fns/start_of_yesterday')
+const endOfYesterday = require('date-fns/end_of_yesterday')
 
-var stats = require('./stats')
-var storage = require('./aggregating-storage')
-var eventSchema = require('./event.schema')
-var payloadSchema = require('./payload.schema')
+const stats = require('./stats')
+const storage = require('./aggregating-storage')
+const eventSchema = require('./event.schema')
+const payloadSchema = require('./payload.schema')
 
-var startOf = {
+const startOf = {
   hours: startOfHour,
   days: startOfDay,
   weeks: function (date) {
@@ -38,7 +38,7 @@ var startOf = {
   months: startOfMonth
 }
 
-var endOf = {
+const endOf = {
   hours: endOfHour,
   days: endOfDay,
   weeks: function (date) {
@@ -47,14 +47,14 @@ var endOf = {
   months: endOfMonth
 }
 
-var subtract = {
+const subtract = {
   hours: subHours,
   days: subDays,
   weeks: subWeeks,
   months: subMonths
 }
 
-var difference = {
+const difference = {
   hours: diffHours,
   days: diffDays,
   weeks: diffWeeks,
@@ -73,13 +73,13 @@ function Queries (storage) {
     }
 
     // resolution is the unit to group by when looking back
-    var resolution = (query && query.resolution) || 'days'
+    const resolution = (query && query.resolution) || 'days'
     if (['hours', 'days', 'weeks', 'months'].indexOf(resolution) < 0) {
       return Promise.reject(new Error('Unknown resolution value: ' + resolution))
     }
 
-    var fromParam
-    var toParam
+    let fromParam
+    let toParam
     try {
       fromParam = query && query.from && startOf[resolution](new Date(query.from))
       toParam = query && query.to && endOf[resolution](new Date(query.to))
@@ -95,7 +95,7 @@ function Queries (storage) {
 
     // range is the number of units the query looks back from the given
     // start day
-    var range = query && query.range
+    let range = query && query.range
     if (range !== 'yesterday') {
       range = parseInt(range || 7, 10)
     }
@@ -108,30 +108,30 @@ function Queries (storage) {
       range = Math.abs(difference[resolution](toParam, fromParam)) + 1
     }
 
-    var now = (query && query.now && new Date(query.now)) || new Date()
-    var lowerBound = fromParam || startOf[resolution](subtract[resolution](now, range - 1))
-    var upperBound = toParam || endOf[resolution](now)
+    const now = (query && query.now && new Date(query.now)) || new Date()
+    const lowerBound = fromParam || startOf[resolution](subtract[resolution](now, range - 1))
+    const upperBound = toParam || endOf[resolution](now)
 
-    var proxy = new GetEventsProxy(storage, accountId, publicJwk, privateJwk)
-    var allEvents = storage.getRawEvents(accountId)
-    var eventsInBounds = proxy.getEvents(lowerBound, upperBound)
-    var realtimeLowerBound = subMinutes(now, 15)
-    var realtimeUpperBound = now
-    var realtimeEvents = proxy.getEvents(realtimeLowerBound, realtimeUpperBound)
+    const proxy = new GetEventsProxy(storage, accountId, publicJwk, privateJwk)
+    const allEvents = storage.getRawEvents(accountId)
+    const eventsInBounds = proxy.getEvents(lowerBound, upperBound)
+    const realtimeLowerBound = subMinutes(now, 15)
+    const realtimeUpperBound = now
+    const realtimeEvents = proxy.getEvents(realtimeLowerBound, realtimeUpperBound)
     // `pageviews` is a list of basic metrics grouped by the given range
     // and resolution. It contains the number of pageviews, unique visitors
     // for operators and accounts for users.
-    var pageviews = Promise.all(Array.from({ length: range })
+    const pageviews = Promise.all(Array.from({ length: range })
       .map(function (num, distance) {
-        var date = subtract[resolution](toParam || now, distance)
+        const date = subtract[resolution](toParam || now, distance)
 
-        var lowerBound = startOf[resolution](date)
-        var upperBound = endOf[resolution](date)
-        var eventsInBounds = proxy.getEvents(lowerBound, upperBound)
+        const lowerBound = startOf[resolution](date)
+        const upperBound = endOf[resolution](date)
+        const eventsInBounds = proxy.getEvents(lowerBound, upperBound)
 
-        var pageviews = stats.pageviews(eventsInBounds)
-        var visitors = stats.visitors(eventsInBounds)
-        var accounts = stats.accounts(eventsInBounds)
+        const pageviews = stats.pageviews(eventsInBounds)
+        const visitors = stats.visitors(eventsInBounds)
+        const accounts = stats.accounts(eventsInBounds)
 
         return Promise.all([pageviews, visitors, accounts])
           .then(function (values) {
@@ -147,43 +147,43 @@ function Queries (storage) {
         return _.sortBy(days, 'date')
       })
 
-    var uniqueUsers = stats.visitors(eventsInBounds)
-    var uniqueAccounts = stats.accounts(eventsInBounds)
-    var returningUsers = stats.returningUsers(eventsInBounds, allEvents)
+    const uniqueUsers = stats.visitors(eventsInBounds)
+    const uniqueAccounts = stats.accounts(eventsInBounds)
+    const returningUsers = stats.returningUsers(eventsInBounds, allEvents)
 
-    var empty = storage.countEvents(accountId).then(function (count) {
+    const empty = storage.countEvents(accountId).then(function (count) {
       return count === 0
     })
 
-    var retentionChunks = []
-    for (var i = 0; i < 4; i++) {
-      var currentChunkLowerBound = subtract.days(now, (i + 1) * 7)
-      var currentChunkUpperBound = subtract.days(now, i * 7)
-      var chunk = proxy.getEvents(currentChunkLowerBound, currentChunkUpperBound)
+    let retentionChunks = []
+    for (let i = 0; i < 4; i++) {
+      const currentChunkLowerBound = subtract.days(now, (i + 1) * 7)
+      const currentChunkUpperBound = subtract.days(now, i * 7)
+      const chunk = proxy.getEvents(currentChunkLowerBound, currentChunkUpperBound)
       retentionChunks.push(chunk)
     }
     retentionChunks = retentionChunks.reverse()
-    var retentionMatrix = Promise.all(retentionChunks)
+    const retentionMatrix = Promise.all(retentionChunks)
       .then(function (chunks) {
         return stats.retention.apply(stats, chunks)
       })
 
-    var uniqueSessions = stats.uniqueSessions(eventsInBounds)
-    var bounceRate = stats.bounceRate(eventsInBounds)
-    var referrers = stats.referrers(eventsInBounds)
-    var pages = stats.pages(eventsInBounds)
-    var campaigns = stats.campaigns(eventsInBounds)
-    var sources = stats.sources(eventsInBounds)
-    var avgPageload = stats.avgPageload(eventsInBounds)
-    var avgPageDepth = stats.avgPageDepth(eventsInBounds)
-    var landingPages = stats.landingPages(eventsInBounds)
-    var exitPages = stats.exitPages(eventsInBounds)
-    var mobileShare = stats.mobileShare(eventsInBounds)
+    const uniqueSessions = stats.uniqueSessions(eventsInBounds)
+    const bounceRate = stats.bounceRate(eventsInBounds)
+    const referrers = stats.referrers(eventsInBounds)
+    const pages = stats.pages(eventsInBounds)
+    const campaigns = stats.campaigns(eventsInBounds)
+    const sources = stats.sources(eventsInBounds)
+    const avgPageload = stats.avgPageload(eventsInBounds)
+    const avgPageDepth = stats.avgPageDepth(eventsInBounds)
+    const landingPages = stats.landingPages(eventsInBounds)
+    const exitPages = stats.exitPages(eventsInBounds)
+    const mobileShare = stats.mobileShare(eventsInBounds)
 
-    var livePages = stats.activePages(realtimeEvents)
-    var liveUsers = stats.visitors(realtimeEvents)
+    const livePages = stats.activePages(realtimeEvents)
+    const liveUsers = stats.visitors(realtimeEvents)
 
-    var onboardingStats = accountId
+    const onboardingStats = accountId
       ? null
       : stats.onboardingStats(allEvents.then(function (result) {
         return _.map(result, validateAndParseEvent)
@@ -254,7 +254,7 @@ function postProcessResult (resolution, range) {
 }
 
 function GetEventsProxy (storage, accountId, publicJwk, privateJwk) {
-  var calls = []
+  const calls = []
   this.getEvents = function (lowerBound, upperBound) {
     return new Promise(function (resolve) {
       calls.push({
@@ -266,9 +266,9 @@ function GetEventsProxy (storage, accountId, publicJwk, privateJwk) {
   }
 
   this.call = function () {
-    var maxUpperBound = _.last(_.sortBy(_.pluck(calls, 'upperBound'), _.identity))
-    var minLowerBound = _.head(_.sortBy(_.pluck(calls, 'lowerBound'), _.identity))
-    var allEvents = storage.getEvents({
+    const maxUpperBound = _.last(_.sortBy(_.pluck(calls, 'upperBound'), _.identity))
+    const minLowerBound = _.head(_.sortBy(_.pluck(calls, 'lowerBound'), _.identity))
+    const allEvents = storage.getEvents({
       accountId: accountId,
       privateJwk: privateJwk,
       publicJwk: publicJwk
@@ -278,8 +278,8 @@ function GetEventsProxy (storage, accountId, publicJwk, privateJwk) {
       })
     _.each(calls, function (call) {
       call.resolve(allEvents.then(function (events) {
-        var upperBoundAsId = call.upperBound && storage.toUpperBound(call.upperBound)
-        var lowerBoundAsId = call.lowerBound && storage.toLowerBound(call.lowerBound)
+        const upperBoundAsId = call.upperBound && storage.toUpperBound(call.upperBound)
+        const lowerBoundAsId = call.lowerBound && storage.toLowerBound(call.lowerBound)
         return _.filter(events, function (event) {
           return lowerBoundAsId <= event.eventId && event.eventId <= upperBoundAsId
         })
@@ -293,7 +293,7 @@ function validateAndParseEvent (event) {
   if (!eventSchema(event) || !payloadSchema(event.payload)) {
     return null
   }
-  var clone = JSON.parse(JSON.stringify(event))
+  const clone = JSON.parse(JSON.stringify(event))
 
   ;['href', 'rawHref', 'referrer'].forEach(function (key) {
     clone.payload[key] = clone.payload[key] && normalizeURL(clone.payload[key])
@@ -302,9 +302,9 @@ function validateAndParseEvent (event) {
   return clone
 }
 
-var normalizeURL = _.memoize(_normalizeURL)
+const normalizeURL = _.memoize(_normalizeURL)
 function _normalizeURL (urlString) {
-  var url = new window.URL(urlString)
+  const url = new window.URL(urlString)
   if (!/\/$/.test(url.pathname)) {
     url.pathname += '/'
   }

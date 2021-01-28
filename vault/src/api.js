@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-var path = require('path')
-var handleFetchResponse = require('offen/fetch-response')
+const path = require('path')
+const handleFetchResponse = require('offen/fetch-response')
 
 exports.getAccount = getAccountWith(window.location.origin + '/api/accounts')
 exports.getAccountWith = getAccountWith
@@ -12,7 +12,7 @@ exports.getAccountWith = getAccountWith
 function getAccountWith (accountsUrl) {
   return function (accountId, params) {
     params = params || {}
-    var url = new window.URL(accountsUrl + '/' + accountId)
+    const url = new window.URL(accountsUrl + '/' + accountId)
     url.search = new window.URLSearchParams(params)
     return window
       .fetch(url, {
@@ -28,7 +28,7 @@ exports.getEventsWith = getEventsWith
 
 function getEventsWith (accountsUrl) {
   return function (query) {
-    var url = new window.URL(accountsUrl)
+    const url = new window.URL(accountsUrl)
     if (query) {
       url.search = new window.URLSearchParams(query)
     }
@@ -54,7 +54,7 @@ exports.postEventWith = postEventWith
 
 function postEventWith (eventsUrl) {
   return function (accountId, payload) {
-    var url = new window.URL(eventsUrl)
+    const url = new window.URL(eventsUrl)
     return window
       .fetch(url, {
         method: 'POST',
@@ -73,7 +73,7 @@ exports.getDeletedEventsWith = getDeletedEventsWith
 
 function getDeletedEventsWith (deletedEventsUrl) {
   return function (eventIds, isUser) {
-    var url = new window.URL(deletedEventsUrl)
+    const url = new window.URL(deletedEventsUrl)
     if (isUser) {
       url.pathname += '/user'
     }
@@ -94,7 +94,7 @@ exports.getPublicKeyWith = getPublicKeyWith
 
 function getPublicKeyWith (exchangeUrl) {
   return function (accountId) {
-    var url = new window.URL(exchangeUrl)
+    const url = new window.URL(exchangeUrl)
     url.search = new window.URLSearchParams({ accountId: accountId })
     return window
       .fetch(url, {
@@ -130,15 +130,15 @@ function loginWith (loginUrl) {
   return function (username, password) {
     return (username && password)
       ? window
-        .fetch(loginUrl, {
-          method: 'POST',
-          credentials: 'include',
-          body: JSON.stringify({
-            username: username,
-            password: password
+          .fetch(loginUrl, {
+            method: 'POST',
+            credentials: 'include',
+            body: JSON.stringify({
+              username: username,
+              password: password
+            })
           })
-        })
-        .then(handleFetchResponse)
+          .then(handleFetchResponse)
       : window
         .fetch(loginUrl, {
           method: 'GET',
@@ -239,7 +239,7 @@ exports.purgeWith = purgeWith
 
 function purgeWith (purgeUrl) {
   return function (deleteUserCookie) {
-    var url = new window.URL(purgeUrl)
+    const url = new window.URL(purgeUrl)
     if (deleteUserCookie) {
       url.search = new window.URLSearchParams({ user: '1' })
     }
@@ -257,7 +257,7 @@ exports.shareAccountWith = shareAccountWith
 
 function shareAccountWith (inviteUrl) {
   return function (invitee, emailAddress, password, urlTemplate, accountId, grantAdminPrivileges) {
-    var url = new window.URL(inviteUrl)
+    const url = new window.URL(inviteUrl)
     if (accountId) {
       url.pathname = path.join(url.pathname, accountId)
     }

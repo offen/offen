@@ -3,19 +3,19 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-var _ = require('underscore')
+const _ = require('underscore')
 
-var api = require('./api')
-var queries = require('./queries')
-var storage = require('./aggregating-storage')
-var bindCrypto = require('./bind-crypto')
+const api = require('./api')
+const queries = require('./queries')
+const storage = require('./aggregating-storage')
+const bindCrypto = require('./bind-crypto')
 
 module.exports = getOperatorEventsWith(queries, storage, api)
 module.exports.getOperatorEventsWith = getOperatorEventsWith
 
 function getOperatorEventsWith (queries, eventStore, api) {
   return function (query, authenticatedUser) {
-    var matchingAccount = _.findWhere(authenticatedUser.accounts, { accountId: query.accountId })
+    const matchingAccount = _.findWhere(authenticatedUser.accounts, { accountId: query.accountId })
     if (!matchingAccount) {
       return Promise.reject(
         new Error('No matching key found for account with id ' + query.accountId)
@@ -37,14 +37,14 @@ function fetchOperatorEventsWith (api) {
   return function (accountId, params) {
     return api.getAccount(accountId, params)
       .then(function (account) {
-        var returnedSecrets = Object.keys(account.secrets || {})
+        const returnedSecrets = Object.keys(account.secrets || {})
           .map(function (secretId) {
             return [secretId, account.secrets[secretId]]
           })
           .filter(function (pair) {
             return pair[1]
           })
-        var returnedEvents = _.flatten(Object.values(account.events || {}), true)
+        const returnedEvents = _.flatten(Object.values(account.events || {}), true)
         return {
           events: returnedEvents,
           encryptedSecrets: returnedSecrets,
@@ -56,10 +56,10 @@ function fetchOperatorEventsWith (api) {
 
 function ensureSyncWith (eventStore, api) {
   return bindCrypto(function (accountId, keyEncryptionJwk) {
-    var decryptKey = this.decryptSymmetricWith(keyEncryptionJwk)
+    const decryptKey = this.decryptSymmetricWith(keyEncryptionJwk)
     return eventStore.getLastKnownCheckpoint(accountId)
       .then(function (checkpoint) {
-        var params = checkpoint
+        const params = checkpoint
           ? { since: checkpoint }
           : null
 
@@ -77,8 +77,8 @@ function ensureSyncWith (eventStore, api) {
                 : null
             ])
               .then(function (results) {
-                var privateKey = results[0]
-                var result = Object.assign(payload.account, {
+                const privateKey = results[0]
+                const result = Object.assign(payload.account, {
                   privateKey: privateKey
                 })
                 return result

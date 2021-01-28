@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-var bindCrypto = require('./bind-crypto')
-var ensureUserSecret = require('./user-secret')
-var api = require('./api')
+const bindCrypto = require('./bind-crypto')
+const ensureUserSecret = require('./user-secret')
+const api = require('./api')
 
 module.exports = relayEventWith(api, ensureUserSecret)
 module.exports.relayEventWith = relayEventWith
@@ -14,11 +14,11 @@ module.exports.relayEventWith = relayEventWith
 // the given accountId. It ensures a local user secret exists for the given
 // accountId and uses it to encrypt the event payload before performing the request.
 function relayEventWith (api, ensureUserSecret) {
-  var relayEvent = bindCrypto(function (accountId, payload) {
-    var crypto = this
+  const relayEvent = bindCrypto(function (accountId, payload) {
+    const crypto = this
     // `flush` is not supposed to be part of the public signature, but will only
     // be used when the function recursively calls itself
-    var flush = arguments[2] || false
+    const flush = arguments[2] || false
     return ensureUserSecret(accountId, flush)
       .then(crypto.encryptSymmetricWith)
       .then(function (encryptEventPayload) {

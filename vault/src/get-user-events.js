@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-var api = require('./api')
-var bindCrypto = require('./bind-crypto')
-var queries = require('./queries')
-var storage = require('./aggregating-storage')
+const api = require('./api')
+const bindCrypto = require('./bind-crypto')
+const queries = require('./queries')
+const storage = require('./aggregating-storage')
 
-var LOCAL_SECRET_ID = 'local'
+const LOCAL_SECRET_ID = 'local'
 
 module.exports = getUserEventsWith(queries, storage, api)
 module.exports.getUserEventsWith = getUserEventsWith
@@ -29,7 +29,7 @@ function ensureSyncWith (eventStore, api) {
   return function () {
     return eventStore.getLastKnownCheckpoint(null)
       .then(function (checkpoint) {
-        var params = checkpoint
+        const params = checkpoint
           ? { since: checkpoint }
           : null
         return api.getEvents(params)
@@ -42,7 +42,7 @@ function ensureSyncWith (eventStore, api) {
             throw err
           })
           .then(function (payload) {
-            var events = payload.events
+            const events = payload.events
             return Promise.all([
               decryptUserEventsWith(eventStore)(events),
               payload.sequence
@@ -55,7 +55,7 @@ function ensureSyncWith (eventStore, api) {
           })
       })
       .then(function (results) {
-        var events = results[0].map(function (event) {
+        const events = results[0].map(function (event) {
           // User events come without any userId or secretId attached as it's
           // implicitly ensured it is always the same value and saving it locally
           // would just create a possible leak of identifiers. We need to index on
@@ -72,10 +72,10 @@ function ensureSyncWith (eventStore, api) {
 
 function decryptUserEventsWith (eventStore) {
   return bindCrypto(function (eventsByAccountId) {
-    var crypto = this
-    var decrypted = Object.keys(eventsByAccountId)
+    const crypto = this
+    const decrypted = Object.keys(eventsByAccountId)
       .map(function (accountId) {
-        var withSecret = eventStore.getUserSecret(accountId)
+        const withSecret = eventStore.getUserSecret(accountId)
           .then(function (jwk) {
             if (!jwk) {
               return function () {
@@ -85,7 +85,7 @@ function decryptUserEventsWith (eventStore) {
             return crypto.decryptSymmetricWith(jwk)
           })
 
-        var events = eventsByAccountId[accountId]
+        const events = eventsByAccountId[accountId]
         return events.map(function (event) {
           return withSecret
             .then(function (decryptEventPayload) {

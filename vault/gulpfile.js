@@ -3,30 +3,30 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-var fs = require('fs')
-var crypto = require('crypto')
-var gulp = require('gulp')
-var clean = require('gulp-clean')
-var browserify = require('browserify')
-var source = require('vinyl-source-stream')
-var rev = require('gulp-rev')
-var buffer = require('vinyl-buffer')
-var revReplace = require('gulp-rev-replace')
-var sriHash = require('gulp-sri-hash')
-var gap = require('gulp-append-prepend')
-var to = require('flush-write-stream')
-var tinyify = require('tinyify')
-var minifyStream = require('minify-stream')
+const fs = require('fs')
+const crypto = require('crypto')
+const gulp = require('gulp')
+const clean = require('gulp-clean')
+const browserify = require('browserify')
+const source = require('vinyl-source-stream')
+const rev = require('gulp-rev')
+const buffer = require('vinyl-buffer')
+const revReplace = require('gulp-rev-replace')
+const sriHash = require('gulp-sri-hash')
+const gap = require('gulp-append-prepend')
+const to = require('flush-write-stream')
+const tinyify = require('tinyify')
+const minifyStream = require('minify-stream')
 
-var defaultLocale = 'en'
-var linguas = fs.readFileSync('./locales/LINGUAS', 'utf-8')
+const defaultLocale = 'en'
+const linguas = fs.readFileSync('./locales/LINGUAS', 'utf-8')
   .split(' ')
   .filter(Boolean)
   .map(function (s) {
     return s.trim()
   })
 
-var pkg = require('./package.json')
+const pkg = require('./package.json')
 
 gulp.task('clean:pre', function () {
   return gulp
@@ -49,12 +49,12 @@ gulp.task('default', gulp.series(
 ))
 
 function createLocalizedBundle (locale) {
-  var dest = './dist/' + locale + '/vault/'
-  var scriptTask = makeScriptTask(dest, locale)
+  const dest = './dist/' + locale + '/vault/'
+  const scriptTask = makeScriptTask(dest, locale)
   scriptTask.displayName = 'script:' + locale
-  var vendorTask = makeVendorTask(dest)
+  const vendorTask = makeVendorTask(dest)
   vendorTask.displayName = 'vendor:' + locale
-  var revReplaceTask = makeRevReplaceTask(dest)
+  const revReplaceTask = makeRevReplaceTask(dest)
   revReplaceTask.displayName = 'revreplace:' + locale
 
   return gulp.series(
@@ -65,8 +65,8 @@ function createLocalizedBundle (locale) {
 
 function makeScriptTask (dest, locale) {
   return function () {
-    var transforms = JSON.parse(JSON.stringify(pkg.browserify.transform))
-    var b = browserify({
+    const transforms = JSON.parse(JSON.stringify(pkg.browserify.transform))
+    const b = browserify({
       entries: './index.js',
       // See: https://github.com/nikku/karma-browserify/issues/130#issuecomment-120036815
       postFilter: function (id, file, currentPkg) {
@@ -96,7 +96,7 @@ function makeScriptTask (dest, locale) {
         },
         sri: 'sha384',
         output: function (bundleName) {
-          var buf = ''
+          let buf = ''
           return to(onwrite, onend)
 
           function onwrite (chunk, enc, cb) {
@@ -105,8 +105,8 @@ function makeScriptTask (dest, locale) {
           }
 
           function onend (cb) {
-            var hash = crypto.createHash('sha1').update(buf)
-            var name = bundleName.replace(/\.js$/, '') + '-' + hash.digest('hex').slice(0, 10) + '.js'
+            const hash = crypto.createHash('sha1').update(buf)
+            const name = bundleName.replace(/\.js$/, '') + '-' + hash.digest('hex').slice(0, 10) + '.js'
             this.emit('name', name)
             fs.writeFile(dest + name, buf, cb)
           }
@@ -130,7 +130,7 @@ function makeScriptTask (dest, locale) {
 
 function makeVendorTask (dest) {
   return function () {
-    var b = browserify()
+    const b = browserify()
 
     return b
       .require('dexie')

@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-var consentStatus = require('./user-consent')
-var getSessionId = require('./session-id')
+const consentStatus = require('./user-consent')
+const getSessionId = require('./session-id')
 
 exports.optIn = optIn
 
@@ -30,7 +30,7 @@ function optIn (event, respond, next) {
         })
     })
     .then(function (result) {
-      var status = result.status
+      const status = result.status
       if (result.persist) {
         consentStatus.set(status)
       }
@@ -50,14 +50,14 @@ function eventDuplexer (event, respond, next) {
   // eventDuplexerMiddleware adds properties to an event that could be subject to spoofing
   // or unwanted access by 3rd parties in "script". For example adding the session id
   // here instead of the script prevents other scripts from reading this value.
-  var now = new Date()
+  const now = new Date()
   Object.assign(event.data.payload.event, {
     timestamp: now,
     sessionId: getSessionId(event.data.payload.accountId)
   })
   // strip search parameters from referrers as they might contain sensitive information
   if (event.data.payload.event.referrer) {
-    var cleanedReferrer = new window.URL(event.data.payload.event.referrer)
+    const cleanedReferrer = new window.URL(event.data.payload.event.referrer)
     cleanedReferrer.search = ''
     event.data.payload.event.referrer = cleanedReferrer.toString()
   }

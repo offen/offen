@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-var _ = require('underscore')
+const _ = require('underscore')
 
 module.exports = _.memoize(mapToBuckets)
 
-var buckets = [
+const buckets = [
   {
     re: /^(www\.)?google\.[a-z]/,
     name: 'Google'
@@ -71,7 +71,7 @@ var buckets = [
 ]
 
 function mapToBuckets (referrerValue) {
-  var bucket = _.find(buckets, function (b) {
+  const bucket = _.find(buckets, function (b) {
     return b.re.test(referrerValue)
   })
   return (bucket && bucket.name) || referrerValue

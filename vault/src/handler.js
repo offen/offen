@@ -3,22 +3,22 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-var api = require('./api')
-var storage = require('./storage')
-var relayEvent = require('./relay-event')
-var consentStatus = require('./user-consent')
-var onboardingStatus = require('./onboarding-status')
-var allowsCookies = require('./allows-cookies')
-var getUserEvents = require('./get-user-events')
-var getOperatorEvents = require('./get-operator-events')
+const api = require('./api')
+const storage = require('./storage')
+const relayEvent = require('./relay-event')
+const consentStatus = require('./user-consent')
+const onboardingStatus = require('./onboarding-status')
+const allowsCookies = require('./allows-cookies')
+const getUserEvents = require('./get-user-events')
+const getOperatorEvents = require('./get-operator-events')
 
 exports.handleAnalyticsEvent = handleAnalyticsEventWith(relayEvent)
 exports.handleAnalyticsEventWith = handleAnalyticsEventWith
 
 function handleAnalyticsEventWith (relayEvent) {
   return function (message) {
-    var accountId = message.payload.accountId
-    var event = message.payload.event
+    const accountId = message.payload.accountId
+    const event = message.payload.event
     return relayEvent(accountId, event, false)
   }
 }
@@ -43,12 +43,12 @@ exports.handleExpressConsentWith = handleExpressConsentWith
 
 function handleExpressConsentWith (api, storage, getConsentStatus) {
   return function (message) {
-    var status = message.payload.status
+    const status = message.payload.status
     if ([consentStatus.ALLOW, consentStatus.DENY].indexOf(status) < 0) {
       return Promise.reject(new Error('Received invalid consent status: ' + status))
     }
     consentStatus.set(status)
-    var maybePurge = status === consentStatus.ALLOW
+    const maybePurge = status === consentStatus.ALLOW
       ? Promise.resolve()
       : Promise.all([
         api
@@ -80,15 +80,15 @@ exports.handleQueryWith = handleQueryWith
 
 function handleQueryWith (getUserEvents, getOperatorEvents) {
   return function (message) {
-    var query = message.payload
+    const query = message.payload
       ? message.payload.query
       : null
 
-    var authenticatedUser = message.payload
+    const authenticatedUser = message.payload
       ? message.payload.authenticatedUser
       : null
 
-    var lookup = (query && query.accountId)
+    const lookup = (query && query.accountId)
       ? getOperatorEvents(query, authenticatedUser)
       : getUserEvents(query)
 
@@ -109,7 +109,7 @@ exports.handlePurge = handlePurgeWith(api, storage, getUserEvents, getOperatorEv
 exports.handlePurgeWith = handlePurgeWith
 
 function handlePurgeWith (api, storage, getUserEvents, getOperatorEvents) {
-  var handleQuery = handleQueryWith(getUserEvents, getOperatorEvents)
+  const handleQuery = handleQueryWith(getUserEvents, getOperatorEvents)
   return function handlePurge (message) {
     return Promise.all([
       api
@@ -177,8 +177,8 @@ exports.handleLoginWith = handleLoginWith
 
 function handleLoginWith (api, get, set) {
   return function (message) {
-    var credentials = (message.payload && message.payload.credentials) || null
-    var args = credentials ? [credentials.username, credentials.password] : []
+    const credentials = (message.payload && message.payload.credentials) || null
+    const args = credentials ? [credentials.username, credentials.password] : []
     return api.login.apply(api, args)
       .then(function (response) {
         if (credentials) {
@@ -187,12 +187,12 @@ function handleLoginWith (api, get, set) {
         return get()
           .then(function (storedResponse) {
             if (!storedResponse) {
-              var noSessionErr = new Error('No local session found')
+              const noSessionErr = new Error('No local session found')
               noSessionErr.status = 401
               throw noSessionErr
             }
             if (response.accountUserId !== storedResponse.accountUserId) {
-              var mismatchErr = new Error('Received account user id did not match local session')
+              const mismatchErr = new Error('Received account user id did not match local session')
               mismatchErr.status = 401
               throw mismatchErr
             }
@@ -224,7 +224,7 @@ exports.handleChangeCredentialsWith = handleChangeCredentialsWith
 
 function handleChangeCredentialsWith (api) {
   return proxyThunk(function (payload) {
-    var doRequest = function () {
+    let doRequest = function () {
       return Promise.reject(new Error('Could not match message payload.'))
     }
     if (payload.currentPassword && payload.changedPassword) {
@@ -376,7 +376,7 @@ function proxyThunk (thunk) {
 
 function getFromSessionStorage () {
   try {
-    var persisted = window.sessionStorage.getItem('session')
+    const persisted = window.sessionStorage.getItem('session')
     return Promise.resolve(JSON.parse(persisted))
   } catch (err) {
     return Promise.reject(err)
@@ -385,7 +385,7 @@ function getFromSessionStorage () {
 
 function setInSessionStorage (value) {
   try {
-    var serialized = JSON.stringify(value)
+    const serialized = JSON.stringify(value)
     window.sessionStorage.setItem('session', serialized)
     return Promise.resolve(value)
   } catch (err) {

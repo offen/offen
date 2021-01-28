@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-var Dexie = require('dexie')
+const Dexie = require('dexie')
 
 module.exports = getDatabase
 
@@ -17,7 +17,7 @@ function getDatabase (name) {
 }
 
 function createDatabase (name) {
-  var db = new Dexie(name)
+  const db = new Dexie(name)
 
   // Version 3 adds an `aggregates` table without any further changes.
   db.version(3).stores({

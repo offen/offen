@@ -36,7 +36,7 @@ const RetentionTable = (props) => {
   const { model, showExplainer, explainerActive, onExplain } = props
   const matrix = model.retentionMatrix
   const rows = matrix.map(function (row, index) {
-    var elements = row.slice()
+    const elements = row.slice()
     while (elements.length < matrix[0].length) {
       elements.push(null)
     }
@@ -74,7 +74,7 @@ const RetentionTable = (props) => {
             <Paragraph class='mw7 ma0 pv2'>
               {__('This panel displays your recurring visits of pages of the <a href="#terms-offen-installation" class="%s">Offen installation</a> during the last 4 weeks. For each of the previous weeks, the percentage is calculated from the value of the current week.', 'b link dim dark-green')}
             </Paragraph>
-          )
+            )
           : null}
       </div>
       <table class='w-100 collapse dt--fixed f6 f5-ns mt3 mb4'>

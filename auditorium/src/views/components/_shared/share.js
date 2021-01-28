@@ -18,9 +18,9 @@ const Share = (props) => {
   const { headline, subline, accountId, onValidationError, onShare, collapsible } = props
   const [isDisabled, setIsDisabled] = useState(false)
   function handleSubmit (formData, resetForm) {
-    var invitee = formData.invitee
-    var emailAddress = formData['email-address']
-    var grantAdminPrivileges = formData['admin-privileges'] === 'on'
+    const invitee = formData.invitee
+    const emailAddress = formData['email-address']
+    const grantAdminPrivileges = formData['admin-privileges'] === 'on'
 
     if (invitee === emailAddress) {
       onValidationError(
@@ -71,7 +71,7 @@ const Share = (props) => {
               aria-label={__('Toggle display of %s functionality', headline)}
               class={classnames('dib', 'label-toggle', isCollapsed ? 'label-toggle--rotate' : null)}
             />
-          )
+            )
           : null}
       </div>
     )
@@ -91,7 +91,7 @@ const Share = (props) => {
                     <Paragraph class='ma0 mb3'>
                       {subline}
                     </Paragraph>
-                  )
+                    )
                   : null}
                 <LabeledInput
                   autocomplete='off'
@@ -168,7 +168,7 @@ const Share = (props) => {
             {renderHeader()}
             {renderBody()}
           </Fragment>
-        )}
+          )}
     </div>
   )
 }

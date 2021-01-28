@@ -3,18 +3,18 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-var fs = require('fs')
-var gulp = require('gulp')
-var clean = require('gulp-clean')
-var gap = require('gulp-append-prepend')
-var buffer = require('vinyl-buffer')
-var source = require('vinyl-source-stream')
-var browserify = require('browserify')
+const fs = require('fs')
+const gulp = require('gulp')
+const clean = require('gulp-clean')
+const gap = require('gulp-append-prepend')
+const buffer = require('vinyl-buffer')
+const source = require('vinyl-source-stream')
+const browserify = require('browserify')
 
-var pkg = require('./package.json')
+const pkg = require('./package.json')
 
-var defaultLocale = 'en'
-var linguas = fs.readFileSync('./locales/LINGUAS', 'utf-8')
+const defaultLocale = 'en'
+const linguas = fs.readFileSync('./locales/LINGUAS', 'utf-8')
   .split(' ')
   .filter(Boolean)
   .map(function (s) {
@@ -42,8 +42,8 @@ gulp.task('default', gulp.series(
 ))
 
 function createLocalizedBundle (locale) {
-  var dest = './dist/' + locale + '/'
-  var scriptTask = makeScriptTask(dest, locale)
+  const dest = './dist/' + locale + '/'
+  const scriptTask = makeScriptTask(dest, locale)
   scriptTask.displayName = 'script:' + locale
 
   return scriptTask
@@ -51,8 +51,8 @@ function createLocalizedBundle (locale) {
 
 function makeScriptTask (dest, locale) {
   return function () {
-    var transforms = JSON.parse(JSON.stringify(pkg.browserify.transform))
-    var b = browserify({
+    const transforms = JSON.parse(JSON.stringify(pkg.browserify.transform))
+    const b = browserify({
       entries: './index.js',
       // See: https://github.com/nikku/karma-browserify/issues/130#issuecomment-120036815
       postFilter: function (id, file, currentPkg) {

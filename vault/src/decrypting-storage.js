@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-var _ = require('underscore')
-var ULID = require('ulid')
+const _ = require('underscore')
+const ULID = require('ulid')
 
-var storage = require('./storage')
-var decryptEvents = require('./decrypt-events')
+const storage = require('./storage')
+const decryptEvents = require('./decrypt-events')
 
 module.exports = new DecryptingStorage(storage)
 module.exports.EventStore = DecryptingStorage
@@ -20,14 +20,14 @@ function DecryptingStorage (storage) {
   _.extend(this, storage)
 
   this.getEvents = function (account, lowerBound, upperBound) {
-    var accountId = account && account.accountId
-    var lowerBoundAsId = lowerBound && toLowerBound(lowerBound)
-    var upperBoundAsId = upperBound && toUpperBound(upperBound)
+    const accountId = account && account.accountId
+    const lowerBoundAsId = lowerBound && toLowerBound(lowerBound)
+    const upperBoundAsId = upperBound && toUpperBound(upperBound)
     if (!accountId) {
       return storage.getRawEvents(accountId, lowerBoundAsId, upperBoundAsId)
     }
 
-    var privateJwk = account && account.privateJwk
+    const privateJwk = account && account.privateJwk
 
     return Promise.all([
       storage.getRawEvents(
@@ -37,8 +37,8 @@ function DecryptingStorage (storage) {
       ),
       storage.getEncryptedSecrets(accountId)
     ]).then(function (results) {
-      var encryptedEvents = results[0]
-      var encryptedSecrets = results[1]
+      const encryptedEvents = results[0]
+      const encryptedSecrets = results[1]
       return decryptEvents(encryptedEvents, encryptedSecrets, privateJwk)
     })
   }

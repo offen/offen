@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-var assert = require('assert')
+const assert = require('assert')
 
-var webCrypto = require('./web-crypto')
+const webCrypto = require('./web-crypto')
 
 module.exports = enqueueCryptoTests
 
@@ -27,7 +27,7 @@ function enqueueCryptoTests (crypto, src) {
       })
 
       it('encrypts and decrypts string values', function () {
-        var jwk
+        let jwk
         return crypto
           .createSymmetricKey()
           .then(function (_jwk) {
@@ -43,7 +43,7 @@ function enqueueCryptoTests (crypto, src) {
       })
 
       it('encrypts and decrypts string values without serializing', function () {
-        var jwk
+        let jwk
         return crypto
           .createSymmetricKey()
           .then(function (_jwk) {
@@ -59,7 +59,7 @@ function enqueueCryptoTests (crypto, src) {
       })
 
       it('encrypts and decrypts string values using compression', function () {
-        var jwk
+        let jwk
         return crypto
           .createSymmetricKey()
           .then(function (_jwk) {
@@ -75,7 +75,7 @@ function enqueueCryptoTests (crypto, src) {
       })
 
       it('encrypts and decrypts string values using compression', function () {
-        var jwk
+        let jwk
         return crypto
           .createSymmetricKey()
           .then(function (_jwk) {
@@ -91,7 +91,7 @@ function enqueueCryptoTests (crypto, src) {
       })
 
       it('encrypts and decrypts javascript objects by default', function () {
-        var jwk
+        let jwk
         return crypto
           .createSymmetricKey()
           .then(function (_jwk) {
@@ -108,13 +108,13 @@ function enqueueCryptoTests (crypto, src) {
     })
 
     describe('assymmetric encryption', function () {
-      var publicJWK = {
+      const publicJWK = {
         e: 'AQAB',
         kty: 'RSA',
         n: 'mz7c1Obxs2gzkqXsPEt1NiijdCPmrcIy_sbJUzKrqh_OcXnBTiipr8stRrBIR52niUSpi9H2kzHu7g1tVbRZEOBj9eYZ2YoEvotrIPcp1D0h6IwVb9LOw59FUvCAMHe_fhC0ERgnlm73bgEURFVzuowSAtmEQe56xLZ4YA4-LyHg0UryVWovpv356E3gxZXz4E7FM8QeyWb_9SylcMwQgHm9Jmdw7L-tuVSe6I40TzlUDd-vVKk_O_WAMIaocrXkAQfv3gzhoZFqR6Lj4w7P8EJNzuXFI_onqW8B1skhaLQJXjDdZwyudrTCbL3zk7AGZq2W9qdi9YiKAzWOz8XThZq8LN4rXwYBRok8Aws0VywrhDfF3CABmlZPnSfTfejPnHWnO_mnDGFtt-x0sJoju0yLROUw2M9TnOWjqwG5QrBevZqS5U_uJtmQ5gvDa_X7gEACcK86Gt3BYBQCfseK2vtO7Lr1ihgiyoe__f_ldEVkuYAcCUEf7Mm5pywBudz8S4sTAk1GLEDtU4LcaQNMknFgTVjUSNMHqgYAnc5rX7vLJlkfikRsXXL2I_JeStm7nwYPkvC3wsaxwPXWD6n8dpHgDMXncXGQoN3PRlFCJboUCuKj56x8kiewKE7tHUEjVj-swuygR4SOt-FEys3z-8KrWYezJrmSjyCr1rkh6Y8'
       }
 
-      var privateJWK = {
+      const privateJWK = {
         d: 'AmxdyBj-xt0miPB8GojXAIxr2MFCtY2lfCKgO-M7mME8WLsc0FqEI5FZWJQh3LRSTCs9NkiFv9B0uVSOU1soVMIb7Ve1KZck8dB9UJtrFLwLjnS5VPCGd7lBvMSyS49i9tXN6cJlw8xhol7z8QkgcFYFZfP9Q4Y0dmOex2kRgWzW9I1l8P1iVwn5361vh8YKc4LnQyKZlG0-K5aR0ovs6gR8dmAA_EEVtiHjBSBLIr1zWXAXbYvix83SPW-sq3W5ZGa6UM4Eq5_4d7vMMNwnVMnEKymdBS2_dr6b2b1z_w1oZAcBPb2N755stoPUjIaf4vRsudbtDYYfGWO5ofalkZcaGKozLxIK6gwxBMyxeCZV0Vl5NgWQt4xQid7wiYq66NXj721ycvSxrGCgwiS8No4Fj6ko4X7ZEUHcJg3VekkyIa7PAkosJ2gqtgKrlBYD07bg4xxRdG5mO5zCxuy3ivEAL1c0kKNNT2y8IU7EPxxRxBKIBkRq11J6omvyxuK9oUpWdoNxmMf9wn089RjaVv1mGZRPX0OW_WWbxQT4Xw78UtdlOW735nxWe93NapdoIzMmvGbv1E0rijIZk9Ct5I4GGXSTKpScnB7DZYn2-q6Ps2ElM4cqKoHU1_g_ZvWhwvrFFW5MobfEtDwhg6ADcBfqeKLgm3OjD_pvrMVlqVE',
         dp: 'VGG1iPFx0AjETUHx9N5a_9RUTFz-Yr3hev6VLMlgOENDobtKFW3QAgRWv_7rUrJb-HsE1SdLt1fSpeTLzP0rn4OwBwA8cppoQJIqW_l6glpips8S9qo_McCGEPwZ3ItNePGDHuynq-nFagNFx48_uGNMMaj-CDGcPAWfwnPLvWuTpqOhjp_8UbOidGWxuds-sPsq614o1v4EVIuyvTyb45a6cIBgPOTqC8Dzh-0AlOsco3dF4fl8Hdqtz0ROf58JL1L-CXOyGbAMNupqhGywN7axvHS3EAUQQHRv-TN1XhEV8S-YQvquf9a4wQ-C7gac9OpbW_Nk0oBS_HvoYNrBdQ',
         dq: 'ezM2NCgHeqe0ClGCH7t7IW7Bl3klp-Fji_IqI7nZJtumamE59vxYdG-pZWOCfEle8URUZ1pgPdLmtx7T2v4PBJftp0N06qOhk4ewsrvrQLP6peXBPqeaFuNRO2Cs7PP5xk23lzMuf3ia_md7CV5IgApJ7jXpO1x1K2uCXt4tHfRG-VE-IZdGobLQ0QbWw-ruqXHcxPV1mPNbXoqhypYv5lEd8BX3cDg79UzvFPfrnYP7ibo40pNdSTsdXciI_NKcNgWGi01dVz3RZkRDjG_XuMePt-s0pBWFAN0bZ_0DIXu9M9Ekm16n-xhvg-a5eqD8dwluSJTDkTSsgsUO-RjXIQ',

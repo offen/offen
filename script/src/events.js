@@ -6,9 +6,9 @@
 exports.pageview = pageview
 
 function pageview (subsequent) {
-  var canonicalLink = document.head.querySelector('link[rel="canonical"]')
-  var canonicalHref = canonicalLink && canonicalLink.getAttribute('href')
-  var event = {
+  const canonicalLink = document.head.querySelector('link[rel="canonical"]')
+  const canonicalHref = canonicalLink && canonicalLink.getAttribute('href')
+  const event = {
     type: 'PAGEVIEW',
     href: canonicalHref || window.location.href,
     title: document.title,

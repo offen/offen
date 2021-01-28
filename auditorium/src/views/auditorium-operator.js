@@ -117,12 +117,12 @@ const AuditoriumView = (props) => {
             <div class='w-70-l w-100 flex bt ba-ns br0 br2-ns mb2-ns b--black-10'>
               <Live model={model} />
             </div>
-          )
+            )
           : (
             <div class='w-70-l w-100 flex br0 br2-ns mb2'>
               <EmbedCode model={model} onCopy={handleCopy} />
             </div>
-          )}
+            )}
       </div>
       <div class='flex flex-column flex-row-l'>
         <div class='w-100 flex bt ba-ns b--black-10 br0 br2-ns mb2-ns'>
@@ -170,7 +170,7 @@ const AuditoriumView = (props) => {
               />
             </div>
           </div>
-        )
+          )
         : null}
       {adminLevel === ADMIN_LEVEL_ALLOW_EDIT
         ? (
@@ -185,7 +185,7 @@ const AuditoriumView = (props) => {
               />
             </div>
           </div>
-        )
+          )
         : null}
       {adminLevel === ADMIN_LEVEL_ALLOW_EDIT
         ? (
@@ -198,7 +198,7 @@ const AuditoriumView = (props) => {
               />
             </div>
           </div>
-        )
+          )
         : null}
       <div class='flex flex-column flex-row-l'>
         <div class='w-100 flex br0 br2-ns mb2'>

@@ -3,18 +3,18 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-var onIdle = require('on-idle')
-var vault = require('offen/vault')
+const onIdle = require('on-idle')
+const vault = require('offen/vault')
 
 module.exports = router
 
 function router (vaultUrl) {
-  var registeredEvents = {}
-  var callbacks = {}
+  const registeredEvents = {}
+  const callbacks = {}
 
   function makeSend (callbackId) {
     return function send (message) {
-      var result = vault(vaultUrl)
+      const result = vault(vaultUrl)
         .then(function (postMessage) {
           return new Promise(function (resolve) {
             onIdle(function () {
@@ -24,7 +24,7 @@ function router (vaultUrl) {
         })
 
       if (callbackId) {
-        var cb = callbacks[callbackId]
+        const cb = callbacks[callbackId]
         delete callbacks[callbackId]
         result.then(function (val) {
           cb(null, val)
@@ -37,13 +37,13 @@ function router (vaultUrl) {
     }
   }
 
-  var channel = new window.MessageChannel()
+  const channel = new window.MessageChannel()
   channel.port2.onmessage = function (event) {
     // clone the message so it can be mutated while
     // being passed through the middleware stack
-    var context = JSON.parse(JSON.stringify(event.data.context))
+    const context = JSON.parse(JSON.stringify(event.data.context))
 
-    var stack = (registeredEvents[event.data.type] || []).slice()
+    const stack = (registeredEvents[event.data.type] || []).slice()
     function callNext () {
       function next (err) {
         if (err) {
@@ -55,7 +55,7 @@ function router (vaultUrl) {
         callNext()
       }
 
-      var nextHandler = stack.shift() || function fallthrough (message, send, next) {
+      const nextHandler = stack.shift() || function fallthrough (message, send, next) {
         next(new Error('Event of type "' + event.data.type + '" not handled.'))
       }
       try {
@@ -70,12 +70,12 @@ function router (vaultUrl) {
 
   return {
     on: function (eventType/* , ...stack */) {
-      var stack = [].slice.call(arguments, 1)
+      const stack = [].slice.call(arguments, 1)
       registeredEvents[eventType] = stack
     },
     dispatch: function (eventType, context, callback) {
       context = context || {}
-      var callbackId
+      let callbackId
       if (callback) {
         callbackId = Math.random().toString(36).slice(2)
         callbacks[callbackId] = callback

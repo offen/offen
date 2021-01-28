@@ -3,27 +3,27 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-var historyEvents = require('history-events')
+const historyEvents = require('history-events')
 
-var checkSupport = require('./src/check-support')
-var router = require('./src/router')
-var events = require('./src/events')
+const checkSupport = require('./src/check-support')
+const router = require('./src/router')
+const events = require('./src/events')
 
 // this needs to be called on module level as otherwise the value will be undefined
 // again when being accessed from inside a function body
-var accountId = document.currentScript && document.currentScript.dataset.accountId
-var scriptHost = document.currentScript && document.currentScript.src
-var useApi = document.currentScript && 'useApi' in document.currentScript.dataset
+const accountId = document.currentScript && document.currentScript.dataset.accountId
+const scriptHost = document.currentScript && document.currentScript.src
+const useApi = document.currentScript && 'useApi' in document.currentScript.dataset
 
-var scriptUrl = ''
+let scriptUrl = ''
 try {
   scriptUrl = new window.URL(scriptHost).origin
 } catch (err) {}
 
 function main () {
-  var app = router(process.env.VAULT_HOST || scriptUrl + '/vault/')
+  const app = router(process.env.VAULT_HOST || scriptUrl + '/vault/')
   app.on('PAGEVIEW', supportMiddleware, function (context, send, next) {
-    var message = {
+    const message = {
       type: 'EVENT',
       payload: {
         accountId: accountId,
@@ -37,7 +37,7 @@ function main () {
   })
 
   app.on('ACQUIRE_CONSENT', supportMiddleware, function (context, send, next) {
-    var message = {
+    const message = {
       type: 'ACQUIRE_CONSENT',
       payload: null
     }

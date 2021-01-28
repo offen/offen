@@ -49,7 +49,7 @@ const Metrics = (props) => {
           <Paragraph class='mw7 ma0 pv2'>
             {__('This panel displays the most significant metrics at a glance.')}
           </Paragraph>
-        )
+          )
         : null}
     </div>
   )
@@ -125,14 +125,16 @@ const Metrics = (props) => {
   )
 
   const metricReturningUsers = (
-    isOperator ? (
-      <KeyMetric
-        name={__('Returning users')}
-        value={model.returningUsers}
-        formatAs='percentage'
-        small
-      />
-    ) : null)
+    isOperator
+      ? (
+        <KeyMetric
+          name={__('Returning users')}
+          value={model.returningUsers}
+          formatAs='percentage'
+          small
+        />
+        )
+      : null)
 
   const propsMobile = explainerPropsFor ? explainerPropsFor('metric/mobile') : {}
   const metricMobile = (

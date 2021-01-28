@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-var assert = require('assert')
-var fetchMock = require('fetch-mock')
+const assert = require('assert')
+const fetchMock = require('fetch-mock')
 
-var api = require('./api')
+const api = require('./api')
 
 describe('src/api.js', function () {
   describe('getAccount', function () {
@@ -22,7 +22,7 @@ describe('src/api.js', function () {
     })
 
     it('calls the given endpoint with the correct parameters', function () {
-      var get = api.getAccountWith('https://server.offen.dev/accounts')
+      const get = api.getAccountWith('https://server.offen.dev/accounts')
       return get('foo-bar')
         .then(function (result) {
           assert.deepStrictEqual(result, { accountId: 'foo-bar', data: 'ok' })
@@ -43,7 +43,7 @@ describe('src/api.js', function () {
     })
 
     it('calls the given endpoint with the correct parameters', function () {
-      var get = api.getEventsWith('https://server.offen.dev/events')
+      const get = api.getEventsWith('https://server.offen.dev/events')
       return get()
         .then(function (result) {
           assert.deepStrictEqual(result, { events: ['a', 'b', 'c'] })

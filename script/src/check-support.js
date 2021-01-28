@@ -10,7 +10,7 @@ module.exports = checkSupport
 // It is important that this does use a callback interface
 // as it native Promises might not necessarily be supported.
 function checkSupport (callback) {
-  var err = null
+  let err = null
   if (!supportsIndexedDb()) {
     err = new Error(__('Browser does not support IndexedDB which is required.'))
   }

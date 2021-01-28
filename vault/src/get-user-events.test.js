@@ -3,19 +3,19 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-var assert = require('assert')
-var sinon = require('sinon')
-var Unibabel = require('unibabel').Unibabel
+const assert = require('assert')
+const sinon = require('sinon')
+const Unibabel = require('unibabel').Unibabel
 
-var getUserEventsWith = require('./get-user-events').getUserEventsWith
+const getUserEventsWith = require('./get-user-events').getUserEventsWith
 
 describe('src/get-user-events', function () {
   describe('getUserEvents', function () {
-    var userSecret
-    var encryptedPayload
+    let userSecret
+    let encryptedPayload
 
     before(function () {
-      var nonce
+      let nonce
       return window.crypto.subtle.generateKey(
         {
           name: 'AES-GCM',
@@ -43,17 +43,17 @@ describe('src/get-user-events', function () {
     })
 
     it('ensures sync and then returns the generated default stats', function () {
-      var mockStorage = {
+      const mockStorage = {
         deleteEvents: sinon.stub().resolves(true),
         putEvents: sinon.stub().resolves(true),
         getLastKnownCheckpoint: sinon.stub().resolves('sequence-a'),
         updateLastKnownCheckpoint: sinon.stub().resolves(),
         getUserSecret: sinon.stub().resolves(window.crypto.subtle.exportKey('jwk', userSecret))
       }
-      var mockQueries = {
+      const mockQueries = {
         getDefaultStats: sinon.stub().resolves({ mock: 'result' })
       }
-      var mockApi = {
+      const mockApi = {
         getDeletedEvents: sinon.stub().resolves({ eventIds: ['a'] }),
         getEvents: sinon.stub().resolves({
           events: {
@@ -67,7 +67,7 @@ describe('src/get-user-events', function () {
           sequence: 'sequence-b'
         })
       }
-      var getUserEvents = getUserEventsWith(mockQueries, mockStorage, mockApi)
+      const getUserEvents = getUserEventsWith(mockQueries, mockStorage, mockApi)
       return getUserEvents()
         .then(function (result) {
           assert(mockStorage.getLastKnownCheckpoint.calledOnce)

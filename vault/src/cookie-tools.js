@@ -25,7 +25,7 @@ exports.parse = parse
 function parse (cookieString) {
   return cookieString.split(';')
     .reduce(function (acc, pair) {
-      var chunks = pair.trim().split('=')
+      const chunks = pair.trim().split('=')
       acc[chunks[0]] = chunks[1]
       return acc
     }, {})
@@ -35,8 +35,8 @@ exports.defaultCookie = defaultCookie
 
 function defaultCookie (name, value, opts) {
   opts = opts || {}
-  var isLocalhost = window.location.hostname === 'localhost'
-  var cookie = {}
+  const isLocalhost = window.location.hostname === 'localhost'
+  const cookie = {}
   cookie[name] = value
   cookie.expires = opts.expires ? opts.expires.toUTCString() : false
   return Object.assign(cookie, {

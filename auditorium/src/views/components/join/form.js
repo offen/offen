@@ -17,7 +17,7 @@ const Form = forwardRef((props, ref) => {
 
   function handleSubmit (e) {
     e.preventDefault()
-    var formData = new window.FormData(e.currentTarget)
+    const formData = new window.FormData(e.currentTarget)
     if (formData.get('password') !== formData.get('repeat-password')) {
       return props.onValidationError(new Error(__('Passwords did not match')))
     }

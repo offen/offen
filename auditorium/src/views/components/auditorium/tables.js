@@ -34,33 +34,33 @@ const Table = (props) => {
   const [showAll, setShowAll] = useState(false)
   const hasMore = Array.isArray(rows) && rows.length > limit
 
-  var tBody = Array.isArray(rows) && rows.length
+  const tBody = Array.isArray(rows) && rows.length
     ? rows.slice(0, showAll ? rows.length : limit).map(function (row, index) {
-      var counts = Array.isArray(row.count) ? row.count : [row.count]
-      return (
-        <tr key={`outer-${index}`} class='striped--near-white'>
-          <td class='truncate pv2 pl2 pr1' title={row.key}>
-            {row.key}
-          </td>
-          {counts.map((count, index) => {
-            return (
-              <td class='pv2 ph1' key={`inner-${index}`}>
-                <Format formatAs={formatAs[index]}>
-                  {count}
-                </Format>
-              </td>
-            )
-          })}
-        </tr>
-      )
-    })
+        const counts = Array.isArray(row.count) ? row.count : [row.count]
+        return (
+          <tr key={`outer-${index}`} class='striped--near-white'>
+            <td class='truncate pv2 pl2 pr1' title={row.key}>
+              {row.key}
+            </td>
+            {counts.map((count, index) => {
+              return (
+                <td class='pv2 ph1' key={`inner-${index}`}>
+                  <Format formatAs={formatAs[index]}>
+                    {count}
+                  </Format>
+                </td>
+              )
+            })}
+          </tr>
+        )
+      })
     : (
       <tr>
         <td class='f6 mid-gray i pl2' colspan='2'>
           {onEmptyMessage}
         </td>
       </tr>
-    )
+      )
 
   const [keyName, ...valueNames] = props.columnNames
   return (
@@ -138,7 +138,7 @@ const Container = (props) => {
     if (!set.props.headline) {
       return null
     }
-    var css = []
+    const css = []
     if (tableSets.length === 1) {
       css.push('f5', 'normal', 'dib', 'pv3')
     }
@@ -188,14 +188,14 @@ const Container = (props) => {
               invert={explainerProps.explainerActive}
               marginLeft
             />
-          )
+            )
           : null}
       </a>
     )
   })
     .filter(Boolean)
 
-  var wrapperClass = ['nowrap', 'overflow-x-auto', 'overflow-y-hidden', 'mb4']
+  const wrapperClass = ['nowrap', 'overflow-x-auto', 'overflow-y-hidden', 'mb4']
   if (!removeBorder) {
     wrapperClass.push('bt', 'b--light-gray')
   }

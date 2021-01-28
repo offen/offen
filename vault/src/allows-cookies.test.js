@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-var assert = require('assert')
+const assert = require('assert')
 
-var allowsCookies = require('./allows-cookies')
+const allowsCookies = require('./allows-cookies')
 
 describe('src/allows-cookies.js', function () {
   describe('allowsCookies()', function () {

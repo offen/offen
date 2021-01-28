@@ -30,7 +30,7 @@ const URLTable = (props) => {
             <Paragraph class='mw7 ma0 pv2'>
               {__('This panel displays several page lists that count the total number of your page views of the <a href="#terms-offen-installation" class="%s">Offen installation</a> per URL in different categories.', 'b link dim dark-green')}
             </Paragraph>
-          )
+            )
           : null}
       </div>
       <div class='mt3'>

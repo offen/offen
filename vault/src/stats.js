@@ -10,11 +10,11 @@
 // matters as these functions can process a lot of events in certain cases
 // so any check can have a real world performance impact.
 
-var _ = require('underscore')
+const _ = require('underscore')
 
-var placeInBucket = require('./buckets')
+const placeInBucket = require('./buckets')
 
-var propertyAccessors = {
+const propertyAccessors = {
   sessionId: _.property(['payload', 'sessionId']),
   href: _.property(['payload', 'href']),
   timestamp: _.property(['payload', 'timestamp']),
@@ -29,8 +29,8 @@ var propertyAccessors = {
 exports.bounceRate = consumeAsync(bounceRate)
 
 function bounceRate (events) {
-  var sessionCounts = 0
-  var bounces = _.chain(events)
+  let sessionCounts = 0
+  const bounces = _.chain(events)
     .map(propertyAccessors.sessionId)
     .compact()
     .countBy(_.identity)
@@ -91,9 +91,9 @@ function _queryParam (key) {
       .groupBy('value')
       .pairs()
       .map(function (pair) {
-        var value = pair[0]
-        var items = pair[1]
-        var associatedViews = _.chain(items)
+        const value = pair[0]
+        const items = pair[1]
+        const associatedViews = _.chain(items)
           .pluck('sessionId')
           .uniq()
           .map(function (sessionId) {
@@ -123,7 +123,7 @@ function _queryParam (key) {
 exports.sources = consumeAsync(_queryParam('utm_source'))
 
 function _referrers (events, groupFn) {
-  var uniqueForeign = _.chain(events)
+  const uniqueForeign = _.chain(events)
     .filter(function (event) {
       if (!event.payload.referrer) {
         return false
@@ -133,20 +133,20 @@ function _referrers (events, groupFn) {
     .uniq(false, propertyAccessors.sessionId)
     .value()
 
-  var sessionIds = _.map(uniqueForeign, propertyAccessors.sessionId)
-  var values = groupFn(uniqueForeign)
+  const sessionIds = _.map(uniqueForeign, propertyAccessors.sessionId)
+  const values = groupFn(uniqueForeign)
   return _.chain(values)
     .zip(sessionIds)
     .filter(_.head)
     .groupBy(_.head)
     .pairs()
     .map(function (pair) {
-      var sessions = _.reduce(pair[1], function (acc, next) {
+      const sessions = _.reduce(pair[1], function (acc, next) {
         acc[_.last(next)] = true
         return acc
       }, {})
-      var numSessions = _.size(sessions)
-      var associatedViews = _.filter(events, function (event) {
+      const numSessions = _.size(sessions)
+      const associatedViews = _.filter(events, function (event) {
         return event.payload.sessionId &&
           sessions[event.payload.sessionId]
       })
@@ -183,7 +183,7 @@ function activePages (events) {
 }
 
 function _pages (events, perUser) {
-  var result = _.chain(events)
+  let result = _.chain(events)
     .filter(propertyAccessors.href)
 
   if (perUser) {
@@ -202,7 +202,7 @@ function _pages (events, perUser) {
 
   return result
     .map(function (event) {
-      var strippedHref = event.payload.href.origin + event.payload.href.pathname
+      const strippedHref = event.payload.href.origin + event.payload.href.pathname
       return { accountId: event.accountId, href: strippedHref }
     })
     .groupBy('accountId')
@@ -225,8 +225,8 @@ function _pages (events, perUser) {
 exports.avgPageload = consumeAsync(avgPageload)
 
 function avgPageload (events) {
-  var count
-  var total = _.chain(events)
+  let count
+  const total = _.chain(events)
     .map(propertyAccessors.pageload)
     .filter(function (value) { return value && value > 0 })
     .tap(function (entries) {
@@ -249,8 +249,8 @@ function avgPageload (events) {
 exports.avgPageDepth = consumeAsync(avgPageDepth)
 
 function avgPageDepth (events) {
-  var views = countKeys(['payload', 'sessionId'], false)(events)
-  var uniqueSessions = countKeys(['payload', 'sessionId'], true)(events)
+  const views = countKeys(['payload', 'sessionId'], false)(events)
+  const uniqueSessions = countKeys(['payload', 'sessionId'], true)(events)
   if (uniqueSessions === 0) {
     return null
   }
@@ -275,7 +275,7 @@ function exitPages (events) {
     .map(function (events, key) {
       // for each session, we are only interested in the first
       // event and its href value
-      var landing = _.chain(events)
+      const landing = _.chain(events)
         .sortBy('timestamp')
         .last()
         .value()
@@ -303,7 +303,7 @@ function landingPages (events) {
     .map(function (events, key) {
       // for each session, we are only interested in the earliest
       // event and its href value
-      var landing = _.chain(events)
+      const landing = _.chain(events)
         .sortBy('timestamp')
         .first()
         .value()
@@ -322,8 +322,8 @@ function landingPages (events) {
 exports.mobileShare = consumeAsync(mobileShare)
 
 function mobileShare (events) {
-  var allEvents = events.length
-  var mobileEvents = _.chain(events)
+  const allEvents = events.length
+  const mobileEvents = _.chain(events)
     .filter(propertyAccessors.isMobile)
     .size()
     .value()
@@ -340,17 +340,17 @@ function mobileShare (events) {
 exports.retention = consumeAsync(retention)
 
 function retention (/* ...events */) {
-  var chunks = [].slice.call(arguments)
-  var result = []
+  const chunks = [].slice.call(arguments)
+  const result = []
   while (chunks.length) {
-    var head = chunks.shift()
-    var referenceIds = _.chain(head).pluck('secretId').uniq().value()
-    var innerResult = chunks.reduce(function (acc, next) {
-      var share
+    const head = chunks.shift()
+    const referenceIds = _.chain(head).pluck('secretId').uniq().value()
+    const innerResult = chunks.reduce(function (acc, next) {
+      let share
       if (referenceIds.length === 0) {
         share = 0
       } else {
-        var matching = _.chain(next)
+        const matching = _.chain(next)
           .pluck('secretId').uniq()
           .intersection(referenceIds).size().value()
         share = matching / referenceIds.length
@@ -368,13 +368,13 @@ function retention (/* ...events */) {
 exports.returningUsers = consumeAsync(returningUsers)
 
 function returningUsers (events, allEvents) {
-  var oldestEventIdInRange = _.chain(events)
+  const oldestEventIdInRange = _.chain(events)
     .pluck('eventId')
     .sortBy()
     .head()
     .value()
 
-  var usersBeforeRange = _.chain(allEvents)
+  const usersBeforeRange = _.chain(allEvents)
     .filter(function (event) {
       return event.eventId < oldestEventIdInRange
     })
@@ -384,7 +384,7 @@ function returningUsers (events, allEvents) {
     }, {})
     .value()
 
-  var usersInRange = _.chain(events)
+  const usersInRange = _.chain(events)
     .pluck('secretId')
     .uniq()
     .value()
@@ -393,7 +393,7 @@ function returningUsers (events, allEvents) {
     return 0
   }
 
-  var newUsers = _.chain(usersInRange)
+  const newUsers = _.chain(usersInRange)
     .filter(function (secretId) {
       return !usersBeforeRange[secretId]
     })
@@ -413,7 +413,7 @@ exports.uniqueSessions = consumeAsync(countKeys(['payload', 'sessionId'], true))
 
 function countKeys (keys, unique) {
   return function (elements) {
-    var list = _.map(elements, _.property(keys))
+    let list = _.map(elements, _.property(keys))
     list = _.compact(list)
     if (unique) {
       list = _.uniq(list)
@@ -425,7 +425,7 @@ function countKeys (keys, unique) {
 exports.onboardingStats = consumeAsync(onboardingStats)
 
 function onboardingStats (events) {
-  var lastEvent = _.chain(events)
+  const lastEvent = _.chain(events)
     .sortBy(propertyAccessors.eventId)
     .last()
     .value()
@@ -434,12 +434,12 @@ function onboardingStats (events) {
     return null
   }
 
-  var numVisits = _.chain(events)
+  const numVisits = _.chain(events)
     .where({ accountId: lastEvent.accountId })
     .size()
     .value()
 
-  var payload = lastEvent.payload
+  const payload = lastEvent.payload
   return {
     domain: payload.href.host,
     url: payload.href.pathname !== '/'
@@ -459,7 +459,7 @@ function onboardingStats (events) {
 function consumeAsync (fn, ctx) {
   ctx = ctx || null
   return function () {
-    var args = [].slice.call(arguments)
+    const args = [].slice.call(arguments)
     return Promise.all(args)
       .then(function (resolvedArgs) {
         return fn.apply(ctx, resolvedArgs)

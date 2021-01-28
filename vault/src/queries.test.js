@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-var assert = require('assert')
+const assert = require('assert')
 
-var queries = require('./queries')
+const queries = require('./queries')
 
 describe('src/queries.js', function () {
   describe('validateAndParseEvent', function () {
@@ -131,8 +131,8 @@ describe('src/queries.js', function () {
 
   describe('getDefaultStats(accountId, query, privateJwk)', function () {
     it('throws on bad arguments', function () {
-      var q = new queries.Queries()
-      var err
+      const q = new queries.Queries()
+      let err
       return q.getDefaultStats('abc-123', {})
         .catch(function (_err) {
           err = _err
@@ -143,8 +143,8 @@ describe('src/queries.js', function () {
     })
 
     it('throws on unknown query parameters', function () {
-      var q = new queries.Queries()
-      var err
+      const q = new queries.Queries()
+      let err
       return q.getDefaultStats('abc-123', { range: 12, resolution: 'aeons' }, {})
         .catch(function (_err) {
           err = _err

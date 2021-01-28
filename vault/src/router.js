@@ -6,7 +6,7 @@
 module.exports = router
 
 function router () {
-  var registeredRoutes = {}
+  const registeredRoutes = {}
 
   function listen (event) {
     function respond (message) {
@@ -16,7 +16,7 @@ function router () {
     }
     respond.selector = event.data.host
 
-    var stack = (registeredRoutes[event.data.type] || []).slice()
+    const stack = (registeredRoutes[event.data.type] || []).slice()
 
     function callNext () {
       function next (err) {
@@ -35,7 +35,7 @@ function router () {
           callNext()
         }
       }
-      var nextHandler = stack.shift() || function (event, respond, next) {
+      const nextHandler = stack.shift() || function (event, respond, next) {
         next(new Error('Message of type "' + event.data.type + '" was not handled.'))
       }
       nextHandler(event, respond, next)
@@ -46,8 +46,8 @@ function router () {
 
   window.addEventListener('message', listen)
 
-  var register = function (messageType /* , ...stack */) {
-    var stack = [].slice.call(arguments, 1)
+  const register = function (messageType /* , ...stack */) {
+    const stack = [].slice.call(arguments, 1)
     registeredRoutes[messageType] = stack
   }
 

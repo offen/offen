@@ -42,7 +42,7 @@ const EmbedCode = (props) => {
               class={classnames('dib', 'label-toggle', !isCollapsed ? null : 'label-toggle--rotate')}
               aria-label={__('Toggle display of embed code')}
             />
-          )
+            )
           : null}
       </div>
     )
@@ -88,7 +88,7 @@ const EmbedCode = (props) => {
             {renderHeader()}
             {renderBody()}
           </Fragment>
-        )}
+          )}
     </div>
   )
 }

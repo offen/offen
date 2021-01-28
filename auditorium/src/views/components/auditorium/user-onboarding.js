@@ -57,7 +57,7 @@ const UserOnboarding = (props) => {
                                   </Span>
                                   &nbsp;
                                 </Fragment>
-                              )
+                                )
                               : (
                                 <Fragment>
                                   <Span>
@@ -65,7 +65,7 @@ const UserOnboarding = (props) => {
                                   </Span>
                                   &nbsp;
                                 </Fragment>
-                              )}
+                                )}
                             {stats.numVisits > 1
                               ? (
                                 <Fragment>
@@ -74,7 +74,7 @@ const UserOnboarding = (props) => {
                                   </Span>
                                   &nbsp;
                                 </Fragment>
-                              )
+                                )
                               : (
                                 <Fragment>
                                   <Span>
@@ -82,7 +82,7 @@ const UserOnboarding = (props) => {
                                   </Span>
                                   &nbsp;
                                 </Fragment>
-                              )}
+                                )}
                             {stats.referrer
                               ? (
                                 <Fragment>
@@ -91,7 +91,7 @@ const UserOnboarding = (props) => {
                                   </Span>
                                   &nbsp;
                                 </Fragment>
-                              )
+                                )
                               : null}
                             <Span>
                               {__('Most likely you are on a <span class="%s">%s</span>.', 'i tracked', stats.isMobile ? __('mobile device') : __('desktop device'))}

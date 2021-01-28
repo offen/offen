@@ -7,9 +7,9 @@ const { route } = require('preact-router')
 
 module.exports = (store) => (next) => (action) => {
   switch (action.type) {
-    case 'LOGIN_SUCCESS':
+    case 'LOGIN_SUCCESS': {
       next(action)
-      var currentUrl = new window.URL(window.location.href)
+      const currentUrl = new window.URL(window.location.href)
       if (currentUrl.searchParams.get('next')) {
         route(currentUrl.searchParams.get('next'))
         return
@@ -20,6 +20,7 @@ module.exports = (store) => (next) => (action) => {
       }
       route(`/auditorium/${action.payload.accounts[0].accountId}/`)
       return
+    }
     case 'SESSION_AUTHENTICATION_FAILURE':
       next(action)
       route('/login/?next=' + window.encodeURIComponent(window.location.pathname + window.location.search))

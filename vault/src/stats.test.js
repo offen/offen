@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-var assert = require('assert')
+const assert = require('assert')
 
-var stats = require('./stats')
+const stats = require('./stats')
 
 describe('src/stats.js', function () {
   describe('stats.uniqueSessions(events)', function () {

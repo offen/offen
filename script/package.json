@@ -35,7 +35,7 @@
     "local-web-server": "^4.0.0",
     "mochify": "^6.3.0",
     "npm-license-crawler": "^0.2.1",
-    "standard": "^14.3.1",
+    "standard": "^16.0.3",
     "tinyify": "^2.5.0",
     "util.promisify": "^1.0.1",
     "vinyl-buffer": "^1.0.1",

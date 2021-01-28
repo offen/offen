@@ -15,7 +15,7 @@ const Form = forwardRef((props, ref) => {
   const [isDisabled, setIsDisabled] = useState(false)
   function handleSubmit (e) {
     e.preventDefault()
-    var formData = new window.FormData(e.currentTarget)
+    const formData = new window.FormData(e.currentTarget)
     setIsDisabled(true)
     props.onLogin(
       formData.get('username'),

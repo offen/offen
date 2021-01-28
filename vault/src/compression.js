@@ -13,9 +13,9 @@ exports.supported = function () {
 
 exports.compress = compress
 function compress (string) {
-  var byteArray = new window.TextEncoder().encode(string)
-  var cs = new window.CompressionStream('gzip')
-  var writer = cs.writable.getWriter()
+  const byteArray = new window.TextEncoder().encode(string)
+  const cs = new window.CompressionStream('gzip')
+  const writer = cs.writable.getWriter()
   writer.write(byteArray)
   writer.close()
   return new window.Response(cs.readable).arrayBuffer()
@@ -23,8 +23,8 @@ function compress (string) {
 
 exports.decompress = decompress
 function decompress (byteArray) {
-  var cs = new window.DecompressionStream('gzip')
-  var writer = cs.writable.getWriter()
+  const cs = new window.DecompressionStream('gzip')
+  const writer = cs.writable.getWriter()
   writer.write(byteArray)
   writer.close()
   return new window.Response(cs.readable).arrayBuffer().then(function (arrayBuffer) {

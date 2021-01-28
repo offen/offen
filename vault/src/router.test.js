@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-var assert = require('assert')
-var router = require('./router')
+const assert = require('assert')
+const router = require('./router')
 
 describe('src/router', function () {
   describe('router()', function () {
-    var register
-    var channel
+    let register
+    let channel
     beforeEach(function () {
       register = router()
       channel = new window.MessageChannel()
@@ -42,7 +42,7 @@ describe('src/router', function () {
       })
 
       channel.port1.onmessage = function (event) {
-        var err
+        let err
         try {
           assert.strictEqual(event.data.type, 'ERROR')
           assert.strictEqual(event.data.payload.error, 'Did not work.')

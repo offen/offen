@@ -2,10 +2,10 @@
  * Copyright 2020 - Offen Authors <hioffen@posteo.de>
  * SPDX-License-Identifier: Apache-2.0
  */
-var router = require('./src/router')
-var handler = require('./src/handler')
-var middleware = require('./src/middleware')
-var allowsCookies = require('./src/allows-cookies')
+const router = require('./src/router')
+const handler = require('./src/handler')
+const middleware = require('./src/middleware')
+const allowsCookies = require('./src/allows-cookies')
 
 if (!window.fetch) {
   require('unfetch/polyfill')
@@ -15,7 +15,7 @@ if (!window.URL || !window.URLSearchParams) {
   require('url-polyfill')
 }
 
-var register = router()
+const register = router()
 
 register('EVENT',
   allowsCookiesMiddleware,

@@ -3,18 +3,18 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-var _ = require('underscore')
+const _ = require('underscore')
 
-var bindCrypto = require('./bind-crypto')
+const bindCrypto = require('./bind-crypto')
 
 module.exports = decryptEventsWith({})
 module.exports.decryptEventsWith = decryptEventsWith
 
 function decryptEventsWith (cache) {
   return bindCrypto(function (encryptedEvents, encryptedSecrets, privateJWK) {
-    var crypto = this
-    var decryptWithAccountKey = crypto.decryptAsymmetricWith(privateJWK)
-    var secretsById = _.indexBy(encryptedSecrets, 'secretId')
+    const crypto = this
+    const decryptWithAccountKey = crypto.decryptAsymmetricWith(privateJWK)
+    const secretsById = _.indexBy(encryptedSecrets, 'secretId')
 
     function getMatchingSecret (secretId) {
       if (cache) {
@@ -24,7 +24,7 @@ function decryptEventsWith (cache) {
       return doDecryptSecret()
 
       function doDecryptSecret () {
-        var secret = secretsById[secretId]
+        const secret = secretsById[secretId]
         if (!secret) {
           return Promise.reject(
             new Error('Unable to find matching secret')
@@ -33,7 +33,7 @@ function decryptEventsWith (cache) {
 
         return decryptWithAccountKey(secret.value)
           .then(function (jwk) {
-            var withKey = Object.assign(
+            const withKey = Object.assign(
               {}, secret, { jwk: jwk }
             )
             return withKey
@@ -41,11 +41,11 @@ function decryptEventsWith (cache) {
       }
     }
 
-    var decryptedEvents = encryptedEvents
+    const decryptedEvents = encryptedEvents
       .map(function (encryptedEvent) {
-        var eventId = encryptedEvent.eventId
-        var secretId = encryptedEvent.secretId
-        var payload = encryptedEvent.payload
+        const eventId = encryptedEvent.eventId
+        const secretId = encryptedEvent.secretId
+        const payload = encryptedEvent.payload
 
         if (cache) {
           cache[eventId] = cache[eventId] || doDecryptEvent()

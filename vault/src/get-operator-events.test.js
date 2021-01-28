@@ -3,21 +3,21 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-var assert = require('assert')
-var sinon = require('sinon')
-var Unibabel = require('unibabel').Unibabel
+const assert = require('assert')
+const sinon = require('sinon')
+const Unibabel = require('unibabel').Unibabel
 
-var getOperatorEventsWith = require('./get-operator-events').getOperatorEventsWith
+const getOperatorEventsWith = require('./get-operator-events').getOperatorEventsWith
 
 describe('src/get-operator-events', function () {
   describe('getOperatorEvents', function () {
     context('with no pending events', function () {
-      var accountKey
-      var keyEncryptionJWK
-      var encryptedPrivateKey
-      var accountPrivateJWK
+      let accountKey
+      let keyEncryptionJWK
+      let encryptedPrivateKey
+      let accountPrivateJWK
       before(function () {
-        var keyEncryptionKey
+        let keyEncryptionKey
         return window.crypto.subtle.generateKey(
           {
             name: 'RSA-OAEP',
@@ -51,7 +51,7 @@ describe('src/get-operator-events', function () {
           })
           .then(function (_accountPrivateJWK) {
             accountPrivateJWK = _accountPrivateJWK
-            var nonce = window.crypto.getRandomValues(new Uint8Array(12))
+            const nonce = window.crypto.getRandomValues(new Uint8Array(12))
             return window.crypto.subtle.encrypt(
               {
                 name: 'AES-GCM',
@@ -68,7 +68,7 @@ describe('src/get-operator-events', function () {
       })
 
       it('syncs the database and returns stats plus account info', function () {
-        var mockStorage = {
+        const mockStorage = {
           getLastKnownCheckpoint: sinon.stub().resolves('sequence-a'),
           updateLastKnownCheckpoint: sinon.stub().resolves(),
           putEncryptedSecrets: sinon.stub().resolves(),
@@ -78,16 +78,16 @@ describe('src/get-operator-events', function () {
           deleteEvents: sinon.stub().resolves(true),
           putEvents: sinon.stub().resolves(true)
         }
-        var mockQueries = {
+        const mockQueries = {
           getDefaultStats: sinon.stub().resolves({ mock: 'result' })
         }
-        var mockApi = {
+        const mockApi = {
           getAccount: sinon.stub().resolves({
             accountId: 'account-a',
             encryptedPrivateKey: encryptedPrivateKey
           })
         }
-        var getOperatorEvents = getOperatorEventsWith(mockQueries, mockStorage, mockApi)
+        const getOperatorEvents = getOperatorEventsWith(mockQueries, mockStorage, mockApi)
         return getOperatorEvents(
           { accountId: 'account-a' },
           {
@@ -110,15 +110,15 @@ describe('src/get-operator-events', function () {
     })
 
     context('with pending events', function () {
-      var userSecret
-      var encryptedUserSecret
-      var encryptedEventPayload
-      var accountKey
-      var userJWK
-      var nonce
-      var keyEncryptionKey
-      var keyEncryptionJWK
-      var encryptedPrivateKey
+      let userSecret
+      let encryptedUserSecret
+      let encryptedEventPayload
+      let accountKey
+      let userJWK
+      let nonce
+      let keyEncryptionKey
+      let keyEncryptionJWK
+      let encryptedPrivateKey
 
       before(function () {
         return window.crypto.subtle.generateKey(
@@ -193,7 +193,7 @@ describe('src/get-operator-events', function () {
             return window.crypto.subtle.exportKey('jwk', accountKey.privateKey)
           })
           .then(function (accountPrivateJWK) {
-            var nonce = window.crypto.getRandomValues(new Uint8Array(12))
+            const nonce = window.crypto.getRandomValues(new Uint8Array(12))
             return window.crypto.subtle.encrypt(
               {
                 name: 'AES-GCM',
@@ -210,7 +210,7 @@ describe('src/get-operator-events', function () {
       })
 
       it('syncs the database and returns stats plus account info', function () {
-        var mockStorage = {
+        const mockStorage = {
           getLastKnownCheckpoint: sinon.stub().resolves('sequence-a'),
           updateLastKnownCheckpoint: sinon.stub().resolves(),
           putEncryptedSecrets: sinon.stub().resolves(),
@@ -224,10 +224,10 @@ describe('src/get-operator-events', function () {
           putEvents: sinon.stub().resolves(true),
           ensureAggregationSecret: sinon.stub().resolves(true)
         }
-        var mockQueries = {
+        const mockQueries = {
           getDefaultStats: sinon.stub().resolves({ mock: 'result' })
         }
-        var mockApi = {
+        const mockApi = {
           getAccount: sinon.stub().resolves({
             events: {
               'account-a': [{
@@ -246,7 +246,7 @@ describe('src/get-operator-events', function () {
             encryptedPrivateKey: encryptedPrivateKey
           })
         }
-        var getOperatorEvents = getOperatorEventsWith(mockQueries, mockStorage, mockApi)
+        const getOperatorEvents = getOperatorEventsWith(mockQueries, mockStorage, mockApi)
         return getOperatorEvents(
           { accountId: 'account-a' },
           {

@@ -19,10 +19,12 @@ const SubmitButton = (props) => {
         )}
         type='submit'
         disabled={disabled}
-        onclick={onClick ? (e) => {
-          e.preventDefault()
-          onClick(e)
-        } : null}
+        onclick={onClick
+          ? (e) => {
+              e.preventDefault()
+              onClick(e)
+            }
+          : null}
         {...otherProps}
       >
         {disabled

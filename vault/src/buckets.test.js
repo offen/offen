@@ -3,14 +3,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-var assert = require('assert')
+const assert = require('assert')
 
-var mapToBuckets = require('./buckets')
+const mapToBuckets = require('./buckets')
 
 describe('src/buckets.js', function () {
   describe('mapToBuckets(referrerValue)', function () {
     it('groups known referrers', function () {
-      var referrers = [
+      const referrers = [
         'www.mysite.com',
         'www.google.de',
         'www.googlelottery.com',
@@ -49,7 +49,7 @@ describe('src/buckets.js', function () {
         'ecosia.org',
         'www.qwant.com'
       ]
-      var mapped = referrers.map(mapToBuckets)
+      const mapped = referrers.map(mapToBuckets)
       assert.deepStrictEqual(mapped, [
         'www.mysite.com',
         'Google',

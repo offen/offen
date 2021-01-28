@@ -56,8 +56,8 @@ const Chart = (props) => {
         return 'W' + getISOWeek(date)
       case 'months':
         return LocalizedDate.localize(date, { month: 'short' })
-      default:
-        var result = LocalizedDate.localize(date, { day: 'numeric' })
+      default: {
+        let result = LocalizedDate.localize(date, { day: 'numeric' })
         if (index === 0 || isFirstDayOfMonth(date)) {
           result = LocalizedDate.localize(date, { month: 'short' }) + ' ' + result
         }
@@ -65,6 +65,7 @@ const Chart = (props) => {
           return `<span style="font-style: italic; color: ${tickColorFade}; font-size: 130%">${result}</span>`
         }
         return result
+      }
     }
   })
 
@@ -151,7 +152,7 @@ const Chart = (props) => {
                 invert={explainerActive}
                 marginLeft
               />
-            )
+              )
             : null}
         </h4>
         {explainerActive
@@ -159,7 +160,7 @@ const Chart = (props) => {
             <Paragraph class='mw7 ma0 pv2'>
               {__('This panel displays the number of pages (bright green) and websites (dark green) you have visited where the <a href="#terms-offen-installation" class="%s">Offen installation</a> is active. To measure this, a cookie is used to assign you a user and a session <a href="#terms-id" class="%s">ID.</a>', 'b link dim dark-green', 'b link dim dark-green')}
             </Paragraph>
-          )
+            )
           : null}
       </div>
       {/* plotly sometimes is unable to assign a proper height to the svg unless we set its default height as min-height */}
@@ -176,7 +177,7 @@ const Chart = (props) => {
               }}
               useResizeHandler
             />
-          )
+            )
           : (
             <div class='w-100 h-100 db bg-near-white br2'>
               <div class='tc pt5'>
@@ -186,7 +187,7 @@ const Chart = (props) => {
                 </Paragraph>
               </div>
             </div>
-          )}
+            )}
       </div>
     </div>
   )

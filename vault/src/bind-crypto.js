@@ -3,17 +3,17 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-var splitRequire = require('split-require')
+const splitRequire = require('split-require')
 
 module.exports = bindCrypto
 
-var cryptoProvider = window.crypto && window.crypto.subtle
+const cryptoProvider = window.crypto && window.crypto.subtle
   ? getWebCrypto()
   : getForgeCrypto()
 
 function bindCrypto (consumerFn) {
   return function () {
-    var args = [].slice.call(arguments)
+    const args = [].slice.call(arguments)
     return cryptoProvider
       .then(function (cryptoImplementation) {
         return consumerFn.apply(cryptoImplementation, args)

@@ -3,20 +3,20 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-var fs = require('fs')
-var gulp = require('gulp')
-var clean = require('gulp-clean')
-var browserify = require('browserify')
-var source = require('vinyl-source-stream')
-var rev = require('gulp-rev')
-var buffer = require('vinyl-buffer')
-var gap = require('gulp-append-prepend')
-var Readable = require('stream').Readable
+const fs = require('fs')
+const gulp = require('gulp')
+const clean = require('gulp-clean')
+const browserify = require('browserify')
+const source = require('vinyl-source-stream')
+const rev = require('gulp-rev')
+const buffer = require('vinyl-buffer')
+const gap = require('gulp-append-prepend')
+const Readable = require('stream').Readable
 
-var pkg = require('./package.json')
+const pkg = require('./package.json')
 
-var defaultLocale = 'en'
-var linguas = fs.readFileSync('./locales/LINGUAS', 'utf-8')
+const defaultLocale = 'en'
+const linguas = fs.readFileSync('./locales/LINGUAS', 'utf-8')
   .split(' ')
   .filter(Boolean)
   .map(function (s) {
@@ -40,18 +40,18 @@ gulp.task('default', gulp.series(
 ))
 
 function createLocalizedBundle (locale) {
-  var dest = './dist/' + locale + '/auditorium/'
-  var scriptTask = makeScriptTask(dest, locale)
+  const dest = './dist/' + locale + '/auditorium/'
+  const scriptTask = makeScriptTask(dest, locale)
   scriptTask.displayName = 'script:' + locale
-  var vendorTask = makeVendorTask(dest)
+  const vendorTask = makeVendorTask(dest)
   vendorTask.displayName = 'vendor:' + locale
   return gulp.parallel(scriptTask, vendorTask)
 }
 
 function makeScriptTask (dest, locale) {
   return function () {
-    var transforms = JSON.parse(JSON.stringify(pkg.browserify.transform))
-    var b = browserify({
+    const transforms = JSON.parse(JSON.stringify(pkg.browserify.transform))
+    const b = browserify({
       entries: './index.js',
       // See: https://github.com/nikku/karma-browserify/issues/130#issuecomment-120036815
       postFilter: function (id, file, currentPkg) {
@@ -95,7 +95,7 @@ function makeScriptTask (dest, locale) {
 
 function makeVendorTask (dest) {
   return function () {
-    var b = browserify()
+    const b = browserify()
     return b
       .require('plotly.js-basic-dist')
       .require('zxcvbn')
