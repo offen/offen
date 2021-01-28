@@ -370,7 +370,7 @@ msgstr "Auditorium öffnen"
 #. src/views/components/index/header-card.js:50
 #: 
 msgid "We only access usage data with your consent."
-msgstr "Wir greifen nur mit deiner Zustimmung auf deine Nutzungsdaten zu."
+msgstr "Wir greifen nur mit deiner ausdrücklichen Zustimmung auf deine Nutzungsdaten zu."
 
 #. src/views/components/index/header-card.js:53
 #: 
@@ -1482,9 +1482,8 @@ msgid "To review your data collected over time, <br class=\"dn db-l\">set a book
 msgstr "Setze ein Lesezeichen für diese Seite, <br class=\"dn db-l\">um deine im Laufe der Zeit gesammelten Daten einzusehen."
 
 #: 
-#, fuzzy
 msgid "30 days"
-msgstr "7 Tage"
+msgstr "30 Tage"
 
 #. src/views/components/auditorium/range-selector.js:86
 #: 
