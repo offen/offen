@@ -86,6 +86,9 @@ const App = () => {
       window.scrollTo(0, 0)
     }
     previousPath.current = e.current.props.path
+    if (window.__offen__ && window.__offen__.pageview) {
+      window.__offen__.pageview({ skipConsent: true })
+    }
   }
 
   return (
