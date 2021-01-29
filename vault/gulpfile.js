@@ -89,6 +89,7 @@ function makeScriptTask (dest, locale) {
 
     return b
       .exclude('dexie')
+      .exclude('underscore')
       .plugin('split-require', {
         dir: dest,
         filename: function (entry) {
@@ -134,6 +135,7 @@ function makeVendorTask (dest) {
 
     return b
       .require('dexie')
+      .require('underscore')
       .plugin('tinyify')
       .bundle()
       .pipe(source('vendor.js'))

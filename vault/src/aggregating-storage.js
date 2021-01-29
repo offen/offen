@@ -5,8 +5,8 @@
 
 var _ = require('underscore')
 var ULID = require('ulid')
-var startOfHour = require('date-fns/start_of_hour')
-var endOfHour = require('date-fns/end_of_hour')
+var startOfHour = require('date-fns/startOfHour')
+var endOfHour = require('date-fns/endOfHour')
 
 var storage = require('./storage')
 var decryptEvents = require('./decrypt-events')

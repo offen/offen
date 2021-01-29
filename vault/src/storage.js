@@ -4,7 +4,7 @@
  */
 
 var dexie = require('dexie')
-var addHours = require('date-fns/add_hours')
+var addHours = require('date-fns/addHours')
 
 var getDatabase = require('./database')
 var cookies = require('./cookie-tools')
