@@ -4,7 +4,6 @@
 package router
 
 import (
-	"encoding/base64"
 	"fmt"
 	"html/template"
 	"net/http"
@@ -17,7 +16,6 @@ import (
 	"github.com/gorilla/securecookie"
 	"github.com/microcosm-cc/bluemonday"
 	"github.com/offen/offen/server/config"
-	"github.com/offen/offen/server/keys"
 	"github.com/offen/offen/server/mailer"
 	"github.com/offen/offen/server/persistence"
 	ratelimiter "github.com/offen/offen/server/ratelimiter"
@@ -183,6 +181,11 @@ func New(opts ...Config) http.Handler {
 		},
 	})
 
+	csp := headerMiddleware(map[string]func() string{
+		"Content-Security-Policy": func() string {
+			return defaultCSP
+		},
+	})
 	etag := etagMiddleware()
 
 	if !rt.config.App.Development {
@@ -198,9 +201,7 @@ func New(opts ...Config) http.Handler {
 
 	root := gin.New()
 	root.SetHTMLTemplate(rt.template)
-	root.GET("/*any", etag, cspMiddleware(func() (string, error) {
-		return keys.GenerateRandomValueWith(keys.DefaultNonceSize, base64.URLEncoding)
-	}), rt.getIndex)
+	root.GET("/*any", etag, csp, rt.getIndex)
 	app.GET("/", gin.WrapH(root))
 
 	app.Any("/healthz", noStore, rt.getHealth)
