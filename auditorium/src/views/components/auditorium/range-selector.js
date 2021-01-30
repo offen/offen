@@ -72,6 +72,13 @@ const RangeSelector = (props) => {
             ? 'pointer dark-green b link dim dib mb2 mr3 pa2 bt bw2 b--dark-green'
             : 'pointer dark-green b link dim dib mb2 mr3 pv2 mt1'}
           aria-current={isActive ? 'time' : null}
+          role='button'
+          tabindex='0'
+          onkeypress={(e) => {
+            if (e.which === 13) {
+              setShowDatepicker(!showDatepicker)
+            }
+          }}
           onclick={() => setShowDatepicker(!showDatepicker)}
         >
           {__('Custom')}

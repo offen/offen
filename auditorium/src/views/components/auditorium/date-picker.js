@@ -22,7 +22,7 @@ const localeMap = {
 module.exports = (props) => {
   const { onClose, from, to } = props
   const [startDate, setStartDate] = useState(from ? new Date(from) : new Date())
-  const [endDate, setEndDate] = useState(from ? new Date(to) : new Date())
+  const [endDate, setEndDate] = useState(to ? new Date(to) : new Date())
   const dateFormatProps = { year: 'numeric', month: 'long', day: 'numeric' }
 
   let url = window.location.pathname

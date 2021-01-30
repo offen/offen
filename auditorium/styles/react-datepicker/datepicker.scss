@@ -11,7 +11,7 @@ $datepicker__header-color: #000 !default;
 
 /*----------------------------------------------------------
 Used */
-$datepicker__muted-color: #333 !default; /* Nicht mögliche Tage */
+$datepicker__muted-color: #333 !default;
 $datepicker__background-color: #ffffff !default;
 $datepicker__selected-color: #555555 !default;
 $datepicker__selected-range-color: #EEEEEE !default;
@@ -24,7 +24,7 @@ $datepicker__navigation-size: 0.45rem !default;
 $datepicker__triangle-size: 8px !default;
 
 $datepicker__font-size: 1rem !default; /* f5 */
-$datepicker__font-size-small: 0.875rem !default; /* Wochentage */
+$datepicker__font-size-small: 0.875rem !default;
 
 $datepicker__item-size: 2.2rem !default;
 $datepicker__day-width: 2.5rem !default;
@@ -170,6 +170,7 @@ $datepicker__day-line-height: 1.8rem !default;
   cursor: pointer;
   text-indent: -999em;
   z-index: 1;
+  overflow: hidden;
 
   &--previous {
     left: 10px;
