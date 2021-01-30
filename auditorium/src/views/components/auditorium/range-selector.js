@@ -52,8 +52,8 @@ const RangeSelector = (props) => {
         <a
           href={url}
           class={activeRange
-            ? 'dark-green b link dim dib mb2 mr3 pa2 bt bw2 b--dark-green'
-            : 'dark-green b link dim dib mb2 mr3 pv2 mt1'}
+            ? 'dark-green b link dim dib mb2 mr1 pv2 ph1 bt bw2 b--dark-green'
+            : 'dark-green b link dim dib mb2 mr1 pv2 ph1 mt1'}
           aria-current={activeRange ? 'time' : null}
           onclick={() => setShowDatepicker(false)}
         >
@@ -69,8 +69,8 @@ const RangeSelector = (props) => {
       <li key='custom-daterange' class='datepicker-display bt b--light-gray pr3'>
         <span
           class={isActive
-            ? 'pointer dark-green b link dim dib mb2 mr3 pa2 bt bw2 b--dark-green'
-            : 'pointer dark-green b link dim dib mb2 mr3 pv2 mt1'}
+            ? 'pointer dark-green b link dim dib mb2 mr1 pv2 ph1 bt bw2 b--dark-green'
+            : 'pointer dark-green b link dim dib mb2 mr1 pv2 ph1 mt1'}
           aria-current={isActive ? 'time' : null}
           role='button'
           tabindex='0'
