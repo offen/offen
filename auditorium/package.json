@@ -4,7 +4,7 @@
   "private": true,
   "main": "index.js",
   "scripts": {
-    "start": "budo index.js --pushstate --port $PORT -- --global-transform aliasify",
+    "start": "budo index.js register-dev-locales.js --pushstate --port $PORT -- --global-transform aliasify",
     "test": "npm run mochify",
     "mochify": "mochify --chrome $(which google-chrome) --global-transform aliasify --allow-chrome-as-root src/{,**}/*.test.js",
     "posttest": "standard",
@@ -42,7 +42,7 @@
     "@babel/core": "^7.8.4",
     "@babel/preset-env": "^7.8.4",
     "@csstools/postcss-sass": "^4.0.0",
-    "@offen/l10nify": "^0.2.0",
+    "@offen/l10nify": "^0.3.0",
     "aliasify": "^2.1.0",
     "babel-preset-preact": "^2.0.0",
     "babelify": "^10.0.0",
