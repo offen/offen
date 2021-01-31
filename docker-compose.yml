@@ -28,6 +28,7 @@ services:
       - servercache:/data
       - ./locales:/offen/server/locales/messages
     environment:
+      OFFEN_APP_LOCALE: ${LOCALE:-en}
       OFFEN_APP_DEVELOPMENT: '1'
       OFFEN_SERVER_REVERSEPROXY: '1'
       OFFEN_SERVER_PORT: 8080
@@ -43,6 +44,7 @@ services:
     restart: on-failure
     working_dir: /offen/vault
     environment:
+      LOCALE: ${LOCALE:-en}
       PORT: 9977
     volumes:
       - .:/offen
@@ -53,6 +55,7 @@ services:
     <<: *budo_app
     working_dir: /offen/script
     environment:
+      LOCALE: ${LOCALE:-en}
       PORT: 9966
     volumes:
       - .:/offen
@@ -63,6 +66,7 @@ services:
     <<: *budo_app
     working_dir: /offen/auditorium
     environment:
+      LOCALE: ${LOCALE:-en}
       PORT: 9955
     volumes:
       - .:/offen

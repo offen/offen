@@ -106,9 +106,11 @@ build-docker:
 secret:
 	@docker-compose run server make secret
 
+LOCALE ?= en
+
 .PHONY: up
 up:
-	@docker-compose up
+	@LOCALE=${LOCALE} docker-compose up
 
 .PHONY: down
 down:
