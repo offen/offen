@@ -100,7 +100,9 @@ Offen treats the user as a party of equal importance in the collection of usage 
 ## Localize
 
 __Offen is currently available in English and German.__
-Our consent banner and the Auditorium for operators as well as users can be displayed in the respective locale. Simply select your preferred language when installing. You can change it anytime later.
+
+Our consent banner and the Auditorium for operators as well as users can be displayed in the respective locale.
+
 Support fair web analytics by contributing French, Spanish and other language versions. [Request an invite.][]
 
 [Request an invite.]: mailto:hioffen@posteo.de
