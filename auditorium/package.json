@@ -69,18 +69,8 @@
     "transform": [
       "babelify",
       "urify/transform",
-      [
-        "envify",
-        {
-          "LOCALE": "en"
-        }
-      ],
-      [
-        "@offen/l10nify",
-        {
-          "locale": "en"
-        }
-      ],
+      "envify",
+      "@offen/l10nify",
       [
         "sheetify",
         {

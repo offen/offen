@@ -29,7 +29,7 @@
     "uuid": "^3.3.2"
   },
   "devDependencies": {
-    "@offen/l10nify": "^0.2.0",
+    "@offen/l10nify": "^0.3.0",
     "@offen/schemaify": "^0.1.0",
     "browserify": "^16.2.3",
     "budo": "^11.6.3",
@@ -58,12 +58,7 @@
     "transform": [
       "@offen/schemaify",
       "envify",
-      [
-        "@offen/l10nify",
-        {
-          "locale": "en"
-        }
-      ],
+      "@offen/l10nify",
       "nanohtml"
     ]
   },

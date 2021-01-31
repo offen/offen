@@ -65,6 +65,9 @@ function makeScriptTask (dest, locale) {
         if (transform === '@offen/l10nify' || (Array.isArray(transform) && transform[0] === '@offen/l10nify')) {
           return ['@offen/l10nify', { locale: locale }]
         }
+        if (transform === 'envify' || (Array.isArray(transform) && transform[0] === 'envify')) {
+          return ['envify', { LOCALE: locale }]
+        }
         return transform
       })
     })
