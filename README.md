@@ -16,7 +16,7 @@ SPDX-License-Identifier: Apache-2.0
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/offen/offen.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/offen/offen/alerts/)
 [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/offen/offen.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/offen/offen/context:javascript)
 
-Offen is an open alternative to common web analytics tools. Gain insights while your users have full access to their data. Lightweight, self hosted and free.
+__Offen is an open alternative to common web analytics tools. Gain insights while your users have full access to their data. Lightweight, self hosted and free.__
 
 ## Contents
 
@@ -132,8 +132,8 @@ See the [NOTICE][notice] file for license information on works that get bundled 
 
 ## Project status
 
-__Offen is in active development.__
-Check our [roadmap][], and [blog][] for detailed updates on what we are working on right now and what's up next.
+__Offen is in active development.__  
+Check our [roadmap][] and [blog][] for detailed updates on what we are working on right now and what's up next.
 
 [roadmap]: https://github.com/offen/offen/projects/1
 [blog]: https://www.offen.dev/blog/
@@ -205,3 +205,4 @@ Send a PR adding your site or app to this section.
 [Website](https://www.offen.dev/)  
 [Docs](https://docs.offen.dev/)  
 [Twitter](https://twitter.com/hioffen)  
+[Mastodon](https://fosstodon.org/@offen)
