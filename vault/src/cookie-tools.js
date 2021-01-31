@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * Copyright 2020-2021 - Offen Authors <hioffen@posteo.de>
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -33,15 +33,16 @@ function parse (cookieString) {
 
 exports.defaultCookie = defaultCookie
 
-function defaultCookie (name, value, expires) {
+function defaultCookie (name, value, opts) {
+  opts = opts || {}
   var isLocalhost = window.location.hostname === 'localhost'
   var cookie = {}
   cookie[name] = value
-  cookie.expires = expires.toUTCString()
+  cookie.expires = opts.expires ? opts.expires.toUTCString() : false
   return Object.assign(cookie, {
     // it is important not to lock this cookie down to `/vault` as the
     // server checks for it before accepting events
-    path: '/',
+    Path: opts.path || '/',
     SameSite: isLocalhost ? 'Lax' : 'None',
     Secure: !isLocalhost
   })

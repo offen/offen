@@ -12,12 +12,10 @@ function optIn (event, respond, next) {
   Promise.resolve(consentStatus.get())
     .then(function (status) {
       if (status) {
-        return status
+        return { status: status, persist: true }
       }
-      if (event.data.meta && event.data.meta.noBanner) {
-        var err = new Error('Skipping consent banner.')
-        err.ok = true
-        throw err
+      if (event.data.meta && event.data.meta.skipConsent) {
+        return { status: consentStatus.DENY, persist: false }
       }
       function styleHost (payload) {
         return respond({
@@ -27,21 +25,22 @@ function optIn (event, respond, next) {
       }
       styleHost.selector = respond.selector
       return consentStatus.askForConsent(styleHost)
+        .then(function (status) {
+          return { status: status, persist: true }
+        })
     })
-    .then(function (status) {
-      consentStatus.set(status)
+    .then(function (result) {
+      var status = result.status
+      if (result.persist) {
+        consentStatus.set(status)
+      }
       if (status === consentStatus.ALLOW) {
         return next()
       }
       console.log(__('This page is using Offen to collect usage statistics.'))
       console.log(__('You have opted out of data collection, no data is being collected.'))
       console.log(__('Find out more about Offen at "%s"', window.location.origin))
-    })
-    .catch(function (err) {
-      if (err && err.ok) {
-        return
-      }
-      throw err
+      respond(null)
     })
 }
 

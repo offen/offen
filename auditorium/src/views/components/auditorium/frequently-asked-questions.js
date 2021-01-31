@@ -15,7 +15,7 @@ module.exports = (props) => {
         {__('FAQ')}
       </h4>
       <div class='flex flex-column flex-row-ns w-100'>
-        <div class='w-100 w-50-ns mr2-ns'>
+        <div class='w-100 w-50-ns mr2-ns mb4 mb0-ns'>
           <Paragraph class='i mt0 mb2'>
             {__('What data is collected?')}
           </Paragraph>
@@ -31,7 +31,7 @@ module.exports = (props) => {
           <Paragraph class='i mt0 mb2'>
             {__('How is my data handled?')}
           </Paragraph>
-          <Paragraph class='mt0 mb4'>
+          <Paragraph class='mt0 mb1'>
             {__('Your usage data is encrypted end-to-end. It will be automatically deleted after 6 months. You can delete your usage data yourself at any time in the privacy panel.')}
           </Paragraph>
         </div>

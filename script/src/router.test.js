@@ -17,7 +17,7 @@ describe('src/router.js', function () {
         send({
           type: 'TEST',
           payload: context
-        }, true)
+        })
           .then(function (response) {
             assert(response.host)
             delete response.host

@@ -1,4 +1,4 @@
-# Copyright 2020 - Offen Authors <hioffen@posteo.de>
+# Copyright 2020-2021 - Offen Authors <hioffen@posteo.de>
 # SPDX-License-Identifier: Apache-2.0
 
 FROM node:14-alpine as auditorium
@@ -56,9 +56,7 @@ RUN npm run --silent extract-strings > vault.po
 FROM golang:1.15
 
 RUN apt-get update \
-  && apt-get install -y \
-  gettext \
-  sqlite \
+  && apt-get install -y gettext \
   && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /code/server

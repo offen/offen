@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * Copyright 2020-2021 - Offen Authors <hioffen@posteo.de>
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -18,12 +18,12 @@ function decryptEventsWith (cache) {
 
     function getMatchingSecret (secretId) {
       if (cache) {
-        cache[secretId] = cache[secretId] || doDecrypt()
+        cache[secretId] = cache[secretId] || doDecryptSecret()
         return cache[secretId]
       }
-      return doDecrypt()
+      return doDecryptSecret()
 
-      function doDecrypt () {
+      function doDecryptSecret () {
         var secret = secretsById[secretId]
         if (!secret) {
           return Promise.reject(
@@ -48,27 +48,17 @@ function decryptEventsWith (cache) {
         var payload = encryptedEvent.payload
 
         if (cache) {
-          cache[eventId] = cache[eventId] || doDecrypt()
+          cache[eventId] = cache[eventId] || doDecryptEvent()
           return cache[eventId]
         }
 
-        return doDecrypt()
+        return doDecryptEvent()
 
-        function doDecrypt () {
-          var result
-          if (!secretId) {
-            result = decryptWithAccountKey(payload)
-          } else {
-            result = getMatchingSecret(secretId)
-              .then(function (secret) {
-                if (!secret) {
-                  return null
-                }
-                return crypto.decryptSymmetricWith(secret.jwk)(payload)
-              })
-          }
-
-          return result
+        function doDecryptEvent () {
+          return getMatchingSecret(secretId)
+            .then(function (secret) {
+              return crypto.decryptSymmetricWith(secret.jwk)(payload)
+            })
             .then(function (decryptedPayload) {
               return Object.assign(
                 {}, encryptedEvent, { payload: decryptedPayload }

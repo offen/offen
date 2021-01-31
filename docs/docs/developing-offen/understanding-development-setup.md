@@ -8,7 +8,7 @@ parent: Developing Offen
 ---
 
 <!--
-Copyright 2020 - Offen Authors <hioffen@posteo.de>
+Copyright 2020-2021 - Offen Authors <hioffen@posteo.de>
 SPDX-License-Identifier: Apache-2.0
 -->
 
@@ -48,7 +48,7 @@ make test
 
 ## Handling localization
 
-All of the subapplications use a "gettext"-style approach for handling localization of strings. This means, any user facing string should appear in the source code in english (which is the default locale), and wrapped using the `__` function.
+All of the subapplications use a "gettext"-style approach for handling localization of strings. This means, any user facing string should appear in the source code in English (which is the default locale), and wrapped using the `__` function.
 
 In JavaScript this would look like:
 

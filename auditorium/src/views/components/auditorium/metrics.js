@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * Copyright 2020-2021 - Offen Authors <hioffen@posteo.de>
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -133,18 +133,6 @@ const Metrics = (props) => {
         small
       />
     ) : null)
-  const metricPlus = (
-    isOperator && model.loss
-      ? (
-        <KeyMetric
-          name={__('Plus')}
-          value={model.loss}
-          formatAs='percentage'
-          small
-        />
-      )
-      : null
-  )
 
   const propsMobile = explainerPropsFor ? explainerPropsFor('metric/mobile') : {}
   const metricMobile = (
@@ -234,7 +222,7 @@ const Metrics = (props) => {
           {metricUniqueSessions}
         </div>
       </div>
-      <div class='flex flex-wrap mb3 bb b--light-gray'>
+      <div class='flex flex-wrap mb4 bb b--light-gray'>
         <div class='w-50 w-100-ns mb4 pl2'>
           {metricAveragePageDepth}
         </div>
@@ -243,9 +231,6 @@ const Metrics = (props) => {
         </div>
         <div class='w-50 w-100-ns mb4 pl2'>
           {metricReturningUsers}
-        </div>
-        <div class='w-50 w-100-ns mb4 pl2'>
-          {metricPlus}
         </div>
       </div>
       <div class='flex flex-wrap'>

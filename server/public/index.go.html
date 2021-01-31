@@ -8,8 +8,8 @@
     <title>Offen</title>
     <link rel="stylesheet" type="text/css" href="/tachyons.min.css">
     {{ template "meta" . }}
-    {{ with .rootAccount }}
-      <script src="/script.js" data-no-banner data-account-id="{{ . }}"></script>
+    {{ if .rootAccount }}
+      <script src="/script.js" data-use-api data-account-id="{{ .rootAccount }}"></script>
     {{ end }}
   </head>
   <body class="bg-washed-yellow">

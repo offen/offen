@@ -1,10 +1,10 @@
 /**
- * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * Copyright 2020-2021 - Offen Authors <hioffen@posteo.de>
  * SPDX-License-Identifier: Apache-2.0
  */
 
 var dexie = require('dexie')
-var addHours = require('date-fns/add_hours')
+var addHours = require('date-fns/addHours')
 
 var getDatabase = require('./database')
 var cookies = require('./cookie-tools')
@@ -223,18 +223,13 @@ function Storage (getDatabase, fallbackStore) {
           })
       })
       .catch(dexie.OpenFailedError, function () {
-        var isLocalhost = window.location.hostname === 'localhost'
-        var sameSite = isLocalhost ? 'Lax' : 'None'
-
-        var entry = {}
-        entry[TYPE_USER_SECRET + '-' + accountId] = JSON.stringify(userSecret)
-        Object.assign(entry, {
-          Path: '/vault',
-          SameSite: sameSite,
-          Secure: !isLocalhost,
-          expires: addHours(new Date(), 4464).toUTCString()
+        var key = TYPE_USER_SECRET + '-' + accountId
+        var value = JSON.stringify(userSecret)
+        var cookie = cookies.defaultCookie(key, value, {
+          expires: addHours(new Date(), 4464),
+          path: '/vault'
         })
-        document.cookie = cookies.serialize(entry)
+        document.cookie = cookies.serialize(cookie)
       })
   }
 
@@ -244,12 +239,11 @@ function Storage (getDatabase, fallbackStore) {
       .where({ type: TYPE_USER_SECRET })
       .delete()
       .catch(dexie.OpenFailedError, function () {
-        var entry = {}
-        entry[TYPE_USER_SECRET + '-' + accountId] = ''
-        Object.assign(entry, {
-          expires: new Date(0).toUTCString()
+        var key = TYPE_USER_SECRET + '-' + accountId
+        var cookie = cookies.defaultCookie(key, '', {
+          expires: new Date(0)
         })
-        document.cookie = cookies.serialize(entry)
+        document.cookie = cookies.serialize(cookie)
       })
   }
 

@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * Copyright 2020-2021 - Offen Authors <hioffen@posteo.de>
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -20,17 +20,6 @@ function handleAnalyticsEventWith (relayEvent) {
     var accountId = message.payload.accountId
     var event = message.payload.event
     return relayEvent(accountId, event, false)
-  }
-}
-
-exports.handleAnonymousEvent = handleAnonymousEventWith(relayEvent)
-exports.handleAnonymousEventWith = handleAnonymousEventWith
-
-function handleAnonymousEventWith (relayEvent) {
-  return function (message) {
-    var accountId = message.payload.accountId
-    var event = message.payload.event
-    return relayEvent(accountId, event, true)
   }
 }
 
@@ -59,7 +48,7 @@ function handleExpressConsentWith (api, storage, getConsentStatus) {
       return Promise.reject(new Error('Received invalid consent status: ' + status))
     }
     consentStatus.set(status)
-    var purge = status === consentStatus.ALLOW
+    var maybePurge = status === consentStatus.ALLOW
       ? Promise.resolve()
       : Promise.all([
         api
@@ -74,7 +63,7 @@ function handleExpressConsentWith (api, storage, getConsentStatus) {
           }),
         storage.purge()
       ])
-    return purge.then(function () {
+    return maybePurge.then(function () {
       return {
         type: 'EXPRESS_CONSENT_SUCCESS',
         payload: {

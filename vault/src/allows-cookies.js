@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * Copyright 2020-2021 - Offen Authors <hioffen@posteo.de>
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -10,14 +10,13 @@ var token = '__allows_cookies__'
 module.exports = allowsCookies
 
 function allowsCookies () {
-  var isLocalhost = window.location.hostname === 'localhost'
-  var sameSite = isLocalhost ? 'Lax' : 'None'
-  document.cookie = cookies.serialize({
-    ok: token, SameSite: sameSite, Secure: !isLocalhost
-  })
+  var cookie = cookies.defaultCookie('ok', token)
+  document.cookie = cookies.serialize(cookie)
+
   var support = document.cookie.indexOf(token) >= 0
-  document.cookie = cookies.serialize({
-    ok: '', expires: new Date(0).toUTCString(), SameSite: sameSite, Secure: !isLocalhost
-  })
+
+  var deletedCookie = cookies.serialize('ok', '', { expires: new Date(0) })
+  document.cookie = cookies.serialize(deletedCookie)
+
   return support
 }

@@ -14,7 +14,7 @@ import (
 	"path"
 
 	// imported for reading fs content side effects
-	_ "github.com/offen/offen/server/public/statik"
+	_ "github.com/offen/offen/server/statik"
 	"github.com/rakyll/statik/fs"
 )
 

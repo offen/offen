@@ -1,0 +1,39 @@
+# Copyright 2020 - Offen Authors <hioffen@posteo.de>
+# SPDX-License-Identifier: Apache-2.0
+
+name: Extract translation strings
+
+on:
+  workflow_dispatch:
+
+jobs:
+  extract_strings:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Extract strings
+        run: |
+          make extract-strings
+      - name: Create Pull Request
+        id: cpr
+        uses: peter-evans/create-pull-request@v3
+        with:
+          base: development
+          token: ${{ secrets.PERSONAL_TOKEN }}
+          commit-message: Update message files
+          committer: Offen Bot <hioffen@posteo.de>
+          author: ${{ github.actor }} <hioffen@posteo.de>
+          branch: extract-new-strings
+          title: Update message files
+          body: |
+            Merge this PR to update the `.po` files  for all defined LINGUAS to
+            the latest state as of ${{ github.sha }}.
+
+            After merging, the webhook integration will upload the new messages
+            to [POEditor](https://poeditor.com/projects/).
+
+            ---
+
+            Are you interested in contributing translations for Offen? Get in
+            touch: hioffen@posteo.de
+          draft: false

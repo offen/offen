@@ -1,23 +1,26 @@
 /**
- * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * Copyright 2020-2021 - Offen Authors <hioffen@posteo.de>
  * SPDX-License-Identifier: Apache-2.0
  */
+
+// All functions in this module are written with the expectation of given
+// events conforming to the schemas defined in event.schema and payload.schema,
+// meaning there is no need to perform safety checks for the existence of props
+// which are already guaranteed by an event conforming to the schema. This
+// matters as these functions can process a lot of events in certain cases
+// so any check can have a real world performance impact.
 
 var _ = require('underscore')
 
 var placeInBucket = require('./buckets')
 
-// `loss` is the percentage of anonymous events (i.e. events without a
-// user identifier) in the given set of events.
-exports.loss = consumeAsync(loss)
-
-function loss (events) {
-  var totalCount = events.length
-  if (totalCount === 0) {
-    return 0
-  }
-  var nonNullCount = countKeys('secretId', false)(events)
-  return 1 - (nonNullCount / totalCount)
+var propertyAccessors = {
+  sessionId: _.property(['payload', 'sessionId']),
+  href: _.property(['payload', 'href']),
+  timestamp: _.property(['payload', 'timestamp']),
+  pageload: _.property(['payload', 'pageload']),
+  isMobile: _.property(['payload', 'isMobile']),
+  eventId: _.property('eventId')
 }
 
 // The bounce rate is calculated as the percentage of session identifiers
@@ -28,7 +31,7 @@ exports.bounceRate = consumeAsync(bounceRate)
 function bounceRate (events) {
   var sessionCounts = 0
   var bounces = _.chain(events)
-    .map(_.property(['payload', 'sessionId']))
+    .map(propertyAccessors.sessionId)
     .compact()
     .countBy(_.identity)
     .values()
@@ -59,9 +62,10 @@ function referrers (events) {
   return _referrers(events, function (set) {
     return set
       .map(function (event) {
-        return event.payload.referrer.host || event.payload.referrer.href
+        return placeInBucket(
+          event.payload.referrer.host || event.payload.referrer.href
+        )
       })
-      .map(placeInBucket)
   })
 }
 
@@ -71,7 +75,7 @@ exports.campaigns = consumeAsync(_queryParam('utm_campaign'))
 function _queryParam (key) {
   return function (events) {
     return _.chain(events)
-      .filter(_.property(['payload', 'href']))
+      .filter(propertyAccessors.href)
       .map(function (event) {
         return {
           sessionId: event.payload.sessionId,
@@ -94,7 +98,7 @@ function _queryParam (key) {
           .uniq()
           .map(function (sessionId) {
             return events.filter(function (event) {
-              return event.payload && event.payload.sessionId === sessionId
+              return event.payload.sessionId === sessionId
             })
           })
           .flatten(true)
@@ -119,24 +123,17 @@ function _queryParam (key) {
 exports.sources = consumeAsync(_queryParam('utm_source'))
 
 function _referrers (events, groupFn) {
-  var uniqueForeign = events
+  var uniqueForeign = _.chain(events)
     .filter(function (event) {
-      if (event.secretId === null || !event.payload || !event.payload.referrer) {
+      if (!event.payload.referrer) {
         return false
       }
       return event.payload.referrer.host !== event.payload.href.host
     })
-    .reduce(function (acc, event) {
-      function unknownSession (knownEvent) {
-        return knownEvent.payload.sessionId !== event.payload.sessionId
-      }
-      if (_.every(acc, unknownSession)) {
-        acc.push(event)
-      }
-      return acc
-    }, [])
+    .uniq(false, propertyAccessors.sessionId)
+    .value()
 
-  var sessionIds = _.map(uniqueForeign, _.property(['payload', 'sessionId']))
+  var sessionIds = _.map(uniqueForeign, propertyAccessors.sessionId)
   var values = groupFn(uniqueForeign)
   return _.chain(values)
     .zip(sessionIds)
@@ -144,17 +141,20 @@ function _referrers (events, groupFn) {
     .groupBy(_.head)
     .pairs()
     .map(function (pair) {
-      var sessions = _.map(pair[1], _.last)
+      var sessions = _.reduce(pair[1], function (acc, next) {
+        acc[_.last(next)] = true
+        return acc
+      }, {})
+      var numSessions = _.size(sessions)
       var associatedViews = _.filter(events, function (event) {
-        return event.payload &&
-          event.payload.sessionId &&
-          _.contains(sessions, event.payload.sessionId)
+        return event.payload.sessionId &&
+          sessions[event.payload.sessionId]
       })
       return {
         key: pair[0],
         count: [
-          sessions.length,
-          associatedViews.length / sessions.length
+          numSessions,
+          associatedViews.length / numSessions
         ]
       }
     })
@@ -184,20 +184,17 @@ function activePages (events) {
 
 function _pages (events, perUser) {
   var result = _.chain(events)
-    .filter(function (event) {
-      return event.secretId !== null && event.payload && event.payload.href
-    })
+    .filter(propertyAccessors.href)
 
   if (perUser) {
     // in this branch, only the most recent event for each user
     // will be considered
-    var sortBy = _.property(['payload', 'timestamp'])
     result = result
       .groupBy('secretId')
       .pairs()
       .map(function (pair) {
         return _.last(
-          _.sortBy(pair[1], sortBy)
+          _.sortBy(pair[1], propertyAccessors.timestamp)
         )
       })
       .flatten(true)
@@ -214,9 +211,7 @@ function _pages (events, perUser) {
       return _.chain(pageviewsPerAccount)
         .countBy('href')
         .pairs()
-        .map(function (pair) {
-          return { key: pair[0], count: pair[1] }
-        })
+        .map(pairToRow)
         .value()
     })
     .flatten(true)
@@ -232,9 +227,8 @@ exports.avgPageload = consumeAsync(avgPageload)
 function avgPageload (events) {
   var count
   var total = _.chain(events)
-    .map(_.property(['payload', 'pageload']))
-    .compact()
-    .filter(function (value) { return value > 0 })
+    .map(propertyAccessors.pageload)
+    .filter(function (value) { return value && value > 0 })
     .tap(function (entries) {
       count = entries.length
     })
@@ -271,16 +265,14 @@ exports.exitPages = consumeAsync(exitPages)
 // a single page will be excluded.
 function exitPages (events) {
   return _.chain(events)
-    .filter(function (e) {
-      return e.secretId !== null && e.payload && e.payload.sessionId && e.payload.href
+    .filter(function (event) {
+      return event.payload.sessionId && event.payload.href
     })
-    .groupBy(function (e) {
-      return e.payload.sessionId
+    .groupBy(propertyAccessors.sessionId)
+    .filter(function (el) {
+      return el.length >= 2
     })
     .map(function (events, key) {
-      if (events.length < 2) {
-        return null
-      }
       // for each session, we are only interested in the first
       // event and its href value
       var landing = _.chain(events)
@@ -289,12 +281,9 @@ function exitPages (events) {
         .value()
       return landing.payload.href.origin + landing.payload.href.pathname
     })
-    .compact()
     .countBy(_.identity)
     .pairs()
-    .map(function (pair) {
-      return { key: pair[0], count: pair[1] }
-    })
+    .map(pairToRow)
     .sortBy('count')
     .reverse()
     .value()
@@ -308,13 +297,11 @@ exports.landingPages = consumeAsync(landingPages)
 function landingPages (events) {
   return _.chain(events)
     .filter(function (e) {
-      return e.secretId !== null && e.payload && e.payload.sessionId && e.payload.href
+      return e.payload.sessionId && e.payload.href
     })
-    .groupBy(function (e) {
-      return e.payload.sessionId
-    })
+    .groupBy(propertyAccessors.sessionId)
     .map(function (events, key) {
-      // for each session, we are only interested in the first
+      // for each session, we are only interested in the earliest
       // event and its href value
       var landing = _.chain(events)
         .sortBy('timestamp')
@@ -324,9 +311,7 @@ function landingPages (events) {
     })
     .countBy(_.identity)
     .pairs()
-    .map(function (pair) {
-      return { key: pair[0], count: pair[1] }
-    })
+    .map(pairToRow)
     .sortBy('count')
     .reverse()
     .value()
@@ -337,13 +322,9 @@ function landingPages (events) {
 exports.mobileShare = consumeAsync(mobileShare)
 
 function mobileShare (events) {
-  var allEvents
+  var allEvents = events.length
   var mobileEvents = _.chain(events)
-    .filter('secretId')
-    .tap(function (events) {
-      allEvents = events.length
-    })
-    .filter(_.property(['payload', 'isMobile']))
+    .filter(propertyAccessors.isMobile)
     .size()
     .value()
 
@@ -363,14 +344,14 @@ function retention (/* ...events */) {
   var result = []
   while (chunks.length) {
     var head = chunks.shift()
-    var referenceIds = _.chain(head).pluck('secretId').compact().uniq().value()
+    var referenceIds = _.chain(head).pluck('secretId').uniq().value()
     var innerResult = chunks.reduce(function (acc, next) {
       var share
       if (referenceIds.length === 0) {
         share = 0
       } else {
         var matching = _.chain(next)
-          .pluck('secretId').compact().uniq()
+          .pluck('secretId').uniq()
           .intersection(referenceIds).size().value()
         share = matching / referenceIds.length
       }
@@ -382,8 +363,8 @@ function retention (/* ...events */) {
   return result
 }
 
-// `returningUsers` calculates the percentage of returning visitors in the given range
-// as compared to the list of all known events
+// `returningUsers` calculates the percentage of returning visitors in the given
+// range as compared to the list of all known events
 exports.returningUsers = consumeAsync(returningUsers)
 
 function returningUsers (events, allEvents) {
@@ -397,14 +378,14 @@ function returningUsers (events, allEvents) {
     .filter(function (event) {
       return event.eventId < oldestEventIdInRange
     })
-    .pluck('secretId')
-    .compact()
-    .uniq()
+    .reduce(function (acc, next) {
+      acc[next.secretId] = true
+      return acc
+    }, {})
     .value()
 
   var usersInRange = _.chain(events)
     .pluck('secretId')
-    .compact()
     .uniq()
     .value()
 
@@ -414,7 +395,7 @@ function returningUsers (events, allEvents) {
 
   var newUsers = _.chain(usersInRange)
     .filter(function (secretId) {
-      return !_.contains(usersBeforeRange, secretId)
+      return !usersBeforeRange[secretId]
     })
     .value()
 
@@ -445,7 +426,7 @@ exports.onboardingStats = consumeAsync(onboardingStats)
 
 function onboardingStats (events) {
   var lastEvent = _.chain(events)
-    .sortBy(_.property('eventId'))
+    .sortBy(propertyAccessors.eventId)
     .last()
     .value()
 
@@ -484,4 +465,8 @@ function consumeAsync (fn, ctx) {
         return fn.apply(ctx, resolvedArgs)
       })
   }
+}
+
+function pairToRow (pair) {
+  return { key: pair[0], count: pair[1] }
 }

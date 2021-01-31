@@ -7,7 +7,7 @@
 const { h } = require('preact')
 
 const AccountPicker = (props) => {
-  const { accounts, selectedId, headline, range, resolution } = props
+  const { accounts, selectedId, headline, range, resolution, from, to } = props
 
   let body = null
   if (!Array.isArray(accounts) || !accounts.length) {
@@ -30,8 +30,8 @@ const AccountPicker = (props) => {
         }
 
         let query = null
-        if (range || resolution) {
-          query = new window.URLSearchParams({ range, resolution })
+        if (range || resolution || from || to) {
+          query = new window.URLSearchParams(JSON.parse(JSON.stringify({ range, resolution, from, to })))
         }
 
         return (

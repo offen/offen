@@ -1,4 +1,4 @@
-// Copyright 2020 - Offen Authors <hioffen@posteo.de>
+// Copyright 2020-2021 - Offen Authors <hioffen@posteo.de>
 // SPDX-License-Identifier: Apache-2.0
 
 package router
@@ -180,6 +180,7 @@ func New(opts ...Config) http.Handler {
 			return "no-store"
 		},
 	})
+
 	csp := headerMiddleware(map[string]func() string{
 		"Content-Security-Policy": func() string {
 			return defaultCSP
@@ -232,7 +233,6 @@ func New(opts ...Config) http.Handler {
 		api.POST("/setup", rt.postSetup)
 
 		api.GET("/events", userCookie, rt.getEvents)
-		api.POST("/events/anonymous", rt.postEvents)
 		api.POST("/events", optin, userCookie, rt.postEvents)
 	}
 

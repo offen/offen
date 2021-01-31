@@ -1,22 +1,28 @@
 /**
- * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * Copyright 2020-2021 - Offen Authors <hioffen@posteo.de>
  * SPDX-License-Identifier: Apache-2.0
  */
 
 var _ = require('underscore')
-var startOfHour = require('date-fns/start_of_hour')
-var startOfDay = require('date-fns/start_of_day')
-var startOfWeek = require('date-fns/start_of_week')
-var startOfMonth = require('date-fns/start_of_month')
-var endOfHour = require('date-fns/end_of_hour')
-var endOfDay = require('date-fns/end_of_day')
-var endOfWeek = require('date-fns/end_of_week')
-var endOfMonth = require('date-fns/end_of_month')
-var subMinutes = require('date-fns/sub_minutes')
-var subHours = require('date-fns/sub_hours')
-var subDays = require('date-fns/sub_days')
-var subWeeks = require('date-fns/sub_weeks')
-var subMonths = require('date-fns/sub_months')
+var startOfHour = require('date-fns/startOfHour')
+var startOfDay = require('date-fns/startOfDay')
+var startOfWeek = require('date-fns/startOfWeek')
+var startOfMonth = require('date-fns/startOfMonth')
+var endOfHour = require('date-fns/endOfHour')
+var endOfDay = require('date-fns/endOfDay')
+var endOfWeek = require('date-fns/endOfWeek')
+var endOfMonth = require('date-fns/endOfMonth')
+var subMinutes = require('date-fns/subMinutes')
+var subHours = require('date-fns/subHours')
+var subDays = require('date-fns/subDays')
+var subWeeks = require('date-fns/subWeeks')
+var subMonths = require('date-fns/subMonths')
+var diffHours = require('date-fns/differenceInHours')
+var diffDays = require('date-fns/differenceInDays')
+var diffWeeks = require('date-fns/differenceInWeeks')
+var diffMonths = require('date-fns/differenceInMonths')
+var startOfYesterday = require('date-fns/startOfYesterday')
+var endOfYesterday = require('date-fns/endOfYesterday')
 
 var stats = require('./stats')
 var storage = require('./aggregating-storage')
@@ -48,6 +54,13 @@ var subtract = {
   months: subMonths
 }
 
+var difference = {
+  hours: diffHours,
+  days: diffDays,
+  weeks: diffWeeks,
+  months: diffMonths
+}
+
 module.exports = new Queries(storage)
 module.exports.Queries = Queries
 
@@ -59,18 +72,45 @@ function Queries (storage) {
       )
     }
 
-    // range is the number of units the query looks back from the given
-    // start day
-    var range = (query && query.range) || 7
     // resolution is the unit to group by when looking back
     var resolution = (query && query.resolution) || 'days'
     if (['hours', 'days', 'weeks', 'months'].indexOf(resolution) < 0) {
       return Promise.reject(new Error('Unknown resolution value: ' + resolution))
     }
 
+    var fromParam
+    var toParam
+    try {
+      fromParam = query && query.from && startOf[resolution](new Date(query.from))
+      toParam = query && query.to && endOf[resolution](new Date(query.to))
+    } catch (err) {
+      return Promise.reject(new Error('Error parsing given date ranges: ' + err.message))
+    }
+
+    if ((fromParam && !toParam) || (toParam && !fromParam)) {
+      return Promise.reject(new Error(
+        'Received either `from` or `to` parameter only. Both are required for querying a date range.'
+      ))
+    }
+
+    // range is the number of units the query looks back from the given
+    // start day
+    var range = query && query.range
+    if (range !== 'yesterday') {
+      range = parseInt(range || 7, 10)
+    }
+    if (fromParam) {
+      range = Math.abs(difference[resolution](toParam, fromParam)) + 1
+    }
+    if (range === 'yesterday') {
+      fromParam = startOfYesterday()
+      toParam = endOfYesterday()
+      range = Math.abs(difference[resolution](toParam, fromParam)) + 1
+    }
+
     var now = (query && query.now && new Date(query.now)) || new Date()
-    var lowerBound = startOf[resolution](subtract[resolution](now, range - 1))
-    var upperBound = endOf[resolution](now)
+    var lowerBound = fromParam || startOf[resolution](subtract[resolution](now, range - 1))
+    var upperBound = toParam || endOf[resolution](now)
 
     var proxy = new GetEventsProxy(storage, accountId, publicJwk, privateJwk)
     var allEvents = storage.getRawEvents(accountId)
@@ -83,7 +123,7 @@ function Queries (storage) {
     // for operators and accounts for users.
     var pageviews = Promise.all(Array.from({ length: range })
       .map(function (num, distance) {
-        var date = subtract[resolution](now, distance)
+        var date = subtract[resolution](toParam || now, distance)
 
         var lowerBound = startOf[resolution](date)
         var upperBound = endOf[resolution](date)
@@ -128,7 +168,6 @@ function Queries (storage) {
         return stats.retention.apply(stats, chunks)
       })
 
-    var loss = stats.loss(eventsInBounds)
     var uniqueSessions = stats.uniqueSessions(eventsInBounds)
     var bounceRate = stats.bounceRate(eventsInBounds)
     var referrers = stats.referrers(eventsInBounds)
@@ -161,7 +200,6 @@ function Queries (storage) {
         pages,
         pageviews,
         bounceRate,
-        loss,
         avgPageload,
         avgPageDepth,
         landingPages,
@@ -185,24 +223,33 @@ function Queries (storage) {
           pages: results[4],
           pageviews: results[5],
           bounceRate: results[6],
-          loss: results[7],
-          avgPageload: results[8],
-          avgPageDepth: results[9],
-          landingPages: results[10],
-          exitPages: results[11],
-          mobileShare: results[12],
-          livePages: results[13],
-          liveUsers: results[14],
-          campaigns: results[15],
-          sources: results[16],
-          retentionMatrix: results[17],
-          empty: results[18],
-          returningUsers: results[19],
-          onboardingStats: results[20],
+          avgPageload: results[7],
+          avgPageDepth: results[8],
+          landingPages: results[9],
+          exitPages: results[10],
+          mobileShare: results[11],
+          livePages: results[12],
+          liveUsers: results[13],
+          campaigns: results[14],
+          sources: results[15],
+          retentionMatrix: results[16],
+          empty: results[17],
+          returningUsers: results[18],
+          onboardingStats: results[19],
           resolution: resolution,
           range: range
         }
       })
+      .then(postProcessResult(query && query.resolution, range))
+  }
+}
+
+function postProcessResult (resolution, range) {
+  return function (result) {
+    if (resolution === 'months' && range === 6) {
+      result.returningUsers = null
+    }
+    return result
   }
 }
 
@@ -247,19 +294,16 @@ function validateAndParseEvent (event) {
     return null
   }
   var clone = JSON.parse(JSON.stringify(event))
-  if (clone.payload.href) {
-    clone.payload.href = normalizedURL(clone.payload.href)
-  }
-  if (clone.payload.rawHref) {
-    clone.payload.rawHref = normalizedURL(clone.payload.rawHref)
-  }
-  if (clone.payload.referrer) {
-    clone.payload.referrer = normalizedURL(clone.payload.referrer)
-  }
+
+  ;['href', 'rawHref', 'referrer'].forEach(function (key) {
+    clone.payload[key] = clone.payload[key] && normalizeURL(clone.payload[key])
+  })
+
   return clone
 }
 
-function normalizedURL (urlString) {
+var normalizeURL = _.memoize(_normalizeURL)
+function _normalizeURL (urlString) {
   var url = new window.URL(urlString)
   if (!/\/$/.test(url.pathname)) {
     url.pathname += '/'
