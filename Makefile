@@ -110,7 +110,7 @@ LOCALE ?= en
 
 .PHONY: up
 up:
-	@OFFEN_APP_LOCALE=${LOCALE} docker-compose up
+	@LOCALE=${LOCALE} docker-compose up
 
 .PHONY: down
 down:

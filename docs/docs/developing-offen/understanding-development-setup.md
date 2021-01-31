@@ -68,4 +68,12 @@ and like this in a Go template:
 
 ### Extracting strings
 
-The current set of strings can be extracted for all supported locales using the top level `make extract-strings` command. Each subapp contains a `locales` folder containing the generated `.po` files.
+The current set of strings can be extracted for all supported locales using the top level `make extract-strings` command. Strings will then be merged into a single PO file for each language that is configured in `./locales/LINGUAS`.
+
+### Running the dev setup using a non-default locale
+
+By default, the dev setup uses english language strings for the UI. If you want to start the local setup using a different locale, you can pass the desired value to `make up`:
+
+```
+make up LOCALE=de
+```
