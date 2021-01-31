@@ -20,19 +20,23 @@ Offen is an open alternative to common web analytics tools. Gain insights while 
 
 ## Contents
 
+__Software__
 - [Core features](#core-features)
 - [How it works](#how-it-works)
 - [Essential metrics](#essential-metrics)
 - [Objectives](#objectives)
+- [Localize](#localize)
 - [Test drive](#test-drive)
+- [License](#license)
 - [Project status](#project-status)
+
+__Community__
+- [Give feedback](#give-feedback)
 - [Contributions welcome](#contributions-welcome)
 - [Kind support](#kind-support)
-- [Give feedback](#give-feedback)
 - [Who's using Offen?](#whos-using-offen)
-- [License](#license)
 - [Links](#links)
- 
+
 ## Core features
 
 __Open & free__  
@@ -60,7 +64,7 @@ __Benefits for your users__
 __What you see__  
 Data of all pages where your Offen installation is active. For example:
 
-![Example A](https://offen.github.io/press-kit/offen-material/gfx-GitHub-Example-A.svg) 
+![Example A](https://offen.github.io/press-kit/offen-material/gfx-GitHub-Example-A.svg)
 
 __What your users see__  
 Data of all pages a user has visited where your Offen installation is active. For example:
@@ -93,22 +97,50 @@ You can run Offen on-premises, or in any other deployment scenario that fits you
 __Transparent and fair__  
 Offen treats the user as a party of equal importance in the collection of usage data. Users have access to the same set of tools for analyzing their own data and they can delete their data at any time.
 
+## Localize
+
+__Offen is currently available in English and German.__
+Our consent banner and the Auditorium for operators as well as users can be displayed in the respective locale. Simply select your preferred language when installing. You can change it anytime later.
+Support fair web analytics by contributing French, Spanish and other language versions. [Request an invite.][]
+
+[Request an invite.]: mailto:hioffen@posteo.de
+
 ## Test drive
 
-If you're curious, give it a test drive right now:
+Give Offen a test drive right now. Open your terminal and type:
 
 ```sh
-docker run --rm -it -p 9876:9876 offen/offen:latest demo -port 9876
+curl https://demo.offen.dev | bash
 ```
 
 This creates an ephemeral one-off installation that is populated with random data and is running on `http://localhost:9876`. There, you can log in using the account `demo@offen.dev` and password `demo`.
 
+## License
+
+Work in this repository is licensed under multiple licences.
+
+- All original source code is licensed under [Apache-2.0][license-apache].
+- All documentation is licensed under [Apache-2.0][license-apache].
+- The Offen icon and logo are licensed as [CC-BY-NC-ND-4.0][license-cc].
+
+See the [NOTICE][notice] file for license information on works that get bundled by Offen.
+
+[license-apache]: https://github.com/offen/offen/blob/development/LICENSES/Apache-2.0.txt
+[license-cc]: https://github.com/offen/offen/blob/development/LICENSES/CC-BY-NC-ND-4.0.txt
+[notice]: https://github.com/offen/offen/blob/development/NOTICE
+
 ## Project status
 
-__Offen is in active development.__ Check our [blog][] and [Twitter][] for detailed updates on what we are working on right now and what's up next.
+__Offen is in active development.__
+Check our [roadmap][], and [blog][] for detailed updates on what we are working on right now and what's up next.
 
+[roadmap]: https://github.com/offen/offen/projects/1
 [blog]: https://www.offen.dev/blog/
-[Twitter]: https://twitter.com/hioffen
+
+## Give feedback
+
+Found an issue or want to add something? Please do not hesitate to file an issue or open a pull request.
+For details head to our [contributing guideline.](https://github.com/offen/offen/blob/development/CONTRIBUTING.md)
 
 ## Contributions welcome
 
@@ -163,30 +195,12 @@ We are happy to work with [NLnet Foundation,](https://nlnet.nl/) which actively 
 
 Cross-Browser testing provided by [BrowserStack](https://www.browserstack.com/).
 
-## Give feedback
-
-Found an issue or want to add something? Please do not hesitate to file an issue or open a pull request. For details head to our [contributing guideline.](https://github.com/offen/offen/blob/development/CONTRIBUTING.md)
-
 ## Who's using Offen?
 
-Are you using Offen? We're happy to feature you in this README. Send a PR adding your site or app to this section.
-
-## License
-
-Work in this repository is licensed under multiple licences.
-
-- All original source code is licensed under [Apache-2.0][license-apache].
-- All documentation is licensed under [Apache-2.0][license-apache].
-- The Offen icon and logo are licensed as [CC-BY-NC-ND-4.0][license-cc].
-
-See the [NOTICE][notice] file for license information on works that get bundled by Offen.
-
-[license-apache]: https://github.com/offen/offen/blob/development/LICENSES/Apache-2.0.txt
-[license-cc]: https://github.com/offen/offen/blob/development/LICENSES/CC-BY-NC-ND-4.0.txt
-[notice]: https://github.com/offen/offen/blob/development/NOTICE
+Are you using Offen? We're happy to feature you in this README.
+Send a PR adding your site or app to this section.
 
 ## Links
-
 [Website](https://www.offen.dev/)  
 [Docs](https://docs.offen.dev/)  
 [Twitter](https://twitter.com/hioffen)  
