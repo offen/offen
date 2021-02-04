@@ -14,7 +14,6 @@ import (
 	"os"
 	"os/signal"
 	"runtime"
-	"sync"
 	"syscall"
 	"time"
 
@@ -44,6 +43,8 @@ Usage of "demo":
 `
 
 func cmdDemo(subcommand string, flags []string) {
+	rand.Seed(time.Now().UnixNano())
+
 	demoCmd := flag.NewFlagSet(subcommand, flag.ExitOnError)
 	demoCmd.Usage = func() {
 		fmt.Fprint(flag.CommandLine.Output(), demoUsage)
@@ -98,9 +99,36 @@ func cmdDemo(subcommand string, flags []string) {
 		a.logger.WithError(err).Fatal("Error applying initial database migrations")
 	}
 
+	users := *numUsers
+	if users == -1 {
+		users = randomInRange(250, 500)
+	}
+
 	progress := db.Bootstrap(persistence.BootstrapConfig{
 		Accounts: []persistence.BootstrapAccount{
-			{AccountID: accountID.String(), Name: "Demo Account"},
+			{
+				AccountID: accountID.String(),
+				Name:      "Demo Account",
+				WithFakeData: &persistence.BootstrapFakeData{
+					NumUsers: users,
+					URLs: []string{
+						fmt.Sprintf("http://localhost:%d%s", a.config.Server.Port, "/"),
+						fmt.Sprintf("http://localhost:%d%s", a.config.Server.Port, "/about/"),
+						fmt.Sprintf("http://localhost:%d%s", a.config.Server.Port, "/blog/"),
+						fmt.Sprintf("http://localhost:%d%s", a.config.Server.Port, "/imprint/"),
+						fmt.Sprintf("http://localhost:%d%s", a.config.Server.Port, "/landing-page/"),
+						fmt.Sprintf("http://localhost:%d%s", a.config.Server.Port, "/landing-page/?utm_source=Example_Source"),
+						fmt.Sprintf("http://localhost:%d%s", a.config.Server.Port, "/landing-page/?utm_campaign=Example_Campaign"),
+						fmt.Sprintf("http://localhost:%d%s", a.config.Server.Port, "/intro/"),
+						fmt.Sprintf("http://localhost:%d%s", a.config.Server.Port, "/contact/"),
+					},
+					Referrers: []string{
+						"https://www.offen.dev",
+						"https://t.co/xyz",
+						"https://example.net/",
+					},
+				},
+			},
 		},
 		AccountUsers: []persistence.BootstrapAccountUser{
 			{
@@ -113,87 +141,17 @@ func cmdDemo(subcommand string, flags []string) {
 		},
 	})
 
+	a.logger.Info("Offen is generating some random usage data for your demo, this might take a little while.")
+	pBar := progressbar.NewOptions(users, progressbar.OptionClearOnFinish())
 	for item := range progress {
 		if item.Err != nil {
 			a.logger.WithError(item.Err).Fatal("Error bootstrapping database")
 		}
-	}
-
-	a.logger.Info("Offen is generating some random usage data for your demo, this might take a little while.")
-	rand.Seed(time.Now().UnixNano())
-	account, _ := db.GetAccount(accountID.String(), false, "")
-
-	users := *numUsers
-	if users == -1 {
-		users = randomInRange(250, 500)
-	}
-
-	wg := sync.WaitGroup{}
-	done := make(chan error)
-	wg.Add(users)
-	pBar := progressbar.NewOptions(users, progressbar.OptionClearOnFinish())
-
-	for i := 0; i < users; i++ {
-		go func() {
-			userID, key, jwk, err := newFakeUser()
-			if err != nil {
-				done <- err
-				return
-			}
-			encryptedSecret, encryptionErr := keys.EncryptAsymmetricWith(
-				account.PublicKey, jwk,
-			)
-			if encryptionErr != nil {
-				done <- err
-				return
-			}
-			if err := db.AssociateUserSecret(
-				accountID.String(), userID, encryptedSecret.Marshal(),
-			); err != nil {
-				done <- err
-			}
-
-			for s := 0; s < randomInRange(1, 4); s++ {
-				evts := newFakeSession(
-					fmt.Sprintf("http://localhost:%d", a.config.Server.Port),
-					randomInRange(1, 12),
-				)
-				for _, evt := range evts {
-					b, bErr := json.Marshal(evt)
-					if bErr != nil {
-						done <- err
-					}
-					event, eventErr := keys.EncryptWith(key, b)
-					if eventErr != nil {
-						done <- err
-					}
-					eventID, _ := persistence.EventIDAt(evt.Timestamp)
-					if err := db.Insert(
-						userID,
-						accountID.String(),
-						event.Marshal(),
-						&eventID,
-					); err != nil {
-						done <- err
-					}
-				}
-			}
-			wg.Done()
-			pBar.Add(1)
-		}()
-	}
-
-	go func() {
-		wg.Wait()
-		done <- nil
-	}()
-
-	select {
-	case err := <-done:
-		if err != nil {
-			a.logger.WithError(err).Fatal("Error setting up demo")
+		if item.Done != nil {
+			pBar.Set(int(*item.Done))
 		}
 	}
+	pBar.Set(users)
 
 	fs := public.NewLocalizedFS(a.config.App.Locale.String())
 	gettext, gettextErr := locales.GettextFor(a.config.App.Locale.String())

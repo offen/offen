@@ -4,11 +4,16 @@
 package persistence
 
 import (
+	"encoding/base64"
+	"encoding/json"
 	"errors"
 	"fmt"
+	"math/rand"
 	"time"
 
 	uuid "github.com/gofrs/uuid"
+	jwk "github.com/lestrrat-go/jwx/jwk"
+	"github.com/offen/offen/server/config"
 	"github.com/offen/offen/server/keys"
 )
 
@@ -28,8 +33,16 @@ type BootstrapConfig struct {
 // BootstrapAccount contains the information needed for creating an account at
 // bootstrap time.
 type BootstrapAccount struct {
-	AccountID string `yaml:"id"`
-	Name      string `yaml:"name"`
+	AccountID    string             `yaml:"id"`
+	Name         string             `yaml:"name"`
+	WithFakeData *BootstrapFakeData `yaml:"with_fake_data"`
+}
+
+// BootstrapFakeData configures how to populate an account with fake data
+type BootstrapFakeData struct {
+	NumUsers  int      `yaml:"num_users"`
+	URLs      []string `yaml:"urls"`
+	Referrers []string `yaml:"referrers"`
 }
 
 // BootstrapAccountUser contains the information needed for creating an account
@@ -50,7 +63,8 @@ type accountCreation struct {
 // BootstrapProgress signals information about the progress of bootstrapping the
 // database
 type BootstrapProgress struct {
-	Err error
+	Err  error
+	Done *uint
 }
 
 // Bootstrap seeds a blank database with the given account and user
@@ -59,6 +73,7 @@ func (p *persistenceLayer) Bootstrap(config BootstrapConfig) chan BootstrapProgr
 	out := make(chan BootstrapProgress)
 	go func() {
 		defer close(out)
+
 		for _, user := range config.AccountUsers {
 			if user.AllowInsecurePassword {
 				continue
@@ -101,13 +116,31 @@ func (p *persistenceLayer) Bootstrap(config BootstrapConfig) chan BootstrapProgr
 			return
 		}
 
-		accounts, accountUsers, relationships, err := bootstrapAccounts(&config)
+		accounts, accountUsers, relationships, events, secrets, err := bootstrapAccounts(&config)
 		if err != nil {
 			txn.Rollback()
 			out <- BootstrapProgress{
 				Err: fmt.Errorf("persistence: error creating seed data: %w", err),
 			}
 			return
+		}
+		for _, secret := range secrets {
+			if err := txn.CreateSecret(&secret); err != nil {
+				txn.Rollback()
+				out <- BootstrapProgress{
+					Err: fmt.Errorf("persistence: error creating secret: %w", err),
+				}
+				return
+			}
+		}
+		for _, event := range events {
+			if err := txn.CreateEvent(&event); err != nil {
+				txn.Rollback()
+				out <- BootstrapProgress{
+					Err: fmt.Errorf("persistence: error creating event: %w", err),
+				}
+				return
+			}
 		}
 		for _, account := range accounts {
 			if err := txn.CreateAccount(&account); err != nil {
@@ -136,6 +169,7 @@ func (p *persistenceLayer) Bootstrap(config BootstrapConfig) chan BootstrapProgr
 				return
 			}
 		}
+
 		if err := txn.Commit(); err != nil {
 			out <- BootstrapProgress{
 				Err: fmt.Errorf("persistence: error committing seed data: %w", err),
@@ -146,12 +180,15 @@ func (p *persistenceLayer) Bootstrap(config BootstrapConfig) chan BootstrapProgr
 	return out
 }
 
-func bootstrapAccounts(config *BootstrapConfig) ([]Account, []AccountUser, []AccountUserRelationship, error) {
-	accountCreations := []accountCreation{}
+func bootstrapAccounts(config *BootstrapConfig) ([]Account, []AccountUser, []AccountUserRelationship, []Event, []Secret, error) {
+	var accountCreations []accountCreation
+	var events []Event
+	var secrets []Secret
+
 	for _, account := range config.Accounts {
 		record, encryptionKey, err := newAccount(account.Name, account.AccountID)
 		if err != nil {
-			return nil, nil, nil, fmt.Errorf("persistence: error creating new account %s: %w", account.Name, err)
+			return nil, nil, nil, nil, nil, fmt.Errorf("persistence: error creating new account %s: %w", account.Name, err)
 		}
 		accountCreations = append(accountCreations, accountCreation{
 			account:       *record,
@@ -165,7 +202,7 @@ func bootstrapAccounts(config *BootstrapConfig) ([]Account, []AccountUser, []Acc
 	for _, accountUserData := range config.AccountUsers {
 		accountUser, err := newAccountUser(accountUserData.Email, accountUserData.Password, accountUserData.AdminLevel)
 		if err != nil {
-			return nil, nil, nil, err
+			return nil, nil, nil, nil, nil, err
 		}
 		accountUserCreations = append(accountUserCreations, *accountUser)
 
@@ -178,18 +215,18 @@ func bootstrapAccounts(config *BootstrapConfig) ([]Account, []AccountUser, []Acc
 				}
 			}
 			if encryptionKey == nil {
-				return nil, nil, nil, fmt.Errorf("account with id %s not found", accountID)
+				return nil, nil, nil, nil, nil, fmt.Errorf("account with id %s not found", accountID)
 			}
 
 			r, err := newAccountUserRelationship(accountUser.AccountUserID, accountID)
 			if err != nil {
-				return nil, nil, nil, fmt.Errorf("persistence: error creating account user relationship: %w", err)
+				return nil, nil, nil, nil, nil, fmt.Errorf("persistence: error creating account user relationship: %w", err)
 			}
 			if err := r.addPasswordEncryptedKey(encryptionKey, accountUser.Salt, accountUserData.Password); err != nil {
-				return nil, nil, nil, fmt.Errorf("persistence: error adding password encrypted key: %w", err)
+				return nil, nil, nil, nil, nil, fmt.Errorf("persistence: error adding password encrypted key: %w", err)
 			}
 			if err := r.addEmailEncryptedKey(encryptionKey, accountUser.Salt, accountUserData.Email); err != nil {
-				return nil, nil, nil, fmt.Errorf("persistence: error adding email encrypted key: %w", err)
+				return nil, nil, nil, nil, nil, fmt.Errorf("persistence: error adding email encrypted key: %w", err)
 			}
 
 			relationshipCreations = append(relationshipCreations, *r)
@@ -199,7 +236,8 @@ func bootstrapAccounts(config *BootstrapConfig) ([]Account, []AccountUser, []Acc
 	for _, creation := range accountCreations {
 		accounts = append(accounts, creation.account)
 	}
-	return accounts, accountUserCreations, relationshipCreations, nil
+
+	return accounts, accountUserCreations, relationshipCreations, events, secrets, nil
 }
 
 func newAccountUser(email, password string, adminLevel interface{}) (*AccountUser, error) {
@@ -300,4 +338,133 @@ func newAccountUserRelationship(accountUserID, accountID string) (*AccountUserRe
 		AccountUserID:  accountUserID,
 		AccountID:      accountID,
 	}, nil
+}
+
+func mustSecret(length int) []byte {
+	secret, err := keys.GenerateRandomValue(16)
+	if err != nil {
+		panic(err)
+	}
+	b, err := base64.StdEncoding.DecodeString(secret)
+	if err != nil {
+		panic(err)
+	}
+	return b
+}
+
+func newFakeUser() (string, []byte, []byte, error) {
+	id, err := uuid.NewV4()
+	if err != nil {
+		return "", nil, nil, fmt.Errorf("error creating user id: %w", err)
+	}
+	k, err := keys.GenerateRandomBytes(keys.DefaultSecretLength)
+	if err != nil {
+		return "", nil, nil, fmt.Errorf("error creating user key: %w", err)
+	}
+	j, err := jwk.New(k)
+	if err != nil {
+		return "", nil, nil, fmt.Errorf("error wrapping key as jwk: %w", err)
+	}
+	j.Set(jwk.AlgorithmKey, "A128GCM")
+	j.Set("ext", true)
+	j.Set(jwk.KeyOpsKey, []string{jwk.KeyOpEncrypt, jwk.KeyOpDecrypt})
+	b, err := json.Marshal(j)
+	if err != nil {
+		return "", nil, nil, fmt.Errorf("error marshaling jwk: %w", err)
+	}
+	return id.String(), k, b, nil
+}
+
+func (p *persistenceLayer) createFakeSession(account Account, urls, referrers []string) error {
+	userID, key, jwk, err := newFakeUser()
+	if err != nil {
+		return err
+	}
+	encryptedSecret, encryptionErr := keys.EncryptAsymmetricWith(
+		account.PublicKey, jwk,
+	)
+	if encryptionErr != nil {
+		return err
+	}
+	if err := p.AssociateUserSecret(
+		account.AccountID, userID, encryptedSecret.Marshal(),
+	); err != nil {
+		return err
+	}
+
+	for s := 0; s < randomInRange(1, 4); s++ {
+		evts := newFakeSession(
+			urls, referrers,
+			randomInRange(1, 12),
+		)
+		for _, evt := range evts {
+			b, bErr := json.Marshal(evt)
+			if bErr != nil {
+				return err
+			}
+			event, eventErr := keys.EncryptWith(key, b)
+			if eventErr != nil {
+				return err
+			}
+			eventID, _ := EventIDAt(evt.Timestamp)
+			if err := p.Insert(
+				userID,
+				account.AccountID,
+				event.Marshal(),
+				&eventID,
+			); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+func randomInRange(lower, upper int) int {
+	return rand.Intn(upper-lower) + lower
+}
+
+func randomBool(prob float64) bool {
+	return prob <= rand.Float64()
+}
+
+type fakeEvent struct {
+	Type      string    `json:"type"`
+	Href      string    `json:"href"`
+	Title     string    `json:"title"`
+	Referrer  string    `json:"referrer"`
+	Pageload  int       `json:"pageload"`
+	IsMobile  bool      `json:"isMobile"`
+	Timestamp time.Time `json:"timestamp"`
+	SessionID string    `json:"sessionId"`
+}
+
+func sample(xs []string) string {
+	return xs[randomInRange(0, len(xs)-1)]
+}
+
+func newFakeSession(urls, referrers []string, length int) []*fakeEvent {
+	var result []*fakeEvent
+	sessionID, _ := uuid.NewV4()
+	timestamp := time.Now().Add(-time.Duration(randomInRange(0, int(config.EventRetention))))
+	isMobileSession := randomBool(0.33)
+
+	for i := 0; i < length; i++ {
+		var referrer string
+		if i == 0 && randomBool(0.25) {
+			referrer = sample(referrers)
+		}
+		result = append(result, &fakeEvent{
+			Type:      "PAGEVIEW",
+			Href:      sample(urls),
+			Title:     "Page Title",
+			Referrer:  referrer,
+			Pageload:  randomInRange(400, 1200),
+			IsMobile:  isMobileSession,
+			Timestamp: timestamp,
+			SessionID: sessionID.String(),
+		})
+		timestamp = timestamp.Add(time.Duration(randomInRange(0, 10000)))
+	}
+	return result
 }

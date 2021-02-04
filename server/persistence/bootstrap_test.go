@@ -49,7 +49,7 @@ func TestBootstrapAccounts(t *testing.T) {
 			},
 		},
 	}
-	accounts, accountUsers, relationships, err := bootstrapAccounts(&config)
+	accounts, accountUsers, relationships, _, _, err := bootstrapAccounts(&config)
 
 	if err != nil {
 		t.Fatalf("Unexpected error %v", err)
