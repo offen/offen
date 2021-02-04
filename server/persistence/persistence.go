@@ -27,7 +27,7 @@ type Service interface {
 	ShareAccount(inviteeEmailAddress, providerEmailAddress, providerPassword, accountID string, grantAdminPrivileges bool) (ShareAccountResult, error)
 	Join(emailAddress, password string) error
 	Expire(retention time.Duration) (int, error)
-	Bootstrap(data BootstrapConfig) error
+	Bootstrap(data BootstrapConfig) chan BootstrapProgress
 	ProbeEmpty() bool
 	CheckHealth() error
 	Migrate() error

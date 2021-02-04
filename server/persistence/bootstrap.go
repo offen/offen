@@ -47,63 +47,103 @@ type accountCreation struct {
 	account       Account
 }
 
+// BootstrapProgress signals information about the progress of bootstrapping the
+// database
+type BootstrapProgress struct {
+	Err error
+}
+
 // Bootstrap seeds a blank database with the given account and user
 // data. This is likely only ever used in development.
-func (p *persistenceLayer) Bootstrap(config BootstrapConfig) error {
-	for _, user := range config.AccountUsers {
-		if user.AllowInsecurePassword {
-			continue
+func (p *persistenceLayer) Bootstrap(config BootstrapConfig) chan BootstrapProgress {
+	out := make(chan BootstrapProgress)
+	go func() {
+		defer close(out)
+		for _, user := range config.AccountUsers {
+			if user.AllowInsecurePassword {
+				continue
+			}
+			if err := keys.ValidatePassword(user.Password); err != nil {
+				out <- BootstrapProgress{
+					Err: fmt.Errorf("persistence: error validating password for user %s: %w", user.Email, err),
+				}
+				return
+			}
 		}
-		if err := keys.ValidatePassword(user.Password); err != nil {
-			return fmt.Errorf("persistence: error validating password for user %s: %w", user.Email, err)
+		if !config.Force {
+			if !p.dal.ProbeEmpty() {
+				out <- BootstrapProgress{
+					Err: errors.New("persistence: action would overwrite existing data - not allowed"),
+				}
+				return
+			}
 		}
-	}
-	if !config.Force {
-		if !p.dal.ProbeEmpty() {
-			return errors.New("persistence: action would overwrite existing data - not allowed")
+		txn, err := p.dal.Transaction()
+		if err != nil {
+			out <- BootstrapProgress{
+				Err: fmt.Errorf("persistence: error creating transaction: %w", err),
+			}
+			return
 		}
-	}
-	txn, err := p.dal.Transaction()
-	if err != nil {
-		return fmt.Errorf("persistence: error creating transaction: %w", err)
-	}
-	if err := txn.DropAll(); err != nil {
-		txn.Rollback()
-		return fmt.Errorf("persistence: error dropping tables before inserting seed data: %w", err)
-	}
+		if err := txn.DropAll(); err != nil {
+			txn.Rollback()
+			out <- BootstrapProgress{
+				Err: fmt.Errorf("persistence: error dropping tables before inserting seed data: %w", err),
+			}
+			return
+		}
 
-	if err := txn.ApplyMigrations(); err != nil {
-		txn.Rollback()
-		return fmt.Errorf("persistence: error applying initial migrations: %w", err)
-	}
+		if err := txn.ApplyMigrations(); err != nil {
+			txn.Rollback()
+			out <- BootstrapProgress{
+				Err: fmt.Errorf("persistence: error applying initial migrations: %w", err),
+			}
+			return
+		}
 
-	accounts, accountUsers, relationships, err := bootstrapAccounts(&config)
-	if err != nil {
-		txn.Rollback()
-		return fmt.Errorf("persistence: error creating seed data: %w", err)
-	}
-	for _, account := range accounts {
-		if err := txn.CreateAccount(&account); err != nil {
+		accounts, accountUsers, relationships, err := bootstrapAccounts(&config)
+		if err != nil {
 			txn.Rollback()
-			return fmt.Errorf("persistence: error creating account: %w", err)
+			out <- BootstrapProgress{
+				Err: fmt.Errorf("persistence: error creating seed data: %w", err),
+			}
+			return
 		}
-	}
-	for _, accountUser := range accountUsers {
-		if err := txn.CreateAccountUser(&accountUser); err != nil {
-			txn.Rollback()
-			return fmt.Errorf("persistence: error creating account user: %w", err)
+		for _, account := range accounts {
+			if err := txn.CreateAccount(&account); err != nil {
+				txn.Rollback()
+				out <- BootstrapProgress{
+					Err: fmt.Errorf("persistence: error creating account: %w", err),
+				}
+				return
+			}
 		}
-	}
-	for _, relationship := range relationships {
-		if err := txn.CreateAccountUserRelationship(&relationship); err != nil {
-			txn.Rollback()
-			return fmt.Errorf("persistence: error creating account user relationship: %w", err)
+		for _, accountUser := range accountUsers {
+			if err := txn.CreateAccountUser(&accountUser); err != nil {
+				txn.Rollback()
+				out <- BootstrapProgress{
+					Err: fmt.Errorf("persistence: error creating account user: %w", err),
+				}
+				return
+			}
 		}
-	}
-	if err := txn.Commit(); err != nil {
-		return fmt.Errorf("persistence: error committing seed data: %w", err)
-	}
-	return nil
+		for _, relationship := range relationships {
+			if err := txn.CreateAccountUserRelationship(&relationship); err != nil {
+				txn.Rollback()
+				out <- BootstrapProgress{
+					Err: fmt.Errorf("persistence: error creating account user relationship: %w", err),
+				}
+				return
+			}
+		}
+		if err := txn.Commit(); err != nil {
+			out <- BootstrapProgress{
+				Err: fmt.Errorf("persistence: error committing seed data: %w", err),
+			}
+			return
+		}
+	}()
+	return out
 }
 
 func bootstrapAccounts(config *BootstrapConfig) ([]Account, []AccountUser, []AccountUserRelationship, error) {

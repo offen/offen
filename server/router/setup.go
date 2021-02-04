@@ -54,7 +54,7 @@ func (rt *router) postSetup(c *gin.Context) {
 		return
 	}
 
-	if err := rt.db.Bootstrap(persistence.BootstrapConfig{
+	progress := rt.db.Bootstrap(persistence.BootstrapConfig{
 		Accounts: []persistence.BootstrapAccount{
 			{
 				Name:      html.UnescapeString(rt.sanitizer.Sanitize(req.AccountName)),
@@ -69,12 +69,16 @@ func (rt *router) postSetup(c *gin.Context) {
 				Accounts:   []string{accountID.String()},
 			},
 		},
-	}); err != nil {
-		newJSONError(
-			fmt.Errorf("router: error running bootstrap: %w", err),
-			http.StatusInternalServerError,
-		).Pipe(c)
-		return
+	})
+
+	for item := range progress {
+		if item.Err != nil {
+			newJSONError(
+				fmt.Errorf("router: error running bootstrap: %w", item.Err),
+				http.StatusInternalServerError,
+			).Pipe(c)
+			return
+		}
 	}
 	c.Status(http.StatusNoContent)
 }

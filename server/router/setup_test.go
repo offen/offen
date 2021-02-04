@@ -66,8 +66,15 @@ type mockPostSetupDatabase struct {
 	err error
 }
 
-func (m *mockPostSetupDatabase) Bootstrap(persistence.BootstrapConfig) error {
-	return m.err
+func (m *mockPostSetupDatabase) Bootstrap(persistence.BootstrapConfig) chan persistence.BootstrapProgress {
+	out := make(chan persistence.BootstrapProgress)
+	go func() {
+		out <- persistence.BootstrapProgress{
+			Err: m.err,
+		}
+		close(out)
+	}()
+	return out
 }
 
 func TestRouter_postSetup(t *testing.T) {

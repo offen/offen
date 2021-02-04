@@ -148,9 +148,13 @@ func cmdSetup(subcommand string, flags []string) {
 		a.logger.WithError(err).Fatal("Error applying database migrations")
 	}
 
-	if err := db.Bootstrap(conf); err != nil {
-		a.logger.WithError(err).Fatal("Error bootstrapping database")
+	progress := db.Bootstrap(conf)
+	for item := range progress {
+		if item.Err != nil {
+			a.logger.WithError(item.Err).Fatal("Error bootstrapping database")
+		}
 	}
+
 	if *source == "" {
 		a.logger.Infof("Successfully created account %s with ID %s, you can use the given credentials to access it", *accountName, *accountID)
 	} else {

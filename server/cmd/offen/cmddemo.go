@@ -97,7 +97,8 @@ func cmdDemo(subcommand string, flags []string) {
 	if err := db.Migrate(); err != nil {
 		a.logger.WithError(err).Fatal("Error applying initial database migrations")
 	}
-	if err := db.Bootstrap(persistence.BootstrapConfig{
+
+	progress := db.Bootstrap(persistence.BootstrapConfig{
 		Accounts: []persistence.BootstrapAccount{
 			{AccountID: accountID.String(), Name: "Demo Account"},
 		},
@@ -110,8 +111,12 @@ func cmdDemo(subcommand string, flags []string) {
 				AllowInsecurePassword: true,
 			},
 		},
-	}); err != nil {
-		a.logger.WithError(err).Fatal("Error bootstrapping database")
+	})
+
+	for item := range progress {
+		if item.Err != nil {
+			a.logger.WithError(item.Err).Fatal("Error bootstrapping database")
+		}
 	}
 
 	a.logger.Info("Offen is generating some random usage data for your demo, this might take a little while.")
