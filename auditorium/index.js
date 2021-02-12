@@ -37,6 +37,7 @@ const flashMessagesMiddleware = require('./src/middleware/flash-messages')
 const navigation = require('./src/action-creators/navigation')
 const errors = require('./src/action-creators/errors')
 
+sf('./styles/viewports.css')
 sf('./styles/onboarding.css')
 sf('./styles/word-break.css')
 sf('./styles/dim-fix.css')
