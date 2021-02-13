@@ -2,16 +2,9 @@
  * Copyright 2020 - Offen Authors <hioffen@posteo.de>
  * SPDX-License-Identifier: Apache-2.0
  */
-
-.viewport-cf { clear: none; }
-.viewport-fl,
-.viewport-fr { float: none; }
 .viewport-main { max-width: 64rem; }
 @media screen and (min-width: 97rem) {
   .viewport-main { max-width: 96rem; }
-  .viewport-cf { clear: both; }
-  .viewport-fl { float: left; }
-  .viewport-fr { float: right; }
 }
 
 .viewport-sub { width: 100%; }

@@ -134,8 +134,8 @@ const AuditoriumView = (props) => {
           />
         </div>
       </div>
-      <div class='viewport-cf'>
-        <div class='viewport-fl viewport-sub flex flex-column flex-row-ns mr2-l'>
+      <div class='cf'>
+        <div class='fl viewport-sub flex flex-column flex-row-ns mr2-l'>
           <div class='w-100 w-70-m w-75-l flex bt ba-ns b--black-10 br0 br2-ns mb2-ns mr2-ns'>
             <Chart
               isOperator
@@ -149,7 +149,7 @@ const AuditoriumView = (props) => {
             />
           </div>
         </div>
-        <div class='viewport-fr viewport-sub flex flex-column flex-row-l'>
+        <div class='fr viewport-sub flex flex-column flex-row-l'>
           <div class='w-100 flex bt ba-ns br0 br2-ns b--black-10 mb2-ns'>
             <URLTables model={model} />
           </div>

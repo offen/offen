@@ -179,11 +179,13 @@ const Chart = (props) => {
           )
           : (
             <div class='w-100 h-100 db bg-near-white br2'>
-              <div class='tc pt5'>
-                <img src={urify(path.join(__dirname, 'offen-empty-state.svg'))} alt={__('Empty state')} width='180' height='190' class='ma0' />
-                <Paragraph class='i lh-copy ma0 mt3'>
-                  {__('No data available <br>for the selected time range.')}
-                </Paragraph>
+              <div class='h-100 w-100 dt pb4'>
+                <div class='dtc v-mid tc'>
+                  <img src={urify(path.join(__dirname, 'offen-empty-state.svg'))} alt={__('Empty state')} width='180' height='190' class='ma0' />
+                  <Paragraph class='i lh-copy ma0 mt3'>
+                    {__('No data available <br>for the selected time range.')}
+                  </Paragraph>
+                </div>
               </div>
             </div>
           )}
