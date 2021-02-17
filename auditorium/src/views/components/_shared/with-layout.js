@@ -30,7 +30,7 @@ const Layout = (props) => {
   return (
     <div class='f5 roboto dark-gray'>
       <div class='w-100 bg-black-05'>
-        <div class='viewport-main center flex pa3 pt2' id='headline'>
+        <div class='mw8 center flex pb3 pt2 viewport-padding' id='headline'>
           <a href='/' class='dim link flex'>
             <img src={urify(path.join(__dirname, 'offen-icon-black.svg'))} alt='Offen logo' width='37' height='40' class='ma0 mt1 mr3' />
             <h1 class='dib dark-gray f2 normal ma0 mt1'>{props.headline || __('Offen Auditorium')}</h1>
@@ -49,7 +49,7 @@ const Layout = (props) => {
           )
           : props.children}
       </div>
-      <div class='viewport-main center flex flex-wrap flex-column flex-row-ns justify-between f6 lh-title ph3 pb5 pb7-ns mid-gray'>
+      <div class='mw8 center flex flex-wrap flex-column flex-row-ns justify-between f6 lh-title pb5 pb7-ns viewport-padding mid-gray'>
         <div class='w-100'>
           <Paragraph
             class='ma0 mb0'

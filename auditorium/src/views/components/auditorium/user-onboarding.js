@@ -17,7 +17,7 @@ const UserOnboarding = (props) => {
   const { onClose, stats } = props
 
   return (
-    <div class='flex flex-column flex-row-l mt4-m mt4-l' data-testid='auditorium/onboarding-wrapper'>
+    <div class='mw8 center flex flex-column flex-row-l mt4-m mt4-l' data-testid='auditorium/onboarding-wrapper'>
       <div class='w-100 flex bt bb ba-ns b--black-10 br0 br2-ns mb2-ns'>
         <div class='pa3 pa4-m pa5-l bg-white w-100'>
           <div class='cf mb0 mb4-m mb5-l'>

@@ -41,19 +41,19 @@ const IndexView = (props) => {
         allowsCookies={allowsCookies}
         consentStatus={consentStatus}
       />
-      <div class='w-100 mt4 mb2 bt bb ba-ns br0 br2-ns b--black-10'>
+      <div class='mw8 center mt4 mb2 bt bb ba-ns br0 br2-ns b--black-10'>
         <HeaderCard
           allowsCookies={allowsCookies}
           consentStatus={consentStatus}
           expressConsent={props.expressConsent}
         />
       </div>
-      <div class='w-100 mb2 br0 br2-ns'>
+      <div class='mw8 center mb2 br0 br2-ns'>
         <MainCard
           consentStatus={consentStatus}
         />
       </div>
-      <div class='w-100 br0 br2-ns'>
+      <div class='mw8 center br0 br2-ns'>
         <OperatorLogin />
       </div>
     </Fragment>

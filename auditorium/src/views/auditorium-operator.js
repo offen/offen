@@ -135,7 +135,7 @@ const AuditoriumView = (props) => {
         </div>
       </div>
       <div class='cf'>
-        <div class='fl viewport-sub flex flex-column flex-row-ns mr2-l'>
+        <div class='fl viewport-extended flex flex-column flex-row-ns mr2-l'>
           <div class='w-100 w-70-m w-75-l flex bt ba-ns b--black-10 br0 br2-ns mb2-ns mr2-ns'>
             <Chart
               isOperator
@@ -149,12 +149,12 @@ const AuditoriumView = (props) => {
             />
           </div>
         </div>
-        <div class='fr viewport-sub flex flex-column flex-row-l'>
+        <div class='fr viewport-extended flex flex-column flex-row-l'>
           <div class='w-100 flex bt ba-ns br0 br2-ns b--black-10 mb2-ns'>
             <URLTables model={model} />
           </div>
         </div>
-        <div class='viewport-sub flex flex-column flex-row-l mb2'>
+        <div class='viewport-extended flex flex-column flex-row-l mb2'>
           <div class='w-100 flex bt bb ba-ns br0 br2-ns b--black-10 mb2-ns'>
             <RetentionChart model={model} />
           </div>
@@ -162,7 +162,7 @@ const AuditoriumView = (props) => {
       </div>
       {!model.empty
         ? (
-          <div class='flex flex-column flex-row-l'>
+          <div class='mw8 center flex flex-column flex-row-l'>
             <div class='w-100 flex br0 br2-ns mb2'>
               <EmbedCode
                 key={`embed-${accountId}`}
@@ -176,7 +176,7 @@ const AuditoriumView = (props) => {
         : null}
       {adminLevel === ADMIN_LEVEL_ALLOW_EDIT
         ? (
-          <div class='flex flex-column flex-row-l'>
+          <div class='mw8 center flex flex-column flex-row-l'>
             <div class='w-100 flex br0 br2-ns mb2'>
               <Share
                 key={`share-${accountId}`}
@@ -191,7 +191,7 @@ const AuditoriumView = (props) => {
         : null}
       {adminLevel === ADMIN_LEVEL_ALLOW_EDIT
         ? (
-          <div class='flex flex-column flex-row-l'>
+          <div class='mw8 center flex flex-column flex-row-l'>
             <div class='w-100 flex br0 br2-ns mb2'>
               <RetireAccount
                 key={`retire-${accountId}`}
@@ -202,7 +202,7 @@ const AuditoriumView = (props) => {
           </div>
         )
         : null}
-      <div class='flex flex-column flex-row-l'>
+      <div class='mw8 center flex flex-column flex-row-l'>
         <div class='w-100 flex br0 br2-ns mb2'>
           <DatabaseSettings
             onPurge={handlePurgeAggregates}
@@ -210,7 +210,7 @@ const AuditoriumView = (props) => {
           />
         </div>
       </div>
-      <div class='flex flex-column flex-row-l'>
+      <div class='mw8 center flex flex-column flex-row-l'>
         <div class='w-100 flex br0 br2-ns'>
           <GoSettings />
         </div>

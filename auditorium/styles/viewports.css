@@ -7,7 +7,12 @@
   .viewport-main { max-width: 96rem; }
 }
 
-.viewport-sub { width: 100%; }
+.viewport-extended { width: 100%; }
 @media screen and (min-width: 97rem) {
-  .viewport-sub { width: 46.75rem; }
+  .viewport-extended { width: 46.75rem; }
+}
+
+.viewport-padding { padding-left: 1rem; padding-right: 1rem; }
+@media screen and (min-width: 97rem) {
+  .viewport-padding { padding-left: 0; padding-right: 0; }
 }
