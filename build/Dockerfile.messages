@@ -53,7 +53,7 @@ WORKDIR /code/vault
 RUN cp -a /code/deps/node_modules /code/vault/
 RUN npm run --silent extract-strings > vault.po
 
-FROM golang:1.16
+FROM golang:1.15
 
 RUN apt-get update \
   && apt-get install -y gettext \

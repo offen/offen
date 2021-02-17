@@ -12,14 +12,14 @@ jobs:
       - checkout:
           path: ~/offen
       - restore_cache:
-          key: offen-server-v2-{{ checksum "go.mod" }}
+          key: offen-server-{{ checksum "go.mod" }}
       - run:
           name: Download modules
           command: go mod download
       - save_cache:
           paths:
             - /go/pkg/mod
-          key: offen-server-v2-{{ checksum "go.mod" }}
+          key: offen-server-{{ checksum "go.mod" }}
       - run:
           name: Run tests
           command: make test
@@ -410,7 +410,7 @@ x-docker-pull-creds: &docker-pull-creds
 executors:
   golang:
     docker:
-      - image: cimg/go:1.16
+      - image: circleci/golang:1.15
         auth: *docker-pull-creds
   node:
     docker:
