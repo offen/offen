@@ -326,14 +326,21 @@ func newFakeSession(root string, length int) []*fakeEvent {
 	timestamp := time.Now().Add(-time.Duration(randomInRange(0, int(config.EventRetention))))
 	isMobileSession := randomBool(0.33)
 
+	var href string
 	for i := 0; i < length; i++ {
 		var referrer string
 		if i == 0 && randomBool(0.25) {
 			referrer = randomReferrer()
+		} else if i != 0 {
+			// a subsequent view will use the previously visited URL
+			// as the referrer
+			referrer = href
 		}
+
+		href := fmt.Sprintf("%s%s", root, randomPage())
 		result = append(result, &fakeEvent{
 			Type:      "PAGEVIEW",
-			Href:      fmt.Sprintf("%s%s", root, randomPage()),
+			Href:      href,
 			Title:     "Page Title",
 			Referrer:  referrer,
 			Pageload:  randomInRange(400, 1200),
