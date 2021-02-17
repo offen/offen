@@ -81,7 +81,7 @@ RUN npm run licenses
 
 FROM ruby:2.7-alpine AS server_licenses
 
-COPY --from=golang:1.15-alpine /usr/local/go/ /usr/local/go/
+COPY --from=golang:1.16-alpine /usr/local/go/ /usr/local/go/
 ENV PATH="/usr/local/go/bin:${PATH}"
 
 RUN gem install license_finder
@@ -112,7 +112,7 @@ RUN python ./create_notice.py \
   --client auditorium.csv \
   --server server.csv >> NOTICE
 
-FROM golang:1.15-alpine as statik
+FROM golang:1.16-alpine as statik
 
 WORKDIR /code/server
 COPY ./server /code/server
@@ -127,7 +127,7 @@ COPY ./locales/* /code/server/public/
 RUN go get github.com/rakyll/statik
 RUN statik -src public
 
-FROM techknowlogick/xgo:go-1.15.x as compiler
+FROM techknowlogick/xgo:go-1.16.x as compiler
 
 ARG rev
 ENV GIT_REVISION=$rev
@@ -140,6 +140,7 @@ COPY --from=statik /code /go/src/github.com/offen/offen
 ENV GOPATH /go
 WORKDIR /build
 
-RUN xgo --targets=$TARGETS --tags 'osusergo netgo static_build sqlite_omit_load_extension' --ldflags="-linkmode external -extldflags '$LDFLAGS' -s -w -X github.com/offen/offen/server/config.Revision=$GIT_REVISION" github.com/offen/offen/server/cmd/offen
+COPY ./build/compile.sh .
+RUN chmod +x ./compile.sh && ./compile.sh
 
 COPY --from=notice /code/NOTICE ./
