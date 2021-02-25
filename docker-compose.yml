@@ -1,4 +1,4 @@
-#  Copyright 2020 - Offen Authors <hioffen@posteo.de>
+#  Copyright 2020-2021 - Offen Authors <hioffen@posteo.de>
 #  SPDX-License-Identifier: Apache-2.0
 
 version: '3'
@@ -26,7 +26,7 @@ services:
       - .:/offen
       - serverdeps:/go/pkg
       - servercache:/data
-      - ./locales:/offen/server/locales/messages
+      - ./locales:/offen/server/public/static/locales
     environment:
       OFFEN_APP_LOCALE: ${LOCALE:-en}
       OFFEN_APP_DEVELOPMENT: '1'

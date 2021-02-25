@@ -1,16 +1,21 @@
-// Copyright 2020 - Offen Authors <hioffen@posteo.de>
+// Copyright 2020-2021 - Offen Authors <hioffen@posteo.de>
 // SPDX-License-Identifier: Apache-2.0
 
 package public
 
 import (
 	"bytes"
+	"embed"
 	"fmt"
 	"html/template"
 	"io/ioutil"
+	"net/http"
 	"strings"
 	"testing"
 )
+
+//go:embed testdata/*
+var testFS embed.FS
 
 func TestLocalizedFS_Open(t *testing.T) {
 	tests := []struct {
@@ -54,7 +59,8 @@ func TestLocalizedFS_Open(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			l := &LocalizedFS{
 				locale: test.locale,
-				root:   newStatikFS("./testdata"),
+				root:   http.FS(testFS),
+				prefix: "/testdata",
 			}
 			result, err := l.Open(test.lookup)
 			if test.expectError != (err != nil) {
@@ -101,7 +107,8 @@ func TestLocalizedFS_rev(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			l := &LocalizedFS{
 				locale: test.locale,
-				root:   newStatikFS("./testdata"),
+				root:   http.FS(testFS),
+				prefix: "/testdata",
 			}
 			result := l.rev(test.lookup)
 			if test.expected != result {
@@ -115,7 +122,8 @@ func TestLocalizedFS_getTemplate(t *testing.T) {
 	t.Run("ok", func(t *testing.T) {
 		l := &LocalizedFS{
 			locale: "en",
-			root:   newStatikFS("./testdata"),
+			root:   http.FS(testFS),
+			prefix: "/testdata",
 		}
 		tpl, err := l.getTemplate("test", []string{"/template.go.html"}, template.FuncMap{
 			"greet": func(s string) string {
@@ -138,7 +146,8 @@ func TestLocalizedFS_getTemplate(t *testing.T) {
 	t.Run("unknown template files", func(t *testing.T) {
 		l := &LocalizedFS{
 			locale: "en",
-			root:   newStatikFS("./testdata"),
+			root:   http.FS(testFS),
+			prefix: "/testdata",
 		}
 		_, err := l.getTemplate("test", []string{"/template.go.html", "/doesnotexist.go.html"}, template.FuncMap{
 			"greet": func(s string) string {
