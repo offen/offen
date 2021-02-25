@@ -63,6 +63,16 @@ A minimal Content-Security-Policy to use Offen on your site could look like:
 Content-Security-Policy: default-src 'self'; script-src 'self' offen.mysite.org; frame-src 'self' offen.mysite.org; style-src 'self' 'unsafe-inline'
 ```
 
+## Setting X-Frame-Options
+
+Offen relies heavily on the security and isolation features provided by running sensitive parts in an `iframe` so there is no way to "unbox" it in any way. If you want or need to use [`X-Frame-Options`][mdn-xframe] on a page that uses Offen, you need to specifically allow the domain you are serving Offen from:
+
+```
+X-Frame-Options: allow-from https://offen.example.com/
+```
+
+[mdn-xframe]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options
+
 ## Triggering pageviews using the JavaScript API
 
 When embedded as shown above, Offen will automatically acquire a user consent decision and collect pageviews in case consent is given. If you need more fine-grained control (e.g. in the context of a user sign-up flow or similar) you can use the JavaScript API exposed by the Offen `script` instead.
