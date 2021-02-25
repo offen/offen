@@ -21,7 +21,6 @@ require (
 	github.com/oklog/ulid v1.3.1
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/phayes/freeport v0.0.0-20180830031419-95f893ade6f2
-	github.com/rakyll/statik v0.1.6
 	github.com/schollz/progressbar/v3 v3.6.0
 	github.com/sirupsen/logrus v1.4.2
 	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9

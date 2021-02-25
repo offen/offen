@@ -1,9 +1,10 @@
-// Copyright 2020 - Offen Authors <hioffen@posteo.de>
+// Copyright 2020-2021 - Offen Authors <hioffen@posteo.de>
 // SPDX-License-Identifier: Apache-2.0
 
 package public
 
 import (
+	"embed"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -12,11 +13,11 @@ import (
 	"net/http"
 	"os"
 	"path"
-
-	// imported for reading fs content side effects
-	_ "github.com/offen/offen/server/statik"
-	"github.com/rakyll/statik/fs"
 )
+
+// FS provides static assets for the server to serve
+//go:embed static
+var FS embed.FS
 
 const defaultLocale = "en"
 
@@ -25,6 +26,7 @@ const defaultLocale = "en"
 type LocalizedFS struct {
 	locale string
 	root   http.FileSystem
+	prefix string
 }
 
 // rev is a function that can be used to look up revisioned assets
@@ -48,9 +50,9 @@ func (l *LocalizedFS) rev(location string) string {
 // Open looks up the requested file by location.
 func (l *LocalizedFS) Open(file string) (http.File, error) {
 	cascade := []string{
-		fmt.Sprintf("/%s%s", l.locale, file),
-		fmt.Sprintf("/%s%s", defaultLocale, file),
-		file,
+		fmt.Sprintf("%s/%s%s", l.prefix, l.locale, file),
+		fmt.Sprintf("%s/%s%s", l.prefix, defaultLocale, file),
+		fmt.Sprintf("%s%s", l.prefix, file),
 	}
 	var err error
 	var f http.File
@@ -63,18 +65,6 @@ func (l *LocalizedFS) Open(file string) (http.File, error) {
 	return nil, err
 }
 
-func newStatikFS(fallbackRoot string) http.FileSystem {
-	statikFS, err := fs.New()
-	if err != nil {
-		// This is here for development when the statik packages have not
-		// been populated. The filesystem will likely not match the requested
-		// files. In development live-reloading static assets will be routed through
-		// nginx instead.
-		return http.Dir(fallbackRoot)
-	}
-	return statikFS
-}
-
 // NewLocalizedFS returns a http.FileSystem that is locale aware. It will first
 // try to return the file in the given locale. In case this is not found, it tries
 // returning the asset in the default language, falling back to the root fs if
@@ -82,7 +72,8 @@ func newStatikFS(fallbackRoot string) http.FileSystem {
 func NewLocalizedFS(locale string) *LocalizedFS {
 	return &LocalizedFS{
 		locale: locale,
-		root:   newStatikFS("./public"),
+		root:   http.FS(FS),
+		prefix: "/static",
 	}
 }
 
@@ -116,7 +107,7 @@ func (l *LocalizedFS) getTemplate(name string, templateFiles []string, funcMap t
 	t.Funcs(funcMap)
 
 	for _, file := range templateFiles {
-		f, err := l.root.Open(file)
+		f, err := l.root.Open(fmt.Sprintf("%s%s", l.prefix, file))
 		if err != nil {
 			return nil, fmt.Errorf("public: error finding file %s: %w", file, err)
 		}

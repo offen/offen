@@ -1,4 +1,4 @@
-# Copyright 2020 - Offen Authors <hioffen@posteo.de>
+# Copyright 2020-2021 - Offen Authors <hioffen@posteo.de>
 # SPDX-License-Identifier: Apache-2.0
 
 FROM node:14-alpine as auditorium
@@ -112,21 +112,6 @@ RUN python ./create_notice.py \
   --client auditorium.csv \
   --server server.csv >> NOTICE
 
-FROM golang:1.16-alpine as statik
-
-WORKDIR /code/server
-COPY ./server /code/server
-
-COPY --from=script /code/script/dist /code/server/public
-COPY --from=vault /code/vault/dist /code/server/public
-COPY --from=auditorium /code/auditorium/dist /code/server/public
-COPY --from=notice /code/NOTICE /code/server/public/NOTICE.txt
-COPY ./locales/* /code/server/public/
-
-
-RUN go get github.com/rakyll/statik
-RUN statik -src public
-
 FROM techknowlogick/xgo:go-1.16.x as compiler
 
 ARG rev
@@ -136,7 +121,13 @@ ENV TARGETS=$targets
 ARG ldflags
 ENV LDFLAGS=$ldflags
 
-COPY --from=statik /code /go/src/github.com/offen/offen
+COPY ./server /go/src/github.com/offen/offen/server
+COPY --from=script /code/script/dist /go/src/github.com/offen/offen/server/public/static
+COPY --from=vault /code/vault/dist /go/src/github.com/offen/offen/server/public/static
+COPY --from=auditorium /code/auditorium/dist /go/src/github.com/offen/offen/server/public/static
+COPY --from=notice /code/NOTICE /go/src/github.com/offen/offen/server/public/static/NOTICE.txt
+COPY ./locales/* /go/src/github.com/offen/offen/server/public/static/locales/
+
 ENV GOPATH /go
 WORKDIR /build
 
