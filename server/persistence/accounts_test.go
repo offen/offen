@@ -1,4 +1,4 @@
-// Copyright 2020 - Offen Authors <hioffen@posteo.de>
+// Copyright 2020-2021 - Offen Authors <hioffen@posteo.de>
 // SPDX-License-Identifier: Apache-2.0
 
 package persistence
@@ -104,7 +104,8 @@ func TestPersistenceLayer_GetAccount(t *testing.T) {
 				},
 				PublicKey: (func() jwk.Key {
 					s, _ := jwk.ParseString(publicKey)
-					return s.Keys[0]
+					k, _ := s.Get(0)
+					return k
 				})(),
 				Secrets: &EncryptedSecretsByID{
 					"hashed-user-a": "aaaaa",
@@ -149,7 +150,8 @@ func TestPersistenceLayer_GetAccount(t *testing.T) {
 				Name:      "name",
 				PublicKey: (func() jwk.Key {
 					s, _ := jwk.ParseString(publicKey)
-					return s.Keys[0]
+					k, _ := s.Get(0)
+					return k
 				})(),
 			},
 			false,

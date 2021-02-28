@@ -21,7 +21,7 @@ require (
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/leonelquinteros/gotext v1.4.0
-	github.com/lestrrat-go/jwx v0.9.0
+	github.com/lestrrat-go/jwx v1.1.3
 	github.com/magefile/mage v1.11.0 // indirect
 	github.com/mattn/go-sqlite3 v1.14.6 // indirect
 	github.com/microcosm-cc/bluemonday v1.0.4
@@ -38,11 +38,8 @@ require (
 	golang.org/x/sys v0.0.0-20210228012217-479acdf4ea46
 	golang.org/x/term v0.0.0-20210220032956-6a3ed077a48d // indirect
 	golang.org/x/text v0.3.5 // indirect
-	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 	google.golang.org/protobuf v1.25.0 // indirect
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
-	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
-	gopkg.in/go-playground/validator.v8 v8.18.2 // indirect
 	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df // indirect
 	gopkg.in/yaml.v2 v2.4.0
 	gorm.io/driver/mysql v1.0.4
