@@ -1,4 +1,4 @@
-// Copyright 2020 - Offen Authors <hioffen@posteo.de>
+// Copyright 2020-2021 - Offen Authors <hioffen@posteo.de>
 // SPDX-License-Identifier: Apache-2.0
 
 package persistence
@@ -9,7 +9,7 @@ import (
 	"sync"
 	"time"
 
-	jwk "github.com/lestrrat-go/jwx/jwk"
+	"github.com/lestrrat-go/jwx/jwk"
 	"github.com/offen/offen/server/keys"
 )
 
@@ -181,5 +181,9 @@ func (a *Account) WrapPublicKey() (jwk.Key, error) {
 	if err != nil {
 		return nil, errors.New("persistence: failed decoding stored key value")
 	}
-	return s.Keys[0], nil
+	key, ok := s.Get(0)
+	if !ok {
+		return nil, errors.New("persistence: found empty keyset")
+	}
+	return key, nil
 }

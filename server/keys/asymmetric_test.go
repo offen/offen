@@ -1,4 +1,4 @@
-// Copyright 2020 - Offen Authors <hioffen@posteo.de>
+// Copyright 2020-2021 - Offen Authors <hioffen@posteo.de>
 // SPDX-License-Identifier: Apache-2.0
 
 package keys
@@ -26,11 +26,10 @@ func TestGenerateRSAKeyPair(t *testing.T) {
 		if err != nil {
 			t.Errorf("Unexpected error %v", err)
 		}
-
-		if _, err := jwk.ParseBytes(private); err != nil {
+		if _, err := jwk.Parse(private); err != nil {
 			t.Errorf("Unexpected error %v", err)
 		}
-		if _, err := jwk.ParseBytes(public); err != nil {
+		if _, err := jwk.Parse(public); err != nil {
 			t.Errorf("Unexpected error %v", err)
 		}
 	})
