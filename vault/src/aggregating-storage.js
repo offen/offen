@@ -215,9 +215,9 @@ function ensureAggregationSecretWith (storage, cache) {
               // A secret might either not exist at all or its decryption failed
               // which means a new one will need to be created.
               var cryptoKey
-              return crypto.createSymmetricKey()
-                .then(function (_cryptoKey) {
-                  cryptoKey = _cryptoKey
+              return Promise.all([crypto.createSymmetricKey(), storage.purgeAggregates(accountId)])
+                .then(function (results) {
+                  cryptoKey = results[0]
                   return crypto.encryptAsymmetricWith(publicJwk)(cryptoKey)
                 })
                 .then(function (encryptedSecret) {
