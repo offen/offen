@@ -367,7 +367,7 @@ func newFakeUser() (string, []byte, []byte, error) {
 	}
 	j.Set(jwk.AlgorithmKey, "A128GCM")
 	j.Set("ext", true)
-	j.Set(jwk.KeyOpsKey, []string{jwk.KeyOpEncrypt, jwk.KeyOpDecrypt})
+	j.Set(jwk.KeyOpsKey, jwk.KeyOperationList{jwk.KeyOpEncrypt, jwk.KeyOpDecrypt})
 	b, err := json.Marshal(j)
 	if err != nil {
 		return "", nil, nil, fmt.Errorf("error marshaling jwk: %w", err)
