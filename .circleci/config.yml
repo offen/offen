@@ -414,11 +414,11 @@ executors:
         auth: *docker-pull-creds
   node:
     docker:
-      - image: cimg/node:14.16-browsers
+      - image: circleci/node:14-browsers
         auth: *docker-pull-creds
   node-postgres:
     docker:
-      - image: cimg/node:14.16-browsers
+      - image: circleci/node:14-browsers
         auth: *docker-pull-creds
       - image: circleci/postgres:11.2-alpine
         auth: *docker-pull-creds
@@ -427,7 +427,7 @@ executors:
           POSTGRES_PASSWORD: test
   node-mysql:
     docker:
-      - image: cimg/node:14.16-browsers
+      - image: circleci/node:14-browsers
         auth: *docker-pull-creds
       - image: circleci/mysql:5.7
         auth: *docker-pull-creds
