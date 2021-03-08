@@ -62,9 +62,14 @@ const Chart = (props) => {
           result = LocalizedDate.localize(date, { month: 'short' }) + ' ' + result
         }
         if (isWeekend(date)) {
-          return `<span style="font-style: italic; color: ${tickColorFade}; font-size: 130%">${result}</span>`
+          const fontSizeWeekend = window.matchMedia('screen and (max-width: 30em)').matches ? '100%' : '130%'
+          return `<span style="font-style: italic; color: ${tickColorFade}; font-size: ${fontSizeWeekend}">${result}</span>`
         }
-        return result
+        if (window.matchMedia('screen and (max-width: 30em)').matches) {
+          return `<span style="font-size: 75%">${result}</span>`
+        } else {
+          return result
+        }
     }
   })
 
