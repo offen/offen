@@ -82,7 +82,7 @@ const AuditoriumView = (props) => {
         isOperator={false}
         accountName={null}
       />
-      <div class='flex flex-column flex-row-l mt4'>
+      <div class='mw8 center flex flex-column flex-row-l mt4'>
         <div class='w-100 flex mb2 mr0-ns br0 br2-ns'>
           <Privacy
             userHasOptedIn={consentStatus.status === 'allow'}
@@ -91,7 +91,7 @@ const AuditoriumView = (props) => {
           />
         </div>
       </div>
-      <div class='flex flex-column flex-row-l'>
+      <div class='mw8 center flex flex-column flex-row-l'>
         <div class='w-100 flex bt ba-ns b--black-10 br0 br2-ns mb2-ns'>
           <RangeSelector
             resolution={resolution}
@@ -102,7 +102,7 @@ const AuditoriumView = (props) => {
           />
         </div>
       </div>
-      <div class='flex flex-column flex-row-ns'>
+      <div class='mw8 center flex flex-column flex-row-ns'>
         <div class='w-100 flex bt ba-ns b--black-10 br0 br2-ns mb2-ns'>
           <Chart
             model={model}
@@ -111,7 +111,7 @@ const AuditoriumView = (props) => {
           />
         </div>
       </div>
-      <div class='flex flex-column flex-row-ns'>
+      <div class='mw8 center flex flex-column flex-row-ns'>
         <div class='w-100 flex bt ba-ns br0 br2-ns b--black-10 mb2-ns'>
           <Metrics
             arrangement='horizontal'
@@ -121,7 +121,7 @@ const AuditoriumView = (props) => {
           />
         </div>
       </div>
-      <div class='flex flex-column flex-row-l'>
+      <div class='mw8 center flex flex-column flex-row-l'>
         <div class='w-100 flex bt ba-ns br0 br2-ns b--black-10 mb2-ns'>
           <URLTables
             model={model}
@@ -129,7 +129,7 @@ const AuditoriumView = (props) => {
           />
         </div>
       </div>
-      <div class='flex flex-column flex-row-l mb2'>
+      <div class='mw8 center flex flex-column flex-row-l mb2'>
         <div class='w-100 flex bt bb ba-ns br0 br2-ns b--black-10 mb2-ns'>
           <RetentionChart
             model={model}
@@ -137,12 +137,12 @@ const AuditoriumView = (props) => {
           />
         </div>
       </div>
-      <div class='flex flex-column flex-row-l mb2'>
+      <div class='mw8 center flex flex-column flex-row-l mb2'>
         <div class='w-100 flex bt bb ba-ns br0 br2-ns b--black-10 mb2-ns'>
           <BasicTerms />
         </div>
       </div>
-      <div class='flex flex-column flex-row-l mb2'>
+      <div class='mw8 center flex flex-column flex-row-l mb2'>
         <div class='w-100 flex bt bb ba-ns br0 br2-ns b--black-10 mb2-ns'>
           <FrequentlyAskedQuestions />
         </div>

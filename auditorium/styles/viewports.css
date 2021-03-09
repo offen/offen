@@ -1,0 +1,18 @@
+/**
+ * Copyright 2021 - Offen Authors <hioffen@posteo.de>
+ * SPDX-License-Identifier: Apache-2.0
+ */
+.viewport-main { max-width: 64rem; }
+@media screen and (min-width: 97rem) {
+  .viewport-main { max-width: 96rem; }
+}
+
+.viewport-extended { width: 100%; }
+@media screen and (min-width: 97rem) {
+  .viewport-extended { width: 46.75rem; }
+}
+
+.viewport-padding { padding-left: 1rem; padding-right: 1rem; }
+@media screen and (min-width: 97rem) {
+  .viewport-padding { padding-left: 0; padding-right: 0; }
+}

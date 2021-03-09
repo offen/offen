@@ -62,9 +62,14 @@ const Chart = (props) => {
           result = LocalizedDate.localize(date, { month: 'short' }) + ' ' + result
         }
         if (isWeekend(date)) {
-          return `<span style="font-style: italic; color: ${tickColorFade}; font-size: 130%">${result}</span>`
+          const fontSizeWeekend = window.matchMedia('screen and (max-width: 30em)').matches ? '100%' : '130%'
+          return `<span style="font-style: italic; color: ${tickColorFade}; font-size: ${fontSizeWeekend}">${result}</span>`
         }
-        return result
+        if (window.matchMedia('screen and (max-width: 30em)').matches) {
+          return `<span style="font-size: 75%">${result}</span>`
+        } else {
+          return result
+        }
     }
   })
 
@@ -179,11 +184,13 @@ const Chart = (props) => {
           )
           : (
             <div class='w-100 h-100 db bg-near-white br2'>
-              <div class='tc pt5'>
-                <img src={urify(path.join(__dirname, 'offen-empty-state.svg'))} alt={__('Empty state')} width='180' height='190' class='ma0' />
-                <Paragraph class='i lh-copy ma0 mt3'>
-                  {__('No data available <br>for the selected time range.')}
-                </Paragraph>
+              <div class='h-100 w-100 dt pb4'>
+                <div class='dtc v-mid tc'>
+                  <img src={urify(path.join(__dirname, 'offen-empty-state.svg'))} alt={__('Empty state')} width='180' height='190' class='ma0' />
+                  <Paragraph class='i lh-copy ma0 mt3'>
+                    {__('No data available <br>for the selected time range.')}
+                  </Paragraph>
+                </div>
               </div>
             </div>
           )}

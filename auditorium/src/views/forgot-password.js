@@ -15,7 +15,7 @@ const useAutofocus = require('./components/_shared/use-autofocus')
 const ForgotPasswordView = (props) => {
   const autofocusRef = useAutofocus()
   return (
-    <div class='w-100 mt4 mb2 br0 br2-ns'>
+    <div class='mw8 center mt4 mb2 br0 br2-ns'>
       <Form
         ref={autofocusRef}
         onForgotPassword={props.handleForgotPassword}
