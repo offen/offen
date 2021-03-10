@@ -25,7 +25,7 @@ describe('src/buckets.js', function () {
         'www.facebook.com',
         'android-app://com.Slack',
         'android-app://com.Slackers',
-        'android-app://com.slack',
+        'android-app://com.slack/',
         'www.duckduckgo.com/something',
         'duckduckgo.com',
         'duckduckgone.com',
