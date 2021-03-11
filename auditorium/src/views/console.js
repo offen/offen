@@ -34,14 +34,14 @@ const ConsoleView = (props) => {
       <Header
         isOperator
       />
-      <div class='w-100 br0 br2-ns mb2 mt4'>
+      <div class='mw8 center br0 br2-ns mb2 mt4'>
         <AccountPicker
           accounts={accounts}
         />
       </div>
       {Array.isArray(accounts) && accounts.length && adminLevel === ADMIN_LEVEL_ALLOW_EDIT
         ? (
-          <div class='w-100 br0 br2-ns mb2'>
+          <div class='mw8 center br0 br2-ns mb2'>
             <ShareAccounts
               onShare={handleShare}
               onValidationError={handleValidationError}
@@ -51,25 +51,25 @@ const ConsoleView = (props) => {
         : null}
       {adminLevel === ADMIN_LEVEL_ALLOW_EDIT
         ? (
-          <div class='w-100 br0 br2-ns mb2'>
+          <div class='mw8 center br0 br2-ns mb2'>
             <CreateAccount
               onCreateAccount={handleCreateAccount}
             />
           </div>
         )
         : null}
-      <div class='w-100 br0 br2-ns mb2'>
+      <div class='mw8 center br0 br2-ns mb2'>
         <ChangeEmail
           onChangeEmail={handleChangeEmail}
         />
       </div>
-      <div class='w-100 br0 br2-ns mb2'>
+      <div class='mw8 center br0 br2-ns mb2'>
         <ChangePassword
           onChangePassword={handleChangePassword}
           onValidationError={handleValidationError}
         />
       </div>
-      <div class='w-100 br0 br2-ns mb2'>
+      <div class='mw8 center br0 br2-ns mb2'>
         <Logout
           onLogout={handleLogout}
         />

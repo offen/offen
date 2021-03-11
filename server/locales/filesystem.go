@@ -1,4 +1,4 @@
-// Copyright 2020 - Offen Authors <hioffen@posteo.de>
+// Copyright 2020-2021 - Offen Authors <hioffen@posteo.de>
 // SPDX-License-Identifier: Apache-2.0
 
 package locales
@@ -7,29 +7,12 @@ import (
 	"fmt"
 	"html/template"
 	"io/ioutil"
-	"net/http"
 
 	"github.com/leonelquinteros/gotext"
-	_ "github.com/offen/offen/server/statik"
-	"github.com/rakyll/statik/fs"
+	"github.com/offen/offen/server/public"
 )
 
 const defaultLocale = "en"
-
-// FS is a file system containing the static assets for serving the application
-var FS http.FileSystem
-
-func getFS() http.FileSystem {
-	fileSystem, err := fs.New()
-	if err != nil {
-		// This is here for development when the statik packages have not
-		// been populated. The filesystem will likely not match the requested
-		// files. In development live-reloading static assets will be routed through
-		// nginx instead.
-		return http.Dir("./locales/messages")
-	}
-	return fileSystem
-}
 
 func wrapFmt(f func(string, ...interface{}) string) func(string, ...interface{}) template.HTML {
 	return func(s string, args ...interface{}) template.HTML {
@@ -44,7 +27,7 @@ func GettextFor(locale string) (func(string, ...interface{}) template.HTML, erro
 		return wrapFmt(fmt.Sprintf), nil
 	}
 
-	file, err := getFS().Open(fmt.Sprintf("/%s.po", locale))
+	file, err := public.FS.Open(fmt.Sprintf("static/locales/%s.po", locale))
 	if err != nil {
 		return nil, fmt.Errorf("locales: error opening file for locale %s: %w", locale, err)
 	}

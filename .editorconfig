@@ -11,14 +11,18 @@ root = true
 end_of_line = lf
 insert_final_newline = true
 trim_trailing_whitespace = true
-indent_style = tab
+indent_style = space
+indent_size = 2
 
 [*.md]
 trim_trailing_whitespace = false
 
-[{*.js,*.yml,*.md,Gopkg.toml,*.json,*.html,Dockerfile.*,Dockerrun.*,*.css,*.scss,*.schema,*.sh}]
-indent_style = space
-indent_size = 2
+[*.go]
+indent_style = tab
+
+[Makefile]
+indent_style = tab
+indent_size = 4
 
 [*.py]
 indent_style = space

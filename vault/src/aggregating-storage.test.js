@@ -183,7 +183,8 @@ describe('src/aggregating-storage.js', function () {
         getRawEvents: sinon.stub().resolves(encrpytedEvents),
         getAggregates: sinon.stub().resolves([]),
         getEncryptedSecrets: sinon.stub().resolves(encryptedSecrets),
-        putAggregate: sinon.stub().resolves(null)
+        putAggregate: sinon.stub().resolves(null),
+        purgeAggregates: sinon.stub().resolves(null)
       }
       var storage = new aggregatingStorage.AggregatingStorage(mockStorage)
       return storage.getEvents({ accountId: 'account-id', publicJwk: publicJwk, privateJwk: privateJwk })
@@ -238,7 +239,8 @@ describe('src/aggregating-storage.js', function () {
     it('creates, persists and returns secrets per accountId', function () {
       var mockStorage = {
         getAggregationSecret: sinon.stub().resolves(null),
-        putAggregationSecret: sinon.stub().resolves(null)
+        putAggregationSecret: sinon.stub().resolves(null),
+        purgeAggregates: sinon.stub().resolves(null)
       }
       var ensureAggregationSecret = aggregatingStorage.ensureAggregationSecretWith(mockStorage)
       return ensureAggregationSecret('account-id', publicJwk, privateJwk)

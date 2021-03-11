@@ -9,9 +9,11 @@ const { h } = require('preact')
 const HighlightBox = (props) => {
   const { children, ...otherProps } = props
   return (
-    <p class='dib pa2 br2 ma0 mt3 ml3 ml0-ns mr3 mr0-ns bg-light-yellow' {...otherProps}>
-      {children}
-    </p>
+    <div class='mw8 center'>
+      <p class='dib pa2 br2 ma0 mt3 ml3 ml0-ns mr3 mr0-ns bg-light-yellow' {...otherProps}>
+        {children}
+      </p>
+    </div>
   )
 }
 

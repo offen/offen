@@ -1,4 +1,4 @@
-// Copyright 2020 - Offen Authors <hioffen@posteo.de>
+// Copyright 2020-2021 - Offen Authors <hioffen@posteo.de>
 // SPDX-License-Identifier: Apache-2.0
 
 package keys
@@ -45,15 +45,13 @@ func EncryptAsymmetricWith(publicKey interface{}, value []byte) (*VersionedCiphe
 	if !keyOk {
 		return nil, errors.New("keys: could not convert given argument to jwk")
 	}
-	m, mErr := key.Materialize()
+
+	var pubKey rsa.PublicKey
+	mErr := key.Raw(&pubKey)
 	if mErr != nil {
 		return nil, fmt.Errorf("keys: error materializing JWK key: %w", mErr)
 	}
-	pubKey, pubKeyOk := m.(*rsa.PublicKey)
-	if !pubKeyOk {
-		return nil, errors.New("keys: error casting materialized key to correct type")
-	}
-	encrypted, encryptedErr := rsa.EncryptOAEP(sha256.New(), rand.Reader, pubKey, value, nil)
+	encrypted, encryptedErr := rsa.EncryptOAEP(sha256.New(), rand.Reader, &pubKey, value, nil)
 	if encryptedErr != nil {
 		return nil, fmt.Errorf("keys: error encrypting given value: %w", encryptedErr)
 	}

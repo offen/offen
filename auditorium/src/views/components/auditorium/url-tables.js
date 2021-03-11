@@ -5,6 +5,7 @@
 
 /** @jsx h */
 const { h } = require('preact')
+const { useState } = require('preact/hooks')
 const classnames = require('classnames')
 
 const Tables = require('./tables')
@@ -16,6 +17,8 @@ const URLTable = (props) => {
     model, showExplainer, explainerActive,
     onExplain, explainerPropsFor
   } = props
+
+  const [showAll, setShowAll] = useState(null)
   return (
     <div class='flex-auto pa3 bg-white'>
       <div
@@ -38,6 +41,8 @@ const URLTable = (props) => {
           <Tables.Table
             columnNames={[__('URL'), __('Pageviews')]}
             rows={model.pages}
+            showAll={showAll === 0}
+            setShowAll={(open) => setShowAll(open ? 0 : null)}
           />
         </Tables.Container>
         <Tables.Container
@@ -57,6 +62,8 @@ const URLTable = (props) => {
                 </Paragraph>
               )
             }}
+            showAll={showAll === 1}
+            setShowAll={(open) => setShowAll(open ? 1 : null)}
           />
           <Tables.Table
             headline={__('Campaigns')}
@@ -70,6 +77,8 @@ const URLTable = (props) => {
                 </Paragraph>
               )
             }}
+            showAll={showAll === 1}
+            setShowAll={(open) => setShowAll(open ? 1 : null)}
           />
           <Tables.Table
             headline={__('Sources')}
@@ -83,6 +92,8 @@ const URLTable = (props) => {
                 </Paragraph>
               )
             }}
+            showAll={showAll === 1}
+            setShowAll={(open) => setShowAll(open ? 1 : null)}
           />
         </Tables.Container>
         <Tables.Container
@@ -101,6 +112,8 @@ const URLTable = (props) => {
                 </Paragraph>
               )
             }}
+            showAll={showAll === 2}
+            setShowAll={(open) => setShowAll(open ? 2 : null)}
           />
           <Tables.Table
             headline={__('Exit pages')}
@@ -113,6 +126,8 @@ const URLTable = (props) => {
                 </Paragraph>
               )
             }}
+            showAll={showAll === 2}
+            setShowAll={(open) => setShowAll(open ? 2 : null)}
           />
         </Tables.Container>
       </div>

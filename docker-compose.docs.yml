@@ -14,9 +14,7 @@ services:
       - docs_jekyll
 
   docs_jekyll:
-    build:
-      context: '.'
-      dockerfile: ./Dockerfile.ruby
+    image: ruby:2.5
     working_dir: /repo
     volumes:
       - ./docs:/repo

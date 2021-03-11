@@ -28,10 +28,11 @@ const Table = (props) => {
     rows,
     formatAs = ['count'],
     onEmptyMessage = __('No data available for this view.'),
-    limit = 10
+    limit = 10,
+    showAll = false,
+    setShowAll = Function.prototype
   } = props
 
-  const [showAll, setShowAll] = useState(false)
   const hasMore = Array.isArray(rows) && rows.length > limit
 
   var tBody = Array.isArray(rows) && rows.length

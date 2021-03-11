@@ -1,4 +1,4 @@
-// Copyright 2020 - Offen Authors <hioffen@posteo.de>
+// Copyright 2020-2021 - Offen Authors <hioffen@posteo.de>
 // SPDX-License-Identifier: Apache-2.0
 
 package main
@@ -267,7 +267,7 @@ func newFakeUser() (string, []byte, []byte, error) {
 	}
 	j.Set(jwk.AlgorithmKey, "A128GCM")
 	j.Set("ext", true)
-	j.Set(jwk.KeyOpsKey, []string{jwk.KeyOpEncrypt, jwk.KeyOpDecrypt})
+	j.Set(jwk.KeyOpsKey, jwk.KeyOperationList{jwk.KeyOpEncrypt, jwk.KeyOpDecrypt})
 	b, err := json.Marshal(j)
 	if err != nil {
 		return "", nil, nil, fmt.Errorf("error marshaling jwk: %w", err)
@@ -326,14 +326,21 @@ func newFakeSession(root string, length int) []*fakeEvent {
 	timestamp := time.Now().Add(-time.Duration(randomInRange(0, int(config.EventRetention))))
 	isMobileSession := randomBool(0.33)
 
+	var href string
 	for i := 0; i < length; i++ {
 		var referrer string
 		if i == 0 && randomBool(0.25) {
 			referrer = randomReferrer()
+		} else if i != 0 {
+			// a subsequent view will use the previously visited URL
+			// as the referrer
+			referrer = href
 		}
+
+		href := fmt.Sprintf("%s%s", root, randomPage())
 		result = append(result, &fakeEvent{
 			Type:      "PAGEVIEW",
-			Href:      fmt.Sprintf("%s%s", root, randomPage()),
+			Href:      href,
 			Title:     "Page Title",
 			Referrer:  referrer,
 			Pageload:  randomInRange(400, 1200),

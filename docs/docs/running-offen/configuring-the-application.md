@@ -15,7 +15,9 @@ SPDX-License-Identifier: Apache-2.0
 # Configuring the application at runtime
 {: .no_toc }
 
-The main interface to configuring Offen at runtime is via the host system's environment variables. All variables are following the pattern of `OFFEN_<scope>_<key>`, e.g. `OFFEN_SERVER_PORT`. In addition to setting variables in the environment Offen also allows for setting these values in [`env` files][dotenv].
+At runtime, __Offen is configured using environment variables__. All variables are following the pattern of `OFFEN_<scope>_<key>` (e.g. `OFFEN_SERVER_PORT`).
+
+In addition to setting variables in the host environment __Offen also supports setting these values through [`env` files][dotenv]__.
 
 [dotenv]: https://github.com/joho/godotenv
 
@@ -29,7 +31,7 @@ The main interface to configuring Offen at runtime is via the host system's envi
 
 ---
 
-## Lookup order
+## Lookup order of .env files
 
 ### On Linux and MacOS
 {: .no_toc }

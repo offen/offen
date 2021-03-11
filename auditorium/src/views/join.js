@@ -17,7 +17,7 @@ const JoinView = (props) => {
   const autofocusRef = useAutofocus()
   const { handleJoin, handleValidationError, token } = props
   return (
-    <div class='w-100 mt4 mb2 br0 br2-ns'>
+    <div class='mw8 center mt4 mb2 br0 br2-ns'>
       <Form
         onJoin={handleJoin}
         onValidationError={handleValidationError}

@@ -25,7 +25,7 @@ var buckets = [
     name: 'Facebook'
   },
   {
-    re: /^android-app:\/\/com\.Slack$/,
+    re: /^android-app:\/\/com\.(S|s)lack\/?$/,
     name: 'Slack'
   },
   {

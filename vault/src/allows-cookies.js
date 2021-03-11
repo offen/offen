@@ -15,7 +15,7 @@ function allowsCookies () {
 
   var support = document.cookie.indexOf(token) >= 0
 
-  var deletedCookie = cookies.serialize('ok', '', { expires: new Date(0) })
+  var deletedCookie = cookies.defaultCookie('ok', '', { expires: new Date(0) })
   document.cookie = cookies.serialize(deletedCookie)
 
   return support

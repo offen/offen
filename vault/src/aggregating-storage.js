@@ -98,9 +98,11 @@ function AggregatingStorage (storage) {
 
         var timestampsInDb = _.pluck(encryptedAggregates, 'timestamp')
         var timestampsInCache = _.keys(accountCache)
-        var missing = _.difference(timestampsInDb, timestampsInCache)
+        var missing = _.indexBy(
+          _.difference(timestampsInDb, timestampsInCache), _.identity
+        )
         var missingAggregates = _.filter(encryptedAggregates, function (agg) {
-          return _.contains(missing, agg.timestamp)
+          return missing[agg.timestamp]
         })
         return Promise.all(_.map(missingAggregates, function (aggregate) {
           return decryptAggregate(aggregate.value, aggregate.compressed)
@@ -122,14 +124,17 @@ function AggregatingStorage (storage) {
         })
       })
       .then(function (eventsFromExistingAggregates) {
-        var eventIds = _.pluck(eventsFromExistingAggregates, 'eventId')
-        var encryptedEventIds = _.pluck(encryptedEvents, 'eventId')
+        var eventIds = _.indexBy(eventsFromExistingAggregates, 'eventId')
         var missingEvents = _.filter(encryptedEvents, function (event) {
-          return !_.contains(eventIds, event.eventId)
+          return !eventIds[event.eventId]
         })
-        var extraneousIds = _.difference(eventIds, _.pluck(encryptedEvents, 'eventId'))
+        var extraneousIds = _.difference(
+          _.pluck(eventsFromExistingAggregates, 'eventId'),
+          _.pluck(encryptedEvents, 'eventId')
+        )
+        var encryptedEventIds = _.indexBy(encryptedEvents, 'eventId')
         var knownEvents = _.filter(eventsFromExistingAggregates, function (event) {
-          return _.contains(encryptedEventIds, event.eventId)
+          return encryptedEventIds[event.eventId]
         })
         return Promise.all([
           decryptEvents(missingEvents, encryptedSecrets, privateJwk),
@@ -201,20 +206,26 @@ function ensureAggregationSecretWith (storage, cache) {
       cache[accountId] = storage.getAggregationSecret(accountId)
         .then(bindCrypto(function (secret) {
           var crypto = this
-          if (secret) {
-            return crypto.decryptAsymmetricWith(privateJwk)(secret)
-          }
-          var cryptoKey
-          return crypto.createSymmetricKey()
-            .then(function (_cryptoKey) {
-              cryptoKey = _cryptoKey
-              return crypto.encryptAsymmetricWith(publicJwk)(cryptoKey)
-            })
-            .then(function (encryptedSecret) {
-              return storage.putAggregationSecret(accountId, encryptedSecret)
-            })
-            .then(function () {
-              return cryptoKey
+          var existingSecret = secret
+            ? crypto.decryptAsymmetricWith(privateJwk)(secret)
+            : Promise.reject(new Error('No secret yet'))
+
+          return existingSecret
+            .catch(function () {
+              // A secret might either not exist at all or its decryption failed
+              // which means a new one will need to be created.
+              var cryptoKey
+              return Promise.all([crypto.createSymmetricKey(), storage.purgeAggregates(accountId)])
+                .then(function (results) {
+                  cryptoKey = results[0]
+                  return crypto.encryptAsymmetricWith(publicJwk)(cryptoKey)
+                })
+                .then(function (encryptedSecret) {
+                  return storage.putAggregationSecret(accountId, encryptedSecret)
+                })
+                .then(function () {
+                  return cryptoKey
+                })
             })
         }))
     }
@@ -311,12 +322,12 @@ function inflateAggregate (aggregate, denormalizeFn) {
 
 module.exports.removeFromAggregate = removeFromAggregate
 function removeFromAggregate (aggregate, keyRef, values) {
-  var indices = values.map(function (value) {
+  var indices = _.indexBy(values.map(function (value) {
     return _.indexOf(aggregate[keyRef], value)
-  })
+  }), _.identity)
   return _.mapObject(aggregate, function (values) {
     return _.reduceRight(values, function (acc, value, index) {
-      if (_.contains(indices, index)) {
+      if (indices[index]) {
         return acc
       }
       acc.unshift(value)

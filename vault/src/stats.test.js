@@ -233,18 +233,20 @@ describe('src/stats.js', function () {
   })
 
   describe('stats.pages(events)', function () {
-    it('returns a sorted list of pages grouped by a clean URL', function () {
+    it('returns a stably sorted list of pages grouped by a clean URL', function () {
       return stats.pages([
         { payload: {} },
         { accountId: 'account-a', secretId: 'user-a', payload: { href: new window.URL('https://www.example.net/foo') } },
         { accountId: 'account-a', secretId: 'user-a', payload: { href: new window.URL('https://www.example.net/foo?param=bar') } },
         { accountId: 'account-b', secretId: 'user-z', payload: { href: new window.URL('https://beep.boop/site#!/foo') } },
+        { accountId: 'account-x', secretId: 'user-x', payload: { href: new window.URL('https://zomfg.site/resource') } },
         { accountId: 'account-a', secretId: null, payload: { } }
       ])
         .then(function (result) {
           assert.deepStrictEqual(result, [
             { key: 'https://www.example.net/foo', count: 2 },
-            { key: 'https://beep.boop/site', count: 1 }
+            { key: 'https://beep.boop/site', count: 1 },
+            { key: 'https://zomfg.site/resource', count: 1 }
           ])
         })
     })

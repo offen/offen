@@ -24,7 +24,7 @@ exports.query = (data, authenticatedUser, softFailureMessage, inBackground) => (
     var months = differenceInMonths(toDate, fromDate)
 
     // mobile and desktop screens use different rules
-    if (window.matchMedia('screen and (min-width: 30em)')) {
+    if (window.matchMedia('screen and (min-width: 30em)').matches) {
       if (weeks >= 6) {
         data.resolution = 'weeks'
       }
