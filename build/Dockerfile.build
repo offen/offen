@@ -132,6 +132,6 @@ ENV GOPATH /go
 WORKDIR /build
 
 COPY ./build/compile.sh .
-RUN chmod +x ./compile.sh && ./compile.sh
+RUN chmod +x ./compile.sh && ./compile.sh && rm ./compile.sh
 
 COPY --from=notice /code/NOTICE ./
