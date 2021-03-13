@@ -35,6 +35,12 @@ Running `offen` without any arguments starts the Offen web server, listening to 
 
 It is also aliased as `offen serve`.
 
+```
+Usage of "serve":
+  -envfile string
+        the env file to use
+```
+
 ## Specifying a configuration file
 
 Every subcommand accepts a `-envfile` argument that you can use to point at your runtime configuration. In case you do not supply a value, the [default cascade][config-article] will be used for looking up this file.
@@ -61,15 +67,15 @@ Usage of "setup":
   -force
         allow setup to delete existing data
   -forceid string
-        force usage of given valid UUID as account ID
+        force usage of given valid UUID as account ID (this is meant to be used in tests or similar - you probably do not want to use this)
   -name string
         the account name
   -password string
-        the password used for login
+        the password used for login (must be at least 8 characters long)
   -populate
         in case required secrets are missing from the configuration, create and persist them in the target env file
   -source string
-        a configuration file
+        a configuration file (this is an experimental feature - do not use it if you are not sure)
 ```
 
 In case the current runtime configuration is missing required secrets, you can use the `-populate` flag and the command will generate the missing values and store them on the system, so that they get picked up when the application is run the next time.
@@ -93,9 +99,9 @@ Usage of "secret":
   -count int
         the number of secrets to generate (default 1)
   -length int
-        the length in bytes (default 16)
+        the secret's length in bytes (default 16)
   -quiet
-        only print secrets
+        only print secrets to stdout
 ```
 
 The default length of 16 is a good default for the secrets required for configuring the application.
@@ -108,9 +114,23 @@ Running `offen version` prints information about the git revision the binary has
 
 `offen demo` starts a one-off demo instance that requires zero configuration. This is meant for anyone that wants to have a look at what Offen is offering but doesn't want to set up any configuration yet. Data is persisted in an temporary database that will be deleted once the process is shut down.
 
+```
+Usage of "demo":
+  -port int
+        the port to bind to (defaults to a random free port)
+  -users int
+        the number of users to simulate - this defaults to a random number between 250 and 500 (default -1)
+```
+
 ### `offen debug`
 
 `offen debug` prints the currently applicable runtime configuration. Use this in case Offen does end up with a configuration you do not expect. Passing a value to the `-envfile` flag will override the default lookup (just like with for example `serve` or `setup`).
+
+```
+Usage of "debug":
+  -envfile string
+        the env file to use
+```
 
 ---
 
@@ -123,6 +143,12 @@ The following commands are only relevant when you plan to run offen as a horizon
 
 Running `offen migrate` applies pending database migrations to the configured database. This is only necessary in case you have updated the binary installation and run it against the same database setup.
 
+```
+Usage of "migrate":
+  -envfile string
+        the env file to use
+```
+
 __Heads Up__
 {: .label .label-red }
 
@@ -131,6 +157,12 @@ In case you have configured Offen to run as a single node setup (which is the de
 ### `offen expire`
 
 Event data in Offen is expected to expire and be pruned after six months. Running `offen expire` looks for events in the configured database that qualify for deletion and removes them. This is a destructive operation and cannot be undone.
+
+```
+Usage of "expire":
+  -envfile string
+        the env file to use
+```
 
 __Heads Up__
 {: .label .label-red }
