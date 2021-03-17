@@ -11,7 +11,7 @@ Copyright 2020 - Offen Authors <hioffen@posteo.de>
 SPDX-License-Identifier: Apache-2.0
 -->
 
-Offen is a fair and open alternative to common web analytics tools. Gain insights while your users have full access to their data. Lightweight, self hosted and free.
+Let your users access their data. Gain valuable insights at the same time. Open, lightweight, self hosted and free.
 {: .text-grey-dk-000 }
 
 ---
