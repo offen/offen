@@ -6,7 +6,7 @@ LABEL maintainer="offen <hioffen@posteo.de>"
 
 RUN addgroup -g 10001 -S offen \
 	&& adduser -u 10000 -S -G offen -h /home/offen offen
-RUN apk add -U --no-cache ca-certificates libcap tini
+RUN apk add -U --no-cache ca-certificates libcap tini bind-tools
 
 COPY ./bin/offen-linux-amd64 /opt/offen/offen-linux-amd64
 RUN setcap CAP_NET_BIND_SERVICE=+eip /opt/offen/offen-linux-amd64
