@@ -23,3 +23,4 @@ EXPOSE 80 443
 ENTRYPOINT ["/sbin/tini", "--", "offen"]
 
 USER offen
+WORKDIR /home/offen
