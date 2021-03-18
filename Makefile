@@ -84,7 +84,6 @@ secret:
 
 TARGETS ?= linux/amd64
 LDFLAGS ?= -static
-DOCKER_IMAGE_TAG ?= local
 OFFEN_GIT_REVISION ?= none
 
 .PHONY: build
@@ -96,10 +95,13 @@ build:
 	@docker cp binary:/build/. ./bin
 	@docker rm binary
 
+DOCKERFILE ?= Dockerfile
+DOCKER_IMAGE_TAG ?= local
+
 .PHONY: build-docker
 build-docker: # @HELP Build the docker image
 build-docker:
-	@docker build -t offen/offen:${DOCKER_IMAGE_TAG} -f build/Dockerfile .
+	@docker build -t offen/offen:${DOCKER_IMAGE_TAG} -f build/${DOCKERFILE} .
 
 .PHONY: setup-docs
 setup-docs: # @HELP Setup the development environment for working on the docs site
