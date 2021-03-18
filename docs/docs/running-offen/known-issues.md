@@ -92,7 +92,7 @@ GitHub PR [575][docker-root-pr]
 ### Cause of the issue
 {: .no_toc }
 
-Up until v0.3.x, the `offen/offen` Docker images were running the application as `root`. This would allow malicious third party code injected into Offen through supply chain attacks to attempt a container escape and gain root access on the Docker host. To prevent this, all images published as v0.4.0 and later run the application [as a dedicated `offen` user][docker-user-doc].
+Up until v0.3.x, the `offen/offen` Docker images were running the application as `root`. This would allow malicious third party code injected into Offen through supply chain attacks to attempt a container escape and gain priviledged access on the Docker host. To prevent this, all images published as v0.4.0 and later run the application [as a dedicated `offen` user][docker-user-doc].
 
 ### Required migration steps
 {: .no_toc }
@@ -101,11 +101,21 @@ If you are using the `offen/offen` Docker image using a SQLite database and want
 
 The steps required to perform are:
 1. Stop the running `offen/offen` container
-1. Using the __same volume mount configuration as before__ (not part of the below command), run the following:
+1. Using the __same volume mount configuration as before__ (not part of the below command), you need to run the following command as `root` against the container:
     ```sh
-    docker run --rm -it -u 0 --entrypoint chown offen/offen:{{ site.offen_version }} -R offen:offen /var/opt/offen /etc/offen /var/www/.cache
+    chown -R offen:offen /var/opt/offen /etc/offen /var/www/.cache
+    ```
+When run using `docker` this would look something like this:
+    ```sh
+    docker run -v offen_db:/var/opt/offen \
+      -v offen_certs:/var/www/.cache \
+      --rm -it -u 0 \
+      --entrypoint chown offen/offen:{{ site.offen_version }} \
+      -R offen:offen /var/opt/offen /etc/offen /var/www/.cache
     ```
 1. Restart your service
+
+If you run into problems doing this, roll back your service to use the previous image version which will still work. [Open an issue][issues] on the GitHub repository or send us an email to <hioffen@posteo.de> and we'll try to help you getting this sorted out.
 
 ### Alternative workaround
 {: .no_toc }
