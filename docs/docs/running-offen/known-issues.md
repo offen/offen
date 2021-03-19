@@ -92,7 +92,7 @@ GitHub PR [575][docker-root-pr]
 ### Cause of the issue
 {: .no_toc }
 
-Up until v0.3.x, the `offen/offen` Docker images were running the application as `root`. This would allow malicious third party code injected into Offen through supply chain attacks to attempt a container escape and gain priviledged access on the Docker host. To prevent this, all images published as v0.4.0 and later run the application [as a dedicated `offen` user][docker-user-doc].
+Up until v0.3.x, the `offen/offen` Docker images were running the application as `root`. This would theoretically allow malicious third party code injected into Offen through supply chain attacks to attempt a container escape and gain priviledged access on the Docker host (this __has not happened in any Offen version__). To prevent this from potentially happening in the future, all images published as v0.4.0 and later run the application [as a dedicated, non-priviledged `offen` user][docker-user-doc].
 
 ### Required migration steps
 {: .no_toc }
