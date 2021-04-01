@@ -16,7 +16,9 @@ SPDX-License-Identifier: Apache-2.0
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/offen/offen.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/offen/offen/alerts/)
 [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/offen/offen.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/offen/offen/context:javascript)
 
-__Offen is an open alternative to common web analytics tools. Gain insights while your users have full access to their data. Lightweight, self hosted and free.__
+__Let your users access their data.  
+Gain valuable insights at the same time.  
+Open, lightweight, self hosted and free.__
 
 ## Contents
 
@@ -39,14 +41,14 @@ __Community__
 
 ## Core features
 
-__Open & free__  
-Our lightweight and open source code can be fully audited by the community. Offen will always be available for free.
+__Secure & free__  
+Our code is open source. All user data is encrypted end-to-end. Offen will always be available for free.
 
 __Self hosted__  
-Comply with GDPR guidelines. Don't share data with third parties. Your users have full access to their data.
+Comply with GDPR guidelines. No ads, no third parties involved. Offen uses first-party cookies only.
 
-__Fair & secure__  
-Opt in only. Users must actively give their consent to data collection. All data is encrypted end-to-end.
+__Fair & by choice__  
+Opt-in only. Users must actively give their consent to data collection. They have full access to their data.
 
 ## How it works
 

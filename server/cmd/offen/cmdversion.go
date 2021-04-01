@@ -20,5 +20,6 @@ func cmdVersion(subcommand string, flags []string) {
 		fmt.Fprint(flag.CommandLine.Output(), versionUsage)
 		cmd.PrintDefaults()
 	}
+	cmd.Parse(flags)
 	newLogger().WithField("revision", config.Revision).Info("Binary built using")
 }

@@ -1,7 +1,10 @@
-# Copyright 2020 - Offen Authors <hioffen@posteo.de>
+# Copyright 2020-2021 - Offen Authors <hioffen@posteo.de>
 # SPDX-License-Identifier: Apache-2.0
 
-.circleci/
-node_modules/
-.github/
-offen
+.circleci
+.github
+.reuse
+node_modules
+test-site
+integration
+LICENSES

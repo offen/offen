@@ -84,3 +84,48 @@ __You can still use Cloudflare for DNS with Offen.__ This only affects setups wh
 [cloudflare-issue]: https://github.com/offen/offen/issues/564
 [configuration]: ../configuring-the-application/
 [mdn-sri]: https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity
+
+## Docker based deployment stops working after upgrading to v0.4.0 or later
+
+GitHub PR [575][docker-root-pr]
+
+### Cause of the issue
+{: .no_toc }
+
+Up until v0.3.x, the `offen/offen` Docker images were running the application as `root`. This would theoretically allow malicious third party code injected into Offen through supply chain attacks to attempt a container escape and gain priviledged access on the Docker host (this __has not happened in any Offen version__). To prevent this from potentially happening in the future, all images published as v0.4.0 and later run the application [as a dedicated, non-priviledged `offen` user][docker-user-doc].
+
+### Required migration steps
+{: .no_toc }
+
+If you are using the `offen/offen` Docker image using a SQLite database and want to migrate to v0.4.0 this requires changing ownership of the database file so that the `offen` user can read and write to that file once updated. This migration likely __requires some service downtime__ and we advise you to __take a backup of your data before updating__.
+
+The steps required to perform are:
+1. Stop the running `offen/offen` container
+1. Using the __same volume mount configuration as before__ (not part of the below command), you need to run the following command as `root` against the container:
+    ```sh
+    chown -R offen:offen /var/opt/offen /etc/offen /var/www/.cache
+    ```
+When run using `docker` this would look something like this:
+    ```sh
+    docker run -v offen_db:/var/opt/offen \
+      -v offen_certs:/var/www/.cache \
+      --rm -it -u 0 \
+      --entrypoint chown offen/offen:{{ site.offen_version }} \
+      -R offen:offen /var/opt/offen /etc/offen /var/www/.cache
+    ```
+1. Restart your service
+
+If you run into problems doing this, roll back your service to use the previous image version which will still work. [Open an issue][issues] on the GitHub repository or send us an email to <hioffen@posteo.de> and we'll try to help you getting this sorted out.
+
+### Alternative workaround
+{: .no_toc }
+
+If you do not want to (or cannot) run the above migration steps, you can use the following workaround for now: for all v0.4.x releases we will publish `-root` versions for each tag to Docker Hub. For example, migrating from `v0.3.1` to `v0.4.0` is possible without any intervention by using the `offen/offen:v0.4.0-root` image.
+
+__Heads Up__
+{: .label .label-red }
+
+__We recommend applying the migration wherever possible__. The `-root` versions of the images are deprecated and will be __dropped with `v0.5.0`__.
+
+[docker-root-pr]: https://github.com/offen/offen/pull/575
+[docker-user-doc]: https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#user
