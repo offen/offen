@@ -17,14 +17,10 @@ var gap = require('gulp-append-prepend')
 var to = require('flush-write-stream')
 var tinyify = require('tinyify')
 var minifyStream = require('minify-stream')
+var linguasFile = require('linguas-file')
 
 var defaultLocale = 'en'
-var linguas = fs.readFileSync('./locales/LINGUAS', 'utf-8')
-  .split(' ')
-  .filter(Boolean)
-  .map(function (s) {
-    return s.trim()
-  })
+var linguas = linguasFile.parse(fs.readFileSync('./locales/LINGUAS', 'utf-8'))
 
 var pkg = require('./package.json')
 
