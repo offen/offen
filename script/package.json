@@ -29,6 +29,7 @@
     "gulp": "^4.0.2",
     "gulp-append-prepend": "^1.0.8",
     "gulp-clean": "^0.4.0",
+    "linguas-file": "^1.0.0",
     "local-web-server": "^4.0.0",
     "mochify": "^6.3.0",
     "npm-license-crawler": "^0.2.1",
