@@ -12,16 +12,12 @@ var rev = require('gulp-rev')
 var buffer = require('vinyl-buffer')
 var gap = require('gulp-append-prepend')
 var Readable = require('stream').Readable
+var linguasFile = require('linguas-file')
 
 var pkg = require('./package.json')
 
 var defaultLocale = 'en'
-var linguas = fs.readFileSync('./locales/LINGUAS', 'utf-8')
-  .split(' ')
-  .filter(Boolean)
-  .map(function (s) {
-    return s.trim()
-  })
+var linguas = linguasFile.parse(fs.readFileSync('./locales/LINGUAS', 'utf-8'))
 
 gulp.task('clean:pre', function () {
   return gulp
