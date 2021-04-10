@@ -107,6 +107,7 @@ build-docker:
 setup-docs: # @HELP Setup the development environment for working on the docs site
 setup-docs:
 	@docker-compose -p offen_docs -f docker-compose.docs.yml build
+	@docker-compose -p offen_docs -f docker-compose.docs.yml run --rm docs_jekyll gem install bundler
 	@docker-compose -p offen_docs -f docker-compose.docs.yml run --rm docs_jekyll bundle install
 	@docker-compose -p offen_docs -f docker-compose.docs.yml run --rm docs_jekyll bundle exec just-the-docs rake search:init
 

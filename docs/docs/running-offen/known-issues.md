@@ -102,11 +102,11 @@ If you are using the `offen/offen` Docker image using a SQLite database and want
 The steps required to perform are:
 1. Stop the running `offen/offen` container
 1. Using the __same volume mount configuration as before__ (not part of the below command), you need to run the following command as `root` against the container:
-    ```sh
+    ```
     chown -R offen:offen /var/opt/offen /etc/offen /var/www/.cache
     ```
 When run using `docker` this would look something like this:
-    ```sh
+    ```
     docker run -v offen_db:/var/opt/offen \
       -v offen_certs:/var/www/.cache \
       --rm -it -u 0 \
