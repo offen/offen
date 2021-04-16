@@ -330,6 +330,26 @@ func (r *relationalDAL) ApplyMigrations() error {
 				return nil
 			},
 		},
+		{
+			ID: "007_account_customStyles",
+			Migrate: func(db *gorm.DB) error {
+				type Account struct {
+					AccountID           string `gorm:"primary_key;size:36;unique"`
+					Name                string
+					PublicKey           string `gorm:"type:text"`
+					EncryptedPrivateKey string `gorm:"type:text"`
+					UserSalt            string
+					Retired             bool
+					CustomStyles        string `gorm:"type:text"`
+					Created             time.Time
+					Events              []Event `gorm:"foreignkey:AccountID;association_foreignkey:AccountID"`
+				}
+				return db.AutoMigrate(&Account{})
+			},
+			Rollback: func(db *gorm.DB) error {
+				return db.Migrator().DropColumn("accounts", "custom_styles")
+			},
+		},
 	})
 
 	m.InitSchema(func(db *gorm.DB) error {

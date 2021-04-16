@@ -160,6 +160,7 @@ type Account struct {
 	EncryptedPrivateKey string
 	UserSalt            string
 	Retired             bool
+	CustomStyles        string
 	Created             time.Time
 	Events              []Event
 }

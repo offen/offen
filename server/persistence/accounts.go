@@ -27,9 +27,10 @@ func (p *persistenceLayer) GetAccount(accountID string, includeEvents bool, even
 	}
 
 	result := AccountResult{
-		AccountID: account.AccountID,
-		Name:      account.Name,
-		Created:   account.Created,
+		AccountID:    account.AccountID,
+		Name:         account.Name,
+		Created:      account.Created,
+		CustomStyles: account.CustomStyles,
 	}
 
 	key, err := account.WrapPublicKey()

@@ -4,6 +4,8 @@
 package router
 
 import (
+	"fmt"
+	"html/template"
 	"net/http"
 	"strings"
 
@@ -12,7 +14,23 @@ import (
 
 func (rt *router) getIndex(c *gin.Context) {
 	if c.Request.URL.Path == "/vault/" {
-		c.HTML(http.StatusOK, "vault", nil)
+		var args interface{}
+		args = nil
+		if accountID := c.Request.URL.Query().Get("accountId"); accountID != "" {
+			account, err := rt.db.GetAccount(accountID, false, "")
+			if err != nil {
+				c.HTML(http.StatusBadRequest, "not_found", map[string]string{
+					"message": fmt.Sprintf("Error %v looking up account %s", err, accountID),
+				})
+				return
+			}
+			if account.CustomStyles != "" {
+				args = map[string]template.CSS{
+					"customStyles": template.CSS(account.CustomStyles),
+				}
+			}
+		}
+		c.HTML(http.StatusOK, "vault", args)
 		return
 	}
 	if rt.config.App.DemoAccount != "" && strings.HasPrefix(c.Request.URL.Path, "/intro") {

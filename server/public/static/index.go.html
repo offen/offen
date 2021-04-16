@@ -188,6 +188,24 @@
           <div id="host"></div>
           <script src="{{ rev "/vault/vendor.js" }}"></script>
           <script src="{{ rev "/vault/index.js" }}"></script>
+          {{ with .customStyles }}
+            <style>
+              {{ . }}
+            </style>
+          {{ end }}
+      </body>
+  </html>
+{{ end }}
+
+{{ define "error" }}
+  <!DOCTYPE html>
+  <html>
+      <head>
+          <title>Error!</title>
+          <meta charset="utf-8">
+      </head>
+      <body>
+        <h1>An error occured: {{ .message }}</h1>
       </body>
   </html>
 {{ end }}
