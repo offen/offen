@@ -11,6 +11,10 @@ import (
 )
 
 func (rt *router) getIndex(c *gin.Context) {
+	if c.Request.URL.Path == "/vault/" {
+		c.HTML(http.StatusOK, "vault", nil)
+		return
+	}
 	if rt.config.App.DemoAccount != "" && strings.HasPrefix(c.Request.URL.Path, "/intro") {
 		c.HTML(http.StatusOK, "intro", map[string]interface{}{
 			"demoAccount": rt.config.App.DemoAccount,
