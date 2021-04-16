@@ -5,12 +5,15 @@
 
 var html = require('nanohtml')
 var raw = require('nanohtml/raw')
+var sf = require('sheetify')
 
 var cookies = require('./cookie-tools')
 
 var ALLOW = 'allow'
 var DENY = 'deny'
 var COOKIE_NAME = 'consent'
+
+sf('./user-consent.css')
 
 exports.ALLOW = ALLOW
 exports.DENY = DENY
@@ -23,7 +26,6 @@ function askForConsent (styleHost) {
     var stylesReady = new Promise(function (resolve) {
       var styleSheet = html`
         <link rel="stylesheet" href="/fonts.css" onload={resolve}>
-        ${bannerStyles()}
       `
       document.head.appendChild(styleSheet)
       resolve()
@@ -137,17 +139,6 @@ function bannerView (consentGiven, handleAllow, handleDeny, handleClose) {
     <div>
       ${content}
     </div>
-  `
-}
-
-function bannerStyles () {
-  return html`
-    <style>
-      body {
-        margin: 0;
-        padding: 8px;
-      }
-    </style>
   `
 }
 

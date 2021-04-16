@@ -46,6 +46,7 @@
     "minify-stream": "^2.1.0",
     "mochify": "^6.2.0",
     "npm-license-crawler": "^0.2.1",
+    "sheetify": "^8.0.0",
     "sinon": "^7.3.2",
     "standard": "^14.3.1",
     "tinyify": "^2.5.1",
@@ -58,7 +59,8 @@
       "@offen/schemaify",
       "envify",
       "@offen/l10nify",
-      "nanohtml"
+      "nanohtml",
+      "sheetify"
     ]
   },
   "standard": {

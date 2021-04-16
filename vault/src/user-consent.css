@@ -1,0 +1,10 @@
+/**
+ * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+body {
+  margin: 0;
+  padding: 8px;
+  background-color: white;
+}
