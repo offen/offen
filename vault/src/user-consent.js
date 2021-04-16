@@ -22,11 +22,11 @@ function askForConsent (styleHost) {
     var consentGiven = false
     var stylesReady = new Promise(function (resolve) {
       var styleSheet = html`
-        <link rel="stylesheet" href="/fonts.css">
-        <link rel="stylesheet" href="/tachyons.min.css" onload="${resolve}">
+        <link rel="stylesheet" href="/fonts.css" onload={resolve}>
         ${bannerStyles()}
       `
       document.head.appendChild(styleSheet)
+      resolve()
     })
 
     window.addEventListener('resize', onResize)
@@ -86,7 +86,8 @@ function askForConsent (styleHost) {
         } else {
           host.appendChild(banner)
           adjustHostStyles(
-            hostStylesVisible(styleHost.selector).innerHTML
+            hostStylesVisible(styleHost.selector).innerHTML,
+            banner.getBoundingClientRect().height
           )
         }
       })
@@ -98,49 +99,42 @@ function bannerView (consentGiven, handleAllow, handleDeny, handleClose) {
   var content
   if (consentGiven) {
     content = html`
-      <p class="tc mt0 mb2">
+      <p>
         ${raw(__('Thanks for your help to make this website better.'))}
       </p>
-      <p class="tc mt0 mb3">
-        ${raw(__('To manage your usage data <a class="b normal link dim dark-gray" target="_blank" rel="noopener" href="%s">open the Auditorium.</a>', '/auditorium/'))}
+      <p>
+        ${raw(__('To manage your usage data <a target="_blank" rel="noopener" href="%s">open the Auditorium.</a>', '/auditorium/'))}
       </p>
-      <div class="w-100 flex">
-        <button class="db w-40 center pointer tc dim bn ph3 pv2 dib br1 white bg-mid-gray" onclick="${handleClose}">
+      <div>
+        <button onclick="${handleClose}">
           ${__('Continue')}
         </button>
       </div>
     `
   } else {
-    var learnMore = html`
-      <a target="_blank" rel="noopener" href="/" class="b normal link dim dark-gray">
-        ${__('Learn more')}
-      </a>
-    `
     content = html`
-      <p class="tc ma0 mb2">
+      <p>
         ${__('We only access usage data with your consent.')}
       </p>
-      <p class="tc ma0 mb3">
-      ${__('You can opt out and delete any time.')}
-      ${learnMore}
+      <p>
+        ${__('You can opt out and delete any time.')}
+        <a target="_blank" rel="noopener" href="/">
+          ${__('Learn more')}
+        </a>
       </p>
-      <div class="flex">
-        <div class="w-50 mr2">
-          <button class="w-100 pointer tc dim bn ph3 pv2 dib br1 white bg-mid-gray" onclick=${handleAllow}>
-            ${__('I allow')}
-          </button>
-        </div>
-        <div class="w-50 ml2">
-          <button class="w-100 pointer tc dim bn ph3 pv2 dib br1 white bg-mid-gray" onclick=${handleDeny}>
-            ${__('I don\'t allow')}
-          </button>
-        </div>
+      <div>
+        <button onclick=${handleAllow}>
+          ${__('I allow')}
+        </button>
+        <button onclick=${handleDeny}>
+          ${__('I don\'t allow')}
+        </button>
       </div>
     `
   }
 
   return html`
-    <div class="roboto pa3">
+    <div>
       ${content}
     </div>
   `
@@ -149,38 +143,9 @@ function bannerView (consentGiven, handleAllow, handleDeny, handleClose) {
 function bannerStyles () {
   return html`
     <style>
-      .label-toggle::after {
-        border-style: solid;
-        border-width: 0.15em 0.15em 0 0;
-        content: '';
-        display: inline-block;
-        height: 0.45em;
-        left: 0.15em;
-        position: relative;
-        top: 0.15em;
-        transform: rotate(135deg);
-        vertical-align: top;
-        width: 0.45em;
-        margin-top: -0.2em;
-        margin-left: -1.2em;
-      }
-      .label-toggle.label-toggle--rotate::after {
-        top: 0;
-        transform: rotate(-45deg);
-        margin-top: 0.4em;
-      }
       body {
-        font-size: 1rem;
-      }
-      @media all and (max-width: 389px) {
-        body {
-          font-size: .75rem;
-        }
-      }
-      @media all and (max-width: 289px) {
-        body {
-          font-size: .65rem;
-        }
+        margin: 0;
+        padding: 8px;
       }
     </style>
   `
@@ -196,10 +161,6 @@ function hostStylesVisible (selector) {
     right: 0;
     left: 0;
     margin: 0 auto;
-    width: 410px;
-    border: 1px solid #8a8a8a;
-    border-radius: 3px;
-    background-color: #FFFDF4;
     box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.50);
     z-index: 2147483647;
   }
