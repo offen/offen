@@ -26,6 +26,7 @@ const DatabaseSettings = require('./components/auditorium/database-settings')
 const LoadingOverlay = require('./components/auditorium/loading-overlay')
 const AccountPicker = require('./components/auditorium/account-picker')
 const RetireAccount = require('./components/auditorium/retire-account')
+const CustomStylesEditor = require('./components/auditorium/custom-styles')
 const Live = require('./components/auditorium/live')
 const model = require('./../action-creators/model')
 const errors = require('./../action-creators/errors')
@@ -208,6 +209,11 @@ const AuditoriumView = (props) => {
             onPurge={handlePurgeAggregates}
             accountId={accountId}
           />
+        </div>
+      </div>
+      <div class='mw8 center flex flex-column flex-row-l'>
+        <div class='w-100 flex br0 br2-ns mb2'>
+          <CustomStylesEditor />
         </div>
       </div>
       <div class='mw8 center flex flex-column flex-row-l'>
