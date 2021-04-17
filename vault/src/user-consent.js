@@ -101,34 +101,34 @@ function bannerView (consentGiven, handleAllow, handleDeny, handleClose) {
   var content
   if (consentGiven) {
     content = html`
-      <p>
+      <p class="banner__paragraph banner__paragraph--first">
         ${raw(__('Thanks for your help to make this website better.'))}
       </p>
-      <p>
-        ${raw(__('To manage your usage data <a target="_blank" rel="noopener" href="%s">open the Auditorium.</a>', '/auditorium/'))}
+      <p class="banner__paragraph">
+        ${raw(__('To manage your usage data <a class="%s"target="_blank" rel="noopener" href="%s">open the Auditorium.</a>', 'banner__anchor', '/auditorium/'))}
       </p>
-      <div>
-        <button onclick="${handleClose}">
+      <div class="banner__buttons">
+        <button class="banner__button" onclick="${handleClose}">
           ${__('Continue')}
         </button>
       </div>
     `
   } else {
     content = html`
-      <p>
+      <p class="banner__paragraph banner__paragraph--first">
         ${__('We only access usage data with your consent.')}
       </p>
-      <p>
+      <p class="banner__paragraph">
         ${__('You can opt out and delete any time.')}
-        <a target="_blank" rel="noopener" href="/">
+        <a class="banner__anchor" target="_blank" rel="noopener" href="/">
           ${__('Learn more')}
         </a>
       </p>
-      <div>
-        <button onclick=${handleAllow}>
+      <div class="banner__buttons">
+        <button class="banner__button banner__button--first" onclick=${handleAllow}>
           ${__('I allow')}
         </button>
-        <button onclick=${handleDeny}>
+        <button class="banner__button banner__button--last" onclick=${handleDeny}>
           ${__('I don\'t allow')}
         </button>
       </div>
@@ -136,7 +136,7 @@ function bannerView (consentGiven, handleAllow, handleDeny, handleClose) {
   }
 
   return html`
-    <div>
+    <div class="banner__host">
       ${content}
     </div>
   `
@@ -154,6 +154,7 @@ function hostStylesVisible (selector) {
     margin: 0 auto;
     box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.50);
     z-index: 2147483647;
+    width: 410px;
   }
   @media all and (max-width: 414px) {
     ${selector} {
