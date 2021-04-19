@@ -39,7 +39,7 @@ const AuditoriumView = (props) => {
   const {
     matches, authenticatedUser, model, stale,
     handleQuery, handleShare, handleValidationError, handleRetire, handleCopy,
-    handlePurgeAggregates
+    handlePurgeAggregates, handleUpdateAccountStyles
   } = props
   const { accountId, range, resolution, now, from, to } = matches
   const { adminLevel } = authenticatedUser
@@ -211,11 +211,20 @@ const AuditoriumView = (props) => {
           />
         </div>
       </div>
-      <div class='mw8 center flex flex-column flex-row-l'>
-        <div class='w-100 flex br0 br2-ns mb2'>
-          <CustomStylesEditor />
-        </div>
-      </div>
+      {adminLevel === ADMIN_LEVEL_ALLOW_EDIT
+        ? (
+          <div class='mw8 center flex flex-column flex-row-l'>
+            <div class='w-100 flex br0 br2-ns mb2'>
+              <CustomStylesEditor
+                customStyles={model.account.customStyles}
+                accountId={model.account.accountId}
+                accountName={model.account.name}
+                onUpdate={handleUpdateAccountStyles}
+              />
+            </div>
+          </div>
+        )
+        : null}
       <div class='mw8 center flex flex-column flex-row-l'>
         <div class='w-100 flex br0 br2-ns'>
           <GoSettings />
@@ -237,7 +246,8 @@ const mapDispatchToProps = {
   handleShare: management.shareAccount,
   handleRetire: management.retireAccount,
   handleCopy: management.handleCopy,
-  handlePurgeAggregates: database.purgeAggregates
+  handlePurgeAggregates: database.purgeAggregates,
+  handleUpdateAccountStyles: management.updateAccountStyles
 }
 
 const ConnectedAuditoriumView = connect(mapStateToProps, mapDispatchToProps)(AuditoriumView)

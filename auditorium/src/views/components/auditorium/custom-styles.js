@@ -10,13 +10,23 @@ const { useState } = require('preact/hooks')
 const classnames = require('classnames')
 const Editor = require('react-simple-code-editor').default
 const { highlight, languages } = require('prismjs/components/prism-core')
+const SubmitButton = require('./../_shared/submit-button')
 
 const Collapsible = require('./../_shared/collapsible')
 
 require('prismjs/components/prism-css')
 sf('prismjs/themes/prism.css')
 
-const DatabaseSettings = (props) => {
+const CustomStylesEditor = (props) => {
+  function handleSubmit (styles) {
+    props.onUpdate(
+      { accountId: props.accountId, customStyles: styles },
+      __('Successfully updated styles for account %s', props.accountName),
+      __('An error occured updating the custom styles.')
+    )
+  }
+
+  const { customStyles = '' } = props
   return (
     <div class='bg-black-05 flex-auto'>
       <Collapsible
@@ -45,11 +55,7 @@ const DatabaseSettings = (props) => {
           )
         }}
         body={(props) => {
-          const [code, setCode] = useState(
-`body {
-  color: hotpink;
-}`
-          )
+          const [code, setCode] = useState(customStyles)
           return (
             <div class='mw6 center ph3 mt3 mb4'>
               <Editor
@@ -64,6 +70,13 @@ const DatabaseSettings = (props) => {
                   minHeight: '200px'
                 }}
               />
+              <div class='link dim'>
+                <SubmitButton
+                  onclick={() => handleSubmit(code)}
+                >
+                  {__('Update Styles')}
+                </SubmitButton>
+              </div>
             </div>
           )
         }}
@@ -72,4 +85,4 @@ const DatabaseSettings = (props) => {
   )
 }
 
-module.exports = DatabaseSettings
+module.exports = CustomStylesEditor

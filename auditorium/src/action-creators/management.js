@@ -150,3 +150,38 @@ exports.retireAccount = (payload, onSuccessMessage, onFailureMessage) => (dispat
     })
     .catch((err) => dispatch(errors.unrecoverable(err)))
 }
+
+exports.updateAccountStyles = (payload, onSuccessMessage, onFailureMessage) => (dispatch, getState, postMessage) => {
+  dispatch({
+    type: 'UPDATE_ACCOUNT_STYLES_REQUEST',
+    payload: null
+  })
+  return postMessage({
+    type: 'UPDATE_ACCOUNT_STYLES',
+    payload: payload
+  })
+    .then(function (response) {
+      switch (response.type) {
+        case 'UPDATE_ACCOUNT_STYLES_SUCCESS':
+          dispatch({
+            type: 'UPDATE_ACCOUNT_STYLES_SUCCESS',
+            payload: {
+              flash: onSuccessMessage,
+              customStyles: payload.customStyles
+            }
+          })
+          return
+        case 'UPDATE_ACCOUNT_STYLES_FAILURE':
+          dispatch({
+            type: 'UPDATE_ACCOUNT_STYLES_FAILURE',
+            payload: {
+              flash: onFailureMessage
+            }
+          })
+          return
+        default:
+          throw new Error('Unhandled response of type "' + response.type + '"')
+      }
+    })
+    .catch((err) => dispatch(errors.unrecoverable(err)))
+}

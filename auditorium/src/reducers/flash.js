@@ -29,6 +29,8 @@ module.exports = (state = [], action) => {
     case 'LOGOUT_SUCCESS':
     case 'LOGOUT_FAILURE':
     case 'COPY_SUCCESS':
+    case 'UPDATE_ACCOUNT_STYLES_SUCCESS':
+    case 'UPDATE_ACCOUNT_STYLES_FAILURE':
       if (action.payload && action.payload.flash) {
         return [
           {

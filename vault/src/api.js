@@ -329,7 +329,7 @@ function retireAccountWith (deleteUrl) {
   }
 }
 
-exports.retireAccount = updateAccountStylesWith(window.location.origin + '/api/accounts/:accountId/update-styles')
+exports.updateAccountStyles = updateAccountStylesWith(window.location.origin + '/api/accounts/:accountId/custom-styles')
 exports.updateAccountStylesWith = updateAccountStylesWith
 
 function updateAccountStylesWith (updateUrl) {
