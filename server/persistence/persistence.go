@@ -25,6 +25,7 @@ type Service interface {
 	GenerateOneTimeKey(emailAddress string) ([]byte, error)
 	ResetPassword(emailAddress, password string, oneTimeKey []byte) error
 	ShareAccount(inviteeEmailAddress, providerEmailAddress, providerPassword, accountID string, grantAdminPrivileges bool) (ShareAccountResult, error)
+	UpdateAccountStyles(accountID, styles string) error
 	Join(emailAddress, password string) error
 	Expire(retention time.Duration) (int, error)
 	Bootstrap(data BootstrapConfig) error

@@ -214,6 +214,7 @@ func New(opts ...Config) http.Handler {
 
 		api.GET("/accounts/:accountID", accountAuth, rt.getAccount)
 		api.DELETE("/accounts/:accountID", accountAuth, rt.deleteAccount)
+		api.PUT("/accounts/:accountID/custom-styles", accountAuth, rt.putAccountStyles)
 		api.POST("/accounts", accountAuth, rt.postAccount)
 
 		api.POST("/purge", userCookie, rt.purgeEvents)
