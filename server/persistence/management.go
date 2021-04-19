@@ -14,7 +14,13 @@ func (p *persistenceLayer) UpdateAccountStyles(accountID, accountStyles string) 
 	if err != nil {
 		return fmt.Errorf("relational: error looking up account before updating custom styles: %w", err)
 	}
-	a.AccountStyles = accountStyles
+
+	sanitized, sanitizeErr := SanitizeCSS(accountStyles)
+	if sanitizeErr != nil {
+		return fmt.Errorf("relational: error sanitizing given CSS: %w", sanitizeErr)
+	}
+
+	a.AccountStyles = sanitized
 	if err := p.dal.UpdateAccount(&a); err != nil {
 		return fmt.Errorf("relational: error updating account %s with custom styles: %w", accountID, err)
 	}
