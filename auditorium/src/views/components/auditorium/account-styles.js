@@ -17,12 +17,12 @@ const Collapsible = require('./../_shared/collapsible')
 require('prismjs/components/prism-css')
 sf('prismjs/themes/prism.css')
 
-const CustomStylesEditor = (props) => {
+const AccountStylesEditor = (props) => {
   function handleSubmit (styles) {
     props.onUpdate(
-      { accountId: props.accountId, customStyles: styles },
+      { accountId: props.accountId, accountStyles: styles },
       __('Successfully updated styles for account %s', props.accountName),
-      __('An error occured updating the custom styles.')
+      __("An error occured updating the account's styles.")
     )
   }
 
@@ -85,4 +85,4 @@ const CustomStylesEditor = (props) => {
   )
 }
 
-module.exports = CustomStylesEditor
+module.exports = AccountStylesEditor

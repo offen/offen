@@ -9,12 +9,12 @@ import (
 	"github.com/offen/offen/server/keys"
 )
 
-func (p *persistenceLayer) UpdateAccountStyles(accountID, styles string) error {
+func (p *persistenceLayer) UpdateAccountStyles(accountID, accountStyles string) error {
 	a, err := p.dal.FindAccount(FindAccountQueryByID(accountID))
 	if err != nil {
 		return fmt.Errorf("relational: error looking up account before updating custom styles: %w", err)
 	}
-	a.CustomStyles = styles
+	a.AccountStyles = accountStyles
 	if err := p.dal.UpdateAccount(&a); err != nil {
 		return fmt.Errorf("relational: error updating account %s with custom styles: %w", accountID, err)
 	}

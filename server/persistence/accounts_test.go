@@ -173,7 +173,7 @@ func TestPersistenceLayer_GetAccount(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			p := &persistenceLayer{dal: test.persistence}
 
-			result, err := p.GetAccount("account-id", test.includeEvents, test.since)
+			result, err := p.GetAccount("account-id", false, test.includeEvents, test.since)
 			if !reflect.DeepEqual(test.expectedResult, result) {
 				t.Errorf("Expected %#v, got %#v", test.expectedResult, result)
 			}

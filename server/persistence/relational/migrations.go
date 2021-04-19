@@ -340,14 +340,14 @@ func (r *relationalDAL) ApplyMigrations() error {
 					EncryptedPrivateKey string `gorm:"type:text"`
 					UserSalt            string
 					Retired             bool
-					CustomStyles        string `gorm:"type:text"`
+					AccountStyles       string `gorm:"type:text"`
 					Created             time.Time
 					Events              []Event `gorm:"foreignkey:AccountID;association_foreignkey:AccountID"`
 				}
 				return db.AutoMigrate(&Account{})
 			},
 			Rollback: func(db *gorm.DB) error {
-				return db.Migrator().DropColumn("accounts", "custom_styles")
+				return db.Migrator().DropColumn("accounts", "account_styles")
 			},
 		},
 	})

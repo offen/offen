@@ -16,7 +16,7 @@ import (
 )
 
 type accountStylesRequest struct {
-	CustomStyles string `json:"customStyles"`
+	AccountStyles string `json:"accountStyles"`
 }
 
 func (rt *router) putAccountStyles(c *gin.Context) {
@@ -57,7 +57,7 @@ func (rt *router) putAccountStyles(c *gin.Context) {
 		return
 	}
 
-	if err := rt.db.UpdateAccountStyles(accountID, req.CustomStyles); err != nil {
+	if err := rt.db.UpdateAccountStyles(accountID, req.AccountStyles); err != nil {
 		newJSONError(
 			fmt.Errorf("router: error updating styles for account %s: %w", accountID, err),
 			http.StatusInternalServerError,

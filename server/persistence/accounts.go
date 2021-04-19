@@ -11,7 +11,7 @@ import (
 	"github.com/offen/offen/server/keys"
 )
 
-func (p *persistenceLayer) GetAccount(accountID string, includeEvents bool, eventsSince string) (AccountResult, error) {
+func (p *persistenceLayer) GetAccount(accountID string, includeStyles, includeEvents bool, eventsSince string) (AccountResult, error) {
 	var account Account
 	var err error
 	if includeEvents {
@@ -27,10 +27,13 @@ func (p *persistenceLayer) GetAccount(accountID string, includeEvents bool, even
 	}
 
 	result := AccountResult{
-		AccountID:    account.AccountID,
-		Name:         account.Name,
-		Created:      account.Created,
-		CustomStyles: account.CustomStyles,
+		AccountID: account.AccountID,
+		Name:      account.Name,
+		Created:   account.Created,
+	}
+
+	if includeStyles {
+		result.AccountStyles = account.AccountStyles
 	}
 
 	key, err := account.WrapPublicKey()

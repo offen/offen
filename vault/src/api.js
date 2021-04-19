@@ -329,17 +329,17 @@ function retireAccountWith (deleteUrl) {
   }
 }
 
-exports.updateAccountStyles = updateAccountStylesWith(window.location.origin + '/api/accounts/:accountId/custom-styles')
+exports.updateAccountStyles = updateAccountStylesWith(window.location.origin + '/api/accounts/:accountId/account-styles')
 exports.updateAccountStylesWith = updateAccountStylesWith
 
 function updateAccountStylesWith (updateUrl) {
-  return function (accountId, customStyles) {
+  return function (accountId, accountStyles) {
     return window
-      .fetch(updateUrl.replace(':accountId', accountId), {
+      .fetch(updateUrl.replace(/:accountId/, accountId), {
         method: 'PUT',
         credentials: 'include',
         body: JSON.stringify({
-          customStyles: customStyles
+          accountStyles: accountStyles
         })
       })
       .then(handleFetchResponse)

@@ -167,7 +167,7 @@ exports.updateAccountStyles = (payload, onSuccessMessage, onFailureMessage) => (
             type: 'UPDATE_ACCOUNT_STYLES_SUCCESS',
             payload: {
               flash: onSuccessMessage,
-              customStyles: payload.customStyles
+              accountStyles: payload.accountStyles
             }
           })
           return

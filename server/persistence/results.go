@@ -45,7 +45,7 @@ type AccountResult struct {
 	DeletedEvents       []string              `json:"deletedEvents,omitempty"`
 	Sequence            string                `json:"sequence,omitempty"`
 	Secrets             *EncryptedSecretsByID `json:"secrets,omitempty"`
-	CustomStyles        string                `json:"customStyles,omitempty"`
+	AccountStyles       string                `json:"accountStyles,omitempty"`
 	Created             time.Time             `json:"created,omitempty"`
 }
 

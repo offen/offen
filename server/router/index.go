@@ -17,16 +17,16 @@ func (rt *router) getIndex(c *gin.Context) {
 		var args interface{}
 		args = nil
 		if accountID := c.Request.URL.Query().Get("accountId"); accountID != "" {
-			account, err := rt.db.GetAccount(accountID, false, "")
+			account, err := rt.db.GetAccount(accountID, true, false, "")
 			if err != nil {
 				c.HTML(http.StatusBadRequest, "not_found", map[string]string{
 					"message": fmt.Sprintf("Error %v looking up account %s", err, accountID),
 				})
 				return
 			}
-			if account.CustomStyles != "" {
+			if account.AccountStyles != "" {
 				args = map[string]template.CSS{
-					"customStyles": template.CSS(account.CustomStyles),
+					"accountStyles": template.CSS(account.AccountStyles),
 				}
 			}
 		}

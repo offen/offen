@@ -26,7 +26,7 @@ const DatabaseSettings = require('./components/auditorium/database-settings')
 const LoadingOverlay = require('./components/auditorium/loading-overlay')
 const AccountPicker = require('./components/auditorium/account-picker')
 const RetireAccount = require('./components/auditorium/retire-account')
-const CustomStylesEditor = require('./components/auditorium/custom-styles')
+const AccountStylesEditor = require('./components/auditorium/account-styles')
 const Live = require('./components/auditorium/live')
 const model = require('./../action-creators/model')
 const errors = require('./../action-creators/errors')
@@ -215,8 +215,8 @@ const AuditoriumView = (props) => {
         ? (
           <div class='mw8 center flex flex-column flex-row-l'>
             <div class='w-100 flex br0 br2-ns mb2'>
-              <CustomStylesEditor
-                customStyles={model.account.customStyles}
+              <AccountStylesEditor
+                accountStyles={model.account.accountStyles}
                 accountId={model.account.accountId}
                 accountName={model.account.name}
                 onUpdate={handleUpdateAccountStyles}

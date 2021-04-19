@@ -45,7 +45,7 @@ type Account struct {
 	EncryptedPrivateKey string `gorm:"type:text"`
 	UserSalt            string
 	Retired             bool
-	CustomStyles        string `gorm:"type:text"`
+	AccountStyles       string `gorm:"type:text"`
 	Created             time.Time
 	Events              []Event `gorm:"foreignkey:AccountID;association_foreignkey:AccountID"`
 }
@@ -192,7 +192,7 @@ func (a *Account) export() persistence.Account {
 		Retired:             a.Retired,
 		Created:             a.Created,
 		Events:              events,
-		CustomStyles:        a.CustomStyles,
+		AccountStyles:       a.AccountStyles,
 	}
 }
 
@@ -210,6 +210,6 @@ func importAccount(a *persistence.Account) Account {
 		Retired:             a.Retired,
 		Created:             a.Created,
 		Events:              events,
-		CustomStyles:        a.CustomStyles,
+		AccountStyles:       a.AccountStyles,
 	}
 }

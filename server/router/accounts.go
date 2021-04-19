@@ -40,7 +40,7 @@ func (rt *router) getAccount(c *gin.Context) {
 		return
 	}
 
-	result, err := rt.db.GetAccount(accountID, true, c.Query("since"))
+	result, err := rt.db.GetAccount(accountID, true, true, c.Query("since"))
 	if err != nil {
 		var errUnknown persistence.ErrUnknownAccount
 		if errors.As(err, &errUnknown) {
