@@ -11,6 +11,7 @@ const classnames = require('classnames')
 const Editor = require('react-simple-code-editor').default
 const { highlight, languages } = require('prismjs/components/prism-core')
 const SubmitButton = require('./../_shared/submit-button')
+const Paragraph = require('./../_shared/paragraph')
 
 const Collapsible = require('./../_shared/collapsible')
 
@@ -26,7 +27,7 @@ const AccountStylesEditor = (props) => {
     )
   }
 
-  const { customStyles = '' } = props
+  const { accountStyles = '' } = props
   return (
     <div class='bg-black-05 flex-auto'>
       <Collapsible
@@ -55,21 +56,26 @@ const AccountStylesEditor = (props) => {
           )
         }}
         body={(props) => {
-          const [code, setCode] = useState(customStyles)
+          const [code, setCode] = useState(accountStyles)
           return (
             <div class='mw6 center ph3 mt3 mb4'>
-              <Editor
-                value={code}
-                onValueChange={(code) => setCode(code)}
-                highlight={(code) => highlight(code, languages.css)}
-                padding={10}
-                style={{
-                  fontFamily: '"Fira code", "Fira Mono", monospace',
-                  fontSize: 12,
-                  backgroundColor: 'white',
-                  minHeight: '200px'
-                }}
-              />
+              <Paragraph class='ma0 mb3'>
+                {__('Apply custom styling to the consent banner for this account. Refer to the <a class="%s" href="%s" target="_blank" rel="noopener">documentation</a> for an in-depth guide on how to do this.', 'link"', 'https://docs.offen.dev')}
+              </Paragraph>
+              <div class='mb3'>
+                <Editor
+                  value={code}
+                  onValueChange={(code) => setCode(code)}
+                  highlight={(code) => highlight(code, languages.css)}
+                  padding={10}
+                  style={{
+                    fontFamily: '"Fira code", "Fira Mono", monospace',
+                    fontSize: 12,
+                    backgroundColor: 'white',
+                    minHeight: '200px'
+                  }}
+                />
+              </div>
               <div class='link dim'>
                 <SubmitButton
                   onclick={() => handleSubmit(code)}
