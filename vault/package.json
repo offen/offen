@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "date-fns": "^2.16.1",
-    "dexie": "^3.0.1",
+    "dexie": "^3.0.3",
     "jwk-to-pem": "^2.0.2",
     "nanohtml": "^1.8.1",
     "node-forge": "^0.10.0",
