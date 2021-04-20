@@ -34,6 +34,7 @@ type router struct {
 	config       *config.Config
 	sanitizer    *bluemonday.Policy
 	limiter      ratelimiter.Throttler
+	cache        *cache.Cache
 }
 
 func (rt *router) getLimiter() ratelimiter.Throttler {
@@ -45,6 +46,17 @@ func (rt *router) getLimiter() ratelimiter.Throttler {
 		}
 	}
 	return rt.limiter
+}
+
+func (rt *router) getCache() *cache.Cache {
+	if rt.cache == nil {
+		interval := 5 * time.Minute
+		if rt.config.App.Development {
+			interval = time.Second
+		}
+		rt.cache = cache.New(interval, interval)
+	}
+	return rt.cache
 }
 
 func (rt *router) logError(err error, message string) {
