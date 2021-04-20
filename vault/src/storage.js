@@ -276,7 +276,7 @@ function Storage (getDatabase, fallbackStore) {
       .then(function () {
         return db.checkpoints.clear()
       })
-      .catch(dexie.OpenFailedError, function (err) {
+      .catch(dexie.OpenFailedError, function () {
         fallbackStore.events = {}
         fallbackStore.checkpoints = {}
         fallbackStore.aggregates = {}
