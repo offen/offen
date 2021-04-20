@@ -10,10 +10,14 @@
     "pretest": "dependency-check package.json",
     "posttest": "standard",
     "fix": "standard --fix",
-    "licenses": "npm-license-crawler --production --onlyDirectDependencies --omitVersion --csv dependencies.csv"
+    "licenses": "npm-license-crawler --production --onlyDirectDependencies --omitVersion --csv dependencies.csv",
+    "extract-strings": "extract-strings index.js $(find consent-banner -name '*.js')"
   },
   "dependencies": {
-    "envify": "^4.1.0"
+    "@offen/l10nify": "^0.3.0",
+    "envify": "^4.1.0",
+    "nanohtml": "^1.9.1",
+    "sheetify": "^8.0.0"
   },
   "devDependencies": {
     "dependency-check": "^3.4.0",
@@ -24,13 +28,18 @@
     "standard": "^14.3.1"
   },
   "standard": {
+    "globals": [
+      "__"
+    ],
     "env": [
       "mocha"
     ]
   },
   "browserify": {
     "transform": [
-      "envify"
+      "envify",
+      "sheetify",
+      "@offen/l10nify"
     ]
   }
 }
