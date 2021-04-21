@@ -11,7 +11,7 @@ body {
   padding: 0;
 }
 
-@media (max-width: 389px) {
+@media all and (max-width: 389px) {
   body {
     font-size: .75rem;
   }

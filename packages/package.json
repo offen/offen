@@ -15,9 +15,9 @@
   },
   "dependencies": {
     "@offen/l10nify": "^0.3.0",
+    "browserify-css": "0.15.0",
     "envify": "^4.1.0",
-    "nanohtml": "^1.9.1",
-    "sheetify": "^8.0.0"
+    "nanohtml": "^1.9.1"
   },
   "devDependencies": {
     "dependency-check": "^3.4.0",
@@ -38,7 +38,12 @@
   "browserify": {
     "transform": [
       "envify",
-      "sheetify",
+      [
+        "browserify-css",
+        {
+          "autoInject": false
+        }
+      ],
       "@offen/l10nify"
     ]
   }

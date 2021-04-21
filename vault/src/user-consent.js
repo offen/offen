@@ -19,11 +19,6 @@ exports.askForConsent = askForConsent
 function askForConsent (styleHost) {
   return new Promise(function (resolve) {
     var consentGiven = false
-    var stylesReady = new Promise(function (resolve) {
-      document.head.appendChild(
-        consentBanner.fontStylesheet({ onload: resolve })
-      )
-    })
 
     window.addEventListener('resize', onResize)
     render()
@@ -64,29 +59,27 @@ function askForConsent (styleHost) {
 
     function render () {
       var host = document.body.querySelector('#host')
-      stylesReady.then(function () {
-        var banner = consentBanner.bannerView({
-          consentGiven: consentGiven,
-          handleAllow: allowHandler,
-          handleDeny: denyHandler,
-          handleClose: closeHandler
-        })
-        if (host.firstChild) {
-          var current = host.firstChild
-          host.insertBefore(banner, current)
-          adjustHostStyles(
-            consentBanner.hostStylesVisible({ selector: styleHost.selector }).innerHTML,
-            banner.getBoundingClientRect().height
-          )
-          host.removeChild(current)
-        } else {
-          host.appendChild(banner)
-          adjustHostStyles(
-            consentBanner.hostStylesVisible({ selector: styleHost.selector }).innerHTML,
-            banner.getBoundingClientRect().height
-          )
-        }
+      var banner = consentBanner.bannerView({
+        consentGiven: consentGiven,
+        handleAllow: allowHandler,
+        handleDeny: denyHandler,
+        handleClose: closeHandler
       })
+      if (host.firstChild) {
+        var current = host.firstChild
+        host.insertBefore(banner, current)
+        adjustHostStyles(
+          consentBanner.hostStylesVisible({ selector: styleHost.selector }).innerHTML,
+          banner.getBoundingClientRect().height
+        )
+        host.removeChild(current)
+      } else {
+        host.appendChild(banner)
+        adjustHostStyles(
+          consentBanner.hostStylesVisible({ selector: styleHost.selector }).innerHTML,
+          banner.getBoundingClientRect().height
+        )
+      }
     }
   })
 }

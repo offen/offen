@@ -5,14 +5,24 @@
 
 var html = require('nanohtml')
 var raw = require('nanohtml/raw')
-var sf = require('sheetify')
 
-sf('./index.css')
+var styles = require('./index.css')
 
 exports.bannerView = function (props) {
   return html`
     <div class="banner__host">
+      <link rel="stylesheet" href="/fonts.css" onload=${props.onload}>
       ${props.consentGiven ? stepOne(props) : stepTwo(props)}
+      <style>
+        ${styles}
+      </style>
+      ${props.previewStyles
+        ? html`
+          <style>
+            ${props.previewStyles}
+          </style>
+        `
+        : null}
     </div>
   `
 }
@@ -53,12 +63,6 @@ function stepTwo (props) {
       </button>
     </div>
    `
-}
-
-exports.fontStylesheet = function (props) {
-  return html`
-    <link rel="stylesheet" href="/fonts.css" onload=${props.onload}>
-  `
 }
 
 exports.hostStylesVisible = function (props) {
