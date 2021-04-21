@@ -226,8 +226,7 @@ function Storage (getDatabase, fallbackStore) {
         var key = TYPE_USER_SECRET + '-' + accountId
         var value = JSON.stringify(userSecret)
         var cookie = cookies.defaultCookie(key, value, {
-          expires: addHours(new Date(), 4464),
-          path: '/vault'
+          expires: addHours(new Date(), 4464)
         })
         document.cookie = cookies.serialize(cookie)
       })
