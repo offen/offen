@@ -30,7 +30,7 @@ exports.bannerView = function (props) {
 function stepOne (props) {
   return html`
     <p class="banner__paragraph banner__paragraph--first">
-      ${raw(__('Thanks for your help to make this website better.'))}
+      ${__('Thanks for your help to make this website better.')}
     </p>
     <p class="banner__paragraph">
       ${raw(__('To manage your usage data <a class="%s"target="_blank" rel="noopener" href="%s">open the Auditorium.</a>', 'banner__anchor', '/auditorium/'))}
