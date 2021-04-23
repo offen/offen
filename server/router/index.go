@@ -8,8 +8,10 @@ import (
 	"html/template"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/offen/offen/server/css"
 )
 
 func (rt *router) getIndex(c *gin.Context) {
@@ -45,10 +47,23 @@ func (rt *router) getIndex(c *gin.Context) {
 			})
 			return
 		}
-		cache.Set(cacheKey, account.AccountStyles, 0)
+
+		ttl := 5 * time.Minute
+		if rt.config.App.Development || rt.config.App.DemoAccount != "" {
+			ttl = 1 * time.Second
+		}
+		cache.Set(cacheKey, account.AccountStyles, ttl)
+
+		styles := account.AccountStyles
+		if styles != "" {
+			if err := css.ValidateCSS(styles); err != nil {
+				styles = ""
+				rt.logger.WithError(err).Warn("Custom styles in database did not pass sanitizing, default styling will apply.")
+			}
+		}
 
 		c.HTML(http.StatusOK, "vault", map[string]interface{}{
-			"accountStyles": template.CSS(account.AccountStyles),
+			"accountStyles": template.CSS(styles),
 		})
 		return
 	}

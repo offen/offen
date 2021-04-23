@@ -50,11 +50,7 @@ func (rt *router) getLimiter() ratelimiter.Throttler {
 
 func (rt *router) getCache() *cache.Cache {
 	if rt.cache == nil {
-		interval := 5 * time.Minute
-		if rt.config.App.Development {
-			interval = time.Second
-		}
-		rt.cache = cache.New(interval, interval)
+		rt.cache = cache.New(cache.NoExpiration, time.Minute)
 	}
 	return rt.cache
 }

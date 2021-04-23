@@ -6,6 +6,7 @@ package persistence
 import (
 	"fmt"
 
+	"github.com/offen/offen/server/css"
 	"github.com/offen/offen/server/keys"
 )
 
@@ -15,12 +16,12 @@ func (p *persistenceLayer) UpdateAccountStyles(accountID, accountStyles string) 
 		return fmt.Errorf("relational: error looking up account before updating custom styles: %w", err)
 	}
 
-	sanitized, sanitizeErr := SanitizeCSS(accountStyles)
-	if sanitizeErr != nil {
-		return fmt.Errorf("relational: error sanitizing given CSS: %w", sanitizeErr)
+	validateErr := css.ValidateCSS(accountStyles)
+	if validateErr != nil {
+		return fmt.Errorf("relational: error validating given CSS: %w", validateErr)
 	}
 
-	a.AccountStyles = sanitized
+	a.AccountStyles = accountStyles
 	if err := p.dal.UpdateAccount(&a); err != nil {
 		return fmt.Errorf("relational: error updating account %s with custom styles: %w", accountID, err)
 	}
