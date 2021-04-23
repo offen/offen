@@ -6,7 +6,7 @@
 /** @jsx h */
 const { h } = require('preact')
 const sf = require('sheetify')
-const { useState, useEffect, useRef } = require('preact/hooks')
+const { useState, useRef, useEffect } = require('preact/hooks')
 const classnames = require('classnames')
 const Editor = require('react-simple-code-editor').default
 const { highlight, languages } = require('prismjs/components/prism-core')
@@ -22,8 +22,12 @@ sf('prismjs/themes/prism.css')
 const AccountStylesEditor = (props) => {
   const { accountStyles = '' } = props
   const [code, setCode] = useState(accountStyles)
-  const [preview, setPreview] = useState(null)
-  const iframe = useRef(null)
+  const [preview, setPreview] = useState(accountStyles)
+
+  useEffect(function updateInitialState () {
+    setCode(accountStyles)
+    setPreview(accountStyles)
+  }, [accountStyles])
 
   function handleSubmit (styles) {
     props.onUpdate(
@@ -36,22 +40,6 @@ const AccountStylesEditor = (props) => {
   function handlePreview (styles) {
     setPreview(styles)
   }
-
-  useEffect(function renderIframedPreview () {
-    if (iframe.current) {
-      const body = iframe.current.contentDocument.body
-      if (body.firstChild) {
-        body.removeChild(
-          body.firstChild
-        )
-      }
-      body.appendChild(
-        consentBanner.bannerView({
-          previewStyles: preview
-        })
-      )
-    }
-  }, [preview])
 
   return (
     <div class='bg-black-05 flex-auto'>
@@ -81,15 +69,32 @@ const AccountStylesEditor = (props) => {
           )
         }}
         body={(props) => {
+          const iframe1 = useRef(null)
+          const iframe2 = useRef(null)
+          useEffect(function renderIframedPreview () {
+            for (const [ref, param] of [[iframe1, false], [iframe2, true]]) {
+              if (ref.current) {
+                const body = ref.current.contentDocument.body
+                body.firstChild && body.removeChild(body.firstChild)
+                body.appendChild(
+                  consentBanner.bannerView({
+                    previewStyles: preview,
+                    consentGiven: param
+                  })
+                )
+              }
+            }
+          }, [preview])
           return (
             <div class='mw6 center ph3 mt3 mb4'>
               <Paragraph class='ma0 mb3'>
                 {__('Apply custom styling to the consent banner for this account. Refer to the <a class="%s" href="%s" target="_blank" rel="noopener">documentation</a> for an in-depth guide on how to do this.', 'link"', 'https://docs.offen.dev')}
               </Paragraph>
               <div class='mb3'>
-                {preview
-                  ? <iframe frameborder='0' scrolling='no' width='100%' ref={iframe} />
-                  : null}
+                <iframe frameborder='0' scrolling='no' width='100%' ref={iframe1} />
+              </div>
+              <div class='mb3'>
+                <iframe frameborder='0' scrolling='no' width='100%' ref={iframe2} />
               </div>
               <div class='mb3'>
                 <Editor

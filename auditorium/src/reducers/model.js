@@ -9,14 +9,6 @@ module.exports = (state = null, action) => {
     case 'PURGE_SUCCESS':
     case 'PURGE_AGGREGATES_SUCCESS':
       return action.payload
-    case 'UPDATE_ACCOUNT_STYLES_SUCCESS':
-      return {
-        ...state,
-        account: {
-          ...state.account,
-          accountStyles: action.payload.accountStyles
-        }
-      }
     case 'NAVIGATE':
       return null
     default:

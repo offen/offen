@@ -206,6 +206,7 @@ const AuditoriumView = (props) => {
       <div class='mw8 center flex flex-column flex-row-l'>
         <div class='w-100 flex br0 br2-ns mb2'>
           <DatabaseSettings
+            key={`database-settings-${accountId}`}
             onPurge={handlePurgeAggregates}
             accountId={accountId}
           />
@@ -216,6 +217,7 @@ const AuditoriumView = (props) => {
           <div class='mw8 center flex flex-column flex-row-l'>
             <div class='w-100 flex br0 br2-ns mb2'>
               <AccountStylesEditor
+                key={`account-styles-${accountId}`}
                 accountStyles={model.account.accountStyles}
                 accountId={model.account.accountId}
                 accountName={model.account.name}
