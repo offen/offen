@@ -33,7 +33,7 @@ body {
   margin-bottom: 0.5rem;
 }
 
-.banner__anchor {
+.paragraph__anchor {
   color: inherit;
   font-weight: bold;
   text-decoration: none;
@@ -44,7 +44,7 @@ body {
   justify-content: center;
 }
 
-.banner__button {
+.buttons__button {
   -webkit-appearance: button;
   background-color: #555;
   border: 0;
@@ -57,14 +57,14 @@ body {
   width: 50%;
 }
 
-.banner__button:hover {
+.buttons__button:hover {
   opacity: 0.5;
 }
 
-.banner__button--first {
+.buttons__button--first {
   margin-right: 0.25rem;
 }
 
-.banner__button--last {
+.buttons__button--last {
   margin-left: 0.25rem;
 }

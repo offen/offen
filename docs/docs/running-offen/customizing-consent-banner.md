@@ -51,22 +51,22 @@ Markup for each state is defined in the [`consent-banner` package][banner-source
 ### Initial state
 
 ```
-<div class="banner__host">
+<div class="banner__host bannner--inital">
   <link rel="stylesheet" href="/fonts.css" onload=${props.onload}>
   <p class="banner__paragraph banner__paragraph--first">
     We only access usage data with your consent.
   </p>
   <p class="banner__paragraph">
     You can opt out and delete any time.
-    <a class="banner__anchor" target="_blank" rel="noopener" href="/">
+    <a class="paragraph__anchor" target="_blank" rel="noopener" href="/">
       Learn more
     </a>
   </p>
   <div class="banner__buttons">
-    <button class="banner__button banner__button--first">
+    <button class="buttons__button banner__button--first">
       I allow
     </button>
-    <button class="banner__button banner__button--last">
+    <button class="buttons__button banner__button--last">
       I don't allow
     </button>
   </div>
@@ -82,16 +82,16 @@ Markup for each state is defined in the [`consent-banner` package][banner-source
 ### Follow up
 
 ```
-<div class="banner__host">
+<div class="banner__host banner--followup">
   <link rel="stylesheet" href="/fonts.css" onload=${props.onload}>
   <p class="banner__paragraph banner__paragraph--first">
     Thanks for your help to make this website better.
   </p>
   <p class="banner__paragraph">
-    To manage your usage data <a class="banner_anchor" target="_blank" rel="noopener" href="/auditorium/">open the Auditorium.</a>
+    To manage your usage data <a class="paragraph__anchor" target="_blank" rel="noopener" href="/auditorium/">open the Auditorium.</a>
   </p>
   <div class="banner__buttons">
-    <button class="banner__button">
+    <button class="buttons__button">
       Continue
     </button>
   </div>
@@ -139,7 +139,7 @@ body {
   margin-bottom: 0.5rem;
 }
 
-.banner__anchor {
+.paragraph__anchor {
   color: inherit;
   font-weight: bold;
   text-decoration: none;
@@ -150,7 +150,7 @@ body {
   justify-content: center;
 }
 
-.banner__button {
+.buttons__button {
   -webkit-appearance: button;
   background-color: #555;
   border: 0;
@@ -163,15 +163,15 @@ body {
   width: 50%;
 }
 
-.banner__button:hover {
+.buttons__button:hover {
   opacity: 0.5;
 }
 
-.banner__button--first {
+.buttons__button--first {
   margin-right: 0.25rem;
 }
 
-.banner__button--last {
+.buttons__button--last {
   margin-left: 0.25rem;
 }
 ```

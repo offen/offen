@@ -9,10 +9,11 @@ var raw = require('nanohtml/raw')
 var styles = require('./index.css')
 
 exports.bannerView = function (props) {
+  props = props || {}
   return html`
-    <div class="banner__host">
+    <div class="banner__host ${props.consentGiven ? 'banner--followup' : 'banner--initial'}">
       <link rel="stylesheet" href="/fonts.css" onload=${props.onload}>
-      ${props.consentGiven ? stepOne(props) : stepTwo(props)}
+      ${props.consentGiven ? followupScreen(props) : initialScreen(props)}
       <style>
         ${styles}
       </style>
@@ -27,38 +28,38 @@ exports.bannerView = function (props) {
   `
 }
 
-function stepOne (props) {
+function followupScreen (props) {
   return html`
     <p class="banner__paragraph banner__paragraph--first">
       ${__('Thanks for your help to make this website better.')}
     </p>
     <p class="banner__paragraph">
-      ${raw(__('To manage your usage data <a class="%s"target="_blank" rel="noopener" href="%s">open the Auditorium.</a>', 'banner__anchor', '/auditorium/'))}
+      ${raw(__('To manage your usage data <a class="%s"target="_blank" rel="noopener" href="%s">open the Auditorium.</a>', 'paragraph__anchor', '/auditorium/'))}
     </p>
     <div class="banner__buttons">
-      <button class="banner__button" onclick="${props.handleClose}">
+      <button class="buttons__button" onclick="${props.handleClose}">
         ${__('Continue')}
       </button>
     </div>
   `
 }
 
-function stepTwo (props) {
+function initialScreen (props) {
   return html`
     <p class="banner__paragraph banner__paragraph--first">
       ${__('We only access usage data with your consent.')}
     </p>
     <p class="banner__paragraph">
       ${__('You can opt out and delete any time.')}
-      <a class="banner__anchor" target="_blank" rel="noopener" href="/">
+      <a class="paragraph__anchor" target="_blank" rel="noopener" href="/">
         ${__('Learn more')}
       </a>
     </p>
     <div class="banner__buttons">
-      <button class="banner__button banner__button--first" onclick=${props.handleAllow}>
+      <button class="buttons__button buttons__button--first" onclick=${props.handleAllow}>
         ${__('I allow')}
       </button>
-      <button class="banner__button banner__button--last" onclick=${props.handleDeny}>
+      <button class="buttons__button buttons__button--last" onclick=${props.handleDeny}>
         ${__("I don't allow")}
       </button>
     </div>
