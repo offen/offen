@@ -161,6 +161,48 @@ body {
 `,
 			true,
 		},
+		{
+			"font size on host",
+			`
+.banner__host {
+	color: hotpink;
+	font-size: 24px;
+}
+`,
+			false,
+		},
+		{
+			"invalid font size on host",
+			`
+.banner__host {
+	color: hotpink;
+	font-size:  4px;
+}
+`,
+			true,
+		},
+		{
+			"font size on blocked element",
+			`
+.banner__host {
+	color: hotpink;
+	font-size:  14px;
+}
+.banner__buttons {
+	font-size: 78px;
+}
+`,
+			true,
+		},
+		{
+			"width",
+			`
+.banner__host {
+	width: 12px;
+}
+`,
+			true,
+		},
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {

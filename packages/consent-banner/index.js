@@ -21,7 +21,8 @@ exports.bannerView = function (props) {
         ? html`
           <script>
             function adjustSelf () {
-              parent.document.querySelector("${props.previewSelector}").style.height = document.querySelector('.banner__host').getBoundingClientRect().height + 'px';
+              var height = document.querySelector('.banner__host').getBoundingClientRect().height + 'px';
+              parent.document.querySelector("${props.previewSelector}").style.height = height;
             }
             window.addEventListener('resize', adjustSelf);
             adjustSelf();

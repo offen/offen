@@ -29,18 +29,28 @@ module.exports = (state = [], action) => {
     case 'LOGOUT_SUCCESS':
     case 'LOGOUT_FAILURE':
     case 'COPY_SUCCESS':
-    case 'UPDATE_ACCOUNT_STYLES_SUCCESS':
     case 'UPDATE_ACCOUNT_STYLES_FAILURE':
-      if (action.payload && action.payload.flash) {
-        return [
-          {
-            content: action.payload.flash,
-            id: action.payload.flashId
-          },
-          ...state
-        ]
+      if (!action.payload || !action.payload.flash) {
+        return state
       }
-      return state
+      return [
+        {
+          content: action.payload.flash,
+          id: action.payload.flashId
+        },
+        ...state
+      ]
+    case 'UPDATE_ACCOUNT_STYLES_SUCCESS':
+      if (!action.payload || !action.payload.flash) {
+        return []
+      }
+      return [
+        {
+          content: action.payload.flash,
+          id: action.payload.flashId
+        },
+        ...state
+      ]
     case 'LOGIN_SUCCESS':
       return []
     case 'EXPIRE_FLASH':

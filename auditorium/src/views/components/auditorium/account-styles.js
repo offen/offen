@@ -19,13 +19,17 @@ const Collapsible = require('./../_shared/collapsible')
 require('prismjs/components/prism-css')
 sf('prism-themes/themes/prism-coldark-cold.css')
 
+const placeholderCSS = `/* ${__('Your custom CSS here')} */`
+
 const AccountStylesEditor = (props) => {
   const { accountStyles = '' } = props
   const [code, setCode] = useState(accountStyles)
   const [preview, setPreview] = useState(accountStyles)
 
+  // This is required so that props updates propagate to
+  // the component's internal state.
   useEffect(function updateInitialState () {
-    setCode(accountStyles)
+    setCode(accountStyles || placeholderCSS)
     setPreview(accountStyles)
   }, [accountStyles])
 
@@ -41,7 +45,7 @@ const AccountStylesEditor = (props) => {
     props.onUpdate(
       { accountId: props.accountId, accountStyles: styles, dryRun: true },
       null,
-      __('Could not validate the current styles. Check the documentation for limitations around external URLs and other areas.')
+      __('Could not validate your styles. Check the documentation for limitations around external URLs and other areas.')
     )
       .then(function (success) {
         if (!success) {
@@ -82,7 +86,11 @@ const AccountStylesEditor = (props) => {
           const iframe1 = useRef(null)
           const iframe2 = useRef(null)
           useEffect(function renderIframedPreview () {
-            for (const [ref, param, selector] of [[iframe1, false, '#account-styles-preview-1'], [iframe2, true, '#account-styles-preview-2']]) {
+            const previews = [
+              [iframe1, false, '#account-styles-preview-1'],
+              [iframe2, true, '#account-styles-preview-2']
+            ]
+            for (const [ref, param, selector] of previews) {
               if (ref.current) {
                 setTimeout(function () {
                   const body = ref.current.contentDocument.body

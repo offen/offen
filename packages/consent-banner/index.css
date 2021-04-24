@@ -7,32 +7,31 @@
 
 body {
   border-radius: 3px;
-  font-size: 1rem;
   line-height: 1.15;
   margin: 0;
   padding: 0;
-}
-
-@media all and (max-width: 389px) {
-  body {
-    font-size: .75rem;
-  }
 }
 
 .banner__host {
   background-color: #fffdf4;
   border: 1px solid #8a8a8a;
   font-family: roboto, sans-serif;
-  padding: 1rem;
+  padding: 1em;
+}
+
+@media all and (max-width: 389px) {
+  body {
+    font-size: .75em;
+  }
 }
 
 .banner__paragraph {
-  margin: 0 0 1rem 0;
+  margin: 0 0 1em 0;
   text-align: center;
 }
 
 .banner__paragraph--first {
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.5em;
 }
 
 .paragraph__anchor {
@@ -58,7 +57,7 @@ body {
   cursor: pointer;
   font-family: inherit;
   font-size: 100%;
-  padding: 0.5rem 0;
+  padding: 0.5em 0;
   -webkit-transition: opacity .15s ease-out;
   transition: opacity .15s ease-out;
   width: 50%;
@@ -69,9 +68,9 @@ body {
 }
 
 .buttons__button--first {
-  margin-right: 0.25rem;
+  margin-right: 0.25em;
 }
 
 .buttons__button--last {
-  margin-left: 0.25rem;
+  margin-left: 0.25em;
 }

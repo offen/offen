@@ -11,23 +11,35 @@ import (
 	"github.com/aymerick/douceur/parser"
 )
 
-var cssBlocklist map[*regexp.Regexp]*regexp.Regexp = map[*regexp.Regexp]*regexp.Regexp{
-	regexp.MustCompile("opacity$"):   regexp.MustCompile(".*"),
-	regexp.MustCompile("content$"):   regexp.MustCompile(".*"),
-	regexp.MustCompile("filter$"):    regexp.MustCompile(".*"),
-	regexp.MustCompile("behavior$"):  regexp.MustCompile(".*"),
-	regexp.MustCompile("width$"):     regexp.MustCompile(".*"),
-	regexp.MustCompile("font-size$"): regexp.MustCompile(".*"),
-	regexp.MustCompile("display$"):   regexp.MustCompile("none"),
-	regexp.MustCompile(".*"):         regexp.MustCompile("(url|expression|javascript)"),
+var allowedFontSizeRe = regexp.MustCompile("^[1-9][2-9]px$")
+var blockedURLPatternsRe = regexp.MustCompile("(url|expression|javascript)")
+
+var cssBlocklist map[*regexp.Regexp]func(string, []string) bool = map[*regexp.Regexp]func(string, []string) bool{
+	regexp.MustCompile("opacity$"):  func(string, []string) bool { return true },
+	regexp.MustCompile("content$"):  func(string, []string) bool { return true },
+	regexp.MustCompile("filter$"):   func(string, []string) bool { return true },
+	regexp.MustCompile("behavior$"): func(string, []string) bool { return true },
+	regexp.MustCompile("width$"):    func(string, []string) bool { return true },
+	regexp.MustCompile("font-size$"): func(v string, s []string) bool {
+		if allowedFontSizeRe.MatchString(v) && s[0] == ".banner__host" && len(s) == 1 {
+			return false
+		}
+		return true
+	},
+	regexp.MustCompile("display$"): func(v string, _ []string) bool {
+		return v == "none"
+	},
+	regexp.MustCompile(".*"): func(v string, _ []string) bool {
+		return blockedURLPatternsRe.MatchString(v)
+	},
 }
 
 func validateRule(rule *css.Rule) error {
 	switch rule.Kind {
 	case css.QualifiedRule:
 		for _, declaration := range rule.Declarations {
-			for propertyRe, declarationRe := range cssBlocklist {
-				if propertyRe.MatchString(declaration.Property) && declarationRe.MatchString(declaration.Value) {
+			for propertyRe, blockDeclaration := range cssBlocklist {
+				if propertyRe.MatchString(declaration.Property) && blockDeclaration(declaration.Value, rule.Selectors) {
 					return fmt.Errorf("css: value %s not allowed for property %s", declaration.Value, declaration.Property)
 				}
 			}
