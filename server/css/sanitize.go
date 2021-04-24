@@ -12,11 +12,14 @@ import (
 )
 
 var cssBlocklist map[*regexp.Regexp]*regexp.Regexp = map[*regexp.Regexp]*regexp.Regexp{
-	regexp.MustCompile("opacity$"):  regexp.MustCompile(".*"),
-	regexp.MustCompile("content$"):  regexp.MustCompile(".*"),
-	regexp.MustCompile("filter$"):   regexp.MustCompile(".*"),
-	regexp.MustCompile("behavior$"): regexp.MustCompile(".*"),
-	regexp.MustCompile(".*"):        regexp.MustCompile("(url|expression|javascript)"),
+	regexp.MustCompile("opacity$"):   regexp.MustCompile(".*"),
+	regexp.MustCompile("content$"):   regexp.MustCompile(".*"),
+	regexp.MustCompile("filter$"):    regexp.MustCompile(".*"),
+	regexp.MustCompile("behavior$"):  regexp.MustCompile(".*"),
+	regexp.MustCompile("width$"):     regexp.MustCompile(".*"),
+	regexp.MustCompile("font-size$"): regexp.MustCompile(".*"),
+	regexp.MustCompile("display$"):   regexp.MustCompile("none"),
+	regexp.MustCompile(".*"):         regexp.MustCompile("(url|expression|javascript)"),
 }
 
 func validateRule(rule *css.Rule) error {

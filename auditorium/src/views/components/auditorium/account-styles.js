@@ -17,7 +17,7 @@ const Paragraph = require('./../_shared/paragraph')
 const Collapsible = require('./../_shared/collapsible')
 
 require('prismjs/components/prism-css')
-sf('prismjs/themes/prism.css')
+sf('prism-themes/themes/prism-coldark-cold.css')
 
 const AccountStylesEditor = (props) => {
   const { accountStyles = '' } = props
@@ -82,16 +82,19 @@ const AccountStylesEditor = (props) => {
           const iframe1 = useRef(null)
           const iframe2 = useRef(null)
           useEffect(function renderIframedPreview () {
-            for (const [ref, param] of [[iframe1, false], [iframe2, true]]) {
+            for (const [ref, param, selector] of [[iframe1, false, '#account-styles-preview-1'], [iframe2, true, '#account-styles-preview-2']]) {
               if (ref.current) {
-                const body = ref.current.contentDocument.body
-                body.firstChild && body.removeChild(body.firstChild)
-                body.appendChild(
-                  consentBanner.bannerView({
-                    previewStyles: preview,
-                    consentGiven: param
-                  })
-                )
+                setTimeout(function () {
+                  const body = ref.current.contentDocument.body
+                  body.firstChild && body.removeChild(body.firstChild)
+                  body.appendChild(
+                    consentBanner.bannerView({
+                      previewStyles: preview,
+                      consentGiven: param,
+                      previewSelector: selector
+                    })
+                  )
+                }, 7)
               }
             }
           }, [preview])
@@ -100,11 +103,22 @@ const AccountStylesEditor = (props) => {
               <Paragraph class='ma0 mb3'>
                 {__('Apply custom styling to the consent banner for this account. Refer to the <a class="%s" href="%s" target="_blank" rel="noopener">documentation</a> for an in-depth guide on how to do this.', 'link"', 'https://docs.offen.dev')}
               </Paragraph>
-              <div class='mb3'>
-                <iframe frameborder='0' scrolling='no' width='100%' ref={iframe1} />
-              </div>
-              <div class='mb3'>
-                <iframe frameborder='0' scrolling='no' width='100%' ref={iframe2} />
+              <div class='tc bg-white pa3'>
+                <iframe
+                  class='mb3'
+                  id='account-styles-preview-1'
+                  frameborder='0'
+                  scrolling='no'
+                  width='100%'
+                  ref={iframe1}
+                />
+                <iframe
+                  id='account-styles-preview-2'
+                  frameborder='0'
+                  scrolling='no'
+                  width='100%'
+                  ref={iframe2}
+                />
               </div>
               <div class='mb3'>
                 <Editor
@@ -115,7 +129,7 @@ const AccountStylesEditor = (props) => {
                   style={{
                     fontFamily: '"Fira code", "Fira Mono", monospace',
                     fontSize: 12,
-                    backgroundColor: 'white',
+                    backgroundColor: '#e3eaf2',
                     minHeight: '200px'
                   }}
                 />
