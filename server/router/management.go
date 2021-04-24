@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/offen/offen/server/css"
 	"github.com/offen/offen/server/persistence"
 )
 
@@ -49,11 +50,24 @@ func (rt *router) putAccountStyles(c *gin.Context) {
 		}
 	}
 
-	if l := <-rt.getLimiter().ExponentialThrottle(time.Second, fmt.Sprintf("postAccountStyles-%s", accountUser.AccountUserID)); l.Error != nil {
+	if l := <-rt.getLimiter().ExponentialThrottle(time.Second, fmt.Sprintf("putAccountStyles-%s", accountUser.AccountUserID)); l.Error != nil {
 		newJSONError(
 			fmt.Errorf("router: error rate limiting request: %w", l.Error),
 			http.StatusTooManyRequests,
 		).Pipe(c)
+		return
+	}
+
+	if err := css.ValidateCSS(req.AccountStyles); err != nil {
+		newJSONError(
+			fmt.Errorf("router: error validating given styles: %w", err),
+			http.StatusBadRequest,
+		).Pipe(c)
+		return
+	}
+
+	if c.Request.URL.Query().Get("dryRun") != "" {
+		c.Status(http.StatusNoContent)
 		return
 	}
 
@@ -63,7 +77,6 @@ func (rt *router) putAccountStyles(c *gin.Context) {
 			http.StatusInternalServerError,
 		).Pipe(c)
 		return
-
 	}
 
 	c.Status(http.StatusNoContent)

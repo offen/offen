@@ -333,9 +333,13 @@ exports.updateAccountStyles = updateAccountStylesWith(window.location.origin + '
 exports.updateAccountStylesWith = updateAccountStylesWith
 
 function updateAccountStylesWith (updateUrl) {
-  return function (accountId, accountStyles) {
+  return function (accountId, accountStyles, dryRun) {
+    var url = new window.URL(updateUrl.replace(/:accountId/, accountId))
+    if (dryRun) {
+      url.searchParams.set('dryRun', '1')
+    }
     return window
-      .fetch(updateUrl.replace(/:accountId/, accountId), {
+      .fetch(url, {
         method: 'PUT',
         credentials: 'include',
         body: JSON.stringify({

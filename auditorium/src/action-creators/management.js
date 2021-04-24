@@ -166,11 +166,10 @@ exports.updateAccountStyles = (payload, onSuccessMessage, onFailureMessage) => (
           dispatch({
             type: 'UPDATE_ACCOUNT_STYLES_SUCCESS',
             payload: {
-              flash: onSuccessMessage,
-              accountStyles: payload.accountStyles
+              flash: onSuccessMessage
             }
           })
-          return
+          return true
         case 'UPDATE_ACCOUNT_STYLES_FAILURE':
           dispatch({
             type: 'UPDATE_ACCOUNT_STYLES_FAILURE',
@@ -178,7 +177,7 @@ exports.updateAccountStyles = (payload, onSuccessMessage, onFailureMessage) => (
               flash: onFailureMessage
             }
           })
-          return
+          return false
         default:
           throw new Error('Unhandled response of type "' + response.type + '"')
       }

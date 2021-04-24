@@ -299,7 +299,9 @@ exports.handleUpdateAccountStylesWith = handleUpdateAccountStylesWith
 
 function handleUpdateAccountStylesWith (api) {
   return proxyThunk(function (payload) {
-    return api.updateAccountStyles(payload.accountId, payload.accountStyles)
+    return api.updateAccountStyles(
+      payload.accountId, payload.accountStyles, payload.dryRun
+    )
   })
 }
 

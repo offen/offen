@@ -38,7 +38,17 @@ const AccountStylesEditor = (props) => {
   }
 
   function handlePreview (styles) {
-    setPreview(styles)
+    props.onUpdate(
+      { accountId: props.accountId, accountStyles: styles, dryRun: true },
+      null,
+      __('Could not validate the current styles. Check the documentation for limitations around external URLs and other areas.')
+    )
+      .then(function (success) {
+        if (!success) {
+          return
+        }
+        setPreview(styles)
+      })
   }
 
   return (
