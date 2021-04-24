@@ -52,7 +52,6 @@ Markup for each state is defined in the [`consent-banner` package][banner-source
 
 ```
 <div class="banner__host bannner--inital">
-  <link rel="stylesheet" href="/fonts.css" onload=${props.onload}>
   <p class="banner__paragraph banner__paragraph--first">
     We only access usage data with your consent.
   </p>
@@ -83,7 +82,6 @@ Markup for each state is defined in the [`consent-banner` package][banner-source
 
 ```
 <div class="banner__host banner--followup">
-  <link rel="stylesheet" href="/fonts.css" onload=${props.onload}>
   <p class="banner__paragraph banner__paragraph--first">
     Thanks for your help to make this website better.
   </p>
@@ -109,6 +107,8 @@ Markup for each state is defined in the [`consent-banner` package][banner-source
 The default stylesheet applied to the banner looks like this:
 
 ```
+@import url('node_modules/normalize.css/normalize.css');
+
 body {
   border-radius: 3px;
   font-size: 1rem;
@@ -146,7 +146,11 @@ body {
 }
 
 .banner__buttons {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
   justify-content: center;
 }
 
@@ -159,6 +163,7 @@ body {
   font-family: inherit;
   font-size: 100%;
   padding: 0.5rem 0;
+  -webkit-transition: opacity .15s ease-out;
   transition: opacity .15s ease-out;
   width: 50%;
 }

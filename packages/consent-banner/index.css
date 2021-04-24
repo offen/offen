@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+@import url('node_modules/normalize.css/normalize.css');
+
 body {
   border-radius: 3px;
   font-size: 1rem;
@@ -40,7 +42,11 @@ body {
 }
 
 .banner__buttons {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
   justify-content: center;
 }
 
@@ -53,6 +59,7 @@ body {
   font-family: inherit;
   font-size: 100%;
   padding: 0.5rem 0;
+  -webkit-transition: opacity .15s ease-out;
   transition: opacity .15s ease-out;
   width: 50%;
 }

@@ -13,17 +13,10 @@ exports.bannerView = function (props) {
   return html`
     <div class="banner__host ${props.consentGiven ? 'banner--followup' : 'banner--initial'}">
       <link rel="stylesheet" href="/fonts.css" onload=${props.onload}>
-      ${props.consentGiven ? followupScreen(props) : initialScreen(props)}
       <style>
         ${styles}
       </style>
-      ${props.previewStyles
-        ? html`
-          <style>
-            ${props.previewStyles}
-          </style>
-        `
-        : null}
+        ${props.consentGiven ? followupScreen(props) : initialScreen(props)}
       ${props.previewSelector
         ? html`
           <script>
@@ -36,6 +29,13 @@ exports.bannerView = function (props) {
         `
         : null
       }
+      ${props.previewStyles
+        ? html`
+          <style>
+            ${props.previewStyles}
+          </style>
+        `
+        : null}
     </div>
   `
 }

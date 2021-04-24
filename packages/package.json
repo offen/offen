@@ -17,7 +17,8 @@
     "@offen/l10nify": "^0.3.0",
     "browserify-css": "0.15.0",
     "envify": "^4.1.0",
-    "nanohtml": "^1.9.1"
+    "nanohtml": "^1.9.1",
+    "normalize.css": "^8.0.1"
   },
   "devDependencies": {
     "dependency-check": "^3.4.0",
@@ -41,7 +42,8 @@
       [
         "browserify-css",
         {
-          "autoInject": false
+          "autoInject": false,
+          "minify": true
         }
       ],
       "@offen/l10nify"
