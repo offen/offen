@@ -12,7 +12,7 @@ body {
   padding: 0;
 }
 
-.banner__host {
+.banner__root {
   background-color: #fffdf4;
   border: 1px solid #8a8a8a;
   font-family: roboto, sans-serif;

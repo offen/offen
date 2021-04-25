@@ -51,7 +51,7 @@ Markup for each state is defined in the [`consent-banner` package][banner-source
 ### Initial state
 
 ```
-<div class="banner__host bannner--inital">
+<div class="banner__root bannner--inital">
   <p class="banner__paragraph banner__paragraph--first">
     We only access usage data with your consent.
   </p>
@@ -81,7 +81,7 @@ Markup for each state is defined in the [`consent-banner` package][banner-source
 ### Follow up
 
 ```
-<div class="banner__host banner--followup">
+<div class="banner__root banner--followup">
   <p class="banner__paragraph banner__paragraph--first">
     Thanks for your help to make this website better.
   </p>
@@ -111,32 +111,31 @@ The default stylesheet applied to the banner looks like this:
 
 body {
   border-radius: 3px;
-  font-size: 1rem;
   line-height: 1.15;
   margin: 0;
   padding: 0;
 }
 
-@media all and (max-width: 389px) {
-  body {
-    font-size: .75rem;
-  }
-}
-
-.banner__host {
+.banner__root {
   background-color: #fffdf4;
   border: 1px solid #8a8a8a;
   font-family: roboto, sans-serif;
-  padding: 1rem;
+  padding: 1em;
+}
+
+@media all and (max-width: 389px) {
+  body {
+    font-size: .75em;
+  }
 }
 
 .banner__paragraph {
-  margin: 0 0 1rem 0;
+  margin: 0 0 1em 0;
   text-align: center;
 }
 
 .banner__paragraph--first {
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.5em;
 }
 
 .paragraph__anchor {
@@ -162,7 +161,7 @@ body {
   cursor: pointer;
   font-family: inherit;
   font-size: 100%;
-  padding: 0.5rem 0;
+  padding: 0.5em 0;
   -webkit-transition: opacity .15s ease-out;
   transition: opacity .15s ease-out;
   width: 50%;
@@ -173,11 +172,11 @@ body {
 }
 
 .buttons__button--first {
-  margin-right: 0.25rem;
+  margin-right: 0.25em;
 }
 
 .buttons__button--last {
-  margin-left: 0.25rem;
+  margin-left: 0.25em;
 }
 ```
 

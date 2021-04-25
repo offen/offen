@@ -164,7 +164,7 @@ body {
 		{
 			"font size on host",
 			`
-.banner__host {
+.banner__root {
 	color: hotpink;
 	font-size: 24px;
 }
@@ -174,7 +174,7 @@ body {
 		{
 			"invalid font size on host",
 			`
-.banner__host {
+.banner__root {
 	color: hotpink;
 	font-size:  4px;
 }
@@ -184,7 +184,7 @@ body {
 		{
 			"font size on blocked element",
 			`
-.banner__host {
+.banner__root {
 	color: hotpink;
 	font-size:  14px;
 }
@@ -197,7 +197,7 @@ body {
 		{
 			"width",
 			`
-.banner__host {
+.banner__root {
 	width: 12px;
 }
 `,

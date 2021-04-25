@@ -11,7 +11,7 @@ var styles = require('./index.css')
 exports.bannerView = function (props) {
   props = props || {}
   return html`
-    <div class="banner__host ${props.consentGiven ? 'banner--followup' : 'banner--initial'}">
+    <div class="banner__root ${props.consentGiven ? 'banner--followup' : 'banner--initial'}">
       <link rel="stylesheet" href="/fonts.css" onload=${props.onload}>
       <style>
         ${styles}
@@ -21,7 +21,7 @@ exports.bannerView = function (props) {
         ? html`
           <script>
             function adjustSelf () {
-              var height = document.querySelector('.banner__host').getBoundingClientRect().height + 'px';
+              var height = document.querySelector('.banner__root').getBoundingClientRect().height + 'px';
               parent.document.querySelector("${props.previewSelector}").style.height = height;
             }
             window.addEventListener('resize', adjustSelf);

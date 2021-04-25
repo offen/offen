@@ -11,26 +11,39 @@ import (
 	"github.com/aymerick/douceur/parser"
 )
 
-var allowedFontSizeRe = regexp.MustCompile("^[1-9][2-9]px$")
+var allowedFontSizeRe = regexp.MustCompile("^(1[2-9]|[2-9][0-9])px$")
 var blockedURLPatternsRe = regexp.MustCompile("(url|expression|javascript)")
 
-var cssBlocklist map[*regexp.Regexp]func(string, []string) bool = map[*regexp.Regexp]func(string, []string) bool{
-	regexp.MustCompile("opacity$"):  func(string, []string) bool { return true },
-	regexp.MustCompile("content$"):  func(string, []string) bool { return true },
-	regexp.MustCompile("filter$"):   func(string, []string) bool { return true },
-	regexp.MustCompile("behavior$"): func(string, []string) bool { return true },
-	regexp.MustCompile("width$"):    func(string, []string) bool { return true },
-	regexp.MustCompile("font-size$"): func(v string, s []string) bool {
-		if allowedFontSizeRe.MatchString(v) && s[0] == ".banner__host" && len(s) == 1 {
+const (
+	bannerRootSelector = ".banner__root"
+)
+
+var cssBlocklist map[*regexp.Regexp]func([]string, string, string) bool = map[*regexp.Regexp]func([]string, string, string) bool{
+	// Use of opacity is blocked entirely
+	regexp.MustCompile("opacity$"): func([]string, string, string) bool { return true },
+	// Use of content is blocked entirely
+	regexp.MustCompile("content$"): func([]string, string, string) bool { return true },
+	// Use of filter is blocked entirely
+	regexp.MustCompile("filter$"): func([]string, string, string) bool { return true },
+	// Use of behavior is blocked entirely
+	regexp.MustCompile("behavior$"): func([]string, string, string) bool { return true },
+	// Use of width is blocked entirely
+	regexp.MustCompile("width$"): func([]string, string, string) bool { return true },
+	// Use of font-size is only allowed on the root element. In addition to that
+	// only numeric values between 12px and 99px are allowed
+	regexp.MustCompile("font-size$"): func(selectors []string, _ string, value string) bool {
+		if allowedFontSizeRe.MatchString(value) && selectors[0] == bannerRootSelector && len(selectors) == 1 {
 			return false
 		}
 		return true
 	},
-	regexp.MustCompile("display$"): func(v string, _ []string) bool {
-		return v == "none"
+	// Usage of display: none is not allowed for all selectors
+	regexp.MustCompile("display$"): func(_ []string, _ string, value string) bool {
+		return value == "none"
 	},
-	regexp.MustCompile(".*"): func(v string, _ []string) bool {
-		return blockedURLPatternsRe.MatchString(v)
+	// Usage of url, expression or javascript is blocked
+	regexp.MustCompile(".*"): func(_ []string, _ string, value string) bool {
+		return blockedURLPatternsRe.MatchString(value)
 	},
 }
 
@@ -39,8 +52,8 @@ func validateRule(rule *css.Rule) error {
 	case css.QualifiedRule:
 		for _, declaration := range rule.Declarations {
 			for propertyRe, blockDeclaration := range cssBlocklist {
-				if propertyRe.MatchString(declaration.Property) && blockDeclaration(declaration.Value, rule.Selectors) {
-					return fmt.Errorf("css: value %s not allowed for property %s", declaration.Value, declaration.Property)
+				if propertyRe.MatchString(declaration.Property) && blockDeclaration(rule.Selectors, declaration.Property, declaration.Value) {
+					return fmt.Errorf("css: value %s not allowed for property %s and selectors %s", declaration.Value, declaration.Property, rule.Selectors)
 				}
 			}
 		}
