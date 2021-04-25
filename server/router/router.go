@@ -201,19 +201,21 @@ func New(opts ...Config) http.Handler {
 	}
 
 	app := gin.New()
+	app.SetHTMLTemplate(rt.template)
 	app.Use(
 		gin.Recovery(),
 		location.Default(),
 		secureContextMiddleware(contextKeySecureContext, rt.config.App.Development),
 	)
 
-	root := gin.New()
-	root.SetHTMLTemplate(rt.template)
-	root.GET("/*any", etag, csp, rt.getIndex)
-	app.GET("/", gin.WrapH(root))
-
 	app.Any("/healthz", noStore, rt.getHealth)
 	app.GET("/versionz", noStore, rt.getVersion)
+
+	app.GET("/vault", etag, csp, rt.getVault)
+	if rt.config.App.DemoAccount != "" {
+		app.GET("/intro", etag, csp, rt.getIntro)
+	}
+
 	{
 		api := app.Group("/api")
 		api.Use(noStore)
@@ -245,8 +247,11 @@ func New(opts ...Config) http.Handler {
 		api.POST("/events", optin, userCookie, rt.postEvents)
 	}
 
-	fileServer := http.FileServer(rt.fs)
-	app.Use(staticMiddleware(fileServer, root))
+	root := gin.New()
+	root.SetHTMLTemplate(rt.template)
+	root.GET("/*any", etag, csp, rt.getIndex)
+
+	app.Use(staticMiddleware(http.FileServer(rt.fs), root))
 
 	if rt.config.Server.ReverseProxy {
 		return app

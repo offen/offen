@@ -7,75 +7,81 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
-	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/offen/offen/server/css"
 )
 
-func (rt *router) getIndex(c *gin.Context) {
-	if c.Request.URL.Path == "/vault/" {
+func (rt *router) getVault(c *gin.Context) {
+	accountID := c.Request.URL.Query().Get("accountId")
+	if accountID == "" {
+		c.HTML(http.StatusOK, "vault", map[string]interface{}{
+			"accountStyles": nil,
+		})
+		return
+	}
 
-		accountID := c.Request.URL.Query().Get("accountId")
-		if accountID == "" {
-			c.HTML(http.StatusOK, "vault", map[string]interface{}{
-				"accountStyles": nil,
+	cache, cacheKey := rt.getCache(), fmt.Sprintf("account-styles-%s", accountID)
+	if cachedItem, ok := cache.Get(cacheKey); ok {
+		cachedStyles, castOk := cachedItem.(string)
+		if !castOk {
+			c.HTML(http.StatusInternalServerError, "bad_cache", map[string]string{
+				"message": fmt.Sprintf("Unexpected cache item for account %s", accountID),
 			})
 			return
-		}
-
-		cache, cacheKey := rt.getCache(), fmt.Sprintf("account-styles-%s", accountID)
-		if cachedItem, ok := cache.Get(cacheKey); ok {
-			cachedStyles, castOk := cachedItem.(string)
-			if !castOk {
-				c.HTML(http.StatusInternalServerError, "bad_cache", map[string]string{
-					"message": fmt.Sprintf("Unexpected cache item for account %s", accountID),
-				})
-			}
-
-			c.HTML(http.StatusOK, "vault", map[string]interface{}{
-				"accountStyles": template.CSS(cachedStyles),
-			})
-			return
-		}
-
-		account, err := rt.db.GetAccount(accountID, true, false, "")
-		if err != nil {
-			c.HTML(http.StatusBadRequest, "not_found", map[string]string{
-				"message": fmt.Sprintf("Error %v looking up account %s", err, accountID),
-			})
-			return
-		}
-
-		ttl := 5 * time.Minute
-		if rt.config.App.Development || rt.config.App.DemoAccount != "" {
-			ttl = 1 * time.Second
-		}
-		cache.Set(cacheKey, account.AccountStyles, ttl)
-
-		styles := account.AccountStyles
-		if styles != "" {
-			if err := css.ValidateCSS(styles); err != nil {
-				styles = ""
-				rt.logger.WithError(err).Warn("Custom styles in database did not pass sanitizing, default styling will apply.")
-			}
 		}
 
 		c.HTML(http.StatusOK, "vault", map[string]interface{}{
-			"accountStyles": template.CSS(styles),
+			"accountStyles": template.CSS(cachedStyles),
 		})
 		return
 	}
 
-	if rt.config.App.DemoAccount != "" && strings.HasPrefix(c.Request.URL.Path, "/intro") {
-		c.HTML(http.StatusOK, "intro", map[string]interface{}{
-			"demoAccount": rt.config.App.DemoAccount,
-			"lang":        rt.config.App.Locale,
+	account, err := rt.db.GetAccount(accountID, true, false, "")
+	if err != nil {
+		c.HTML(http.StatusBadRequest, "not_found", map[string]string{
+			"message": fmt.Sprintf("Error %v looking up account %s", err, accountID),
 		})
 		return
 	}
 
+	ttl := 5 * time.Minute
+	if rt.config.App.Development || rt.config.App.DemoAccount != "" {
+		ttl = time.Second
+	}
+
+	styles := account.AccountStyles
+	if styles != "" {
+		if err := css.ValidateCSS(styles); err != nil {
+			styles = ""
+			rt.logger.WithError(err).Warnf(
+				"Custom styles for account %s in database did not pass validation, default styling will apply.",
+				account.Name,
+			)
+		}
+	}
+
+	// Writing to the cache at this point means the application _might_ cache
+	// an empty string in case the CSS in the database is considered invalid,
+	// which might be confusing but mitigates the possibility of attacking the
+	// application by inserting malformed CSS into the database.
+	cache.Set(cacheKey, styles, ttl)
+
+	c.HTML(http.StatusOK, "vault", map[string]interface{}{
+		"accountStyles": template.CSS(styles),
+	})
+}
+
+func (rt *router) getIntro(c *gin.Context) {
+	c.HTML(http.StatusOK, "intro", map[string]interface{}{
+		"demoAccount": rt.config.App.DemoAccount,
+		"lang":        rt.config.App.Locale,
+	})
+	return
+}
+
+func (rt *router) getIndex(c *gin.Context) {
 	c.HTML(http.StatusOK, "index", map[string]interface{}{
 		"rootAccount": rt.config.App.RootAccount,
 		"lang":        rt.config.App.Locale,
