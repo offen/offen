@@ -14,10 +14,6 @@ func TestValidateCSS(t *testing.T) {
 		{
 			"ok",
 			`
-body {
-	color: hotpink;
-}
-
 .some-element {
 	padding: 12px;
 }
@@ -25,7 +21,7 @@ body {
 			false,
 		},
 		{
-			"empty",
+			"non-class selector",
 			`
 body {
 	color: hotpink;
@@ -35,7 +31,31 @@ body {
 	padding: 12px;
 }
 			`,
-			false,
+			true,
+		},
+		{
+			"nested non-class selector",
+			`
+@media screen and (min-width: 4000px) {
+	body, .other-thing {
+		color: hotpink;
+	}
+}
+
+.some-element {
+	padding: 12px;
+}
+			`,
+			true,
+		},
+		{
+			"disallowed pseudo class",
+			`
+.some-element:first-child {
+	padding: 12px;
+}
+			`,
+			true,
 		},
 		{
 			"uses opacity",
@@ -218,6 +238,15 @@ body {
 			`
 .banner__root {
 	width: 12px;
+}
+`,
+			true,
+		},
+		{
+			"negative value",
+			`
+.banner__root {
+	margin: 0 0 0 -9999px;
 }
 `,
 			true,

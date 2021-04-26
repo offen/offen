@@ -58,13 +58,13 @@ body {
   font-family: inherit;
   font-size: 100%;
   padding: 0.5em 0;
-  -webkit-transition: opacity .15s ease-out;
-  transition: opacity .15s ease-out;
+  -webkit-transition: background-color .15s ease-out;
+  transition: background-color .15s ease-out;
   width: 50%;
 }
 
 .buttons__button:hover {
-  opacity: 0.5;
+  background-color: #c4c4c4;
 }
 
 .buttons__button--first {

@@ -25,6 +25,9 @@ exports.bannerView = function (props) {
               parent.document.querySelector("${props.previewSelector}").style.height = height;
             }
             window.addEventListener('resize', adjustSelf);
+            window.addEventListener('click', function (e) {
+              e.preventDefault();
+            });
             adjustSelf();
           </script>
         `

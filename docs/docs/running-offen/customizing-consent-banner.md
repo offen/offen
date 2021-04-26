@@ -34,7 +34,7 @@ You can use any of these examples as a template for your changes or combine them
 ```
 .banner__root, .buttons__button {
   color: black;
-  border: 1px solid #9EEBCF;
+  border: 1px solid #9eebcf;
 }
 
 .buttons__button {
@@ -42,8 +42,12 @@ You can use any of these examples as a template for your changes or combine them
   font-weight: bold;
 }
 
+.buttons__button:hover {
+  background-color: #9eebcf;
+}
+
 .banner__root {
-  background-color: #E8FDF5;
+  background-color: #e8fdf5;
 }
 ```
 
@@ -70,13 +74,14 @@ You can use any of these examples as a template for your changes or combine them
 }
 ```
 
-## General considerations when styling the banner
-
-Offen is based on the idea that users can choose whether they are ok with their usage data being collected. This is a good guideline when styling the banner. Your users will appreciate if you keep the consent decision transparent and fair for them.
-
-## Blocked CSS properties and values
+## Allowed CSS properties and values
 
 Certain validation rules apply to the CSS you can use for styling your banner: Offen wants to make sure malicious actors could not change the appearance of your banner to be misleading when it comes to enabling users to express their consent freely.
+
+### Selectors
+{: .no_toc }
+
+Selectors are only allowed to be classnames. In addition to that, only `:hover`, `:active` and `:focus` pseudo classes are allowed.
 
 ### Properties
 {: .no_toc }
@@ -268,13 +273,13 @@ body {
   font-family: inherit;
   font-size: 100%;
   padding: 0.5em 0;
-  -webkit-transition: opacity .15s ease-out;
-  transition: opacity .15s ease-out;
+  -webkit-transition: background-color .15s ease-out;
+  transition: background-color .15s ease-out;
   width: 50%;
 }
 
 .buttons__button:hover {
-  opacity: 0.5;
+  background-color: #c4c4c4;
 }
 
 .buttons__button--first {

@@ -12,13 +12,17 @@ import (
 	"github.com/aymerick/douceur/parser"
 )
 
-var allowedFontSizeRe = regexp.MustCompile("^(1[2-9]|[2-9][0-9])px$")
-var blockedValuePatternsRe = regexp.MustCompile("(url|expression|javascript|calc|transform|-)")
-var errNotAllowed = errors.New("css: rule not allowed")
-
 const (
 	bannerRootSelector = ".banner__root"
 )
+
+var (
+	allowedFontSizeRe      = regexp.MustCompile("^(1[2-9]|[2-9][0-9])px$")
+	blockedValuePatternsRe = regexp.MustCompile("(url|expression|javascript|calc|transform|-)")
+	allowedSelectorsRe     = regexp.MustCompile("\\.[a-z_\\-]+:?(hover|active|focus)?$")
+)
+
+var errNotAllowed = errors.New("css: rule not allowed")
 
 type cssValidator func([]string, string, string) error
 
@@ -27,10 +31,16 @@ var cssBlocklist map[*regexp.Regexp]cssValidator = map[*regexp.Regexp]cssValidat
 	regexp.MustCompile("(opacity|content|filter|behavior|width|cursor|pointer-events)$"): func([]string, string, string) error {
 		return errNotAllowed
 	},
-	// Use of some blocked values is forbidden for all properties
-	nil: func(_ []string, _ string, value string) error {
+	// Use of some blocked values is forbidden for all properties.
+	// Also, selectors are only allowed to be classes.
+	nil: func(selectors []string, _ string, value string) error {
 		if blockedValuePatternsRe.MatchString(value) {
 			return errNotAllowed
+		}
+		for _, selector := range selectors {
+			if !allowedSelectorsRe.MatchString(selector) {
+				return errNotAllowed
+			}
 		}
 		return nil
 	},
