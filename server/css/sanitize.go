@@ -4,6 +4,7 @@
 package css
 
 import (
+	"errors"
 	"fmt"
 	"regexp"
 
@@ -12,49 +13,68 @@ import (
 )
 
 var allowedFontSizeRe = regexp.MustCompile("^(1[2-9]|[2-9][0-9])px$")
-var blockedURLPatternsRe = regexp.MustCompile("(url|expression|javascript)")
+var blockedValuePatternsRe = regexp.MustCompile("(url|expression|javascript|calc|transform|-)")
+var errNotAllowed = errors.New("css: rule not allowed")
 
 const (
 	bannerRootSelector = ".banner__root"
 )
 
-var cssBlocklist map[*regexp.Regexp]func([]string, string, string) bool = map[*regexp.Regexp]func([]string, string, string) bool{
-	// Use of opacity is blocked entirely
-	regexp.MustCompile("opacity$"): func([]string, string, string) bool { return true },
-	// Use of content is blocked entirely
-	regexp.MustCompile("content$"): func([]string, string, string) bool { return true },
-	// Use of filter is blocked entirely
-	regexp.MustCompile("filter$"): func([]string, string, string) bool { return true },
-	// Use of behavior is blocked entirely
-	regexp.MustCompile("behavior$"): func([]string, string, string) bool { return true },
-	// Use of width is blocked entirely
-	regexp.MustCompile("width$"): func([]string, string, string) bool { return true },
+type cssValidator func([]string, string, string) error
+
+var cssBlocklist map[*regexp.Regexp]cssValidator = map[*regexp.Regexp]cssValidator{
+	// Use of these properties is blocked entirely
+	regexp.MustCompile("(opacity|content|filter|behavior|width|cursor|pointer-events)$"): func([]string, string, string) error {
+		return errNotAllowed
+	},
+	// Use of some blocked values is forbidden for all properties
+	nil: func(_ []string, _ string, value string) error {
+		if blockedValuePatternsRe.MatchString(value) {
+			return errNotAllowed
+		}
+		return nil
+	},
 	// Use of font-size is only allowed on the root element. In addition to that
 	// only numeric values between 12px and 99px are allowed
-	regexp.MustCompile("font-size$"): func(selectors []string, _ string, value string) bool {
+	regexp.MustCompile("font-size$"): func(selectors []string, _ string, value string) error {
 		if allowedFontSizeRe.MatchString(value) && selectors[0] == bannerRootSelector && len(selectors) == 1 {
-			return false
+			return nil
 		}
-		return true
+		return errNotAllowed
 	},
 	// Usage of display: none is not allowed for all selectors
-	regexp.MustCompile("display$"): func(_ []string, _ string, value string) bool {
-		return value == "none"
+	regexp.MustCompile("display$"): func(_ []string, _ string, value string) error {
+		if value == "none" {
+			return errNotAllowed
+		}
+		return nil
 	},
-	// Usage of url, expression or javascript is blocked
-	regexp.MustCompile(".*"): func(_ []string, _ string, value string) bool {
-		return blockedURLPatternsRe.MatchString(value)
-	},
+}
+
+func validateDeclaration(declaration *css.Declaration, selectors []string) error {
+	for propertyRe, validate := range cssBlocklist {
+		if propertyRe != nil && !propertyRe.MatchString(declaration.Property) {
+			continue
+		}
+		if err := validate(selectors, declaration.Property, declaration.Value); err == nil {
+			continue
+		}
+		return fmt.Errorf(
+			"css: value %s not allowed for property %s and selectors %s",
+			declaration.Value,
+			declaration.Property,
+			selectors,
+		)
+	}
+	return nil
 }
 
 func validateRule(rule *css.Rule) error {
 	switch rule.Kind {
 	case css.QualifiedRule:
 		for _, declaration := range rule.Declarations {
-			for propertyRe, blockDeclaration := range cssBlocklist {
-				if propertyRe.MatchString(declaration.Property) && blockDeclaration(rule.Selectors, declaration.Property, declaration.Value) {
-					return fmt.Errorf("css: value %s not allowed for property %s and selectors %s", declaration.Value, declaration.Property, rule.Selectors)
-				}
+			if err := validateDeclaration(declaration, rule.Selectors); err != nil {
+				return err
 			}
 		}
 	case css.AtRule:

@@ -203,6 +203,25 @@ body {
 `,
 			true,
 		},
+		{
+			"font size on rule with multiple selectors",
+			`
+.banner__root, .banner__buttons {
+	color: hotpink;
+	font-size:  14px;
+}
+`,
+			true,
+		},
+		{
+			"width",
+			`
+.banner__root {
+	width: 12px;
+}
+`,
+			true,
+		},
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
