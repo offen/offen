@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Customizing the the consent banner
+title: Customizing the consent banner
 nav_order: 8
 description: "How to add custom CSS to customize the appearance of the consent banner in Offen"
 permalink: /running-offen/customizing-consent-banner/
@@ -12,7 +12,7 @@ Copyright 2021 - Offen Authors <hioffen@posteo.de>
 SPDX-License-Identifier: Apache-2.0
 -->
 
-# Customizing the the consent banner
+# Customizing the consent banner
 {: .no_toc }
 
 Offen lets you customize the appearance of the consent banner by appending custom CSS that written by yourself. To edit the CSS, navigate to the "Customize appearance" tab in the Auditorium. Appearance is customized at account level, so you can add different styles for different accounts. It's currently not possible to share the appearance of multiple accounts using other means than manually copy / pasting the contents.
@@ -301,5 +301,3 @@ body {
   background-color: #c4c4c4;
 }
 ```
-
-
