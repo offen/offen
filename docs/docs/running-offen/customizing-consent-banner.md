@@ -227,6 +227,10 @@ body {
   padding: 0;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 .banner__root {
   background-color: #fffdf4;
   border: 1px solid #8a8a8a;

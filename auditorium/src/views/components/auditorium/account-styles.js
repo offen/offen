@@ -22,44 +22,18 @@ sf('prism-themes/themes/prism-coldark-cold.css')
 const placeholderCSS = `/* ${__('Your custom CSS here')} */`
 
 const AccountStylesEditor = (props) => {
-  const { accountStyles = '' } = props
-  const [code, setCode] = useState(accountStyles)
-  const [preview, setPreview] = useState(accountStyles)
-
-  // This is required so that props updates propagate to
-  // the component's internal state.
-  useEffect(function updateInitialState () {
-    setCode(accountStyles || placeholderCSS)
-    setPreview(accountStyles)
-  }, [accountStyles])
-
-  function handleSubmit (styles) {
-    props.onUpdate(
-      { accountId: props.accountId, accountStyles: styles },
-      __('Successfully updated styles for account %s', props.accountName),
-      __("An error occured updating the account's styles.")
-    )
-  }
-
-  function handlePreview (styles) {
-    props.onUpdate(
-      { accountId: props.accountId, accountStyles: styles, dryRun: true },
-      null,
-      __('Could not validate your styles. Check the documentation for limitations around external URLs and other areas.')
-    )
-      .then(function (success) {
-        if (!success) {
-          return
-        }
-        setPreview(styles)
-      })
-  }
+  const { accountStyles = '', onUpdate, accountId } = props
+  const [refresh, setRefresh] = useState(0)
 
   return (
     <div class='bg-black-05 flex-auto'>
       <Collapsible
         header={(props) => {
-          const { isCollapsed, handleToggle } = props
+          const { isCollapsed } = props
+          function handleToggle () {
+            props.handleToggle()
+            setRefresh(refresh + 1)
+          }
           return (
             <div
               class='pa3 flex justify-between pointer'
@@ -83,6 +57,30 @@ const AccountStylesEditor = (props) => {
           )
         }}
         body={(props) => {
+          function handleSubmit (styles) {
+            onUpdate(
+              { accountId: accountId, accountStyles: styles },
+              __('Successfully updated styles for account %s', props.accountName),
+              __("An error occured updating the account's styles.")
+            )
+          }
+
+          function handlePreview (styles) {
+            onUpdate(
+              { accountId: accountId, accountStyles: styles, dryRun: true },
+              null,
+              __('Could not validate your styles. Check the documentation for limitations around external URLs and other areas.')
+            )
+              .then(function (success) {
+                if (!success) {
+                  return
+                }
+                setPreview(styles)
+              })
+          }
+          const [code, setCode] = useState(accountStyles || placeholderCSS)
+          const [preview, setPreview] = useState(accountStyles)
+
           const iframe1 = useRef(null)
           const iframe2 = useRef(null)
           useEffect(function renderIframedPreview () {
@@ -105,7 +103,7 @@ const AccountStylesEditor = (props) => {
                 }, 7)
               }
             }
-          }, [preview])
+          }, [preview, refresh])
           return (
             <div class='mw6 center ph3 mt3 mb4'>
               <Paragraph class='ma0 mb3'>

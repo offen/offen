@@ -12,6 +12,10 @@ body {
   padding: 0;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 .banner__root {
   background-color: #fffdf4;
   border: 1px solid #8a8a8a;
@@ -47,6 +51,7 @@ body {
   -webkit-box-pack: center;
   -ms-flex-pack: center;
   justify-content: center;
+  margin: 0 -0.5em;
 }
 
 .buttons__button {
@@ -61,16 +66,9 @@ body {
   -webkit-transition: background-color .15s ease-out;
   transition: background-color .15s ease-out;
   width: 50%;
+  margin: 0 0.5em;
 }
 
 .buttons__button:hover {
   background-color: #c4c4c4;
-}
-
-.buttons__button--first {
-  margin-right: 0.25em;
-}
-
-.buttons__button--last {
-  margin-left: 0.25em;
 }

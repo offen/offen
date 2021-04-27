@@ -15,8 +15,9 @@ exports.bannerView = function (props) {
       <link rel="stylesheet" href="/fonts.css" onload=${props.onload}>
       <style>
         ${styles}
+        ${props.previewStyles || null}
       </style>
-        ${props.consentGiven ? followupScreen(props) : initialScreen(props)}
+      ${props.consentGiven ? followupScreen(props) : initialScreen(props)}
       ${props.previewSelector
         ? html`
           <script>
@@ -33,13 +34,6 @@ exports.bannerView = function (props) {
         `
         : null
       }
-      ${props.previewStyles
-        ? html`
-          <style>
-            ${props.previewStyles}
-          </style>
-        `
-        : null}
     </div>
   `
 }
