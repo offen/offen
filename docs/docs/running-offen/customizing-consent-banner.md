@@ -173,10 +173,10 @@ Markup for each state is defined in the [`consent-banner` package][banner-source
     </a>
   </p>
   <div class="banner__buttons">
-    <button class="buttons__button banner__button--first">
+    <button class="buttons__button">
       I allow
     </button>
-    <button class="buttons__button banner__button--last">
+    <button class="buttons__button">
       I don't allow
     </button>
   </div>

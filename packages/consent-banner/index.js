@@ -72,10 +72,10 @@ function initialScreen (props) {
       </a>
     </p>
     <div class="banner__buttons">
-      <button class="buttons__button buttons__button--first" onclick=${props.handleAllow}>
+      <button class="buttons__button" onclick=${props.handleAllow}>
         ${__('I allow')}
       </button>
-      <button class="buttons__button buttons__button--last" onclick=${props.handleDeny}>
+      <button class="buttons__button" onclick=${props.handleDeny}>
         ${__("I don't allow")}
       </button>
     </div>
