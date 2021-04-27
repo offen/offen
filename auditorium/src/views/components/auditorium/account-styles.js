@@ -13,6 +13,7 @@ const { highlight, languages } = require('prismjs/components/prism-core')
 const consentBanner = require('offen/consent-banner')
 
 const SubmitButton = require('./../_shared/submit-button')
+const SubmitButtonLight = require('./../_shared/submit-button-light')
 const Paragraph = require('./../_shared/paragraph')
 const Collapsible = require('./../_shared/collapsible')
 
@@ -107,9 +108,15 @@ const AccountStylesEditor = (props) => {
           return (
             <div class='mw6 center ph3 mt3 mb4'>
               <Paragraph class='ma0 mb3'>
-                {__('Apply custom styling to the consent banner for this account. Refer to the <a class="%s" href="%s" target="_blank" rel="noopener">documentation</a> for an in-depth guide on how to do this.', 'link"', 'https://docs.offen.dev')}
+                {__('Customise the styling of the consent banners for this account. Basic CSS is allowed, except for external URLs, injected content or transparencies.')}
               </Paragraph>
-              <div class='tc bg-white pa3'>
+              <Paragraph class='ma0 mb4'>
+                {__('<a class="%s" href="%s" target="_blank" rel="noopener">Read the Docs – Customize appearence</a>', 'b link dim dark-green', 'https://docs.offen.dev')}
+              </Paragraph>
+              <div class='bg-white pa3'>
+                <Paragraph class='ma0 mb3'>
+                  {__('Preview')}
+                </Paragraph>
                 <iframe
                   class='mb3'
                   id='account-styles-preview-1'
@@ -119,6 +126,7 @@ const AccountStylesEditor = (props) => {
                   ref={iframe1}
                 />
                 <iframe
+                  class='mb3'
                   id='account-styles-preview-2'
                   frameborder='0'
                   scrolling='no'
@@ -140,19 +148,24 @@ const AccountStylesEditor = (props) => {
                   }}
                 />
               </div>
-              <div class='link dim'>
-                <SubmitButton
+              <div class='link dim mb3'>
+                <SubmitButtonLight
                   onclick={() => handlePreview(code)}
                 >
-                  {__('Render preview')}
-                </SubmitButton>
+                  {__('Update preview')}
+                </SubmitButtonLight>
               </div>
-              <div class='link dim'>
-                <SubmitButton
-                  onclick={() => handleSubmit(code)}
-                >
-                  {__('Update Styles')}
-                </SubmitButton>
+              <div class="bt b--black-10">
+                <Paragraph class='ma0 mv3'>
+                  {__('Apply your custom styles to the consent banners for this account. Changes will be visible after a chache update (up to 5 min) and a browser refresh.')}
+                </Paragraph>
+                <div class='link dim'>
+                  <SubmitButton
+                    onclick={() => handleSubmit(code)}
+                  >
+                    {__('Apply Styles')}
+                  </SubmitButton>
+                </div>
               </div>
             </div>
           )
