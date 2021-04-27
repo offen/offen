@@ -108,13 +108,13 @@ const AccountStylesEditor = (props) => {
           return (
             <div class='mw6 center ph3 mt3 mb4'>
               <Paragraph class='ma0 mb3'>
-                {__('Customise the styling of the consent banners for this account. Basic CSS is allowed, except for external URLs, injected content or transparencies.')}
+                {__('Customise the styling of the consent banners for this account. Basic CSS is allowed, except for things like external URLs, injected content or transparencies.')}
               </Paragraph>
               <Paragraph class='ma0 mb4'>
                 {__('<a class="%s" href="%s" target="_blank" rel="noopener">Read the Docs – Customize appearence</a>', 'b link dim dark-green', 'https://docs.offen.dev')}
               </Paragraph>
-              <div class='bg-white pa3'>
-                <Paragraph class='ma0 mb3'>
+              <div class='bg-white br1 br--top pa3'>
+                <Paragraph class='gray ma0 mb3'>
                   {__('Preview')}
                 </Paragraph>
                 <iframe
@@ -134,7 +134,7 @@ const AccountStylesEditor = (props) => {
                   ref={iframe2}
                 />
               </div>
-              <div class='mb3'>
+              <div class='br1 br--bottom'>
                 <Editor
                   value={code}
                   onValueChange={(code) => setCode(code)}
@@ -142,28 +142,28 @@ const AccountStylesEditor = (props) => {
                   padding={10}
                   style={{
                     fontFamily: '"Fira code", "Fira Mono", monospace',
-                    fontSize: 12,
-                    backgroundColor: '#e3eaf2',
+                    fontSize: 14,
+                    backgroundColor: '#e5e2d3',
                     minHeight: '200px'
                   }}
                 />
               </div>
-              <div class='link dim mb3'>
+              <div class='link dim mv3'>
                 <SubmitButtonLight
                   onclick={() => handlePreview(code)}
                 >
                   {__('Update preview')}
                 </SubmitButtonLight>
               </div>
-              <div class="bt b--black-10">
+              <div class='bt b--black-10'>
                 <Paragraph class='ma0 mv3'>
-                  {__('Apply your custom styles to the consent banners for this account. Changes will be visible after a chache update (up to 5 min) and a browser refresh.')}
+                  {__('Apply your custom styles to the consent banners for this account. Changes will be visible after a chache update (up to 5 minutes) and a browser refresh.')}
                 </Paragraph>
                 <div class='link dim'>
                   <SubmitButton
                     onclick={() => handleSubmit(code)}
                   >
-                    {__('Apply Styles')}
+                    {__('Apply styles')}
                   </SubmitButton>
                 </div>
               </div>
