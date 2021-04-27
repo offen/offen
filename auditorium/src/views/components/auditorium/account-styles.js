@@ -13,7 +13,6 @@ const { highlight, languages } = require('prismjs/components/prism-core')
 const consentBanner = require('offen/consent-banner')
 
 const SubmitButton = require('./../_shared/submit-button')
-const SubmitButtonLight = require('./../_shared/submit-button-light')
 const Paragraph = require('./../_shared/paragraph')
 const Collapsible = require('./../_shared/collapsible')
 
@@ -23,7 +22,7 @@ sf('prism-themes/themes/prism-coldark-cold.css')
 const placeholderCSS = `/* ${__('Your custom CSS here')} */`
 
 const AccountStylesEditor = (props) => {
-  const { accountStyles = '', onUpdate, accountId } = props
+  const { accountStyles = '', onUpdate, accountId, accountName } = props
   const [refresh, setRefresh] = useState(0)
 
   return (
@@ -61,7 +60,7 @@ const AccountStylesEditor = (props) => {
           function handleSubmit (styles) {
             onUpdate(
               { accountId: accountId, accountStyles: styles },
-              __('Successfully updated styles for account %s', props.accountName),
+              __('Successfully updated styles for account %s', accountName),
               __("An error occured updating the account's styles.")
             )
           }
@@ -108,10 +107,10 @@ const AccountStylesEditor = (props) => {
           return (
             <div class='mw6 center ph3 mt3 mb4'>
               <Paragraph class='ma0 mb3'>
-                {__('Customise the styling of the consent banners for this account. Basic CSS is allowed, except for things like external URLs, injected content or transparencies.')}
+                {__('Customize the styling of the consent banners for this account. Most CSS is allowed, except for things like external URLs, injected content or transparencies.')}
               </Paragraph>
               <Paragraph class='ma0 mb4'>
-                {__('<a class="%s" href="%s" target="_blank" rel="noopener">Read the Docs – Customize appearence</a>', 'b link dim dark-green', 'https://docs.offen.dev')}
+                {__('<a class="%s" href="%s" target="_blank" rel="noopener">Read the Docs – Customize appearence</a>', 'b link dim dark-green', 'https://docs.offen.dev//running-offen/customizing-consent-banner/')}
               </Paragraph>
               <div class='bg-white br1 br--top pa3'>
                 <Paragraph class='gray ma0 mb3'>
@@ -149,15 +148,16 @@ const AccountStylesEditor = (props) => {
                 />
               </div>
               <div class='link dim mv3'>
-                <SubmitButtonLight
+                <SubmitButton
+                  light
                   onclick={() => handlePreview(code)}
                 >
                   {__('Update preview')}
-                </SubmitButtonLight>
+                </SubmitButton>
               </div>
               <div class='bt b--black-10'>
                 <Paragraph class='ma0 mv3'>
-                  {__('Apply your custom styles to the consent banners for this account. Changes will be visible after a chache update (up to 5 minutes) and a browser refresh.')}
+                  {__('Apply your custom styles to the consent banners for this account. Changes will be visible after a cache update (which can take up to 5 minutes) and a browser refresh.')}
                 </Paragraph>
                 <div class='link dim'>
                   <SubmitButton
