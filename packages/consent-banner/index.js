@@ -22,7 +22,7 @@ exports.bannerView = function (props) {
         ? html`
           <script>
             function adjustSelf () {
-              var height = document.querySelector('.banner__root').getBoundingClientRect().height + 'px';
+              var height = document.body.getBoundingClientRect().height + 'px';
               parent.document.querySelector("${props.previewSelector}").style.height = height;
             }
             window.addEventListener('resize', adjustSelf);
@@ -86,16 +86,14 @@ exports.hostStylesVisible = function (props) {
     right: 0;
     left: 0;
     margin: 0 auto;
-    box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.50);
     z-index: 2147483647;
-    width: 410px;
+    width: 426px;
   }
   @media all and (max-width: 414px) {
     ${props.selector} {
       width: 100%;
       border-left: none;
       border-right: none;
-      border-radius: 0;
     }
   }
 </style>

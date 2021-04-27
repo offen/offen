@@ -18,7 +18,7 @@ const (
 
 var (
 	allowedFontSizeRe      = regexp.MustCompile("^(1[2-9]|[2-9][0-9])px$")
-	blockedValuePatternsRe = regexp.MustCompile("(url|expression|javascript|calc|transform|-)")
+	blockedValuePatternsRe = regexp.MustCompile("(url|expression|javascript|calc|transform|transparent|-)")
 	allowedSelectorsRe     = regexp.MustCompile("\\.[a-z_\\-]+:?(hover|active|focus)?$")
 )
 

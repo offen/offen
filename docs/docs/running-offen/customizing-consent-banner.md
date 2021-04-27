@@ -106,6 +106,7 @@ In values, all of these tokens are not allowed:
 - `javascript`
 - `calc`
 - `transform`
+- `transparent`
 - `-` (i.e. no negative values are allowed for anything)
 
 
@@ -218,13 +219,18 @@ Markup for each state is defined in the [`consent-banner` package][banner-source
 The default stylesheet applied to the banner looks like this:
 
 ```
+/**
+ * Copyright 2020-2021 - Offen Authors <hioffen@posteo.de>
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 @import url('node_modules/normalize.css/normalize.css');
 
 body {
-  border-radius: 3px;
   line-height: 1.15;
   margin: 0;
-  padding: 0;
+  padding: 8px;
+  background-color: transparent;
 }
 
 * {
@@ -232,15 +238,22 @@ body {
 }
 
 .banner__root {
+  padding: 8px;
+  border-radius: 3px;
   background-color: #fffdf4;
   border: 1px solid #8a8a8a;
   font-family: roboto, sans-serif;
   padding: 1em;
+  box-shadow: 0px 0px 9px 0px rgba(0, 0, 0, 0.5);
 }
 
 @media all and (max-width: 389px) {
   body {
     font-size: .75em;
+    padding: 8px 0;
+  }
+  .banner__root {
+    border-radius: 0;
   }
 }
 
@@ -266,6 +279,7 @@ body {
   -webkit-box-pack: center;
   -ms-flex-pack: center;
   justify-content: center;
+  margin: 0 -0.5em;
 }
 
 .buttons__button {
@@ -280,18 +294,11 @@ body {
   -webkit-transition: background-color .15s ease-out;
   transition: background-color .15s ease-out;
   width: 50%;
+  margin: 0 0.5em;
 }
 
 .buttons__button:hover {
   background-color: #c4c4c4;
-}
-
-.buttons__button--first {
-  margin-right: 0.25em;
-}
-
-.buttons__button--last {
-  margin-left: 0.25em;
 }
 ```
 
