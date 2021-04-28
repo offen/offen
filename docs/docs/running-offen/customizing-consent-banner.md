@@ -70,6 +70,9 @@ Colors, shapes, and basic font specifications can be adapted to meet an existing
   background-color: #19A974;
   border-radius: 14px;
 }
+.buttons__button:hover {
+  background-color: #137752;
+}
 ```
 
 ### Serif theme
@@ -105,6 +108,10 @@ More complex customizations are also possible. Changes to font size and spacing 
   background-color: #fff;
   border-radius: 0;
   border: 2px dotted #000;
+}
+.buttons__button:hover {
+  background-color: #fff;
+  border: 2px solid #000;
 }
 ```
 
