@@ -272,6 +272,7 @@ body {
 }
 
 .banner__root {
+  color: #333;
   padding: 8px;
   border-radius: 3px;
   background-color: #fffdf4;
