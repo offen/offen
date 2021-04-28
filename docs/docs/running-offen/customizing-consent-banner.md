@@ -15,7 +15,7 @@ SPDX-License-Identifier: Apache-2.0
 # Customizing the consent banner
 {: .no_toc }
 
-Offen lets you customize the appearance of the consent banner by appending custom CSS that written by yourself. To edit the CSS, navigate to the "Customize appearance" tab in the Auditorium. Appearance is customized at account level, so you can add different styles for different accounts. It's currently not possible to share the appearance of multiple accounts using other means than manually copy / pasting the contents.
+Offen lets you customize the appearance of the consent banner by appending custom CSS provided by yourself. To edit the CSS, navigate to the "Customize appearance" tab in the Auditorium. Appearance is customized at account level, so you can add different styles for different accounts. It's currently not possible to share the appearance of multiple accounts using other means than manually copy / pasting the contents. Only a selected subset of CSS is allowed to prevent XSS or injecting tracking into the consent banner.
 
 ---
 
