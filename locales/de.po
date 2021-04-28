@@ -1478,9 +1478,8 @@ msgid "Select"
 msgstr "Auswählen"
 
 #: 
-#, fuzzy
 msgid "There was an error inviting the user. Could it be that the user already has access?"
-msgstr "Bei der Einladung ist ein Fehler aufgetreten, bitte versuche es noch einmal."
+msgstr "Bei der Einladung ist ein Fehler aufgetreten. Könnte es sein, dass bereits Zugriff besteht?"
 
 #. src/views/components/auditorium/account-styles.js:22
 #: 
@@ -1493,9 +1492,8 @@ msgid "Customize appearance"
 msgstr "Aussehen anpassen"
 
 #: 
-#, fuzzy
 msgid "Toggle display of custom styling area"
-msgstr "Anzeige Datenbank Einstellungen umschalten"
+msgstr "Umschalten der Anzeige Eigenes Styling"
 
 #. src/views/components/auditorium/account-styles.js:63
 #: 
@@ -1503,9 +1501,8 @@ msgid "Successfully updated styles for account %s"
 msgstr "Styles für den Account %s wurden erfolgreich aktualisiert."
 
 #: 
-#, fuzzy
 msgid "An error occured updating the account's styles."
-msgstr "Beim Erstellen des Accounts ist ein Fehler aufgetreten, bitte versuche es noch einmal."
+msgstr "Beim Aktualisieren der Styles dieses Accounts ist ein Fehler aufgetreten."
 
 #. src/views/components/auditorium/account-styles.js:72
 #: 
@@ -1523,9 +1520,8 @@ msgid "<a class=\"%s\" href=\"%s\" target=\"_blank\" rel=\"noopener\">Read the D
 msgstr "<a class=\"%s\" href=\"%s\" target=\"_blank\" rel=\"noopener\">Read the Docs - Customizing the consent banner</a>"
 
 #: 
-#, fuzzy
 msgid "Preview"
-msgstr "Seitenaufrufe"
+msgstr "Preview"
 
 #. src/views/components/auditorium/account-styles.js:155
 #: 
@@ -1543,7 +1539,6 @@ msgid "Apply styles"
 msgstr "Styles anwenden"
 
 #: 
-#, fuzzy
 msgid "To manage your usage data <a class=\"%s\"target=\"_blank\" rel=\"noopener\" href=\"%s\">open the Auditorium.</a>"
-msgstr "Um deine Daten zu sehen, <a class=\"b normal link dim dark-gray\" target=\"_blank\" rel=\"noopener\" href=\"%s\">öffne das Auditorium.</a>"
+msgstr "Um deine Daten zu sehen, <a class=\"%s\" target=\"_blank\" rel=\"noopener\" href=\"%s\">öffne das Auditorium.</a>"
 
