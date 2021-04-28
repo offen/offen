@@ -26,51 +26,85 @@ Offen lets you customize the appearance of the consent banner by appending custo
 
 ## Examples
 
-You can use any of these examples as a template for your changes or combine them.
+### Simple dark theme
 
-### Changing colors
-{: .no_toc }
+A simple style change to match the banner to a dark themed website.
+
+![Simple dark theme](/assets/images/docs-simple-dark-theme.jpg)
 
 ```
-.banner__root, .buttons__button {
-  color: black;
-  border: 1px solid #9eebcf;
+.banner__root {
+  box-shadow: none;
+  border: none;
+  color: #fff;
+  background-color: #333;
 }
-
 .buttons__button {
-  background-color: transparent;
+  color: #333;
+  background-color: #fff;
+}
+```
+
+### Peppermint theme
+
+Colors, shapes, and basic font specifications can be adapted to meet an existing design.
+
+![Peppermint theme](/assets/images/docs-peppermint-theme.jpg)
+
+```
+.banner__root {
+  color: #137752;
+  background-color: #E8FDF5;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 0 4px 0 rgb(0 0 0 / 50%);
+}
+.paragraph__anchor {
+  font-weight: normal;
+  font-style: italic;
+  color: #001B44;
+}
+.buttons__button {
   font-weight: bold;
-}
-
-.buttons__button:hover {
-  background-color: #9eebcf;
-}
-
-.banner__root {
-  background-color: #e8fdf5;
+  color: #E8FDF5;
+  background-color: #19A974;
+  border-radius: 14px;
 }
 ```
 
-### Changing text styles
-{: .no_toc }
+### Serif theme
+
+More complex customizations are also possible. Changes to font size and spacing should be checked for readability with different media queries.
+
+![Serif theme](/assets/images/docs-serif-theme.jpg)
 
 ```
 .banner__root {
-  font-family: georgia, times, serif;
+  font-family: "Times New Roman", Times, serif;
   font-size: 18px;
+  color: #000;
+  background-color: #fff;
+  border-radius: 0;
+  border: 0.15em solid #555;
+  box-shadow: 0.2em 0.2em 0 0 #555;
 }
-```
-
-### Changing spacing
-{: .no_toc }
-
-```
-.banner__root {
-  padding: 3em;
+.banner__paragraph {
+  margin-bottom: 1.5em;
 }
-
-.banner__buttons {
-  margin-top: 3em;
+.banner__paragraph--first {
+  margin: 0;
+}
+.paragraph__anchor {
+  font-weight: normal;
+  text-decoration: underline;
+}
+.buttons__button {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #000;
+  background-color: #fff;
+  border-radius: 0;
+  border: 2px dotted #000;
 }
 ```
 
