@@ -176,3 +176,36 @@
   <link rel="preload" href="/fonts/roboto-v20-latin-regular.woff2" as="font" crossorigin="anonymous">
   <link rel="preload" href="/fonts/roboto-v20-latin-700.woff2" as="font" crossorigin="anonymous">
 {{ end }}
+
+{{ define "vault" }}
+  <!DOCTYPE html>
+  <html>
+      <head>
+          <title>Offen vault</title>
+          <meta charset="utf-8">
+      </head>
+      <body>
+          <div id="host"></div>
+          <script src="{{ rev "/vault/vendor.js" }}"></script>
+          <script src="{{ rev "/vault/index.js" }}"></script>
+          {{ with .accountStyles }}
+            <style>
+              {{ . }}
+            </style>
+          {{ end }}
+      </body>
+  </html>
+{{ end }}
+
+{{ define "error" }}
+  <!DOCTYPE html>
+  <html>
+      <head>
+          <title>Error!</title>
+          <meta charset="utf-8">
+      </head>
+      <body>
+        <h1>An error occured: {{ .message }}</h1>
+      </body>
+  </html>
+{{ end }}

@@ -52,6 +52,7 @@ register('SHARE_ACCOUNT', middleware.sameOrigin, callHandler(handler.handleShare
 register('JOIN', middleware.sameOrigin, callHandler(handler.handleJoin))
 register('CREATE_ACCOUNT', middleware.sameOrigin, callHandler(handler.handleCreateAccount))
 register('RETIRE_ACCOUNT', middleware.sameOrigin, callHandler(handler.handleRetireAccount))
+register('UPDATE_ACCOUNT_STYLES', middleware.sameOrigin, callHandler(handler.handleUpdateAccountStyles))
 register('SETUP_STATUS', middleware.sameOrigin, callHandler(handler.handleSetupStatus))
 register('SETUP', middleware.sameOrigin, callHandler(handler.handleSetup))
 register('PURGE_AGGREGATES', middleware.sameOrigin, callHandler(handler.handlePurgeAggregates))

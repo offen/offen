@@ -294,6 +294,17 @@ function handleRetireAccountWith (api) {
   })
 }
 
+exports.handleUpdateAccountStyles = handleUpdateAccountStylesWith(api)
+exports.handleUpdateAccountStylesWith = handleUpdateAccountStylesWith
+
+function handleUpdateAccountStylesWith (api) {
+  return proxyThunk(function (payload) {
+    return api.updateAccountStyles(
+      payload.accountId, payload.accountStyles, payload.dryRun
+    )
+  })
+}
+
 exports.handleSetup = handleSetupWith(api)
 exports.handleSetupWith = handleSetupWith
 

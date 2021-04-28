@@ -12,8 +12,75 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/offen/offen/server/css"
 	"github.com/offen/offen/server/persistence"
 )
+
+type accountStylesRequest struct {
+	AccountStyles string `json:"accountStyles"`
+}
+
+func (rt *router) putAccountStyles(c *gin.Context) {
+	var req accountStylesRequest
+	if err := c.BindJSON(&req); err != nil {
+		newJSONError(
+			fmt.Errorf("router: error decoding response body: %w", err),
+			http.StatusBadRequest,
+		).Pipe(c)
+		return
+	}
+
+	accountUser, ok := c.Value(contextKeyAuth).(persistence.LoginResult)
+	if !ok {
+		newJSONError(
+			errors.New("router: could not find account user object in request context"),
+			http.StatusBadRequest,
+		).Pipe(c)
+		return
+	}
+
+	accountID := c.Param("accountID")
+	if accountID != "" {
+		if !accountUser.CanAccessAccount(accountID) {
+			newJSONError(
+				fmt.Errorf("router: user is not allowed to access account %s", accountID),
+				http.StatusUnauthorized,
+			).Pipe(c)
+			return
+		}
+	}
+
+	if l := <-rt.getLimiter().ExponentialThrottle(time.Second, fmt.Sprintf("putAccountStyles-%s", accountUser.AccountUserID)); l.Error != nil {
+		newJSONError(
+			fmt.Errorf("router: error rate limiting request: %w", l.Error),
+			http.StatusTooManyRequests,
+		).Pipe(c)
+		return
+	}
+
+	if err := css.ValidateCSS(req.AccountStyles); err != nil {
+		newJSONError(
+			fmt.Errorf("router: error validating given styles: %w", err),
+			http.StatusBadRequest,
+		).Pipe(c)
+		return
+	}
+
+	if c.Request.URL.Query().Get("dryRun") != "" {
+		c.Status(http.StatusNoContent)
+		return
+	}
+
+	if err := rt.db.UpdateAccountStyles(accountID, req.AccountStyles); err != nil {
+		newJSONError(
+			fmt.Errorf("router: error updating styles for account %s: %w", accountID, err),
+			http.StatusInternalServerError,
+		).Pipe(c)
+		return
+	}
+
+	c.Status(http.StatusNoContent)
+}
 
 type shareAccountRequest struct {
 	InviteeEmailAddress  string `json:"invitee"`

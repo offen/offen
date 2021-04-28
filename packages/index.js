@@ -5,3 +5,4 @@
 
 exports.vault = require('./vault')
 exports.handleFetchResponse = require('./fetch-response')
+exports.consentBanner = require('./consent-banner')

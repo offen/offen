@@ -116,7 +116,7 @@ func cmdDemo(subcommand string, flags []string) {
 
 	a.logger.Info("Offen is generating some random usage data for your demo, this might take a little while.")
 	rand.Seed(time.Now().UnixNano())
-	account, _ := db.GetAccount(accountID.String(), false, "")
+	account, _ := db.GetAccount(accountID.String(), false, false, "")
 
 	users := *numUsers
 	if users == -1 {

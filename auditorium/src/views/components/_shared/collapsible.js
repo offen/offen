@@ -19,7 +19,7 @@ const Collapsible = (props) => {
   return (
     <Fragment>
       {headerContent}
-      {isCollapsed ? null : body({})}
+      {isCollapsed ? null : body({ isCollapsed })}
     </Fragment>
   )
 }

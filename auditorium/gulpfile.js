@@ -47,6 +47,9 @@ function createLocalizedBundle (locale) {
 function makeScriptTask (dest, locale) {
   return function () {
     var transforms = JSON.parse(JSON.stringify(pkg.browserify.transform))
+    // we are setting this at process level so that it propagates to
+    // dependencies that also require setting it
+    process.env.LOCALE = locale
     var b = browserify({
       entries: './index.js',
       // See: https://github.com/nikku/karma-browserify/issues/130#issuecomment-120036815
@@ -58,7 +61,7 @@ function makeScriptTask (dest, locale) {
       },
       transform: transforms.map(function (transform) {
         if (transform === '@offen/l10nify' || (Array.isArray(transform) && transform[0] === '@offen/l10nify')) {
-          return ['@offen/l10nify', { locale: locale }]
+          return ['@offen/l10nify']
         }
         if (transform === 'envify' || (Array.isArray(transform) && transform[0] === 'envify')) {
           return ['envify', { LOCALE: locale }]

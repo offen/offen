@@ -53,6 +53,24 @@ WORKDIR /code/vault
 RUN cp -a /code/deps/node_modules /code/vault/
 RUN npm run --silent extract-strings > vault.po
 
+FROM node:14-alpine as packages
+RUN apk add git
+RUN apk add --no-cache --virtual .gyp python make g++
+
+COPY ./packages/package.json ./packages/package-lock.json /code/deps/
+COPY ./packages /code/packages
+WORKDIR /code/deps
+ENV ADBLOCK true
+ENV DISABLE_OPENCOLLECTIVE true
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
+RUN npm ci
+COPY ./packages /code/packages
+COPY ./banner.txt /code/banner.txt
+COPY ./locales /code/packages/locales
+WORKDIR /code/packages
+RUN cp -a /code/deps/node_modules /code/packages/
+RUN npm run --silent extract-strings > packages.po
+
 FROM golang:1.16
 
 RUN apt-get update \
@@ -69,5 +87,6 @@ COPY ./locales /root/locales
 COPY --from=script /code/script/script.po /root/script.po
 COPY --from=vault /code/vault/vault.po /root/vault.po
 COPY --from=auditorium /code/auditorium/auditorium.po /root/auditorium.po
+COPY --from=packages /code/packages/packages.po /root/packages.po
 
 RUN ./merge_messages.sh

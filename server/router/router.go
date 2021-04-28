@@ -34,6 +34,7 @@ type router struct {
 	config       *config.Config
 	sanitizer    *bluemonday.Policy
 	limiter      ratelimiter.Throttler
+	cache        *cache.Cache
 }
 
 func (rt *router) getLimiter() ratelimiter.Throttler {
@@ -45,6 +46,13 @@ func (rt *router) getLimiter() ratelimiter.Throttler {
 		}
 	}
 	return rt.limiter
+}
+
+func (rt *router) getCache() *cache.Cache {
+	if rt.cache == nil {
+		rt.cache = cache.New(cache.NoExpiration, time.Minute)
+	}
+	return rt.cache
 }
 
 func (rt *router) logError(err error, message string) {
@@ -193,19 +201,21 @@ func New(opts ...Config) http.Handler {
 	}
 
 	app := gin.New()
+	app.SetHTMLTemplate(rt.template)
 	app.Use(
 		gin.Recovery(),
 		location.Default(),
 		secureContextMiddleware(contextKeySecureContext, rt.config.App.Development),
 	)
 
-	root := gin.New()
-	root.SetHTMLTemplate(rt.template)
-	root.GET("/*any", etag, csp, rt.getIndex)
-	app.GET("/", gin.WrapH(root))
-
 	app.Any("/healthz", noStore, rt.getHealth)
 	app.GET("/versionz", noStore, rt.getVersion)
+
+	app.GET("/vault", etag, csp, rt.getVault)
+	if rt.config.App.DemoAccount != "" {
+		app.GET("/intro", etag, csp, rt.getIntro)
+	}
+
 	{
 		api := app.Group("/api")
 		api.Use(noStore)
@@ -214,6 +224,7 @@ func New(opts ...Config) http.Handler {
 
 		api.GET("/accounts/:accountID", accountAuth, rt.getAccount)
 		api.DELETE("/accounts/:accountID", accountAuth, rt.deleteAccount)
+		api.PUT("/accounts/:accountID/account-styles", accountAuth, rt.putAccountStyles)
 		api.POST("/accounts", accountAuth, rt.postAccount)
 
 		api.POST("/purge", userCookie, rt.purgeEvents)
@@ -236,8 +247,11 @@ func New(opts ...Config) http.Handler {
 		api.POST("/events", optin, userCookie, rt.postEvents)
 	}
 
-	fileServer := http.FileServer(rt.fs)
-	app.Use(staticMiddleware(fileServer, root))
+	root := gin.New()
+	root.SetHTMLTemplate(rt.template)
+	root.GET("/*any", etag, csp, rt.getIndex)
+
+	app.Use(staticMiddleware(http.FileServer(rt.fs), root))
 
 	if rt.config.Server.ReverseProxy {
 		return app

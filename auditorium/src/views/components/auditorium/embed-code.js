@@ -56,7 +56,7 @@ const EmbedCode = (props) => {
       <Paragraph class='ma0 mb3'>
         {__('In case you are serving multiple domains from your Offen instance, please double check that the domain in this snippet matches the target account.')}
       </Paragraph>
-      <div class='w-100 ba br1 b--gray ph2 pv2 white bg-dark-green'>
+      <div class='w-100 br1 ph2 pv2 bg-black-10'>
         <code
           class='ma0 lh-solid word-wrap'
           dangerouslySetInnerHTML={{

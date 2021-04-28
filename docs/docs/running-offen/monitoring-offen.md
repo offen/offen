@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Monitoring an Offen instance
-nav_order: 8
+nav_order: 9
 description: "How to set up monitoring for your Offen instance and what is being logged"
 permalink: /running-offen/monitoring-offen/
 parent: Running Offen

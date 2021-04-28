@@ -4,6 +4,7 @@ go 1.16
 
 require (
 	github.com/NYTimes/gziphandler v1.1.1
+	github.com/aymerick/douceur v0.2.0 // indirect
 	github.com/cenkalti/backoff/v4 v4.1.0
 	github.com/felixge/httpsnoop v1.0.1
 	github.com/gin-contrib/location v0.0.2

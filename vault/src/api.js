@@ -329,6 +329,27 @@ function retireAccountWith (deleteUrl) {
   }
 }
 
+exports.updateAccountStyles = updateAccountStylesWith(window.location.origin + '/api/accounts/:accountId/account-styles')
+exports.updateAccountStylesWith = updateAccountStylesWith
+
+function updateAccountStylesWith (updateUrl) {
+  return function (accountId, accountStyles, dryRun) {
+    var url = new window.URL(updateUrl.replace(/:accountId/, accountId))
+    if (dryRun) {
+      url.searchParams.set('dryRun', '1')
+    }
+    return window
+      .fetch(url, {
+        method: 'PUT',
+        credentials: 'include',
+        body: JSON.stringify({
+          accountStyles: accountStyles
+        })
+      })
+      .then(handleFetchResponse)
+  }
+}
+
 exports.setup = setupWith(window.location.origin + '/api/setup')
 exports.setupWith = setupWith
 
