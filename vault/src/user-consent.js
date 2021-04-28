@@ -51,7 +51,7 @@ function askForConsent (styleHost) {
     function adjustHostStyles (styles, height) {
       styleHost({
         attributes: {
-          height: height || document.body.clientHeight
+          height: document.body.clientHeight
         },
         styles: styles
       })
@@ -68,16 +68,14 @@ function askForConsent (styleHost) {
       if (host.firstChild) {
         var current = host.firstChild
         host.insertBefore(banner, current)
-        adjustHostStyles(
-          consentBanner.hostStylesVisible({ selector: styleHost.selector }).innerHTML,
-          banner.getBoundingClientRect().height
-        )
         host.removeChild(current)
+        adjustHostStyles(
+          consentBanner.hostStylesVisible({ selector: styleHost.selector }).innerHTML
+        )
       } else {
         host.appendChild(banner)
         adjustHostStyles(
-          consentBanner.hostStylesVisible({ selector: styleHost.selector }).innerHTML,
-          banner.getBoundingClientRect().height
+          consentBanner.hostStylesVisible({ selector: styleHost.selector }).innerHTML
         )
       }
     }
