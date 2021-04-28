@@ -30,7 +30,7 @@ Offen lets you customize the appearance of the consent banner by appending custo
 
 A simple style change to match the banner to a dark themed website.
 
-![Simple dark theme](/assets/images/docs-simple-dark-theme.jpg)
+![Simple dark theme](../../assets/images/docs-simple-dark-theme.jpg)
 
 ```
 .banner__root {
@@ -49,7 +49,7 @@ A simple style change to match the banner to a dark themed website.
 
 Colors, shapes, and basic font specifications can be adapted to meet an existing design.
 
-![Peppermint theme](/assets/images/docs-peppermint-theme.jpg)
+![Peppermint theme](../../assets/images/docs-peppermint-theme.jpg)
 
 ```
 .banner__root {
@@ -76,7 +76,7 @@ Colors, shapes, and basic font specifications can be adapted to meet an existing
 
 More complex customizations are also possible. Changes to font size and spacing should be checked for readability with different media queries.
 
-![Serif theme](/assets/images/docs-serif-theme.jpg)
+![Serif theme](../../assets/images/docs-serif-theme.jpg)
 
 ```
 .banner__root {
