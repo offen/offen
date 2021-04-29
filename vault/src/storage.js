@@ -181,8 +181,10 @@ function Storage (getDatabase, fallbackStore) {
 
   this.getUserSecret = function (accountId) {
     var db = getDatabase(accountId)
-    return db.keys
-      .get({ type: TYPE_USER_SECRET })
+    return throwWhenSafari(function () {
+      return db.keys
+        .get({ type: TYPE_USER_SECRET })
+    }, dexie.OpenFailedError)
       .then(function (result) {
         if (result) {
           return result.value
@@ -209,9 +211,11 @@ function Storage (getDatabase, fallbackStore) {
 
   this.putUserSecret = function (accountId, userSecret) {
     var db = getDatabase(accountId)
-    return db.keys
-      .where({ type: TYPE_USER_SECRET })
-      .first()
+    return throwWhenSafari(function () {
+      return db.keys
+        .where({ type: TYPE_USER_SECRET })
+        .first()
+    }, dexie.OpenFailedError)
       .then(function (existingSecret) {
         if (existingSecret) {
           return
@@ -324,4 +328,24 @@ function Storage (getDatabase, fallbackStore) {
         return fallbackStore.encryptedSecrets[accountId] || []
       })
   }
+}
+
+var isSafari = /(iPhone|iPad)/.test(window.navigator.userAgent) || /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === '[object SafariRemoteNotification]' })(!window['safari'] || (typeof safari !== 'undefined' && window['safari'].pushNotification)) // eslint-disable-line
+
+// I don't know who needs to hear this, but Apple is not your friend when
+// it comes to privacy. Instead it's busy peddling snake oil and selling you
+// shiny and overpriced stuff.
+//
+// This method is needed so we can force Safari to store data in cookies instead
+// of IndexedDB. For IndexedDB (which would allow us to handle data in a safe and
+// privacy friendly way), it provides an interface, but will not persist data,
+// thus disallowing users to manage their data. Instead we fall back to cookie
+// storage forcefully by wrapping certain methods in this helper.
+function throwWhenSafari (thunk, err) {
+  if (isSafari) {
+    return function () {
+      return Promise.reject(err)
+    }
+  }
+  return thunk()
 }
