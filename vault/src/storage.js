@@ -330,7 +330,7 @@ function Storage (getDatabase, fallbackStore) {
   }
 }
 
-var isSafari = /(iPhone|iPad)/.test(window.navigator.userAgent) || /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === '[object SafariRemoteNotification]' })(!window['safari'] || (typeof safari !== 'undefined' && window['safari'].pushNotification)) // eslint-disable-line
+var isSafari = /(iPhone|iPad)/.test(window.navigator.userAgent) || typeof window.safari !== 'undefined'
 
 // I don't know who needs to hear this, but Apple is not your friend when
 // it comes to privacy. Instead it's busy peddling snake oil and selling you
