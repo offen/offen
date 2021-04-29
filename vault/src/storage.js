@@ -184,7 +184,7 @@ function Storage (getDatabase, fallbackStore) {
     return throwWhenSafari(function () {
       return db.keys
         .get({ type: TYPE_USER_SECRET })
-    }, dexie.OpenFailedError)
+    }, new dexie.OpenFailedError('Forcefully skipping IndexedDB.'))
       .then(function (result) {
         if (result) {
           return result.value
@@ -215,7 +215,7 @@ function Storage (getDatabase, fallbackStore) {
       return db.keys
         .where({ type: TYPE_USER_SECRET })
         .first()
-    }, dexie.OpenFailedError)
+    }, new dexie.OpenFailedError('Forcefully skipping IndexedDB.'))
       .then(function (existingSecret) {
         if (existingSecret) {
           return
