@@ -55,7 +55,6 @@ register('RETIRE_ACCOUNT', middleware.sameOrigin, callHandler(handler.handleReti
 register('UPDATE_ACCOUNT_STYLES', middleware.sameOrigin, callHandler(handler.handleUpdateAccountStyles))
 register('SETUP_STATUS', middleware.sameOrigin, callHandler(handler.handleSetupStatus))
 register('SETUP', middleware.sameOrigin, callHandler(handler.handleSetup))
-register('PURGE_AGGREGATES', middleware.sameOrigin, callHandler(handler.handlePurgeAggregates))
 register('ONBOARDING_STATUS', middleware.sameOrigin, callHandler(handler.handleOnboardingStatus))
 register('COMPLETE_ONBOARDING', middleware.sameOrigin, callHandler(handler.handleSetOnboardingCompleted))
 

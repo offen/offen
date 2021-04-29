@@ -22,7 +22,6 @@ const URLTables = require('./components/auditorium/url-tables')
 const EmbedCode = require('./components/auditorium/embed-code')
 const Share = require('./components/auditorium/share')
 const GoSettings = require('./components/auditorium/go-settings')
-const DatabaseSettings = require('./components/auditorium/database-settings')
 const LoadingOverlay = require('./components/auditorium/loading-overlay')
 const AccountPicker = require('./components/auditorium/account-picker')
 const RetireAccount = require('./components/auditorium/retire-account')
@@ -31,7 +30,6 @@ const Live = require('./components/auditorium/live')
 const model = require('./../action-creators/model')
 const errors = require('./../action-creators/errors')
 const management = require('./../action-creators/management')
-const database = require('./../action-creators/database')
 
 const ADMIN_LEVEL_ALLOW_EDIT = 1
 
@@ -39,7 +37,7 @@ const AuditoriumView = (props) => {
   const {
     matches, authenticatedUser, model, stale,
     handleQuery, handleShare, handleValidationError, handleRetire, handleCopy,
-    handlePurgeAggregates, handleUpdateAccountStyles
+    handleUpdateAccountStyles
   } = props
   const { accountId, range, resolution, now, from, to } = matches
   const { adminLevel } = authenticatedUser
@@ -203,15 +201,6 @@ const AuditoriumView = (props) => {
           </div>
         )
         : null}
-      <div class='mw8 center flex flex-column flex-row-l'>
-        <div class='w-100 flex br0 br2-ns mb2'>
-          <DatabaseSettings
-            key={`database-settings-${accountId}`}
-            onPurge={handlePurgeAggregates}
-            accountId={accountId}
-          />
-        </div>
-      </div>
       {adminLevel === ADMIN_LEVEL_ALLOW_EDIT
         ? (
           <div class='mw8 center flex flex-column flex-row-l'>
@@ -248,7 +237,6 @@ const mapDispatchToProps = {
   handleShare: management.shareAccount,
   handleRetire: management.retireAccount,
   handleCopy: management.handleCopy,
-  handlePurgeAggregates: database.purgeAggregates,
   handleUpdateAccountStyles: management.updateAccountStyles
 }
 
