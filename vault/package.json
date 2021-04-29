@@ -16,15 +16,15 @@
   "dependencies": {
     "date-fns": "^2.16.1",
     "dexie": "^3.0.3",
-    "jwk-to-pem": "^2.0.2",
+    "jwk-to-pem": "^2.0.5",
     "node-forge": "^0.10.0",
     "offen": "file:./../packages",
     "split-require": "^3.1.2",
     "ulid": "^2.3.0",
     "underscore": "^1.10.2",
-    "unfetch": "^4.1.0",
+    "unfetch": "^4.2.0",
     "unibabel": "^2.1.8",
-    "url-polyfill": "^1.1.7",
+    "url-polyfill": "^1.1.12",
     "uuid": "^3.3.2"
   },
   "devDependencies": {
