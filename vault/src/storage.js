@@ -330,8 +330,6 @@ function Storage (getDatabase, fallbackStore) {
   }
 }
 
-var isSafari = /(iPhone|iPad)/.test(window.navigator.userAgent) || typeof window.safari !== 'undefined'
-
 // I don't know who needs to hear this, but Apple is not your friend when
 // it comes to privacy. Instead it's busy peddling snake oil and selling you
 // shiny and overpriced stuff.
@@ -342,10 +340,7 @@ var isSafari = /(iPhone|iPad)/.test(window.navigator.userAgent) || typeof window
 // thus disallowing users to manage their data. Instead we fall back to cookie
 // storage forcefully by wrapping certain methods in this helper.
 function throwWhenSafari (thunk, err) {
-  if (isSafari) {
-    return function () {
-      return Promise.reject(err)
-    }
-  }
-  return thunk()
+  return /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
+    ? Promise.reject(err)
+    : thunk()
 }
