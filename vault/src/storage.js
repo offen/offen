@@ -181,10 +181,10 @@ function Storage (getDatabase, fallbackStore) {
 
   this.getUserSecret = function (accountId) {
     var db = getDatabase(accountId)
-    return throwWhenSafari(function () {
+    return bypassSafari(function () {
       return db.keys
         .get({ type: TYPE_USER_SECRET })
-    }, new dexie.OpenFailedError('Forcefully skipping IndexedDB.'))
+    })
       .then(function (result) {
         if (result) {
           return result.value
@@ -211,11 +211,11 @@ function Storage (getDatabase, fallbackStore) {
 
   this.putUserSecret = function (accountId, userSecret) {
     var db = getDatabase(accountId)
-    return throwWhenSafari(function () {
+    return bypassSafari(function () {
       return db.keys
         .where({ type: TYPE_USER_SECRET })
         .first()
-    }, new dexie.OpenFailedError('Forcefully skipping IndexedDB.'))
+    })
       .then(function (existingSecret) {
         if (existingSecret) {
           return
@@ -239,9 +239,11 @@ function Storage (getDatabase, fallbackStore) {
 
   this.deleteUserSecret = function (accountId) {
     var db = getDatabase(accountId)
-    return db.keys
-      .where({ type: TYPE_USER_SECRET })
-      .delete()
+    return bypassSafari(function () {
+      return db.keys
+        .where({ type: TYPE_USER_SECRET })
+        .delete()
+    })
       .catch(dexie.OpenFailedError, function () {
         var key = TYPE_USER_SECRET + '-' + accountId
         var cookie = cookies.defaultCookie(key, '', {
@@ -339,8 +341,8 @@ function Storage (getDatabase, fallbackStore) {
 // privacy friendly way), it provides an interface, but will not persist data,
 // thus disallowing users to manage their data. Instead we fall back to cookie
 // storage forcefully by wrapping certain methods in this helper.
-function throwWhenSafari (thunk, err) {
-  return /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
-    ? Promise.reject(err)
+function bypassSafari (thunk, err) {
+  return true || /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
+    ? dexie.Promise.reject(new dexie.OpenFailedError('Forcefully skipping IndexedDB.'))
     : thunk()
 }
