@@ -342,7 +342,7 @@ function Storage (getDatabase, fallbackStore) {
 // thus disallowing users to manage their data. Instead we fall back to cookie
 // storage forcefully by wrapping certain methods in this helper.
 function bypassSafari (thunk, err) {
-  return true || /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
+  return /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
     ? dexie.Promise.reject(new dexie.OpenFailedError('Forcefully skipping IndexedDB.'))
     : thunk()
 }
