@@ -249,7 +249,8 @@ services:
   offen:
     image: offen/offen:{{ offen.site_version }}
     ports:
-      - 8888:80
+      - 80:80
+      - 443:443
     env_file: ./offen.env
     environment:
       OFFEN_DATABASE_DIALECT: mysql
