@@ -16,7 +16,7 @@ dependencies) and `license_finder` (for Go modules) [1] is supported.
 
 
 def normalize_row(row):
-    is_versioned_go_module = re.compile(r".*/v\d$")
+    is_versioned_go_module = re.compile(r".*/v\d+$")
     result = {}
     try:
         result["name"] = row["module name"]
