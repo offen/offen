@@ -210,3 +210,102 @@ To read log output, use `logs`:
 ```
 docker logs offen
 ```
+
+---
+
+## Bonus: Example docker-compose setups
+
+docker-compose is an ubiquitous tool for handling multi container setups. Below you will find templates to use for deploying Offen alongside a database:
+
+### Using a SQLite database
+
+```
+version: '3'
+
+services:
+  offen:
+    image: offen/offen:{{ site.offen_version }}
+    env_file: ./offen.env
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+     - data:/var/opt/offen
+     - certs:/var/www/.cache
+
+volumes:
+  data:
+  certs:
+```
+
+### Using a MariaDB / MySQL database
+
+```
+version: '3'
+
+services:
+  offen:
+    image: offen/offen:{{ offen.site_version }}
+    ports:
+      - 8888:80
+    env_file: ./offen.env
+    environment:
+      OFFEN_DATABASE_DIALECT: mysql
+      OFFEN_DATABASE_CONNECTIONSTRING: root:password@tcp(mysql:3306)/offen?parseTime=true
+      OFFEN_DATABASE_CONNECTIONRETRIES: 10
+    volumes:
+      - certs:/var/www/.cache
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mariadb:5
+    volumes:
+      - data:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: offen
+      # check the documentation for MYSQL_ROOT_PASSWORD_FILE for
+      # how to avoid putting the password in here
+      MYSQL_ROOT_PASSWORD: password
+
+volumes:
+  data:
+  certs:
+```
+
+### Using a Postgres database
+
+```
+version: '3'
+
+services:
+  offen:
+    image: offen/offen:{{ offen.site_version }}
+    ports:
+      - 80:80
+      - 443:443
+    env_file: ./offen.env
+    environment:
+      OFFEN_DATABASE_DIALECT: postgres
+      OFFEN_DATABASE_CONNECTIONSTRING: postgres://user:password@postgres:5432/offen?sslmode=disable
+      OFFEN_DATABASE_CONNECTIONRETRIES: 10
+    volumes:
+      - certs:/var/www/.cache
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:12-alpine
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_DB: offen
+      # check the documentation for POSTGRES_PASSWORD_FILE for
+      # how to avoid putting the password in here
+      POSTGRES_PASSWORD: password
+    volumes:
+      - data:/var/lib/postgresql/data
+
+volumes:
+  data:
+  certs:
+```
