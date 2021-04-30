@@ -36,12 +36,13 @@ A simple style change to match the banner to a dark themed website.
 .banner__root {
   box-shadow: none;
   border: none;
-  color: #fff;
-  background-color: #333;
+  color: white;
+  background-color: #333333;
 }
+
 .buttons__button {
-  color: #333;
-  background-color: #fff;
+  color: #333333;
+  background-color: white;
 }
 ```
 
@@ -54,22 +55,25 @@ Colors, shapes, and basic font specifications can be adapted to meet an existing
 ```
 .banner__root {
   color: #137752;
-  background-color: #E8FDF5;
+  background-color: #e8fdf5;
   border: none;
   border-radius: 10px;
   box-shadow: 0 0 4px 0 rgb(0 0 0 / 50%);
 }
+
 .paragraph__anchor {
   font-weight: normal;
   font-style: italic;
-  color: #001B44;
+  color: #001b44;
 }
+
 .buttons__button {
   font-weight: bold;
-  color: #E8FDF5;
-  background-color: #19A974;
+  color: #e8fdf5;
+  background-color: #19a974;
   border-radius: 14px;
 }
+
 .buttons__button:hover {
   background-color: #137752;
 }
@@ -85,33 +89,38 @@ More complex customizations are also possible. Changes to font size and spacing 
 .banner__root {
   font-family: "Times New Roman", Times, serif;
   font-size: 18px;
-  color: #000;
-  background-color: #fff;
+  color: black;
+  background-color: white;
   border-radius: 0;
-  border: 0.15em solid #555;
-  box-shadow: 0.2em 0.2em 0 0 #555;
+  border: 0.15em solid #555555;
+  box-shadow: 0.2em 0.2em 0 0 #555555;
 }
+
 .banner__paragraph {
   margin-bottom: 1.5em;
 }
+
 .banner__paragraph--first {
   margin: 0;
 }
+
 .paragraph__anchor {
   font-weight: normal;
   text-decoration: underline;
 }
+
 .buttons__button {
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: #000;
-  background-color: #fff;
+  color: black;
+  background-color: white;
   border-radius: 0;
-  border: 2px dotted #000;
+  border: 2px dotted black;
 }
+
 .buttons__button:hover {
-  background-color: #fff;
-  border: 2px solid #000;
+  background-color: white;
+  border: 2px solid black;
 }
 ```
 
@@ -260,22 +269,18 @@ Markup for each state is defined in the [`consent-banner` package][banner-source
 The default stylesheet applied to the banner looks like this:
 
 ```
-/**
- * Copyright 2020-2021 - Offen Authors <hioffen@posteo.de>
- * SPDX-License-Identifier: Apache-2.0
- */
-
+/* normalize.css is currently at version 8.0.1 */
 @import url('node_modules/normalize.css/normalize.css');
+
+* {
+  box-sizing: border-box;
+}
 
 body {
   line-height: 1.15;
   margin: 0;
   padding: 8px;
   background-color: transparent;
-}
-
-* {
-  box-sizing: border-box;
 }
 
 .banner__root {
