@@ -215,7 +215,9 @@ docker logs offen
 
 ## Bonus: Example docker-compose setups
 
-docker-compose is an ubiquitous tool for handling multi container setups. Below you will find templates to use for deploying Offen alongside a database:
+docker-compose is an ubiquitous tool for handling multi container setups. Below you will find templates to use for deploying Offen alongside a database. Alternatively, check out our [template repository][deploy-template] which we use to deploy Offen ourselves.
+
+[deploy-template]: https://github.com/offen/deployment
 
 ### Using a SQLite database
 
