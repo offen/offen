@@ -269,7 +269,7 @@ func TestEtagMiddleware(t *testing.T) {
 
 	m.ServeHTTP(w2, r2)
 
-	if w2.Code != http.StatusOK {
+	if w2.Code != http.StatusNotModified {
 		t.Errorf("Unexpected status code %v", w2.Code)
 	}
 }
