@@ -64,7 +64,9 @@ def main(**kwargs):
         deps = dedupe(deps)
 
         if deps:
-            print("\n{} side:\n=========\n".format(key.title()))
+            headline = "{} side:".format(key.title())
+            print("\n{}\n{}\n".format(headline, "="*len(headline)))
+
             for dep in deps:
                 print(
                     '"{}" licensed under {}, available at <{}>'.format(
