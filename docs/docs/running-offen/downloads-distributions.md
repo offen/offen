@@ -155,6 +155,8 @@ If you use YunoHost to self-host your applications, you can install our [package
 $ sudo yunohost app install https://github.com/offen/offen_ynh
 ```
 
+[ynh-repo]: https://github.com/offen/offen_ynh
+
 ## Building Offen for architectures other than `amd64`
 
 Current distributions of Offen target `amd64` architectures only. If you want to run Offen on different hardware (e.g. Raspberry Pi), it is trivial to build a binary for your target OS and platform yourself. Assuming you have Docker and `make` installed, you can build the latest version like this (the example targets Linux on ARM v8):

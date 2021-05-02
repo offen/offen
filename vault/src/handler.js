@@ -128,28 +128,6 @@ function handlePurgeWith (api, storage, getUserEvents, getOperatorEvents) {
   }
 }
 
-exports.handlePurgeAggregates = handlePurgeAggregatesWith(storage)
-exports.handlePurgeAggregatesWith = handlePurgeAggregatesWith
-
-function handlePurgeAggregatesWith (storage) {
-  return function handlePurgeAggregates (message) {
-    return storage.purgeAggregates(message.payload.accountId)
-      .then(function () {
-        return {
-          type: 'PURGE_AGGREGATES_SUCCESS',
-          payload: null
-        }
-      }, function (err) {
-        return {
-          type: 'PURGE_AGGREGATES_FAILURE',
-          payload: {
-            message: err.message
-          }
-        }
-      })
-  }
-}
-
 exports.handleLogout = handleLogoutWith(api)
 exports.handleLogoutWith = handleLogoutWith
 
@@ -291,6 +269,17 @@ exports.handleRetireAccountWith = handleRetireAccountWith
 function handleRetireAccountWith (api) {
   return proxyThunk(function (payload) {
     return api.retireAccount(payload.accountId)
+  })
+}
+
+exports.handleUpdateAccountStyles = handleUpdateAccountStylesWith(api)
+exports.handleUpdateAccountStylesWith = handleUpdateAccountStylesWith
+
+function handleUpdateAccountStylesWith (api) {
+  return proxyThunk(function (payload) {
+    return api.updateAccountStyles(
+      payload.accountId, payload.accountStyles, payload.dryRun
+    )
   })
 }
 

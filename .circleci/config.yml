@@ -140,6 +140,7 @@ jobs:
     steps:
       - wait_for:
           service: MySQL
+          retries: 20
           port: 3306
       - run_integration_tests
 
@@ -310,13 +311,16 @@ commands:
       service:
         type: string
         default: service
+      retries:
+        type: integer
+        default: 10
       port:
         type: integer
     steps:
       - run:
           name: Waiting for << parameters.service >> to be ready
           command: |
-            for i in `seq 1 10`;
+            for i in `seq 1 << parameters.retries >>`;
             do
               nc -z localhost << parameters.port >> && echo Success && exit 0
               echo -n .

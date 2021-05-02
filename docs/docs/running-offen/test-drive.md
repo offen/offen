@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Test drive
-nav_order: 11
+nav_order: 12
 description: "Test drive Offen on your system today."
 permalink: /running-offen/test-drive/
 parent: Running Offen
@@ -38,3 +38,12 @@ If you have already downloaded the binaries use:
 {: .mb-8 }
 
 Head to the URL printed in the terminal and start your testing. You can log in using the account `demo@offen.dev` and password `demo`.
+
+---
+
+__Heads Up__
+{: .label .label-red }
+
+When running the demo locally, you __have to access it using the `localhost` hostname__ as otherwise certain browser APIs are blocked due to running in an [insecure context][contexts].
+
+[contexts]: https://developer.mozilla.org/en-US/docs/Web/Security/Secure_Contexts

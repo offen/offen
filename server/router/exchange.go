@@ -15,7 +15,7 @@ import (
 )
 
 func (rt *router) getPublicKey(c *gin.Context) {
-	account, err := rt.db.GetAccount(c.Query("accountId"), false, "")
+	account, err := rt.db.GetAccount(c.Query("accountId"), false, false, "")
 	if err != nil {
 		var unknownAccountErr persistence.ErrUnknownAccount
 		if errors.As(err, &unknownAccountErr) {

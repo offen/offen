@@ -13,7 +13,7 @@ import (
 type Service interface {
 	Insert(userID, accountID, payload string, eventID *string) error
 	Query(Query) (EventsResult, error)
-	GetAccount(accountID string, events bool, eventsSince string) (AccountResult, error)
+	GetAccount(accountID string, styles, events bool, eventsSince string) (AccountResult, error)
 	CreateAccount(name, creatorEmailAddress, creatorPassword string) error
 	RetireAccount(accountID string) error
 	AssociateUserSecret(accountID, userID, encryptedUserSecret string) error
@@ -25,6 +25,7 @@ type Service interface {
 	GenerateOneTimeKey(emailAddress string) ([]byte, error)
 	ResetPassword(emailAddress, password string, oneTimeKey []byte) error
 	ShareAccount(inviteeEmailAddress, providerEmailAddress, providerPassword, accountID string, grantAdminPrivileges bool) (ShareAccountResult, error)
+	UpdateAccountStyles(accountID, styles string) error
 	Join(emailAddress, password string) error
 	Expire(retention time.Duration) (int, error)
 	Bootstrap(data BootstrapConfig) error

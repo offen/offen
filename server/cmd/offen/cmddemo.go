@@ -116,7 +116,7 @@ func cmdDemo(subcommand string, flags []string) {
 
 	a.logger.Info("Offen is generating some random usage data for your demo, this might take a little while.")
 	rand.Seed(time.Now().UnixNano())
-	account, _ := db.GetAccount(accountID.String(), false, "")
+	account, _ := db.GetAccount(accountID.String(), false, false, "")
 
 	users := *numUsers
 	if users == -1 {
@@ -225,7 +225,8 @@ func cmdDemo(subcommand string, flags []string) {
 	a.logger.Infof("")
 	a.logger.Infof("--> http://localhost:%d/intro/ <--", a.config.Server.Port)
 	a.logger.Infof("")
-	a.logger.Infof("in your browser.")
+	a.logger.Infof("in your browser. Please make sure to use the `localhost`")
+	a.logger.Infof("hostname so a secure context is available.")
 
 	quit := make(chan os.Signal)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)

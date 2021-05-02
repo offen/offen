@@ -16,7 +16,7 @@ dependencies) and `license_finder` (for Go modules) [1] is supported.
 
 
 def normalize_row(row):
-    is_versioned_go_module = re.compile(r".*/v\d$")
+    is_versioned_go_module = re.compile(r".*/v\d+$")
     result = {}
     try:
         result["name"] = row["module name"]
@@ -64,7 +64,9 @@ def main(**kwargs):
         deps = dedupe(deps)
 
         if deps:
-            print("\n{} side:\n=========\n".format(key.title()))
+            headline = "{} side:".format(key.title())
+            print("\n{}\n{}\n".format(headline, "="*len(headline)))
+
             for dep in deps:
                 print(
                     '"{}" licensed under {}, available at <{}>'.format(

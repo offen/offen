@@ -24,7 +24,7 @@ type mockGetAccountDatabase struct {
 	err    error
 }
 
-func (m *mockGetAccountDatabase) GetAccount(string, bool, string) (persistence.AccountResult, error) {
+func (m *mockGetAccountDatabase) GetAccount(string, bool, bool, string) (persistence.AccountResult, error) {
 	return m.result, m.err
 }
 

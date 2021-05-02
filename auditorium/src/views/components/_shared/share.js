@@ -40,7 +40,7 @@ const Share = (props) => {
         grantAdminPrivileges: grantAdminPrivileges
       },
       __('An invite email has been sent to <em class="%s">%s</em>.', 'i tracked', invitee),
-      __('There was an error inviting the user, please try again.')
+      __('There was an error inviting the user. Could it be that the user already has access?')
     )
       .then(() => {
         setIsDisabled(false)
