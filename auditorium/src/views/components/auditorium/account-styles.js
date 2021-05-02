@@ -110,7 +110,7 @@ const AccountStylesEditor = (props) => {
                 {__('Customize the styling of the consent banners for this account. Most CSS is allowed, except for things like external URLs, injected content or transparencies.')}
               </Paragraph>
               <Paragraph class='ma0 mb4'>
-                {__('<a class="%s" href="%s" target="_blank" rel="noopener">Read the Docs - Customizing the consent banner</a>', 'b link dim dark-green', 'https://docs.offen.dev//running-offen/customizing-consent-banner/')}
+                {__('<a class="%s" href="%s" target="_blank" rel="noopener">Read the Docs - Customizing the consent banner</a>', 'b link dim dark-green', 'https://docs.offen.dev/running-offen/customizing-consent-banner/')}
               </Paragraph>
               <div class='bg-white br1 br--top pa3'>
                 <Paragraph class='gray ma0 mb3'>
