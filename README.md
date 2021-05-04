@@ -29,6 +29,7 @@ __Software__
 - [Essential metrics](#essential-metrics)
 - [Objectives](#objectives)
 - [Localize](#localize)
+- [Customize](#customize)
 - [Test drive](#test-drive)
 - [License](#license)
 - [Project status](#project-status)
@@ -108,6 +109,12 @@ Our consent banner and the Auditorium for operators as well as users can be disp
 Support fair web analytics by contributing Spanish, Portuguese and other language versions. [Request an invite.][]
 
 [Request an invite.]: mailto:hioffen@posteo.de
+
+## Customize
+
+The Offen consent banner is customizable in __color, shape and basic font specifications__ to match your design. [Learn more.][]
+
+[Learn more.]: https://docs.offen.dev/running-offen/customizing-consent-banner/
 
 ## Test drive
 
