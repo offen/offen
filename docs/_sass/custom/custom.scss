@@ -55,11 +55,6 @@ h2.text-delta {
 }
 
 .nav-list-link {
-  &.active,
-  &:hover,
-  &:active {
-    background-image: none !important;
-  }
   line-height: 1.2rem !important;
 }
 
@@ -67,4 +62,12 @@ h2.text-delta {
   border-radius: 2px;
   margin-right: 0;
   margin-left: 0;
+}
+
+.site-footer {
+  padding-bottom: 2rem;
+}
+
+footer {
+  line-height: $body-line-height;
 }
