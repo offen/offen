@@ -37,7 +37,7 @@
     "redux": "^4.0.5",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
-    "underscore": "^1.10.2",
+    "underscore": "^1.12.1",
     "url-polyfill": "^1.1.12",
     "zxcvbn": "^4.4.2"
   },
