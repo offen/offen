@@ -1,4 +1,4 @@
-# Copyright 2020 - Offen Authors <hioffen@posteo.de>
+# Copyright 2020-2021 - Offen Authors <hioffen@posteo.de>
 # SPDX-License-Identifier: Apache-2.0
 
 # Welcome to Jekyll!
@@ -28,8 +28,6 @@ exclude:
   - Gemfile.lock
   - README.md
 
-# Set a path/url to a logo that will be displayed instead of the title
-logo: https://offen.github.io/press-kit/offen-logo/offen-logo-black.svg
 offen_account_id: 52cbe617-1e1e-40fa-9c91-422ab734d851
 
 # Enable or disable the site search
@@ -46,8 +44,7 @@ aux_links:
   'Offen on GitHub':
     - https://github.com/offen/offen
 
-# Color scheme currently only supports "dark" or nil (default)
-color_scheme: nil
+color_scheme: offen
 
 compress_html:
   clippings: all
