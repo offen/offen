@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * Copyright 2020-2021 - Offen Authors <hioffen@posteo.de>
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -30,7 +30,7 @@ const onboarding = require('./../action-creators/onboarding')
 const AuditoriumView = (props) => {
   const { matches, model, consentStatus, onboardingCompleted } = props
   const { handlePurge, handleQuery, expressConsent, getConsentStatus, getOnboardingStatus, completeOnboarding } = props
-  const { range, resolution, onboarding: forceOnboarding, from, to } = matches
+  const { range, resolution, onboarding: forceOnboarding, from, to, filter } = matches
 
   useEffect(function fetchConsentStatus () {
     getConsentStatus()
@@ -49,8 +49,8 @@ const AuditoriumView = (props) => {
   // it's important to keep this hook below the check for the consent status so
   // that it does not create a race condition between consentStatus and events
   useEffect(function fetchData () {
-    handleQuery({ accountId: null, range, resolution, from, to }, null)
-  }, [range, resolution, consentStatus, from, to])
+    handleQuery({ accountId: null, range, resolution, from, to, filter }, null)
+  }, [range, resolution, consentStatus, from, to, filter])
 
   if (!model) {
     return (

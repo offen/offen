@@ -25,6 +25,7 @@ var startOfYesterday = require('date-fns/startOfYesterday')
 var endOfYesterday = require('date-fns/endOfYesterday')
 
 var stats = require('./stats')
+var filters = require('./filters')
 var storage = require('./aggregating-storage')
 var eventSchema = require('./event.schema')
 var payloadSchema = require('./payload.schema')
@@ -72,6 +73,16 @@ function Queries (storage) {
       )
     }
 
+    var filter = new filters.noop() // eslint-disable-line
+    if (query && query.filter) {
+      var tuple = query.filter.split(':')
+      var prop = tuple.shift()
+      var value = tuple.join(':')
+      if (prop && filters[prop] && value) {
+        filter = new filters[prop](value)
+      }
+    }
+
     // resolution is the unit to group by when looking back
     var resolution = (query && query.resolution) || 'days'
     if (['hours', 'days', 'weeks', 'months'].indexOf(resolution) < 0) {
@@ -114,10 +125,16 @@ function Queries (storage) {
 
     var proxy = new GetEventsProxy(storage, accountId, publicJwk, privateJwk)
     var allEvents = storage.getRawEvents(accountId)
+
     var eventsInBounds = proxy.getEvents(lowerBound, upperBound)
+      .then(function (events) {
+        return filter.digest(events).apply()
+      })
+
     var realtimeLowerBound = subMinutes(now, 15)
     var realtimeUpperBound = now
     var realtimeEvents = proxy.getEvents(realtimeLowerBound, realtimeUpperBound)
+
     // `pageviews` is a list of basic metrics grouped by the given range
     // and resolution. It contains the number of pageviews, unique visitors
     // for operators and accounts for users.
@@ -128,6 +145,12 @@ function Queries (storage) {
         var lowerBound = startOf[resolution](date)
         var upperBound = endOf[resolution](date)
         var eventsInBounds = proxy.getEvents(lowerBound, upperBound)
+          .then(function (events) {
+            return filter.scopedFilter()
+              .then(function (scopedFilter) {
+                return scopedFilter(events)
+              })
+          })
 
         var pageviews = stats.pageviews(eventsInBounds)
         var visitors = stats.visitors(eventsInBounds)

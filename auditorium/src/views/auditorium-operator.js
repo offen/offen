@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * Copyright 2020-2021 - Offen Authors <hioffen@posteo.de>
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -39,7 +39,7 @@ const AuditoriumView = (props) => {
     handleQuery, handleShare, handleValidationError, handleRetire, handleCopy,
     handleUpdateAccountStyles
   } = props
-  const { accountId, range, resolution, now, from, to } = matches
+  const { accountId, range, resolution, now, from, to, filter } = matches
   const { adminLevel } = authenticatedUser
   const [focus, setFocus] = useState(true)
 
@@ -49,7 +49,7 @@ const AuditoriumView = (props) => {
 
   useEffect(function () {
     if (model === null) {
-      handleQuery({ accountId, range, resolution, now, from, to }, authenticatedUser)
+      handleQuery({ accountId, range, resolution, now, from, to, filter }, authenticatedUser)
     }
   }, [model])
 
@@ -58,16 +58,16 @@ const AuditoriumView = (props) => {
       return null
     }
     if (model !== null) {
-      handleQuery({ accountId, range, resolution, now, from, to }, authenticatedUser)
+      handleQuery({ accountId, range, resolution, now, from, to, filter }, authenticatedUser)
     }
 
     const tick = window.setInterval(() => {
-      handleQuery({ accountId, range, resolution, now, from, to }, authenticatedUser, softFailure, true)
+      handleQuery({ accountId, range, resolution, now, from, to, filter }, authenticatedUser, softFailure, true)
     }, 15000)
     return function cancelAutoRefresh () {
       window.clearInterval(tick)
     }
-  }, [accountId, range, resolution, focus, from, to, now])
+  }, [accountId, range, resolution, focus, from, to, now, filter])
 
   useEffect(function detectFocusChange () {
     function focus () {
