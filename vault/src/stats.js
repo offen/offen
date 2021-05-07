@@ -12,14 +12,13 @@
 
 var _ = require('underscore')
 
-var placeInBucket = require('./buckets')
-
 var propertyAccessors = {
   sessionId: _.property(['payload', 'sessionId']),
   href: _.property(['payload', 'href']),
   timestamp: _.property(['payload', 'timestamp']),
   pageload: _.property(['payload', 'pageload']),
   isMobile: _.property(['payload', 'isMobile']),
+  computedReferrer: _.property(['payload', 'computedReferrer']),
   eventId: _.property('eventId')
 }
 
@@ -61,11 +60,7 @@ exports.referrers = consumeAsync(referrers)
 function referrers (events) {
   return _referrers(events, function (set) {
     return set
-      .map(function (event) {
-        return placeInBucket(
-          event.payload.referrer.host || event.payload.referrer.href
-        )
-      })
+      .map(propertyAccessors.computedReferrer)
   })
 }
 
@@ -124,12 +119,7 @@ exports.sources = consumeAsync(_queryParam('utm_source'))
 
 function _referrers (events, groupFn) {
   var uniqueForeign = _.chain(events)
-    .filter(function (event) {
-      if (!event.payload.referrer) {
-        return false
-      }
-      return event.payload.referrer.host !== event.payload.href.host
-    })
+    .filter(propertyAccessors.computedReferrer)
     .uniq(false, propertyAccessors.sessionId)
     .value()
 
@@ -451,9 +441,7 @@ function onboardingStats (events) {
     url: payload.href.pathname !== '/'
       ? payload.href.host + payload.href.pathname
       : null,
-    referrer: payload.referrer && payload.referrer.host !== payload.href.host
-      ? placeInBucket(payload.referrer.host)
-      : null,
+    referrer: payload.computedReferrer,
     numVisits: numVisits,
     isMobile: payload.isMobile
   }

@@ -27,6 +27,7 @@ var endOfYesterday = require('date-fns/endOfYesterday')
 var stats = require('./stats')
 var filters = require('./filters')
 var storage = require('./aggregating-storage')
+var placeInBucket = require('./buckets')
 var eventSchema = require('./event.schema')
 var payloadSchema = require('./payload.schema')
 
@@ -320,6 +321,12 @@ function validateAndParseEvent (event) {
 
   ;['href', 'rawHref', 'referrer'].forEach(function (key) {
     clone.payload[key] = clone.payload[key] && normalizeURL(clone.payload[key])
+  })
+
+  Object.assign(clone.payload, {
+    computedReferrer: clone.payload.referrer && clone.payload.referrer.host !== clone.payload.href.host
+      ? placeInBucket(clone.payload.referrer.host)
+      : null
   })
 
   return clone
