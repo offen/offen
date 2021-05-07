@@ -74,10 +74,13 @@ function Queries (storage) {
       )
     }
 
-    var filter = new filters.noop() // eslint-disable-line
+    var filter = new filters.Noop()
     if (query && query.filter) {
       var tuple = query.filter.split(':')
       var prop = tuple.shift()
+        .split('')
+        .map(function (c, i) { return i ? c : c.toUpperCase() })
+        .join('')
       var value = tuple.join(':')
       if (prop && filters[prop] && value) {
         filter = new filters[prop](value)
@@ -128,9 +131,7 @@ function Queries (storage) {
     var allEvents = storage.getRawEvents(accountId)
 
     var eventsInBounds = proxy.getEvents(lowerBound, upperBound)
-      .then(function (events) {
-        return filter.digest(events).apply()
-      })
+      .then(filter.apply.bind(filter))
 
     var realtimeLowerBound = subMinutes(now, 15)
     var realtimeUpperBound = now
@@ -146,12 +147,7 @@ function Queries (storage) {
         var lowerBound = startOf[resolution](date)
         var upperBound = endOf[resolution](date)
         var eventsInBounds = proxy.getEvents(lowerBound, upperBound)
-          .then(function (events) {
-            return filter.scopedFilter()
-              .then(function (scopedFilter) {
-                return scopedFilter(events)
-              })
-          })
+          .then(filter.scopedFilter.bind(filter))
 
         var pageviews = stats.pageviews(eventsInBounds)
         var visitors = stats.visitors(eventsInBounds)

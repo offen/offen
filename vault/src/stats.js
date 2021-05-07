@@ -119,8 +119,13 @@ exports.sources = consumeAsync(_queryParam('utm_source'))
 
 function _referrers (events, groupFn) {
   var uniqueForeign = _.chain(events)
+    .groupBy(propertyAccessors.sessionId)
+    .pairs()
+    .map(function (pair) {
+      return pair[1][0]
+    })
     .filter(propertyAccessors.computedReferrer)
-    .uniq(false, propertyAccessors.sessionId)
+    .uniq()
     .value()
 
   var sessionIds = _.map(uniqueForeign, propertyAccessors.sessionId)
