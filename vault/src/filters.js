@@ -28,6 +28,26 @@ exports.Referrer = makeSessionFilter(function (events, filter) {
   return events[0].payload.computedReferrer === filter
 })
 
+exports.Campaign = makeSessionFilter(function (events, filter) {
+  var href = events[0].payload.rawHref || events[0].payload.href
+  return href.searchParams.get('utm_campaign') === filter
+})
+
+exports.Source = makeSessionFilter(function (events, filter) {
+  var href = events[0].payload.rawHref || events[0].payload.href
+  return href.searchParams.get('utm_source') === filter
+})
+
+exports.Landing = makeSessionFilter(function (events, filter) {
+  var href = events[0].payload.href
+  return href.toString() === filter
+})
+
+exports.Exit = makeSessionFilter(function (events, filter) {
+  var href = _.last(events).payload.href
+  return href.toString() === filter
+})
+
 function makeSessionFilter (sessionComparison) {
   return function Filter (filter) {
     var self = this
