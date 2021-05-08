@@ -31,11 +31,20 @@ const RangeSelector = (props) => {
 
   const items = predefinedRanges.map(function (range, index) {
     let url = window.location.pathname
+    const search = new window.URLSearchParams(window.location.search)
     const activeRange = !from && !to &&
       JSON.stringify({ range: currentRange, resolution }) === JSON.stringify(range.query || {})
 
     if (range.query) {
-      url += '?' + new window.URLSearchParams(range.query)
+      for (const key in range.query) {
+        search.set(key, range.query[key])
+      }
+    } else {
+      search.delete('range')
+      search.delete('resolution')
+    }
+    if (search.toString()) {
+      url += '?' + new window.URLSearchParams(search)
     }
 
     return (
@@ -46,7 +55,6 @@ const RangeSelector = (props) => {
           range.opensSecondBlock ? 'fixed-ranges-start pl4-ns' : null,
           range.endsFirstBlock ? 'br-ns' : null,
           range.endsSecondBlock ? 'pr4' : null
-
         )}
       >
         <a

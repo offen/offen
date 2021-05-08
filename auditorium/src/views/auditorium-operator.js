@@ -25,6 +25,7 @@ const GoSettings = require('./components/auditorium/go-settings')
 const LoadingOverlay = require('./components/auditorium/loading-overlay')
 const AccountPicker = require('./components/auditorium/account-picker')
 const RetireAccount = require('./components/auditorium/retire-account')
+const FilterDisplay = require('./components/auditorium/filter-display')
 const AccountStylesEditor = require('./components/auditorium/account-styles')
 const Live = require('./components/auditorium/live')
 const model = require('./../action-creators/model')
@@ -133,6 +134,17 @@ const AuditoriumView = (props) => {
           />
         </div>
       </div>
+      {filter
+        ? (
+          <div class='flex flex-column flex-row-l'>
+            <div class='w-100 flex bt ba-ns b--black-10 br0 br2-ns mb2-ns'>
+              <FilterDisplay
+                filter={filter}
+              />
+            </div>
+          </div>
+        )
+        : null}
       <div class='cf'>
         <div class='fl viewport-extended flex flex-column flex-row-ns mr2-l'>
           <div class='w-100 w-70-m w-75-l flex bt ba-ns b--black-10 br0 br2-ns mb2-ns mr2-ns'>

@@ -41,6 +41,7 @@ const URLTable = (props) => {
           <Tables.Table
             columnNames={[__('URL'), __('Pageviews')]}
             rows={model.pages}
+            filterProp='href'
             showAll={showAll === 0}
             setShowAll={(open) => setShowAll(open ? 0 : null)}
           />
@@ -55,6 +56,7 @@ const URLTable = (props) => {
             columnNames={[__('Host'), __('Sessions'), __('Page depth')]}
             formatAs={['count', 'value']}
             rows={model.referrers}
+            filterProp='referrer'
             explainer={(props) => {
               return (
                 <Paragraph class='mw7 ma0 ph1 pv2 ws-normal'>
@@ -70,6 +72,7 @@ const URLTable = (props) => {
             columnNames={[__('Campaign'), __('Sessions'), __('Page depth')]}
             formatAs={['count', 'value']}
             rows={model.campaigns}
+            filterProp='campaign'
             explainer={(props) => {
               return (
                 <Paragraph class='mw7 ma0 ph1 pv2 ws-normal'>
@@ -85,6 +88,7 @@ const URLTable = (props) => {
             columnNames={[__('Source'), __('Sessions'), __('Views per session')]}
             formatAs={['count', 'value']}
             rows={model.sources}
+            filterProp='source'
             explainer={(props) => {
               return (
                 <Paragraph class='mw7 ma0 ph1 pv2 ws-normal'>
@@ -105,6 +109,7 @@ const URLTable = (props) => {
             headline={__('Landing pages')}
             columnNames={[__('URL'), __('Landings')]}
             rows={model.landingPages}
+            filterProp='landing'
             explainer={(props) => {
               return (
                 <Paragraph class='mw7 ma0 ph1 pv2 ws-normal'>
@@ -119,6 +124,7 @@ const URLTable = (props) => {
             headline={__('Exit pages')}
             columnNames={[__('URL'), __('Exits')]}
             rows={model.exitPages}
+            filterProp='exit'
             explainer={(props) => {
               return (
                 <Paragraph class='mw7 ma0 ph1 pv2 ws-normal'>
