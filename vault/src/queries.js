@@ -320,7 +320,7 @@ function validateAndParseEvent (event) {
   })
 
   Object.assign(clone.payload, {
-    computedReferrer: clone.payload.referrer && clone.payload.referrer.host !== clone.payload.href.host
+    $referrer: clone.payload.referrer && clone.payload.referrer.host !== clone.payload.href.host
       ? placeInBucket(clone.payload.referrer.host)
       : null
   })

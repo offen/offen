@@ -13,6 +13,7 @@ function NoopFilter () {
 
 exports.Href = HrefFilter
 function HrefFilter (filter) {
+  var self = this
   this.apply = function (events) {
     return _.filter(events, function (event) {
       return event.payload.href && event.payload.href.toString() === filter
@@ -20,31 +21,40 @@ function HrefFilter (filter) {
   }
 
   this.scopedFilter = function (events) {
-    return new HrefFilter(filter).apply(events)
+    return self.apply(events)
   }
 }
 
-exports.Referrer = makeSessionFilter(function (events, filter) {
-  return events[0].payload.computedReferrer === filter
+exports.Referrer = makeSessionFilter(function (session, filter) {
+  var sessionEntry = _.findWhere(session, function (event) {
+    return event.payload.$referrer
+  })
+  return sessionEntry && sessionEntry.payload.$referrer === filter
 })
 
-exports.Campaign = makeSessionFilter(function (events, filter) {
-  var href = events[0].payload.rawHref || events[0].payload.href
+exports.Campaign = makeSessionFilter(function (session, filter) {
+  var sessionEntry = _.findWhere(session, function (event) {
+    return (event.payload.rawHref || event.payload.href).get('utm_campaign')
+  })
+  var href = sessionEntry.payload.rawHref || sessionEntry.payload.href
   return href.searchParams.get('utm_campaign') === filter
 })
 
-exports.Source = makeSessionFilter(function (events, filter) {
-  var href = events[0].payload.rawHref || events[0].payload.href
+exports.Source = makeSessionFilter(function (session, filter) {
+  var sessionEntry = _.findWhere(session, function (event) {
+    return (event.payload.rawHref || event.payload.href).get('utm_source')
+  })
+  var href = sessionEntry.payload.rawHref || sessionEntry.payload.href
   return href.searchParams.get('utm_source') === filter
 })
 
-exports.Landing = makeSessionFilter(function (events, filter) {
-  var href = events[0].payload.href
+exports.Landing = makeSessionFilter(function (session, filter) {
+  var href = _.head(session).payload.href
   return href.toString() === filter
 })
 
-exports.Exit = makeSessionFilter(function (events, filter) {
-  var href = _.last(events).payload.href
+exports.Exit = makeSessionFilter(function (session, filter) {
+  var href = _.last(session).payload.href
   return href.toString() === filter
 })
 
@@ -61,9 +71,11 @@ function makeSessionFilter (sessionComparison) {
       var filtered = _.chain(events)
         .groupBy(_.property(['payload', 'sessionId']))
         .pairs()
-        .map(_.last)
-        .filter(function (events) {
-          return sessionComparison(events, filter)
+        .map(function (pair) {
+          return _.sortBy(pair[1], 'eventId')
+        })
+        .filter(function (session) {
+          return sessionComparison(session, filter)
         })
         .flatten(true)
         .value()

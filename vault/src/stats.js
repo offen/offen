@@ -18,7 +18,7 @@ var propertyAccessors = {
   timestamp: _.property(['payload', 'timestamp']),
   pageload: _.property(['payload', 'pageload']),
   isMobile: _.property(['payload', 'isMobile']),
-  computedReferrer: _.property(['payload', 'computedReferrer']),
+  computedReferrer: _.property(['payload', '$referrer']),
   eventId: _.property('eventId')
 }
 
@@ -122,9 +122,9 @@ function _referrers (events, groupFn) {
     .groupBy(propertyAccessors.sessionId)
     .pairs()
     .map(function (pair) {
-      return pair[1][0]
+      return _.findWhere(pair[1], propertyAccessors.computedReferrer)
     })
-    .filter(propertyAccessors.computedReferrer)
+    .filter(_.identity)
     .uniq()
     .value()
 
@@ -446,7 +446,7 @@ function onboardingStats (events) {
     url: payload.href.pathname !== '/'
       ? payload.href.host + payload.href.pathname
       : null,
-    referrer: payload.computedReferrer,
+    referrer: payload.$referrer,
     numVisits: numVisits,
     isMobile: payload.isMobile
   }
