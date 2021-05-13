@@ -31,6 +31,7 @@ const Table = (props) => {
     limit = 10,
     showAll = false,
     filterProp,
+    queryParams,
     setShowAll = Function.prototype
   } = props
 
@@ -39,19 +40,25 @@ const Table = (props) => {
   const tBody = Array.isArray(rows) && rows.length
     ? rows.slice(0, showAll ? rows.length : limit).map(function (row, index) {
       const counts = Array.isArray(row.count) ? row.count : [row.count]
-      let href = window.location.pathname
-      const search = new window.URLSearchParams(window.location.search)
-      search.set('filter', `${filterProp}:${row.key}`)
-      href += '?' + search
       return (
         <tr key={`outer-${index}`} class='striped--near-white'>
           <td class='truncate pv2 pl2 pr1' title={row.key}>
-            <a
-              title={__('Filter view by this item.')}
-              href={href}
-            >
-              {row.key}
-            </a>
+            {filterProp
+              ? (() => {
+                let href = window.location.pathname
+                const search = new window.URLSearchParams(queryParams)
+                search.set('filter', `${filterProp}:${row.key}`)
+                href += '?' + search
+                return (
+                  <a
+                    title={__('Filter view by this item.')}
+                    href={href}
+                  >
+                    {row.key}
+                  </a>
+                )
+              })()
+              : row.key}
           </td>
           {counts.map((count, index) => {
             return (

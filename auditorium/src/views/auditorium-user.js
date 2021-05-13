@@ -29,7 +29,7 @@ const consent = require('./../action-creators/consent-status')
 const onboarding = require('./../action-creators/onboarding')
 
 const AuditoriumView = (props) => {
-  const { matches, model, consentStatus, onboardingCompleted } = props
+  const { matches, model, consentStatus, onboardingCompleted, queryParams } = props
   const { handlePurge, handleQuery, expressConsent, getConsentStatus, getOnboardingStatus, completeOnboarding } = props
   const { range, resolution, onboarding: forceOnboarding, from, to, filter } = matches
 
@@ -99,6 +99,7 @@ const AuditoriumView = (props) => {
             range={range}
             from={from}
             to={to}
+            queryParams={queryParams}
             {...explainerPropsFor('range-selector')}
           />
         </div>
@@ -109,6 +110,7 @@ const AuditoriumView = (props) => {
             <div class='w-100 flex bt ba-ns b--black-10 br0 br2-ns mb2-ns'>
               <FilterDisplay
                 filter={filter}
+                queryParams={queryParams}
               />
             </div>
           </div>
@@ -137,6 +139,7 @@ const AuditoriumView = (props) => {
         <div class='w-100 flex bt ba-ns br0 br2-ns b--black-10 mb2-ns'>
           <URLTables
             model={model}
+            queryParams={queryParams}
             {...explainerPropsFor('url-tables')}
           />
         </div>

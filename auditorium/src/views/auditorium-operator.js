@@ -36,7 +36,7 @@ const ADMIN_LEVEL_ALLOW_EDIT = 1
 
 const AuditoriumView = (props) => {
   const {
-    matches, authenticatedUser, model, stale,
+    matches, authenticatedUser, model, stale, queryParams,
     handleQuery, handleShare, handleValidationError, handleRetire, handleCopy,
     handleUpdateAccountStyles
   } = props
@@ -106,10 +106,7 @@ const AuditoriumView = (props) => {
           <AccountPicker
             accounts={authenticatedUser.accounts}
             selectedId={accountId}
-            range={range}
-            resolution={resolution}
-            from={from}
-            to={to}
+            queryParams={queryParams}
           />
         </div>
         {!model.empty
@@ -131,6 +128,7 @@ const AuditoriumView = (props) => {
             range={range}
             from={from}
             to={to}
+            queryParams={queryParams}
           />
         </div>
       </div>
@@ -140,6 +138,7 @@ const AuditoriumView = (props) => {
             <div class='w-100 flex bt ba-ns b--black-10 br0 br2-ns mb2-ns'>
               <FilterDisplay
                 filter={filter}
+                queryParams={queryParams}
               />
             </div>
           </div>
@@ -162,7 +161,10 @@ const AuditoriumView = (props) => {
         </div>
         <div class='fr viewport-extended flex flex-column flex-row-l'>
           <div class='w-100 flex bt ba-ns br0 br2-ns b--black-10 mb2-ns'>
-            <URLTables model={model} />
+            <URLTables
+              model={model}
+              queryParams={queryParams}
+            />
           </div>
         </div>
         <div class='viewport-extended flex flex-column flex-row-l mb2'>
@@ -240,7 +242,8 @@ const AuditoriumView = (props) => {
 const mapStateToProps = (state) => ({
   authenticatedUser: state.authenticatedUser,
   model: state.model,
-  stale: state.stale
+  stale: state.stale,
+  queryParams: state.queryParams
 })
 
 const mapDispatchToProps = {

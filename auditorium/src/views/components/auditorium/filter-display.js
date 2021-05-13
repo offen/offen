@@ -16,17 +16,17 @@ const filterDisplayNames = {
 }
 
 const FilterDisplay = (props) => {
-  const { filter: current } = props
+  const { filter: current, queryParams } = props
 
   const tokens = current.split(':')
   const filterKey = tokens.shift()
   const filterValue = tokens.join(':')
 
   let url = window.location.pathname
-  const params = new window.URLSearchParams(window.location.search)
-  params.delete('filter')
-  if (params.toString()) {
-    url += '?' + params
+  const search = new window.URLSearchParams(queryParams)
+  search.delete('filter')
+  if (search.toString()) {
+    url += '?' + search
   }
   return (
     <div class='pa4 bg-white w-100'>

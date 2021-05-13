@@ -15,7 +15,7 @@ const Paragraph = require('./../_shared/paragraph')
 const URLTable = (props) => {
   const {
     model, showExplainer, explainerActive,
-    onExplain, explainerPropsFor
+    onExplain, explainerPropsFor, queryParams
   } = props
 
   const [showAll, setShowAll] = useState(null)
@@ -42,6 +42,7 @@ const URLTable = (props) => {
             columnNames={[__('URL'), __('Pageviews')]}
             rows={model.pages}
             filterProp='href'
+            queryParams={queryParams}
             showAll={showAll === 0}
             setShowAll={(open) => setShowAll(open ? 0 : null)}
           />
@@ -57,6 +58,7 @@ const URLTable = (props) => {
             formatAs={['count', 'value']}
             rows={model.referrers}
             filterProp='referrer'
+            queryParams={queryParams}
             explainer={(props) => {
               return (
                 <Paragraph class='mw7 ma0 ph1 pv2 ws-normal'>
@@ -73,6 +75,7 @@ const URLTable = (props) => {
             formatAs={['count', 'value']}
             rows={model.campaigns}
             filterProp='campaign'
+            queryParams={queryParams}
             explainer={(props) => {
               return (
                 <Paragraph class='mw7 ma0 ph1 pv2 ws-normal'>
@@ -89,6 +92,7 @@ const URLTable = (props) => {
             formatAs={['count', 'value']}
             rows={model.sources}
             filterProp='source'
+            queryParams={queryParams}
             explainer={(props) => {
               return (
                 <Paragraph class='mw7 ma0 ph1 pv2 ws-normal'>
@@ -110,6 +114,7 @@ const URLTable = (props) => {
             columnNames={[__('URL'), __('Landings')]}
             rows={model.landingPages}
             filterProp='landing'
+            queryParams={queryParams}
             explainer={(props) => {
               return (
                 <Paragraph class='mw7 ma0 ph1 pv2 ws-normal'>
@@ -125,6 +130,7 @@ const URLTable = (props) => {
             columnNames={[__('URL'), __('Exits')]}
             rows={model.exitPages}
             filterProp='exit'
+            queryParams={queryParams}
             explainer={(props) => {
               return (
                 <Paragraph class='mw7 ma0 ph1 pv2 ws-normal'>

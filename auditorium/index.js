@@ -24,6 +24,7 @@ const JoinView = require('./src/views/join')
 const ForgotPasswordView = require('./src/views/forgot-password')
 const ResetPasswordView = require('./src/views/reset-password')
 const consentStatusReducer = require('./src/reducers/consent-status')
+const queryParamsReducer = require('./src/reducers/query-params')
 const globalErrorReducer = require('./src/reducers/global-error')
 const setupStatusReducer = require('./src/reducers/setup-status')
 const authenticatedUserReducer = require('./src/reducers/authenticated-user')
@@ -34,6 +35,7 @@ const onboardingCompletedReducer = require('./src/reducers/onboarding-completed'
 const redirectMiddleware = require('./src/middleware/redirect')
 const pushStateMiddleware = require('./src/middleware/push-state')
 const flashMessagesMiddleware = require('./src/middleware/flash-messages')
+const queryParamsMiddleware = require('./src/middleware/query-params')
 const navigation = require('./src/action-creators/navigation')
 const errors = require('./src/action-creators/errors')
 
@@ -54,7 +56,8 @@ const middlewares = [
   ),
   pushStateMiddleware,
   redirectMiddleware,
-  flashMessagesMiddleware
+  flashMessagesMiddleware,
+  queryParamsMiddleware
 ]
 
 if (process.env.NODE_ENV !== 'production') {
@@ -71,7 +74,8 @@ const store = createStore(
     model: modelReducer,
     stale: staleReducer,
     setupStatus: setupStatusReducer,
-    onboardingCompleted: onboardingCompletedReducer
+    onboardingCompleted: onboardingCompletedReducer,
+    queryParams: queryParamsReducer
   }),
   applyMiddleware(
     ...middlewares
