@@ -26,7 +26,7 @@ func (rt *router) getVault(c *gin.Context) {
 	if cachedItem, ok := cache.Get(cacheKey); ok {
 		cachedStyles, castOk := cachedItem.(string)
 		if !castOk {
-			c.HTML(http.StatusInternalServerError, "bad_cache", map[string]string{
+			c.HTML(http.StatusInternalServerError, "error", map[string]string{
 				"message": fmt.Sprintf("Unexpected cache item for account %s", accountID),
 			})
 			return
@@ -40,7 +40,7 @@ func (rt *router) getVault(c *gin.Context) {
 
 	account, err := rt.db.GetAccount(accountID, true, false, "")
 	if err != nil {
-		c.HTML(http.StatusBadRequest, "not_found", map[string]string{
+		c.HTML(http.StatusBadRequest, "error", map[string]string{
 			"message": fmt.Sprintf("Error %v looking up account %s", err, accountID),
 		})
 		return
