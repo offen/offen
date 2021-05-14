@@ -30,8 +30,7 @@ const Table = (props) => {
     onEmptyMessage = __('No data available for this view.'),
     limit = 10,
     showAll = false,
-    filterProp,
-    queryParams,
+    ItemDecorator,
     setShowAll = Function.prototype
   } = props
 
@@ -43,21 +42,8 @@ const Table = (props) => {
       return (
         <tr key={`outer-${index}`} class='striped--near-white'>
           <td class='truncate pv2 pl2 pr1' title={row.key}>
-            {filterProp
-              ? (() => {
-                let href = window.location.pathname
-                const search = new window.URLSearchParams(queryParams)
-                search.set('filter', `${filterProp}:${row.key}`)
-                href += '?' + search
-                return (
-                  <a
-                    title={__('Filter view by this item.')}
-                    href={href}
-                  >
-                    {row.key}
-                  </a>
-                )
-              })()
+            {ItemDecorator
+              ? <ItemDecorator>{row.key}</ItemDecorator>
               : row.key}
           </td>
           {counts.map((count, index) => {

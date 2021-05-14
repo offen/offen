@@ -18,6 +18,22 @@ const URLTable = (props) => {
     onExplain, explainerPropsFor, queryParams
   } = props
 
+  const href = window.location.pathname
+
+  const FilterLink = (props) => {
+    const { filterProp, children } = props
+    const search = new window.URLSearchParams(queryParams)
+    search.set('filter', `${filterProp}:${children}`)
+    return (
+      <a
+        title={__('Filter current view by this item.')}
+        href={href + '?' + search}
+      >
+        {children}
+      </a>
+    )
+  }
+
   const [showAll, setShowAll] = useState(null)
   return (
     <div class='flex-auto pa3 bg-white'>
@@ -41,8 +57,13 @@ const URLTable = (props) => {
           <Tables.Table
             columnNames={[__('URL'), __('Pageviews')]}
             rows={model.pages}
-            filterProp='href'
-            queryParams={queryParams}
+            ItemDecorator={(props) => (
+              <FilterLink
+                filterProp='href'
+              >
+                {props.children}
+              </FilterLink>
+            )}
             showAll={showAll === 0}
             setShowAll={(open) => setShowAll(open ? 0 : null)}
           />
@@ -57,8 +78,13 @@ const URLTable = (props) => {
             columnNames={[__('Host'), __('Sessions'), __('Page depth')]}
             formatAs={['count', 'value']}
             rows={model.referrers}
-            filterProp='referrer'
-            queryParams={queryParams}
+            ItemDecorator={(props) => (
+              <FilterLink
+                filterProp='referrer'
+              >
+                {props.children}
+              </FilterLink>
+            )}
             explainer={(props) => {
               return (
                 <Paragraph class='mw7 ma0 ph1 pv2 ws-normal'>
@@ -74,8 +100,13 @@ const URLTable = (props) => {
             columnNames={[__('Campaign'), __('Sessions'), __('Page depth')]}
             formatAs={['count', 'value']}
             rows={model.campaigns}
-            filterProp='campaign'
-            queryParams={queryParams}
+            ItemDecorator={(props) => (
+              <FilterLink
+                filterProp='campaign'
+              >
+                {props.children}
+              </FilterLink>
+            )}
             explainer={(props) => {
               return (
                 <Paragraph class='mw7 ma0 ph1 pv2 ws-normal'>
@@ -91,8 +122,13 @@ const URLTable = (props) => {
             columnNames={[__('Source'), __('Sessions'), __('Views per session')]}
             formatAs={['count', 'value']}
             rows={model.sources}
-            filterProp='source'
-            queryParams={queryParams}
+            ItemDecorator={(props) => (
+              <FilterLink
+                filterProp='source'
+              >
+                {props.children}
+              </FilterLink>
+            )}
             explainer={(props) => {
               return (
                 <Paragraph class='mw7 ma0 ph1 pv2 ws-normal'>
@@ -113,15 +149,18 @@ const URLTable = (props) => {
             headline={__('Landing pages')}
             columnNames={[__('URL'), __('Landings')]}
             rows={model.landingPages}
-            filterProp='landing'
-            queryParams={queryParams}
-            explainer={(props) => {
-              return (
-                <Paragraph class='mw7 ma0 ph1 pv2 ws-normal'>
-                  {__('A list of pages of the <a href="#terms-offen-installation" class="%s">Offen installation</a> that you have opened first in all <a href="#terms-unique-session" class="%s">unique sessions.</a>', 'b link dim dark-green', 'b link dim dark-green')}
-                </Paragraph>
-              )
-            }}
+            ItemDecorator={(props) => (
+              <FilterLink
+                filterProp='landing'
+              >
+                {props.children}
+              </FilterLink>
+            )}
+            explainer={(props) => (
+              <Paragraph class='mw7 ma0 ph1 pv2 ws-normal'>
+                {__('A list of pages of the <a href="#terms-offen-installation" class="%s">Offen installation</a> that you have opened first in all <a href="#terms-unique-session" class="%s">unique sessions.</a>', 'b link dim dark-green', 'b link dim dark-green')}
+              </Paragraph>
+            )}
             showAll={showAll === 2}
             setShowAll={(open) => setShowAll(open ? 2 : null)}
           />
@@ -129,8 +168,13 @@ const URLTable = (props) => {
             headline={__('Exit pages')}
             columnNames={[__('URL'), __('Exits')]}
             rows={model.exitPages}
-            filterProp='exit'
-            queryParams={queryParams}
+            ItemDecorator={(props) => (
+              <FilterLink
+                filterProp='exit'
+              >
+                {props.children}
+              </FilterLink>
+            )}
             explainer={(props) => {
               return (
                 <Paragraph class='mw7 ma0 ph1 pv2 ws-normal'>
