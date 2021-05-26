@@ -28,29 +28,25 @@ jobs:
     executor: node
     working_directory: ~/offen/vault
     steps:
-      - test_node_app:
-          app: vault
+      - test_node_app
 
   script:
     executor: node
     working_directory: ~/offen/script
     steps:
-      - test_node_app:
-          app: script
+      - test_node_app
 
   auditorium:
     executor: node
     working_directory: ~/offen/auditorium
     steps:
-      - test_node_app:
-          app: auditorium
+      - test_node_app
 
   packages:
     executor: node
     working_directory: ~/offen/packages
     steps:
-      - test_node_app:
-          app: packages
+      - test_node_app
 
   reuse:
     executor: python
@@ -379,28 +375,18 @@ commands:
   test_node_app:
     description: Run unit tests for a Node.js based subapp
     parameters:
-      app:
-        type: string
       checkout:
         type: string
         default: ~/offen
     steps:
       - checkout:
           path: << parameters.checkout >>
-      - restore_cache:
-          key: offen-<< parameters.app >>-{{ checksum "package.json" }}
       - run:
           name: Install dependencies
-          command: |
-            sudo apt-get install libxss1
-            npm ci
-      - save_cache:
-          paths:
-            - ~/offen/<< parameters.app >>/node_modules
-          key: offen-<< parameters.app >>-{{ checksum "package.json" }}
+          command: npm ci
       - run:
           name: Run tests
-          command: npm test
+          command: npm t
 
   install_mc:
     description: Install MinIO client
