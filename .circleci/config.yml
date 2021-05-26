@@ -107,10 +107,6 @@ jobs:
       OFFEN_DATABASE_CONNECTIONSTRING: /tmp/offen.sqlite3
     working_directory: ~/offen
     steps:
-      - run:
-          name: Create db file
-          command: |
-            touch /tmp/offen.sqlite3
       - run_integration_tests
 
   integration_postgres:
