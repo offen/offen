@@ -24,7 +24,7 @@
     "dependency-check": "^3.4.0",
     "fetch-mock": "^7.3.3",
     "local-web-server": "^4.0.0",
-    "mochify": "^6.2.0",
+    "mochify": "^8.0.0",
     "npm-license-crawler": "^0.2.1",
     "standard": "^14.3.1"
   },
