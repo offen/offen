@@ -15,21 +15,41 @@ const Paragraph = require('./../_shared/paragraph')
 const URLTable = (props) => {
   const {
     model, showExplainer, explainerActive,
-    onExplain, explainerPropsFor, queryParams
+    onExplain, explainerPropsFor, queryParams,
+    filter: currentFilter
   } = props
 
-  const href = window.location.pathname
+  let href = window.location.pathname
 
   const FilterLink = (props) => {
-    const { filterProp, children } = props
+    const { filterProp, children: linkContent } = props
     const search = new window.URLSearchParams(queryParams)
-    search.set('filter', `${filterProp}:${children}`)
+    const value = `${filterProp}:${linkContent}`
+
+    if (value === currentFilter) {
+      search.delete('filter')
+      if (search.toString()) {
+        href += '?' + search
+      }
+      return (
+        <a
+          class='b link dim dark-green'
+          title={__('Remove this filter.')}
+          href={href}
+        >
+          X {linkContent}
+        </a>
+      )
+    }
+
+    search.set('filter', value)
+    href += '?' + search
     return (
       <a
         title={__('Filter current view by this item.')}
-        href={href + '?' + search}
+        href={href}
       >
-        {children}
+        {linkContent}
       </a>
     )
   }

@@ -21,7 +21,6 @@ const Privacy = require('./components/auditorium/privacy')
 const RetentionChart = require('./components/auditorium/retention-chart')
 const URLTables = require('./components/auditorium/url-tables')
 const UserOnboading = require('./components/auditorium/user-onboarding')
-const FilterDisplay = require('./components/auditorium/filter-display')
 const BasicTerms = require('./components/auditorium/basic-terms')
 const FrequentlyAskedQuestions = require('./components/auditorium/frequently-asked-questions')
 const model = require('./../action-creators/model')
@@ -104,18 +103,6 @@ const AuditoriumView = (props) => {
           />
         </div>
       </div>
-      {filter
-        ? (
-          <div class='flex flex-column flex-row-l'>
-            <div class='w-100 flex bt ba-ns b--black-10 br0 br2-ns mb2-ns'>
-              <FilterDisplay
-                filter={filter}
-                queryParams={queryParams}
-              />
-            </div>
-          </div>
-        )
-        : null}
       <div class='mw8 center flex flex-column flex-row-ns'>
         <div class='w-100 flex bt ba-ns b--black-10 br0 br2-ns mb2-ns'>
           <Chart
@@ -140,6 +127,7 @@ const AuditoriumView = (props) => {
           <URLTables
             model={model}
             queryParams={queryParams}
+            filter={filter}
             {...explainerPropsFor('url-tables')}
           />
         </div>
