@@ -15,14 +15,13 @@ const Paragraph = require('./../_shared/paragraph')
 const URLTable = (props) => {
   const {
     model, showExplainer, explainerActive,
-    onExplain, explainerPropsFor, queryParams,
-    filter: currentFilter
+    onExplain, explainerPropsFor, queryParams
   } = props
 
   let currentFilterProp = null
   let currentFilterValue = null
-  if (currentFilter) {
-    const tokens = currentFilter.split(':')
+  if (model.filter) {
+    const tokens = model.filter.split(':')
     currentFilterProp = tokens.shift()
     currentFilterValue = tokens.join(':')
   }
@@ -33,7 +32,7 @@ const URLTable = (props) => {
     const search = new window.URLSearchParams(queryParams)
     const value = `${filterProp}:${linkContent}`
 
-    if (value === currentFilter) {
+    if (value === model.filter) {
       search.delete('filter')
       if (search.toString()) {
         href += '?' + search

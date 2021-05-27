@@ -152,7 +152,6 @@ const AuditoriumView = (props) => {
             <URLTables
               model={model}
               queryParams={queryParams}
-              filter={filter}
             />
           </div>
         </div>

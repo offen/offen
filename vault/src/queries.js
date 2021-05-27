@@ -257,7 +257,8 @@ function Queries (storage) {
           returningUsers: results[18],
           onboardingStats: results[19],
           resolution: resolution,
-          range: range
+          range: range,
+          filter: (query && query.filter) || null
         }
       })
       .then(postProcessResult(query && query.resolution, range))
