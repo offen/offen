@@ -31,8 +31,13 @@ const Table = (props) => {
     limit = 10,
     showAll = false,
     ItemDecorator,
-    setShowAll = Function.prototype
+    setShowAll = Function.prototype,
+    emptyFallback
   } = props
+
+  if (emptyFallback && Array.isArray(rows) && !rows.length) {
+    rows.push(emptyFallback)
+  }
 
   const hasMore = Array.isArray(rows) && rows.length > limit
 

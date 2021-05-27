@@ -19,6 +19,14 @@ const URLTable = (props) => {
     filter: currentFilter
   } = props
 
+  let currentFilterProp = null
+  let currentFilterValue = null
+  if (currentFilter) {
+    const tokens = currentFilter.split(':')
+    currentFilterProp = tokens.shift()
+    currentFilterValue = tokens.join(':')
+  }
+
   const FilterLink = (props) => {
     let href = window.location.pathname
     const { filterProp, children: linkContent } = props
@@ -83,6 +91,11 @@ const URLTable = (props) => {
                 {props.children}
               </FilterLink>
             )}
+            emptyFallback={
+              currentFilterProp === 'href'
+                ? { key: currentFilterValue, count: 0 }
+                : null
+            }
             showAll={showAll === 0}
             setShowAll={(open) => setShowAll(open ? 0 : null)}
           />
@@ -113,6 +126,11 @@ const URLTable = (props) => {
             }}
             showAll={showAll === 1}
             setShowAll={(open) => setShowAll(open ? 1 : null)}
+            emptyFallback={
+              currentFilterProp === 'referrer'
+                ? { key: currentFilterValue, count: [0, 0] }
+                : null
+            }
           />
           <Tables.Table
             headline={__('Campaigns')}
@@ -126,6 +144,11 @@ const URLTable = (props) => {
                 {props.children}
               </FilterLink>
             )}
+            emptyFallback={
+              currentFilterProp === 'campaign'
+                ? { key: currentFilterValue, count: [0, 0] }
+                : null
+            }
             explainer={(props) => {
               return (
                 <Paragraph class='mw7 ma0 ph1 pv2 ws-normal'>
@@ -148,6 +171,11 @@ const URLTable = (props) => {
                 {props.children}
               </FilterLink>
             )}
+            emptyFallback={
+              currentFilterProp === 'source'
+                ? { key: currentFilterValue, count: [0, 0] }
+                : null
+            }
             explainer={(props) => {
               return (
                 <Paragraph class='mw7 ma0 ph1 pv2 ws-normal'>
@@ -175,6 +203,11 @@ const URLTable = (props) => {
                 {props.children}
               </FilterLink>
             )}
+            emptyFallback={
+              currentFilterProp === 'landing'
+                ? { key: currentFilterValue, count: 0 }
+                : null
+            }
             explainer={(props) => (
               <Paragraph class='mw7 ma0 ph1 pv2 ws-normal'>
                 {__('A list of pages of the <a href="#terms-offen-installation" class="%s">Offen installation</a> that you have opened first in all <a href="#terms-unique-session" class="%s">unique sessions.</a>', 'b link dim dark-green', 'b link dim dark-green')}
@@ -194,6 +227,11 @@ const URLTable = (props) => {
                 {props.children}
               </FilterLink>
             )}
+            emptyFallback={
+              currentFilterProp === 'exit'
+                ? { key: currentFilterValue, count: 0 }
+                : null
+            }
             explainer={(props) => {
               return (
                 <Paragraph class='mw7 ma0 ph1 pv2 ws-normal'>
