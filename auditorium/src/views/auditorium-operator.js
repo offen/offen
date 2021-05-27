@@ -39,9 +39,10 @@ const AuditoriumView = (props) => {
     handleQuery, handleShare, handleValidationError, handleRetire, handleCopy,
     handleUpdateAccountStyles
   } = props
-  const { accountId, range, resolution, now, from, to, filter } = matches
+  const { accountId, range, resolution, now, from, to, filter: rawFilter } = matches
   const { adminLevel } = authenticatedUser
   const [focus, setFocus] = useState(true)
+  const filter = rawFilter && window.decodeURIComponent(rawFilter)
 
   const softFailure = __(
     'This view failed to update automatically, data may be out of date. Check your network connection if the problem persists.'

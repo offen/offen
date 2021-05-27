@@ -30,7 +30,8 @@ const onboarding = require('./../action-creators/onboarding')
 const AuditoriumView = (props) => {
   const { matches, model, consentStatus, onboardingCompleted, queryParams } = props
   const { handlePurge, handleQuery, expressConsent, getConsentStatus, getOnboardingStatus, completeOnboarding } = props
-  const { range, resolution, onboarding: forceOnboarding, from, to, filter } = matches
+  const { range, resolution, onboarding: forceOnboarding, from, to, filter: rawFilter } = matches
+  const filter = rawFilter && window.decodeURIComponent(rawFilter)
 
   useEffect(function fetchConsentStatus () {
     getConsentStatus()

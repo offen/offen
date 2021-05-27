@@ -19,9 +19,8 @@ const URLTable = (props) => {
     filter: currentFilter
   } = props
 
-  let href = window.location.pathname
-
   const FilterLink = (props) => {
+    let href = window.location.pathname
     const { filterProp, children: linkContent } = props
     const search = new window.URLSearchParams(queryParams)
     const value = `${filterProp}:${linkContent}`
@@ -42,7 +41,7 @@ const URLTable = (props) => {
       )
     }
 
-    search.set('filter', value)
+    search.set('filter', window.encodeURIComponent(value))
     href += '?' + search
     return (
       <a
