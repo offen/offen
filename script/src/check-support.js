@@ -3,12 +3,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+// @ts-check
+
 module.exports = checkSupport
 
 // checkSupport ensures all features the application assumes present are
 // supported by the browser that is running the script.
 // It is important that this does use a callback interface
 // as it native Promises might not necessarily be supported.
+/** @type {(callback: (err: Error) => void) => void} */
 function checkSupport (callback) {
   var err = null
   if (!supportsIndexedDb()) {

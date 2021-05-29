@@ -3,11 +3,27 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+// @ts-check
+
 exports.pageview = pageview
 
+/**
+ *
+ * @typedef {Object} EventType
+ * @property {'PAGEVIEW'} type
+ * @property {string} href
+ * @property {string} [rawHref]
+ * @property {string} title
+ * @property {string} referrer
+ * @property {number} pageload
+ * @property {boolean} isMobile
+ */
+
+/** @type {(subsequent: boolean) => EventType} */
 function pageview (subsequent) {
   var canonicalLink = document.head.querySelector('link[rel="canonical"]')
   var canonicalHref = canonicalLink && canonicalLink.getAttribute('href')
+  /** @type {EventType} */
   var event = {
     type: 'PAGEVIEW',
     href: canonicalHref || window.location.href,
