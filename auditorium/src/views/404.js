@@ -17,7 +17,7 @@ const NotFoundView = () => (
 )
 
 module.exports = withLayout()(
-  withTitle('Not Found | Offen')(
+  withTitle(__('Not Found | %s', 'Offen'))(
     NotFoundView
   )
 )

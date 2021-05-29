@@ -94,7 +94,7 @@ const mapDispatchToProps = {
 module.exports = connect(mapStateToProps, mapDispatchToProps)(
   withLayout()(
     withAuth('/login/')(
-      withTitle(__('Console | Offen'))(
+      withTitle(__('Console | %s', 'Offen'))(
         ConsoleView
       )
     )

@@ -168,4 +168,4 @@ const mapDispatchToProps = {
 
 const ConnectedAuditoriumView = connect(mapStateToProps, mapDispatchToProps)(AuditoriumView)
 
-module.exports = withLayout()(withTitle(__('Auditorium | Offen'))(ConnectedAuditoriumView))
+module.exports = withLayout()(withTitle(__('Auditorium | %s', 'Offen'))(ConnectedAuditoriumView))
