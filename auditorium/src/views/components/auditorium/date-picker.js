@@ -25,8 +25,8 @@ module.exports = (props) => {
   const [endDate, setEndDate] = useState(to ? new Date(to) : new Date())
   const dateFormatProps = { year: 'numeric', month: 'long', day: 'numeric' }
 
-  let href = window.location.pathname
-  let searchParams = new window.URLSearchParams(queryParams)
+  const href = window.location.pathname
+  const searchParams = new window.URLSearchParams(queryParams)
   if (startDate && endDate) {
     searchParams.set('from', format(startDate, 'yyyy-MM-dd'))
     searchParams.set('to', format(endDate, 'yyyy-MM-dd'))

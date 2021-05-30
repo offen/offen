@@ -28,7 +28,7 @@ const URLTable = (props) => {
 
   const FilterLink = (props) => {
     let href = window.location.pathname
-    const { filterProp, children: linkContent } = props
+    const { filterProp, children: linkContent, isFallback } = props
     const search = new window.URLSearchParams(queryParams)
     const value = `${filterProp}:${linkContent}`
 
@@ -37,9 +37,10 @@ const URLTable = (props) => {
       if (search.toString()) {
         href += '?' + search
       }
+      const color = isFallback ? 'bg-dark-red' : 'bg-dark-green'
       return (
         <a
-          class='flex flex-nowrap-ns flex-wrap w-100 no-underline link dim dib br1 ph2 pv2 nt2 nb2 nl2 white bg-dark-green'
+          class={`flex flex-nowrap-ns flex-wrap w-100 no-underline link dim dib br1 ph2 pv2 nt2 nb2 nl2 white ${color}`}
           title={__('Remove this filter.')}
           href={href}
         >
@@ -104,6 +105,7 @@ const URLTable = (props) => {
             rows={model.pages}
             ItemDecorator={(props) => (
               <FilterLink
+                {...props}
                 filterProp='href'
               >
                 {props.children}
@@ -130,6 +132,7 @@ const URLTable = (props) => {
             rows={model.referrers}
             ItemDecorator={(props) => (
               <FilterLink
+                {...props}
                 filterProp='referrer'
               >
                 {props.children}
@@ -157,6 +160,7 @@ const URLTable = (props) => {
             rows={model.campaigns}
             ItemDecorator={(props) => (
               <FilterLink
+                {...props}
                 filterProp='campaign'
               >
                 {props.children}
@@ -184,6 +188,7 @@ const URLTable = (props) => {
             rows={model.sources}
             ItemDecorator={(props) => (
               <FilterLink
+                {...props}
                 filterProp='source'
               >
                 {props.children}
@@ -216,6 +221,7 @@ const URLTable = (props) => {
             rows={model.landingPages}
             ItemDecorator={(props) => (
               <FilterLink
+                {...props}
                 filterProp='landing'
               >
                 {props.children}
@@ -240,6 +246,7 @@ const URLTable = (props) => {
             rows={model.exitPages}
             ItemDecorator={(props) => (
               <FilterLink
+                {...props}
                 filterProp='exit'
               >
                 {props.children}
