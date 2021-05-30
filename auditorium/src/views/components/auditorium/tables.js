@@ -35,7 +35,9 @@ const Table = (props) => {
     emptyFallback
   } = props
 
+  let isFallback = false
   if (emptyFallback && Array.isArray(rows) && !rows.length) {
+    isFallback = true
     rows.push(emptyFallback)
   }
 
@@ -48,7 +50,7 @@ const Table = (props) => {
         <tr key={`outer-${index}`} class='striped--near-white'>
           <td class='truncate pv2 pl2 pr1' title={row.key}>
             {ItemDecorator
-              ? <ItemDecorator>{row.key}</ItemDecorator>
+              ? <ItemDecorator isFallback={isFallback}>{row.key}</ItemDecorator>
               : row.key}
           </td>
           {counts.map((count, index) => {
