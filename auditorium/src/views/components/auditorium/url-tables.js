@@ -39,11 +39,29 @@ const URLTable = (props) => {
       }
       return (
         <a
-          class='b link dim dark-green'
+          class='flex flex-nowrap-ns flex-wrap w-100 no-underline link dim dib br1 ph2 pv2 nt2 nr2 nb2 nl2 white bg-dark-green'
           title={__('Remove this filter.')}
           href={href}
         >
-          X {linkContent}
+          <div
+            class='order-1-ns order-2 nb2 mt0-ns mt2'
+          >
+            <svg width='16' height='17' viewBox='0 0 16 17' fill='none' xmlns='http://www.w3.org/2000/svg'>
+              <path d='M15.9317 0.49858C16.0603 0.848011 16.0073 1.14631 15.7728 1.39347L10.1787 7.69602V17.1818C10.1787 17.5398 10.0311 17.7912 9.73612 17.9361C9.63778 17.9787 9.54322 18 9.45244 18C9.24819 18 9.07798 17.919 8.94182 17.7571L6.03694 14.4844C5.89321 14.3224 5.82134 14.1307 5.82134 13.9091V7.69602L0.22718 1.39347C-0.00732838 1.14631 -0.0602819 0.848011 0.0683195 0.49858C0.196921 0.166193 0.420082 0 0.737803 0H15.2622C15.5799 0 15.8031 0.166193 15.9317 0.49858Z' fill='white' />
+            </svg>
+          </div>
+          <div
+            class='order-2-ns order-1 w-100 b truncate ml2-ns ml0'
+          >
+            {linkContent}
+          </div>
+          <div
+            class='order-3 mt0-ns mt2 ml2 ml0-ns'
+          >
+            <div
+              class='filter-close-icon'
+            />
+          </div>
         </a>
       )
     }
@@ -52,6 +70,7 @@ const URLTable = (props) => {
     href += '?' + search
     return (
       <a
+        class='b link dim dark-green'
         title={__('Filter current view by this item.')}
         href={href}
       >
