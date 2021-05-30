@@ -20,14 +20,18 @@ const localeMap = {
 }
 
 module.exports = (props) => {
-  const { onClose, from, to } = props
+  const { onClose, from, to, queryParams } = props
   const [startDate, setStartDate] = useState(from ? new Date(from) : new Date())
   const [endDate, setEndDate] = useState(to ? new Date(to) : new Date())
   const dateFormatProps = { year: 'numeric', month: 'long', day: 'numeric' }
 
-  let url = window.location.pathname
+  let href = window.location.pathname
+  let searchParams = new window.URLSearchParams(queryParams)
   if (startDate && endDate) {
-    url = `${url}?from=${format(startDate, 'yyyy-MM-dd')}&to=${format(endDate, 'yyyy-MM-dd')}`
+    searchParams.set('from', format(startDate, 'yyyy-MM-dd'))
+    searchParams.set('to', format(endDate, 'yyyy-MM-dd'))
+    searchParams.delete('range')
+    searchParams.delete('resolution')
   }
 
   const now = new Date()
@@ -81,7 +85,7 @@ module.exports = (props) => {
           <div class='flex justify-center'>
             <a
               onclick={onClose}
-              href={url}
+              href={href + (searchParams.toString() ? `?${searchParams}` : '')}
               class='f5 tc no-underline dim bn ph4 pv2 dib br1 white bg-dark-green'
             >
               {__('Select')}
