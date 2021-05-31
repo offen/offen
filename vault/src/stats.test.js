@@ -183,13 +183,12 @@ describe('src/stats.js', function () {
   describe('stats.referrers(events)', function () {
     it('returns sorted referrer values from foreign domains grouped by host', function () {
       return stats.referrers([
-        { payload: {} },
-        { payload: { sessionId: 'session-a', href: new window.URL('https://www.mysite.com/x'), referrer: new window.URL('https://www.example.net/foo') } },
-        { payload: { sessionId: 'session-a', href: new window.URL('https://www.mysite.com/y'), referrer: new window.URL('https://www.example.net/bar') } },
-        { payload: { sessionId: 'session-b', href: new window.URL('https://www.mysite.com/z'), referrer: new window.URL('https://www.example.net/baz') } },
-        { payload: { sessionId: 'session-b', href: new window.URL('https://www.mysite.com/a'), referrer: new window.URL('https://www.example.net/baz') } },
-        { payload: { sessionId: 'session-c', href: new window.URL('https://www.mysite.com/x'), referrer: new window.URL('https://beep.boop/#!foo=bar') } },
-        { payload: { sessionId: 'session-d', href: new window.URL('https://www.mysite.com/x'), referrer: new window.URL('https://www.mysite.com/a') } }
+        { payload: { sessionId: 'session-a', href: new window.URL('https://www.mysite.com/x'), $referrer: 'www.example.net' } },
+        { payload: { sessionId: 'session-a', href: new window.URL('https://www.mysite.com/y'), $referrer: 'www.example.net' } },
+        { payload: { sessionId: 'session-b', href: new window.URL('https://www.mysite.com/z'), $referrer: 'www.example.net' } },
+        { payload: { sessionId: 'session-b', href: new window.URL('https://www.mysite.com/a'), $referrer: 'www.example.net' } },
+        { payload: { sessionId: 'session-c', href: new window.URL('https://www.mysite.com/x'), $referrer: 'beep.boop' } },
+        { payload: { sessionId: 'session-d', href: new window.URL('https://www.mysite.com/x'), $referrer: null } }
       ])
         .then(function (result) {
           assert.deepStrictEqual(result, [
@@ -209,7 +208,6 @@ describe('src/stats.js', function () {
   describe('stats.campaigns(events)', function () {
     it('returns sorted referrer campaigns from foreign domains grouped by host', function () {
       return stats.campaigns([
-        { payload: {} },
         { payload: { sessionId: 'session-a', href: new window.URL('https://www.example.net/foo?utm_campaign=beep') } },
         { payload: { sessionId: 'session-b', href: new window.URL('https://www.example.net/bar?something=12&utm_campaign=boop') } },
         { payload: { sessionId: 'session-b', href: new window.URL('https://www.example.net/baz') } },
@@ -403,22 +401,22 @@ describe('src/stats.js', function () {
         {
           eventId: 'event-a',
           accountId: 'account-a',
-          payload: { referrer: new window.URL('https://www.coolblog.com/nice-article'), href: new window.URL('https://www.offen.dev'), isMobile: false }
+          payload: { $referrer: 'www.coolblog.com', href: new window.URL('https://www.offen.dev'), isMobile: false }
         },
         {
           eventId: 'event-z',
           accountId: 'account-a',
-          payload: { referrer: new window.URL('https://www.coolblog.com/ok'), href: new window.URL('https://www.offen.dev/get-started'), isMobile: false }
+          payload: { $referrer: 'www.coolblog.com', href: new window.URL('https://www.offen.dev/get-started'), isMobile: false }
         },
         {
           eventId: 'event-b',
           accountId: 'account-b',
-          payload: { referrer: new window.URL('https://www.coolblog.com/other'), href: new window.URL('https://www.example.com'), isMobile: true }
+          payload: { $referrer: 'www.coolblog.com', href: new window.URL('https://www.example.com'), isMobile: true }
         },
         {
           eventId: 'event-x',
           accountId: 'account-a',
-          payload: { referrer: new window.URL('https://www.coolblog.com/something'), href: new window.URL('https://www.offen.dev'), isMobile: false }
+          payload: { $referrer: 'www.coolblog.com', href: new window.URL('https://www.offen.dev'), isMobile: false }
         }
       ])
         .then(function (result) {

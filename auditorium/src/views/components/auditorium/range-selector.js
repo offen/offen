@@ -24,18 +24,29 @@ const predefinedRanges = [
 const RangeSelector = (props) => {
   const {
     resolution, range: currentRange, showExplainer, onExplain, explainerActive,
-    from, to
+    from, to, queryParams
   } = props
 
   const [showDatepicker, setShowDatepicker] = useState(false)
 
   const items = predefinedRanges.map(function (range, index) {
     let url = window.location.pathname
+    const search = new window.URLSearchParams(queryParams)
+    search.delete('from')
+    search.delete('to')
     const activeRange = !from && !to &&
       JSON.stringify({ range: currentRange, resolution }) === JSON.stringify(range.query || {})
 
     if (range.query) {
-      url += '?' + new window.URLSearchParams(range.query)
+      for (const key in range.query) {
+        search.set(key, range.query[key])
+      }
+    } else {
+      search.delete('range')
+      search.delete('resolution')
+    }
+    if (search.toString()) {
+      url += '?' + search
     }
 
     return (
@@ -46,7 +57,6 @@ const RangeSelector = (props) => {
           range.opensSecondBlock ? 'fixed-ranges-start pl4-ns' : null,
           range.endsFirstBlock ? 'br-ns' : null,
           range.endsSecondBlock ? 'pr4' : null
-
         )}
       >
         <a
@@ -136,8 +146,7 @@ const RangeSelector = (props) => {
       {showDatepicker
         ? (
           <DatePicker
-            from={from}
-            to={to}
+            queryParams={queryParams}
             onClose={() => setShowDatepicker(false)}
           />
         )
