@@ -25,7 +25,7 @@ const ExplainerContent = (props) => {
 
 const Table = (props) => {
   const {
-    rows,
+    rows: originalRows,
     formatAs = ['count'],
     onEmptyMessage = __('No data available for this view.'),
     limit = 10,
@@ -35,12 +35,12 @@ const Table = (props) => {
     emptyFallback
   } = props
 
-  let isFallback = false
-  if (emptyFallback && Array.isArray(rows) && !rows.length) {
-    isFallback = true
-    rows.push(emptyFallback)
-  }
+  let rows = [...(originalRows || [])]
+  const isFallback = emptyFallback && rows.length === 0
 
+  if (isFallback) {
+    rows = [emptyFallback]
+  }
   const hasMore = Array.isArray(rows) && rows.length > limit
 
   const tBody = Array.isArray(rows) && rows.length
@@ -157,12 +157,16 @@ const Container = (props) => {
     if (!set.props.headline) {
       return null
     }
+
+    const isFallback = set.props.emptyFallback &&
+      (!set.props.rows || (Array.isArray(set.props.rows) && set.props.rows.length === 0))
     var css = []
     if (tableSets.length === 1) {
       css.push('f5', 'normal', 'dib', 'pv3')
     }
     if (tableSets.length > 1) {
-      css.push('f5', 'b', 'normal', 'link', 'dim', 'dib', 'pt2', 'pb2', 'ph2', 'mr2', 'dark-green')
+      css.push('f5', 'b', 'normal', 'link', 'dim', 'dib', 'pt2', 'pb2', 'ph2', 'mr2')
+      css.push(isFallback ? 'dark-red' : 'dark-green')
     }
 
     let handleClick = null
@@ -172,7 +176,8 @@ const Container = (props) => {
       handleClick = () => setSelectedTab(index)
     }
     if (index === selectedTab && tableSets.length !== 1) {
-      css.push('bt', 'bw2', 'b--dark-green')
+      css.push('bt', 'bw2')
+      css.push(isFallback ? 'b--dark-red' : 'b--dark-green')
       ariaLabels['aria-current'] = 'true'
     }
 
