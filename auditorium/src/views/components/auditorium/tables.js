@@ -76,7 +76,7 @@ const Table = (props) => {
   const [keyName, ...valueNames] = props.columnNames
   return (
     <Fragment>
-      <table class='collapse w-100 dt--fixed-ns mb2'>
+      <table class='collapse w-100 dt--fixed-ns'>
         <thead>
           <tr>
             <th class='f6 normal tl pv2 pl2 pr1 mid-gray'>
@@ -104,23 +104,31 @@ const Table = (props) => {
         }
         if (showAll) {
           return (
-            <a
-              data-role='button'
-              class='b normal link dim dark-green pointer'
-              onclick={() => setShowAll(false)}
+            <div
+              class='bt b--light-gray pt3 mb2'
             >
-              {__('Show top %d only', limit)}
-            </a>
+              <a
+                data-role='button'
+                class='b normal link dim dark-green pointer'
+                onclick={() => setShowAll(false)}
+              >
+                {__('Show top %d only', limit)}
+              </a>
+            </div>
           )
         }
         return (
-          <a
-            data-role='button'
-            class='b normal link dim dark-green pointer'
-            onclick={() => setShowAll(true)}
+          <div
+            class='bt b--light-gray pt3 mb2'
           >
-            {__('Show all entries')}
-          </a>
+            <a
+              data-role='button'
+              class='b normal link dim dark-green pointer'
+              onclick={() => setShowAll(true)}
+            >
+              {__('Show all entries')}
+            </a>
+          </div>
         )
       })()}
     </Fragment>

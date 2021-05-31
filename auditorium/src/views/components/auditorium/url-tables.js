@@ -52,7 +52,7 @@ const URLTable = (props) => {
             </svg>
           </div>
           <div
-            class='order-2-ns order-1 w-100 b truncate ml2-ns ml0'
+            class='order-2-ns order-1 w-100 truncate ml2-ns ml0'
           >
             {linkContent}
           </div>
@@ -71,7 +71,7 @@ const URLTable = (props) => {
     href += '?' + search
     return (
       <a
-        class='b link dim dark-green'
+        class='link dim dark-green'
         title={__('Filter current view by this item.')}
         href={href}
       >
