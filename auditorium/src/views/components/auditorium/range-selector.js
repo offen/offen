@@ -147,6 +147,8 @@ const RangeSelector = (props) => {
         ? (
           <DatePicker
             queryParams={queryParams}
+            from={from}
+            to={to}
             onClose={() => setShowDatepicker(false)}
           />
         )
