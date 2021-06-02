@@ -193,6 +193,7 @@ describe('src/stats.js', function () {
         .then(function (result) {
           assert.deepStrictEqual(result, [
             { key: 'www.example.net', count: [2, 2] },
+            { key: '__NONE_REFERRER__', count: [1, 1] },
             { key: 'beep.boop', count: [1, 1] }
           ])
         })

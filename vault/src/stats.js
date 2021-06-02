@@ -118,18 +118,20 @@ function _queryParam (key) {
 exports.sources = consumeAsync(_queryParam('utm_source'))
 
 function _referrers (events, groupFn) {
-  var uniqueForeign = _.chain(events)
+  var split = _.chain(events)
     .groupBy(propertyAccessors.sessionId)
     .pairs()
     .map(function (pair) {
-      return _.findWhere(pair[1], propertyAccessors.computedReferrer)
+      return _.findWhere(pair[1], propertyAccessors.computedReferrer) || pair[1][0]
     })
-    .filter(_.identity)
-    .uniq()
+    .partition(propertyAccessors.computedReferrer)
     .value()
 
-  var sessionIds = _.map(uniqueForeign, propertyAccessors.sessionId)
-  var values = groupFn(uniqueForeign)
+  var uniqeForeign = split[0]
+  var none = split[1]
+
+  var sessionIds = _.map(uniqeForeign, propertyAccessors.sessionId)
+  var values = groupFn(uniqeForeign)
   return _.chain(values)
     .zip(sessionIds)
     .filter(_.head)
@@ -151,6 +153,22 @@ function _referrers (events, groupFn) {
           numSessions,
           associatedViews.length / numSessions
         ]
+      }
+    })
+    .tap(function (rows) {
+      if (none.length) {
+        var noneViews = _.chain(none)
+          .map(function (event) {
+            var sessionId = event.payload.sessionId
+            return _.filter(events, function (event) {
+              return event.payload.sessionId === sessionId
+            }).length
+          })
+          .reduce(function (acc, next) {
+            return acc + next
+          }, 0)
+          .value()
+        rows.push({ key: '__NONE_REFERRER__', count: [none.length, noneViews / none.length] })
       }
     })
     .sortBy(function (row) { return row.count[0] })
