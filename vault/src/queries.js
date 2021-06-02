@@ -323,7 +323,7 @@ function validateAndParseEvent (event) {
   Object.assign(clone.payload, {
     $referrer: clone.payload.referrer && clone.payload.referrer.host !== clone.payload.href.host
       ? placeInBucket(clone.payload.referrer.host)
-      : null
+      : '__NONE_REFERRER__'
   })
 
   return clone

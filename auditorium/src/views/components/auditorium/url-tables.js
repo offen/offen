@@ -14,9 +14,9 @@ const Paragraph = require('./../_shared/paragraph')
 
 const FilterLink = (props) => {
   let href = window.location.pathname
-  const { filterProp, children: linkContent, isFallback, queryParams, filter } = props
+  const { filterProp, filterValue, children: linkContent, isFallback, queryParams, filter } = props
   const search = new window.URLSearchParams(queryParams)
-  const value = `${filterProp}:${linkContent}`
+  const value = `${filterProp}:${filterValue || linkContent}`
   if (value === filter) {
     search.delete('filter')
     if (search.toString()) {
@@ -128,16 +128,23 @@ const URLTable = (props) => {
             columnNames={[__('Host'), __('Sessions'), __('Page depth')]}
             formatAs={['count', 'value']}
             rows={model.referrers}
-            ItemDecorator={(props) => (
-              <FilterLink
-                {...props}
-                filterProp='referrer'
-                queryParams={queryParams}
-                filter={model.filter}
-              >
-                {props.children}
-              </FilterLink>
-            )}
+            ItemDecorator={(props) => {
+              let content = props.children
+              if (content === '__NONE_REFERRER__') {
+                content = (<i>{__('None')}</i>)
+              }
+              return (
+                <FilterLink
+                  {...props}
+                  filterProp='referrer'
+                  filterValue={props.children}
+                  queryParams={queryParams}
+                  filter={model.filter}
+                >
+                  {content}
+                </FilterLink>
+              )
+            }}
             explainer={(props) => {
               return (
                 <Paragraph class='mw7 ma0 ph1 pv2 ws-normal'>
