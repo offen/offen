@@ -29,6 +29,9 @@ exports.Referrer = makeSessionFilter(function (session, filter) {
   var sessionEntry = _.findWhere(session, function (event) {
     return event.payload.$referrer
   })
+  if (filter === '__NONE_REFERRER__') {
+    return sessionEntry && !sessionEntry.payload.$referrer
+  }
   return sessionEntry && sessionEntry.payload.$referrer === filter
 })
 
