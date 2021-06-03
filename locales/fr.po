@@ -7,14 +7,14 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: POEditor.com\n"
 
+msgid "Checking your consent status"
+msgstr "Vérification de votre statut de consentement"
+
 msgid "This instance is already set up."
 msgstr "Cette instance est déjà configurée."
 
 msgid "Preparing setup..."
 msgstr "Préparation de l'installation  ..."
-
-msgid "Checking your consent status"
-msgstr "Vérification de votre statut de consentement"
 
 msgid "Could not log in using the given credentials. Try again."
 msgstr "Impossible de se connecter à l'aide des informations d'identification fournies. Essayer à nouveau."
@@ -65,6 +65,10 @@ msgstr "Sessions"
 
 msgid "Page depth"
 msgstr "Profondeur de page"
+
+# src/views/components/auditorium/url-tables.js:134
+msgid "None"
+msgstr ""
 
 msgid "A list of referrers that directed you to pages of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation.</a> Popular referrers like, for example, Google or Twitter display their proper name, others their domain."
 msgstr "Une liste des sites référents qui vous ont dirigé vers des pages de l'<a href=\"#terms-offen-installation\" class=\"%s\">installation Offen.</a> Les référents populaires comme, par exemple, Google ou Twitter affichent leur nom propre, d'autres leur domaine."
@@ -180,9 +184,6 @@ msgstr "%d jours plus tard"
 msgid "%d days earlier"
 msgstr "%d jours plus tôt"
 
-msgid "Select"
-msgstr "Sélectionner"
-
 msgid "Real time"
 msgstr "Temps réel"
 
@@ -194,6 +195,9 @@ msgstr "Pages actives"
 
 msgid "Visitors"
 msgstr "Visiteurs"
+
+msgid "Select"
+msgstr "Sélectionner"
 
 msgid "Choose account"
 msgstr "Choisir un compte"
@@ -369,12 +373,6 @@ msgstr "Vous visualisez les données en tant qu'opérateur avec le compte <em cl
 msgid "You are viewing your usage data."
 msgstr "Vous consultez vos données d'utilisation."
 
-msgid "Weekly retention"
-msgstr "Rétention hebdomadaire"
-
-msgid "This panel displays your recurring visits of pages of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation</a> during the last 4 weeks. For each of the previous weeks, the percentage is calculated from the value of the current week."
-msgstr "Ce panneau affiche vos visites récurrentes des pages de l'<a href=\"#terms-offen-installation\" class=\"%s\">installation Offen</a> au cours des 4 dernières semaines. Pour chacune des semaines précédentes, le pourcentage est calculé à partir de la valeur de la semaine en cours."
-
 msgid "Your custom CSS here"
 msgstr "Votre CSS personnalisé ici"
 
@@ -410,6 +408,69 @@ msgstr "Appliquer vos styles personnalisés aux bannières de consentement pour 
 
 msgid "Apply styles"
 msgstr "Appliquer les styles"
+
+msgid "Weekly retention"
+msgstr "Rétention hebdomadaire"
+
+msgid "This panel displays your recurring visits of pages of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation</a> during the last 4 weeks. For each of the previous weeks, the percentage is calculated from the value of the current week."
+msgstr "Ce panneau affiche vos visites récurrentes des pages de l'<a href=\"#terms-offen-installation\" class=\"%s\">installation Offen</a> au cours des 4 dernières semaines. Pour chacune des semaines précédentes, le pourcentage est calculé à partir de la valeur de la semaine en cours."
+
+msgid "Skip"
+msgstr "Passer"
+
+msgid "Welcome to the Auditorium, this is how it works."
+msgstr "Bienvenue dans l'Auditorium, voici comment cela fonctionne."
+
+msgid "What <span class=\"%s\">%s</span> knows about you."
+msgstr "Ce que <span class=\"%s\">%s</span> sait de vous."
+
+msgid "You just visited the page <span class=\"%s\">%s</span> ."
+msgstr "Vous venez de visiter la page <span class=\"%s\">%s</span> ."
+
+msgid "You just visited this website."
+msgstr "Vous venez de visiter ce site Web."
+
+msgid "You have visited <span class=\"%s\">%s %d</span> times."
+msgstr "Vous avez visité la page <span class=\"%s\">%s</span> ."
+
+msgid "It is probably your first time visiting <span class=\"%s\">%s</span> ."
+msgstr "Il s'agit probablement de la première fois que vous visitez <span class=\"%s\">%s</span> ."
+
+msgid "You came via <span class=\"%s\">%s</span> ."
+msgstr "Vous êtes venu via <span class=\"% s\">%s</span>."
+
+msgid "Most likely you are on a <span class=\"%s\">%s</span>."
+msgstr "Vous êtes probablement sur un <span class=\"%s\">%s</span>."
+
+msgid "mobile device"
+msgstr "périphérique mobile"
+
+msgid "desktop device"
+msgstr "appareil de bureau"
+
+msgid "Next"
+msgstr "Suivant"
+
+msgid "Your data always stays yours."
+msgstr "Vos données restent toujours les vôtres."
+
+msgid "Review your data in the Auditorium. You can delete your data or opt out completely at any time in the Privacy tab."
+msgstr "Passez en revue vos données dans l'Auditorium. Vous pouvez supprimer vos données ou retirer votre consentement complètement à tout moment dans l'onglet Confidentialité."
+
+msgid "Click this symbol to display detailed explanations of the respective terms."
+msgstr "Cliquez sur ce symbole pour afficher des explications détaillées sur les termes respectifs."
+
+msgid "Bookmark this page to come back later."
+msgstr "Placez un favori sur cette page pour y revenir plus tard."
+
+msgid "Get an overall picture of your data collected over time. Come back here anytime to see what <span class=\"%s\">%s</span> knows about you."
+msgstr "Obtenez une vue d'ensemble de vos données collectées au fil du temps. Revenez ici à tout moment pour voir ce que <span class=\"%s\">%s</span> sait de vous."
+
+msgid "Now let's get started!"
+msgstr "Maintenant, commençons !"
+
+msgid "Open Auditorium"
+msgstr "Ouvrir l'Auditorium"
 
 msgid "Page views and %s"
 msgstr "Pages vues et %s"
@@ -479,63 +540,6 @@ msgstr "Consentir"
 
 msgid "To review your data collected over time, <br class=\"dn db-l\">set a bookmark for this page."
 msgstr "Pour passer en revue vos données collectées<br class=\"dn db-l\">au fil du temps, définissez un signet pour cette page."
-
-msgid "Skip"
-msgstr "Passer"
-
-msgid "Welcome to the Auditorium, this is how it works."
-msgstr "Bienvenue dans l'Auditorium, voici comment cela fonctionne."
-
-msgid "What <span class=\"%s\">%s</span> knows about you."
-msgstr "Ce que <span class=\"%s\">%s</span> sait de vous."
-
-msgid "You just visited the page <span class=\"%s\">%s</span> ."
-msgstr "Vous venez de visiter la page <span class=\"%s\">%s</span> ."
-
-msgid "You just visited this website."
-msgstr "Vous venez de visiter ce site Web."
-
-msgid "You have visited <span class=\"%s\">%s %d</span> times."
-msgstr "Vous avez visité la page <span class=\"%s\">%s</span> ."
-
-msgid "It is probably your first time visiting <span class=\"%s\">%s</span> ."
-msgstr "Il s'agit probablement de la première fois que vous visitez <span class=\"%s\">%s</span> ."
-
-msgid "You came via <span class=\"%s\">%s</span> ."
-msgstr "Vous êtes venu via <span class=\"% s\">%s</span>."
-
-msgid "Most likely you are on a <span class=\"%s\">%s</span>."
-msgstr "Vous êtes probablement sur un <span class=\"%s\">%s</span>."
-
-msgid "mobile device"
-msgstr "périphérique mobile"
-
-msgid "desktop device"
-msgstr "appareil de bureau"
-
-msgid "Next"
-msgstr "Suivant"
-
-msgid "Your data always stays yours."
-msgstr "Vos données restent toujours les vôtres."
-
-msgid "Review your data in the Auditorium. You can delete your data or opt out completely at any time in the Privacy tab."
-msgstr "Passez en revue vos données dans l'Auditorium. Vous pouvez supprimer vos données ou retirer votre consentement complètement à tout moment dans l'onglet Confidentialité."
-
-msgid "Click this symbol to display detailed explanations of the respective terms."
-msgstr "Cliquez sur ce symbole pour afficher des explications détaillées sur les termes respectifs."
-
-msgid "Bookmark this page to come back later."
-msgstr "Placez un favori sur cette page pour y revenir plus tard."
-
-msgid "Get an overall picture of your data collected over time. Come back here anytime to see what <span class=\"%s\">%s</span> knows about you."
-msgstr "Obtenez une vue d'ensemble de vos données collectées au fil du temps. Revenez ici à tout moment pour voir ce que <span class=\"%s\">%s</span> sait de vous."
-
-msgid "Now let's get started!"
-msgstr "Maintenant, commençons !"
-
-msgid "Open Auditorium"
-msgstr "Ouvrir l'Auditorium"
 
 msgid "You have been logged out."
 msgstr "Vous avez été déconnecté."
@@ -624,27 +628,6 @@ msgstr "Merci de vous identifier en utilisant vos identifiants."
 msgid "Checking authentication"
 msgstr "Vérification de l'authentification"
 
-msgid "weak"
-msgstr "faible"
-
-msgid "low"
-msgstr "bas"
-
-msgid "ok"
-msgstr "ok"
-
-msgid "strong"
-msgstr "robuste"
-
-msgid "very strong"
-msgstr "très robuste"
-
-msgid "Your password needs to be at least 8 characters long."
-msgstr "Votre mot de passe doit comporter au moins 8 caractères."
-
-msgid "Password strength: %s"
-msgstr "Force du mot de passe : %s"
-
 msgid "You cannot invite yourself."
 msgstr "Vous ne pouvez pas vous inviter."
 
@@ -669,6 +652,27 @@ msgstr "Inviter un utilisateur"
 msgid "Your email address"
 msgstr "Votre adresse de courriel"
 
+msgid "weak"
+msgstr "faible"
+
+msgid "low"
+msgstr "bas"
+
+msgid "ok"
+msgstr "ok"
+
+msgid "strong"
+msgstr "robuste"
+
+msgid "very strong"
+msgstr "très robuste"
+
+msgid "Your password needs to be at least 8 characters long."
+msgstr "Votre mot de passe doit comporter au moins 8 caractères."
+
+msgid "Password strength: %s"
+msgstr "Force du mot de passe : %s"
+
 msgid "Offen Auditorium"
 msgstr "Auditorium Offen"
 
@@ -691,6 +695,33 @@ msgstr "Vous avez un souci, besoin d'aide ou souhaitez ajouter quelque chose ?<b
 
 msgid "One moment..."
 msgstr "Un instant ..."
+
+msgid "You can now log in using the provided credentials."
+msgstr "Vous pouvez maintenant vous connecter à l'aide des informations d'identification fournies."
+
+msgid "Could not handle your request, please try again."
+msgstr "Impossible de traiter votre requête, merci de réessayer."
+
+msgid "Set up your instance by creating your first account."
+msgstr "Configurez votre instance en créant votre premier compte."
+
+msgid "The account name"
+msgstr "Le nom du compte"
+
+msgid "Repeat password"
+msgstr "Répéter le mot de passe"
+
+msgid "Setup instance"
+msgstr "Configurer l'instance"
+
+msgid "You have opted in."
+msgstr "Vous avez consenti."
+
+msgid "You have opted out."
+msgstr "Vous avez retiré votre consentement."
+
+msgid "It seems like your browser is blocking cookies."
+msgstr "Il semble que votre navigateur bloque les cookies."
 
 msgid "How can I review and delete my usage data or opt out?"
 msgstr "Comment puis-je réviser et supprimer mes données d'utilisation ou retirer mon consentement ?"
@@ -721,33 +752,6 @@ msgstr "Oui, en particulier les cookies sont utilisés pour stocker votre décis
 
 msgid "After opening a website where an Offen installation is active, you can explicitly opt in to the data collection and thereby help to improve the services you use. Only then you will be assigned a user and a session ID using a cookie. Offen handles these IDs in an unrecognizable form. <a href=\"https://en.wikipedia.org/wiki/HTTP_cookie\" class=\"%s\" target=\"_blank\" rel=\"noreferer noopener\">Learn more about cookies here.</a>"
 msgstr "Après avoir ouvert un site Web sur lequel une installation Offen est active, vous pouvez explicitement consentir à la collecte de données et ainsi contribuer à améliorer les services que vous utilisez. Ce n'est qu'alors qu'un utilisateur et un identifiant de session vous seront attribués à l'aide d'un cookie. Offen gère ces identifiants sous une forme non reconnaissable. <a href=\"https://fr.wikipedia.org/wiki/Cookie_(informatique)\" class=\"%s\" target=\"_blank\" rel=\"noreferer noopener\">Apprenez-en plus sur les cookies ici.</a>"
-
-msgid "You can now log in using the provided credentials."
-msgstr "Vous pouvez maintenant vous connecter à l'aide des informations d'identification fournies."
-
-msgid "Could not handle your request, please try again."
-msgstr "Impossible de traiter votre requête, merci de réessayer."
-
-msgid "Set up your instance by creating your first account."
-msgstr "Configurez votre instance en créant votre premier compte."
-
-msgid "The account name"
-msgstr "Le nom du compte"
-
-msgid "Repeat password"
-msgstr "Répéter le mot de passe"
-
-msgid "Setup instance"
-msgstr "Configurer l'instance"
-
-msgid "You have opted in."
-msgstr "Vous avez consenti."
-
-msgid "You have opted out."
-msgstr "Vous avez retiré votre consentement."
-
-msgid "It seems like your browser is blocking cookies."
-msgstr "Il semble que votre navigateur bloque les cookies."
 
 msgid "Are you the operator of this Offen installation? Log in to your account."
 msgstr "Êtes-vous l'opérateur de cette installation d'Offen ? Connectez-vous."
@@ -781,15 +785,6 @@ msgstr "J'autorise"
 msgid "I don't allow"
 msgstr "Je n'autorise pas"
 
-msgid "Check your inbox and follow the instructions in the email."
-msgstr "Vérifiez votre boîte de réception et suivez les instructions contenues dans le courriel."
-
-msgid "Request link to reset password"
-msgstr "Demander un lien pour réinitialiser le mot de passe"
-
-msgid "Send Email"
-msgstr "Envoyer un courriel"
-
 msgid "There has been an error resetting your password, please try again."
 msgstr "Une erreur s'est produite lors de la réinitialisation de votre mot de passe, veuillez réessayer."
 
@@ -810,6 +805,15 @@ msgstr "Rejoindre Offen"
 
 msgid "Accept invite"
 msgstr "Accepter l'invitation"
+
+msgid "Check your inbox and follow the instructions in the email."
+msgstr "Vérifiez votre boîte de réception et suivez les instructions contenues dans le courriel."
+
+msgid "Request link to reset password"
+msgstr "Demander un lien pour réinitialiser le mot de passe"
+
+msgid "Send Email"
+msgstr "Envoyer un courriel"
 
 msgid "This view failed to update automatically, data may be out of date. Check your network connection if the problem persists."
 msgstr "Cette vue n'a pas pu être mise à jour automatiquement, les données peuvent être obsolètes. Vérifiez votre connexion réseau si le problème persiste."
