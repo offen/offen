@@ -58,10 +58,62 @@ function bounceRate (events) {
 exports.referrers = consumeAsync(referrers)
 
 function referrers (events) {
-  return _referrers(events, function (set) {
-    return set
-      .map(propertyAccessors.computedReferrer)
-  })
+  var countsBySession = _.countBy(events, propertyAccessors.sessionId)
+  var split = _.chain(events)
+    .groupBy(propertyAccessors.sessionId)
+    .pairs()
+    .map(function (pair) {
+      return _.findWhere(pair[1], propertyAccessors.computedReferrer) || pair[1][0]
+    })
+    .partition(propertyAccessors.computedReferrer)
+    .value()
+
+  var foreignEvents = split[0]
+  var noneEvents = split[1]
+
+  return _.chain(foreignEvents)
+    .map(propertyAccessors.computedReferrer)
+    .zip(_.map(foreignEvents, propertyAccessors.sessionId))
+    .filter(_.head)
+    .groupBy(_.head)
+    .pairs()
+    .map(function (pair) {
+      var sessions = _.chain(pair[1])
+        .map(function (pair) {
+          return _.last(pair)
+        })
+        .uniq()
+        .value()
+      var numSessions = _.size(sessions)
+      var associatedViews = _.reduce(sessions, function (acc, sessionId) {
+        return acc + countsBySession[sessionId]
+      }, 0)
+      return {
+        key: pair[0],
+        count: [
+          numSessions,
+          associatedViews / numSessions
+        ]
+      }
+    })
+    .tap(function (rows) {
+      if (!noneEvents.length) {
+        return
+      }
+      var noneViewCount = _.chain(noneEvents)
+        .reduce(function (acc, event) {
+          var sessionId = event.payload.sessionId
+          return acc + countsBySession[sessionId]
+        }, 0)
+        .value()
+      rows.push({
+        key: '__NONE_REFERRER__',
+        count: [noneEvents.length, noneViewCount / noneEvents.length]
+      })
+    })
+    .sortBy(function (row) { return row.count[0] })
+    .reverse()
+    .value()
 }
 
 // `campaigns` groups the referrer values by their `utm_campaign` if present
@@ -69,6 +121,8 @@ exports.campaigns = consumeAsync(_queryParam('utm_campaign'))
 
 function _queryParam (key) {
   return function (events) {
+    var countsBySession = _.countBy(events, propertyAccessors.sessionId)
+
     return _.chain(events)
       .filter(propertyAccessors.href)
       .map(function (event) {
@@ -91,13 +145,9 @@ function _queryParam (key) {
         var associatedViews = _.chain(items)
           .pluck('sessionId')
           .uniq()
-          .map(function (sessionId) {
-            return events.filter(function (event) {
-              return event.payload.sessionId === sessionId
-            })
-          })
-          .flatten(true)
-          .size()
+          .reduce(function (acc, sessionId) {
+            return acc + countsBySession[sessionId]
+          }, 0)
           .value()
 
         return {
@@ -116,65 +166,6 @@ function _queryParam (key) {
 
 // `sources` groups the referrer values by their `utm_source` if present
 exports.sources = consumeAsync(_queryParam('utm_source'))
-
-function _referrers (events, groupFn) {
-  var split = _.chain(events)
-    .groupBy(propertyAccessors.sessionId)
-    .pairs()
-    .map(function (pair) {
-      return _.findWhere(pair[1], propertyAccessors.computedReferrer) || pair[1][0]
-    })
-    .partition(propertyAccessors.computedReferrer)
-    .value()
-
-  var uniqeForeign = split[0]
-  var none = split[1]
-
-  var sessionIds = _.map(uniqeForeign, propertyAccessors.sessionId)
-  var values = groupFn(uniqeForeign)
-  return _.chain(values)
-    .zip(sessionIds)
-    .filter(_.head)
-    .groupBy(_.head)
-    .pairs()
-    .map(function (pair) {
-      var sessions = _.reduce(pair[1], function (acc, next) {
-        acc[_.last(next)] = true
-        return acc
-      }, {})
-      var numSessions = _.size(sessions)
-      var associatedViews = _.filter(events, function (event) {
-        return event.payload.sessionId &&
-          sessions[event.payload.sessionId]
-      })
-      return {
-        key: pair[0],
-        count: [
-          numSessions,
-          associatedViews.length / numSessions
-        ]
-      }
-    })
-    .tap(function (rows) {
-      if (none.length) {
-        var noneViews = _.chain(none)
-          .map(function (event) {
-            var sessionId = event.payload.sessionId
-            return _.filter(events, function (event) {
-              return event.payload.sessionId === sessionId
-            }).length
-          })
-          .reduce(function (acc, next) {
-            return acc + next
-          }, 0)
-          .value()
-        rows.push({ key: '__NONE_REFERRER__', count: [none.length, noneViews / none.length] })
-      }
-    })
-    .sortBy(function (row) { return row.count[0] })
-    .reverse()
-    .value()
-}
 
 // `pages` contains all pages visited sorted by the number of pageviews.
 // URLs are stripped off potential query strings and hash parameters
