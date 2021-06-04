@@ -16,7 +16,11 @@ function HrefFilter (filter) {
   var self = this
   this.apply = function (events) {
     return _.filter(events, function (event) {
-      return event.payload.href && event.payload.href.toString() === filter
+      if (!event.payload.href) {
+        return false
+      }
+      var strippedHref = event.payload.href.origin + event.payload.href.pathname
+      return strippedHref === filter
     })
   }
 
