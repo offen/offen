@@ -12,14 +12,13 @@
 
 var _ = require('underscore')
 
-var placeInBucket = require('./buckets')
-
 var propertyAccessors = {
   sessionId: _.property(['payload', 'sessionId']),
   href: _.property(['payload', 'href']),
   timestamp: _.property(['payload', 'timestamp']),
   pageload: _.property(['payload', 'pageload']),
   isMobile: _.property(['payload', 'isMobile']),
+  computedReferrer: _.property(['payload', '$referrer']),
   eventId: _.property('eventId')
 }
 
@@ -59,14 +58,62 @@ function bounceRate (events) {
 exports.referrers = consumeAsync(referrers)
 
 function referrers (events) {
-  return _referrers(events, function (set) {
-    return set
-      .map(function (event) {
-        return placeInBucket(
-          event.payload.referrer.host || event.payload.referrer.href
-        )
+  var countsBySession = _.countBy(events, propertyAccessors.sessionId)
+  var split = _.chain(events)
+    .groupBy(propertyAccessors.sessionId)
+    .pairs()
+    .map(function (pair) {
+      return _.findWhere(pair[1], propertyAccessors.computedReferrer) || pair[1][0]
+    })
+    .partition(propertyAccessors.computedReferrer)
+    .value()
+
+  var foreignEvents = split[0]
+  var noneEvents = split[1]
+
+  return _.chain(foreignEvents)
+    .map(propertyAccessors.computedReferrer)
+    .zip(_.map(foreignEvents, propertyAccessors.sessionId))
+    .filter(_.head)
+    .groupBy(_.head)
+    .pairs()
+    .map(function (pair) {
+      var sessions = _.chain(pair[1])
+        .map(function (pair) {
+          return _.last(pair)
+        })
+        .uniq()
+        .value()
+      var numSessions = _.size(sessions)
+      var associatedViews = _.reduce(sessions, function (acc, sessionId) {
+        return acc + countsBySession[sessionId]
+      }, 0)
+      return {
+        key: pair[0],
+        count: [
+          numSessions,
+          associatedViews / numSessions
+        ]
+      }
+    })
+    .tap(function (rows) {
+      if (!noneEvents.length) {
+        return
+      }
+      var noneViewCount = _.chain(noneEvents)
+        .reduce(function (acc, event) {
+          var sessionId = event.payload.sessionId
+          return acc + countsBySession[sessionId]
+        }, 0)
+        .value()
+      rows.push({
+        key: '__NONE_REFERRER__',
+        count: [noneEvents.length, noneViewCount / noneEvents.length]
       })
-  })
+    })
+    .sortBy(function (row) { return row.count[0] })
+    .reverse()
+    .value()
 }
 
 // `campaigns` groups the referrer values by their `utm_campaign` if present
@@ -74,6 +121,8 @@ exports.campaigns = consumeAsync(_queryParam('utm_campaign'))
 
 function _queryParam (key) {
   return function (events) {
+    var countsBySession = _.countBy(events, propertyAccessors.sessionId)
+
     return _.chain(events)
       .filter(propertyAccessors.href)
       .map(function (event) {
@@ -96,13 +145,9 @@ function _queryParam (key) {
         var associatedViews = _.chain(items)
           .pluck('sessionId')
           .uniq()
-          .map(function (sessionId) {
-            return events.filter(function (event) {
-              return event.payload.sessionId === sessionId
-            })
-          })
-          .flatten(true)
-          .size()
+          .reduce(function (acc, sessionId) {
+            return acc + countsBySession[sessionId]
+          }, 0)
           .value()
 
         return {
@@ -121,47 +166,6 @@ function _queryParam (key) {
 
 // `sources` groups the referrer values by their `utm_source` if present
 exports.sources = consumeAsync(_queryParam('utm_source'))
-
-function _referrers (events, groupFn) {
-  var uniqueForeign = _.chain(events)
-    .filter(function (event) {
-      if (!event.payload.referrer) {
-        return false
-      }
-      return event.payload.referrer.host !== event.payload.href.host
-    })
-    .uniq(false, propertyAccessors.sessionId)
-    .value()
-
-  var sessionIds = _.map(uniqueForeign, propertyAccessors.sessionId)
-  var values = groupFn(uniqueForeign)
-  return _.chain(values)
-    .zip(sessionIds)
-    .filter(_.head)
-    .groupBy(_.head)
-    .pairs()
-    .map(function (pair) {
-      var sessions = _.reduce(pair[1], function (acc, next) {
-        acc[_.last(next)] = true
-        return acc
-      }, {})
-      var numSessions = _.size(sessions)
-      var associatedViews = _.filter(events, function (event) {
-        return event.payload.sessionId &&
-          sessions[event.payload.sessionId]
-      })
-      return {
-        key: pair[0],
-        count: [
-          numSessions,
-          associatedViews.length / numSessions
-        ]
-      }
-    })
-    .sortBy(function (row) { return row.count[0] })
-    .reverse()
-    .value()
-}
 
 // `pages` contains all pages visited sorted by the number of pageviews.
 // URLs are stripped off potential query strings and hash parameters
@@ -451,9 +455,7 @@ function onboardingStats (events) {
     url: payload.href.pathname !== '/'
       ? payload.href.host + payload.href.pathname
       : null,
-    referrer: payload.referrer && payload.referrer.host !== payload.href.host
-      ? placeInBucket(payload.referrer.host)
-      : null,
+    referrer: payload.$referrer,
     numVisits: numVisits,
     isMobile: payload.isMobile
   }

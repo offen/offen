@@ -1,0 +1,26 @@
+/**
+ * Copyright 2021 - Offen Authors <hioffen@posteo.de>
+ * SPDX-License-Identifier: Apache-2.0
+ */
+ 
+.filter-close-icon {
+  width: 1.1em;
+  height: 1.1em;
+  position: relative;
+}
+.filter-close-icon:after {
+  content: '';
+  height: 1.1em;
+  border-left: 0.15em solid #fff;
+  position: absolute;
+  transform: rotate(45deg);
+  left: 0.5em;
+}
+.filter-close-icon:before {
+  content: '';
+  height: 1.1em;
+  border-left: 0.15em solid #fff;
+  position: absolute;
+  transform: rotate(-45deg);
+  left: 0.5em;
+}

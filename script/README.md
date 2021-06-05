@@ -5,7 +5,7 @@ SPDX-License-Identifier: Apache-2.0
 
 # script
 
-The `script` is the script operators are using to deploy _offen_ on a site.
+The `script` is the script operators are using to deploy Offen on a site.
 
 It collects events autonoumously and only needs to be parametrized with an Account ID. This is being done using the `data-account-id` attribute on the `<script>` tag:
 

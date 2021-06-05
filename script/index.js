@@ -22,7 +22,9 @@ try {
 
 function main () {
   var vaultUrl = new window.URL(process.env.VAULT_HOST || scriptUrl + '/vault')
-  vaultUrl.searchParams.set('accountId', accountId)
+  if (accountId) {
+    vaultUrl.searchParams.set('accountId', accountId)
+  }
   var app = router(vaultUrl.toString())
   app.on('PAGEVIEW', supportMiddleware, function (context, send, next) {
     var message = {
@@ -88,7 +90,6 @@ function supportMiddleware (context, send, next) {
 function onReady (callback) {
   switch (document.readyState) {
     case 'complete':
-    case 'loaded':
     case 'interactive':
       window.setTimeout(function () {
         callback()

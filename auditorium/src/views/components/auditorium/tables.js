@@ -25,23 +25,33 @@ const ExplainerContent = (props) => {
 
 const Table = (props) => {
   const {
-    rows,
+    rows: originalRows,
     formatAs = ['count'],
     onEmptyMessage = __('No data available for this view.'),
     limit = 10,
     showAll = false,
-    setShowAll = Function.prototype
+    ItemDecorator,
+    setShowAll = Function.prototype,
+    emptyFallback
   } = props
 
+  let rows = [...(originalRows || [])]
+  const isFallback = emptyFallback && rows.length === 0
+
+  if (isFallback) {
+    rows = [emptyFallback]
+  }
   const hasMore = Array.isArray(rows) && rows.length > limit
 
-  var tBody = Array.isArray(rows) && rows.length
+  const tBody = Array.isArray(rows) && rows.length
     ? rows.slice(0, showAll ? rows.length : limit).map(function (row, index) {
-      var counts = Array.isArray(row.count) ? row.count : [row.count]
+      const counts = Array.isArray(row.count) ? row.count : [row.count]
       return (
         <tr key={`outer-${index}`} class='striped--near-white'>
           <td class='truncate pv2 pl2 pr1' title={row.key}>
-            {row.key}
+            {ItemDecorator
+              ? <ItemDecorator isFallback={isFallback}>{row.key}</ItemDecorator>
+              : row.key}
           </td>
           {counts.map((count, index) => {
             return (
@@ -66,7 +76,7 @@ const Table = (props) => {
   const [keyName, ...valueNames] = props.columnNames
   return (
     <Fragment>
-      <table class='collapse w-100 dt--fixed-ns mb2'>
+      <table class='collapse w-100 dt--fixed-ns'>
         <thead>
           <tr>
             <th class='f6 normal tl pv2 pl2 pr1 mid-gray'>
@@ -94,23 +104,31 @@ const Table = (props) => {
         }
         if (showAll) {
           return (
-            <a
-              data-role='button'
-              class='b normal link dim dark-green pointer'
-              onclick={() => setShowAll(false)}
+            <div
+              class='bt b--light-gray pt3 mb2'
             >
-              {__('Show top %d only', limit)}
-            </a>
+              <a
+                data-role='button'
+                class='b normal link dim dark-green pointer'
+                onclick={() => setShowAll(false)}
+              >
+                {__('Show top %d only', limit)}
+              </a>
+            </div>
           )
         }
         return (
-          <a
-            data-role='button'
-            class='b normal link dim dark-green pointer'
-            onclick={() => setShowAll(true)}
+          <div
+            class='bt b--light-gray pt3 mb2'
           >
-            {__('Show all entries')}
-          </a>
+            <a
+              data-role='button'
+              class='b normal link dim dark-green pointer'
+              onclick={() => setShowAll(true)}
+            >
+              {__('Show all entries')}
+            </a>
+          </div>
         )
       })()}
     </Fragment>
@@ -139,12 +157,16 @@ const Container = (props) => {
     if (!set.props.headline) {
       return null
     }
+
+    const isFallback = set.props.emptyFallback &&
+      (!set.props.rows || (Array.isArray(set.props.rows) && set.props.rows.length === 0))
     var css = []
     if (tableSets.length === 1) {
       css.push('f5', 'normal', 'dib', 'pv3')
     }
     if (tableSets.length > 1) {
-      css.push('f5', 'b', 'normal', 'link', 'dim', 'dib', 'pt2', 'pb2', 'ph2', 'mr2', 'dark-green')
+      css.push('f5', 'b', 'normal', 'link', 'dim', 'dib', 'pt2', 'pb2', 'ph2', 'mr2')
+      css.push(isFallback ? 'dark-red' : 'dark-green')
     }
 
     let handleClick = null
@@ -154,7 +176,8 @@ const Container = (props) => {
       handleClick = () => setSelectedTab(index)
     }
     if (index === selectedTab && tableSets.length !== 1) {
-      css.push('bt', 'bw2', 'b--dark-green')
+      css.push('bt', 'bw2')
+      css.push(isFallback ? 'b--dark-red' : 'b--dark-green')
       ariaLabels['aria-current'] = 'true'
     }
 

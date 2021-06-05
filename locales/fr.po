@@ -1001,26 +1001,6 @@ msgstr "Visiteurs"
 msgid "Share this account"
 msgstr "Partager ce compte"
 
-#. src/views/components/auditorium/database-settings.js:15
-#: 
-msgid "Failed to purge local aggregates, please try again."
-msgstr "Échec de la purge des agrégats locaux, veuillez réessayer."
-
-#. src/views/components/auditorium/database-settings.js:36
-#: 
-msgid "Database settings"
-msgstr "Paramètres de base de données"
-
-#. src/views/components/auditorium/database-settings.js:49
-#: 
-msgid "Purge aggregates from local database and rebuild. This operation is non-destructive and can be performed at any time."
-msgstr "Purger les agrégats de la base de données locale et les reconstruire. Cette opération est non destructive et peut être effectuée à tout moment."
-
-#. src/views/components/auditorium/database-settings.js:55
-#: 
-msgid "Rebuild aggregates"
-msgstr "Reconstruire les agrégats"
-
 #. src/views/components/join/form.js:22
 #: 
 msgid "Passwords did not match"
@@ -1051,11 +1031,6 @@ msgstr "Vérification de votre statut de consentement"
 msgid "Fetching and decrypting the latest data"
 msgstr "Récupération et déchiffrement des dernières données"
 
-#. src/views/auditorium-operator.js:234
-#: 
-msgid "Auditorium | Offen"
-msgstr "Auditorium | Offen"
-
 #. src/views/setup.js:20
 #: 
 msgid "This instance is already set up."
@@ -1075,11 +1050,6 @@ msgstr "Cette vue n'a pas pu être mise à jour automatiquement, les données pe
 #: 
 msgid "Fetching and aggregating the latest data"
 msgstr "Récupération et agrégation des dernières données"
-
-#. src/views/console.js:97
-#: 
-msgid "Console | Offen"
-msgstr "Console | Offen"
 
 #. index.js:63
 #: 
@@ -1417,11 +1387,6 @@ msgstr "Basculer l'affichage du code d'intégration"
 msgid "Toggle display of admin console navigation"
 msgstr "Basculer l'affichage de la navigation dans la console d'administration"
 
-#. src/views/components/auditorium/database-settings.js:39
-#: 
-msgid "Toggle display of database settings"
-msgstr "Basculer l'affichage des paramètres de base de données"
-
 #. src/views/components/auditorium/share.js:16
 #: 
 msgid "Share your Offen account <em class=\"%s\">%s</em> via email invitation. If granted admin privileges, invited users have full access to a shared account and can also create further accounts for this Offen instance."
@@ -1541,4 +1506,31 @@ msgstr "Appliquer les styles"
 #: 
 msgid "To manage your usage data <a class=\"%s\"target=\"_blank\" rel=\"noopener\" href=\"%s\">open the Auditorium.</a>"
 msgstr "Pour gérer vos données d'utilisation <a class=\"%s\"target=\"_blank\" rel=\"noopener\" href=\"%s\">ouvrir l'Auditorium.</a>"
+
+#. src/views/components/auditorium/url-tables.js:29
+#: 
+msgid "Remove this filter."
+msgstr "Retirez ce filtre."
+
+#. src/views/components/auditorium/url-tables.js:60
+#: 
+msgid "Filter current view by this item."
+msgstr "Filtrer la vue actuelle par cet élément."
+
+#: 
+msgid "Auditorium | %s"
+msgstr "Auditorium | %s"
+
+#: 
+msgid "Not Found | %s"
+msgstr "Page non trouvé | %s"
+
+#: 
+msgid "Console | %s"
+msgstr "Console | %s"
+
+#. src/views/components/auditorium/url-tables.js:134
+#: 
+msgid "None"
+msgstr "Aucun"
 

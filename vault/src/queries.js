@@ -25,7 +25,9 @@ var startOfYesterday = require('date-fns/startOfYesterday')
 var endOfYesterday = require('date-fns/endOfYesterday')
 
 var stats = require('./stats')
+var filters = require('./filters')
 var storage = require('./aggregating-storage')
+var placeInBucket = require('./buckets')
 var eventSchema = require('./event.schema')
 var payloadSchema = require('./payload.schema')
 
@@ -72,6 +74,19 @@ function Queries (storage) {
       )
     }
 
+    var filter = new filters.Noop()
+    if (query && query.filter) {
+      var tuple = query.filter.split(':')
+      var prop = tuple.shift()
+        .split('')
+        .map(function (c, i) { return i ? c : c.toUpperCase() })
+        .join('')
+      var value = tuple.join(':')
+      if (prop && filters[prop] && value) {
+        filter = new filters[prop](value)
+      }
+    }
+
     // resolution is the unit to group by when looking back
     var resolution = (query && query.resolution) || 'days'
     if (['hours', 'days', 'weeks', 'months'].indexOf(resolution) < 0) {
@@ -114,10 +129,14 @@ function Queries (storage) {
 
     var proxy = new GetEventsProxy(storage, accountId, publicJwk, privateJwk)
     var allEvents = storage.getRawEvents(accountId)
+
     var eventsInBounds = proxy.getEvents(lowerBound, upperBound)
+      .then(filter.apply.bind(filter))
+
     var realtimeLowerBound = subMinutes(now, 15)
     var realtimeUpperBound = now
     var realtimeEvents = proxy.getEvents(realtimeLowerBound, realtimeUpperBound)
+
     // `pageviews` is a list of basic metrics grouped by the given range
     // and resolution. It contains the number of pageviews, unique visitors
     // for operators and accounts for users.
@@ -128,6 +147,7 @@ function Queries (storage) {
         var lowerBound = startOf[resolution](date)
         var upperBound = endOf[resolution](date)
         var eventsInBounds = proxy.getEvents(lowerBound, upperBound)
+          .then(filter.scopedFilter.bind(filter))
 
         var pageviews = stats.pageviews(eventsInBounds)
         var visitors = stats.visitors(eventsInBounds)
@@ -237,7 +257,8 @@ function Queries (storage) {
           returningUsers: results[18],
           onboardingStats: results[19],
           resolution: resolution,
-          range: range
+          range: range,
+          filter: (query && query.filter) || null
         }
       })
       .then(postProcessResult(query && query.resolution, range))
@@ -274,7 +295,11 @@ function GetEventsProxy (storage, accountId, publicJwk, privateJwk) {
       publicJwk: publicJwk
     }, minLowerBound, maxUpperBound)
       .then(function (events) {
-        return _.compact(_.map(events, validateAndParseEvent))
+        return _.chain(events)
+          .map(validateAndParseEvent)
+          .compact()
+          .sortBy('eventId')
+          .value()
       })
     _.each(calls, function (call) {
       call.resolve(allEvents.then(function (events) {
@@ -297,6 +322,12 @@ function validateAndParseEvent (event) {
 
   ;['href', 'rawHref', 'referrer'].forEach(function (key) {
     clone.payload[key] = clone.payload[key] && normalizeURL(clone.payload[key])
+  })
+
+  Object.assign(clone.payload, {
+    $referrer: clone.payload.referrer && clone.payload.referrer.host !== clone.payload.href.host
+      ? placeInBucket(clone.payload.referrer.host)
+      : null
   })
 
   return clone

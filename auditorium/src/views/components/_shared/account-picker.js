@@ -7,7 +7,7 @@
 const { h } = require('preact')
 
 const AccountPicker = (props) => {
-  const { accounts, selectedId, headline, range, resolution, from, to } = props
+  const { accounts, selectedId, headline, queryParams } = props
 
   let body = null
   if (!Array.isArray(accounts) || !accounts.length) {
@@ -29,15 +29,11 @@ const AccountPicker = (props) => {
           buttonClass = 'link dim dib br1 ph3 pv2 mb2 mr2 white bg-black-30'
         }
 
-        let query = null
-        if (range || resolution || from || to) {
-          query = new window.URLSearchParams(JSON.parse(JSON.stringify({ range, resolution, from, to })))
-        }
-
+        const search = new window.URLSearchParams(queryParams)
         return (
           <li key={idx}>
             <a
-              href={`/auditorium/${account.accountId}/${query ? `?${query}` : ''}`}
+              href={`/auditorium/${account.accountId}/${search.toString() ? `?${search}` : ''}`}
               class={buttonClass}
               aria-current={isCurrent ? 'page' : 'false'}
             >

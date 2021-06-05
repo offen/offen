@@ -55,7 +55,10 @@ test:
 .PHONY: integration
 integration: # @HELP Run integration tests
 integration:
-	@docker-compose -p offen_integration -f docker-compose.integration.yml run --rm integration npm t
+	@docker-compose \
+		-p offen_integration \
+		-f docker-compose.integration.yml run --rm \
+		integration npm t
 
 .PHONY: dev-build
 dev-build: # @HELP Build the Docker images for local development
@@ -89,7 +92,11 @@ OFFEN_GIT_REVISION ?= none
 .PHONY: build
 build: # @HELP Build the application binary
 build:
-	@docker build --build-arg ldflags=${LDFLAGS} --build-arg targets=${TARGETS} --build-arg rev=${OFFEN_GIT_REVISION} -t offen/build -f build/Dockerfile.build .
+	@docker build \
+		--build-arg ldflags=${LDFLAGS} \
+		--build-arg targets=${TARGETS} \
+		--build-arg rev=${OFFEN_GIT_REVISION} \
+		-t offen/build -f build/Dockerfile.build .
 	@mkdir -p bin
 	@docker create --entrypoint=bash -it --name binary offen/build
 	@docker cp binary:/build/. ./bin
@@ -107,9 +114,10 @@ build-docker:
 setup-docs: # @HELP Setup the development environment for working on the docs site
 setup-docs:
 	@docker-compose -p offen_docs -f docker-compose.docs.yml build
-	@docker-compose -p offen_docs -f docker-compose.docs.yml run --rm docs_jekyll gem install bundler
-	@docker-compose -p offen_docs -f docker-compose.docs.yml run --rm docs_jekyll bundle install
-	@docker-compose -p offen_docs -f docker-compose.docs.yml run --rm docs_jekyll bundle exec just-the-docs rake search:init
+	@docker-compose -p offen_docs -f docker-compose.docs.yml run --rm \
+		docs_jekyll bundle install
+	@docker-compose -p offen_docs -f docker-compose.docs.yml run --rm \
+		docs_jekyll bundle exec just-the-docs rake search:init
 
 .PHONY: docs
 docs: # @HELP Run the development environment for the docs site
@@ -117,7 +125,7 @@ docs:
 	@docker-compose -p offen_docs -f docker-compose.docs.yml up
 
 .PHONY: build-docs
-build-docs: # @HELP Build the static asstes for the docs site
+build-docs: # @HELP Build the static assets for the docs site
 build-docs:
 	@docker build -t offen/docs -f build/Dockerfile.docs .
 	@rm -rf docs-site && mkdir docs-site

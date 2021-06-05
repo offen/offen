@@ -29,3 +29,5 @@ docs-site
 
 dependencies.csv
 *.deb
+
+.jekyll-cache

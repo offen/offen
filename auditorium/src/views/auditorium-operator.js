@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * Copyright 2020-2021 - Offen Authors <hioffen@posteo.de>
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -35,13 +35,14 @@ const ADMIN_LEVEL_ALLOW_EDIT = 1
 
 const AuditoriumView = (props) => {
   const {
-    matches, authenticatedUser, model, stale,
+    matches, authenticatedUser, model, stale, queryParams,
     handleQuery, handleShare, handleValidationError, handleRetire, handleCopy,
     handleUpdateAccountStyles
   } = props
-  const { accountId, range, resolution, now, from, to } = matches
+  const { accountId, range, resolution, now, from, to, filter: rawFilter } = matches
   const { adminLevel } = authenticatedUser
   const [focus, setFocus] = useState(true)
+  const filter = rawFilter && window.decodeURIComponent(rawFilter)
 
   const softFailure = __(
     'This view failed to update automatically, data may be out of date. Check your network connection if the problem persists.'
@@ -49,7 +50,7 @@ const AuditoriumView = (props) => {
 
   useEffect(function () {
     if (model === null) {
-      handleQuery({ accountId, range, resolution, now, from, to }, authenticatedUser)
+      handleQuery({ accountId, range, resolution, now, from, to, filter }, authenticatedUser)
     }
   }, [model])
 
@@ -58,16 +59,16 @@ const AuditoriumView = (props) => {
       return null
     }
     if (model !== null) {
-      handleQuery({ accountId, range, resolution, now, from, to }, authenticatedUser)
+      handleQuery({ accountId, range, resolution, now, from, to, filter }, authenticatedUser)
     }
 
     const tick = window.setInterval(() => {
-      handleQuery({ accountId, range, resolution, now, from, to }, authenticatedUser, softFailure, true)
+      handleQuery({ accountId, range, resolution, now, from, to, filter }, authenticatedUser, softFailure, true)
     }, 15000)
     return function cancelAutoRefresh () {
       window.clearInterval(tick)
     }
-  }, [accountId, range, resolution, focus, from, to, now])
+  }, [accountId, range, resolution, focus, from, to, now, filter])
 
   useEffect(function detectFocusChange () {
     function focus () {
@@ -105,10 +106,7 @@ const AuditoriumView = (props) => {
           <AccountPicker
             accounts={authenticatedUser.accounts}
             selectedId={accountId}
-            range={range}
-            resolution={resolution}
-            from={from}
-            to={to}
+            queryParams={queryParams}
           />
         </div>
         {!model.empty
@@ -130,6 +128,7 @@ const AuditoriumView = (props) => {
             range={range}
             from={from}
             to={to}
+            queryParams={queryParams}
           />
         </div>
       </div>
@@ -150,7 +149,10 @@ const AuditoriumView = (props) => {
         </div>
         <div class='fr viewport-extended flex flex-column flex-row-l'>
           <div class='w-100 flex bt ba-ns br0 br2-ns b--black-10 mb2-ns'>
-            <URLTables model={model} />
+            <URLTables
+              model={model}
+              queryParams={queryParams}
+            />
           </div>
         </div>
         <div class='viewport-extended flex flex-column flex-row-l mb2'>
@@ -228,7 +230,8 @@ const AuditoriumView = (props) => {
 const mapStateToProps = (state) => ({
   authenticatedUser: state.authenticatedUser,
   model: state.model,
-  stale: state.stale
+  stale: state.stale,
+  queryParams: state.queryParams
 })
 
 const mapDispatchToProps = {
@@ -242,4 +245,4 @@ const mapDispatchToProps = {
 
 const ConnectedAuditoriumView = connect(mapStateToProps, mapDispatchToProps)(AuditoriumView)
 
-module.exports = withLayout()(withAuth('/login/')(withTitle(__('Auditorium | Offen'))(ConnectedAuditoriumView)))
+module.exports = withLayout()(withAuth('/login/')(withTitle(__('Auditorium | %s', 'Offen'))(ConnectedAuditoriumView)))

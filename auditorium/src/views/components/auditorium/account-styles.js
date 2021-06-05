@@ -116,22 +116,26 @@ const AccountStylesEditor = (props) => {
                 <Paragraph class='gray ma0 mb3'>
                   {__('Preview')}
                 </Paragraph>
-                <iframe
-                  class='mb3'
-                  id='account-styles-preview-1'
-                  frameborder='0'
-                  scrolling='no'
-                  width='100%'
-                  ref={iframe1}
-                />
-                <iframe
-                  class='mb3'
-                  id='account-styles-preview-2'
-                  frameborder='0'
-                  scrolling='no'
-                  width='100%'
-                  ref={iframe2}
-                />
+                <div style={{ maxWidth: '426px', margin: 'auto' }}>
+                  <iframe
+                    class='mb3'
+                    id='account-styles-preview-1'
+                    frameborder='0'
+                    scrolling='no'
+                    width='100%'
+                    ref={iframe1}
+                  />
+                </div>
+                <div style={{ maxWidth: '426px', margin: 'auto' }}>
+                  <iframe
+                    class='mb3'
+                    id='account-styles-preview-2'
+                    frameborder='0'
+                    scrolling='no'
+                    width='100%'
+                    ref={iframe2}
+                  />
+                </div>
               </div>
               <div class='br1 br--bottom'>
                 <Editor

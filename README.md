@@ -1,5 +1,5 @@
 <!--
-Copyright 2020 - Offen Authors <hioffen@posteo.de>
+Copyright 2020-2021 - Offen Authors <hioffen@posteo.de>
 SPDX-License-Identifier: Apache-2.0
 -->
 
@@ -11,7 +11,7 @@ SPDX-License-Identifier: Apache-2.0
 
 [![CircleCI](https://circleci.com/gh/offen/offen/tree/development.svg?style=svg)](https://circleci.com/gh/offen/offen/tree/development)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Docs](https://img.shields.io/badge/documentation-docs.offen.dev-blue.svg)](https://docs.offen.dev)
+[![Docs](https://img.shields.io/badge/Documentation-docs.offen.dev-blue.svg)](https://docs.offen.dev)
 [![Awesome Humane Tech](https://raw.githubusercontent.com/humanetech-community/awesome-humane-tech/main/humane-tech-badge.svg?sanitize=true)](https://github.com/humanetech-community/awesome-humane-tech)
 [![REUSE status](https://api.reuse.software/badge/github.com/offen/offen)](https://api.reuse.software/info/github.com/offen/offen)
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/offen/offen.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/offen/offen/alerts/)
@@ -29,13 +29,13 @@ __Software__
 - [Essential metrics](#essential-metrics)
 - [Objectives](#objectives)
 - [Localize](#localize)
+- [Customize](#customize)
 - [Test drive](#test-drive)
 - [License](#license)
 - [Project status](#project-status)
 
 __Community__
-- [Give feedback](#give-feedback)
-- [Contributions welcome](#contributions-welcome)
+- [Feedback and contributions welcome](#feedback-and-contributions-welcome)
 - [Kind support](#kind-support)
 - [Who's using Offen?](#whos-using-offen)
 - [Links](#links)
@@ -43,13 +43,19 @@ __Community__
 ## Core features
 
 __Secure & free__  
-Our code is open source. All user data is encrypted end-to-end. Offen will always be available for free.
+Our code is open source.
+All usage data is encrypted end-to-end.
+Offen will always be available for free.
 
 __Self hosted__  
-Comply with GDPR guidelines. No ads, no third parties involved. Offen uses first-party cookies only.
+Comply with GDPR guidelines.
+No ads, no third parties involved.
+Offen uses first-party cookies only.
 
 __Fair & by choice__  
-Opt-in only. Users must actively give their consent to data collection. They have full access to their data.
+Opt-in only.
+Users must actively give their consent to data collection.
+They have full access to their data.
 
 ## How it works
 
@@ -65,7 +71,8 @@ __Benefits for your users__
 - Only delete usage data or opt out completely at any time.  
 
 __What you see__  
-Data of all pages where your Offen installation is active. For example:
+Data of all pages where your Offen installation is active.
+For example:
 
 ![Example A](https://offen.github.io/press-kit/offen-material/gfx-GitHub-Example-A.svg)
 
@@ -89,16 +96,24 @@ Collected without violating the privacy of your users.
 ## Objectives
 
 __Privacy friendly__  
-Collection of usage data is opt in, users that do not actively opt in will never leave a trace. After opt in, Offen collects the minimal amount of data needed to generate meaningful statistics for operators. No IPs, User-Agent strings or similar are being collected or even looked at.
+Collection of usage data is opt in, users that do not actively opt in will never leave a trace.
+After opt in, Offen collects the minimal amount of data needed to generate meaningful statistics for operators.
+No IPs, User-Agent strings or similar are being collected or even looked at.
 
 __Secure__  
-Data in Offen is encrypted End-To-End. Clients encrypt usage data before it leaves the browser and there is no way for the server storing this data to decrypt it. Attackers have no means to compromise an instance, accidental data leaks cannot expose user data.
+Data in Offen is encrypted End-To-End.
+Clients encrypt usage data before it leaves the browser and there is no way for the server storing this data to decrypt it.
+Attackers have no means to compromise an instance, accidental data leaks cannot expose user data.
 
 __Self hosted and lightweight__  
-You can run Offen on-premises, or in any other deployment scenario that fits your need. All you need to do is download a single binary file or pull a Docker image, and run it on your server. Offen will automatically install and renew SSL certificates for you if you want it to. If you do not want to deploy a database, you can use SQLite to store data directly on the server.
+You can run Offen on-premises, or in any other deployment scenario that fits your need.
+All you need to do is download a single binary file or pull a Docker image, and run it on your server.
+Offen will automatically install and renew SSL certificates for you if you want it to.
+If you do not want to deploy a dedicated database, you can use SQLite to store data directly on the server.
 
 __Transparent and fair__  
-Offen treats the user as a party of equal importance in the collection of usage data. Users have access to the same set of tools for analyzing their own data and they can delete their data at any time.
+Offen treats the user as a party of equal importance in the collection of usage data.
+Users have access to the same set of tools for analyzing their own data and they can delete their data at any time.
 
 ## Localize
 
@@ -109,6 +124,12 @@ Support fair web analytics by contributing Spanish, Portuguese and other languag
 
 [Request an invite.]: mailto:hioffen@posteo.de
 
+## Customize
+
+The Offen consent banner is customizable in __color, shape and basic font specifications__ to match your design. [Learn more.][]
+
+[Learn more.]: https://docs.offen.dev/running-offen/customizing-consent-banner/
+
 ## Test drive
 
 Give Offen a test drive right now. Open your terminal and type:
@@ -117,7 +138,8 @@ Give Offen a test drive right now. Open your terminal and type:
 curl https://demo.offen.dev | bash
 ```
 
-This creates an ephemeral one-off installation that is populated with random data and is running on `http://localhost:9876`. There, you can log in using the account `demo@offen.dev` and password `demo`.
+This creates an ephemeral one-off installation that is populated with random data and is running on `http://localhost:9876`.
+There, you can log in using the account `demo@offen.dev` and password `demo`.
 
 ## License
 
@@ -141,15 +163,14 @@ Check our [roadmap][] and [blog][] for detailed updates on what we are working o
 [roadmap]: https://github.com/offen/offen/projects/1
 [blog]: https://www.offen.dev/blog/
 
-## Give feedback
+## Feedback and contributions welcome
 
 Found an issue or want to add something? Please do not hesitate to file an issue or open a pull request.
-For details head to our [contributing guideline.](https://github.com/offen/offen/blob/development/CONTRIBUTING.md)
+For details on how to get started head over to our [contributing guidelines.](https://github.com/offen/offen/blob/development/CONTRIBUTING.md)
 
-## Contributions welcome
+---
 
-This repository contains all source code needed to build and run Offen, both on the server as well as on the client. Also see each of the READMEs in the subdirectories for information on how to work on that particular area of the application.
-
+This repository contains all source code needed to work on Offen, both on the server as well as on the client.
 The development setup requires `docker` and `docker-compose` to be installed.
 
 After cloning the repository, you can build the containers and install dependencies using:
@@ -178,14 +199,21 @@ Run the tests for all subapplications using
 $ make test
 ```
 
-The documentation site at <https://docs.offen.dev> is also part of this repository. To run this site locally, you can:
+Detailed instructions on how to get started with development can be found at our [dedicated docs site][dev-docs].
+
+[dev-docs]: https://docs.offen.dev/developing-offen/
+
+---
+
+The documentation site at <https://docs.offen.dev> is also part of this repository.
+To run this site locally, you can:
 
 ```sh
 make setup-docs
 make docs
 ```
 
-This will serve the documentation on <https://localhost:4000>.
+This will serve the documentation site on <https://localhost:4000>.
 
 ## Kind support
 

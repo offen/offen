@@ -341,8 +341,10 @@ function Storage (getDatabase, fallbackStore) {
 // privacy friendly way), it provides an interface, but will not persist data,
 // thus disallowing users to manage their data. Instead we fall back to cookie
 // storage forcefully by wrapping certain methods in this helper.
-function bypassSafari (thunk, err) {
-  return /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
-    ? dexie.Promise.reject(new dexie.OpenFailedError('Forcefully skipping IndexedDB.'))
+function bypassSafari (thunk) {
+  return /apple/i.test(navigator.vendor)
+    ? dexie.Promise.reject(
+      new dexie.OpenFailedError('Forcefully skipping IndexedDB for Safari browsers.')
+    )
     : thunk()
 }

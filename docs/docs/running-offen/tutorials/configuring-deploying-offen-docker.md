@@ -247,7 +247,7 @@ version: '3'
 
 services:
   offen:
-    image: offen/offen:{{ offen.site_version }}
+    image: offen/offen:{{ site.offen_version }}
     ports:
       - 80:80
       - 443:443
@@ -283,7 +283,7 @@ version: '3'
 
 services:
   offen:
-    image: offen/offen:{{ offen.site_version }}
+    image: offen/offen:{{ site.offen_version }}
     ports:
       - 80:80
       - 443:443
