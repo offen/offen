@@ -30,39 +30,45 @@ function HrefFilter (filter) {
 }
 
 exports.Referrer = makeSessionFilter(function (session, filter) {
-  var sessionEntry = _.findWhere(session, function (event) {
-    return event.payload.$referrer
-  })
+  var sessionEntry = _.head(session)
   if (filter === '__NONE_REFERRER__') {
-    return sessionEntry && !sessionEntry.payload.$referrer
+    return !sessionEntry.payload.$referrer
   }
-  return sessionEntry && sessionEntry.payload.$referrer === filter
+  return sessionEntry.payload.$referrer === filter
 })
 
 exports.Campaign = makeSessionFilter(function (session, filter) {
-  var sessionEntry = _.findWhere(session, function (event) {
-    return (event.payload.rawHref || event.payload.href).get('utm_campaign')
+  var firstMatch = _.find(session, function (event) {
+    return (event.payload.rawHref || event.payload.href).searchParams.get('utm_campaign')
   })
-  var href = sessionEntry.payload.rawHref || sessionEntry.payload.href
+  if (!firstMatch) {
+    return false
+  }
+  var href = firstMatch.payload.rawHref || firstMatch.payload.href
   return href.searchParams.get('utm_campaign') === filter
 })
 
 exports.Source = makeSessionFilter(function (session, filter) {
-  var sessionEntry = _.findWhere(session, function (event) {
-    return (event.payload.rawHref || event.payload.href).get('utm_source')
+  var firstMatch = _.find(session, function (event) {
+    return (event.payload.rawHref || event.payload.href).searchParams.get('utm_source')
   })
-  var href = sessionEntry.payload.rawHref || sessionEntry.payload.href
+  if (!firstMatch) {
+    return false
+  }
+  var href = firstMatch.payload.rawHref || firstMatch.payload.href
   return href.searchParams.get('utm_source') === filter
 })
 
 exports.Landing = makeSessionFilter(function (session, filter) {
-  var href = _.head(session).payload.href
-  return href.toString() === filter
+  var head = _.head(session)
+  var strippedHref = head.payload.href.origin + head.payload.href.pathname
+  return strippedHref === filter
 })
 
 exports.Exit = makeSessionFilter(function (session, filter) {
-  var href = _.last(session).payload.href
-  return href.toString() === filter
+  var last = _.last(session)
+  var strippedHref = last.payload.href.origin + last.payload.href.pathname
+  return strippedHref === filter
 })
 
 function makeSessionFilter (sessionComparison) {
@@ -77,10 +83,7 @@ function makeSessionFilter (sessionComparison) {
     this.apply = function (events) {
       var filtered = _.chain(events)
         .groupBy(_.property(['payload', 'sessionId']))
-        .pairs()
-        .map(function (pair) {
-          return _.sortBy(pair[1], 'eventId')
-        })
+        .values()
         .filter(function (session) {
           return sessionComparison(session, filter)
         })

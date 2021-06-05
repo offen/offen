@@ -61,10 +61,8 @@ function referrers (events) {
   var countsBySession = _.countBy(events, propertyAccessors.sessionId)
   var split = _.chain(events)
     .groupBy(propertyAccessors.sessionId)
-    .pairs()
-    .map(function (pair) {
-      return _.findWhere(pair[1], propertyAccessors.computedReferrer) || pair[1][0]
-    })
+    .values()
+    .map(_.head)
     .partition(propertyAccessors.computedReferrer)
     .value()
 
@@ -124,19 +122,25 @@ function _queryParam (key) {
     var countsBySession = _.countBy(events, propertyAccessors.sessionId)
 
     return _.chain(events)
-      .filter(propertyAccessors.href)
-      .map(function (event) {
-        return {
-          sessionId: event.payload.sessionId,
-          value: event.payload.rawHref
+      .groupBy(propertyAccessors.sessionId)
+      .pairs()
+      .map(function (pair) {
+        var firstMatch = _.find(pair[1], function (event) {
+          return event.payload.rawHref
             ? event.payload.rawHref.searchParams.get(key)
             : event.payload.href.searchParams.get(key)
+        })
+        if (!firstMatch) {
+          return null
+        }
+        return {
+          sessionId: firstMatch.payload.sessionId,
+          value: firstMatch.payload.rawHref
+            ? firstMatch.payload.rawHref.searchParams.get(key)
+            : firstMatch.payload.href.searchParams.get(key)
         }
       })
-      .uniq(false, JSON.stringify)
-      .filter(function (item) {
-        return item.value && item.sessionId
-      })
+      .compact()
       .groupBy('value')
       .pairs()
       .map(function (pair) {
