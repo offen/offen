@@ -295,7 +295,11 @@ function GetEventsProxy (storage, accountId, publicJwk, privateJwk) {
       publicJwk: publicJwk
     }, minLowerBound, maxUpperBound)
       .then(function (events) {
-        return _.compact(_.map(events, validateAndParseEvent))
+        return _.chain(events)
+          .map(validateAndParseEvent)
+          .compact()
+          .sortBy('eventId')
+          .value()
       })
     _.each(calls, function (call) {
       call.resolve(allEvents.then(function (events) {
