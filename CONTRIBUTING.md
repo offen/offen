@@ -53,3 +53,7 @@ options.
 We have dedicated [documentation][docs] on running Offen available. If this does not cover what you are looking for or you are stuck, feel free to open an issue on this repository or email us at <hioffen@posteo.de>.
 
 [docs]: https://docs.offen.dev/running-offen/
+
+## Don't want to use GitHub?
+
+In case you would prefer not to use GitHub (e.g. because you don't have an account), you can still contribute. Just send us an email with details at <hioffen@posteo.de> and we'll figure out how to get you on board.

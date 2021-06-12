@@ -165,7 +165,7 @@ Check our [roadmap][] and [blog][] for detailed updates on what we are working o
 
 ## Feedback and contributions welcome
 
-Found an issue or want to add something? Please do not hesitate to file an issue or open a pull request.
+Found an issue or want to add something? Please do not hesitate to file an issue or open a pull request (or send an email in case you don't want to use GitHub).
 For details on how to get started head over to our [contributing guidelines.](https://github.com/offen/offen/blob/development/CONTRIBUTING.md)
 
 ---
