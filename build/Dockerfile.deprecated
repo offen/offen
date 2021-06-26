@@ -6,7 +6,7 @@
 # use it unless you really need to. Refer to `Dockerfile` for an up to date
 # version.
 
-FROM alpine:3.13
+FROM alpine:3.14
 LABEL maintainer="offen <hioffen@posteo.de>"
 
 RUN apk add -U --no-cache ca-certificates
