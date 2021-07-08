@@ -16,7 +16,7 @@ screenshots, other recordings) that help us reproduce and fix the issue are much
 
 ## Do you want to translate Offen into your language?
 
-Offen can be localized into any language and we are actively looking to grow the number of supported locales. If you would like to contribute by translating Offen into your language, send us an email to <hioffen@posteo.de> and we'll send you an invite to our translation tool. Thank you!
+Offen can be localized into any language and we are actively looking to grow the number of supported locales. Right now, English, German and French are supported, and we'd love to have Spanish or Portuguese versions too. If you would like to contribute by translating Offen into one of these or any other language, send us an email to <hioffen@posteo.de> and we'll send you an invite to our translation tool. Thank you!
 
 ## Do you want to submit a Pull Request?
 

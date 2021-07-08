@@ -173,7 +173,13 @@ For details on how to get started head over to our [contributing guidelines.](ht
 This repository contains all source code needed to work on Offen, both on the server as well as on the client.
 The development setup requires `docker` and `docker-compose` to be installed.
 
-After cloning the repository, you can build the containers and install dependencies using:
+After cloning the repository
+
+```
+$ git clone git@github.com:offen/offen.git
+```
+
+you can build the containers and install dependencies using:
 
 ```sh
 $ make setup
