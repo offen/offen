@@ -70,7 +70,7 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker:
-          version: 19.03.12
+          version: 20.10.6
       - run:
           name: Set revision
           command: |
