@@ -69,9 +69,9 @@ dev-build:
 update: # @HELP Install and/or update dependencies for the subapp containers
 update:
 	@echo "Installing / updating dependencies ..."
-	@docker-compose run --rm script npm install
-	@docker-compose run --rm vault npm install
-	@docker-compose run --rm auditorium npm install
+	@docker-compose run --rm script npm ci
+	@docker-compose run --rm vault npm ci
+	@docker-compose run --rm auditorium npm ci
 	@docker-compose run --rm server go mod download -x
 
 
