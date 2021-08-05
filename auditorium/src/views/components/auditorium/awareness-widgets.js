@@ -8,6 +8,7 @@ const { h } = require('preact')
 const { useState } = require('preact/hooks')
 const { CopyToClipboard } = require('react-copy-to-clipboard')
 const classnames = require('classnames')
+const escapeHtml = require('escape-html')
 
 const Collapsible = require('./../_shared/collapsible')
 
@@ -59,6 +60,7 @@ const AwarenessWidgets = (props) => {
           )
         }}
         body={(props) => {
+          const snippetContent = `<a href="${window.location.origin}/auditorium"><img src="${window.location.origin}${selectedWidget.asset}"></a>`
           return (
             <div class='mw6 center ph3 mt3 mb4'>
               <p class='ma0 mb3'>
@@ -120,17 +122,13 @@ const AwarenessWidgets = (props) => {
                 <code
                   class='ma0 lh-solid word-wrap'
                   dangerouslySetInnerHTML={{
-                    __html: `&lt;a href="${window.location.origin}/auditorium"&gt;&lt;img src="${window.location.origin}${selectedWidget.asset}"&gt;&lt;/a&gt;`
+                    __html: escapeHtml(snippetContent)
                   }}
-                >
-                  {window.location.origin}/auditorium/
-                </code>
+                />
               </div>
               <CopyToClipboard
                 onCopy={() => onCopy(__('Successfully copied widget code to clipboard.'))}
-                text={
-                 `<a href="${window.location.origin}/auditorium"><img src="${window.location.origin}${selectedWidget.asset}"></a>`
-                }
+                text={snippetContent}
               >
                 <div class='link dim'>
                   <button class='pointer w-100 w-auto-ns f5 tc bn dib br1 ph3 pv2 mv3 white bg-mid-gray'>
