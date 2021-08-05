@@ -13,16 +13,16 @@ const Collapsible = require('./../_shared/collapsible')
 
 const HTMLWidgets = [
   {
-    name: 'Bar',
-    asset: '/offen-icon-black.svg'
+    name: __('Bar'),
+    asset: __('/offen-icon-black.svg')
   },
   {
-    name: 'Box',
-    asset: '/offen-logo-yellow.jpg'
+    name: __('Box'),
+    asset: __('/offen-logo-yellow.jpg')
   },
   {
-    name: 'Circle',
-    asset: '/offen-icon-black.svg'
+    name: __('Circle'),
+    asset: __('/offen-icon-black.svg')
   }
 ]
 
