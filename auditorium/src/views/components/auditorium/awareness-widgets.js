@@ -15,15 +15,15 @@ const Collapsible = require('./../_shared/collapsible')
 const HTMLWidgets = [
   {
     name: __('Bar'),
-    asset: __('/offen-icon-black.svg')
+    asset: __('/user-access-widget-bar-en.svg')
   },
   {
     name: __('Box'),
-    asset: __('/offen-logo-yellow.jpg')
+    asset: __('/user-access-widget-box-en.svg')
   },
   {
     name: __('Circle'),
-    asset: __('/offen-icon-black.svg')
+    asset: __('/user-access-widget-circle-en.svg')
   }
 ]
 
@@ -83,19 +83,19 @@ const AwarenessWidgets = (props) => {
                 }
               >
                 <div class='link dim'>
-                  <button class='pointer w-100 w-auto-ns f5 tc bn dib br1 ph3 pv2 mv3 white bg-mid-gray'>
-                    {__('Copy code')}
+                  <button class='pointer w-100 w-auto-ns f5 tc bn dib br1 ph3 pv2 mt3 mb4 white bg-mid-gray'>
+                    {__('Copy link')}
                   </button>
                 </div>
               </CopyToClipboard>
-              <div class='bt b--black-10 pt4'>
+              <div class='bt b--black-10 pt3'>
                 <p class='ma0 mb3'>
                   {__('HTML Widget')}
                 </p>
-                <div class='mb2'>
+                <div class='mb3'>
                   {HTMLWidgets.map(function (widget) {
                     return (
-                      <label key={widget.name} class='dib mr2'>
+                      <label key={widget.name} class='dib mr3'>
                         <input
                           onChange={() => setSelectedWidget(widget)}
                           class='dib mr1'
@@ -113,7 +113,7 @@ const AwarenessWidgets = (props) => {
                   <p class='gray ma0 mb3'>
                     {__('Preview')}
                   </p>
-                  <div>
+                  <div class='flex justify-center mb3'>
                     <img src={selectedWidget.asset} />
                   </div>
                 </div>
@@ -132,7 +132,7 @@ const AwarenessWidgets = (props) => {
               >
                 <div class='link dim'>
                   <button class='pointer w-100 w-auto-ns f5 tc bn dib br1 ph3 pv2 mv3 white bg-mid-gray'>
-                    {__('Copy snippet')}
+                    {__('Copy widget')}
                   </button>
                 </div>
               </CopyToClipboard>
