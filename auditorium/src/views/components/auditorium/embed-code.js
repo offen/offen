@@ -7,6 +7,7 @@
 const { h, Fragment } = require('preact')
 const { CopyToClipboard } = require('react-copy-to-clipboard')
 const classnames = require('classnames')
+const escapeHtml = require('escape-html')
 
 const Collapsible = require('./../_shared/collapsible')
 const Paragraph = require('./../_shared/paragraph')
@@ -48,6 +49,8 @@ const EmbedCode = (props) => {
     )
   }
 
+  const snippet = `<script async src="${window.location.origin}/script.js" data-account-id="${model.account.accountId}"></script>`
+
   const renderBody = (props = {}) => (
     <div class='mw6 center ph3 mt3 mb4'>
       <Paragraph class='ma0 mb3'>
@@ -60,15 +63,13 @@ const EmbedCode = (props) => {
         <code
           class='ma0 lh-solid word-wrap'
           dangerouslySetInnerHTML={{
-            __html: `&lt;script async src="${window.location.origin}/script.js" data-account-id="${model.account.accountId}"&gt;&lt;/script&gt;`
+            __html: escapeHtml(snippet)
           }}
         />
       </div>
       <CopyToClipboard
         onCopy={handleCopy}
-        text={
-         `<script async src="${window.location.origin}/script.js" data-account-id="${model.account.accountId}"></script>`
-        }
+        text={snippet}
       >
         <div class='link dim'>
           <button class='pointer w-100 w-auto-ns f5 tc bn dib br1 ph3 pv2 mv3 white bg-mid-gray'>

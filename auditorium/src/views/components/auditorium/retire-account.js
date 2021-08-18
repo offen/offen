@@ -97,7 +97,7 @@ const RetireAccount = (props) => {
               tabindex='0'
             >
               <h4 class='f4 normal ma0'>
-                {__('Retire account')}
+                {__('Retire this account')}
               </h4>
               <a
                 class={classnames('dib', 'label-toggle', isCollapsed ? 'label-toggle--rotate' : null)}
