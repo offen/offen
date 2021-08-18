@@ -406,7 +406,7 @@ x-docker-pull-creds: &docker-pull-creds
 executors:
   golang:
     docker:
-      - image: cimg/go:1.16
+      - image: cimg/go:1.17
         auth: *docker-pull-creds
   node:
     docker:
