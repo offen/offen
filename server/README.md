@@ -9,7 +9,7 @@ SPDX-License-Identifier: Apache-2.0
 
 `server` exposes a HTTP API that can be used to record and query event data as well as static assets.
 
-`server` is a Go application built on top of the [gin-framework][] that uses Go modules for dependency management. The expected Go version is 1.16.
+`server` is a Go application built on top of the [gin-framework][] that uses Go modules for dependency management. The expected Go version is 1.17.
 
 [gin-framework]: https://github.com/gin-gonic/gin
 
