@@ -23,6 +23,7 @@ function createVault (host) {
   vault.style.display = 'none'
   vault.setAttribute('frameBorder', '0')
   vault.setAttribute('scrolling', 'no')
+  vault.setAttribute('title', 'Offen Vault')
 
   var elementId = createElementId()
   vault.setAttribute('id', elementId)
