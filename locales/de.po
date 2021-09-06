@@ -1534,3 +1534,83 @@ msgstr "Konsole | %s"
 msgid "None"
 msgstr "None"
 
+#: 
+#, fuzzy
+msgid "Retire this account"
+msgstr "Account stilllegen"
+
+#. src/views/components/auditorium/awareness-widgets.js:17
+#: 
+msgid "Bar"
+msgstr "Balken"
+
+#. src/views/components/auditorium/awareness-widgets.js:18
+#: 
+msgid "/user-access-widget-bar-en.svg"
+msgstr "/user-access-widget-bar-de.svg"
+
+#. src/views/components/auditorium/awareness-widgets.js:21
+#: 
+msgid "Box"
+msgstr "Box"
+
+#. src/views/components/auditorium/awareness-widgets.js:22
+#: 
+msgid "/user-access-widget-box-en.svg"
+msgstr "/user-access-widget-box-de.svg"
+
+#. src/views/components/auditorium/awareness-widgets.js:25
+#: 
+msgid "Circle"
+msgstr "Kreis"
+
+#. src/views/components/auditorium/awareness-widgets.js:26
+#: 
+msgid "/user-access-widget-circle-en.svg"
+msgstr "/user-access-widget-circle-de.svg"
+
+#. src/views/components/auditorium/awareness-widgets.js:53
+#: 
+msgid "Let users access their data"
+msgstr "Gewähre Nutzerinnen und Nutzern Zugriff auf ihre Daten"
+
+#: 
+#, fuzzy
+msgid "Toggle display of awareness widgets"
+msgstr "Anzeige Embed Code umschalten"
+
+#. src/views/components/auditorium/awareness-widgets.js:67
+#: 
+msgid "Let users access their data on every page of your website. Link directly to the User Auditorium or use the HTML widget."
+msgstr "Gewähre Nutzerinnen und Nutzern auf jeder Seite Zugriff auf ihre Daten. Verlinke das Auditorium für Nutzerinnen und Nutzer direkt oder verwende das HTML-Widget."
+
+#: 
+#, fuzzy
+msgid "User Auditorium link"
+msgstr "Auditorium öffnen"
+
+#: 
+#, fuzzy
+msgid "Successfully copied link to clipboard."
+msgstr "Erfolgreich den Embed Code in die Zwischenablage kopiert."
+
+#. src/views/components/auditorium/awareness-widgets.js:87
+#: 
+msgid "Copy link"
+msgstr "Link kopieren"
+
+#. src/views/components/auditorium/awareness-widgets.js:93
+#: 
+msgid "HTML Widget"
+msgstr "HTML Widget"
+
+#: 
+#, fuzzy
+msgid "Successfully copied widget code to clipboard."
+msgstr "Erfolgreich den Embed Code in die Zwischenablage kopiert."
+
+#: 
+#, fuzzy
+msgid "Copy widget"
+msgstr "Code kopieren"
+

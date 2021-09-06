@@ -31,7 +31,7 @@
     "gulp-clean": "^0.4.0",
     "linguas-file": "^1.0.0",
     "local-web-server": "^4.0.0",
-    "mochify": "^8.0.0",
+    "mochify": "^8.1.0",
     "npm-license-crawler": "^0.2.1",
     "standard": "^14.3.1",
     "tinyify": "^2.5.0",

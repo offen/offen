@@ -16,7 +16,7 @@ screenshots, other recordings) that help us reproduce and fix the issue are much
 
 ## Do you want to translate Offen into your language?
 
-Offen can be localized into any language and we are actively looking to grow the number of supported locales. If you would like to contribute by translating Offen into your language, send us an email to <hioffen@posteo.de> and we'll send you an invite to our translation tool. Thank you!
+Offen can be localized into any language and we are actively looking to grow the number of supported locales. Right now, English, German and French are supported, and we'd love to have Spanish or Portuguese versions too. If you would like to contribute by translating Offen into one of these or any other language, send us an email to <hioffen@posteo.de> and we'll send you an invite to our translation tool. Thank you!
 
 ## Do you want to submit a Pull Request?
 
@@ -53,3 +53,7 @@ options.
 We have dedicated [documentation][docs] on running Offen available. If this does not cover what you are looking for or you are stuck, feel free to open an issue on this repository or email us at <hioffen@posteo.de>.
 
 [docs]: https://docs.offen.dev/running-offen/
+
+## Don't want to use GitHub?
+
+In case you would prefer not to use GitHub (e.g. because you don't have an account), you can still contribute. Just send us an email with details at <hioffen@posteo.de> and we'll figure out how to get you on board.

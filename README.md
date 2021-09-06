@@ -90,7 +90,7 @@ __More features__
 ## Essential metrics
 
 All important statistics that help you to improve your service.  
-Collected without violating the privacy of your users.  
+Filter collected data by URL, Referrer, UTM parameters, as well as Landing Pages and Exit Pages.
 ![Essential metrics](https://offen.github.io/press-kit/offen-material/gfx-GitHub-Metrics.svg)
 
 ## Objectives
@@ -165,7 +165,7 @@ Check our [roadmap][] and [blog][] for detailed updates on what we are working o
 
 ## Feedback and contributions welcome
 
-Found an issue or want to add something? Please do not hesitate to file an issue or open a pull request.
+Found an issue or want to add something? Please do not hesitate to file an issue or open a pull request (or send an email in case you don't want to use GitHub).
 For details on how to get started head over to our [contributing guidelines.](https://github.com/offen/offen/blob/development/CONTRIBUTING.md)
 
 ---
@@ -173,7 +173,13 @@ For details on how to get started head over to our [contributing guidelines.](ht
 This repository contains all source code needed to work on Offen, both on the server as well as on the client.
 The development setup requires `docker` and `docker-compose` to be installed.
 
-After cloning the repository, you can build the containers and install dependencies using:
+After cloning the repository
+
+```
+$ git clone git@github.com:offen/offen.git
+```
+
+you can build the containers and install dependencies using:
 
 ```sh
 $ make setup

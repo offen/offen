@@ -1534,3 +1534,77 @@ msgstr "Console | %s"
 msgid "None"
 msgstr "Aucun"
 
+#: 
+msgid "Retire this account"
+msgstr "Désactiver ce compte"
+
+#. src/views/components/auditorium/awareness-widgets.js:17
+#: 
+msgid "Bar"
+msgstr "Barre"
+
+#. src/views/components/auditorium/awareness-widgets.js:18
+#: 
+msgid "/user-access-widget-bar-en.svg"
+msgstr "/user-access-widget-bar-fr.svg"
+
+#. src/views/components/auditorium/awareness-widgets.js:21
+#: 
+msgid "Box"
+msgstr "Boîte"
+
+#. src/views/components/auditorium/awareness-widgets.js:22
+#: 
+msgid "/user-access-widget-box-en.svg"
+msgstr "/user-access-widget-box-fr.svg"
+
+#. src/views/components/auditorium/awareness-widgets.js:25
+#: 
+msgid "Circle"
+msgstr "Cercle"
+
+#. src/views/components/auditorium/awareness-widgets.js:26
+#: 
+msgid "/user-access-widget-circle-en.svg"
+msgstr "/user-access-widget-circle-fr.svg"
+
+#. src/views/components/auditorium/awareness-widgets.js:53
+#: 
+msgid "Let users access their data"
+msgstr "Laisser les utilisateurs accéder à leurs données"
+
+#: 
+msgid "Toggle display of awareness widgets"
+msgstr "Basculer l'affichage des widgets de sensibilisation"
+
+#. src/views/components/auditorium/awareness-widgets.js:67
+#: 
+msgid "Let users access their data on every page of your website. Link directly to the User Auditorium or use the HTML widget."
+msgstr "Laisser les utilisateurs accéder à leur données sur toutes les pages de votre site web. Liez directement à l'Auditorium utilisateur ou utilisez le widget HTML."
+
+#: 
+msgid "User Auditorium link"
+msgstr "Lien utilisateur Auditorium"
+
+#: 
+msgid "Successfully copied link to clipboard."
+msgstr "Le lien a été copié dans le presse-papier avec succès."
+
+#. src/views/components/auditorium/awareness-widgets.js:87
+#: 
+msgid "Copy link"
+msgstr "Copier le lien"
+
+#. src/views/components/auditorium/awareness-widgets.js:93
+#: 
+msgid "HTML Widget"
+msgstr "Widget HTML"
+
+#: 
+msgid "Successfully copied widget code to clipboard."
+msgstr "Le code du widget a été copié dans le presse-papier avec succès."
+
+#: 
+msgid "Copy widget"
+msgstr "Copier le widget"
+

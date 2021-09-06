@@ -1,12 +1,12 @@
 # Copyright 2020 - Offen Authors <hioffen@posteo.de>
 # SPDX-License-Identifier: Apache-2.0
 
-FROM golang:1.16
+FROM golang:1.17
 
 RUN apt-get update \
   && apt-get install -y \
   gettext \
-  sqlite \
+  sqlite3 \
   && rm -rf /var/lib/apt/lists/*
 
 ENV GOCACHE /data/cache
@@ -15,4 +15,4 @@ WORKDIR /offen
 # this is used for hot-reloading applications on change
 # configuration is found in the application directories
 # themselves
-RUN go get github.com/markbates/refresh
+RUN go install github.com/markbates/refresh@latest
