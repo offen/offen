@@ -48,7 +48,10 @@ describe('src/buckets.js', function () {
         'www.reddit.tk',
         'android-app://com.laurencedawson.reddit_sync.pro',
         'ecosia.org',
-        'www.qwant.com'
+        'www.qwant.com',
+        'en.wikipedia.org',
+        'fr.m.wikipedia.org',
+        'fake.not-reallywikipedia.org'
       ]
       var mapped = referrers.map(mapToBuckets)
       assert.deepStrictEqual(mapped, [
@@ -89,7 +92,10 @@ describe('src/buckets.js', function () {
         'www.reddit.tk',
         'Reddit',
         'Ecosia',
-        'Qwant'
+        'Qwant',
+        'Wikipedia',
+        'Wikipedia',
+        'fake.not-reallywikipedia.org'
       ])
     })
   })
