@@ -41,7 +41,7 @@
     "gulp-clean": "^0.4.0",
     "gulp-rev": "^9.0.0",
     "gulp-uglify": "^3.0.2",
-    "linguas-file": "^1.0.0",
+    "linguas-file": "^2.0.0",
     "minify-stream": "^2.1.0",
     "mochify": "^8.1.0",
     "npm-license-crawler": "^0.2.1",
