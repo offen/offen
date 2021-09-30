@@ -4,7 +4,7 @@
   "private": true,
   "main": "index.js",
   "scripts": {
-    "start": "budo index.js register-dev-locales.js --pushstate --port $PORT -- --global-transform aliasify",
+    "start": "budo index.js --pushstate --port $PORT -- --entry ./register-dev-locales.js --global-transform aliasify",
     "test": "npm run mochify",
     "mochify": "mochify --chrome $(which google-chrome) --global-transform aliasify --allow-chrome-as-root src/{,**}/*.test.js",
     "posttest": "standard",
@@ -23,6 +23,7 @@
     "classnames": "^2.3.1",
     "date-fns": "^2.16.1",
     "escape-html": "^1.0.3",
+    "i18n-iso-countries": "^6.8.0",
     "offen": "file:./../packages",
     "plotly.js-basic-dist": "^1.51.2",
     "preact": "^10.5.13",

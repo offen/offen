@@ -258,7 +258,7 @@ function Queries (storage) {
           empty: results[17],
           returningUsers: results[18],
           onboardingStats: results[19],
-          geoLocation: results[20],
+          geo: results[20],
           resolution: resolution,
           range: range,
           filter: (query && query.filter) || null

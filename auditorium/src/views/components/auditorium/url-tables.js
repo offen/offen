@@ -11,6 +11,7 @@ const classnames = require('classnames')
 const Tables = require('./tables')
 const ExplainerIcon = require('./explainer-icon')
 const Paragraph = require('./../_shared/paragraph')
+const LocalizedCountry = require('./localized-country')
 
 const FilterLink = (props) => {
   let href = window.location.pathname
@@ -202,6 +203,35 @@ const URLTable = (props) => {
               return (
                 <Paragraph class='mw7 ma0 ph1 pv2 ws-normal'>
                   {__('A list of special referrers that directed you to pages of the <a href="#terms-offen-installation" class="%s">Offen installation.</a> <a href="#terms-operator" class="%s">Operators</a> can mark links to their pages with a source tag. This is used, for example, to measure the success of online advertising campaigns.', 'b link dim dark-green', 'b link dim dark-green')}
+                </Paragraph>
+              )
+            }}
+            showAll={showAll === 1}
+            setShowAll={(open) => setShowAll(open ? 1 : null)}
+          />
+          <Tables.Table
+            headline={__('Location')}
+            columnNames={[__('Location'), __('Sessions'), __('Views per session')]}
+            formatAs={['count', 'value']}
+            rows={model.geo}
+            ItemDecorator={(props) => (
+              <FilterLink
+                {...props}
+                filterProp='geo'
+                filterValue={props.children}
+                queryParams={queryParams}
+                filter={model.filter}
+              >
+                <LocalizedCountry>
+                  {props.children}
+                </LocalizedCountry>
+              </FilterLink>
+            )}
+            emptyFallback={currentFilterProp === 'geo' && { key: currentFilterValue, count: [0, 0] }}
+            explainer={(props) => {
+              return (
+                <Paragraph class='mw7 ma0 ph1 pv2 ws-normal'>
+                  {__('The geographic location associated with each session.')}
                 </Paragraph>
               )
             }}
