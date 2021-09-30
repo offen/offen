@@ -44,6 +44,10 @@
       "type": ["string", "null"],
       "format": "uri",
       "maxLength": 2000
+    },
+    "geo": {
+      "type": ["string", "null"],
+      "maxLength": 4
     }
   }
 }

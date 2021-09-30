@@ -5,6 +5,7 @@
 
 var consentStatus = require('./user-consent')
 var getSessionId = require('./session-id')
+var zones = require('./zones')
 
 exports.optIn = optIn
 
@@ -53,7 +54,15 @@ function eventDuplexer (event, respond, next) {
   var now = new Date()
   Object.assign(event.data.payload.event, {
     timestamp: now,
-    sessionId: getSessionId(event.data.payload.accountId)
+    sessionId: getSessionId(event.data.payload.accountId),
+    geo: (function () {
+      if (!window.Intl || !window.Intl.DateTimeFormat) {
+        return null
+      }
+      var format = new window.Intl.DateTimeFormat()
+      var timeZone = format.resolvedOptions().timeZone
+      return zones[timeZone] || null
+    })()
   })
   // strip search parameters from referrers as they might contain sensitive information
   if (event.data.payload.event.referrer) {

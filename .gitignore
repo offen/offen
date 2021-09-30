@@ -31,3 +31,5 @@ dependencies.csv
 *.deb
 
 .jekyll-cache
+
+*.tab
