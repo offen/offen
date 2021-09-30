@@ -125,6 +125,14 @@ A list of special referrer values that directed users to pages. For this metric,
 
 ---
 
+## Location
+
+The geographic location associated to the sessions in the selected timeframe.
+Offen does not rely on an IP database for deriving geo location, but instead asks the browser for the selected timezone and tries to map this to a country.
+Country level is the only resolution available, countries that span multiple timezones are merged before storing data.
+
+---
+
 ## Landing pages
 
 A list of entry pages for all unique sessions. As this is collected on session level, a returning unique user might create multiple landing pages.
