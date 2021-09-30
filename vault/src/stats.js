@@ -19,7 +19,8 @@ var propertyAccessors = {
   pageload: _.property(['payload', 'pageload']),
   isMobile: _.property(['payload', 'isMobile']),
   computedReferrer: _.property(['payload', '$referrer']),
-  eventId: _.property('eventId')
+  eventId: _.property('eventId'),
+  geo: _.property(['payload', 'geo'])
 }
 
 // The bounce rate is calculated as the percentage of session identifiers
@@ -346,6 +347,29 @@ function mobileShare (events) {
     return null
   }
   return mobileEvents / allEvents
+}
+
+// `geoLocation` counts sessions by geolocation
+exports.geoLocation = consumeAsync(geoLocation)
+
+function geoLocation (events) {
+  return _.chain(events)
+    .groupBy(propertyAccessors.sessionId)
+    .values()
+    .map(_.head)
+    .countBy(function (event) {
+      var value = propertyAccessors.geo(event)
+      if (value) {
+        return value
+      }
+      return '__NONE_GEOLOCATION__'
+    })
+    .map(function (value, key) {
+      return { key: key, count: value }
+    })
+    .sortBy('count')
+    .reverse()
+    .value()
 }
 
 // `retention` calculates a retention matrix for the given slices of events.
