@@ -218,9 +218,9 @@ describe('src/stats.js', function () {
       ])
         .then(function (result) {
           assert.deepStrictEqual(result, [
-            { key: '__NONE_GEOLOCATION__', count: 2 },
-            { key: 'RU', count: 1 },
-            { key: 'FR', count: 1 }
+            { key: '__NONE_GEOLOCATION__', count: [2, 1] },
+            { key: 'RU', count: [1, 2] },
+            { key: 'FR', count: [1, 2] }
           ])
         })
     })
@@ -428,22 +428,22 @@ describe('src/stats.js', function () {
         {
           eventId: 'event-a',
           accountId: 'account-a',
-          payload: { $referrer: 'www.coolblog.com', href: new window.URL('https://www.offen.dev'), isMobile: false }
+          payload: { $referrer: 'www.coolblog.com', href: new window.URL('https://www.offen.dev'), isMobile: false, geo: 'PT' }
         },
         {
           eventId: 'event-z',
           accountId: 'account-a',
-          payload: { $referrer: 'www.coolblog.com', href: new window.URL('https://www.offen.dev/get-started'), isMobile: false }
+          payload: { $referrer: 'www.coolblog.com', href: new window.URL('https://www.offen.dev/get-started'), isMobile: false, geo: 'PT' }
         },
         {
           eventId: 'event-b',
           accountId: 'account-b',
-          payload: { $referrer: 'www.coolblog.com', href: new window.URL('https://www.example.com'), isMobile: true }
+          payload: { $referrer: 'www.coolblog.com', href: new window.URL('https://www.example.com'), isMobile: true, geo: 'ES' }
         },
         {
           eventId: 'event-x',
           accountId: 'account-a',
-          payload: { $referrer: 'www.coolblog.com', href: new window.URL('https://www.offen.dev'), isMobile: false }
+          payload: { $referrer: 'www.coolblog.com', href: new window.URL('https://www.offen.dev'), isMobile: false, geo: 'PT' }
         }
       ])
         .then(function (result) {
@@ -452,7 +452,8 @@ describe('src/stats.js', function () {
             url: 'www.offen.dev/get-started',
             referrer: 'www.coolblog.com',
             numVisits: 3,
-            isMobile: false
+            isMobile: false,
+            geo: 'PT'
           })
         })
     })

@@ -353,21 +353,34 @@ function mobileShare (events) {
 exports.geoLocation = consumeAsync(geoLocation)
 
 function geoLocation (events) {
+  var eventsBySession = _.countBy(events, propertyAccessors.sessionId)
   return _.chain(events)
     .groupBy(propertyAccessors.sessionId)
     .values()
     .map(_.head)
-    .countBy(function (event) {
+    .groupBy(function (event) {
       var value = propertyAccessors.geo(event)
       if (value) {
         return value
       }
       return '__NONE_GEOLOCATION__'
     })
-    .map(function (value, key) {
-      return { key: key, count: value }
+    .map(function (values, key) {
+      var matchingSessions = values.length
+      var matchingEvents = _.reduce(values, function (count, next) {
+        return count + eventsBySession[propertyAccessors.sessionId(next)]
+      }, 0)
+      return {
+        key: key,
+        count: [
+          matchingSessions,
+          matchingEvents / matchingSessions
+        ]
+      }
     })
-    .sortBy('count')
+    .sortBy(function (item) {
+      return item.count[0]
+    })
     .reverse()
     .value()
 }
@@ -485,7 +498,8 @@ function onboardingStats (events) {
       : null,
     referrer: payload.$referrer,
     numVisits: numVisits,
-    isMobile: payload.isMobile
+    isMobile: payload.isMobile,
+    geo: payload.geo
   }
 }
 
