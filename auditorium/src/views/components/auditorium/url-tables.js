@@ -7,11 +7,11 @@
 const { h } = require('preact')
 const { useState } = require('preact/hooks')
 const classnames = require('classnames')
+const countries = require('i18n-iso-countries')
 
 const Tables = require('./tables')
 const ExplainerIcon = require('./explainer-icon')
 const Paragraph = require('./../_shared/paragraph')
-const LocalizedCountry = require('./localized-country')
 
 const FilterLink = (props) => {
   let href = window.location.pathname
@@ -185,7 +185,7 @@ const URLTable = (props) => {
           />
           <Tables.Table
             headline={__('Sources')}
-            columnNames={[__('Source'), __('Sessions'), __('Views per session')]}
+            columnNames={[__('Source'), __('Sessions'), __('Page depth')]}
             formatAs={['count', 'value']}
             rows={model.sources}
             ItemDecorator={(props) => (
@@ -211,22 +211,33 @@ const URLTable = (props) => {
           />
           <Tables.Table
             headline={__('Location')}
-            columnNames={[__('Location'), __('Sessions'), __('Views per session')]}
+            columnNames={[__('Location'), __('Sessions'), __('Page depth')]}
             formatAs={['count', 'value']}
             rows={model.geo}
-            ItemDecorator={(props) => (
-              <FilterLink
-                {...props}
-                filterProp='geo'
-                filterValue={props.children}
-                queryParams={queryParams}
-                filter={model.filter}
-              >
-                <LocalizedCountry>
-                  {props.children}
-                </LocalizedCountry>
-              </FilterLink>
-            )}
+            ItemDecorator={(props) => {
+              let content
+              if (props.children === '__NONE_GEOLOCATION__') {
+                content = (<i>{__('None')}</i>)
+              } else {
+                content = countries.getName(
+                  props.children,
+                  process.env.LOCALE,
+                  { select: 'official' }
+                ) || props.children
+              }
+
+              return (
+                <FilterLink
+                  {...props}
+                  filterProp='geo'
+                  filterValue={props.children}
+                  queryParams={queryParams}
+                  filter={model.filter}
+                >
+                  {content}
+                </FilterLink>
+              )
+            }}
             emptyFallback={currentFilterProp === 'geo' && { key: currentFilterValue, count: [0, 0] }}
             explainer={(props) => {
               return (
