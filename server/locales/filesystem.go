@@ -37,7 +37,7 @@ func GettextFor(locale string) (func(string, ...interface{}) template.HTML, erro
 		return nil, fmt.Errorf("locales: error reading file contents for locale %s: %w", locale, err)
 	}
 
-	po := gotext.Po{}
+	po := gotext.NewPo()
 	po.Parse(b)
 	return wrapFmt(po.Get), nil
 }
