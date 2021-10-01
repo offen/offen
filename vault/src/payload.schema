@@ -46,8 +46,7 @@
       "maxLength": 2000
     },
     "geo": {
-      "type": ["string", "null"],
-      "maxLength": 4
-    }
+      "type": ["string", "null"]
+     }
   }
 }
