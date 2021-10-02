@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * Copyright 2021 - Offen Authors <hioffen@posteo.de>
  * SPDX-License-Identifier: Apache-2.0
  */
 
