@@ -19,7 +19,7 @@ var mapping = zoneFile.toString('utf8').split('\n')
   .filter(Boolean)
   .reduce(function (acc, next) {
     var chunks = next.split('\t')
-    acc[chunks[2]] = chunks[0]
+    acc[chunks[2].toUpperCase()] = chunks[0].toUpperCase()
     return acc
   }, {})
 

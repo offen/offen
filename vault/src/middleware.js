@@ -61,7 +61,7 @@ function eventDuplexer (event, respond, next) {
       }
       var format = new window.Intl.DateTimeFormat()
       var timeZone = format.resolvedOptions().timeZone
-      return zones[timeZone] || null
+      return zones[timeZone.toUpperCase()] || null
     })()
   })
   // strip search parameters from referrers as they might contain sensitive information
