@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * Copyright 2020-2021 - Offen Authors <hioffen@posteo.de>
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -7,6 +7,7 @@
 const { h } = require('preact')
 const { useState } = require('preact/hooks')
 const classnames = require('classnames')
+const countries = require('i18n-iso-countries')
 
 const Tables = require('./tables')
 const ExplainerIcon = require('./explainer-icon')
@@ -184,7 +185,7 @@ const URLTable = (props) => {
           />
           <Tables.Table
             headline={__('Sources')}
-            columnNames={[__('Source'), __('Sessions'), __('Views per session')]}
+            columnNames={[__('Source'), __('Sessions'), __('Page depth')]}
             formatAs={['count', 'value']}
             rows={model.sources}
             ItemDecorator={(props) => (
@@ -202,6 +203,46 @@ const URLTable = (props) => {
               return (
                 <Paragraph class='mw7 ma0 ph1 pv2 ws-normal'>
                   {__('A list of special referrers that directed you to pages of the <a href="#terms-offen-installation" class="%s">Offen installation.</a> <a href="#terms-operator" class="%s">Operators</a> can mark links to their pages with a source tag. This is used, for example, to measure the success of online advertising campaigns.', 'b link dim dark-green', 'b link dim dark-green')}
+                </Paragraph>
+              )
+            }}
+            showAll={showAll === 1}
+            setShowAll={(open) => setShowAll(open ? 1 : null)}
+          />
+          <Tables.Table
+            headline={__('Location')}
+            columnNames={[__('Location'), __('Sessions'), __('Page depth')]}
+            formatAs={['count', 'value']}
+            rows={model.geo}
+            ItemDecorator={(props) => {
+              let content
+              if (props.children === '__NONE_GEOLOCATION__') {
+                content = (<i>{__('None')}</i>)
+              } else {
+                content = countries.getName(
+                  props.children,
+                  process.env.LOCALE,
+                  { select: 'official' }
+                ) || props.children
+              }
+
+              return (
+                <FilterLink
+                  {...props}
+                  filterProp='geo'
+                  filterValue={props.children}
+                  queryParams={queryParams}
+                  filter={model.filter}
+                >
+                  {content}
+                </FilterLink>
+              )
+            }}
+            emptyFallback={currentFilterProp === 'geo' && { key: currentFilterValue, count: [0, 0] }}
+            explainer={(props) => {
+              return (
+                <Paragraph class='mw7 ma0 ph1 pv2 ws-normal'>
+                  {__('The geographic location associated with each session.')}
                 </Paragraph>
               )
             }}

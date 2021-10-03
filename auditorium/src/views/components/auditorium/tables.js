@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * Copyright 2020-2021 - Offen Authors <hioffen@posteo.de>
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -165,7 +165,7 @@ const Container = (props) => {
       css.push('f5', 'normal', 'dib', 'pv3')
     }
     if (tableSets.length > 1) {
-      css.push('f5', 'b', 'normal', 'link', 'dim', 'dib', 'pt2', 'pb2', 'ph2', 'mr2')
+      css.push('f5', 'b', 'normal', 'link', 'dim', 'dib', 'pt2', 'pb2', 'ph2', 'mr0', 'mr2-ns')
       css.push(isFallback ? 'dark-red' : 'dark-green')
     }
 

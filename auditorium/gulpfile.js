@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * Copyright 2020-2021 - Offen Authors <hioffen@posteo.de>
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -74,6 +74,7 @@ function makeScriptTask (dest, locale) {
     if (locale !== defaultLocale) {
       b.add(configureDatepickerLocale(locale))
     }
+    b.add(configureCountriesLocale(locale))
 
     return b
       .exclude('plotly.js-basic-dist')
@@ -121,5 +122,12 @@ function configureDatepickerLocale (locale) {
 const { registerLocale } = require('react-datepicker')
 const locale = require('date-fns/locale/${locale}')
 registerLocale('${locale}', locale)
+  `])
+}
+
+function configureCountriesLocale (locale) {
+  return Readable.from([`
+const countries = require('i18n-iso-countries')
+countries.registerLocale(require('i18n-iso-countries/langs/${locale}.json'))
   `])
 }

@@ -199,6 +199,7 @@ function Queries (storage) {
     var landingPages = stats.landingPages(eventsInBounds)
     var exitPages = stats.exitPages(eventsInBounds)
     var mobileShare = stats.mobileShare(eventsInBounds)
+    var geoLocation = stats.geoLocation(eventsInBounds)
 
     var livePages = stats.activePages(realtimeEvents)
     var liveUsers = stats.visitors(realtimeEvents)
@@ -232,7 +233,8 @@ function Queries (storage) {
         retentionMatrix,
         empty,
         returningUsers,
-        onboardingStats
+        onboardingStats,
+        geoLocation
       ])
       .then(function (results) {
         return {
@@ -256,6 +258,7 @@ function Queries (storage) {
           empty: results[17],
           returningUsers: results[18],
           onboardingStats: results[19],
+          geo: results[20],
           resolution: resolution,
           range: range,
           filter: (query && query.filter) || null

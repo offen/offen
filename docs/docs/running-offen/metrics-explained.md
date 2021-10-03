@@ -8,7 +8,7 @@ parent: Running Offen
 ---
 
 <!--
-Copyright 2020 - Offen Authors <hioffen@posteo.de>
+Copyright 2020-2021 - Offen Authors <hioffen@posteo.de>
 SPDX-License-Identifier: Apache-2.0
 -->
 
@@ -122,6 +122,14 @@ A list of special referrer values that directed users to pages. For this metric,
 ## Sources
 
 A list of special referrer values that directed users to pages. For this metric, referrers will be grouped by the `utm_source` values contained in their querystring parameters. Check ["Tagging campaigns and sources (UTM)"][campaigns sources] for how URLs have to be tagged for this feature.
+
+---
+
+## Location
+
+The geographic location associated to the sessions in the selected timeframe.
+Offen does not rely on an IP database for deriving geo location, but instead asks the browser for the selected timezone and tries to map this to a country.
+Country level is the only resolution available, countries that span multiple timezones are merged before storing data.
 
 ---
 

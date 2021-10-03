@@ -206,6 +206,32 @@ describe('src/stats.js', function () {
     })
   })
 
+  describe('stats.geoLocation(events)', function () {
+    it('returns sorted geolocation values by session', function () {
+      return stats.geoLocation([
+        { payload: { sessionId: 'session-a', geo: 'FR' } },
+        { payload: { sessionId: 'session-a', geo: 'FR' } },
+        { payload: { sessionId: 'session-b', geo: 'RU' } },
+        { payload: { sessionId: 'session-b', geo: 'RU' } },
+        { payload: { sessionId: 'session-c', geo: null } },
+        { payload: { sessionId: 'session-d', geo: null } }
+      ])
+        .then(function (result) {
+          assert.deepStrictEqual(result, [
+            { key: '__NONE_GEOLOCATION__', count: [2, 1] },
+            { key: 'RU', count: [1, 2] },
+            { key: 'FR', count: [1, 2] }
+          ])
+        })
+    })
+    it('returns an empty array when given an empty array', function () {
+      return stats.geoLocation([])
+        .then(function (result) {
+          assert.deepStrictEqual(result, [])
+        })
+    })
+  })
+
   describe('stats.campaigns(events)', function () {
     it('returns sorted referrer campaigns from foreign domains grouped by host', function () {
       return stats.campaigns([
@@ -402,22 +428,22 @@ describe('src/stats.js', function () {
         {
           eventId: 'event-a',
           accountId: 'account-a',
-          payload: { $referrer: 'www.coolblog.com', href: new window.URL('https://www.offen.dev'), isMobile: false }
+          payload: { $referrer: 'www.coolblog.com', href: new window.URL('https://www.offen.dev'), isMobile: false, geo: 'PT' }
         },
         {
           eventId: 'event-z',
           accountId: 'account-a',
-          payload: { $referrer: 'www.coolblog.com', href: new window.URL('https://www.offen.dev/get-started'), isMobile: false }
+          payload: { $referrer: 'www.coolblog.com', href: new window.URL('https://www.offen.dev/get-started'), isMobile: false, geo: 'PT' }
         },
         {
           eventId: 'event-b',
           accountId: 'account-b',
-          payload: { $referrer: 'www.coolblog.com', href: new window.URL('https://www.example.com'), isMobile: true }
+          payload: { $referrer: 'www.coolblog.com', href: new window.URL('https://www.example.com'), isMobile: true, geo: 'ES' }
         },
         {
           eventId: 'event-x',
           accountId: 'account-a',
-          payload: { $referrer: 'www.coolblog.com', href: new window.URL('https://www.offen.dev'), isMobile: false }
+          payload: { $referrer: 'www.coolblog.com', href: new window.URL('https://www.offen.dev'), isMobile: false, geo: 'PT' }
         }
       ])
         .then(function (result) {
@@ -426,7 +452,8 @@ describe('src/stats.js', function () {
             url: 'www.offen.dev/get-started',
             referrer: 'www.coolblog.com',
             numVisits: 3,
-            isMobile: false
+            isMobile: false,
+            geo: 'PT'
           })
         })
     })

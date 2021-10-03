@@ -64,7 +64,7 @@ module.exports = (props) => {
             {__("What data isn't collected?")}
           </Headline>
           <Paragraph class='mt0 mb4'>
-            {__('Location data, device information and engagement are not collected. There are also no fingerprinting technologies in use.')}
+            {__('Device information and engagement are not collected. There are also no fingerprinting technologies in use.')}
           </Paragraph>
           <Headline level={3} class='f5 i normal mt0 mb2'>
             {__('How is my data handled?')}
