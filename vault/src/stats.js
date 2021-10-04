@@ -357,7 +357,9 @@ function geoLocation (events) {
   return _.chain(events)
     .groupBy(propertyAccessors.sessionId)
     .values()
-    .map(_.head)
+    .map(function (session) {
+      return _.find(session, propertyAccessors.geo) || session[0]
+    })
     .groupBy(function (event) {
       var value = propertyAccessors.geo(event)
       if (value) {

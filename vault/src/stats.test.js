@@ -214,13 +214,15 @@ describe('src/stats.js', function () {
         { payload: { sessionId: 'session-b', geo: 'RU' } },
         { payload: { sessionId: 'session-b', geo: 'RU' } },
         { payload: { sessionId: 'session-c', geo: null } },
-        { payload: { sessionId: 'session-d', geo: null } }
+        { payload: { sessionId: 'session-d', geo: null } },
+        { payload: { sessionId: 'session-y', geo: 'FR' } },
+        { payload: { sessionId: 'session-z', geo: 'FR' } }
       ])
         .then(function (result) {
           assert.deepStrictEqual(result, [
+            { key: 'FR', count: [3, 4 / 3] },
             { key: '__NONE_GEOLOCATION__', count: [2, 1] },
-            { key: 'RU', count: [1, 2] },
-            { key: 'FR', count: [1, 2] }
+            { key: 'RU', count: [1, 2] }
           ])
         })
     })
