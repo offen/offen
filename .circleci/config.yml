@@ -159,7 +159,6 @@ jobs:
               fi
             else
               echo 'export DOCKER_IMAGE_TAGS=($CIRCLE_TAG latest)' >> $BASH_ENV
-              echo 'export DOCKER_BUILD_DEPRECATED="true"' >> $BASH_ENV
             fi
       - run:
           name: Download and import signing key
@@ -194,14 +193,8 @@ jobs:
           name: Build Docker image(s)
           command: |
             make build-docker
-            # This will be removed at some point
-            make build-docker DOCKERFILE=Dockerfile.deprecated DOCKER_IMAGE_TAG=root
-
             for tag in "${DOCKER_IMAGE_TAGS[@]}"; do
               docker tag offen/offen:local offen/offen:$tag
-              if [ ! -z "$DOCKER_BUILD_DEPRECATED" ]; then
-                docker tag offen/offen:root offen/offen:$tag-root
-              fi
             done
       - run:
           name: Push offen/offen to Docker Hub
@@ -209,9 +202,6 @@ jobs:
             echo "$DOCKER_ACCESSTOKEN" | docker login --username $DOCKER_LOGIN --password-stdin
             for tag in "${DOCKER_IMAGE_TAGS[@]}"; do
               docker push offen/offen:$tag
-              if [ ! -z "$DOCKER_BUILD_DEPRECATED" ]; then
-                docker push offen/offen:$tag-root
-              fi
             done
       - store_artifacts:
           path: /tmp/artifacts
