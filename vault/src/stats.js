@@ -381,6 +381,9 @@ function geoLocation (events) {
       }
     })
     .sortBy(function (item) {
+      return item.count[1]
+    })
+    .sortBy(function (item) {
       return item.count[0]
     })
     .reverse()
