@@ -11,9 +11,6 @@
     "isMobile": {
       "type": "boolean"
     },
-    "title": {
-      "type": "string"
-    },
     "sessionId": {
       "type": ["string", "null"]
     },

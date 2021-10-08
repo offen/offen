@@ -92,7 +92,6 @@ describe('src/aggregating-storage.js', function () {
                   payload: {
                     type: 'PAGEVIEW',
                     href: 'https://www.offen.dev',
-                    title: 'Transparent web analytics',
                     sessionId: 'session-id-1',
                     referrer: '',
                     timestamp: now.toJSON(),
@@ -107,7 +106,6 @@ describe('src/aggregating-storage.js', function () {
                   payload: {
                     type: 'PAGEVIEW',
                     href: 'https://www.offen.dev',
-                    title: 'Transparent web analytics',
                     sessionId: 'session-id-1',
                     referrer: '',
                     timestamp: minuteAgo.toJSON(),
@@ -122,7 +120,6 @@ describe('src/aggregating-storage.js', function () {
                   payload: {
                     type: 'PAGEVIEW',
                     href: 'https://www.offen.dev',
-                    title: 'Transparent web analytics',
                     sessionId: 'session-id-1',
                     referrer: '',
                     timestamp: twoHoursAgo.toJSON(),
