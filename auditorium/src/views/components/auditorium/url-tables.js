@@ -122,96 +122,10 @@ const URLTable = (props) => {
         <Tables.Container
           showExplainer={showExplainer}
           explainerPropsFor={explainerPropsFor}
-          groupName='referrers'
+          groupName='geo-location'
         >
           <Tables.Table
-            headline={__('Referrers')}
-            columnNames={[__('Host'), __('Sessions'), __('Page depth')]}
-            formatAs={['count', 'value']}
-            rows={model.referrers}
-            ItemDecorator={(props) => {
-              let content = props.children
-              if (content === '__NONE_REFERRER__') {
-                content = (<i>{__('None')}</i>)
-              }
-              return (
-                <FilterLink
-                  {...props}
-                  filterProp='referrer'
-                  filterValue={props.children}
-                  queryParams={queryParams}
-                  filter={model.filter}
-                >
-                  {content}
-                </FilterLink>
-              )
-            }}
-            explainer={(props) => {
-              return (
-                <Paragraph class='mw7 ma0 ph1 pv2 ws-normal'>
-                  {__('A list of referrers that directed you to pages of the <a href="#terms-offen-installation" class="%s">Offen installation.</a> Popular referrers like, for example, Google or Twitter display their proper name, others their domain.', 'b link dim dark-green')}
-                </Paragraph>
-              )
-            }}
-            showAll={showAll === 1}
-            setShowAll={(open) => setShowAll(open ? 1 : null)}
-            emptyFallback={currentFilterProp === 'referrer' && { key: currentFilterValue, count: [0, 0] }}
-          />
-          <Tables.Table
-            headline={__('Campaigns')}
-            columnNames={[__('Campaign'), __('Sessions'), __('Page depth')]}
-            formatAs={['count', 'value']}
-            rows={model.campaigns}
-            ItemDecorator={(props) => (
-              <FilterLink
-                {...props}
-                filterProp='campaign'
-                queryParams={queryParams}
-                filter={model.filter}
-              >
-                {props.children}
-              </FilterLink>
-            )}
-            emptyFallback={currentFilterProp === 'campaign' && { key: currentFilterValue, count: [0, 0] }}
-            explainer={(props) => {
-              return (
-                <Paragraph class='mw7 ma0 ph1 pv2 ws-normal'>
-                  {__('A list of special referrers that directed you to pages of the <a href="#terms-offen-installation" class="%s">Offen installation.</a> <a href="#terms-operator" class="%s">Operators</a> can mark links to their pages with a campaign tag. This is used, for example, to measure the success of online advertising campaigns.', 'b link dim dark-green', 'b link dim dark-green')}
-                </Paragraph>
-              )
-            }}
-            showAll={showAll === 1}
-            setShowAll={(open) => setShowAll(open ? 1 : null)}
-          />
-          <Tables.Table
-            headline={__('Sources')}
-            columnNames={[__('Source'), __('Sessions'), __('Page depth')]}
-            formatAs={['count', 'value']}
-            rows={model.sources}
-            ItemDecorator={(props) => (
-              <FilterLink
-                {...props}
-                filterProp='source'
-                queryParams={queryParams}
-                filter={model.filter}
-              >
-                {props.children}
-              </FilterLink>
-            )}
-            emptyFallback={currentFilterProp === 'source' && { key: currentFilterValue, count: [0, 0] }}
-            explainer={(props) => {
-              return (
-                <Paragraph class='mw7 ma0 ph1 pv2 ws-normal'>
-                  {__('A list of special referrers that directed you to pages of the <a href="#terms-offen-installation" class="%s">Offen installation.</a> <a href="#terms-operator" class="%s">Operators</a> can mark links to their pages with a source tag. This is used, for example, to measure the success of online advertising campaigns.', 'b link dim dark-green', 'b link dim dark-green')}
-                </Paragraph>
-              )
-            }}
-            showAll={showAll === 1}
-            setShowAll={(open) => setShowAll(open ? 1 : null)}
-          />
-          <Tables.Table
-            headline={__('Location')}
-            columnNames={[__('Location'), __('Sessions'), __('Page depth')]}
+            columnNames={[__('Country'), __('Sessions'), __('Page depth')]}
             formatAs={['count', 'value']}
             rows={model.geo}
             ItemDecorator={(props) => {
@@ -253,6 +167,97 @@ const URLTable = (props) => {
         <Tables.Container
           showExplainer={showExplainer}
           explainerPropsFor={explainerPropsFor}
+          groupName='referrers'
+        >
+          <Tables.Table
+            headline={__('Referrers')}
+            columnNames={[__('Host'), __('Sessions'), __('Page depth')]}
+            formatAs={['count', 'value']}
+            rows={model.referrers}
+            ItemDecorator={(props) => {
+              let content = props.children
+              if (content === '__NONE_REFERRER__') {
+                content = (<i>{__('None')}</i>)
+              }
+              return (
+                <FilterLink
+                  {...props}
+                  filterProp='referrer'
+                  filterValue={props.children}
+                  queryParams={queryParams}
+                  filter={model.filter}
+                >
+                  {content}
+                </FilterLink>
+              )
+            }}
+            explainer={(props) => {
+              return (
+                <Paragraph class='mw7 ma0 ph1 pv2 ws-normal'>
+                  {__('A list of referrers that directed you to pages of the <a href="#terms-offen-installation" class="%s">Offen installation.</a> Popular referrers like, for example, Google or Twitter display their proper name, others their domain.', 'b link dim dark-green')}
+                </Paragraph>
+              )
+            }}
+            showAll={showAll === 1}
+            setShowAll={(open) => setShowAll(open ? 2 : null)}
+            emptyFallback={currentFilterProp === 'referrer' && { key: currentFilterValue, count: [0, 0] }}
+          />
+          <Tables.Table
+            headline={__('Campaigns')}
+            columnNames={[__('Campaign'), __('Sessions'), __('Page depth')]}
+            formatAs={['count', 'value']}
+            rows={model.campaigns}
+            ItemDecorator={(props) => (
+              <FilterLink
+                {...props}
+                filterProp='campaign'
+                queryParams={queryParams}
+                filter={model.filter}
+              >
+                {props.children}
+              </FilterLink>
+            )}
+            emptyFallback={currentFilterProp === 'campaign' && { key: currentFilterValue, count: [0, 0] }}
+            explainer={(props) => {
+              return (
+                <Paragraph class='mw7 ma0 ph1 pv2 ws-normal'>
+                  {__('A list of special referrers that directed you to pages of the <a href="#terms-offen-installation" class="%s">Offen installation.</a> <a href="#terms-operator" class="%s">Operators</a> can mark links to their pages with a campaign tag. This is used, for example, to measure the success of online advertising campaigns.', 'b link dim dark-green', 'b link dim dark-green')}
+                </Paragraph>
+              )
+            }}
+            showAll={showAll === 2}
+            setShowAll={(open) => setShowAll(open ? 2 : null)}
+          />
+          <Tables.Table
+            headline={__('Sources')}
+            columnNames={[__('Source'), __('Sessions'), __('Page depth')]}
+            formatAs={['count', 'value']}
+            rows={model.sources}
+            ItemDecorator={(props) => (
+              <FilterLink
+                {...props}
+                filterProp='source'
+                queryParams={queryParams}
+                filter={model.filter}
+              >
+                {props.children}
+              </FilterLink>
+            )}
+            emptyFallback={currentFilterProp === 'source' && { key: currentFilterValue, count: [0, 0] }}
+            explainer={(props) => {
+              return (
+                <Paragraph class='mw7 ma0 ph1 pv2 ws-normal'>
+                  {__('A list of special referrers that directed you to pages of the <a href="#terms-offen-installation" class="%s">Offen installation.</a> <a href="#terms-operator" class="%s">Operators</a> can mark links to their pages with a source tag. This is used, for example, to measure the success of online advertising campaigns.', 'b link dim dark-green', 'b link dim dark-green')}
+                </Paragraph>
+              )
+            }}
+            showAll={showAll === 2}
+            setShowAll={(open) => setShowAll(open ? 2 : null)}
+          />
+        </Tables.Container>
+        <Tables.Container
+          showExplainer={showExplainer}
+          explainerPropsFor={explainerPropsFor}
           groupName='landing-exit'
         >
           <Tables.Table
@@ -275,8 +280,8 @@ const URLTable = (props) => {
                 {__('A list of pages of the <a href="#terms-offen-installation" class="%s">Offen installation</a> that you have opened first in all <a href="#terms-unique-session" class="%s">unique sessions.</a>', 'b link dim dark-green', 'b link dim dark-green')}
               </Paragraph>
             )}
-            showAll={showAll === 2}
-            setShowAll={(open) => setShowAll(open ? 2 : null)}
+            showAll={showAll === 3}
+            setShowAll={(open) => setShowAll(open ? 3 : null)}
           />
           <Tables.Table
             headline={__('Exit pages')}
@@ -300,8 +305,8 @@ const URLTable = (props) => {
                 </Paragraph>
               )
             }}
-            showAll={showAll === 2}
-            setShowAll={(open) => setShowAll(open ? 2 : null)}
+            showAll={showAll === 3}
+            setShowAll={(open) => setShowAll(open ? 3 : null)}
           />
         </Tables.Container>
       </div>
