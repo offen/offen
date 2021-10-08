@@ -110,13 +110,21 @@ function referrers (events) {
         count: [noneEvents.length, noneViewCount / noneEvents.length]
       })
     })
-    .sortBy(function (row) { return row.count[0] })
+    .sortBy(function (row) {
+      return row.count[1]
+    })
+    .sortBy(function (row) {
+      return row.count[0]
+    })
     .reverse()
     .value()
 }
 
 // `campaigns` groups the referrer values by their `utm_campaign` if present
 exports.campaigns = consumeAsync(_queryParam('utm_campaign'))
+
+// `sources` groups the referrer values by their `utm_source` if present
+exports.sources = consumeAsync(_queryParam('utm_source'))
 
 function _queryParam (key) {
   return function (events) {
@@ -163,14 +171,16 @@ function _queryParam (key) {
           ]
         }
       })
-      .sortBy(function (row) { return row.count[0] })
+      .sortBy(function (row) {
+        return row.count[1]
+      })
+      .sortBy(function (row) {
+        return row.count[0]
+      })
       .reverse()
       .value()
   }
 }
-
-// `sources` groups the referrer values by their `utm_source` if present
-exports.sources = consumeAsync(_queryParam('utm_source'))
 
 // `pages` contains all pages visited sorted by the number of pageviews.
 // URLs are stripped off potential query strings and hash parameters
