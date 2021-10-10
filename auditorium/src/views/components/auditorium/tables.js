@@ -162,7 +162,8 @@ const Container = (props) => {
       (!set.props.rows || (Array.isArray(set.props.rows) && set.props.rows.length === 0))
     var css = []
     if (tableSets.length === 1) {
-      css.push('f5', 'normal', 'dib', 'pv3')
+      css.push('f5', 'b', 'normal', 'dib', 'pt2', 'pb2', 'ph2')
+      css.push(isFallback ? 'dark-red' : 'dark-green')
     }
     if (tableSets.length > 1) {
       css.push('f5', 'b', 'normal', 'link', 'dim', 'dib', 'pt2', 'pb2', 'ph2', 'mr0', 'mr2-ns')

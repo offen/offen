@@ -125,6 +125,7 @@ const URLTable = (props) => {
           groupName='geo-location'
         >
           <Tables.Table
+            headline={__('Location')}
             columnNames={[__('Country'), __('Sessions'), __('Page depth')]}
             formatAs={['count', 'value']}
             rows={model.geo}
