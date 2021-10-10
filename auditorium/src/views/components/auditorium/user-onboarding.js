@@ -45,10 +45,10 @@ const UserOnboarding = (props) => {
                           <p class='ma0 mb3'>
                             {__('Welcome to the Auditorium, this is how it works.')}
                           </p>
-                          <Paragraph class='f3 ma0 mb3'>
+                          <Paragraph class='f3 ma0 mb3 overflow-hidden'>
                             {__('What <span class="%s">%s</span> knows about you.', 'i tracked', stats.domain)}
                           </Paragraph>
-                          <p class='ma0'>
+                          <p class='overflow-hidden ma0 mb4'>
                             {stats.url
                               ? (
                                 <Fragment>
