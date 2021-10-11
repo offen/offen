@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-.onboarding-height { height: 28rem; }
+.onboarding-height { min-height: 28rem; }
 @media screen and (min-width: 30em) and (max-width: 45em) {
-  .onboarding-height { height: 22rem; }
+  .onboarding-height { min-height: 22rem; }
 }
 @media screen and (min-width: 45em) {
-  .onboarding-height { height: 16rem; }
+  .onboarding-height { min-height: 16rem; }
 }
 
 .onboarding-image-height { max-height: 8rem; }
