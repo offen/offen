@@ -12,6 +12,7 @@ const Paragraph = require('./../_shared/paragraph')
 const Span = require('./../_shared/span')
 const Slides = require('./slides')
 const ExplainerIcon = require('./explainer-icon')
+const countries = require('i18n-iso-countries')
 
 const UserOnboarding = (props) => {
   const { onClose, stats } = props
@@ -80,7 +81,7 @@ const UserOnboarding = (props) => {
                                 ? (
                                   <Fragment>
                                     <Span>
-                                      {__('You are probably located in <span class="%s">%s</span> .', 'i tracked', stats.geo)}
+                                      {__('You are probably located in <span class="%s">%s.', 'i tracked', countries.getName(stats.geo, process.env.LOCALE, { select: 'official' }))}
                                     </Span>
                                     &nbsp;
                                   </Fragment>
