@@ -49,23 +49,6 @@ const UserOnboarding = (props) => {
                             {__('What <span class="%s">%s</span> knows about you.', 'i tracked', stats.domain)}
                           </Paragraph>
                           <p class='overflow-hidden ma0 mb4'>
-                            {stats.url
-                              ? (
-                                <Fragment>
-                                  <Span>
-                                    {__('You just visited the page <span class="%s">%s</span> .', 'i tracked', stats.url)}
-                                  </Span>
-                                  &nbsp;
-                                </Fragment>
-                              )
-                              : (
-                                <Fragment>
-                                  <Span>
-                                    {__('You just visited this website.')}
-                                  </Span>
-                                  &nbsp;
-                                </Fragment>
-                              )}
                             {stats.numVisits > 1
                               ? (
                                 <Fragment>
@@ -93,6 +76,16 @@ const UserOnboarding = (props) => {
                                 </Fragment>
                               )
                               : null}
+                              {stats.geo
+                                ? (
+                                  <Fragment>
+                                    <Span>
+                                      {__('You are probably located in <span class="%s">%s</span> .', 'i tracked', stats.geo)}
+                                    </Span>
+                                    &nbsp;
+                                  </Fragment>
+                                )
+                                : null}
                             <Span>
                               {__('Most likely you are on a <span class="%s">%s</span>.', 'i tracked', stats.isMobile ? __('mobile device') : __('desktop device'))}
                             </Span>
