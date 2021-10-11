@@ -77,16 +77,16 @@ const UserOnboarding = (props) => {
                                 </Fragment>
                               )
                               : null}
-                              {stats.geo
-                                ? (
-                                  <Fragment>
-                                    <Span>
-                                      {__('You are probably located in <span class="%s">%s.', 'i tracked', countries.getName(stats.geo, process.env.LOCALE, { select: 'official' }))}
-                                    </Span>
-                                    &nbsp;
-                                  </Fragment>
-                                )
-                                : null}
+                            {stats.geo
+                              ? (
+                                <Fragment>
+                                  <Span>
+                                    {__('You are probably located in <span class="%s">%s.', 'i tracked', countries.getName(stats.geo, process.env.LOCALE, { select: 'official' }))}
+                                  </Span>
+                                  &nbsp;
+                                </Fragment>
+                              )
+                              : null}
                             <Span>
                               {__('Most likely you are on a <span class="%s">%s</span>.', 'i tracked', stats.isMobile ? __('mobile device') : __('desktop device'))}
                             </Span>
