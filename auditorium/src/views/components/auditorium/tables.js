@@ -32,7 +32,8 @@ const Table = (props) => {
     showAll = false,
     ItemDecorator,
     setShowAll = Function.prototype,
-    emptyFallback
+    emptyFallback,
+    titleTransform = x => x
   } = props
 
   let rows = [...(originalRows || [])]
@@ -48,7 +49,7 @@ const Table = (props) => {
       const counts = Array.isArray(row.count) ? row.count : [row.count]
       return (
         <tr key={`outer-${index}`} class='striped--near-white'>
-          <td class='truncate pv2 pl2 pr1' title={row.key}>
+          <td class='truncate pv2 pl2 pr1' title={titleTransform(row.key)}>
             {ItemDecorator
               ? <ItemDecorator isFallback={isFallback}>{row.key}</ItemDecorator>
               : row.key}

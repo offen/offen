@@ -129,6 +129,7 @@ const URLTable = (props) => {
             columnNames={[__('Country'), __('Sessions'), __('Page depth')]}
             formatAs={['count', 'value']}
             rows={model.geo}
+            titleTransform={k => countries.getName(k, process.env.LOCALE, { select: 'official' })}
             ItemDecorator={(props) => {
               let content
               if (props.children === '__NONE_GEOLOCATION__') {
@@ -175,6 +176,7 @@ const URLTable = (props) => {
             columnNames={[__('Host'), __('Sessions'), __('Page depth')]}
             formatAs={['count', 'value']}
             rows={model.referrers}
+            titleTransform={k => k === '__NONE_REFERRER__' ? __('None') : k}
             ItemDecorator={(props) => {
               let content = props.children
               if (content === '__NONE_REFERRER__') {
