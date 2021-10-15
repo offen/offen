@@ -57,7 +57,7 @@ func TestRouter_purgeEvents(t *testing.T) {
 			m.POST("/", func(c *gin.Context) {
 				c.Set(contextKeyCookie, "user-id")
 				c.Next()
-			}, rt.purgeEvents)
+			}, rt.deleteEvents)
 
 			w := httptest.NewRecorder()
 			r := httptest.NewRequest(http.MethodPost, "/", nil)

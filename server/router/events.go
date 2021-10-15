@@ -99,7 +99,7 @@ func (rt *router) getEvents(c *gin.Context) {
 	c.JSON(http.StatusOK, result)
 }
 
-func (rt *router) purgeEvents(c *gin.Context) {
+func (rt *router) deleteEvents(c *gin.Context) {
 	userID := c.GetString(contextKeyCookie)
 	if l := <-rt.getLimiter().LinearThrottle(time.Second, fmt.Sprintf("purgeEvents-%s", userID)); l.Error != nil {
 		newJSONError(

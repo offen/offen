@@ -219,15 +219,17 @@ func New(opts ...Config) http.Handler {
 	{
 		api := app.Group("/api")
 		api.Use(noStore)
-		api.GET("/exchange", rt.getPublicKey)
-		api.POST("/exchange", rt.postUserSecret)
+
+		api.GET("/events/exchange", rt.getPublicKey)
+		api.POST("/events/exchange", rt.postUserSecret)
+		api.GET("/events", userCookie, rt.getEvents)
+		api.POST("/events", optin, userCookie, rt.postEvents)
+		api.DELETE("/events", userCookie, rt.deleteEvents)
 
 		api.GET("/accounts/:accountID", accountAuth, rt.getAccount)
 		api.DELETE("/accounts/:accountID", accountAuth, rt.deleteAccount)
 		api.PUT("/accounts/:accountID/account-styles", accountAuth, rt.putAccountStyles)
 		api.POST("/accounts", accountAuth, rt.postAccount)
-
-		api.POST("/purge", userCookie, rt.purgeEvents)
 
 		api.GET("/login", accountAuth, rt.getLogin)
 		api.POST("/login", rt.postLogin)
@@ -242,9 +244,6 @@ func New(opts ...Config) http.Handler {
 		api.POST("/join", rt.postJoin)
 		api.GET("/setup", rt.getSetup)
 		api.POST("/setup", rt.postSetup)
-
-		api.GET("/events", userCookie, rt.getEvents)
-		api.POST("/events", optin, userCookie, rt.postEvents)
 	}
 
 	root := gin.New()
