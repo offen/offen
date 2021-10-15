@@ -88,7 +88,7 @@ function purgeWith (purgeUrl) {
   }
 }
 
-exports.getPublicKey = getPublicKeyWith(apiRoot + '/events/exchange')
+exports.getPublicKey = getPublicKeyWith(apiRoot + '/events')
 exports.getPublicKeyWith = getPublicKeyWith
 
 function getPublicKeyWith (exchangeUrl) {
@@ -97,8 +97,7 @@ function getPublicKeyWith (exchangeUrl) {
     url.search = new window.URLSearchParams({ accountId: accountId })
     return window
       .fetch(url, {
-        method: 'GET',
-        credentials: 'include'
+        method: 'GET'
       })
       .then(handleFetchResponse)
       .then(function (response) {
@@ -107,7 +106,7 @@ function getPublicKeyWith (exchangeUrl) {
   }
 }
 
-exports.postUserSecret = postUserSecretWith(apiRoot + '/events/exchange')
+exports.postUserSecret = postUserSecretWith(apiRoot + '/events')
 exports.postUserSecretWith = postUserSecretWith
 
 function postUserSecretWith (exchangeUrl) {
@@ -115,7 +114,6 @@ function postUserSecretWith (exchangeUrl) {
     return window
       .fetch(exchangeUrl, {
         method: 'POST',
-        credentials: 'include',
         body: JSON.stringify(body)
       })
       .then(handleFetchResponse)

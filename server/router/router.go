@@ -181,7 +181,7 @@ func New(opts ...Config) http.Handler {
 	rt.cookieSigner = securecookie.New(rt.config.Secret.Bytes(), nil)
 
 	optin := optinMiddleware(optinKey, optinValue)
-	userCookie := userCookieMiddleware(cookieKey, contextKeyCookie)
+	userCookie := userCookieTurnout(cookieKey, contextKeyCookie)
 	accountAuth := rt.accountUserMiddleware(authKey, contextKeyAuth)
 	noStore := headerMiddleware(map[string]func() string{
 		"Cache-Control": func() string {
@@ -220,11 +220,9 @@ func New(opts ...Config) http.Handler {
 		api := app.Group("/api")
 		api.Use(noStore)
 
-		api.GET("/events/exchange", rt.getPublicKey)
-		api.POST("/events/exchange", rt.postUserSecret)
-		api.GET("/events", userCookie, rt.getEvents)
-		api.POST("/events", optin, userCookie, rt.postEvents)
-		api.DELETE("/events", userCookie, rt.deleteEvents)
+		api.GET("/events", userCookie(rt.getEvents, rt.getPublicKey))
+		api.POST("/events", optin, userCookie(rt.postEvents, rt.postUserSecret))
+		api.DELETE("/events", userCookie(rt.deleteEvents))
 
 		api.GET("/accounts/:accountID", accountAuth, rt.getAccount)
 		api.DELETE("/accounts/:accountID", accountAuth, rt.deleteAccount)

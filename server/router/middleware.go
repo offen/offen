@@ -36,21 +36,27 @@ func optinMiddleware(cookieName, passWhen string) gin.HandlerFunc {
 	}
 }
 
-// userCookieMiddleware ensures a cookie of the given name is present and
+// userCookieTurnout ensures a cookie of the given name is present and
 // attaches its value to the request's context using the given key, before
 // passing it on to the wrapped handler.
-func userCookieMiddleware(cookieKey, contextKey string) gin.HandlerFunc {
-	return func(c *gin.Context) {
-		ck, err := c.Request.Cookie(cookieKey)
-		if err != nil {
-			newJSONError(
-				errors.New("user cookie: received no or blank identifier"),
-				http.StatusBadRequest,
-			).Pipe(c)
-			return
+func userCookieTurnout(cookieKey, contextKey string) func(...gin.HandlerFunc) gin.HandlerFunc {
+	return func(handler ...gin.HandlerFunc) gin.HandlerFunc {
+		return func(c *gin.Context) {
+			ck, err := c.Request.Cookie(cookieKey)
+			if err != nil {
+				if len(handler) > 1 {
+					handler[1](c)
+					return
+				}
+				newJSONError(
+					errors.New("user cookie: received no or blank identifier"),
+					http.StatusBadRequest,
+				).Pipe(c)
+				return
+			}
+			c.Set(contextKey, ck.Value)
+			handler[0](c)
 		}
-		c.Set(contextKey, ck.Value)
-		c.Next()
 	}
 }
 
