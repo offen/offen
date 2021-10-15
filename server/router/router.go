@@ -221,7 +221,8 @@ func New(opts ...Config) http.Handler {
 		api.Use(noStore)
 
 		api.GET("/events", userCookie(rt.getEvents, rt.getPublicKey))
-		api.POST("/events", optin, userCookie(rt.postEvents, rt.postUserSecret))
+		api.POST("/events", optin, rt.postUserSecret)
+		api.PUT("/events", optin, userCookie(rt.postEvents))
 		api.DELETE("/events", userCookie(rt.deleteEvents))
 
 		api.GET("/accounts/:accountID", accountAuth, rt.getAccount)

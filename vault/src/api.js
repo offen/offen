@@ -59,7 +59,7 @@ function postEventWith (eventsUrl) {
     var url = new window.URL(eventsUrl)
     return window
       .fetch(url, {
-        method: 'POST',
+        method: 'PUT',
         credentials: 'include',
         body: JSON.stringify({
           accountId: accountId,
