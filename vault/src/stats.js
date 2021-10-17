@@ -19,7 +19,8 @@ var propertyAccessors = {
   pageload: _.property(['payload', 'pageload']),
   isMobile: _.property(['payload', 'isMobile']),
   computedReferrer: _.property(['payload', '$referrer']),
-  eventId: _.property('eventId')
+  eventId: _.property('eventId'),
+  geo: _.property(['payload', 'geo'])
 }
 
 // The bounce rate is calculated as the percentage of session identifiers
@@ -109,13 +110,21 @@ function referrers (events) {
         count: [noneEvents.length, noneViewCount / noneEvents.length]
       })
     })
-    .sortBy(function (row) { return row.count[0] })
+    .sortBy(function (row) {
+      return row.count[1]
+    })
+    .sortBy(function (row) {
+      return row.count[0]
+    })
     .reverse()
     .value()
 }
 
 // `campaigns` groups the referrer values by their `utm_campaign` if present
 exports.campaigns = consumeAsync(_queryParam('utm_campaign'))
+
+// `sources` groups the referrer values by their `utm_source` if present
+exports.sources = consumeAsync(_queryParam('utm_source'))
 
 function _queryParam (key) {
   return function (events) {
@@ -162,14 +171,16 @@ function _queryParam (key) {
           ]
         }
       })
-      .sortBy(function (row) { return row.count[0] })
+      .sortBy(function (row) {
+        return row.count[1]
+      })
+      .sortBy(function (row) {
+        return row.count[0]
+      })
       .reverse()
       .value()
   }
 }
-
-// `sources` groups the referrer values by their `utm_source` if present
-exports.sources = consumeAsync(_queryParam('utm_source'))
 
 // `pages` contains all pages visited sorted by the number of pageviews.
 // URLs are stripped off potential query strings and hash parameters
@@ -348,6 +359,47 @@ function mobileShare (events) {
   return mobileEvents / allEvents
 }
 
+// `geoLocation` counts sessions by geolocation
+exports.geoLocation = consumeAsync(geoLocation)
+
+function geoLocation (events) {
+  var eventsBySession = _.countBy(events, propertyAccessors.sessionId)
+  return _.chain(events)
+    .groupBy(propertyAccessors.sessionId)
+    .values()
+    .map(function (session) {
+      return _.find(session, propertyAccessors.geo) || session[0]
+    })
+    .groupBy(function (event) {
+      var value = propertyAccessors.geo(event)
+      if (value) {
+        return value
+      }
+      return '__NONE_GEOLOCATION__'
+    })
+    .map(function (values, key) {
+      var matchingSessions = values.length
+      var matchingEvents = _.reduce(values, function (count, next) {
+        return count + eventsBySession[propertyAccessors.sessionId(next)]
+      }, 0)
+      return {
+        key: key,
+        count: [
+          matchingSessions,
+          matchingEvents / matchingSessions
+        ]
+      }
+    })
+    .sortBy(function (item) {
+      return item.count[1]
+    })
+    .sortBy(function (item) {
+      return item.count[0]
+    })
+    .reverse()
+    .value()
+}
+
 // `retention` calculates a retention matrix for the given slices of events.
 // The function itself does not make any assumptions about how these chunks are
 // distributed in time.
@@ -461,7 +513,8 @@ function onboardingStats (events) {
       : null,
     referrer: payload.$referrer,
     numVisits: numVisits,
-    isMobile: payload.isMobile
+    isMobile: payload.isMobile,
+    geo: payload.geo
   }
 }
 

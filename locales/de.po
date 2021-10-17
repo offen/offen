@@ -427,11 +427,6 @@ msgstr "Welche Daten werden gesammelt?"
 msgid "What data isn't collected?"
 msgstr "Welche Daten werden nicht gesammelt?"
 
-#. src/views/components/auditorium/frequently-asked-questions.js:29
-#: 
-msgid "Location data, device information and engagement are not collected. There are also no fingerprinting technologies in use."
-msgstr "Standortdaten, Geräteinformationen und Interaktionsbereitschaft werden nicht erfasst. Es sind auch keine Fingerprinting-Technologien im Einsatz."
-
 #. src/views/components/auditorium/frequently-asked-questions.js:32
 #: 
 msgid "How is my data handled?"
@@ -866,11 +861,6 @@ msgstr "Quellen"
 msgid "Source"
 msgstr "Quelle"
 
-#. src/views/components/auditorium/url-tables.js:76
-#: 
-msgid "Views per session"
-msgstr "Aufrufe pro Sitzung"
-
 #. src/views/components/auditorium/url-tables.js:82
 #: 
 msgid "A list of special referrers that directed you to pages of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation.</a> <a href=\"#terms-operator\" class=\"%s\">Operators</a> can mark links to their pages with a source tag. This is used, for example, to measure the success of online advertising campaigns."
@@ -1204,16 +1194,6 @@ msgstr "Willkommen im Auditorium, so funktionierts."
 msgid "What <span class=\"%s\">%s</span> knows about you."
 msgstr "Was <span class=\"%s\">%s</span> über dich weiß."
 
-#. src/views/components/auditorium/user-onboarding.js:56
-#: 
-msgid "You just visited the page <span class=\"%s\">%s</span> ."
-msgstr "Du hast gerade die Seite <span class=\"%s\">%s</span> besucht."
-
-#. src/views/components/auditorium/user-onboarding.js:64
-#: 
-msgid "You just visited this website."
-msgstr "Du hast gerade diese Webseite besucht."
-
 #. src/views/components/auditorium/user-onboarding.js:73
 #: 
 msgid "You have visited <span class=\"%s\">%s %d</span> times."
@@ -1535,7 +1515,6 @@ msgid "None"
 msgstr "None"
 
 #: 
-#, fuzzy
 msgid "Retire this account"
 msgstr "Account stilllegen"
 
@@ -1575,24 +1554,21 @@ msgid "Let users access their data"
 msgstr "Gewähre Nutzerinnen und Nutzern Zugriff auf ihre Daten"
 
 #: 
-#, fuzzy
 msgid "Toggle display of awareness widgets"
 msgstr "Anzeige Embed Code umschalten"
 
 #. src/views/components/auditorium/awareness-widgets.js:67
 #: 
 msgid "Let users access their data on every page of your website. Link directly to the User Auditorium or use the HTML widget."
-msgstr "Gewähre Nutzerinnen und Nutzern auf jeder Seite Zugriff auf ihre Daten. Verlinke das Auditorium für Nutzerinnen und Nutzer direkt oder verwende das HTML-Widget."
+msgstr "Gewähre Nutzerinnen und Nutzern auf jeder Seite Zugriff auf ihre Daten. Verlinke das  direkt oder verwende das HTML-Widget."
 
 #: 
-#, fuzzy
 msgid "User Auditorium link"
 msgstr "Auditorium öffnen"
 
 #: 
-#, fuzzy
 msgid "Successfully copied link to clipboard."
-msgstr "Erfolgreich den Embed Code in die Zwischenablage kopiert."
+msgstr "Erfolgreich den Link in die Zwischenablage kopiert."
 
 #. src/views/components/auditorium/awareness-widgets.js:87
 #: 
@@ -1605,12 +1581,38 @@ msgid "HTML Widget"
 msgstr "HTML Widget"
 
 #: 
-#, fuzzy
 msgid "Successfully copied widget code to clipboard."
-msgstr "Erfolgreich den Embed Code in die Zwischenablage kopiert."
+msgstr "Erfolgreich den Widget Code in die Zwischenablage kopiert."
 
 #: 
-#, fuzzy
 msgid "Copy widget"
-msgstr "Code kopieren"
+msgstr "Widget kopieren"
+
+#: 
+msgid "Device information and engagement are not collected. There are also no fingerprinting technologies in use."
+msgstr "Geräteinformationen und Interaktionsbereitschaft werden nicht erfasst. Es sind auch keine Fingerprinting-Technologien im Einsatz."
+
+#: 
+msgid "You are probably located in <span class=\"%s\">%s."
+msgstr "Wahrscheinlich befindest du dich in <span class=\"%s\">%s</span>."
+
+#. src/views/components/auditorium/url-tables.js:128
+#: 
+msgid "Location"
+msgstr "Standort"
+
+#. src/views/components/auditorium/url-tables.js:129
+#: 
+msgid "Country"
+msgstr "Land"
+
+#. src/views/components/auditorium/url-tables.js:160
+#: 
+msgid "The geographic location associated with each session."
+msgstr "Der geografische Standort, der mit jeder Sitzung verknüpft ist."
+
+#. src/views/components/login/user-auditorium.js:15
+#: 
+msgid "Not the operator of this Offen installation? Manage your data in the <a href=\"/auditorium/\" class=\"%s\" >User Auditorium.</a>"
+msgstr "Du betreibst diese Offen Installation nicht? Verwalten deine gesammelten Nutzungsdaten im <a href=\"/auditorium/\" class=\"%s\" >Auditorium für Nutzerinnen und Nutzer.</a>"
 

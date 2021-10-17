@@ -427,11 +427,6 @@ msgstr "Quelles données sont collectées ?"
 msgid "What data isn't collected?"
 msgstr "Quelles données ne sont pas collectées ?"
 
-#. src/views/components/auditorium/frequently-asked-questions.js:29
-#: 
-msgid "Location data, device information and engagement are not collected. There are also no fingerprinting technologies in use."
-msgstr "Les données de localisation, les informations sur l'appareil et l'engagement ne sont pas collectés. Il n'y a pas non plus de technologies d'empreintes digitales en cours d'utilisation."
-
 #. src/views/components/auditorium/frequently-asked-questions.js:32
 #: 
 msgid "How is my data handled?"
@@ -866,11 +861,6 @@ msgstr "Sources"
 msgid "Source"
 msgstr "Source"
 
-#. src/views/components/auditorium/url-tables.js:76
-#: 
-msgid "Views per session"
-msgstr "Vues par session"
-
 #. src/views/components/auditorium/url-tables.js:82
 #: 
 msgid "A list of special referrers that directed you to pages of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation.</a> <a href=\"#terms-operator\" class=\"%s\">Operators</a> can mark links to their pages with a source tag. This is used, for example, to measure the success of online advertising campaigns."
@@ -1203,16 +1193,6 @@ msgstr "Bienvenue dans l'Auditorium, voici comment cela fonctionne."
 #: 
 msgid "What <span class=\"%s\">%s</span> knows about you."
 msgstr "Ce que <span class=\"%s\">%s</span> sait de vous."
-
-#. src/views/components/auditorium/user-onboarding.js:56
-#: 
-msgid "You just visited the page <span class=\"%s\">%s</span> ."
-msgstr "Vous venez de visiter la page <span class=\"%s\">%s</span> ."
-
-#. src/views/components/auditorium/user-onboarding.js:64
-#: 
-msgid "You just visited this website."
-msgstr "Vous venez de visiter ce site Web."
 
 #. src/views/components/auditorium/user-onboarding.js:73
 #: 
@@ -1607,4 +1587,32 @@ msgstr "Le code du widget a été copié dans le presse-papier avec succès."
 #: 
 msgid "Copy widget"
 msgstr "Copier le widget"
+
+#: 
+msgid "Device information and engagement are not collected. There are also no fingerprinting technologies in use."
+msgstr "Les informations sur l'appareil et l'engagement ne sont pas collectés. Il n'y a pas non plus de technologies d'empreintes digitales utilisées."
+
+#: 
+msgid "You are probably located in <span class=\"%s\">%s."
+msgstr "Vous êtes probablement localisé en <span class=\"%s\">%s."
+
+#. src/views/components/auditorium/url-tables.js:128
+#: 
+msgid "Location"
+msgstr "Localisation"
+
+#. src/views/components/auditorium/url-tables.js:129
+#: 
+msgid "Country"
+msgstr "Pays"
+
+#. src/views/components/auditorium/url-tables.js:160
+#: 
+msgid "The geographic location associated with each session."
+msgstr "La localisation géographique associée à chaque session."
+
+#. src/views/components/login/user-auditorium.js:15
+#: 
+msgid "Not the operator of this Offen installation? Manage your data in the <a href=\"/auditorium/\" class=\"%s\" >User Auditorium.</a>"
+msgstr "Pas l'opérateur de cette installation d'Offen ? Gérez vos données dans <a href=\"/auditorium/\" class=\"%s\" >l'Auditorium Utilisateur.</a>"
 

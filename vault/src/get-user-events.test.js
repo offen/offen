@@ -54,7 +54,6 @@ describe('src/get-user-events', function () {
         getDefaultStats: sinon.stub().resolves({ mock: 'result' })
       }
       var mockApi = {
-        getDeletedEvents: sinon.stub().resolves({ eventIds: ['a'] }),
         getEvents: sinon.stub().resolves({
           events: {
             'account-a': [{

@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * Copyright 2020-2021 - Offen Authors <hioffen@posteo.de>
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -26,7 +26,7 @@ module.exports = (props) => {
             {__("What kind of data isn't collected?")}
           </Paragraph>
           <Paragraph class='mt0 mb4'>
-            {__('Location data, device information and engagement are not collected. There are also no fingerprinting technologies in use.')}
+            {__('Device information and engagement are not collected. There are also no fingerprinting technologies in use.')}
           </Paragraph>
           <Paragraph class='i mt0 mb2'>
             {__('How is my data handled?')}

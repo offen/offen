@@ -11,7 +11,6 @@ function pageview (subsequent) {
   var event = {
     type: 'PAGEVIEW',
     href: canonicalHref || window.location.href,
-    title: document.title,
     referrer: document.referrer,
     pageload: (function () {
       if (!subsequent && window.performance && window.performance.timing) {

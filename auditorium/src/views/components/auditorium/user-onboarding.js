@@ -12,6 +12,7 @@ const Paragraph = require('./../_shared/paragraph')
 const Span = require('./../_shared/span')
 const Slides = require('./slides')
 const ExplainerIcon = require('./explainer-icon')
+const countries = require('i18n-iso-countries')
 
 const UserOnboarding = (props) => {
   const { onClose, stats } = props
@@ -45,27 +46,10 @@ const UserOnboarding = (props) => {
                           <p class='ma0 mb3'>
                             {__('Welcome to the Auditorium, this is how it works.')}
                           </p>
-                          <Paragraph class='f3 ma0 mb3'>
+                          <Paragraph class='f3 ma0 mb3 overflow-hidden'>
                             {__('What <span class="%s">%s</span> knows about you.', 'i tracked', stats.domain)}
                           </Paragraph>
-                          <p class='ma0'>
-                            {stats.url
-                              ? (
-                                <Fragment>
-                                  <Span>
-                                    {__('You just visited the page <span class="%s">%s</span> .', 'i tracked', stats.url)}
-                                  </Span>
-                                  &nbsp;
-                                </Fragment>
-                              )
-                              : (
-                                <Fragment>
-                                  <Span>
-                                    {__('You just visited this website.')}
-                                  </Span>
-                                  &nbsp;
-                                </Fragment>
-                              )}
+                          <p class='overflow-hidden ma0 mb4'>
                             {stats.numVisits > 1
                               ? (
                                 <Fragment>
@@ -88,6 +72,16 @@ const UserOnboarding = (props) => {
                                 <Fragment>
                                   <Span>
                                     {__('You came via <span class="%s">%s</span> .', 'i tracked', stats.referrer)}
+                                  </Span>
+                                  &nbsp;
+                                </Fragment>
+                              )
+                              : null}
+                            {stats.geo
+                              ? (
+                                <Fragment>
+                                  <Span>
+                                    {__('You are probably located in <span class="%s">%s.', 'i tracked', countries.getName(stats.geo, process.env.LOCALE, { select: 'official' }))}
                                   </Span>
                                   &nbsp;
                                 </Fragment>

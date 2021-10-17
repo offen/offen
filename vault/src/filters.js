@@ -29,6 +29,16 @@ function HrefFilter (filter) {
   }
 }
 
+exports.Geo = makeSessionFilter(function (session, filter) {
+  var firstMatch = _.find(session, function (event) {
+    return event.payload.geo
+  }) || session[0]
+  if (filter === '__NONE_GEOLOCATION__') {
+    return !firstMatch.payload.geo
+  }
+  return firstMatch.payload.geo === filter
+})
+
 exports.Referrer = makeSessionFilter(function (session, filter) {
   var sessionEntry = _.head(session)
   if (filter === '__NONE_REFERRER__') {

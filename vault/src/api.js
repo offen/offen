@@ -68,27 +68,6 @@ function postEventWith (eventsUrl) {
   }
 }
 
-exports.getDeletedEvents = getDeletedEventsWith(window.location.origin + '/api/deleted')
-exports.getDeletedEventsWith = getDeletedEventsWith
-
-function getDeletedEventsWith (deletedEventsUrl) {
-  return function (eventIds, isUser) {
-    var url = new window.URL(deletedEventsUrl)
-    if (isUser) {
-      url.pathname += '/user'
-    }
-    return window
-      .fetch(url, {
-        method: 'POST',
-        credentials: 'include',
-        body: JSON.stringify({
-          eventIds: eventIds
-        })
-      })
-      .then(handleFetchResponse)
-  }
-}
-
 exports.getPublicKey = getPublicKeyWith(window.location.origin + '/api/exchange')
 exports.getPublicKeyWith = getPublicKeyWith
 

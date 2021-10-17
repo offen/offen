@@ -11,15 +11,21 @@ const authentication = require('./../action-creators/authentication')
 const withLayout = require('./components/_shared/with-layout')
 const useAutofocus = require('./components/_shared/use-autofocus')
 const Form = require('./components/login/form')
+const UserAuditorium = require('./components/login/user-auditorium')
 
 const LoginView = (props) => {
   const autofocusRef = useAutofocus()
   return (
-    <div class='mw8 center mt4 mb2 br0 br2-ns'>
-      <Form
-        onLogin={props.handleLogin}
-        ref={autofocusRef}
-      />
+    <div>
+      <div class='mw8 center mt4 mb2 br0 br2-ns'>
+        <Form
+          onLogin={props.handleLogin}
+          ref={autofocusRef}
+        />
+      </div>
+      <div class='mw8 center br0 br2-ns'>
+        <UserAuditorium />
+      </div>
     </div>
   )
 }

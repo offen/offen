@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * Copyright 2020-2021 - Offen Authors <hioffen@posteo.de>
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -32,7 +32,8 @@ const Table = (props) => {
     showAll = false,
     ItemDecorator,
     setShowAll = Function.prototype,
-    emptyFallback
+    emptyFallback,
+    titleTransform = x => x
   } = props
 
   let rows = [...(originalRows || [])]
@@ -48,7 +49,7 @@ const Table = (props) => {
       const counts = Array.isArray(row.count) ? row.count : [row.count]
       return (
         <tr key={`outer-${index}`} class='striped--near-white'>
-          <td class='truncate pv2 pl2 pr1' title={row.key}>
+          <td class='truncate pv2 pl2 pr1' title={titleTransform(row.key)}>
             {ItemDecorator
               ? <ItemDecorator isFallback={isFallback}>{row.key}</ItemDecorator>
               : row.key}
@@ -162,10 +163,11 @@ const Container = (props) => {
       (!set.props.rows || (Array.isArray(set.props.rows) && set.props.rows.length === 0))
     var css = []
     if (tableSets.length === 1) {
-      css.push('f5', 'normal', 'dib', 'pv3')
+      css.push('f5', 'b', 'normal', 'dib', 'pt2', 'pb2', 'ph2')
+      css.push(isFallback ? 'dark-red' : 'dark-green')
     }
     if (tableSets.length > 1) {
-      css.push('f5', 'b', 'normal', 'link', 'dim', 'dib', 'pt2', 'pb2', 'ph2', 'mr2')
+      css.push('f5', 'b', 'normal', 'link', 'dim', 'dib', 'pt2', 'pb2', 'ph2', 'mr0', 'mr2-ns')
       css.push(isFallback ? 'dark-red' : 'dark-green')
     }
 

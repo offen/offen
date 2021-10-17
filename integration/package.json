@@ -5,7 +5,7 @@
   "scripts": {
     "posttest": "standard",
     "test": "npm run test:chrome",
-    "test:chrome": "cypress run --browser chrome"
+    "test:chrome": "cypress run --browser $(which google-chrome)"
   },
   "dependencies": {
     "cypress-audit": "^0.2.0"

@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * Copyright 2020-2021 - Offen Authors <hioffen@posteo.de>
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -7,6 +7,7 @@
 const { h } = require('preact')
 const { useState } = require('preact/hooks')
 const classnames = require('classnames')
+const countries = require('i18n-iso-countries')
 
 const Tables = require('./tables')
 const ExplainerIcon = require('./explainer-icon')
@@ -121,6 +122,53 @@ const URLTable = (props) => {
         <Tables.Container
           showExplainer={showExplainer}
           explainerPropsFor={explainerPropsFor}
+          groupName='geo-location'
+        >
+          <Tables.Table
+            headline={__('Location')}
+            columnNames={[__('Country'), __('Sessions'), __('Page depth')]}
+            formatAs={['count', 'value']}
+            rows={model.geo}
+            titleTransform={k => countries.getName(k, process.env.LOCALE, { select: 'official' })}
+            ItemDecorator={(props) => {
+              let content
+              if (props.children === '__NONE_GEOLOCATION__') {
+                content = (<i>{__('None')}</i>)
+              } else {
+                content = countries.getName(
+                  props.children,
+                  process.env.LOCALE,
+                  { select: 'official' }
+                ) || props.children
+              }
+
+              return (
+                <FilterLink
+                  {...props}
+                  filterProp='geo'
+                  filterValue={props.children}
+                  queryParams={queryParams}
+                  filter={model.filter}
+                >
+                  {content}
+                </FilterLink>
+              )
+            }}
+            emptyFallback={currentFilterProp === 'geo' && { key: currentFilterValue, count: [0, 0] }}
+            explainer={(props) => {
+              return (
+                <Paragraph class='mw7 ma0 ph1 pv2 ws-normal'>
+                  {__('The geographic location associated with each session.')}
+                </Paragraph>
+              )
+            }}
+            showAll={showAll === 1}
+            setShowAll={(open) => setShowAll(open ? 1 : null)}
+          />
+        </Tables.Container>
+        <Tables.Container
+          showExplainer={showExplainer}
+          explainerPropsFor={explainerPropsFor}
           groupName='referrers'
         >
           <Tables.Table
@@ -128,6 +176,7 @@ const URLTable = (props) => {
             columnNames={[__('Host'), __('Sessions'), __('Page depth')]}
             formatAs={['count', 'value']}
             rows={model.referrers}
+            titleTransform={k => k === '__NONE_REFERRER__' ? __('None') : k}
             ItemDecorator={(props) => {
               let content = props.children
               if (content === '__NONE_REFERRER__') {
@@ -153,7 +202,7 @@ const URLTable = (props) => {
               )
             }}
             showAll={showAll === 1}
-            setShowAll={(open) => setShowAll(open ? 1 : null)}
+            setShowAll={(open) => setShowAll(open ? 2 : null)}
             emptyFallback={currentFilterProp === 'referrer' && { key: currentFilterValue, count: [0, 0] }}
           />
           <Tables.Table
@@ -179,12 +228,12 @@ const URLTable = (props) => {
                 </Paragraph>
               )
             }}
-            showAll={showAll === 1}
-            setShowAll={(open) => setShowAll(open ? 1 : null)}
+            showAll={showAll === 2}
+            setShowAll={(open) => setShowAll(open ? 2 : null)}
           />
           <Tables.Table
             headline={__('Sources')}
-            columnNames={[__('Source'), __('Sessions'), __('Views per session')]}
+            columnNames={[__('Source'), __('Sessions'), __('Page depth')]}
             formatAs={['count', 'value']}
             rows={model.sources}
             ItemDecorator={(props) => (
@@ -205,8 +254,8 @@ const URLTable = (props) => {
                 </Paragraph>
               )
             }}
-            showAll={showAll === 1}
-            setShowAll={(open) => setShowAll(open ? 1 : null)}
+            showAll={showAll === 2}
+            setShowAll={(open) => setShowAll(open ? 2 : null)}
           />
         </Tables.Container>
         <Tables.Container
@@ -234,8 +283,8 @@ const URLTable = (props) => {
                 {__('A list of pages of the <a href="#terms-offen-installation" class="%s">Offen installation</a> that you have opened first in all <a href="#terms-unique-session" class="%s">unique sessions.</a>', 'b link dim dark-green', 'b link dim dark-green')}
               </Paragraph>
             )}
-            showAll={showAll === 2}
-            setShowAll={(open) => setShowAll(open ? 2 : null)}
+            showAll={showAll === 3}
+            setShowAll={(open) => setShowAll(open ? 3 : null)}
           />
           <Tables.Table
             headline={__('Exit pages')}
@@ -259,8 +308,8 @@ const URLTable = (props) => {
                 </Paragraph>
               )
             }}
-            showAll={showAll === 2}
-            setShowAll={(open) => setShowAll(open ? 2 : null)}
+            showAll={showAll === 3}
+            setShowAll={(open) => setShowAll(open ? 3 : null)}
           />
         </Tables.Container>
       </div>

@@ -11,9 +11,6 @@
     "isMobile": {
       "type": "boolean"
     },
-    "title": {
-      "type": "string"
-    },
     "sessionId": {
       "type": ["string", "null"]
     },
@@ -44,6 +41,9 @@
       "type": ["string", "null"],
       "format": "uri",
       "maxLength": 2000
-    }
+    },
+    "geo": {
+      "type": ["string", "null"]
+     }
   }
 }

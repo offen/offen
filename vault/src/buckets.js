@@ -61,18 +61,20 @@ var buckets = [
     name: 'Hacker News'
   },
   {
-    re: /^(old|www)\.reddit\.com($|\/)/,
+    re: [/^(old|www)\.reddit\.com($|\/)/, /^android-app:\/\/com.laurencedawson\.reddit_sync\./],
     name: 'Reddit'
   },
   {
-    re: /^android-app:\/\/com.laurencedawson\.reddit_sync\./,
-    name: 'Reddit'
+    re: /\.wikipedia\.org($|\/)/,
+    name: 'Wikipedia'
   }
 ]
 
 function mapToBuckets (referrerValue) {
   var bucket = _.find(buckets, function (b) {
-    return b.re.test(referrerValue)
+    return [].concat(b.re).some(function (re) {
+      return re.test(referrerValue)
+    })
   })
   return (bucket && bucket.name) || referrerValue
 }
