@@ -90,7 +90,7 @@ __More features__
 ## Essential metrics
 
 All important statistics that help you to improve your service.  
-Filter collected data by URL, Referrer, UTM parameters, as well as Landing Pages and Exit Pages.
+Filter collected data by URL, Location, Referrer, UTM parameters, as well as Landing Pages and Exit Pages.
 ![Essential metrics](https://offen.github.io/press-kit/offen-material/gfx-GitHub-Metrics.svg)
 
 ## Objectives
