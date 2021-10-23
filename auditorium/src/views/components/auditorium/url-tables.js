@@ -201,7 +201,7 @@ const URLTable = (props) => {
                 </Paragraph>
               )
             }}
-            showAll={showAll === 1}
+            showAll={showAll === 2}
             setShowAll={(open) => setShowAll(open ? 2 : null)}
             emptyFallback={currentFilterProp === 'referrer' && { key: currentFilterValue, count: [0, 0] }}
           />
