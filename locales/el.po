@@ -1,1645 +1,1011 @@
 msgid ""
 msgstr ""
+"Project-Id-Version: Offen\n"
+"Language: el\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: POEditor.com\n"
-"Project-Id-Version: Offen\n"
-"Language: el\n"
 
-#. src/views/components/console/create-account.js:24
-#: 
+msgid "Passwords did not match. Please try again."
+msgstr "Οι κωδικοί δεν είναι ίδιοι. Δοκιμάστε ξανά."
+
+msgid "Please log in again using your new password."
+msgstr "Παρακαλούμε συνδεθείτε ξανά χρησιμοποιώντας τον νέο κωδικό πρόσβασής σας."
+
+msgid "Could not change password. Try again."
+msgstr "Δεν ήταν δυνατή η αλλαγή κωδικού πρόσβασης. Προσπάθησε ξανά."
+
+msgid "Change password"
+msgstr "Αλλαγή κωδικού"
+
+msgid "Current password"
+msgstr "Υπάρχον κωδικός"
+
+msgid "New password"
+msgstr "Νέος κωδικός"
+
+msgid "Repeat new password"
+msgstr "Επαναλάβατε το νεο κωδικό"
+
 msgid "Log in again to use the newly created account <em class=\"%s\">\"%s\"</em>."
 msgstr "Συνδεθείτε ξανά για να δείτε τον καινούριο σας λογαριασμό <em class=\"%s\">\"%s\"</em>."
 
-#. src/views/components/console/create-account.js:25
-#: 
 msgid "There was an error creating the account, please try again."
 msgstr "Υπήρξε πρόβλημα με τη δημιουργία του λογαριασμού σας, δοκιμάστε ξανά."
 
-#. src/views/components/console/create-account.js:36
-#: 
 msgid "Create new account"
 msgstr "Δημιουργήστε νέο λογιαριασμό"
 
-#. src/views/components/console/create-account.js:51
-#: 
 msgid "Account name"
 msgstr "Όνομα λογαριασμού"
 
-#. src/views/components/console/create-account.js:54
-#: 
 msgid "Create account"
 msgstr "Δημιουργίστε λογαριασμό"
 
-#. src/views/components/_shared/share.js:124
-#: 
 msgid "You need to confirm this action with your credentials."
 msgstr "Πρέπει να επιβεβαιώσετε την επιλογή αυτή με το συνθηματικό σας."
 
-#. src/views/components/console/create-account.js:72
-#: 
 msgid "Your email"
 msgstr "Το email σας"
 
-#. src/views/components/_shared/share.js:141
-#: 
 msgid "Your password"
 msgstr "Ο κωδικός σας"
 
-#. src/views/components/auditorium/retire-account.js:52
-#. src/views/components/auditorium/retire-account.js:55
-#: 
 msgid "Confirm"
 msgstr "Επιβεβαίωση"
 
-#. src/views/components/auditorium/retire-account.js:59
-#. src/views/components/auditorium/retire-account.js:63
-#: 
 msgid "Cancel"
 msgstr "Ακύρωση"
 
-#. src/views/components/console/share-accounts.js:15
-#: 
 msgid "Share all accounts"
 msgstr "Διαμοιρασμός όλων των λογαριασμών"
 
-#. src/views/components/console/share-accounts.js:16
-#: 
 #, fuzzy
 msgid "Share all your Offen accounts via email invitation. When granted Admin privilges, invited users have full access to shared accounts and can create new accounts on this Offen instance."
 msgstr "Διαμοιρασμός όλων των Offen λογαριασμών με μύνημα email. Με διακαιώματα Διαχειριστή, προσκεκλημένοι χρήστες έχουν πληρη πρόσβαση στους διαμοιρασμένους λογαριασμούς και μπορούν να δημιουργήσουν νέους λογαριασμούς σε αυτή την Εγκατάσταση του Offen."
 
-#. src/views/components/console/account-picker.js:14
-#: 
 msgid "Open account"
 msgstr "Δημιουργία λογαριασμού"
 
-#. src/views/components/console/change-email.js:25
-#: 
-msgid "Could not change email. Try again."
-msgstr "Η αλλαγή του email απέτυχε. Ξαναδοκιμάστε."
-
-#. src/views/components/console/change-email.js:36
-#. src/views/components/console/change-email.js:55
-#: 
-msgid "Change email address"
-msgstr "Αλλαγή διεύθυνσης email"
-
-#. src/views/components/console/change-email.js:52
-#: 
-msgid "New email address"
-msgstr "Νεα διεύθυσνη email"
-
-#. src/views/components/console/change-email.js:72
-#: 
-msgid "Current email address"
-msgstr "Τωρινή διεύθυνση email"
-
-#. src/views/components/join/form.js:55
-#: 
-msgid "Password"
-msgstr "Κωδικός"
-
-#. src/views/components/setup/form.js:23
-#: 
-msgid "Passwords did not match. Please try again."
-msgstr "Οι κωδικοί δεν είναι ίδιοι. Δοκιμάστε ξανά."
-
-#. src/views/components/console/change-password.js:40
-#. src/views/components/console/change-password.js:76
-#: 
-msgid "Change password"
-msgstr "Αλλαγή κωδικού"
-
-#. src/views/components/console/change-password.js:54
-#: 
-msgid "Current password"
-msgstr "Υπάρχον κωδικός"
-
-#. src/views/components/reset-password/form.js:52
-#: 
-msgid "New password"
-msgstr "Νέος κωδικός"
-
-#. src/views/components/reset-password/form.js:60
-#: 
-msgid "Repeat new password"
-msgstr "Επαναλάβατε το νεο κωδικό"
-
-#. src/views/components/console/logout.js:15
-#: 
 msgid "You have been logged out."
 msgstr "Έχετε αποσυνδεθεί."
 
-#. src/views/components/console/logout.js:16
-#: 
 msgid "There was an error terminating your session, please try again."
 msgstr "Υπήρξε πρόβλημα κάτά τον τερματισμό της συνεδρίας, δοκιμάστε ξανά."
 
-#. src/views/components/console/logout.js:29
-#: 
 msgid "Logout"
 msgstr "Αποσύνδεση"
 
-#. src/views/components/console/header.js:15
-#: 
+msgid "Please log in again using your updated email."
+msgstr "Συνδεθείτε ξανά χρησιμοποιώντας το ενημερωμένο email σας."
+
+msgid "Could not change email. Try again."
+msgstr "Η αλλαγή του email απέτυχε. Ξαναδοκιμάστε."
+
+msgid "Change email address"
+msgstr "Αλλαγή διεύθυνσης email"
+
+msgid "New email address"
+msgstr "Νεα διεύθυσνη email"
+
+msgid "Current email address"
+msgstr "Τωρινή διεύθυνση email"
+
+msgid "Password"
+msgstr "Κωδικός"
+
 msgid "You are logged in as operator."
 msgstr "Έχετε συνδεθεί ώς χειριστής."
 
-#. src/views/components/login/form.js:23
-#: 
+msgid "Not the operator of this Offen installation? Manage your data in the <a href=\"/auditorium/\" class=\"%s\" >User Auditorium.</a>"
+msgstr "Δεν είναι ο χειριστής αυτής της εγκατάστασης Offen; Διαχειριστείτε τα δεδομένα σας στο <a href=\"/Auditorium/\" class=\"%s\"> auditorium χρήστη. </a>"
+
 msgid "Could not log in using the given credentials. Try again."
 msgstr "Δεν μπορεί να γίνει σύνδεση με τα στοιχεία αυτά. Δοκιμάστε ξανά."
 
-#. src/views/components/index/operator-login.js:19
-#: 
 msgid "Log in as operator"
 msgstr "Σύνδεση ώς χειριστής"
 
-#. src/views/components/join/form.js:48
-#: 
 msgid "Email address"
 msgstr "Διεύθυνση email"
 
-#. src/views/components/login/form.js:54
-#: 
 msgid "Log in"
 msgstr "Σύνδεση"
 
-#. src/views/components/login/form.js:58
-#: 
 msgid "Forgot password?"
 msgstr "Ξεχάσατε τον κωδικό σας;"
 
-#. src/views/components/forgot-password/form.js:25
-#: 
 msgid "Check your inbox and follow the instructions in the email."
 msgstr "Ελέξτε τα εισερχόμενα και ακολουθήστε τις οδηγίες στο email που σας στείλαμε."
 
-#. src/views/components/join/form.js:32
-#: 
 msgid "Could not handle your request, please try again."
 msgstr "Το αίτημα απέτυχε, δοκιμάστε ξανά."
 
-#. src/views/components/forgot-password/form.js:34
-#: 
 msgid "Request link to reset password"
 msgstr "Αιτημα για σύνδεσμο επαναφοράς κωδικού"
 
-#. src/views/components/forgot-password/form.js:48
-#: 
 msgid "Send Email"
 msgstr "Αποστολή email"
 
-#. src/views/components/setup/form.js:34
-#: 
 #, fuzzy
 msgid "You can now log in using the provided credentials."
 msgstr "Μπορείτε να συνδεθείτε με το όνομα χρήστη και τον κωδικό σας."
 
-#. src/views/components/setup/form.js:52
-#: 
-msgid "The account name"
-msgstr "Το όνομα του λογαριασμού"
-
-#. src/views/components/_shared/share.js:133
-#: 
-msgid "Your email address"
-msgstr "H διεύθυνση email σας"
-
-#. src/views/components/join/form.js:63
-#: 
-msgid "Repeat password"
-msgstr "Επαναλάβατε τον κωδικό σας"
-
-#. src/views/components/setup/form.js:78
-#: 
-msgid "Setup instance"
-msgstr "Ρύθμιση εγκατάστασης"
-
-#. src/views/components/_shared/with-layout.js:34
-#: 
-msgid "Offen Auditorium"
-msgstr "Offen Auditorium"
-
-#. src/views/components/_shared/with-layout.js:55
-#: 
-msgid "<a href=\"https://www.offen.dev/\" class=\"%s\" target=\"_blank\" rel=\"noreferer noopener\">Offen</a>"
-msgstr "<a href=\"https://www.offen.dev/\" class=\"%s\" target=\"_blank\" rel=\"noreferer noopener\">Offen</a>"
-
-#. src/views/components/_shared/with-layout.js:62
-#: 
-msgid "Fair web analytics"
-msgstr "Δίκαια αναλυτικά στοιχεία για το διαδύκτιο"
-
-#. src/views/components/_shared/with-layout.js:69
-#: 
-msgid "Found an issue, need help or want to add something?<br><a href=\"https://twitter.com/hioffen\" class=\"%s\" target=\"_blank\" rel=\"noreferer noopener\">Tweet,</a> <a href=\"mailto:hioffen@posteo.de\" class=\"%s\" target=\"_blank\">email</a> or file an <a href=\"https://github.com/offen/offen\" class=\"%s\" target=\"_blank\" rel=\"noreferer noopener\">issue.</a>"
-msgstr "Βρίκες κάποιο πρόβλημα, χρειάζεσαι βοήθεια ή θες να προσθέσεις κάτι; Στείλε <br><a href=\"https://twitter.com/hioffen\" class=\"%s\" target=\"_blank\" rel=\"noreferer noopener\">Tweet,</a> <a href=\"mailto:hioffen@posteo.de\" class=\"%s\" target=\"_blank\">email</a> ή υπέβαλε <a href=\"https://github.com/offen/offen\" class=\"%s\" target=\"_blank\" rel=\"noreferer noopener\"> μια αναφορά.</a>"
-
-#. src/views/components/_shared/new-password-input.js:14
-#: 
-msgid "weak"
-msgstr "αδύναμο"
-
-#. src/views/components/_shared/new-password-input.js:15
-#: 
-msgid "low"
-msgstr "χαμηλό"
-
-#. src/views/components/_shared/new-password-input.js:16
-#: 
-msgid "ok"
-msgstr "εντάξει"
-
-#. src/views/components/_shared/new-password-input.js:17
-#: 
-msgid "strong"
-msgstr "ισχυρό"
-
-#. src/views/components/_shared/new-password-input.js:18
-#: 
-msgid "very strong"
-msgstr "πολύ ισχυρό"
-
-#. src/views/components/_shared/new-password-input.js:26
-#. src/views/components/_shared/new-password-input.js:67
-#: 
-msgid "Your password needs to be at least 8 characters long."
-msgstr "Ο κωδικός πρέπει να είναι τουλάχιστον 8 χαρακτήρες."
-
-#. src/views/components/_shared/new-password-input.js:32
-#: 
-msgid "Password strength: %s"
-msgstr "Ισχύς κωδικού: %s"
-
-#. src/views/components/_shared/with-auth.js:19
-#: 
-msgid "Please log in using your credentials."
-msgstr "Συνδεθείτε χρησημοποιώντας τα στοιχεία σας."
-
-#. src/views/components/_shared/with-auth.js:23
-#: 
-msgid "Checking authentication"
-msgstr "Αυθεντικοποίηση"
-
-#. src/views/components/_shared/account-picker.js:16
-#: 
-msgid "You currently do not have any active accounts. You can create one below."
-msgstr "Δεν έχετε ενεργό λογαριασμό. Μπορείτε να φτιάξετε εναν καινούριο εδώ."
-
-#. src/views/components/_shared/submit-button.js:29
-#: 
-msgid "One moment..."
-msgstr "Μια στιγμή..."
-
-#. src/views/components/_shared/share.js:42
-#: 
-msgid "An invite email has been sent to <em class=\"%s\">%s</em>."
-msgstr "Έχει σταλεί ένα email πρόσκλησης στο <em class=\"%s\">%s</em>."
-
-#. src/views/components/_shared/share.js:71
-#: 
-msgid "Toggle display of %s functionality"
-msgstr "Αλλαγή εμφάνισης της λειτουργικότητας %s"
-
-#. src/views/components/_shared/share.js:103
-#: 
-msgid "Email address to send invite to"
-msgstr "Διεύθυνση email προς αποστολή πρόσκλησης"
-
-#. src/views/components/_shared/share.js:110
-#: 
-msgid "Grant Admin privileges"
-msgstr "Παραχωρήστε δικαιώματα διαχειριστή"
-
-#. src/views/components/_shared/share.js:115
-#: 
-msgid "Invite user"
-msgstr "Πρόσκληση Χρήστη"
-
-#. src/views/components/reset-password/form.js:34
-#: 
-msgid "Reset password"
-msgstr "Επαναφορά κωδικού"
-
-#. src/views/components/reset-password/form.js:63
-#: 
-msgid "Reset Password"
-msgstr "Επαναφορά Κωδικού"
-
-#. src/views/components/index/consent-status-display.js:25
-#: 
-msgid "It seems like your browser is blocking cookies."
-msgstr "Φαίνεται ότι το πρόγραμμα περιήγησής σας αποκλείει τα cookies."
-
-#. src/views/components/index/operator-login.js:14
-#: 
-msgid "Are you the operator of this Offen installation? Log in to your account."
-msgstr "Είστε ο χειριστής αυτής της εγκατάστασης Offen; Συνδεθείτε στο λογαριασμό σας."
-
-#. src/views/components/index/header-card.js:15
-#: 
-msgid "Offen requires cookies to function properly."
-msgstr "Το Offen απαιτεί τα cookies να λειτουργούν σωστά."
-
-#. src/views/components/index/header-card.js:18
-#: 
-msgid "Offen is a fair and open source analytics software. It is installed on the website that linked you here."
-msgstr "Offen είναι ένα λογισμικό έκθεσης και ανοιχτού κώδικα. Εγκατασταθεί στον ιστότοπο που σας συνδέει εδώ."
-
-#. src/views/components/index/header-card.js:21
-#: 
-msgid "For Offen to work, your browser has to accept cookies. Please change your browsers settings and reload this page. Subsequently, you will be asked for consent to collect your usage data."
-msgstr "Για να λειτουργήσει η εργασία, το πρόγραμμα περιήγησής σας πρέπει να δεχτεί cookies. Αλλάξτε τις ρυθμίσεις των προγραμμάτων περιήγησης και επαναφόρτωση αυτής της σελίδας. Στη συνέχεια, θα σας ζητηθεί συγκατάθεση για τη συλλογή των δεδομένων χρήσης σας."
-
-#. src/views/components/index/header-card.js:30
-#: 
-msgid "Manage your usage data this website has collected."
-msgstr "Διαχειριστείτε τα δεδομένα χρήσης σας, αυτός ο ιστότοπος έχει συλλέξει."
-
-#. src/views/components/index/header-card.js:39
-#: 
-msgid "Open Auditorium"
-msgstr "Ανοιχτό αμφιθέατρο"
-
-#. src/views/components/index/header-card.js:50
-#: 
-msgid "We only access usage data with your consent."
-msgstr "Παίρνουμε μόνο δεδομένα χρήσης με τη συγκατάθεσή σας."
-
-#. src/views/components/index/header-card.js:53
-#: 
-msgid "Offen is a fair and open source analytics software. Help the website that linked you here by allowing access to your usage data."
-msgstr "Offen δίκαιο λογισμικό ανοιχτού κώδικα. Βοηθήστε τον ιστότοπο που σας έφερε εδώ επιτρέποντας την πρόσβαση στα δεδομένα χρήσης σας."
-
-#. src/views/components/index/header-card.js:56
-#: 
-msgid "Your data always remains yours. You can review and delete it at any time. Opt out again whenever you want."
-msgstr "Τα δεδομένα σας παραμένουν πάντα δικά σας. Μπορείτε να τα ελέγξετε και να τα διαγράψετε ανά πάσα στιγμή. Ανεραίστε την επιλογή αυτή όποτε το επιθυμείτε."
-
-#. src/views/components/index/header-card.js:65
-#: 
-msgid "I allow"
-msgstr "επιτρέπω"
-
-#. src/views/components/index/header-card.js:74
-#: 
-msgid "I don't allow"
-msgstr "Δεν επιτρέπω"
-
-#. src/views/components/index/main-card.js:19
-#: 
-msgid "How can I review and delete my usage data or opt out?"
-msgstr "Πώς μπορώ να αναθεωρήσω και να διαγράψω τα δεδομένα χρήσης ή να εξαιρεθώ;"
-
-#. src/views/components/index/main-card.js:22
-#: 
-msgid "<a href=\"%s\" class=\"%s\">Go to the Auditorium.</a>"
-msgstr "<a href=\"%s\" class=\"%s\"> πηγαίνετε στο Auditorium. </a>"
-
-#. src/views/components/index/main-card.js:29
-#: 
-msgid "Your usage data is encrypted end-to-end. It will be automatically deleted after 6 months. <a href=\"/auditorium/\" class=\"%s\">You can delete your usage data yourself at any time in the Auditorium.</a>"
-msgstr "Τα δεδομένα χρήσης σας είναι κρυπτογραφημένα από άκρο σε άκρο. Θα διαγραφούν αυτόματα μετά από 6 μήνες. <a href=\"/auditorium/\" class=\"%s\"> Μπορείτε να διαγράψετε μόνοι σας τα δεδομένα χρήσης σας οποιαδήποτε στιγμή στο Auditorium. </a>"
-
-#. src/views/components/index/main-card.js:37
-#: 
-msgid "How can I review and delete my usage data?"
-msgstr "Πώς μπορώ να επανεξετάσω και να διαγράψω τα δεδομένα χρήσης μου;"
-
-#. src/views/components/index/main-card.js:40
-#: 
-msgid "For data to be collected you need to opt in first. <a href=\"%s\" class=\"%s\">You can do this in the consent banner.</a>"
-msgstr "Για να συλλεχθούν δεδομένα πρέπει να συναινέσετε πρώτα. <a href=\"%s\" class=\"%s\"> μπορείτε να το κάνετε αυτό στο banner συγκατάθεσης. </a>"
-
-#. src/views/components/index/main-card.js:47
-#: 
-msgid "Your usage data is encrypted end-to-end. It will be automatically deleted after 6 months. You can delete your usage data yourself at any time."
-msgstr "Τα δεδομένα χρήσης σας είναι κρυπτογραφημένα από άκρο σε άκρο. Θα διαγραφούν αυτόματα μετά από 6 μήνες. Μπορείτε να διαγράψετε τα δεδομένα χρήσης σας μόνοι σας ανά πάσα στιγμή."
-
-#. src/views/components/auditorium/frequently-asked-questions.js:20
-#: 
-msgid "What data is collected?"
-msgstr "Ποια δεδομένα συλλέγονται;"
-
-#. src/views/components/index/main-card.js:64
-#: 
-msgid "What data isn't collected?"
-msgstr "Ποια δεδομένα δεν συλλέγονται;"
-
-#. src/views/components/auditorium/frequently-asked-questions.js:32
-#: 
-msgid "How is my data handled?"
-msgstr "Πώς γίνεται ο χειρισμός των δεδομένων μου;"
-
-#. src/views/components/auditorium/frequently-asked-questions.js:40
-#: 
-msgid "Why do I need to opt in or opt out?"
-msgstr "Γιατί πρέπει να συνενέσω;"
-
-#. src/views/components/auditorium/frequently-asked-questions.js:43
-#: 
-msgid "Our banner serves two purposes: We ask you to access your usage data and would like to obtain your consent for its use."
-msgstr "Το banner μας εξυπηρετεί δύο σκοπούς: Σας ζητάμε να έχουμε πρόσβαση στα δεδομένα χρήσης σας και θα θέλαμε να λάβουμε τη συγκατάθεσή σας για την επεξεργασία τους."
-
-#. src/views/components/auditorium/frequently-asked-questions.js:46
-#: 
-msgid "Do you use cookies?"
-msgstr "Χρησιμοποιείτε cookies;"
-
-#. src/views/components/index/main-card.js:85
-#: 
-msgid "Yes, in particular cookies are used to store your decision about granting access to your usage data. If you opt in, we also use cookies to store a user and a session ID for you."
-msgstr "Ναι, συγκεκριμένα τα cookies χρησιμοποιούνται για την αποθήκευση της επιλογής σας σχετικά με τη χορήγηση πρόσβασης στα δεδομένα χρήσης σας. Εάν συναινέσετε, χρησιμοποιούμε επίσης cookies για να αποθηκεύσουμε έναν χρήστη και ένα αναγνωριστικό συνεδρίας για εσάς."
-
-#. src/views/components/auditorium/frequently-asked-questions.js:52
-#: 
-msgid "How does it all work?"
-msgstr "Πώς λειτουργεί όλο αυτό;"
-
-#. src/views/components/auditorium/tables.js:30
-#: 
-msgid "No data available for this view."
-msgstr "Δεν υπάρχουν διαθέσιμα δεδομένα."
-
-#. src/views/components/auditorium/tables.js:101
-#: 
-msgid "Show top %d only"
-msgstr "Εμφάνιση μόνο του άνω %d"
-
-#. src/views/components/auditorium/tables.js:111
-#: 
-msgid "Show all entries"
-msgstr "Εμφάνιση όλων των καταχωρήσεων"
-
-#. src/views/components/auditorium/basic-terms.js:15
-#: 
-msgid "Basic Terms"
-msgstr "Βασικοί όροι"
-
-#. src/views/components/auditorium/basic-terms.js:20
-#: 
-msgid "Auditorium"
-msgstr "Auditorium"
-
-#. src/views/components/auditorium/basic-terms.js:26
-#: 
-msgid "Offen installation"
-msgstr "Εγκατάσταση Offen"
-
-#. src/views/components/auditorium/basic-terms.js:29
-#: 
-msgid "One Offen installation can include several websites. All metrics of all websites in this installation are displayed in the <a href=\"#terms-auditorium\" class=\"%s\">Auditorium.</a> Metrics generated on websites of other installations can only be viewed in the associated <a href=\"#terms-auditorium\" class=\"%s\">Auditorium.</a>"
-msgstr "Μια εγκατάσταση εντοπισμού μπορεί να περιλαμβάνει αρκετούς ιστότοπους. Όλες οι μετρήσεις όλων των ιστότοπων σε αυτή την εγκατάσταση εμφανίζονται στο <a href=\"#terms-atormitorium\" class=\"%s\"> auditorium. </a> Οι μετρήσεις που παράγονται σε ιστότοπους άλλων εγκαταστάσεων μπορούν να προβληθούν μόνο στο σχετικό <a href=\"#terms-auditorium\" class=\"%s\">Auditorium.</a>"
-
-#. src/views/components/auditorium/basic-terms.js:32
-#: 
-msgid "Cookies"
-msgstr "Cookies"
-
-#. src/views/components/auditorium/basic-terms.js:35
-#: 
-msgid "When you visit a website where a <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation</a> is active, small amounts of data are stored on your computer. These data elements are known as cookies. <a href=\"https://en.wikipedia.org/wiki/HTTP_cookie\" class=\"%s\" target=\"_blank\" rel=\"noreferer noopener\">Learn more.</a>"
-msgstr "Όταν επισκέπτεστε έναν ιστότοπο όπου μια <a href=\"#terms-offen-installation\" class=\"%s\"> εγκατάσταση offen </a> είναι ενεργή, μικρές ποσότητες δεδομένων αποθηκεύονται στον υπολογιστή σας. Αυτά τα στοιχεία δεδομένων είναι γνωστά ως cookies. <a href=\"htps://en.wikipedia.org/wiki/http_cookie\" class=\"%s\" target=\"_blank\" rel=\"Noreferer noopener\"> Μάθετε περισσότερα. </a>"
-
-#. src/views/components/auditorium/basic-terms.js:38
-#: 
-msgid "Operator"
-msgstr "Χειριστής"
-
-#. src/views/components/auditorium/basic-terms.js:41
-#: 
-msgid "Operators are the owners of <a href=\"#terms-offen-installation\" class=\"%s\">Offen installations.</a> Only after you opted in, your usage data of a website is collected. Operators than can view it for maximum 6 months."
-msgstr "Οι Χειριστές είναι οι ιδιοκτήτες της <a href=\"#terms-offen-installation\" class=\"%s\">εγκατάστασης Offen </a> μόνο μετά την συναίνεσή σας, συλλέγονται τα δεδομένα χρήσης ενός ιστότοπου. Οι χειριστές μπορούν να έχουν πρόσβασή σε αυτά για 6 μήνες."
-
-#. src/views/components/auditorium/basic-terms.js:46
-#: 
-msgid "Unique user"
-msgstr "Μοναδικός χρήστης"
-
-#. src/views/components/auditorium/basic-terms.js:52
-#: 
-msgid "Unique session"
-msgstr "Μοναδική συνεδρία"
-
-#. src/views/components/auditorium/basic-terms.js:55
-#: 
-msgid "A unique session is defined as a <a href=\"#terms-unique-user\" class=\"%s\">unique user</a> being actively engaged with a page during a browser session. To measure this, a <a href=\"#terms-cookies\" class=\"%s\">cookie</a> is used to assign a session <a href=\"#terms-id\" class=\"%s\">ID</a> to you."
-msgstr "Μια μοναδική συνεδρία ορίζεται ως ένας<a href=\"#terms-unique-user \"class=\"%s\"> μοναδικός χρήστης </a> που ασχολείται με μια σελίδα κατά τη διάρκεια μιας συνεδρίας. Για να γίνει αυτή η μέτρηση, ένα <a href=\"#terms-cookies \"class=\"%s\"> cookie </a> χρησιμοποιείται για την εκχώρηση μιας περιόδου σύνδεσης <a href=\"#terms-id\" class=\"%s\"> Id </a> σε σας."
-
-#. src/views/components/auditorium/basic-terms.js:58
-#: 
-msgid "ID"
-msgstr "ταυτότητα"
-
-#. src/views/components/auditorium/basic-terms.js:61
-#: 
-msgid "Originally: UUID. Full form: Universally unique identifier. Offen uses UUID of version 4. These IDs are generated randomly, unique and without using any personal data. On the individual Offen server, they are handled in an unrecognizable form. <a href=\"https://en.wikipedia.org/wiki/Universally_unique_identifier\" class=\"%s\" target=\"_blank\" rel=\"noreferer noopener\">Learn more.</a>"
-msgstr "Αρχικά: UUID. Πλήρης μορφή: Παγκοσμίως μοναδικό αναγνωριστικό. Offen Χρήσεις UUID της έκδοσης 4. Αυτά τα αναγνωριστικά δημιουργούνται τυχαία, μοναδικά και χωρίς να χρησιμοποιούν προσωπικά δεδομένα. Στο μεμονωμένο διακομιστή Offen, χειρίζονται σε μη αναγνωρίσιμη μορφή. <a href=\"https://en.wikipedia.org/wiki/universally_unique_Inderifier\" class=\"%s\" target=\"_blank\" rel=\"Noferer noopener\"> Μάθετε περισσότερα. </a>"
-
-#. src/views/components/auditorium/format.js:16
-#: 
-msgid "No"
-msgstr "Οχι"
-
-#. src/views/components/auditorium/format.js:16
-#: 
-msgid "Yes"
-msgstr "Ναί"
-
-#. src/views/components/auditorium/format.js:45
-#: 
-msgid "s"
-msgstr "μικρό"
-
-#. src/views/components/auditorium/format.js:47
-#: 
-msgid "ms"
-msgstr "Κυρία"
-
-#. src/views/components/auditorium/format.js:53
-#: 
-msgid "M"
-msgstr "Μ"
-
-#. src/views/components/auditorium/format.js:56
-#: 
-msgid "k"
-msgstr "κ"
-
-#. src/views/components/auditorium/range-selector.js:15
-#: 
-msgid "24 hours"
-msgstr "24 ώρες"
-
-#. src/views/components/auditorium/range-selector.js:16
-#: 
-msgid "7 days"
-msgstr "7 ημέρες"
-
-#. src/views/components/auditorium/range-selector.js:18
-#: 
-msgid "6 weeks"
-msgstr "6 εβδομάδες"
-
-#. src/views/components/auditorium/range-selector.js:19
-#: 
-msgid "12 weeks"
-msgstr "12 εβδομάδες"
-
-#. src/views/components/auditorium/range-selector.js:20
-#: 
-msgid "6 months"
-msgstr "6 μήνες"
-
-#. src/views/components/auditorium/range-selector.js:72
-#: 
-msgid "Here you can set the time frame for all displayed metrics. As all data is generally deleted after 6 months, the selection is limited to this duration."
-msgstr "Εδώ μπορείτε να ρυθμίσετε το χρονικό πλαίσιο για όλες τις εμφανιζόμενες μετρήσεις. Καθώς όλα τα δεδομένα διαγράφονται γενικά μετά από 6 μήνες, η επιλογή περιορίζεται σε αυτή τη διάρκεια."
-
-#. src/views/components/auditorium/retention-chart.js:69
-#: 
-msgid "Weekly retention"
-msgstr "Εβδομαδιαία διατήρηση"
-
-#. src/views/components/auditorium/retention-chart.js:75
-#: 
-msgid "This panel displays your recurring visits of pages of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation</a> during the last 4 weeks. For each of the previous weeks, the percentage is calculated from the value of the current week."
-msgstr "Αυτός ο πίνακας εμφανίζει τις επαναλαμβανόμενες επισκέψεις σελίδων των σελίδων του <a Href=\"#terms-offen-installation\" class=\"%s\"> εγκατάσταση offen </a> κατά τις τελευταίες 4 εβδομάδες. Για κάθε μία από τις προηγούμενες εβδομάδες, το ποσοστό υπολογίζεται από την τιμή της τρέχουσας εβδομάδας."
-
-#. src/views/components/auditorium/privacy.js:36
-#: 
-msgid "Delete"
-msgstr "Διαγράφω"
-
-#. src/views/components/auditorium/privacy.js:48
-#: 
-msgid "Privacy"
-msgstr "Μυστικότητα"
-
-#. src/views/components/auditorium/privacy.js:61
-#: 
-msgid "Opt out"
-msgstr "Εξαίρεση"
-
-#. src/views/components/auditorium/privacy.js:61
-#: 
-msgid "Opt in"
-msgstr "Παραλείπω"
-
-#. src/views/components/auditorium/account-picker.js:14
-#: 
-msgid "Choose account"
-msgstr "Επιλέξτε λογαριασμό"
-
-#. src/views/components/auditorium/chart.js:140
-#: 
-msgid "Page views and %s"
-msgstr "Προβολές σελίδας και% S"
-
-#. src/views/components/auditorium/metrics.js:36
-#: 
-msgid "users"
-msgstr "χρήστες"
-
-#. src/views/components/auditorium/metrics.js:37
-#: 
-msgid "websites"
-msgstr "ιστοσελίδα"
-
-#. src/views/components/auditorium/chart.js:154
-#: 
-msgid "This panel displays the number of pages (bright green) and websites (dark green) you have visited where the <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation</a> is active. To measure this, a cookie is used to assign you a user and a session <a href=\"#terms-id\" class=\"%s\">ID.</a>"
-msgstr "Αυτός ο πίνακας εμφανίζει τον αριθμό των σελίδων (Bright Green) και ιστότοπους (σκούρο πράσινο) που έχετε επισκεφθεί όπου το <a href=\"#terms-offen-installation \"class=\"%s\"> Εγκατάσταση Offen </a> είναι ενεργή. Για να μετρήσετε αυτό, ένα cookie χρησιμοποιείται για να σας εκχωρήσει έναν χρήστη και μια συνεδρία <a href=\"#terms-id\" class=\"%s\"> id. </a>"
-
-#. src/views/components/auditorium/metrics.js:44
-#: 
-msgid "Key metrics"
-msgstr "Βασικές μετρήσεις"
-
-#. src/views/components/auditorium/metrics.js:50
-#: 
-msgid "This panel displays the most significant metrics at a glance."
-msgstr "Αυτός ο πίνακας εμφανίζει τις πιο σημαντικές μετρήσεις με μια ματιά."
-
-#. src/views/components/auditorium/metrics.js:60
-#: 
-msgid "Unique %s"
-msgstr "Μοναδικό% s"
-
-#. src/views/components/auditorium/metrics.js:69
-#: 
-msgid "The number of websites you have visited where the <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation</a> is active. This value will be 1 in many cases."
-msgstr "Ο αριθμός των ιστοσελίδων που έχετε επισκεφθεί όπου η <a href=\"#terms-offen-installation \"class=\"%s\"> εγκατάσταση offen </a> είναι ενεργή. Αυτή η τιμή θα είναι 1 σε πολλές περιπτώσεις."
-
-#. src/views/components/auditorium/metrics.js:77
-#: 
-msgid "Unique sessions"
-msgstr "Μοναδικές συνεδρίες"
-
-#. src/views/components/auditorium/metrics.js:86
-#: 
-msgid "The number of <a href=\"#terms-unique-session\" class=\"%s\">unique sessions</a> you have created on pages where the <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation</a> is active."
-msgstr "Ο αριθμός των <a href=\"#terms-unique-session\" class=\"%s\"> μοναδικές συνεδρίες </a> Έχετε δημιουργήσει σε σελίδες όπου η κλάση <a href = \"# the facten-offeren-offeren\" \" % S \"> Εγκατάσταση Offen </a> είναι ενεργή."
-
-#. src/views/components/auditorium/metrics.js:94
-#: 
-msgid "Avg. page depth"
-msgstr "Avg. Βάθος σελίδας"
-
-#. src/views/components/auditorium/metrics.js:104
-#: 
-msgid "Full form: Average page depth. The average number of pages you have visited during all <a href=\"#terms-unique-session\" class=\"%s\">unique sessions</a> on all websites where the <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation</a> is active."
-msgstr "Πλήρης μορφή: Μέση βάθος σελίδας. Ο μέσος αριθμός σελίδων που έχετε επισκεφθεί κατά τη διάρκεια όλων των <a href=\"#terms-unique-session\" class=\"%s\"> μοναδικές συνεδρίες </a> σε όλες τις ιστοσελίδες όπου οι όροι <a href = \" Εγκατάσταση \"Κλάση =\"% S \"> Εγκατάσταση Offen </a> είναι ενεργή."
-
-#. src/views/components/auditorium/metrics.js:112
-#: 
-msgid "Bounce rate"
-msgstr "Ποσοστό αναπήδησης"
-
-#. src/views/components/auditorium/metrics.js:122
-#: 
-msgid "The percentage of <a href=\"#terms-unique-session\" class=\"%s\">unique sessions</a> where you only visited one page of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation.</a> Therefore a website with only one page will always have a bounce rate of 100%."
-msgstr "Το ποσοστό της <a href=\"#terms-unique-session\" class=\"%s\"> μοναδικές συνεδρίες </a> όπου επισκέφτηκαν μόνο μία σελίδα μιας σελίδας <A Href = \"# Όροι-Offen-Offection-Εγκατάσταση\" \"% S\"> Εγκατάσταση Offen. </a> Ένας ιστότοπος με μόνο μία σελίδα θα έχει πάντα ένα ποσοστό αναπήδησης 100%."
-
-#. src/views/components/auditorium/metrics.js:130
-#: 
-msgid "Returning users"
-msgstr "Επιστρέφοντας τους χρήστες"
-
-#. src/views/components/auditorium/metrics.js:152
-#: 
-msgid "Mobile users"
-msgstr "Κινητοί χρήστες"
-
-#. src/views/components/auditorium/metrics.js:152
-#: 
-msgid "Mobile user"
-msgstr "Χρήστης κινητής τηλεφωνίας"
-
-#. src/views/components/auditorium/metrics.js:162
-#: 
-msgid "Shows whether you are considered to be using a mobile device. A check is made to see if your device thinks it can change its orientation. If so, it is considered mobile."
-msgstr "Δείχνει αν θεωρείται ότι χρησιμοποιείτε μια κινητή συσκευή. Ένας έλεγχος γίνεται για να δείτε αν η συσκευή σας θεωρεί ότι μπορεί να αλλάξει τον προσανατολισμό του. Εάν ναι, θεωρείται κινητό."
-
-#. src/views/components/auditorium/metrics.js:170
-#: 
-msgid "Avg. page load time"
-msgstr "Avg. Χρόνος φόρτωσης σελίδας"
-
-#. src/views/components/auditorium/metrics.js:180
-#: 
-msgid "Full form: Average page load time. The average time it took for all pages of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation</a> you visited to become interactive."
-msgstr "Πλήρης μορφή: Μέση ώρα φόρτωσης σελίδας. Ο μέσος χρόνος που χρειάστηκε για όλες τις σελίδες της <a href=\"#terms-offen-installation\" class=\"%s\"> offen εγκατάσταση </a> επισκεφθείτε να γίνετε διαδραστικοί."
-
-#. src/views/components/auditorium/embed-code.js:18
-#: 
-msgid "Successfully copied embed code to clipboard."
-msgstr "Αντιγραφεί με επιτυχία τον κωδικό ενσωμάτωσης στο πρόχειρο."
-
-#. src/views/components/auditorium/embed-code.js:38
-#: 
-msgid "Embed code"
-msgstr "Κωδικός ενσωμάτωσης"
-
-#. src/views/components/auditorium/embed-code.js:54
-#: 
-msgid "To use Offen with the account <em class=\"%s\">%s</em> on your website, embed the following script on each page you want to appear in your statistics."
-msgstr "Για να χρησιμοποιήσετε Offen με το λογαριασμό <Em Class = \"% S\">% S </ em> στον ιστότοπό σας, ενσωματώστε το παρακάτω σενάριο σε κάθε σελίδα που θέλετε να εμφανίζονται στα στατιστικά στοιχεία σας."
-
-#. src/views/components/auditorium/embed-code.js:57
-#: 
-msgid "In case you are serving multiple domains from your Offen instance, please double check that the domain in this snippet matches the target account."
-msgstr "Σε περίπτωση που υπηρετείτε πολλαπλούς τομείς από την εμφάνισή σας, βεβαιωθείτε ότι ο τομέας σε αυτό το απόσπασμα ταιριάζει με τον λογαριασμό-στόχο."
-
-#. src/views/components/auditorium/embed-code.js:75
-#: 
-msgid "Copy code"
-msgstr "Αντιγραφή κώδικα"
-
-#. src/views/components/auditorium/retire-account.js:21
-#: 
-msgid "If you retire the account <em class=\"%s\">%s,</em> it will not appear in your statistics anymore. Users will be able to access and manage their data for the account for another 6 months until data expires."
-msgstr "Εάν αποσυρθείτε το λογαριασμό <em class = \"% s\">% s, </ em> δεν θα εμφανιστεί πλέον στα στατιστικά στοιχεία σας. Οι χρήστες θα μπορούν να έχουν πρόσβαση και να διαχειρίζονται τα δεδομένα τους για το λογαριασμό για άλλους 6 μήνες έως ότου λήξουν τα δεδομένα."
-
-#. src/views/components/auditorium/retire-account.js:24
-#: 
-msgid "<em class=\"%s\">Danger zone! This action cannot be undone.</em>"
-msgstr "<em Class = \"% S\"> Ζώνη κινδύνου! Αυτή η ενέργεια δεν μπορεί να ανατραπεί. </ Em>"
-
-#. src/views/components/auditorium/retire-account.js:29
-#. src/views/components/auditorium/retire-account.js:100
-#: 
-msgid "Retire account"
-msgstr "Συνταξιοδότηστος"
-
-#. src/views/components/auditorium/retire-account.js:45
-#: 
-msgid "To permanently retire the account, type its name <em class=\"%s\">\"%s\"</em> into the form below:"
-msgstr "Για να αποσυρθείτε μόνιμα το λογαριασμό, πληκτρολογήστε το όνομα του <Em Class = \"% S\"> \"% S\" </ em> στην παρακάτω φόρμα:"
-
-#. src/views/components/auditorium/retire-account.js:77
-#: 
-msgid "The account <em class=\"%s\">\"%s\"</em> has been retired successfully. Log in again to continue."
-msgstr "Ο λογαριασμός <em class = \"% s\"> \"% s\" </ em> έχει αποσυρθεί με επιτυχία. Συνδεθείτε ξανά για να συνεχίσετε."
-
-#. src/views/components/auditorium/retire-account.js:78
-#: 
-msgid "There was an error retiring the account, please try again."
-msgstr "Υπήρξε σφάλμα συνταξιοδότησης του λογαριασμού, δοκιμάστε ξανά."
-
-#. src/views/components/auditorium/url-tables.js:25
-#: 
-msgid "Top pages"
-msgstr "Κορυφαίοι σελίδες"
-
-#. src/views/components/auditorium/url-tables.js:31
-#: 
-msgid "This panel displays several page lists that count the total number of your page views of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation</a> per URL in different categories."
-msgstr "Αυτός ο πίνακας εμφανίζει πολλές λίστες σελίδων που μετρούν τον συνολικό αριθμό των προβολών σελίδων σας στο <a href=\"#terms-offen-installation\" class=\"%s\"> offen εγκατάσταση </a> ανά διεύθυνση URL σε διαφορετικές κατηγορίες."
-
-#. src/views/components/auditorium/live.js:36
-#: 
-msgid "URL"
-msgstr "Url"
-
-#. src/views/components/auditorium/url-tables.js:39
-#: 
-msgid "Pageviews"
-msgstr "Περιηγήσεις σελίδας"
-
-#. src/views/components/auditorium/url-tables.js:49
-#: 
-msgid "Referrers"
-msgstr "Αναφορές"
-
-#. src/views/components/auditorium/url-tables.js:50
-#: 
-msgid "Host"
-msgstr "Πλήθος"
-
-#. src/views/components/auditorium/url-tables.js:50
-#. src/views/components/auditorium/url-tables.js:63
-#. src/views/components/auditorium/url-tables.js:76
-#: 
-msgid "Sessions"
-msgstr "Συνεδρίες"
-
-#. src/views/components/auditorium/url-tables.js:50
-#. src/views/components/auditorium/url-tables.js:63
-#: 
-msgid "Page depth"
-msgstr "Βάθος σελίδας"
-
-#. src/views/components/auditorium/url-tables.js:56
-#: 
-msgid "A list of referrers that directed you to pages of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation.</a> Popular referrers like, for example, Google or Twitter display their proper name, others their domain."
-msgstr "Μια λίστα των παραπομπών που σας κατευθύνονταν στις σελίδες του <a Href=\"#terms-offen-installation\" class=\"%s\"> offen εγκατάσταση. </a> δημοφιλείς παραπομπές όπως, για παράδειγμα, το Google ή το Twitter εμφανίζουν το σωστό τους Όνομα, άλλοι τομέα τους."
-
-#. src/views/components/auditorium/url-tables.js:62
-#: 
-msgid "Campaigns"
-msgstr "Εκστρατείες"
-
-#. src/views/components/auditorium/url-tables.js:63
-#: 
-msgid "Campaign"
-msgstr "καμπάνια"
-
-#. src/views/components/auditorium/url-tables.js:69
-#: 
-msgid "A list of special referrers that directed you to pages of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation.</a> <a href=\"#terms-operator\" class=\"%s\">Operators</a> can mark links to their pages with a campaign tag. This is used, for example, to measure the success of online advertising campaigns."
-msgstr "Μια λίστα ειδικών παραπομπών που σας κατευθύνονταν στις σελίδες του <a Href=\"#terms-offen-installation\" class=\"%s\"> εγκατάσταση offen. </a> <a href = \"# όρος-χειριστής\" Οι χειριστές \"% S\"> Οι χειριστές </a> μπορούν να επισημάνουν συνδέσμους στις σελίδες τους με μια ετικέτα καμπάνιας. Αυτό χρησιμοποιείται, για παράδειγμα, για τη μέτρηση της επιτυχίας των online διαφημιστικών καμπανιών."
-
-#. src/views/components/auditorium/url-tables.js:75
-#: 
-msgid "Sources"
-msgstr "Πηγές"
-
-#. src/views/components/auditorium/url-tables.js:76
-#: 
-msgid "Source"
-msgstr "Πηγή"
-
-#. src/views/components/auditorium/url-tables.js:82
-#: 
-msgid "A list of special referrers that directed you to pages of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation.</a> <a href=\"#terms-operator\" class=\"%s\">Operators</a> can mark links to their pages with a source tag. This is used, for example, to measure the success of online advertising campaigns."
-msgstr "Μια λίστα ειδικών παραπομπών που σας κατευθύνονταν στις σελίδες του <a Href=\"#terms-offen-installation\" class=\"%s\"> εγκατάσταση offen. </a> <a href = \"# όρος-χειριστής\" Οι χειριστές \"% S\"> </a> μπορούν να επισημάνουν συνδέσμους στις σελίδες τους με μια ετικέτα πηγής. Αυτό χρησιμοποιείται, για παράδειγμα, για τη μέτρηση της επιτυχίας των online διαφημιστικών καμπανιών."
-
-#. src/views/components/auditorium/url-tables.js:94
-#: 
-msgid "Landing pages"
-msgstr "Ιστοσελίδες προορισμού"
-
-#. src/views/components/auditorium/url-tables.js:95
-#: 
-msgid "Landings"
-msgstr "Προσγειώσεις"
-
-#. src/views/components/auditorium/url-tables.js:100
-#: 
-msgid "A list of pages of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation</a> that you have opened first in all <a href=\"#terms-unique-session\" class=\"%s\">unique sessions.</a>"
-msgstr "Μια λίστα των σελίδων του <a Href=\"#terms-offen-installation\" class=\"%s\"> offen εγκατάσταση </a> ότι έχετε ανοίξει πρώτα σε όλες τις λέξεις <A Href = \"# Όροι-μοναδική συνεδρία\" class = \"% s\"> μοναδικές συνεδρίες. </a>"
-
-#. src/views/components/auditorium/url-tables.js:106
-#: 
-msgid "Exit pages"
-msgstr "Σελίδες εξόδου"
-
-#. src/views/components/auditorium/url-tables.js:107
-#: 
-msgid "Exits"
-msgstr "Εξέρχομαι"
-
-#. src/views/components/auditorium/url-tables.js:112
-#: 
-msgid "A list of pages of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation</a> that you have opened last in all <a href=\"#terms-unique-session\" class=\"%s\">unique sessions.</a> For this to be counted you must have visited at least two pages."
-msgstr "Μια λίστα με σελίδες του <a Href=\"#terms-offen-installation\" class=\"%s\"> εγκατάσταση offen </a> ότι έχετε ανοίξει τελευταία σε όλες τις λέξεις <a href = \"# Όροι-μοναδική συνεδρία\" Class = \"% S\"> μοναδικές συνεδρίες. </a> Για να υπολογιστεί αυτό πρέπει να έχετε επισκεφθεί τουλάχιστον δύο σελίδες."
-
-#. src/views/components/auditorium/frequently-asked-questions.js:15
-#: 
-msgid "FAQ"
-msgstr "Συχνές ερωτήσεις"
-
-#. src/views/components/auditorium/frequently-asked-questions.js:23
-#: 
-msgid "Only page views, sessions, referrer and the visited URL are collected. From this, other metrics such as for example the bounce rate are calculated."
-msgstr "Μόνο οι προβολές σελίδων, οι συνεδρίες, ο παραπομπή και η διεύθυνση URL που επισκέπτεται. Από αυτό, υπολογίζονται άλλες μετρήσεις όπως για παράδειγμα το ποσοστό αναπήδησης."
-
-#. src/views/components/auditorium/frequently-asked-questions.js:26
-#: 
-msgid "What kind of data isn't collected?"
-msgstr "Τι είδους δεδομένα δεν συλλέγονται;"
-
-#. src/views/components/auditorium/frequently-asked-questions.js:35
-#: 
-msgid "Your usage data is encrypted end-to-end. It will be automatically deleted after 6 months. You can delete your usage data yourself at any time in the privacy panel."
-msgstr "Τα δεδομένα χρήσης σας είναι κρυπτογραφημένα από άκρο σε άκρο. Θα διαγραφεί αυτόματα μετά από 6 μήνες. Μπορείτε να διαγράψετε τον εαυτό σας τα δεδομένα χρήσης σας σε οποιαδήποτε στιγμή στον πίνακα απορρήτου."
-
-#. src/views/components/auditorium/frequently-asked-questions.js:49
-#: 
-msgid "Yes, in particular cookies are used to store your decision about granting access to your usage data. If you opt in, we also use <a href=\"#terms-cookies\" class=\"%s\">cookies</a> to store a user and a session <a href=\"#terms-id\" class=\"%s\">ID</a> for you."
-msgstr "Ναι, σε συγκεκριμένα τα cookies χρησιμοποιούνται για την αποθήκευση της απόφασής σας σχετικά με τη χορήγηση πρόσβασης στα δεδομένα χρήσης σας. Εάν επιλέξετε, χρησιμοποιούμε επίσης το <a href=\"#terms-cookies \"class=\"%s\"> cookies </a> για να αποθηκεύσετε έναν χρήστη και μια συνεδρία <a href =\" # there-id \"class =\" % s \"> id </a> για εσάς."
-
-#. src/views/components/auditorium/frequently-asked-questions.js:55
-#: 
-msgid "After opening a website where a <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation</a> is active, you can explicitly opt in to the data collection and thereby help to improve the services you use. Only then you will be assigned a user and a session <a href=\"#terms-id\" class=\"%s\">ID</a> using a <a href=\"#terms-cookies\" class=\"%s\">cookie.</a> Offen handles these <a href=\"#terms-id\" class=\"%s\">IDs</a> in an unrecognizable form, i.e. no server will ever store this identifier."
-msgstr "Μετά το άνοιγμα μιας ιστοσελίδας όπου ένα <a href=\"#terms-offen-installation\" class=\"%s\"> εγκατάσταση offen </a> είναι ενεργή, μπορείτε να επιλέξετε ρητά στη συλλογή δεδομένων και έτσι να συμβάλλετε στη βελτίωση των υπηρεσιών εσυ χρησιμοποιεις. Μόνο τότε θα σας εκχωρηθεί ένας χρήστης και μια συνεδρία <a href=\"#terms-id\" class=\"%s\"> id </a> χρησιμοποιώντας ένα <a href = \"# όρια-cookies\" class = \"% s \"> cookie. </a> offen χειρίζεται αυτές τις <a href=\"#terms-id\" class=\"%s\"> ids </a> σε μια μη αναγνωρίσιμη μορφή, δηλαδή κανένας διακομιστής δεν θα αποθηκεύσει ποτέ αυτό το αναγνωριστικό."
-
-#. src/views/components/auditorium/relative-time.js:13
-#: 
-msgid "Now"
-msgstr "Τώρα"
-
-#. src/views/components/auditorium/relative-time.js:15
-#: 
-msgid "%d days later"
-msgstr "% d ημέρες αργότερα"
-
-#. src/views/components/auditorium/relative-time.js:15
-#: 
-msgid "%d days earlier"
-msgstr "% d ημέρες νωρίτερα"
-
-#. src/views/components/auditorium/header.js:15
-#: 
-msgid "You are viewing data as operator with account <em class=\"%s\">%s</em>."
-msgstr "Προβάλλετε δεδομένα ως χειριστής με λογαριασμό <em class = \"% S\">% s </ em>."
-
-#. src/views/components/auditorium/header.js:20
-#: 
-msgid "You are viewing your usage data."
-msgstr "Βλέπετε τα δεδομένα χρήσης σας."
-
-#. src/views/components/auditorium/go-settings.js:32
-#: 
-msgid "Admin console"
-msgstr "Κονσόλα διαχειριστή"
-
-#. src/views/components/auditorium/go-settings.js:45
-#: 
-msgid "Share all accounts, create a new one, change your email address and password, log out from Offen"
-msgstr "Μοιραστείτε όλους τους λογαριασμούς, δημιουργήστε ένα νέο, αλλάξτε τη διεύθυνση ηλεκτρονικού ταχυδρομείου και τον κωδικό πρόσβασής σας, αποσυνδεθείτε από Offen"
-
-#. src/views/components/auditorium/go-settings.js:53
-#: 
-msgid "Open admin console"
-msgstr "Ανοικτή κονσόλα διαχείρισης"
-
-#. src/views/components/auditorium/live.js:19
-#: 
-msgid "Real time"
-msgstr "Πραγματικός χρόνος"
-
-#. src/views/components/auditorium/live.js:23
-#: 
-msgid "Active users on site"
-msgstr "Ενεργοί χρήστες στο χώρο του ξενοδοχείου"
-
-#. src/views/components/auditorium/live.js:29
-#: 
-msgid "Active pages"
-msgstr "Ενεργές σελίδες"
-
-#. src/views/components/auditorium/live.js:36
-#: 
-msgid "Visitors"
-msgstr "Επισκέπτες"
-
-#. src/views/components/auditorium/share.js:15
-#: 
-msgid "Share this account"
-msgstr "Μοιραστείτε αυτόν τον λογαριασμό"
-
-#. src/views/components/join/form.js:22
-#: 
-msgid "Passwords did not match"
-msgstr "Οι κωδικοί πρόσβασης δεν ταιριάζουν"
-
-#. src/views/components/join/form.js:31
-#: 
-msgid "Your account has been set up, you can now log in."
-msgstr "Ο λογαριασμός σας έχει ρυθμιστεί, μπορείτε τώρα να συνδεθείτε."
-
-#. src/views/components/join/form.js:39
-#: 
-msgid "Join Offen"
-msgstr "Εγγραφείτε Offen"
-
-#. src/views/components/join/form.js:66
-#: 
-msgid "Accept invite"
-msgstr "Αποδεχτείτε την πρόσκληση"
-
-#. src/views/index.js:29
-#: 
-msgid "Checking your consent status"
-msgstr "Έλεγχος της κατάστασης συγκατάθεσής σας"
-
-#. src/views/auditorium-user.js:56
-#: 
-msgid "Fetching and decrypting the latest data"
-msgstr "Να πάρει και να αποκρυπτογραφήσει τα τελευταία δεδομένα"
-
-#. src/views/setup.js:20
-#: 
-msgid "This instance is already set up."
-msgstr "Αυτή η περίπτωση έχει ήδη ρυθμιστεί."
-
-#. src/views/setup.js:24
-#: 
-msgid "Preparing setup..."
-msgstr "Προετοιμασία ρύθμισης ..."
-
-#. src/views/auditorium-operator.js:47
-#: 
-msgid "This view failed to update automatically, data may be out of date. Check your network connection if the problem persists."
-msgstr "Αυτή η προβολή απέτυχε να ενημερώσει αυτόματα, τα δεδομένα ενδέχεται να είναι ξεπερασμένα. Ελέγξτε τη σύνδεση δικτύου σας εάν το πρόβλημα παραμένει."
-
-#. src/views/auditorium-operator.js:91
-#: 
-msgid "Fetching and aggregating the latest data"
-msgstr "Λαμβάνοντας και συγκεντρώνει τα τελευταία δεδομένα"
-
-#. index.js:63
-#: 
-msgid "Offen does not support this site: %s"
-msgstr "Offen δεν υποστηρίζει αυτόν τον ιστότοπο:% s"
-
-#. index.js:64
-#: 
-msgid "No data will be collected. Find out more at \"https://www.offen.dev\"."
-msgstr "Δεν θα συλλεχθούν δεδομένα. Μάθετε περισσότερα στο \"https://www.offen.dev\"."
-
-#. ~ line 5 "public/emails.go.html"
-#: 
-msgid "Reset your password"
-msgstr "Επαναφορά του κωδικού πρόσβασής σας"
-
-#. ~ line 9 "public/emails.go.html"
-#. ~ line 23 "public/emails.go.html"
-#. ~ line 37 "public/emails.go.html"
-#: 
-msgid "Hi!"
-msgstr "Γεια!"
-
-#. ~ line 11 "public/emails.go.html"
-#: 
-msgid "You have requested to reset your password. To do so, visit the following link:"
-msgstr "Έχετε ζητήσει να επαναφέρετε τον κωδικό πρόσβασής σας. Για να το κάνετε, επισκεφθείτε τον ακόλουθο σύνδεσμο:"
-
-#. ~ line 15 "public/emails.go.html"
-#: 
-msgid "The link is valid for 24 hours after this email has been sent. In case you have missed this deadline, you can always request a new link."
-msgstr "Ο σύνδεσμος ισχύει για 24 ώρες μετά την αποστολή αυτού του μηνύματος ηλεκτρονικού ταχυδρομείου. Σε περίπτωση που χάσατε αυτή την προθεσμία, μπορείτε πάντα να ζητήσετε έναν νέο σύνδεσμο."
-
-#. ~ line 25 "public/emails.go.html"
-#: 
-msgid "You have been invited to Offen. To accept your invite, visit the following link:"
-msgstr "Έχετε καλέσει να offen. Για να αποδεχτείτε την πρόσκλησή σας, επισκεφθείτε τον ακόλουθο σύνδεσμο:"
-
-#. ~ line 29 "public/emails.go.html"
-#: 
-msgid "The link is valid for 7 days after this email has been sent. In case you have missed this deadline, request a new invite."
-msgstr "Ο σύνδεσμος ισχύει για 7 ημέρες μετά την αποστολή αυτού του μηνύματος ηλεκτρονικού ταχυδρομείου. Σε περίπτωση που χάσατε αυτή την προθεσμία, ζητήστε μια νέα πρόσκληση."
-
-#. ~ line 39 "public/emails.go.html"
-#: 
-msgid "You have been added to the following new accounts on Offen:"
-msgstr "Έχετε προστεθεί στους ακόλουθους νέους λογαριασμούς σχετικά με Offen:"
-
-#. ~ line 45 "public/emails.go.html"
-#: 
-msgid "You automatically gain access to these accounts the next time you log in."
-msgstr "Αποκτήστε αυτόματα την πρόσβαση σε αυτούς τους λογαριασμούς την επόμενη φορά που θα συνδεθείτε."
-
-#. ~ line 31 "public/index.go.html"
-#: 
-msgid "It seems like your browser has JavaScript disabled."
-msgstr "Φαίνεται ότι το πρόγραμμα περιήγησής σας έχει απενεργοποιηθεί το Javascript."
-
-#. ~ line 36 "public/index.go.html"
-#: 
-msgid "Offen requires JavaScript to function properly."
-msgstr "Το Offen απαιτεί τη σωστή λειτουργία Javascript."
-
-#. ~ line 42 "public/index.go.html"
-#: 
-msgid "For Offen to work, your browser has to allow JavaScript and accept cookies. Please change your browser settings and reload this page. Subsequently, Offen will ask for your consent before collecting any usage data."
-msgstr "Για να λειτουργήσει για να εργαστεί, το πρόγραμμα περιήγησής σας πρέπει να επιτρέψει το javascript και να δεχτεί cookies. Αλλάξτε τις ρυθμίσεις του προγράμματος περιήγησης και επαναφόρτωση αυτής της σελίδας. Στη συνέχεια, το Offen θα ζητήσει τη συγκατάθεσή σας πριν τη συλλογή οποιωνδήποτε δεδομένων χρήσης."
-
-#. ~ line 49 "public/index.go.html"
-#: 
-msgid "Offen"
-msgstr "Προσβάλλω"
-
-#. ~ line 169 "public/index.go.html"
-#: 
-msgid "Offen is an open alternative to common web analytics tools. Operators gain insights while users have full access to their data. Lightweight, self hosted and free."
-msgstr "Offen είναι μια ανοικτή εναλλακτική λύση στα κοινά εργαλεία Web Analytics. Οι φορείς εκμετάλλευσης κερδίζουν γνώσεις, ενώ οι χρήστες έχουν πλήρη πρόσβαση στα δεδομένα τους. Ελαφρύ, αυτοεξυπηρέτηση και δωρεάν."
-
-#. src/middleware.js:36
-#: 
-msgid "This page is using Offen to collect usage statistics."
-msgstr "Αυτή η σελίδα χρησιμοποιεί Offen για τη συλλογή στατιστικών στοιχείων χρήσης."
-
-#. index.js:28
-#: 
-msgid "You can access and manage all of your personal data or opt-out at \"%s/auditorium/\"."
-msgstr "Μπορείτε να έχετε πρόσβαση και να διαχειριστείτε όλα τα προσωπικά σας δεδομένα ή να εξαιρέσετε στο \"% S / Auditorium /\"."
-
-#. index.js:29
-#. index.js:60
-#: 
-msgid "Find out more about Offen at \"https://www.offen.dev\"."
-msgstr "Μάθετε περισσότερα σχετικά με Offen στο \"https://www.offen.dev\"."
-
-#. index.js:58
-#: 
-msgid "Your setup prevents third party cookies or you have disabled it in your browser's settings."
-msgstr "Η ρύθμισή σας αποτρέπει τα cookies τρίτου μέρους ή έχετε απενεργοποιήσει τις ρυθμίσεις του προγράμματος περιήγησης."
-
-#. index.js:59
-#: 
-msgid "No usage data will be collected."
-msgstr "Δεν θα συλλεχθούν δεδομένα χρήσης."
-
-#. src/user-consent.js:102
-#: 
-msgid "Thanks for your help to make this website better."
-msgstr "Ευχαριστώ για τη βοήθειά σας για να κάνετε αυτή την ιστοσελίδα καλύτερη."
-
-#. src/user-consent.js:109
-#: 
-msgid "Continue"
-msgstr "Να συνεχίσει"
-
-#. src/user-consent.js:116
-#: 
-msgid "Learn more"
-msgstr "Μάθε περισσότερα"
-
-#. src/user-consent.js:124
-#: 
-msgid "You can opt out and delete any time."
-msgstr "Μπορείτε να εξαιρεθείτε και να διαγράψετε οποιαδήποτε στιγμή."
-
-#. src/middleware.js:37
-#: 
-msgid "You have opted out of data collection, no data is being collected."
-msgstr "Έχετε επιλέξει τη συλλογή δεδομένων, δεν συλλέγονται δεδομένα."
-
-#. src/middleware.js:38
-#: 
-msgid "Find out more about Offen at \"%s\""
-msgstr "Μάθετε περισσότερα σχετικά με Offen στο \"% S\""
-
-#. src/views/404.js:15
-#: 
-msgid "Not found..."
-msgstr "Δεν βρέθηκε..."
-
-#. src/views/components/auditorium/user-onboarding.js:29
-#: 
-msgid "Skip"
-msgstr "Παραλείπω"
-
-#. src/views/components/auditorium/user-onboarding.js:46
-#: 
-msgid "Welcome to the Auditorium, this is how it works."
-msgstr "Καλώς ήρθατε στο Auditorium, έτσι λειτουργεί."
-
-#. src/views/components/auditorium/user-onboarding.js:49
-#: 
-msgid "What <span class=\"%s\">%s</span> knows about you."
-msgstr "Τι class class = \"% s\">% s </ span> ξέρει για εσάς."
-
-#. src/views/components/auditorium/user-onboarding.js:73
-#: 
-msgid "You have visited <span class=\"%s\">%s %d</span> times."
-msgstr "Έχετε επισκεφθεί το <span class = \"% s\">% s% d </ span> φορές."
-
-#. src/views/components/auditorium/user-onboarding.js:81
-#: 
-msgid "It is probably your first time visiting <span class=\"%s\">%s</span> ."
-msgstr "Είναι ίσως η πρώτη φορά που επισκέπτεστε το <span class = \"% s\">% s </ span>."
-
-#. src/views/components/auditorium/user-onboarding.js:90
-#: 
-msgid "You came via <span class=\"%s\">%s</span> ."
-msgstr "Ήρθατε μέσω <Span Class = \"% S\">% S </ Span>."
-
-#. src/views/components/auditorium/user-onboarding.js:97
-#: 
-msgid "Most likely you are on a <span class=\"%s\">%s</span>."
-msgstr "Πιθανότατα είστε σε μια <span class = \"% s\">% s </ span>."
-
-#. src/views/components/auditorium/user-onboarding.js:97
-#: 
-msgid "mobile device"
-msgstr "κινητή συσκευή"
-
-#. src/views/components/auditorium/user-onboarding.js:97
-#: 
-msgid "desktop device"
-msgstr "επιφάνεια εργασίας"
-
-#. #-#-#-#-#  auditorium.po  #-#-#-#-#
-#. src/views/components/auditorium/user-onboarding.js:106
-#. #-#-#-#-#  auditorium.po  #-#-#-#-#
-#. src/views/components/auditorium/user-onboarding.js:137
-#: 
-msgid "Next"
-msgstr "Επόμενο"
-
-#. src/views/components/auditorium/user-onboarding.js:122
-#: 
-msgid "Your data always stays yours."
-msgstr "Τα δεδομένα σας πάντα παραμένουν δικά σας."
-
-#. src/views/components/auditorium/user-onboarding.js:129
-#: 
-msgid "Click this symbol to display detailed explanations of the respective terms."
-msgstr "Κάντε κλικ σε αυτό το σύμβολο για να εμφανίσετε λεπτομερείς επεξηγήσεις των αντίστοιχων όρων."
-
-#. src/views/components/auditorium/user-onboarding.js:152
-#: 
-msgid "Bookmark this page to come back later."
-msgstr "Σημειώστε αυτή τη σελίδα για να επιστρέψετε αργότερα."
-
-#. src/views/components/auditorium/user-onboarding.js:155
-#: 
-msgid "Get an overall picture of your data collected over time. Come back here anytime to see what <span class=\"%s\">%s</span> knows about you."
-msgstr "Πάρτε μια συνολική εικόνα των δεδομένων σας που συλλέγονται με την πάροδο του χρόνου. Επιστρέψτε εδώ οποιαδήποτε στιγμή για να δείτε τι <span class = \"% s\">% s </ span> ξέρει για εσάς."
-
-#. src/views/components/auditorium/user-onboarding.js:158
-#: 
-msgid "Now let's get started!"
-msgstr "Τώρα ας ξεκινήσουμε!"
-
-#. src/views/components/auditorium/privacy.js:29
-#: 
-msgid "Stay opted in,<br>only delete usage data"
-msgstr "Μείνετε επιλέξτε, <br> μόνο διαγράψτε τα δεδομένα χρήσης"
-
-#. src/views/components/auditorium/privacy.js:55
-#: 
-msgid "Opt out<br>and delete usage data."
-msgstr "Εξαιρέστε τις <br> και διαγράψτε τα δεδομένα χρήσης."
-
-#. src/views/components/auditorium/privacy.js:56
-#: 
-msgid "Opt in and grant<br>access to your usage data."
-msgstr "Επιλέξτε και παραχωρήστε την πρόσβαση στην πρόσβαση στα δεδομένα χρήσης σας."
-
-#. src/views/components/auditorium/chart.js:179
-#: 
-msgid "Empty state"
-msgstr "Άδειο κράτος"
-
-#. src/views/components/auditorium/chart.js:181
-#: 
-msgid "No data available <br>for the selected time range."
-msgstr "Δεν υπάρχουν διαθέσιμα στοιχεία για την επιλεγμένη χρονική περιοχή."
-
-#. src/views/components/console/change-email.js:24
-#: 
-msgid "Please log in again using your updated email."
-msgstr "Συνδεθείτε ξανά χρησιμοποιώντας το ενημερωμένο email σας."
-
-#. src/views/components/console/change-password.js:31
-#: 
-msgid "Please log in again using your new password."
-msgstr "Παρακαλούμε συνδεθείτε ξανά χρησιμοποιώντας τον νέο κωδικό πρόσβασής σας."
-
-#. src/views/components/console/change-password.js:32
-#: 
-msgid "Could not change password. Try again."
-msgstr "Δεν ήταν δυνατή η αλλαγή κωδικού πρόσβασης. Προσπάθησε ξανά."
-
-#. src/views/components/setup/form.js:43
-#: 
 msgid "Set up your instance by creating your first account."
 msgstr "Ρυθμίστε την εμφάνισή σας δημιουργώντας τον πρώτο σας λογαριασμό."
 
-#. src/views/components/_shared/with-layout.js:45
-#: 
+msgid "The account name"
+msgstr "Το όνομα του λογαριασμού"
+
+msgid "Your email address"
+msgstr "H διεύθυνση email σας"
+
+msgid "Repeat password"
+msgstr "Επαναλάβατε τον κωδικό σας"
+
+msgid "Setup instance"
+msgstr "Ρύθμιση εγκατάστασης"
+
+msgid "Offen Auditorium"
+msgstr "Offen Auditorium"
+
 msgid "An error occurred: %s"
 msgstr "Παρουσιάστηκε σφάλμα:% s"
 
-#. src/views/components/_shared/share.js:27
-#: 
+msgid "<a href=\"https://www.offen.dev/\" class=\"%s\" target=\"_blank\" rel=\"noreferer noopener\">Offen</a>"
+msgstr "<a href=\"https://www.offen.dev/\" class=\"%s\" target=\"_blank\" rel=\"noreferer noopener\">Offen</a>"
+
+#. #-#-#-#-#  server.po  #-#-#-#-#
+#. ~ line 54 "public/static/index.go.html"
+msgid "Fair web analytics"
+msgstr "Δίκαια αναλυτικά στοιχεία για το διαδύκτιο"
+
+#. #-#-#-#-#  server.po  #-#-#-#-#
+#. ~ line 59 "public/static/index.go.html"
+#, python-format
+msgid "Found an issue, need help or want to add something?<br><a href=\"https://twitter.com/hioffen\" class=\"%s\" target=\"_blank\" rel=\"noreferer noopener\">Tweet,</a> <a href=\"mailto:hioffen@posteo.de\" class=\"%s\" target=\"_blank\">email</a> or file an <a href=\"https://github.com/offen/offen\" class=\"%s\" target=\"_blank\" rel=\"noreferer noopener\">issue.</a>"
+msgstr "Βρίκες κάποιο πρόβλημα, χρειάζεσαι βοήθεια ή θες να προσθέσεις κάτι; Στείλε <br><a href=\"https://twitter.com/hioffen\" class=\"%s\" target=\"_blank\" rel=\"noreferer noopener\">Tweet,</a> <a href=\"mailto:hioffen@posteo.de\" class=\"%s\" target=\"_blank\">email</a> ή υπέβαλε <a href=\"https://github.com/offen/offen\" class=\"%s\" target=\"_blank\" rel=\"noreferer noopener\"> μια αναφορά.</a>"
+
+msgid "weak"
+msgstr "αδύναμο"
+
+msgid "low"
+msgstr "χαμηλό"
+
+msgid "ok"
+msgstr "εντάξει"
+
+msgid "strong"
+msgstr "ισχυρό"
+
+msgid "very strong"
+msgstr "πολύ ισχυρό"
+
+msgid "Your password needs to be at least 8 characters long."
+msgstr "Ο κωδικός πρέπει να είναι τουλάχιστον 8 χαρακτήρες."
+
+msgid "Password strength: %s"
+msgstr "Ισχύς κωδικού: %s"
+
+msgid "Please log in using your credentials."
+msgstr "Συνδεθείτε χρησημοποιώντας τα στοιχεία σας."
+
+msgid "Checking authentication"
+msgstr "Αυθεντικοποίηση"
+
+msgid "You currently do not have any active accounts. You can create one below."
+msgstr "Δεν έχετε ενεργό λογαριασμό. Μπορείτε να φτιάξετε εναν καινούριο εδώ."
+
+msgid "One moment..."
+msgstr "Μια στιγμή..."
+
 msgid "You cannot invite yourself."
 msgstr "Δεν μπορείτε να καλέσετε τον εαυτό σας."
 
-#. src/views/components/reset-password/form.js:27
-#: 
-msgid "There has been an error resetting your password, please try again."
-msgstr "Υπήρξε σφάλμα Επαναφορά του κωδικού πρόσβασής σας, δοκιμάστε ξανά."
+msgid "An invite email has been sent to <em class=\"%s\">%s</em>."
+msgstr "Έχει σταλεί ένα email πρόσκλησης στο <em class=\"%s\">%s</em>."
 
-#. src/views/components/index/consent-status-display.js:14
-#: 
-msgid "You have opted in."
-msgstr "Έχετε επιλέξει."
-
-#. src/views/components/index/consent-status-display.js:15
-#: 
-msgid "You have opted out."
-msgstr "Έχετε επιλέξει."
-
-#. src/views/components/index/main-card.js:61
-#: 
-msgid "Only page views, sessions, referrer and visited URLs are collected. From this, other metrics such as the bounce rate are calculated."
-msgstr "Μόνο οι προβολές σελίδων, οι συνεδρίες, ο παραπομπή και οι διευθύνσεις URL που επισκέπτονται. Από αυτό, υπολογίζονται άλλες μετρήσεις όπως το ποσοστό αναπήδησης."
-
-#. src/views/components/index/main-card.js:91
-#: 
-msgid "After opening a website where an Offen installation is active, you can explicitly opt in to the data collection and thereby help to improve the services you use. Only then you will be assigned a user and a session ID using a cookie. Offen handles these IDs in an unrecognizable form. <a href=\"https://en.wikipedia.org/wiki/HTTP_cookie\" class=\"%s\" target=\"_blank\" rel=\"noreferer noopener\">Learn more about cookies here.</a>"
-msgstr "Μετά το άνοιγμα ενός ιστότοπου όπου είναι ενεργή μια εγκατάσταση Offen, μπορείτε να επιλέξετε ρητά στη συλλογή δεδομένων και έτσι να βοηθήσετε στη βελτίωση των υπηρεσιών που χρησιμοποιείτε. Μόνο τότε θα σας εκχωρηθεί ένας χρήστης και ένα αναγνωριστικό συνεδρίας χρησιμοποιώντας ένα cookie. Το Offen χειρίζεται αυτά τα αναγνωριστικά σε μια μη αναγνωρίσιμη μορφή. <a href=\"https://en.wikipedia.org/wiki/http_cookie\" class=\"%s\" target=\"_blank\" rel=\"Noreferer noopener\"> Μάθετε περισσότερα σχετικά με τα cookies εδώ. </a>"
-
-#. src/views/components/auditorium/basic-terms.js:23
-#: 
-msgid "You are viewing the Auditorium right now. Only available after opt-in, it is the interface where you can review and delete your usage data or opt out entirely."
-msgstr "Βλέπετε το Auditorium αυτή τη στιγμή. Διατίθεται μόνο μετά το opt-in, είναι η διασύνδεση όπου μπορείτε να ελέγξετε και να διαγράψετε τα δεδομένα χρήσης σας ή να επιλέξετε εξ ολοκλήρου."
-
-#. src/views/components/auditorium/basic-terms.js:49
-#: 
-msgid "You are defined as a unique user after your opt-in to data collection. To measure this, a <a href=\"#terms-cookies\" class=\"%s\">cookie</a> is used to assign a user <a href=\"#terms-id\" class=\"%s\">ID</a> to you."
-msgstr "Ορίζεται ως ένας μοναδικός χρήστης μετά τη συλλογή δεδομένων στη συλλογή δεδομένων. Για να μετρήσετε αυτό, ένα <a href=\"#terms-cookies\" class=\"%s\"> cookie </a> χρησιμοποιείται για την εκχώρηση ενός χρήστη <a href=\"#terms-id\" class=\"%s\"> Id </a> σε σας."
-
-#. src/views/components/auditorium/user-onboarding.js:125
-#: 
-msgid "Review your data in the Auditorium. You can delete your data or opt out completely at any time in the Privacy tab."
-msgstr "Ελέγξτε τα δεδομένα σας στο αίθριο. Μπορείτε να διαγράψετε τα δεδομένα σας ή να επιλέξετε εντελώς ανά πάσα στιγμή στην καρτέλα Προστασίας απορρήτου."
-
-#. src/views/components/auditorium/retire-account.js:104
-#: 
-msgid "Toggle display of retire account functionality"
-msgstr "Εναλλαγή της λειτουργίας του λογαριασμού αποστολής"
-
-#. src/views/components/auditorium/embed-code.js:43
-#: 
-msgid "Toggle display of embed code"
-msgstr "Εναλλαγή εμφάνισης κώδικα ενσωμάτωσης"
-
-#. src/views/components/auditorium/go-settings.js:35
-#: 
-msgid "Toggle display of admin console navigation"
-msgstr "Εναλλαγή εμφάνισης πλοήγησης κονσόλας διαχειριστή"
-
-#. src/views/components/auditorium/share.js:16
-#: 
-msgid "Share your Offen account <em class=\"%s\">%s</em> via email invitation. If granted admin privileges, invited users have full access to a shared account and can also create further accounts for this Offen instance."
-msgstr "Μοιραστείτε το λογαριασμό σας Offen Class = \"% S\">% S </ em> μέσω πρόσκλησης ηλεκτρονικού ταχυδρομείου. Εάν χορηγούνται προνόμια διαχειριστών, οι προσκεκλημένοι χρήστες έχουν πλήρη πρόσβαση σε κοινόχρηστο λογαριασμό και μπορούν επίσης να δημιουργήσουν περαιτέρω λογαριασμούς για αυτό το παράδειγμα."
-
-#. src/check-support.js:15
-#: 
-msgid "Browser does not support IndexedDB which is required."
-msgstr "Το πρόγραμμα περιήγησης δεν υποστηρίζει το IndexedDB που απαιτείται."
-
-#. ~ line 19 "public/emails.go.html"
-#: 
-msgid "You have been invited to join Offen."
-msgstr "Έχετε καλέσει να συμμετάσχετε στο Offen."
-
-#. ~ line 33 "public/emails.go.html"
-#: 
-msgid "You have been added to additional accounts on Offen."
-msgstr "Έχετε προστεθεί σε πρόσθετους λογαριασμούς σχετικά με Offen."
-
-#. src/views/components/auditorium/privacy.js:80
-#: 
-msgid "To review your data collected over time, <br class=\"dn db-l\">set a bookmark for this page."
-msgstr "Για να ελέγξετε τα δεδομένα σας που συλλέγονται με την πάροδο του χρόνου, <brkets=\"dn db-l\"> Ορίστε ένα σελιδοδείκτη για αυτή τη σελίδα."
-
-#. src/views/components/auditorium/range-selector.js:18
-#: 
-msgid "30 days"
-msgstr "30 μέρες"
-
-#. src/views/components/auditorium/range-selector.js:86
-#: 
-msgid "Yesterday"
-msgstr "Εχθές"
-
-#. src/views/components/auditorium/range-selector.js:91
-#: 
-msgid "Last"
-msgstr "τελευταίος"
-
-#. src/views/components/auditorium/range-selector.js:109
-#: 
-msgid "Custom"
-msgstr "Εθιμο"
-
-#. src/views/components/auditorium/range-selector.js:114
-#: 
-msgid "Show data from"
-msgstr "Εμφάνιση δεδομένων από"
-
-#. src/views/components/auditorium/date-picker.js:87
-#: 
-msgid "Select"
-msgstr "Επιλέγω"
-
-#. src/views/components/_shared/share.js:43
-#: 
 msgid "There was an error inviting the user. Could it be that the user already has access?"
 msgstr "Υπήρξε ένα σφάλμα που καλεί τον χρήστη. Θα μπορούσε να είναι ότι ο χρήστης έχει ήδη πρόσβαση;"
 
-#. src/views/components/auditorium/account-styles.js:22
-#: 
-msgid "Your custom CSS here"
-msgstr "Το Custom CSS εδώ"
+msgid "Toggle display of %s functionality"
+msgstr "Αλλαγή εμφάνισης της λειτουργικότητας %s"
 
-#. src/views/components/auditorium/account-styles.js:50
-#: 
-msgid "Customize appearance"
-msgstr "Προσαρμόστε την εμφάνιση"
+msgid "Email address to send invite to"
+msgstr "Διεύθυνση email προς αποστολή πρόσκλησης"
 
-#. src/views/components/auditorium/account-styles.js:53
-#: 
-msgid "Toggle display of custom styling area"
-msgstr "Εναλλαγή προβολής προσαρμοσμένης περιοχής στυλ"
+msgid "Grant Admin privileges"
+msgstr "Παραχωρήστε δικαιώματα διαχειριστή"
 
-#. src/views/components/auditorium/account-styles.js:63
-#: 
-msgid "Successfully updated styles for account %s"
-msgstr "Ενημερώθηκαν με επιτυχία τα στυλ για λογαριασμό% s"
+msgid "Invite user"
+msgstr "Πρόσκληση Χρήστη"
 
-#. src/views/components/auditorium/account-styles.js:64
-#: 
-msgid "An error occured updating the account's styles."
-msgstr "Παρουσιάστηκε σφάλμα ενημέρωσης των στυλ του λογαριασμού."
+msgid "There has been an error resetting your password, please try again."
+msgstr "Υπήρξε σφάλμα Επαναφορά του κωδικού πρόσβασής σας, δοκιμάστε ξανά."
 
-#. src/views/components/auditorium/account-styles.js:72
-#: 
-msgid "Could not validate your styles. Check the documentation for limitations around external URLs and other areas."
-msgstr "Δεν ήταν δυνατή η επικύρωση των στυλ σας. Ελέγξτε την τεκμηρίωση για περιορισμούς γύρω από εξωτερικές διευθύνσεις URL και άλλες περιοχές."
+msgid "Reset password"
+msgstr "Επαναφορά κωδικού"
 
-#. src/views/components/auditorium/account-styles.js:110
-#: 
-msgid "Customize the styling of the consent banners for this account. Most CSS is allowed, except for things like external URLs, injected content or transparencies."
-msgstr "Προσαρμόστε το στυλ των πανό συναίνεσης για αυτόν τον λογαριασμό. Οι περισσότεροι CSS επιτρέπονται, εκτός από πράγματα όπως εξωτερικές διευθύνσεις URL, περιεχόμενο ή διαφάνειες."
+msgid "Reset Password"
+msgstr "Επαναφορά Κωδικού"
 
-#. src/views/components/auditorium/account-styles.js:113
-#: 
-msgid "<a class=\"%s\" href=\"%s\" target=\"_blank\" rel=\"noopener\">Read the Docs - Customizing the consent banner</a>"
-msgstr "<a class=\"%s\" href=\"%s\" target=\"_blank\" rel=\"noopener\"> Διαβάστε τα έγγραφα - Προσαρμογή του banner συναίνεσης </a>"
+msgid "You have opted in."
+msgstr "Έχετε επιλέξει."
 
-#. #-#-#-#-#  auditorium.po  #-#-#-#-#
-#. src/views/components/auditorium/awareness-widgets.js:114
-#. #-#-#-#-#  auditorium.po  #-#-#-#-#
-#. src/views/components/auditorium/account-styles.js:117
-#: 
-msgid "Preview"
-msgstr "Προεπισκόπηση"
+msgid "You have opted out."
+msgstr "Έχετε επιλέξει."
 
-#. src/views/components/auditorium/account-styles.js:155
-#: 
-msgid "Update preview"
-msgstr "Ενημέρωση προεπισκόπησης"
+msgid "It seems like your browser is blocking cookies."
+msgstr "Φαίνεται ότι το πρόγραμμα περιήγησής σας αποκλείει τα cookies."
 
-#. src/views/components/auditorium/account-styles.js:160
-#: 
-msgid "Apply your custom styles to the consent banners for this account. Changes will be visible after a cache update (which can take up to 5 minutes) and a browser refresh."
-msgstr "Εφαρμόστε τα προσαρμοσμένα στυλ σας στα banners συγκατάθεσης για αυτόν τον λογαριασμό. Οι αλλαγές θα είναι ορατές μετά από μια ενημερωμένη έκδοση κρυφής μνήμης (η οποία μπορεί να διαρκέσει έως και 5 λεπτά) και ανανέωση του προγράμματος περιήγησης."
+msgid "Offen requires cookies to function properly."
+msgstr "Το Offen απαιτεί τα cookies να λειτουργούν σωστά."
 
-#. src/views/components/auditorium/account-styles.js:166
-#: 
-msgid "Apply styles"
-msgstr "Εφαρμόστε στυλ"
+#. #-#-#-#-#  server.po  #-#-#-#-#
+#. ~ line 39 "public/static/index.go.html"
+msgid "Offen is a fair and open source analytics software. It is installed on the website that linked you here."
+msgstr "Offen είναι ένα λογισμικό έκθεσης και ανοιχτού κώδικα. Εγκατασταθεί στον ιστότοπο που σας συνδέει εδώ."
 
-#. consent-banner/index.js:47
-#: 
-msgid "To manage your usage data <a class=\"%s\"target=\"_blank\" rel=\"noopener\" href=\"%s\">open the Auditorium.</a>"
-msgstr "Για να διαχειριστείτε τα δεδομένα χρήσης σας <a class=\"%s\"target=\"_blank\" rel=\"noopener\" href=\"%s\"> ανοίξτε το αμφιθέατρο. </a>"
+msgid "For Offen to work, your browser has to accept cookies. Please change your browsers settings and reload this page. Subsequently, you will be asked for consent to collect your usage data."
+msgstr "Για να λειτουργήσει η εργασία, το πρόγραμμα περιήγησής σας πρέπει να δεχτεί cookies. Αλλάξτε τις ρυθμίσεις των προγραμμάτων περιήγησης και επαναφόρτωση αυτής της σελίδας. Στη συνέχεια, θα σας ζητηθεί συγκατάθεση για τη συλλογή των δεδομένων χρήσης σας."
 
-#. src/views/components/auditorium/url-tables.js:29
-#: 
-msgid "Remove this filter."
-msgstr "Αφαιρέστε αυτό το φίλτρο."
+msgid "Manage your usage data this website has collected."
+msgstr "Διαχειριστείτε τα δεδομένα χρήσης σας, αυτός ο ιστότοπος έχει συλλέξει."
 
-#. src/views/components/auditorium/url-tables.js:60
-#: 
-msgid "Filter current view by this item."
-msgstr "Φίλτρο ρεύματος από αυτό το στοιχείο."
+msgid "Open Auditorium"
+msgstr "Ανοιχτό αμφιθέατρο"
 
-#. #-#-#-#-#  auditorium.po  #-#-#-#-#
-#. src/views/auditorium-user.js:174
-#. #-#-#-#-#  auditorium.po  #-#-#-#-#
-#. src/views/auditorium-operator.js:258
-#: 
-msgid "Auditorium | %s"
-msgstr "Αμφιθέαια | %μικρό"
+msgid "We only access usage data with your consent."
+msgstr "Παίρνουμε μόνο δεδομένα χρήσης με τη συγκατάθεσή σας."
 
-#. src/views/404.js:20
-#: 
-msgid "Not Found | %s"
-msgstr "Δεν βρέθηκε | %μικρό"
+msgid "Offen is a fair and open source analytics software. Help the website that linked you here by allowing access to your usage data."
+msgstr "Offen δίκαιο λογισμικό ανοιχτού κώδικα. Βοηθήστε τον ιστότοπο που σας έφερε εδώ επιτρέποντας την πρόσβαση στα δεδομένα χρήσης σας."
 
-#. src/views/console.js:97
-#: 
-msgid "Console | %s"
-msgstr "Κονσόλα | %μικρό"
+msgid "Your data always remains yours. You can review and delete it at any time. Opt out again whenever you want."
+msgstr "Τα δεδομένα σας παραμένουν πάντα δικά σας. Μπορείτε να τα ελέγξετε και να τα διαγράψετε ανά πάσα στιγμή. Ανεραίστε την επιλογή αυτή όποτε το επιθυμείτε."
 
-#. src/views/components/auditorium/url-tables.js:134
-#: 
-msgid "None"
-msgstr "Κανένας"
+msgid "I allow"
+msgstr "επιτρέπω"
 
-#. src/views/components/auditorium/retire-account.js:100
-#: 
-msgid "Retire this account"
-msgstr "Αποσυρθείτε αυτόν τον λογαριασμό"
+msgid "I don't allow"
+msgstr "Δεν επιτρέπω"
 
-#. src/views/components/auditorium/awareness-widgets.js:17
-#: 
-msgid "Bar"
-msgstr "Μπαρ"
+msgid "Are you the operator of this Offen installation? Log in to your account."
+msgstr "Είστε ο χειριστής αυτής της εγκατάστασης Offen; Συνδεθείτε στο λογαριασμό σας."
 
-#. src/views/components/auditorium/awareness-widgets.js:18
-#: 
-msgid "/user-access-widget-bar-en.svg"
-msgstr "/user-access-widget-bar-en.svg"
+msgid "How can I review and delete my usage data or opt out?"
+msgstr "Πώς μπορώ να αναθεωρήσω και να διαγράψω τα δεδομένα χρήσης ή να εξαιρεθώ;"
 
-#. src/views/components/auditorium/awareness-widgets.js:21
-#: 
-msgid "Box"
-msgstr "Κουτί"
+msgid "<a href=\"%s\" class=\"%s\">Go to the Auditorium.</a>"
+msgstr "<a href=\"%s\" class=\"%s\"> πηγαίνετε στο Auditorium. </a>"
 
-#. src/views/components/auditorium/awareness-widgets.js:22
-#: 
-msgid "/user-access-widget-box-en.svg"
-msgstr "/user-access-widget-box-en.svg"
+msgid "Your usage data is encrypted end-to-end. It will be automatically deleted after 6 months. <a href=\"/auditorium/\" class=\"%s\">You can delete your usage data yourself at any time in the Auditorium.</a>"
+msgstr "Τα δεδομένα χρήσης σας είναι κρυπτογραφημένα από άκρο σε άκρο. Θα διαγραφούν αυτόματα μετά από 6 μήνες. <a href=\"/auditorium/\" class=\"%s\"> Μπορείτε να διαγράψετε μόνοι σας τα δεδομένα χρήσης σας οποιαδήποτε στιγμή στο Auditorium. </a>"
 
-#. src/views/components/auditorium/awareness-widgets.js:25
-#: 
-msgid "Circle"
-msgstr "Κύκλος"
+msgid "How can I review and delete my usage data?"
+msgstr "Πώς μπορώ να επανεξετάσω και να διαγράψω τα δεδομένα χρήσης μου;"
 
-#. src/views/components/auditorium/awareness-widgets.js:26
-#: 
-msgid "/user-access-widget-circle-en.svg"
-msgstr "/user-access-widget-circle-en.svg"
+msgid "For data to be collected you need to opt in first. <a href=\"%s\" class=\"%s\">You can do this in the consent banner.</a>"
+msgstr "Για να συλλεχθούν δεδομένα πρέπει να συναινέσετε πρώτα. <a href=\"%s\" class=\"%s\"> μπορείτε να το κάνετε αυτό στο banner συγκατάθεσης. </a>"
 
-#. src/views/components/auditorium/awareness-widgets.js:53
-#: 
-msgid "Let users access their data"
-msgstr "Αφήστε τους χρήστες να έχουν πρόσβαση στα δεδομένα τους"
+msgid "Your usage data is encrypted end-to-end. It will be automatically deleted after 6 months. You can delete your usage data yourself at any time."
+msgstr "Τα δεδομένα χρήσης σας είναι κρυπτογραφημένα από άκρο σε άκρο. Θα διαγραφούν αυτόματα μετά από 6 μήνες. Μπορείτε να διαγράψετε τα δεδομένα χρήσης σας μόνοι σας ανά πάσα στιγμή."
 
-#. src/views/components/auditorium/awareness-widgets.js:56
-#: 
-msgid "Toggle display of awareness widgets"
-msgstr "Εναλλαγή Εμφάνιση γραφικών ευαισθητοποίησης"
+msgid "What data is collected?"
+msgstr "Ποια δεδομένα συλλέγονται;"
 
-#. src/views/components/auditorium/awareness-widgets.js:67
-#: 
-msgid "Let users access their data on every page of your website. Link directly to the User Auditorium or use the HTML widget."
-msgstr "Αφήστε τους χρήστες να έχουν πρόσβαση στα δεδομένα τους σε κάθε σελίδα του ιστότοπού σας. Σύνδεση απευθείας στο Auditorium User ή χρησιμοποιήστε το Widget HTML."
+msgid "Only page views, sessions, referrer and visited URLs are collected. From this, other metrics such as the bounce rate are calculated."
+msgstr "Μόνο οι προβολές σελίδων, οι συνεδρίες, ο παραπομπή και οι διευθύνσεις URL που επισκέπτονται. Από αυτό, υπολογίζονται άλλες μετρήσεις όπως το ποσοστό αναπήδησης."
 
-#. src/views/components/auditorium/awareness-widgets.js:70
-#: 
-msgid "User Auditorium link"
-msgstr "Σύνδεσμος Auditorium User"
+msgid "What data isn't collected?"
+msgstr "Ποια δεδομένα δεν συλλέγονται;"
 
-#. src/views/components/auditorium/awareness-widgets.js:80
-#: 
-msgid "Successfully copied link to clipboard."
-msgstr "Αντιγραφεί με επιτυχία το σύνδεσμο στο πρόχειρο."
-
-#. src/views/components/auditorium/awareness-widgets.js:87
-#: 
-msgid "Copy link"
-msgstr "Αντιγραφή συνδέσμου"
-
-#. src/views/components/auditorium/awareness-widgets.js:93
-#: 
-msgid "HTML Widget"
-msgstr "Html widget"
-
-#. src/views/components/auditorium/awareness-widgets.js:130
-#: 
-msgid "Successfully copied widget code to clipboard."
-msgstr "Αντιγραφεί με επιτυχία τον κωδικό widget στο πρόχειρο."
-
-#. src/views/components/auditorium/awareness-widgets.js:135
-#: 
-msgid "Copy widget"
-msgstr "Αντιγράψτε το γραφικό στοιχείο"
-
-#. #-#-#-#-#  auditorium.po  #-#-#-#-#
-#. src/views/components/index/main-card.js:67
-#. #-#-#-#-#  auditorium.po  #-#-#-#-#
-#. src/views/components/auditorium/frequently-asked-questions.js:29
-#: 
 msgid "Device information and engagement are not collected. There are also no fingerprinting technologies in use."
 msgstr "Οι πληροφορίες και η εμπλοκή της συσκευής δεν συλλέγονται. Δεν υπάρχουν επίσης τεχνολογίες δακτυλικών αποτυπωμάτων που χρησιμοποιούνται."
 
-#. src/views/components/auditorium/user-onboarding.js:84
-#: 
+msgid "How is my data handled?"
+msgstr "Πώς γίνεται ο χειρισμός των δεδομένων μου;"
+
+msgid "Why do I need to opt in or opt out?"
+msgstr "Γιατί πρέπει να συνενέσω;"
+
+msgid "Our banner serves two purposes: We ask you to access your usage data and would like to obtain your consent for its use."
+msgstr "Το banner μας εξυπηρετεί δύο σκοπούς: Σας ζητάμε να έχουμε πρόσβαση στα δεδομένα χρήσης σας και θα θέλαμε να λάβουμε τη συγκατάθεσή σας για την επεξεργασία τους."
+
+msgid "Do you use cookies?"
+msgstr "Χρησιμοποιείτε cookies;"
+
+msgid "Yes, in particular cookies are used to store your decision about granting access to your usage data. If you opt in, we also use cookies to store a user and a session ID for you."
+msgstr "Ναι, συγκεκριμένα τα cookies χρησιμοποιούνται για την αποθήκευση της επιλογής σας σχετικά με τη χορήγηση πρόσβασης στα δεδομένα χρήσης σας. Εάν συναινέσετε, χρησιμοποιούμε επίσης cookies για να αποθηκεύσουμε έναν χρήστη και ένα αναγνωριστικό συνεδρίας για εσάς."
+
+msgid "How does it all work?"
+msgstr "Πώς λειτουργεί όλο αυτό;"
+
+msgid "After opening a website where an Offen installation is active, you can explicitly opt in to the data collection and thereby help to improve the services you use. Only then you will be assigned a user and a session ID using a cookie. Offen handles these IDs in an unrecognizable form. <a href=\"https://en.wikipedia.org/wiki/HTTP_cookie\" class=\"%s\" target=\"_blank\" rel=\"noreferer noopener\">Learn more about cookies here.</a>"
+msgstr "Μετά το άνοιγμα ενός ιστότοπου όπου είναι ενεργή μια εγκατάσταση Offen, μπορείτε να επιλέξετε ρητά στη συλλογή δεδομένων και έτσι να βοηθήσετε στη βελτίωση των υπηρεσιών που χρησιμοποιείτε. Μόνο τότε θα σας εκχωρηθεί ένας χρήστης και ένα αναγνωριστικό συνεδρίας χρησιμοποιώντας ένα cookie. Το Offen χειρίζεται αυτά τα αναγνωριστικά σε μια μη αναγνωρίσιμη μορφή. <a href=\"https://en.wikipedia.org/wiki/http_cookie\" class=\"%s\" target=\"_blank\" rel=\"Noreferer noopener\"> Μάθετε περισσότερα σχετικά με τα cookies εδώ. </a>"
+
+msgid "No data available for this view."
+msgstr "Δεν υπάρχουν διαθέσιμα δεδομένα."
+
+msgid "Show top %d only"
+msgstr "Εμφάνιση μόνο του άνω %d"
+
+msgid "Show all entries"
+msgstr "Εμφάνιση όλων των καταχωρήσεων"
+
+msgid "Select"
+msgstr "Επιλέγω"
+
+msgid "Basic Terms"
+msgstr "Βασικοί όροι"
+
+msgid "Auditorium"
+msgstr "Auditorium"
+
+msgid "You are viewing the Auditorium right now. Only available after opt-in, it is the interface where you can review and delete your usage data or opt out entirely."
+msgstr "Βλέπετε το Auditorium αυτή τη στιγμή. Διατίθεται μόνο μετά το opt-in, είναι η διασύνδεση όπου μπορείτε να ελέγξετε και να διαγράψετε τα δεδομένα χρήσης σας ή να επιλέξετε εξ ολοκλήρου."
+
+msgid "Offen installation"
+msgstr "Εγκατάσταση Offen"
+
+msgid "One Offen installation can include several websites. All metrics of all websites in this installation are displayed in the <a href=\"#terms-auditorium\" class=\"%s\">Auditorium.</a> Metrics generated on websites of other installations can only be viewed in the associated <a href=\"#terms-auditorium\" class=\"%s\">Auditorium.</a>"
+msgstr "Μια εγκατάσταση εντοπισμού μπορεί να περιλαμβάνει αρκετούς ιστότοπους. Όλες οι μετρήσεις όλων των ιστότοπων σε αυτή την εγκατάσταση εμφανίζονται στο <a href=\"#terms-atormitorium\" class=\"%s\"> auditorium. </a> Οι μετρήσεις που παράγονται σε ιστότοπους άλλων εγκαταστάσεων μπορούν να προβληθούν μόνο στο σχετικό <a href=\"#terms-auditorium\" class=\"%s\">Auditorium.</a>"
+
+msgid "Cookies"
+msgstr "Cookies"
+
+msgid "When you visit a website where a <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation</a> is active, small amounts of data are stored on your computer. These data elements are known as cookies. <a href=\"https://en.wikipedia.org/wiki/HTTP_cookie\" class=\"%s\" target=\"_blank\" rel=\"noreferer noopener\">Learn more.</a>"
+msgstr "Όταν επισκέπτεστε έναν ιστότοπο όπου μια <a href=\"#terms-offen-installation\" class=\"%s\"> εγκατάσταση offen </a> είναι ενεργή, μικρές ποσότητες δεδομένων αποθηκεύονται στον υπολογιστή σας. Αυτά τα στοιχεία δεδομένων είναι γνωστά ως cookies. <a href=\"htps://en.wikipedia.org/wiki/http_cookie\" class=\"%s\" target=\"_blank\" rel=\"Noreferer noopener\"> Μάθετε περισσότερα. </a>"
+
+msgid "Operator"
+msgstr "Χειριστής"
+
+msgid "Operators are the owners of <a href=\"#terms-offen-installation\" class=\"%s\">Offen installations.</a> Only after you opted in, your usage data of a website is collected. Operators than can view it for maximum 6 months."
+msgstr "Οι Χειριστές είναι οι ιδιοκτήτες της <a href=\"#terms-offen-installation\" class=\"%s\">εγκατάστασης Offen </a> μόνο μετά την συναίνεσή σας, συλλέγονται τα δεδομένα χρήσης ενός ιστότοπου. Οι χειριστές μπορούν να έχουν πρόσβασή σε αυτά για 6 μήνες."
+
+msgid "Unique user"
+msgstr "Μοναδικός χρήστης"
+
+msgid "You are defined as a unique user after your opt-in to data collection. To measure this, a <a href=\"#terms-cookies\" class=\"%s\">cookie</a> is used to assign a user <a href=\"#terms-id\" class=\"%s\">ID</a> to you."
+msgstr "Ορίζεται ως ένας μοναδικός χρήστης μετά τη συλλογή δεδομένων στη συλλογή δεδομένων. Για να μετρήσετε αυτό, ένα <a href=\"#terms-cookies\" class=\"%s\"> cookie </a> χρησιμοποιείται για την εκχώρηση ενός χρήστη <a href=\"#terms-id\" class=\"%s\"> Id </a> σε σας."
+
+msgid "Unique session"
+msgstr "Μοναδική συνεδρία"
+
+msgid "A unique session is defined as a <a href=\"#terms-unique-user\" class=\"%s\">unique user</a> being actively engaged with a page during a browser session. To measure this, a <a href=\"#terms-cookies\" class=\"%s\">cookie</a> is used to assign a session <a href=\"#terms-id\" class=\"%s\">ID</a> to you."
+msgstr "Μια μοναδική συνεδρία ορίζεται ως ένας<a href=\"#terms-unique-user \"class=\"%s\"> μοναδικός χρήστης </a> που ασχολείται με μια σελίδα κατά τη διάρκεια μιας συνεδρίας. Για να γίνει αυτή η μέτρηση, ένα <a href=\"#terms-cookies \"class=\"%s\"> cookie </a> χρησιμοποιείται για την εκχώρηση μιας περιόδου σύνδεσης <a href=\"#terms-id\" class=\"%s\"> Id </a> σε σας."
+
+msgid "ID"
+msgstr "ταυτότητα"
+
+msgid "Originally: UUID. Full form: Universally unique identifier. Offen uses UUID of version 4. These IDs are generated randomly, unique and without using any personal data. On the individual Offen server, they are handled in an unrecognizable form. <a href=\"https://en.wikipedia.org/wiki/Universally_unique_identifier\" class=\"%s\" target=\"_blank\" rel=\"noreferer noopener\">Learn more.</a>"
+msgstr "Αρχικά: UUID. Πλήρης μορφή: Παγκοσμίως μοναδικό αναγνωριστικό. Offen Χρήσεις UUID της έκδοσης 4. Αυτά τα αναγνωριστικά δημιουργούνται τυχαία, μοναδικά και χωρίς να χρησιμοποιούν προσωπικά δεδομένα. Στο μεμονωμένο διακομιστή Offen, χειρίζονται σε μη αναγνωρίσιμη μορφή. <a href=\"https://en.wikipedia.org/wiki/universally_unique_Inderifier\" class=\"%s\" target=\"_blank\" rel=\"Noferer noopener\"> Μάθετε περισσότερα. </a>"
+
+msgid "No"
+msgstr "Οχι"
+
+msgid "Yes"
+msgstr "Ναί"
+
+msgid "s"
+msgstr "μικρό"
+
+msgid "ms"
+msgstr "Κυρία"
+
+msgid "M"
+msgstr "Μ"
+
+msgid "k"
+msgstr "κ"
+
+msgid "Yesterday"
+msgstr "Εχθές"
+
+msgid "24 hours"
+msgstr "24 ώρες"
+
+msgid "7 days"
+msgstr "7 ημέρες"
+
+msgid "30 days"
+msgstr "30 μέρες"
+
+msgid "6 weeks"
+msgstr "6 εβδομάδες"
+
+msgid "12 weeks"
+msgstr "12 εβδομάδες"
+
+msgid "6 months"
+msgstr "6 μήνες"
+
+msgid "Custom"
+msgstr "Εθιμο"
+
+msgid "Last"
+msgstr "τελευταίος"
+
+msgid "Show data from"
+msgstr "Εμφάνιση δεδομένων από"
+
+msgid "Here you can set the time frame for all displayed metrics. As all data is generally deleted after 6 months, the selection is limited to this duration."
+msgstr "Εδώ μπορείτε να ρυθμίσετε το χρονικό πλαίσιο για όλες τις εμφανιζόμενες μετρήσεις. Καθώς όλα τα δεδομένα διαγράφονται γενικά μετά από 6 μήνες, η επιλογή περιορίζεται σε αυτή τη διάρκεια."
+
+msgid "Weekly retention"
+msgstr "Εβδομαδιαία διατήρηση"
+
+msgid "This panel displays your recurring visits of pages of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation</a> during the last 4 weeks. For each of the previous weeks, the percentage is calculated from the value of the current week."
+msgstr "Αυτός ο πίνακας εμφανίζει τις επαναλαμβανόμενες επισκέψεις σελίδων των σελίδων του <a Href=\"#terms-offen-installation\" class=\"%s\"> εγκατάσταση offen </a> κατά τις τελευταίες 4 εβδομάδες. Για κάθε μία από τις προηγούμενες εβδομάδες, το ποσοστό υπολογίζεται από την τιμή της τρέχουσας εβδομάδας."
+
+msgid "Bar"
+msgstr "Μπαρ"
+
+msgid "/user-access-widget-bar-en.svg"
+msgstr "/user-access-widget-bar-en.svg"
+
+#, fuzzy
+msgid "Access your usage data"
+msgstr "Βλέπετε τα δεδομένα χρήσης σας."
+
+msgid "Box"
+msgstr "Κουτί"
+
+msgid "/user-access-widget-box-en.svg"
+msgstr "/user-access-widget-box-en.svg"
+
+# #-#-#-#-#  auditorium.po  #-#-#-#-#
+# src/views/components/auditorium/awareness-widgets.js:24
+# #-#-#-#-#  auditorium.po  #-#-#-#-#
+# src/views/components/auditorium/awareness-widgets.js:29
+msgid "Access your data"
+msgstr ""
+
+msgid "Circle"
+msgstr "Κύκλος"
+
+msgid "/user-access-widget-circle-en.svg"
+msgstr "/user-access-widget-circle-en.svg"
+
+msgid "Let users access their data"
+msgstr "Αφήστε τους χρήστες να έχουν πρόσβαση στα δεδομένα τους"
+
+msgid "Toggle display of awareness widgets"
+msgstr "Εναλλαγή Εμφάνιση γραφικών ευαισθητοποίησης"
+
+msgid "Let users access their data on every page of your website. Link directly to the User Auditorium or use the HTML widget."
+msgstr "Αφήστε τους χρήστες να έχουν πρόσβαση στα δεδομένα τους σε κάθε σελίδα του ιστότοπού σας. Σύνδεση απευθείας στο Auditorium User ή χρησιμοποιήστε το Widget HTML."
+
+msgid "User Auditorium link"
+msgstr "Σύνδεσμος Auditorium User"
+
+msgid "Successfully copied link to clipboard."
+msgstr "Αντιγραφεί με επιτυχία το σύνδεσμο στο πρόχειρο."
+
+msgid "Copy link"
+msgstr "Αντιγραφή συνδέσμου"
+
+msgid "HTML Widget"
+msgstr "Html widget"
+
+msgid "Preview"
+msgstr "Προεπισκόπηση"
+
+msgid "Successfully copied widget code to clipboard."
+msgstr "Αντιγραφεί με επιτυχία τον κωδικό widget στο πρόχειρο."
+
+msgid "Copy widget"
+msgstr "Αντιγράψτε το γραφικό στοιχείο"
+
+msgid "Skip"
+msgstr "Παραλείπω"
+
+msgid "Welcome to the Auditorium, this is how it works."
+msgstr "Καλώς ήρθατε στο Auditorium, έτσι λειτουργεί."
+
+msgid "What <span class=\"%s\">%s</span> knows about you."
+msgstr "Τι class class = \"% s\">% s </ span> ξέρει για εσάς."
+
+msgid "You have visited <span class=\"%s\">%s %d</span> times."
+msgstr "Έχετε επισκεφθεί το <span class = \"% s\">% s% d </ span> φορές."
+
+msgid "It is probably your first time visiting <span class=\"%s\">%s</span> ."
+msgstr "Είναι ίσως η πρώτη φορά που επισκέπτεστε το <span class = \"% s\">% s </ span>."
+
+msgid "You came via <span class=\"%s\">%s</span> ."
+msgstr "Ήρθατε μέσω <Span Class = \"% S\">% S </ Span>."
+
 msgid "You are probably located in <span class=\"%s\">%s."
 msgstr "Πιθανότατα βρίσκεστε σε <span class = \"% s\">% s."
 
-#. src/views/components/auditorium/url-tables.js:128
-#: 
+msgid "Most likely you are on a <span class=\"%s\">%s</span>."
+msgstr "Πιθανότατα είστε σε μια <span class = \"% s\">% s </ span>."
+
+msgid "mobile device"
+msgstr "κινητή συσκευή"
+
+msgid "desktop device"
+msgstr "επιφάνεια εργασίας"
+
+msgid "Next"
+msgstr "Επόμενο"
+
+msgid "Your data always stays yours."
+msgstr "Τα δεδομένα σας πάντα παραμένουν δικά σας."
+
+msgid "Review your data in the Auditorium. You can delete your data or opt out completely at any time in the Privacy tab."
+msgstr "Ελέγξτε τα δεδομένα σας στο αίθριο. Μπορείτε να διαγράψετε τα δεδομένα σας ή να επιλέξετε εντελώς ανά πάσα στιγμή στην καρτέλα Προστασίας απορρήτου."
+
+msgid "Click this symbol to display detailed explanations of the respective terms."
+msgstr "Κάντε κλικ σε αυτό το σύμβολο για να εμφανίσετε λεπτομερείς επεξηγήσεις των αντίστοιχων όρων."
+
+msgid "Bookmark this page to come back later."
+msgstr "Σημειώστε αυτή τη σελίδα για να επιστρέψετε αργότερα."
+
+msgid "Get an overall picture of your data collected over time. Come back here anytime to see what <span class=\"%s\">%s</span> knows about you."
+msgstr "Πάρτε μια συνολική εικόνα των δεδομένων σας που συλλέγονται με την πάροδο του χρόνου. Επιστρέψτε εδώ οποιαδήποτε στιγμή για να δείτε τι <span class = \"% s\">% s </ span> ξέρει για εσάς."
+
+msgid "Now let's get started!"
+msgstr "Τώρα ας ξεκινήσουμε!"
+
+msgid "Page views and %s"
+msgstr "Προβολές σελίδας και% S"
+
+msgid "users"
+msgstr "χρήστες"
+
+msgid "websites"
+msgstr "ιστοσελίδα"
+
+msgid "This panel displays the number of pages (bright green) and websites (dark green) you have visited where the <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation</a> is active. To measure this, a cookie is used to assign you a user and a session <a href=\"#terms-id\" class=\"%s\">ID.</a>"
+msgstr "Αυτός ο πίνακας εμφανίζει τον αριθμό των σελίδων (Bright Green) και ιστότοπους (σκούρο πράσινο) που έχετε επισκεφθεί όπου το <a href=\"#terms-offen-installation \"class=\"%s\"> Εγκατάσταση Offen </a> είναι ενεργή. Για να μετρήσετε αυτό, ένα cookie χρησιμοποιείται για να σας εκχωρήσει έναν χρήστη και μια συνεδρία <a href=\"#terms-id\" class=\"%s\"> id. </a>"
+
+msgid "Empty state"
+msgstr "Άδειο κράτος"
+
+msgid "No data available <br>for the selected time range."
+msgstr "Δεν υπάρχουν διαθέσιμα στοιχεία για την επιλεγμένη χρονική περιοχή."
+
+msgid "Key metrics"
+msgstr "Βασικές μετρήσεις"
+
+msgid "This panel displays the most significant metrics at a glance."
+msgstr "Αυτός ο πίνακας εμφανίζει τις πιο σημαντικές μετρήσεις με μια ματιά."
+
+msgid "Unique %s"
+msgstr "Μοναδικό% s"
+
+msgid "The number of websites you have visited where the <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation</a> is active. This value will be 1 in many cases."
+msgstr "Ο αριθμός των ιστοσελίδων που έχετε επισκεφθεί όπου η <a href=\"#terms-offen-installation \"class=\"%s\"> εγκατάσταση offen </a> είναι ενεργή. Αυτή η τιμή θα είναι 1 σε πολλές περιπτώσεις."
+
+msgid "Unique sessions"
+msgstr "Μοναδικές συνεδρίες"
+
+msgid "The number of <a href=\"#terms-unique-session\" class=\"%s\">unique sessions</a> you have created on pages where the <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation</a> is active."
+msgstr "Ο αριθμός των <a href=\"#terms-unique-session\" class=\"%s\"> μοναδικές συνεδρίες </a> Έχετε δημιουργήσει σε σελίδες όπου η κλάση <a href = \"# the facten-offeren-offeren\" \" % S \"> Εγκατάσταση Offen </a> είναι ενεργή."
+
+msgid "Avg. page depth"
+msgstr "Avg. Βάθος σελίδας"
+
+msgid "Full form: Average page depth. The average number of pages you have visited during all <a href=\"#terms-unique-session\" class=\"%s\">unique sessions</a> on all websites where the <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation</a> is active."
+msgstr "Πλήρης μορφή: Μέση βάθος σελίδας. Ο μέσος αριθμός σελίδων που έχετε επισκεφθεί κατά τη διάρκεια όλων των <a href=\"#terms-unique-session\" class=\"%s\"> μοναδικές συνεδρίες </a> σε όλες τις ιστοσελίδες όπου οι όροι <a href = \" Εγκατάσταση \"Κλάση =\"% S \"> Εγκατάσταση Offen </a> είναι ενεργή."
+
+msgid "Bounce rate"
+msgstr "Ποσοστό αναπήδησης"
+
+msgid "The percentage of <a href=\"#terms-unique-session\" class=\"%s\">unique sessions</a> where you only visited one page of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation.</a> Therefore a website with only one page will always have a bounce rate of 100%."
+msgstr "Το ποσοστό της <a href=\"#terms-unique-session\" class=\"%s\"> μοναδικές συνεδρίες </a> όπου επισκέφτηκαν μόνο μία σελίδα μιας σελίδας <A Href = \"# Όροι-Offen-Offection-Εγκατάσταση\" \"% S\"> Εγκατάσταση Offen. </a> Ένας ιστότοπος με μόνο μία σελίδα θα έχει πάντα ένα ποσοστό αναπήδησης 100%."
+
+msgid "Returning users"
+msgstr "Επιστρέφοντας τους χρήστες"
+
+msgid "Mobile users"
+msgstr "Κινητοί χρήστες"
+
+msgid "Mobile user"
+msgstr "Χρήστης κινητής τηλεφωνίας"
+
+msgid "Shows whether you are considered to be using a mobile device. A check is made to see if your device thinks it can change its orientation. If so, it is considered mobile."
+msgstr "Δείχνει αν θεωρείται ότι χρησιμοποιείτε μια κινητή συσκευή. Ένας έλεγχος γίνεται για να δείτε αν η συσκευή σας θεωρεί ότι μπορεί να αλλάξει τον προσανατολισμό του. Εάν ναι, θεωρείται κινητό."
+
+msgid "Avg. page load time"
+msgstr "Avg. Χρόνος φόρτωσης σελίδας"
+
+msgid "Full form: Average page load time. The average time it took for all pages of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation</a> you visited to become interactive."
+msgstr "Πλήρης μορφή: Μέση ώρα φόρτωσης σελίδας. Ο μέσος χρόνος που χρειάστηκε για όλες τις σελίδες της <a href=\"#terms-offen-installation\" class=\"%s\"> offen εγκατάσταση </a> επισκεφθείτε να γίνετε διαδραστικοί."
+
+msgid "Choose account"
+msgstr "Επιλέξτε λογαριασμό"
+
+msgid "Successfully copied embed code to clipboard."
+msgstr "Αντιγραφεί με επιτυχία τον κωδικό ενσωμάτωσης στο πρόχειρο."
+
+msgid "Embed code"
+msgstr "Κωδικός ενσωμάτωσης"
+
+msgid "Toggle display of embed code"
+msgstr "Εναλλαγή εμφάνισης κώδικα ενσωμάτωσης"
+
+msgid "To use Offen with the account <em class=\"%s\">%s</em> on your website, embed the following script on each page you want to appear in your statistics."
+msgstr "Για να χρησιμοποιήσετε Offen με το λογαριασμό <Em Class = \"% S\">% S </ em> στον ιστότοπό σας, ενσωματώστε το παρακάτω σενάριο σε κάθε σελίδα που θέλετε να εμφανίζονται στα στατιστικά στοιχεία σας."
+
+msgid "In case you are serving multiple domains from your Offen instance, please double check that the domain in this snippet matches the target account."
+msgstr "Σε περίπτωση που υπηρετείτε πολλαπλούς τομείς από την εμφάνισή σας, βεβαιωθείτε ότι ο τομέας σε αυτό το απόσπασμα ταιριάζει με τον λογαριασμό-στόχο."
+
+msgid "Copy code"
+msgstr "Αντιγραφή κώδικα"
+
+msgid "If you retire the account <em class=\"%s\">%s,</em> it will not appear in your statistics anymore. Users will be able to access and manage their data for the account for another 6 months until data expires."
+msgstr "Εάν αποσυρθείτε το λογαριασμό <em class = \"% s\">% s, </ em> δεν θα εμφανιστεί πλέον στα στατιστικά στοιχεία σας. Οι χρήστες θα μπορούν να έχουν πρόσβαση και να διαχειρίζονται τα δεδομένα τους για το λογαριασμό για άλλους 6 μήνες έως ότου λήξουν τα δεδομένα."
+
+msgid "<em class=\"%s\">Danger zone! This action cannot be undone.</em>"
+msgstr "<em Class = \"% S\"> Ζώνη κινδύνου! Αυτή η ενέργεια δεν μπορεί να ανατραπεί. </ Em>"
+
+msgid "Retire account"
+msgstr "Συνταξιοδότηστος"
+
+msgid "To permanently retire the account, type its name <em class=\"%s\">\"%s\"</em> into the form below:"
+msgstr "Για να αποσυρθείτε μόνιμα το λογαριασμό, πληκτρολογήστε το όνομα του <Em Class = \"% S\"> \"% S\" </ em> στην παρακάτω φόρμα:"
+
+msgid "The account <em class=\"%s\">\"%s\"</em> has been retired successfully. Log in again to continue."
+msgstr "Ο λογαριασμός <em class = \"% s\"> \"% s\" </ em> έχει αποσυρθεί με επιτυχία. Συνδεθείτε ξανά για να συνεχίσετε."
+
+msgid "There was an error retiring the account, please try again."
+msgstr "Υπήρξε σφάλμα συνταξιοδότησης του λογαριασμού, δοκιμάστε ξανά."
+
+msgid "Retire this account"
+msgstr "Αποσυρθείτε αυτόν τον λογαριασμό"
+
+msgid "Toggle display of retire account functionality"
+msgstr "Εναλλαγή της λειτουργίας του λογαριασμού αποστολής"
+
+msgid "Remove this filter."
+msgstr "Αφαιρέστε αυτό το φίλτρο."
+
+msgid "Filter current view by this item."
+msgstr "Φίλτρο ρεύματος από αυτό το στοιχείο."
+
+msgid "Top pages"
+msgstr "Κορυφαίοι σελίδες"
+
+msgid "This panel displays several page lists that count the total number of your page views of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation</a> per URL in different categories."
+msgstr "Αυτός ο πίνακας εμφανίζει πολλές λίστες σελίδων που μετρούν τον συνολικό αριθμό των προβολών σελίδων σας στο <a href=\"#terms-offen-installation\" class=\"%s\"> offen εγκατάσταση </a> ανά διεύθυνση URL σε διαφορετικές κατηγορίες."
+
+msgid "URL"
+msgstr "Url"
+
+msgid "Pageviews"
+msgstr "Περιηγήσεις σελίδας"
+
 msgid "Location"
 msgstr "Τοποθεσία"
 
-#. src/views/components/auditorium/url-tables.js:129
-#: 
 msgid "Country"
 msgstr "Χώρα"
 
-#. src/views/components/auditorium/url-tables.js:160
-#: 
+msgid "Sessions"
+msgstr "Συνεδρίες"
+
+msgid "Page depth"
+msgstr "Βάθος σελίδας"
+
+msgid "None"
+msgstr "Κανένας"
+
 msgid "The geographic location associated with each session."
 msgstr "Τη γεωγραφική θέση που σχετίζεται με κάθε συνεδρία."
 
-#. src/views/components/login/user-auditorium.js:15
-#: 
-msgid "Not the operator of this Offen installation? Manage your data in the <a href=\"/auditorium/\" class=\"%s\" >User Auditorium.</a>"
-msgstr "Δεν είναι ο χειριστής αυτής της εγκατάστασης Offen; Διαχειριστείτε τα δεδομένα σας στο <a href=\"/Auditorium/\" class=\"%s\"> auditorium χρήστη. </a>"
+msgid "Referrers"
+msgstr "Αναφορές"
 
+msgid "Host"
+msgstr "Πλήθος"
+
+msgid "A list of referrers that directed you to pages of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation.</a> Popular referrers like, for example, Google or Twitter display their proper name, others their domain."
+msgstr "Μια λίστα των παραπομπών που σας κατευθύνονταν στις σελίδες του <a Href=\"#terms-offen-installation\" class=\"%s\"> offen εγκατάσταση. </a> δημοφιλείς παραπομπές όπως, για παράδειγμα, το Google ή το Twitter εμφανίζουν το σωστό τους Όνομα, άλλοι τομέα τους."
+
+msgid "Campaigns"
+msgstr "Εκστρατείες"
+
+msgid "Campaign"
+msgstr "καμπάνια"
+
+msgid "A list of special referrers that directed you to pages of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation.</a> <a href=\"#terms-operator\" class=\"%s\">Operators</a> can mark links to their pages with a campaign tag. This is used, for example, to measure the success of online advertising campaigns."
+msgstr "Μια λίστα ειδικών παραπομπών που σας κατευθύνονταν στις σελίδες του <a Href=\"#terms-offen-installation\" class=\"%s\"> εγκατάσταση offen. </a> <a href = \"# όρος-χειριστής\" Οι χειριστές \"% S\"> Οι χειριστές </a> μπορούν να επισημάνουν συνδέσμους στις σελίδες τους με μια ετικέτα καμπάνιας. Αυτό χρησιμοποιείται, για παράδειγμα, για τη μέτρηση της επιτυχίας των online διαφημιστικών καμπανιών."
+
+msgid "Sources"
+msgstr "Πηγές"
+
+msgid "Source"
+msgstr "Πηγή"
+
+msgid "A list of special referrers that directed you to pages of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation.</a> <a href=\"#terms-operator\" class=\"%s\">Operators</a> can mark links to their pages with a source tag. This is used, for example, to measure the success of online advertising campaigns."
+msgstr "Μια λίστα ειδικών παραπομπών που σας κατευθύνονταν στις σελίδες του <a Href=\"#terms-offen-installation\" class=\"%s\"> εγκατάσταση offen. </a> <a href = \"# όρος-χειριστής\" Οι χειριστές \"% S\"> </a> μπορούν να επισημάνουν συνδέσμους στις σελίδες τους με μια ετικέτα πηγής. Αυτό χρησιμοποιείται, για παράδειγμα, για τη μέτρηση της επιτυχίας των online διαφημιστικών καμπανιών."
+
+msgid "Landing pages"
+msgstr "Ιστοσελίδες προορισμού"
+
+msgid "Landings"
+msgstr "Προσγειώσεις"
+
+msgid "A list of pages of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation</a> that you have opened first in all <a href=\"#terms-unique-session\" class=\"%s\">unique sessions.</a>"
+msgstr "Μια λίστα των σελίδων του <a Href=\"#terms-offen-installation\" class=\"%s\"> offen εγκατάσταση </a> ότι έχετε ανοίξει πρώτα σε όλες τις λέξεις <A Href = \"# Όροι-μοναδική συνεδρία\" class = \"% s\"> μοναδικές συνεδρίες. </a>"
+
+msgid "Exit pages"
+msgstr "Σελίδες εξόδου"
+
+msgid "Exits"
+msgstr "Εξέρχομαι"
+
+msgid "A list of pages of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation</a> that you have opened last in all <a href=\"#terms-unique-session\" class=\"%s\">unique sessions.</a> For this to be counted you must have visited at least two pages."
+msgstr "Μια λίστα με σελίδες του <a Href=\"#terms-offen-installation\" class=\"%s\"> εγκατάσταση offen </a> ότι έχετε ανοίξει τελευταία σε όλες τις λέξεις <a href = \"# Όροι-μοναδική συνεδρία\" Class = \"% S\"> μοναδικές συνεδρίες. </a> Για να υπολογιστεί αυτό πρέπει να έχετε επισκεφθεί τουλάχιστον δύο σελίδες."
+
+msgid "FAQ"
+msgstr "Συχνές ερωτήσεις"
+
+msgid "Only page views, sessions, referrer and the visited URL are collected. From this, other metrics such as for example the bounce rate are calculated."
+msgstr "Μόνο οι προβολές σελίδων, οι συνεδρίες, ο παραπομπή και η διεύθυνση URL που επισκέπτεται. Από αυτό, υπολογίζονται άλλες μετρήσεις όπως για παράδειγμα το ποσοστό αναπήδησης."
+
+msgid "What kind of data isn't collected?"
+msgstr "Τι είδους δεδομένα δεν συλλέγονται;"
+
+msgid "Your usage data is encrypted end-to-end. It will be automatically deleted after 6 months. You can delete your usage data yourself at any time in the privacy panel."
+msgstr "Τα δεδομένα χρήσης σας είναι κρυπτογραφημένα από άκρο σε άκρο. Θα διαγραφεί αυτόματα μετά από 6 μήνες. Μπορείτε να διαγράψετε τον εαυτό σας τα δεδομένα χρήσης σας σε οποιαδήποτε στιγμή στον πίνακα απορρήτου."
+
+msgid "Yes, in particular cookies are used to store your decision about granting access to your usage data. If you opt in, we also use <a href=\"#terms-cookies\" class=\"%s\">cookies</a> to store a user and a session <a href=\"#terms-id\" class=\"%s\">ID</a> for you."
+msgstr "Ναι, σε συγκεκριμένα τα cookies χρησιμοποιούνται για την αποθήκευση της απόφασής σας σχετικά με τη χορήγηση πρόσβασης στα δεδομένα χρήσης σας. Εάν επιλέξετε, χρησιμοποιούμε επίσης το <a href=\"#terms-cookies \"class=\"%s\"> cookies </a> για να αποθηκεύσετε έναν χρήστη και μια συνεδρία <a href =\" # there-id \"class =\" % s \"> id </a> για εσάς."
+
+msgid "After opening a website where a <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation</a> is active, you can explicitly opt in to the data collection and thereby help to improve the services you use. Only then you will be assigned a user and a session <a href=\"#terms-id\" class=\"%s\">ID</a> using a <a href=\"#terms-cookies\" class=\"%s\">cookie.</a> Offen handles these <a href=\"#terms-id\" class=\"%s\">IDs</a> in an unrecognizable form, i.e. no server will ever store this identifier."
+msgstr "Μετά το άνοιγμα μιας ιστοσελίδας όπου ένα <a href=\"#terms-offen-installation\" class=\"%s\"> εγκατάσταση offen </a> είναι ενεργή, μπορείτε να επιλέξετε ρητά στη συλλογή δεδομένων και έτσι να συμβάλλετε στη βελτίωση των υπηρεσιών εσυ χρησιμοποιεις. Μόνο τότε θα σας εκχωρηθεί ένας χρήστης και μια συνεδρία <a href=\"#terms-id\" class=\"%s\"> id </a> χρησιμοποιώντας ένα <a href = \"# όρια-cookies\" class = \"% s \"> cookie. </a> offen χειρίζεται αυτές τις <a href=\"#terms-id\" class=\"%s\"> ids </a> σε μια μη αναγνωρίσιμη μορφή, δηλαδή κανένας διακομιστής δεν θα αποθηκεύσει ποτέ αυτό το αναγνωριστικό."
+
+msgid "You are viewing data as operator with account <em class=\"%s\">%s</em>."
+msgstr "Προβάλλετε δεδομένα ως χειριστής με λογαριασμό <em class = \"% S\">% s </ em>."
+
+msgid "You are viewing your usage data."
+msgstr "Βλέπετε τα δεδομένα χρήσης σας."
+
+msgid "Now"
+msgstr "Τώρα"
+
+msgid "%d days later"
+msgstr "% d ημέρες αργότερα"
+
+msgid "%d days earlier"
+msgstr "% d ημέρες νωρίτερα"
+
+msgid "Admin console"
+msgstr "Κονσόλα διαχειριστή"
+
+msgid "Toggle display of admin console navigation"
+msgstr "Εναλλαγή εμφάνισης πλοήγησης κονσόλας διαχειριστή"
+
+msgid "Share all accounts, create a new one, change your email address and password, log out from Offen"
+msgstr "Μοιραστείτε όλους τους λογαριασμούς, δημιουργήστε ένα νέο, αλλάξτε τη διεύθυνση ηλεκτρονικού ταχυδρομείου και τον κωδικό πρόσβασής σας, αποσυνδεθείτε από Offen"
+
+msgid "Open admin console"
+msgstr "Ανοικτή κονσόλα διαχείρισης"
+
+msgid "Your custom CSS here"
+msgstr "Το Custom CSS εδώ"
+
+msgid "Customize appearance"
+msgstr "Προσαρμόστε την εμφάνιση"
+
+msgid "Toggle display of custom styling area"
+msgstr "Εναλλαγή προβολής προσαρμοσμένης περιοχής στυλ"
+
+msgid "Successfully updated styles for account %s"
+msgstr "Ενημερώθηκαν με επιτυχία τα στυλ για λογαριασμό% s"
+
+msgid "An error occured updating the account's styles."
+msgstr "Παρουσιάστηκε σφάλμα ενημέρωσης των στυλ του λογαριασμού."
+
+msgid "Could not validate your styles. Check the documentation for limitations around external URLs and other areas."
+msgstr "Δεν ήταν δυνατή η επικύρωση των στυλ σας. Ελέγξτε την τεκμηρίωση για περιορισμούς γύρω από εξωτερικές διευθύνσεις URL και άλλες περιοχές."
+
+msgid "Customize the styling of the consent banners for this account. Most CSS is allowed, except for things like external URLs, injected content or transparencies."
+msgstr "Προσαρμόστε το στυλ των πανό συναίνεσης για αυτόν τον λογαριασμό. Οι περισσότεροι CSS επιτρέπονται, εκτός από πράγματα όπως εξωτερικές διευθύνσεις URL, περιεχόμενο ή διαφάνειες."
+
+msgid "<a class=\"%s\" href=\"%s\" target=\"_blank\" rel=\"noopener\">Read the Docs - Customizing the consent banner</a>"
+msgstr "<a class=\"%s\" href=\"%s\" target=\"_blank\" rel=\"noopener\"> Διαβάστε τα έγγραφα - Προσαρμογή του banner συναίνεσης </a>"
+
+msgid "Update preview"
+msgstr "Ενημέρωση προεπισκόπησης"
+
+msgid "Apply your custom styles to the consent banners for this account. Changes will be visible after a cache update (which can take up to 5 minutes) and a browser refresh."
+msgstr "Εφαρμόστε τα προσαρμοσμένα στυλ σας στα banners συγκατάθεσης για αυτόν τον λογαριασμό. Οι αλλαγές θα είναι ορατές μετά από μια ενημερωμένη έκδοση κρυφής μνήμης (η οποία μπορεί να διαρκέσει έως και 5 λεπτά) και ανανέωση του προγράμματος περιήγησης."
+
+msgid "Apply styles"
+msgstr "Εφαρμόστε στυλ"
+
+msgid "Real time"
+msgstr "Πραγματικός χρόνος"
+
+msgid "Active users on site"
+msgstr "Ενεργοί χρήστες στο χώρο του ξενοδοχείου"
+
+msgid "Active pages"
+msgstr "Ενεργές σελίδες"
+
+msgid "Visitors"
+msgstr "Επισκέπτες"
+
+msgid "Share this account"
+msgstr "Μοιραστείτε αυτόν τον λογαριασμό"
+
+msgid "Share your Offen account <em class=\"%s\">%s</em> via email invitation. If granted admin privileges, invited users have full access to a shared account and can also create further accounts for this Offen instance."
+msgstr "Μοιραστείτε το λογαριασμό σας Offen Class = \"% S\">% S </ em> μέσω πρόσκλησης ηλεκτρονικού ταχυδρομείου. Εάν χορηγούνται προνόμια διαχειριστών, οι προσκεκλημένοι χρήστες έχουν πλήρη πρόσβαση σε κοινόχρηστο λογαριασμό και μπορούν επίσης να δημιουργήσουν περαιτέρω λογαριασμούς για αυτό το παράδειγμα."
+
+msgid "Passwords did not match"
+msgstr "Οι κωδικοί πρόσβασης δεν ταιριάζουν"
+
+msgid "Your account has been set up, you can now log in."
+msgstr "Ο λογαριασμός σας έχει ρυθμιστεί, μπορείτε τώρα να συνδεθείτε."
+
+msgid "Join Offen"
+msgstr "Εγγραφείτε Offen"
+
+msgid "Accept invite"
+msgstr "Αποδεχτείτε την πρόσκληση"
+
+msgid "Checking your consent status"
+msgstr "Έλεγχος της κατάστασης συγκατάθεσής σας"
+
+msgid "Fetching and decrypting the latest data"
+msgstr "Να πάρει και να αποκρυπτογραφήσει τα τελευταία δεδομένα"
+
+msgid "Auditorium | %s"
+msgstr "Αμφιθέαια | %μικρό"
+
+msgid "Not found..."
+msgstr "Δεν βρέθηκε..."
+
+msgid "Not Found | %s"
+msgstr "Δεν βρέθηκε | %μικρό"
+
+msgid "This instance is already set up."
+msgstr "Αυτή η περίπτωση έχει ήδη ρυθμιστεί."
+
+msgid "Preparing setup..."
+msgstr "Προετοιμασία ρύθμισης ..."
+
+msgid "This view failed to update automatically, data may be out of date. Check your network connection if the problem persists."
+msgstr "Αυτή η προβολή απέτυχε να ενημερώσει αυτόματα, τα δεδομένα ενδέχεται να είναι ξεπερασμένα. Ελέγξτε τη σύνδεση δικτύου σας εάν το πρόβλημα παραμένει."
+
+msgid "Fetching and aggregating the latest data"
+msgstr "Λαμβάνοντας και συγκεντρώνει τα τελευταία δεδομένα"
+
+msgid "Console | %s"
+msgstr "Κονσόλα | %μικρό"
+
+msgid "Stay opted in,<br>only delete usage data"
+msgstr "Μείνετε επιλέξτε, <br> μόνο διαγράψτε τα δεδομένα χρήσης"
+
+msgid "Delete"
+msgstr "Διαγράφω"
+
+msgid "Privacy"
+msgstr "Μυστικότητα"
+
+msgid "Opt out<br>and delete usage data."
+msgstr "Εξαιρέστε τις <br> και διαγράψτε τα δεδομένα χρήσης."
+
+msgid "Opt in and grant<br>access to your usage data."
+msgstr "Επιλέξτε και παραχωρήστε την πρόσβαση στην πρόσβαση στα δεδομένα χρήσης σας."
+
+msgid "Opt out"
+msgstr "Εξαίρεση"
+
+msgid "Opt in"
+msgstr "Παραλείπω"
+
+msgid "To review your data collected over time, <br class=\"dn db-l\">set a bookmark for this page."
+msgstr "Για να ελέγξετε τα δεδομένα σας που συλλέγονται με την πάροδο του χρόνου, <brkets=\"dn db-l\"> Ορίστε ένα σελιδοδείκτη για αυτή τη σελίδα."
+
+msgid "Thanks for your help to make this website better."
+msgstr "Ευχαριστώ για τη βοήθειά σας για να κάνετε αυτή την ιστοσελίδα καλύτερη."
+
+msgid "To manage your usage data <a class=\"%s\"target=\"_blank\" rel=\"noopener\" href=\"%s\">open the Auditorium.</a>"
+msgstr "Για να διαχειριστείτε τα δεδομένα χρήσης σας <a class=\"%s\"target=\"_blank\" rel=\"noopener\" href=\"%s\"> ανοίξτε το αμφιθέατρο. </a>"
+
+msgid "Continue"
+msgstr "Να συνεχίσει"
+
+msgid "You can opt out and delete any time."
+msgstr "Μπορείτε να εξαιρεθείτε και να διαγράψετε οποιαδήποτε στιγμή."
+
+msgid "Learn more"
+msgstr "Μάθε περισσότερα"
+
+msgid "Offen does not support this site: %s"
+msgstr "Offen δεν υποστηρίζει αυτόν τον ιστότοπο:% s"
+
+msgid "No data will be collected. Find out more at \"https://www.offen.dev\"."
+msgstr "Δεν θα συλλεχθούν δεδομένα. Μάθετε περισσότερα στο \"https://www.offen.dev\"."
+
+msgid "Browser does not support IndexedDB which is required."
+msgstr "Το πρόγραμμα περιήγησης δεν υποστηρίζει το IndexedDB που απαιτείται."
+
+#. ~ line 5 "public/static/emails.go.html"
+msgid "Reset your password"
+msgstr "Επαναφορά του κωδικού πρόσβασής σας"
+
+#. ~ line 9 "public/static/emails.go.html"
+#. ~ line 23 "public/static/emails.go.html"
+#. ~ line 37 "public/static/emails.go.html"
+msgid "Hi!"
+msgstr "Γεια!"
+
+#. ~ line 11 "public/static/emails.go.html"
+msgid "You have requested to reset your password. To do so, visit the following link:"
+msgstr "Έχετε ζητήσει να επαναφέρετε τον κωδικό πρόσβασής σας. Για να το κάνετε, επισκεφθείτε τον ακόλουθο σύνδεσμο:"
+
+#. ~ line 15 "public/static/emails.go.html"
+msgid "The link is valid for 24 hours after this email has been sent. In case you have missed this deadline, you can always request a new link."
+msgstr "Ο σύνδεσμος ισχύει για 24 ώρες μετά την αποστολή αυτού του μηνύματος ηλεκτρονικού ταχυδρομείου. Σε περίπτωση που χάσατε αυτή την προθεσμία, μπορείτε πάντα να ζητήσετε έναν νέο σύνδεσμο."
+
+#. ~ line 19 "public/static/emails.go.html"
+msgid "You have been invited to join Offen."
+msgstr "Έχετε καλέσει να συμμετάσχετε στο Offen."
+
+#. ~ line 25 "public/static/emails.go.html"
+msgid "You have been invited to Offen. To accept your invite, visit the following link:"
+msgstr "Έχετε καλέσει να offen. Για να αποδεχτείτε την πρόσκλησή σας, επισκεφθείτε τον ακόλουθο σύνδεσμο:"
+
+#. ~ line 29 "public/static/emails.go.html"
+msgid "The link is valid for 7 days after this email has been sent. In case you have missed this deadline, request a new invite."
+msgstr "Ο σύνδεσμος ισχύει για 7 ημέρες μετά την αποστολή αυτού του μηνύματος ηλεκτρονικού ταχυδρομείου. Σε περίπτωση που χάσατε αυτή την προθεσμία, ζητήστε μια νέα πρόσκληση."
+
+#. ~ line 33 "public/static/emails.go.html"
+msgid "You have been added to additional accounts on Offen."
+msgstr "Έχετε προστεθεί σε πρόσθετους λογαριασμούς σχετικά με Offen."
+
+#. ~ line 39 "public/static/emails.go.html"
+msgid "You have been added to the following new accounts on Offen:"
+msgstr "Έχετε προστεθεί στους ακόλουθους νέους λογαριασμούς σχετικά με Offen:"
+
+#. ~ line 45 "public/static/emails.go.html"
+msgid "You automatically gain access to these accounts the next time you log in."
+msgstr "Αποκτήστε αυτόματα την πρόσβαση σε αυτούς τους λογαριασμούς την επόμενη φορά που θα συνδεθείτε."
+
+#. ~ line 31 "public/static/index.go.html"
+msgid "It seems like your browser has JavaScript disabled."
+msgstr "Φαίνεται ότι το πρόγραμμα περιήγησής σας έχει απενεργοποιηθεί το Javascript."
+
+#. ~ line 36 "public/static/index.go.html"
+msgid "Offen requires JavaScript to function properly."
+msgstr "Το Offen απαιτεί τη σωστή λειτουργία Javascript."
+
+#. ~ line 42 "public/static/index.go.html"
+msgid "For Offen to work, your browser has to allow JavaScript and accept cookies. Please change your browser settings and reload this page. Subsequently, Offen will ask for your consent before collecting any usage data."
+msgstr "Για να λειτουργήσει για να εργαστεί, το πρόγραμμα περιήγησής σας πρέπει να επιτρέψει το javascript και να δεχτεί cookies. Αλλάξτε τις ρυθμίσεις του προγράμματος περιήγησης και επαναφόρτωση αυτής της σελίδας. Στη συνέχεια, το Offen θα ζητήσει τη συγκατάθεσή σας πριν τη συλλογή οποιωνδήποτε δεδομένων χρήσης."
+
+#. ~ line 49 "public/static/index.go.html"
+msgid "Offen"
+msgstr "Προσβάλλω"
+
+#. ~ line 169 "public/static/index.go.html"
+msgid "Offen is an open alternative to common web analytics tools. Operators gain insights while users have full access to their data. Lightweight, self hosted and free."
+msgstr "Offen είναι μια ανοικτή εναλλακτική λύση στα κοινά εργαλεία Web Analytics. Οι φορείς εκμετάλλευσης κερδίζουν γνώσεις, ενώ οι χρήστες έχουν πλήρη πρόσβαση στα δεδομένα τους. Ελαφρύ, αυτοεξυπηρέτηση και δωρεάν."
+
+msgid "This page is using Offen to collect usage statistics."
+msgstr "Αυτή η σελίδα χρησιμοποιεί Offen για τη συλλογή στατιστικών στοιχείων χρήσης."
+
+msgid "You can access and manage all of your personal data or opt-out at \"%s/auditorium/\"."
+msgstr "Μπορείτε να έχετε πρόσβαση και να διαχειριστείτε όλα τα προσωπικά σας δεδομένα ή να εξαιρέσετε στο \"% S / Auditorium /\"."
+
+msgid "Find out more about Offen at \"https://www.offen.dev\"."
+msgstr "Μάθετε περισσότερα σχετικά με Offen στο \"https://www.offen.dev\"."
+
+msgid "Your setup prevents third party cookies or you have disabled it in your browser's settings."
+msgstr "Η ρύθμισή σας αποτρέπει τα cookies τρίτου μέρους ή έχετε απενεργοποιήσει τις ρυθμίσεις του προγράμματος περιήγησης."
+
+msgid "No usage data will be collected."
+msgstr "Δεν θα συλλεχθούν δεδομένα χρήσης."
+
+msgid "You have opted out of data collection, no data is being collected."
+msgstr "Έχετε επιλέξει τη συλλογή δεδομένων, δεν συλλέγονται δεδομένα."
+
+msgid "Find out more about Offen at \"%s\""
+msgstr "Μάθετε περισσότερα σχετικά με Offen στο \"% S\""
