@@ -15,15 +15,18 @@ const Collapsible = require('./../_shared/collapsible')
 const HTMLWidgets = [
   {
     name: __('Bar'),
-    asset: __('/user-access-widget-bar-en.svg')
+    asset: __('/user-access-widget-bar-en.svg'),
+    alt: [__('Fair web analytics'), __('Access your usage data')].join(' ')
   },
   {
     name: __('Box'),
-    asset: __('/user-access-widget-box-en.svg')
+    asset: __('/user-access-widget-box-en.svg'),
+    alt: [__('Fair web analytics'), __('Access your data')].join(' ')
   },
   {
     name: __('Circle'),
-    asset: __('/user-access-widget-circle-en.svg')
+    asset: __('/user-access-widget-circle-en.svg'),
+    alt: [__('Fair web analytics'), __('Access your data')].join(' ')
   }
 ]
 
@@ -60,7 +63,7 @@ const AwarenessWidgets = (props) => {
           )
         }}
         body={(props) => {
-          const snippetContent = `<a href="${window.location.origin}/auditorium"><img src="${window.location.origin}${selectedWidget.asset}"></a>`
+          const snippetContent = `<a href="${window.location.origin}/auditorium"><img alt="${selectedWidget.alt}" src="${window.location.origin}${selectedWidget.asset}"></a>`
           return (
             <div class='mw6 center ph3 mt3 mb4'>
               <p class='ma0 mb3'>
@@ -114,7 +117,7 @@ const AwarenessWidgets = (props) => {
                     {__('Preview')}
                   </p>
                   <div class='flex justify-center mb3'>
-                    <img src={selectedWidget.asset} />
+                    <img src={selectedWidget.asset} alt={selectedWidget.alt} />
                   </div>
                 </div>
               </div>
