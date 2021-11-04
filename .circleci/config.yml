@@ -1,6 +1,5 @@
-# Copyright 2020 - Offen Authors <hioffen@posteo.de>
+# Copyright 2020-2022 - Offen Authors <hioffen@posteo.de>
 # SPDX-License-Identifier: Apache-2.0
-
 
 version: 2.1
 
@@ -82,7 +81,7 @@ jobs:
       - run:
           name: Build binaries
           command: |
-            if [ -z "$CIRCLE_TAG" ] && [ "${CIRCLE_BRANCH}" != "development" ] && [ "${CIRCLE_BRANCH}" != "master" ]; then
+            if [ -z "$CIRCLE_TAG" ] && [ "${CIRCLE_BRANCH}" != "development" ]; then
               SKIP_LOCALES="1" make build
             else
               TARGETS=linux/amd64,windows/amd64,linux/arm-7,linux/arm64 make build
@@ -154,11 +153,7 @@ jobs:
           name: Set image tag
           command: |
             if [ -z "$CIRCLE_TAG" ]; then
-              if [ "${CIRCLE_BRANCH}" == "master" ]; then
-                echo 'export DOCKER_IMAGE_TAGS=(stable)' >> $BASH_ENV
-              else
-                echo 'export DOCKER_IMAGE_TAGS=(development)' >> $BASH_ENV
-              fi
+              echo 'export DOCKER_IMAGE_TAGS=(development)' >> $BASH_ENV
             else
               echo 'export DOCKER_IMAGE_TAGS=($CIRCLE_TAG latest)' >> $BASH_ENV
             fi
@@ -217,17 +212,10 @@ jobs:
           name: Build and deploy versioned docs site
           command: |
             if [ -z "$CIRCLE_TAG" ]; then
-              if [ "${CIRCLE_BRANCH}" == "master" ]; then
-                echo "offen_version: stable" >> ./docs/_override.yml
-                echo "baseurl: v/stable" >> ./docs/_override.yml
-                make build-docs
-                mc mirror --remove --overwrite ./docs-site/ offen/docs/v/stable/
-              else
-                echo "offen_version: development" >> ./docs/_override.yml
-                echo "baseurl: v/development" >> ./docs/_override.yml
-                make build-docs
-                mc mirror --remove --overwrite ./docs-site/ offen/docs/v/development/
-              fi
+              echo "offen_version: development" >> ./docs/_override.yml
+              echo "baseurl: v/development" >> ./docs/_override.yml
+              make build-docs
+              mc mirror --remove --overwrite ./docs-site/ offen/docs/v/development/
             else
               mc cp ./docs/robots.txt offen/docs
 
@@ -279,11 +267,10 @@ workflows:
             - build
           filters:
             tags:
-              only: /^v.*/ # tagged release from master branch
+              only: /^v.*/ # tagged release from any branch
             branches:
               only:
                 - development
-                - master
       - release_docs: *default_release_job
 
 commands:
