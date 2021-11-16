@@ -60,7 +60,7 @@ They have full access to their data.
 ## How it works
 
 __Your job__
-- Self host Offen and thereby comply with GDPR guidelines.  
+- Self host Offen while protecting your users' data.  
 - Integrate the code snippet into pages you want to track.  
 - Make your users aware of the access to their data.  
 - Improve your services with fair and transparent insights.  
