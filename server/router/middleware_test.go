@@ -70,12 +70,12 @@ func TestOptinMiddleware(t *testing.T) {
 	})
 }
 
-func TestUserCookieTurnout(t *testing.T) {
+func TestUserCookieDuplexer(t *testing.T) {
 	m := gin.New()
-	m.GET("/", userCookieTurnout("user", "1")(func(c *gin.Context) {
+	m.GET("/", cookieDuplexer("user", "1")(withCookieFound(func(c *gin.Context) {
 		value := c.Value("1")
 		c.String(http.StatusOK, "value is %v", value)
-	}))
+	})))
 	t.Run("no cookie", func(t *testing.T) {
 		w := httptest.NewRecorder()
 		r := httptest.NewRequest(http.MethodGet, "/", nil)
