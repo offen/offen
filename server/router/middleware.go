@@ -36,21 +36,61 @@ func optinMiddleware(cookieName, passWhen string) gin.HandlerFunc {
 	}
 }
 
-// userCookieMiddleware ensures a cookie of the given name is present and
+// cookieDuplexer ensures a cookie of the given name is present and
 // attaches its value to the request's context using the given key, before
-// passing it on to the wrapped handler.
-func userCookieMiddleware(cookieKey, contextKey string) gin.HandlerFunc {
-	return func(c *gin.Context) {
-		ck, err := c.Request.Cookie(cookieKey)
-		if err != nil {
-			newJSONError(
-				errors.New("user cookie: received no or blank identifier"),
-				http.StatusBadRequest,
-			).Pipe(c)
-			return
+// passing it on to the wrapped handler. In case a second handler function
+// is give, it will be called in case no cookie is present.
+func cookieDuplexer(cookieKey, contextKey string) func(...duplexerOption) gin.HandlerFunc {
+	var defaultNotFoundHandler gin.HandlerFunc = func(c *gin.Context) {
+		newJSONError(
+			errors.New("cookie duplexer: received no or blank identifier"),
+			http.StatusBadRequest,
+		).Pipe(c)
+	}
+	var defaultFoundHandler gin.HandlerFunc = func(c *gin.Context) {
+		newJSONError(
+			errors.New("cookie duplexer: no handler configured"),
+			http.StatusInternalServerError,
+		).Pipe(c)
+	}
+
+	return func(opts ...duplexerOption) gin.HandlerFunc {
+		conf := duplexerConfig{
+			found:    &defaultFoundHandler,
+			notFound: &defaultNotFoundHandler,
 		}
-		c.Set(contextKey, ck.Value)
-		c.Next()
+		for _, opt := range opts {
+			opt(&conf)
+		}
+
+		return func(c *gin.Context) {
+			cookie, err := c.Request.Cookie(cookieKey)
+			if err != nil {
+				(*conf.notFound)(c)
+				return
+			}
+			c.Set(contextKey, cookie.Value)
+			(*conf.found)(c)
+		}
+	}
+}
+
+type duplexerConfig struct {
+	found    *gin.HandlerFunc
+	notFound *gin.HandlerFunc
+}
+
+type duplexerOption func(*duplexerConfig)
+
+func whenCookieFound(h gin.HandlerFunc) duplexerOption {
+	return func(c *duplexerConfig) {
+		c.found = &h
+	}
+}
+
+func whenCookieNotFound(h gin.HandlerFunc) duplexerOption {
+	return func(c *duplexerConfig) {
+		c.notFound = &h
 	}
 }
 
