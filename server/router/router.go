@@ -220,10 +220,10 @@ func New(opts ...Config) http.Handler {
 		api := app.Group("/api")
 		api.Use(noStore)
 
-		api.GET("/events", userCookieDuplexer(withCookieFound(rt.getEvents), withCookieNotFound(rt.getPublicKey)))
+		api.GET("/events", userCookieDuplexer(whenCookieFound(rt.getEvents), whenCookieNotFound(rt.getPublicKey)))
 		api.POST("/events", optin, rt.postUserSecret)
-		api.PUT("/events", optin, userCookieDuplexer(withCookieFound(rt.postEvents)))
-		api.DELETE("/events", userCookieDuplexer(withCookieFound(rt.deleteEvents)))
+		api.PUT("/events", optin, userCookieDuplexer(whenCookieFound(rt.postEvents)))
+		api.DELETE("/events", userCookieDuplexer(whenCookieFound(rt.deleteEvents)))
 
 		api.GET("/accounts/:accountID", accountAuth, rt.getAccount)
 		api.DELETE("/accounts/:accountID", accountAuth, rt.deleteAccount)

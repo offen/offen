@@ -72,7 +72,7 @@ func TestOptinMiddleware(t *testing.T) {
 
 func TestUserCookieDuplexer(t *testing.T) {
 	m := gin.New()
-	m.GET("/", cookieDuplexer("user", "1")(withCookieFound(func(c *gin.Context) {
+	m.GET("/", cookieDuplexer("user", "1")(whenCookieFound(func(c *gin.Context) {
 		value := c.Value("1")
 		c.String(http.StatusOK, "value is %v", value)
 	})))

@@ -41,20 +41,20 @@ func optinMiddleware(cookieName, passWhen string) gin.HandlerFunc {
 // passing it on to the wrapped handler. In case a second handler function
 // is give, it will be called in case no cookie is present.
 func cookieDuplexer(cookieKey, contextKey string) func(...duplexerOption) gin.HandlerFunc {
-	return func(opts ...duplexerOption) gin.HandlerFunc {
-		var defaultNotFoundHandler gin.HandlerFunc = func(c *gin.Context) {
-			newJSONError(
-				errors.New("cookie duplexer: received no or blank identifier"),
-				http.StatusBadRequest,
-			).Pipe(c)
-		}
-		var defaultFoundHandler gin.HandlerFunc = func(c *gin.Context) {
-			newJSONError(
-				errors.New("cookie duplexer: no handler configured"),
-				http.StatusInternalServerError,
-			).Pipe(c)
-		}
+	var defaultNotFoundHandler gin.HandlerFunc = func(c *gin.Context) {
+		newJSONError(
+			errors.New("cookie duplexer: received no or blank identifier"),
+			http.StatusBadRequest,
+		).Pipe(c)
+	}
+	var defaultFoundHandler gin.HandlerFunc = func(c *gin.Context) {
+		newJSONError(
+			errors.New("cookie duplexer: no handler configured"),
+			http.StatusInternalServerError,
+		).Pipe(c)
+	}
 
+	return func(opts ...duplexerOption) gin.HandlerFunc {
 		conf := duplexerConfig{
 			found:    &defaultFoundHandler,
 			notFound: &defaultNotFoundHandler,
@@ -82,13 +82,13 @@ type duplexerConfig struct {
 
 type duplexerOption func(*duplexerConfig)
 
-func withCookieFound(h gin.HandlerFunc) duplexerOption {
+func whenCookieFound(h gin.HandlerFunc) duplexerOption {
 	return func(c *duplexerConfig) {
 		c.found = &h
 	}
 }
 
-func withCookieNotFound(h gin.HandlerFunc) duplexerOption {
+func whenCookieNotFound(h gin.HandlerFunc) duplexerOption {
 	return func(c *duplexerConfig) {
 		c.notFound = &h
 	}
