@@ -80,7 +80,7 @@ When embedded as shown above, Offen will automatically acquire a user consent de
 This API is not exposed by default. Embed the script passing a `data-use-api` attribute and not using `async` or `defer`:
 
 ```html
-<script src="https://<your-installation-domain>/script.js" data-account-id="<your-account-id data-use-api>"></script>
+<script src="https://<your-installation-domain>/script.js" data-account-id="<your-account-id>" data-use-api></script>
 ```
 
 Offen now exposes two methods on `window.__offen__`:
