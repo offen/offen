@@ -15,15 +15,7 @@ import (
 )
 
 func (rt *router) getPublicKey(c *gin.Context) {
-	accountID := c.Query("accountId")
-	if accountID == "" {
-		newJSONError(
-			errors.New("router: no account given, cannot query public key"),
-			http.StatusBadRequest,
-		).Pipe(c)
-		return
-	}
-	account, err := rt.db.GetAccount(accountID, false, false, "")
+	account, err := rt.db.GetAccount(c.Query("accountId"), false, false, "")
 	if err != nil {
 		var unknownAccountErr persistence.ErrUnknownAccount
 		if errors.As(err, &unknownAccountErr) {
