@@ -181,7 +181,7 @@ func New(opts ...Config) http.Handler {
 	rt.cookieSigner = securecookie.New(rt.config.Secret.Bytes(), nil)
 
 	optin := optinMiddleware(optinKey, optinValue)
-	userCookieDuplexer := cookieDuplexer(cookieKey, contextKeyCookie)
+	userCookie := userCookieMiddleware(cookieKey, contextKeyCookie)
 	accountAuth := rt.accountUserMiddleware(authKey, contextKeyAuth)
 	noStore := headerMiddleware(map[string]func() string{
 		"Cache-Control": func() string {
@@ -219,16 +219,15 @@ func New(opts ...Config) http.Handler {
 	{
 		api := app.Group("/api")
 		api.Use(noStore)
-
-		api.GET("/events", userCookieDuplexer(whenCookieFound(rt.getEvents), whenCookieNotFound(rt.getPublicKey)))
-		api.POST("/events", optin, rt.postUserSecret)
-		api.PUT("/events", optin, userCookieDuplexer(whenCookieFound(rt.postEvents)))
-		api.DELETE("/events", userCookieDuplexer(whenCookieFound(rt.deleteEvents)))
+		api.GET("/exchange", rt.getPublicKey)
+		api.POST("/exchange", rt.postUserSecret)
 
 		api.GET("/accounts/:accountID", accountAuth, rt.getAccount)
 		api.DELETE("/accounts/:accountID", accountAuth, rt.deleteAccount)
 		api.PUT("/accounts/:accountID/account-styles", accountAuth, rt.putAccountStyles)
 		api.POST("/accounts", accountAuth, rt.postAccount)
+
+		api.POST("/purge", userCookie, rt.purgeEvents)
 
 		api.GET("/login", accountAuth, rt.getLogin)
 		api.POST("/login", rt.postLogin)
@@ -243,6 +242,9 @@ func New(opts ...Config) http.Handler {
 		api.POST("/join", rt.postJoin)
 		api.GET("/setup", rt.getSetup)
 		api.POST("/setup", rt.postSetup)
+
+		api.GET("/events", userCookie, rt.getEvents)
+		api.POST("/events", optin, userCookie, rt.postEvents)
 	}
 
 	root := gin.New()

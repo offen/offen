@@ -6,9 +6,7 @@
 var path = require('path')
 var handleFetchResponse = require('offen/fetch-response')
 
-var apiRoot = window.location.origin + '/api'
-
-exports.getAccount = getAccountWith(apiRoot + '/accounts')
+exports.getAccount = getAccountWith(window.location.origin + '/api/accounts')
 exports.getAccountWith = getAccountWith
 
 function getAccountWith (accountsUrl) {
@@ -25,7 +23,7 @@ function getAccountWith (accountsUrl) {
   }
 }
 
-exports.getEvents = getEventsWith(apiRoot + '/events')
+exports.getEvents = getEventsWith(window.location.origin + '/api/events')
 exports.getEventsWith = getEventsWith
 
 function getEventsWith (accountsUrl) {
@@ -51,7 +49,7 @@ function getEventsWith (accountsUrl) {
   }
 }
 
-exports.postEvent = postEventWith(apiRoot + '/events')
+exports.postEvent = postEventWith(window.location.origin + '/api/events')
 exports.postEventWith = postEventWith
 
 function postEventWith (eventsUrl) {
@@ -59,7 +57,7 @@ function postEventWith (eventsUrl) {
     var url = new window.URL(eventsUrl)
     return window
       .fetch(url, {
-        method: 'PUT',
+        method: 'POST',
         credentials: 'include',
         body: JSON.stringify({
           accountId: accountId,
@@ -70,25 +68,7 @@ function postEventWith (eventsUrl) {
   }
 }
 
-exports.purge = purgeWith(apiRoot + '/events')
-exports.purgeWith = purgeWith
-
-function purgeWith (purgeUrl) {
-  return function (deleteUserCookie) {
-    var url = new window.URL(purgeUrl)
-    if (deleteUserCookie) {
-      url.search = new window.URLSearchParams({ user: '1' })
-    }
-    return window
-      .fetch(url, {
-        method: 'DELETE',
-        credentials: 'include'
-      })
-      .then(handleFetchResponse)
-  }
-}
-
-exports.getPublicKey = getPublicKeyWith(apiRoot + '/events')
+exports.getPublicKey = getPublicKeyWith(window.location.origin + '/api/exchange')
 exports.getPublicKeyWith = getPublicKeyWith
 
 function getPublicKeyWith (exchangeUrl) {
@@ -97,7 +77,8 @@ function getPublicKeyWith (exchangeUrl) {
     url.search = new window.URLSearchParams({ accountId: accountId })
     return window
       .fetch(url, {
-        method: 'GET'
+        method: 'GET',
+        credentials: 'include'
       })
       .then(handleFetchResponse)
       .then(function (response) {
@@ -106,7 +87,7 @@ function getPublicKeyWith (exchangeUrl) {
   }
 }
 
-exports.postUserSecret = postUserSecretWith(apiRoot + '/events')
+exports.postUserSecret = postUserSecretWith(window.location.origin + '/api/exchange')
 exports.postUserSecretWith = postUserSecretWith
 
 function postUserSecretWith (exchangeUrl) {
@@ -114,13 +95,14 @@ function postUserSecretWith (exchangeUrl) {
     return window
       .fetch(exchangeUrl, {
         method: 'POST',
+        credentials: 'include',
         body: JSON.stringify(body)
       })
       .then(handleFetchResponse)
   }
 }
 
-exports.login = loginWith(apiRoot + '/login')
+exports.login = loginWith(window.location.origin + '/api/login')
 exports.loginWith = loginWith
 
 function loginWith (loginUrl) {
@@ -145,7 +127,7 @@ function loginWith (loginUrl) {
   }
 }
 
-exports.logout = logoutWith(apiRoot + '/logout')
+exports.logout = logoutWith(window.location.origin + '/api/logout')
 exports.logoutWith = logoutWith
 
 function logoutWith (logoutUrl) {
@@ -159,7 +141,7 @@ function logoutWith (logoutUrl) {
   }
 }
 
-exports.changePassword = changePasswordWith(apiRoot + '/change-password')
+exports.changePassword = changePasswordWith(window.location.origin + '/api/change-password')
 exports.changePasswordWith = changePasswordWith
 
 function changePasswordWith (loginUrl) {
@@ -177,7 +159,7 @@ function changePasswordWith (loginUrl) {
   }
 }
 
-exports.forgotPassword = forgotPasswordWith(apiRoot + '/forgot-password')
+exports.forgotPassword = forgotPasswordWith(window.location.origin + '/api/forgot-password')
 exports.forgotPasswordWith = forgotPasswordWith
 
 function forgotPasswordWith (forgotUrl) {
@@ -194,7 +176,7 @@ function forgotPasswordWith (forgotUrl) {
   }
 }
 
-exports.resetPassword = resetPasswordWith(apiRoot + '/reset-password')
+exports.resetPassword = resetPasswordWith(window.location.origin + '/api/reset-password')
 exports.resetPasswordWith = resetPasswordWith
 
 function resetPasswordWith (resetUrl) {
@@ -212,7 +194,7 @@ function resetPasswordWith (resetUrl) {
   }
 }
 
-exports.changeEmail = changeEmailWith(apiRoot + '/change-email')
+exports.changeEmail = changeEmailWith(window.location.origin + '/api/change-email')
 exports.changeEmailWith = changeEmailWith
 
 function changeEmailWith (loginUrl) {
@@ -231,7 +213,25 @@ function changeEmailWith (loginUrl) {
   }
 }
 
-exports.shareAccount = shareAccountWith(apiRoot + '/share-account')
+exports.purge = purgeWith(window.location.origin + '/api/purge')
+exports.purgeWith = purgeWith
+
+function purgeWith (purgeUrl) {
+  return function (deleteUserCookie) {
+    var url = new window.URL(purgeUrl)
+    if (deleteUserCookie) {
+      url.search = new window.URLSearchParams({ user: '1' })
+    }
+    return window
+      .fetch(url, {
+        method: 'POST',
+        credentials: 'include'
+      })
+      .then(handleFetchResponse)
+  }
+}
+
+exports.shareAccount = shareAccountWith(window.location.origin + '/api/share-account')
 exports.shareAccountWith = shareAccountWith
 
 function shareAccountWith (inviteUrl) {
@@ -256,7 +256,7 @@ function shareAccountWith (inviteUrl) {
   }
 }
 
-exports.join = joinWith(apiRoot + '/join')
+exports.join = joinWith(window.location.origin + '/api/join')
 exports.joinWith = joinWith
 
 function joinWith (joinUrl) {
@@ -275,7 +275,7 @@ function joinWith (joinUrl) {
   }
 }
 
-exports.createAccount = createAccountWith(apiRoot + '/accounts')
+exports.createAccount = createAccountWith(window.location.origin + '/api/accounts')
 exports.createAccountWith = createAccountWith
 
 function createAccountWith (createUrl) {
@@ -294,7 +294,7 @@ function createAccountWith (createUrl) {
   }
 }
 
-exports.retireAccount = retireAccountWith(apiRoot + '/accounts')
+exports.retireAccount = retireAccountWith(window.location.origin + '/api/accounts')
 exports.retireAccountWith = retireAccountWith
 
 function retireAccountWith (deleteUrl) {
@@ -308,7 +308,7 @@ function retireAccountWith (deleteUrl) {
   }
 }
 
-exports.updateAccountStyles = updateAccountStylesWith(apiRoot + '/accounts/:accountId/account-styles')
+exports.updateAccountStyles = updateAccountStylesWith(window.location.origin + '/api/accounts/:accountId/account-styles')
 exports.updateAccountStylesWith = updateAccountStylesWith
 
 function updateAccountStylesWith (updateUrl) {
@@ -329,7 +329,7 @@ function updateAccountStylesWith (updateUrl) {
   }
 }
 
-exports.setup = setupWith(apiRoot + '/setup')
+exports.setup = setupWith(window.location.origin + '/api/setup')
 exports.setupWith = setupWith
 
 function setupWith (setupUrl) {
@@ -348,11 +348,11 @@ function setupWith (setupUrl) {
   }
 }
 
-exports.setupStatus = setupStatusWith(apiRoot + '/setup')
+exports.setupStatus = setupStatusWith(window.location.origin + '/api/setup')
 exports.setupStatusWith = setupStatusWith
 
 function setupStatusWith (setupUrl) {
-  return function () {
+  return function (accountName, emailAddress, password) {
     return window
       .fetch(setupUrl, {
         method: 'GET',
