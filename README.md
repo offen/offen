@@ -3,7 +3,7 @@ Copyright 2020-2021 - Offen Authors <hioffen@posteo.de>
 SPDX-License-Identifier: Apache-2.0
 -->
 
-<a href="https://offen.dev/">
+<a href="https://www.offen.dev/">
     <img src="https://offen.github.io/press-kit/offen-material/gfx-GitHub-Offen-logo.svg" alt="Offen logo" title="Offen" width="150px"/>
 </a>
 
