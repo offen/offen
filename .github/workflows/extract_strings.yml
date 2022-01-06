@@ -18,7 +18,7 @@ jobs:
         id: cpr
         uses: peter-evans/create-pull-request@v3
         with:
-          base: development
+          base: ${{ github.ref }}
           token: ${{ secrets.PERSONAL_TOKEN }}
           commit-message: Update message files
           committer: Offen Bot <hioffen@posteo.de>
