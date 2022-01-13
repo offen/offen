@@ -12,8 +12,10 @@
 const { registerLocale } = require('react-datepicker')
 registerLocale('de', require('date-fns/locale/de'))
 registerLocale('fr', require('date-fns/locale/fr'))
+registerLocale('es', require('date-fns/locale/es'))
 
 const countries = require('i18n-iso-countries')
 countries.registerLocale(require('i18n-iso-countries/langs/en.json'))
 countries.registerLocale(require('i18n-iso-countries/langs/de.json'))
 countries.registerLocale(require('i18n-iso-countries/langs/fr.json'))
+countries.registerLocale(require('i18n-iso-countries/langs/es.json'))

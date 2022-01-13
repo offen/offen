@@ -3,7 +3,7 @@
 
 FROM node:14-alpine as auditorium
 RUN apk add git
-RUN apk add --no-cache --virtual .gyp python make g++
+RUN apk add --no-cache --virtual .gyp python3 make g++
 
 COPY ./auditorium/package.json ./auditorium/package-lock.json /code/deps/
 COPY ./packages /code/packages
@@ -23,7 +23,7 @@ RUN npm run licenses
 
 FROM node:14-alpine as script
 RUN apk add git
-RUN apk add --no-cache --virtual .gyp python make g++
+RUN apk add --no-cache --virtual .gyp python3 make g++
 
 COPY ./script/package.json ./script/package-lock.json /code/deps/
 COPY ./packages /code/packages
@@ -43,7 +43,7 @@ RUN npm run licenses
 
 FROM node:14-alpine as vault
 RUN apk add git
-RUN apk add --no-cache --virtual .gyp python make g++
+RUN apk add --no-cache --virtual .gyp python3 make g++
 
 COPY ./vault/package.json ./vault/package-lock.json /code/deps/
 COPY ./packages /code/packages
@@ -64,7 +64,7 @@ RUN npm run licenses
 # packages does not have a build step but we need to derive license information
 FROM node:14-alpine as packages
 RUN apk add git
-RUN apk add --no-cache --virtual .gyp python make g++
+RUN apk add --no-cache --virtual .gyp python3 make g++
 
 COPY ./packages/package.json ./packages/package-lock.json /code/deps/
 COPY ./packages /code/packages

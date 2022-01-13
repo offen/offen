@@ -3,7 +3,7 @@ Copyright 2020-2021 - Offen Authors <hioffen@posteo.de>
 SPDX-License-Identifier: Apache-2.0
 -->
 
-<a href="https://offen.dev/">
+<a href="https://www.offen.dev/">
     <img src="https://offen.github.io/press-kit/offen-material/gfx-GitHub-Offen-logo.svg" alt="Offen logo" title="Offen" width="150px"/>
 </a>
 
@@ -60,7 +60,7 @@ They have full access to their data.
 ## How it works
 
 __Your job__
-- Self host Offen and thereby comply with GDPR guidelines.  
+- Self host Offen while protecting your users' data.  
 - Integrate the code snippet into pages you want to track.  
 - Make your users aware of the access to their data.  
 - Improve your services with fair and transparent insights.  

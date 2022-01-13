@@ -1422,6 +1422,7 @@ msgstr "Afficher les données de"
 msgid "Select"
 msgstr "Sélectionner"
 
+#. src/views/components/_shared/share.js:43
 #: 
 msgid "There was an error inviting the user. Could it be that the user already has access?"
 msgstr "Une erreur est survenue lors de l'invitation de l'utilisateur. Est-ce possible que l'utilisateur ait déjà accès ?"
@@ -1436,6 +1437,7 @@ msgstr "Votre CSS personnalisé ici"
 msgid "Customize appearance"
 msgstr "Personnaliser l'apparence"
 
+#. src/views/components/auditorium/account-styles.js:53
 #: 
 msgid "Toggle display of custom styling area"
 msgstr "Basculer l'affichage de l'espace des styles personnalisés"
@@ -1445,6 +1447,7 @@ msgstr "Basculer l'affichage de l'espace des styles personnalisés"
 msgid "Successfully updated styles for account %s"
 msgstr "Styles mis à jour avec succès pour le compte %s"
 
+#. src/views/components/auditorium/account-styles.js:64
 #: 
 msgid "An error occured updating the account's styles."
 msgstr "Une erreur est survenue lors de la mise à jour des styles du compte."
@@ -1464,6 +1467,10 @@ msgstr "Personnaliser le style des bannières de consentement pour ce compte. La
 msgid "<a class=\"%s\" href=\"%s\" target=\"_blank\" rel=\"noopener\">Read the Docs - Customizing the consent banner</a>"
 msgstr "<a class=\"%s\" href=\"%s\" target=\"_blank\" rel=\"noopener\">Read the Docs - Personnaliser la bannière de consentement</a>"
 
+#. #-#-#-#-#  auditorium.po  #-#-#-#-#
+#. src/views/components/auditorium/awareness-widgets.js:114
+#. #-#-#-#-#  auditorium.po  #-#-#-#-#
+#. src/views/components/auditorium/account-styles.js:117
 #: 
 msgid "Preview"
 msgstr "Prévisualiser"
@@ -1483,6 +1490,7 @@ msgstr "Appliquer vos styles personnalisés aux bannières de consentement pour 
 msgid "Apply styles"
 msgstr "Appliquer les styles"
 
+#. consent-banner/index.js:47
 #: 
 msgid "To manage your usage data <a class=\"%s\"target=\"_blank\" rel=\"noopener\" href=\"%s\">open the Auditorium.</a>"
 msgstr "Pour gérer vos données d'utilisation <a class=\"%s\"target=\"_blank\" rel=\"noopener\" href=\"%s\">ouvrir l'Auditorium.</a>"
@@ -1497,14 +1505,20 @@ msgstr "Retirez ce filtre."
 msgid "Filter current view by this item."
 msgstr "Filtrer la vue actuelle par cet élément."
 
+#. #-#-#-#-#  auditorium.po  #-#-#-#-#
+#. src/views/auditorium-user.js:174
+#. #-#-#-#-#  auditorium.po  #-#-#-#-#
+#. src/views/auditorium-operator.js:258
 #: 
 msgid "Auditorium | %s"
 msgstr "Auditorium | %s"
 
+#. src/views/404.js:20
 #: 
 msgid "Not Found | %s"
 msgstr "Page non trouvé | %s"
 
+#. src/views/console.js:97
 #: 
 msgid "Console | %s"
 msgstr "Console | %s"
@@ -1514,6 +1528,7 @@ msgstr "Console | %s"
 msgid "None"
 msgstr "Aucun"
 
+#. src/views/components/auditorium/retire-account.js:100
 #: 
 msgid "Retire this account"
 msgstr "Désactiver ce compte"
@@ -1553,6 +1568,7 @@ msgstr "/user-access-widget-circle-fr.svg"
 msgid "Let users access their data"
 msgstr "Laisser les utilisateurs accéder à leurs données"
 
+#. src/views/components/auditorium/awareness-widgets.js:56
 #: 
 msgid "Toggle display of awareness widgets"
 msgstr "Basculer l'affichage des widgets de sensibilisation"
@@ -1562,10 +1578,12 @@ msgstr "Basculer l'affichage des widgets de sensibilisation"
 msgid "Let users access their data on every page of your website. Link directly to the User Auditorium or use the HTML widget."
 msgstr "Laisser les utilisateurs accéder à leur données sur toutes les pages de votre site web. Liez directement à l'Auditorium utilisateur ou utilisez le widget HTML."
 
+#. src/views/components/auditorium/awareness-widgets.js:70
 #: 
 msgid "User Auditorium link"
 msgstr "Lien utilisateur Auditorium"
 
+#. src/views/components/auditorium/awareness-widgets.js:80
 #: 
 msgid "Successfully copied link to clipboard."
 msgstr "Le lien a été copié dans le presse-papier avec succès."
@@ -1580,18 +1598,25 @@ msgstr "Copier le lien"
 msgid "HTML Widget"
 msgstr "Widget HTML"
 
+#. src/views/components/auditorium/awareness-widgets.js:130
 #: 
 msgid "Successfully copied widget code to clipboard."
 msgstr "Le code du widget a été copié dans le presse-papier avec succès."
 
+#. src/views/components/auditorium/awareness-widgets.js:135
 #: 
 msgid "Copy widget"
 msgstr "Copier le widget"
 
+#. #-#-#-#-#  auditorium.po  #-#-#-#-#
+#. src/views/components/index/main-card.js:67
+#. #-#-#-#-#  auditorium.po  #-#-#-#-#
+#. src/views/components/auditorium/frequently-asked-questions.js:29
 #: 
 msgid "Device information and engagement are not collected. There are also no fingerprinting technologies in use."
 msgstr "Les informations sur l'appareil et l'engagement ne sont pas collectés. Il n'y a pas non plus de technologies d'empreintes digitales utilisées."
 
+#. src/views/components/auditorium/user-onboarding.js:84
 #: 
 msgid "You are probably located in <span class=\"%s\">%s."
 msgstr "Vous êtes probablement localisé en <span class=\"%s\">%s."
@@ -1615,4 +1640,16 @@ msgstr "La localisation géographique associée à chaque session."
 #: 
 msgid "Not the operator of this Offen installation? Manage your data in the <a href=\"/auditorium/\" class=\"%s\" >User Auditorium.</a>"
 msgstr "Pas l'opérateur de cette installation d'Offen ? Gérez vos données dans <a href=\"/auditorium/\" class=\"%s\" >l'Auditorium Utilisateur.</a>"
+
+#: 
+msgid "Access your usage data"
+msgstr "Accéder à vos données d'utilisation"
+
+#. #-#-#-#-#  auditorium.po  #-#-#-#-#
+#. src/views/components/auditorium/awareness-widgets.js:24
+#. #-#-#-#-#  auditorium.po  #-#-#-#-#
+#. src/views/components/auditorium/awareness-widgets.js:29
+#: 
+msgid "Access your data"
+msgstr "Accéder à vos données d'utilisation"
 

@@ -48,8 +48,9 @@ sf('./styles/label-toggle.css')
 sf('./styles/filter-elements.css')
 sf('./styles/negative-margins.css')
 sf('./styles/loading-overlay.css')
+sf('./styles/first-letter-uppercase.css')
 
-const vaultInstance = vault(process.env.VAULT_HOST || (window.location.origin + '/vault/'))
+const vaultInstance = vault(process.env.VAULT_HOST || (window.location.origin + '/vault'))
 
 const middlewares = [
   thunk.withExtraArgument(
