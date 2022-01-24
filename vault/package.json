@@ -43,7 +43,7 @@
     "gulp-uglify": "^3.0.2",
     "linguas-file": "^2.0.0",
     "minify-stream": "^2.1.0",
-    "mochify": "^8.1.0",
+    "mochify": "^9.1.0",
     "npm-license-crawler": "^0.2.1",
     "sinon": "^7.3.2",
     "standard": "^14.3.1",
