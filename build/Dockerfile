@@ -1,7 +1,7 @@
 # Copyright 2021 - Offen Authors <hioffen@posteo.de>
 # SPDX-License-Identifier: Apache-2.0
 
-FROM alpine:3.14
+FROM alpine:3.15
 LABEL maintainer="offen <hioffen@posteo.de>"
 
 RUN addgroup -g 10001 -S offen \
