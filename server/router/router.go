@@ -4,9 +4,11 @@
 package router
 
 import (
+	"errors"
 	"fmt"
 	"html/template"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/NYTimes/gziphandler"
@@ -56,8 +58,9 @@ func (rt *router) getCache() *cache.Cache {
 }
 
 func (rt *router) logError(err error, message string) {
+	sanitizedErrorMessage := strings.ReplaceAll(err.Error(), "\n", " ")
 	if rt.logger != nil {
-		rt.logger.WithError(err).Error(message)
+		rt.logger.WithError(errors.New(sanitizedErrorMessage)).Error(message)
 	}
 }
 
