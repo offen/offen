@@ -129,7 +129,7 @@ const URLTable = (props) => {
             columnNames={[__('Country'), __('Sessions'), __('Page depth')]}
             formatAs={['count', 'value']}
             rows={model.geo}
-            titleTransform={k => countries.getName(k, process.env.LOCALE, { select: 'official' })}
+            titleTransform={k => countries.getName(k, process.env.LOCALE, { select: 'alias' })}
             ItemDecorator={(props) => {
               let content
               if (props.children === '__NONE_GEOLOCATION__') {
