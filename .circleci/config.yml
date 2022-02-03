@@ -319,6 +319,7 @@ commands:
     steps:
       - browser-tools/install-browser-tools
       - checkout
+      - downgrade_npm
       - attach_workspace:
           at: ~/offen
       - run:
@@ -373,6 +374,7 @@ commands:
     steps:
       - checkout:
           path: << parameters.checkout >>
+      - downgrade_npm
       - run:
           name: Install dependencies
           command: npm ci
@@ -392,6 +394,13 @@ commands:
             sudo mv mc /usr/local/bin/mc
             command -v mc
 
+  downgrade_npm:
+    description: Downgrade npm to version 6
+    steps:
+      - run:
+          name: Install npm 6 globally
+          command: sudo npm i -g npm@6
+
 orbs:
   docker: circleci/docker@1.0.1
   browser-tools: circleci/browser-tools@1.1.0
@@ -407,11 +416,11 @@ executors:
         auth: *docker-pull-creds
   node:
     docker:
-      - image: cimg/node:14.17-browsers
+      - image: cimg/node:16.13-browsers
         auth: *docker-pull-creds
   node-postgres:
     docker:
-      - image: cimg/node:14.17-browsers
+      - image: cimg/node:16.13-browsers
         auth: *docker-pull-creds
       - image: circleci/postgres:11.2-alpine
         auth: *docker-pull-creds
@@ -420,7 +429,7 @@ executors:
           POSTGRES_PASSWORD: test
   node-mysql:
     docker:
-      - image: cimg/node:14.17-browsers
+      - image: cimg/node:16.13-browsers
         auth: *docker-pull-creds
       - image: circleci/mysql:5.7.32
         auth: *docker-pull-creds

@@ -1,7 +1,7 @@
 # Copyright 2020 - Offen Authors <hioffen@posteo.de>
 # SPDX-License-Identifier: Apache-2.0
 
-FROM node:14
+FROM node:16
 
 # Install these dependencies for using Headless Chrome inside the Container
 # https://github.com/GoogleChrome/puppeteer/blob/master/docs/troubleshooting.md#running-puppeteer-in-docker
@@ -58,9 +58,10 @@ RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key
     fonts-thai-tlwg \
     fonts-wqy-zenhei \
     google-chrome-unstable \
-    ttf-freefont \
     --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
+
+RUN npm install -g npm@6
 
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 ENV ADBLOCK true
