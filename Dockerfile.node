@@ -57,6 +57,7 @@ RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key
     fonts-kacst \
     fonts-thai-tlwg \
     fonts-wqy-zenhei \
+    fonts-freefont-ttf \
     google-chrome-unstable \
     --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
