@@ -6,6 +6,7 @@ package css
 import (
 	"errors"
 	"fmt"
+	"os"
 	"regexp"
 
 	"github.com/aymerick/douceur/css"
@@ -98,6 +99,11 @@ func validateRule(rule *css.Rule) error {
 // ValidateCSS makes sure the given CSS does not contain any potentially
 // dangerous rules in the context of being used in the consent banner
 func ValidateCSS(input string) error {
+	validationPolicy := os.Getenv("OFFEN_UNSAFE_CSS")
+	if validationPolicy == "allow" {
+		return nil
+	}
+
 	s, err := parser.Parse(input)
 	if err != nil {
 		return fmt.Errorf("css: error parsing given CSS: %w", err)
