@@ -138,7 +138,7 @@ const URLTable = (props) => {
                 content = countries.getName(
                   props.children,
                   process.env.LOCALE,
-                  { select: 'official' }
+                  { select: 'alias' }
                 ) || props.children
               }
 
