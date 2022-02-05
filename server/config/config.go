@@ -24,7 +24,7 @@ const envFileName = "offen.env"
 
 var (
 	// EventRetention defines the duration for which events are expected to
-	//  be kept before expired.
+	//  be kept before expired. This value can be overridden by setting OFFEN_APP_RETENTION_DAYS
 	EventRetention = time.Hour * 24 * 6 * 31
 )
 
@@ -180,6 +180,13 @@ func New(populateMissing bool, override string) (*Config, error) {
 			return &c, fmt.Errorf("config: error creating cookie one-off secret: %w", cookieSecretErr)
 		}
 		c.Secret = Bytes(cookieSecret)
+	}
+
+	if c.App.RetentionDays >= 0 {
+		if c.App.RetentionDays > 31*6 || c.App.RetentionDays == 0 {
+			return &c, fmt.Errorf("config: cannot set a retention period that is zero or that is higher than 186 days")
+		}
+		EventRetention = time.Duration(c.App.RetentionDays) * time.Hour * 24
 	}
 
 	// some deploy targets have custom overrides for creating the

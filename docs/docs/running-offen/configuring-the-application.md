@@ -266,3 +266,12 @@ In case you want to run Offen as a horizontally scaling service, you can set thi
 No default value.
 
 If you want to collect usage statistics for your Offen installation using Offen, you can use this parameter to specify an Account ID known to your Offen instance that will be used for collecting data.
+
+### OFFEN_APP_RETENTIONDAYS
+{: .no_toc }
+
+No default value.
+
+By default, Offen retains data for 6 months (186 days) and deletes all data that is older than this threshold.
+In case you wish to expire data even earlier, use this setting to define a number of days in the range between 1 and 186.
+Negative values will be ignored.
