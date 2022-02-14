@@ -85,7 +85,7 @@ jobs:
             if [ -z "$CIRCLE_TAG" ] && [ "${CIRCLE_BRANCH}" != "development" ] && [ "${CIRCLE_BRANCH}" != "master" ]; then
               make build
             else
-              TARGETS=linux/amd64,windows/amd64 make build
+              TARGETS=linux/amd64,windows/amd64,linux/arm64 make build
               # Darwin builds cannot be statically linked right now
               # so we override the default LDFLAGS value
               TARGETS=darwin/amd64 LDFLAGS='' make build
