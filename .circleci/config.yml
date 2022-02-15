@@ -189,13 +189,6 @@ jobs:
             done
       - docker/install-docker-credential-helper
       - docker/configure-docker-credentials-store
-      # - run:
-      #     name: Build Docker image(s)
-      #     command: |
-      #       make build-docker
-      #       for tag in "${DOCKER_IMAGE_TAGS[@]}"; do
-      #         docker tag offen/offen:local offen/offen:$tag
-      #       done
       - run:
           name: Push offen/offen to Docker Hub
           command: |
