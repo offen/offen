@@ -113,5 +113,6 @@ WORKDIR /build
 
 COPY ./build/compile.sh .
 RUN chmod +x ./compile.sh && ./compile.sh && rm ./compile.sh
+RUN [ ! -f ./offen-linux-arm-7 ] || mv ./offen-linux-arm-7 ./offen-linux-arm-v7
 
 COPY --from=notice /code/NOTICE ./
