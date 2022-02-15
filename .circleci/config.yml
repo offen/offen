@@ -85,7 +85,7 @@ jobs:
             if [ -z "$CIRCLE_TAG" ] && [ "${CIRCLE_BRANCH}" != "development" ] && [ "${CIRCLE_BRANCH}" != "master" ]; then
               make build
             else
-              TARGETS=linux/amd64,windows/amd64 make build
+              TARGETS=linux/amd64,windows/amd64,linux/arm-7,linux/arm64 make build
               # Darwin builds cannot be statically linked right now
               # so we override the default LDFLAGS value
               TARGETS=darwin/amd64 LDFLAGS='' make build
@@ -140,6 +140,8 @@ jobs:
     executor: python
     environment:
       DOCKER_LOGIN: offen
+      DOCKER_BUILDKIT: '1'
+      DOCKER_CLI_EXPERIMENTAL: enabled
       MINIO_STORAGE: https://storage.offen.dev
     working_directory: ~/offen
     steps:
@@ -190,18 +192,16 @@ jobs:
       - docker/install-docker-credential-helper
       - docker/configure-docker-credentials-store
       - run:
-          name: Build Docker image(s)
-          command: |
-            make build-docker
-            for tag in "${DOCKER_IMAGE_TAGS[@]}"; do
-              docker tag offen/offen:local offen/offen:$tag
-            done
-      - run:
           name: Push offen/offen to Docker Hub
           command: |
             echo "$DOCKER_ACCESSTOKEN" | docker login --username $DOCKER_LOGIN --password-stdin
+            # This is required for building ARM: https://gitlab.alpinelinux.org/alpine/aports/-/issues/12406
+            docker run --rm --privileged linuxkit/binfmt:v0.8
+            docker context create docker-offen
+            docker buildx create docker-offen --name docker-offen --use
+            docker buildx inspect --bootstrap
             for tag in "${DOCKER_IMAGE_TAGS[@]}"; do
-              docker push offen/offen:$tag
+              docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 offen/offen:$tag . --push
             done
       - store_artifacts:
           path: /tmp/artifacts
