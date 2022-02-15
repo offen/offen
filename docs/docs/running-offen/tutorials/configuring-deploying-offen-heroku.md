@@ -49,7 +49,7 @@ To follow the steps in this tutorial you will need to have created an account wi
 
 You can automatically deploy our [template repository][template] to Heroku using this button:
 
-<a class="btn btn-outline" target="_blank" href="https://heroku.com/deploy?template=https://github.com/offen/heroku/tree/master">Deploy Offen on Heroku</a>
+<a class="btn btn-outline" target="_blank" href="https://heroku.com/deploy?template=https://github.com/offen/heroku">Deploy Offen on Heroku</a>
 
 [template]: https://github.com/offen/heroku
 
