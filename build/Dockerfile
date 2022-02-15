@@ -5,12 +5,13 @@ FROM alpine:3.15
 LABEL maintainer="offen <hioffen@posteo.de>"
 
 ARG TARGETARCH
+ARG TARGETVARIANT
 
 RUN addgroup -g 10001 -S offen \
 	&& adduser -u 10000 -S -G offen -h /home/offen offen
 RUN apk add -U --no-cache ca-certificates libcap tini bind-tools
 
-COPY ./bin/offen-linux-$TARGETARCH /opt/offen/offen-linux-$TARGETARCH
+COPY ./bin/offen-linux-$TARGETARCH${TARGETVARIANT:+-7} /opt/offen/offen-linux-$TARGETARCH
 RUN setcap CAP_NET_BIND_SERVICE=+eip /opt/offen/offen-linux-$TARGETARCH
 RUN ln -s /opt/offen/offen-linux-$TARGETARCH /sbin/offen
 
