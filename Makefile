@@ -96,6 +96,7 @@ build:
 		--build-arg ldflags=${LDFLAGS} \
 		--build-arg targets=${TARGETS} \
 		--build-arg rev=${OFFEN_GIT_REVISION} \
+		--build-arg skip_locales=${SKIP_LOCALES} \
 		-t offen/build -f build/Dockerfile.build .
 	@mkdir -p bin
 	@docker create --entrypoint=bash -it --name binary offen/build
