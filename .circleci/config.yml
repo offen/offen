@@ -83,7 +83,7 @@ jobs:
           name: Build binaries
           command: |
             if [ -z "$CIRCLE_TAG" ] && [ "${CIRCLE_BRANCH}" != "development" ] && [ "${CIRCLE_BRANCH}" != "master" ]; then
-              make build
+              SKIP_LOCALES="1" make build
             else
               TARGETS=linux/amd64,windows/amd64,linux/arm-7,linux/arm64 make build
               # Darwin builds cannot be statically linked right now

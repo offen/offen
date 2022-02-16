@@ -11,6 +11,8 @@ ENV DISABLE_OPENCOLLECTIVE true
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 
 FROM offen_node as auditorium
+ARG skip_locales
+ENV SKIP_LOCALES=$skip_locales
 COPY ./auditorium/package.json ./auditorium/package-lock.json /code/deps/
 WORKDIR /code/deps
 RUN npm ci
@@ -24,6 +26,8 @@ RUN npm run build
 RUN npm run licenses
 
 FROM offen_node as script
+ARG skip_locales
+ENV SKIP_LOCALES=$skip_locales
 COPY ./script/package.json ./script/package-lock.json /code/deps/
 WORKDIR /code/deps
 RUN npm ci
@@ -37,6 +41,8 @@ RUN npm run build
 RUN npm run licenses
 
 FROM offen_node as vault
+ARG skip_locales
+ENV SKIP_LOCALES=$skip_locales
 COPY ./vault/package.json ./vault/package-lock.json /code/deps/
 WORKDIR /code/deps
 RUN npm ci

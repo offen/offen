@@ -15,7 +15,9 @@ var linguasFile = require('linguas-file')
 var pkg = require('./package.json')
 
 var defaultLocale = 'en'
-var linguas = linguasFile.parse(fs.readFileSync('./locales/LINGUAS', 'utf-8'))
+var linguas = !process.env.SKIP_LOCALES
+  ? linguasFile.parse(fs.readFileSync('./locales/LINGUAS', 'utf-8'))
+  : []
 
 gulp.task('clean:pre', function () {
   return gulp
