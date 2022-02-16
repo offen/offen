@@ -19,7 +19,7 @@ func TestLocale(t *testing.T) {
 	})
 	t.Run("error", func(t *testing.T) {
 		var l Locale
-		if err := l.Decode("pt"); err == nil {
+		if err := l.Decode("ru"); err == nil {
 			t.Error("Unexpected nil error")
 		}
 	})
