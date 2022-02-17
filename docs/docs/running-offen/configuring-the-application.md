@@ -281,3 +281,5 @@ Possible values are:
 - `6weeks`
 - `30days`
 - `7days`
+
+Please note that when you configure this value to be lower than before, the application will delete all events older than the new value on startup, and there will be no way to recover this data.
