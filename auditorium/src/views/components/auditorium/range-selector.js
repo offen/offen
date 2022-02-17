@@ -155,7 +155,7 @@ const RangeSelector = (props) => {
         {explainerActive
           ? (
             <p class='mw7 ma0 pv2'>
-              {__('Here you can set the time frame for all displayed metrics. As all data is generally deleted after 6 months, the selection is limited to this duration.')}
+              {__('Here you can set the time frame for all displayed metrics. As all data is generally deleted after 6 months maximum, the selection is limited to this duration.')}
             </p>
           )
           : null}

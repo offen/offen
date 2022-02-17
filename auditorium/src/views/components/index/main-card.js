@@ -26,7 +26,7 @@ module.exports = (props) => {
     dataHandled = (
       <Fragment>
         <Paragraph class='mt0 mb1'>
-          {__('Your usage data is encrypted end-to-end. It will be automatically deleted within 6 months. <a href="/auditorium/" class="%s">You can delete your usage data yourself at any time in the Auditorium.</a>', 'b link dim dark-green')}
+          {__('Your usage data is encrypted end-to-end. It will be automatically deleted in maximum 6 months. <a href="/auditorium/" class="%s">You can delete your usage data yourself at any time in the Auditorium.</a>', 'b link dim dark-green')}
         </Paragraph>
       </Fragment>
     )
@@ -44,7 +44,7 @@ module.exports = (props) => {
     dataHandled = (
       <Fragment>
         <Paragraph class='mt0 mb1'>
-          {__('Your usage data is encrypted end-to-end. It will be automatically deleted within 6 months. You can delete your usage data yourself at any time.')}
+          {__('Your usage data is encrypted end-to-end. It will be automatically deleted in maximum 6 months. You can delete your usage data yourself at any time.')}
         </Paragraph>
       </Fragment>
     )

@@ -282,4 +282,7 @@ Possible values are:
 - `30days`
 - `7days`
 
-Please note that when you configure this value to be lower than before, the application will delete all events older than the new value on startup, and there will be no way to recover this data.
+__Heads Up__
+{: .label .label-red }
+
+Please note that when you configure this value to be lower than what was usedbefore, __the application will delete all events older than the new value on startup__, and there will be __no way to recover this data__.

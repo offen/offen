@@ -38,7 +38,7 @@ module.exports = (props) => {
             {__('Operator')}
           </Paragraph>
           <Paragraph class='mt0 mb4'>
-            {__('Operators are the owners of <a href="#terms-offen-installation" class="%s">Offen installations.</a> Only after you opted in, your usage data of a website is collected. Operators than can view it for maximum 6 months.', 'b link dim dark-green')}
+            {__('Operators are the owners of <a href="#terms-offen-installation" class="%s">Offen installations.</a> Only after you opted in, your usage data of a website is collected. Operators then can view it for maximum 6 months.', 'b link dim dark-green')}
           </Paragraph>
         </div>
         <div class='w-100 w-50-ns ml4-ns'>
