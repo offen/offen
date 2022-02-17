@@ -18,7 +18,9 @@ var minifyStream = require('minify-stream')
 var linguasFile = require('linguas-file')
 
 var defaultLocale = 'en'
-var linguas = linguasFile.parse(fs.readFileSync('./locales/LINGUAS', 'utf-8'))
+var linguas = !process.env.SKIP_LOCALES
+  ? linguasFile.parse(fs.readFileSync('./locales/LINGUAS', 'utf-8'))
+  : []
 
 var pkg = require('./package.json')
 

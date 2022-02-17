@@ -8,7 +8,7 @@ parent: Running Offen
 ---
 
 <!--
-Copyright 2020 - Offen Authors <hioffen@posteo.de>
+Copyright 2020-2022 - Offen Authors <hioffen@posteo.de>
 SPDX-License-Identifier: Apache-2.0
 -->
 
@@ -157,15 +157,15 @@ $ sudo yunohost app install https://github.com/offen/offen_ynh
 
 [ynh-repo]: https://github.com/offen/offen_ynh
 
-## Building Offen for architectures other than `amd64`
+## Building Offen for other architectures other
 
-Current distributions of Offen target `amd64` architectures only. If you want to run Offen on different hardware (e.g. Raspberry Pi), it is trivial to build a binary for your target OS and platform yourself. Assuming you have Docker and `make` installed, you can build the latest version like this (the example targets Linux on ARM v8):
+Current distributions of Offen target `amd64`, `arm64` and `arm/v7` architectures only. If you want to run Offen on different hardware, it is possible to build a binary for your target OS and platform yourself. Assuming you have Docker and `make` installed, you can build the latest version like this (the example targets Linux on ARM v6):
 
 ```
 git clone git@github.com:offen/offen.git
 cd offen
 git checkout {{ site.offen_version }}
-TARGETS=linux/arm64 make build
+TARGETS=linux/arm-6 make build
 ```
 
 Once finished, the `bin` folder contains your binary of choice. Currently supported architectures are all architectures supported by [xgo][xgo]:

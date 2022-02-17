@@ -81,7 +81,7 @@ const UserOnboarding = (props) => {
                               ? (
                                 <Fragment>
                                   <Span>
-                                    {__('You are probably located in <span class="%s">%s.', 'i tracked', countries.getName(stats.geo, process.env.LOCALE, { select: 'official' }))}
+                                    {__('You are probably located in <span class="%s">%s.', 'i tracked', countries.getName(stats.geo, process.env.LOCALE, { select: 'alias' }))}
                                   </Span>
                                   &nbsp;
                                 </Fragment>

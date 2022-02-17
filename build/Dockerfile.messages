@@ -1,9 +1,10 @@
 # Copyright 2020-2021 - Offen Authors <hioffen@posteo.de>
 # SPDX-License-Identifier: Apache-2.0
 
-FROM node:14-alpine as auditorium
+FROM node:16-alpine as auditorium
 RUN apk add git
 RUN apk add --no-cache --virtual .gyp python3 make g++
+RUN npm i -g npm@6
 
 COPY ./auditorium/package.json ./auditorium/package-lock.json /code/deps/
 COPY ./packages /code/packages
@@ -17,9 +18,10 @@ WORKDIR /code/auditorium
 RUN cp -a /code/deps/node_modules /code/auditorium/
 RUN npm run --silent extract-strings > auditorium.po
 
-FROM node:14-alpine as script
+FROM node:16-alpine as script
 RUN apk add git
 RUN apk add --no-cache --virtual .gyp python3 make g++
+RUN npm i -g npm@6
 
 COPY ./script/package.json ./script/package-lock.json /code/deps/
 COPY ./packages /code/packages
@@ -35,9 +37,10 @@ WORKDIR /code/script
 RUN cp -a /code/deps/node_modules /code/script/
 RUN npm run --silent extract-strings > script.po
 
-FROM node:14-alpine as vault
+FROM node:16-alpine as vault
 RUN apk add git
 RUN apk add --no-cache --virtual .gyp python3 make g++
+RUN npm i -g npm@6
 
 COPY ./vault/package.json ./vault/package-lock.json /code/deps/
 COPY ./packages /code/packages
@@ -53,9 +56,10 @@ WORKDIR /code/vault
 RUN cp -a /code/deps/node_modules /code/vault/
 RUN npm run --silent extract-strings > vault.po
 
-FROM node:14-alpine as packages
+FROM node:16-alpine as packages
 RUN apk add git
 RUN apk add --no-cache --virtual .gyp python3 make g++
+RUN npm i -g npm@6
 
 COPY ./packages/package.json ./packages/package-lock.json /code/deps/
 WORKDIR /code/deps
@@ -70,7 +74,7 @@ WORKDIR /code/packages
 RUN cp -a /code/deps/node_modules /code/packages/
 RUN npm run --silent extract-strings > packages.po
 
-FROM golang:1.16
+FROM golang:1.17
 
 RUN apt-get update \
   && apt-get install -y gettext \

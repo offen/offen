@@ -117,10 +117,10 @@ Users have access to the same set of tools for analyzing their own data and they
 
 ## Localize
 
-__Offen is currently available in English, German and French.__  
+__Offen is currently available in English, German, French, Spanish and Portuguese.__
 Our consent banner and the Auditorium for operators as well as users can be displayed in the respective locale.  
 
-Support fair web analytics by contributing Spanish, Portuguese and other language versions. [Request an invite.][]
+Support fair web analytics by contributing Italian, Chinese and other language versions. [Request an invite.][]
 
 [Request an invite.]: mailto:hioffen@posteo.de
 

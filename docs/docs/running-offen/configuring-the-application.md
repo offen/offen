@@ -242,7 +242,7 @@ The `APP` namespace affects how the application will behave.
 
 Defaults to `en`.
 
-The language the application will use when displaying user facing text. Right now, `en` (English), `de` (German), `fr` (French) and `es` (Spanish) are supported. In case you want to contribute to Offen by adding a new language, [we'd love to hear from you][email].
+The language the application will use when displaying user facing text. Right now, `en` (English), `de` (German), `fr` (French), `es` (Spanish) and `pt` (Portuguese) are supported. In case you want to contribute to Offen by adding a new language, [we'd love to hear from you][email].
 
 [email]: mailto:hioffen@posteo.de
 
