@@ -73,6 +73,9 @@ function ensureSyncWith (eventStore, api) {
         })
         return eventStore.putEvents(null, events)
           .then(function (result) {
+            if (!result) {
+              return { retentionPeriod: retentionPeriod }
+            }
             return Object.assign(result, { retentionPeriod: retentionPeriod })
           })
       })
