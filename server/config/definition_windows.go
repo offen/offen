@@ -25,14 +25,14 @@ type Config struct {
 		ConnectionRetries int       `default:"0"`
 	}
 	App struct {
-		Development   bool     `default:"false"`
-		LogLevel      LogLevel `default:"info"`
-		SingleNode    bool     `default:"true"`
-		Locale        Locale   `default:"en"`
-		RootAccount   string
-		DemoAccount   string `ignored:"true"`
-		DeployTarget  DeployTarget
-		RetentionDays int `default:"-1"`
+		Development  bool     `default:"false"`
+		LogLevel     LogLevel `default:"info"`
+		SingleNode   bool     `default:"true"`
+		Locale       Locale   `default:"en"`
+		RootAccount  string
+		DemoAccount  string `ignored:"true"`
+		DeployTarget DeployTarget
+		Retention    Retention `default:"6months"`
 	}
 	Secret Bytes
 	SMTP   struct {

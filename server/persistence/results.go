@@ -47,6 +47,7 @@ type AccountResult struct {
 	Secrets             *EncryptedSecretsByID `json:"secrets,omitempty"`
 	AccountStyles       string                `json:"accountStyles,omitempty"`
 	Created             time.Time             `json:"created,omitempty"`
+	RetentionPeriod     string                `json:"retentionPeriod,omitempty"`
 }
 
 // ShareAccountResult is a successful invitation of a user

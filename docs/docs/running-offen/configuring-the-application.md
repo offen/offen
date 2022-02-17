@@ -267,11 +267,17 @@ No default value.
 
 If you want to collect usage statistics for your Offen installation using Offen, you can use this parameter to specify an Account ID known to your Offen instance that will be used for collecting data.
 
-### OFFEN_APP_RETENTIONDAYS
+### OFFEN_APP_RETENTION
 {: .no_toc }
 
-No default value.
+Defaults to `6months`
 
 By default, Offen retains data for 6 months (186 days) and deletes all data that is older than this threshold.
-In case you wish to expire data even earlier, use this setting to define a number of days in the range between 1 and 186.
-Negative values will be ignored.
+In case you wish to expire data even earlier, use this setting to define a shorter retention period.
+Possible values are:
+
+- `6months`
+- `12weeks`
+- `6weeks`
+- `30days`
+- `7days`

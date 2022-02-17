@@ -11,25 +11,31 @@ const classnames = require('classnames')
 const ExplainerIcon = require('./explainer-icon')
 const DatePicker = require('./date-picker')
 
+// possible values for `retentionPeriod` are:
+// `6months`, '12weeks', '6weeks', '30days', '7days'
+
 const predefinedRanges = [
   { display: __('Yesterday'), query: { range: 'yesterday', resolution: 'hours' }, endsFirstBlock: true },
   { display: __('24 hours'), query: { range: '24', resolution: 'hours' }, opensSecondBlock: true },
   { display: __('7 days'), query: null },
-  { display: __('30 days'), query: { range: '30', resolution: 'days' } },
-  { display: __('6 weeks'), query: { range: '6', resolution: 'weeks' } },
-  { display: __('12 weeks'), query: { range: '12', resolution: 'weeks' } },
-  { display: __('6 months'), query: { range: '6', resolution: 'months' }, endsSecondBlock: true }
+  { display: __('30 days'), query: { range: '30', resolution: 'days' }, configured: (r) => ['6months', '12weeks', '6weeks', '30days'].indexOf(r) !== -1 },
+  { display: __('6 weeks'), query: { range: '6', resolution: 'weeks' }, configured: (r) => ['6months', '12weeks', '6weeks'].indexOf(r) !== -1 },
+  { display: __('12 weeks'), query: { range: '12', resolution: 'weeks' }, configured: (r) => ['6months', '12weeks'].indexOf(r) !== -1 },
+  { display: __('6 months'), query: { range: '6', resolution: 'months' }, endsSecondBlock: true, configured: (r) => ['6months'].indexOf(r) !== -1 }
 ]
 
 const RangeSelector = (props) => {
   const {
     resolution, range: currentRange, showExplainer, onExplain, explainerActive,
-    from, to, queryParams
+    from, to, queryParams, retentionPeriod
   } = props
 
   const [showDatepicker, setShowDatepicker] = useState(false)
 
   const items = predefinedRanges.map(function (range, index) {
+    const isConfigured = 'configured' in range
+      ? range.configured(retentionPeriod)
+      : true
     let url = window.location.pathname
     const search = new window.URLSearchParams(queryParams)
     search.delete('from')
@@ -59,16 +65,30 @@ const RangeSelector = (props) => {
           range.endsSecondBlock ? 'pr4' : null
         )}
       >
-        <a
-          href={url}
-          class={activeRange
-            ? 'dark-green b link dim dib mb2 mr1 pv2 ph1 bt bw2 b--dark-green'
-            : 'dark-green b link dim dib mb2 mr1 pv2 ph1 mt1'}
-          aria-current={activeRange ? 'time' : null}
-          onclick={() => setShowDatepicker(false)}
-        >
-          {range.display}
-        </a>
+        {(() => {
+          if (!isConfigured) {
+            return (
+              <span
+                class='moon-gray b link dim dib mb2 mr1 pv2 ph1 mt1'
+                title={__('Not available')}
+              >
+                {range.display}
+              </span>
+            )
+          }
+          return (
+            <a
+              href={url}
+              class={activeRange
+                ? 'dark-green b link dim dib mb2 mr1 pv2 ph1 bt bw2 b--dark-green'
+                : 'dark-green b link dim dib mb2 mr1 pv2 ph1 mt1'}
+              aria-current={activeRange ? 'time' : null}
+              onclick={() => setShowDatepicker(false)}
+            >
+              {range.display}
+            </a>
+          )
+        })()}
       </li>
     )
   })
@@ -149,6 +169,7 @@ const RangeSelector = (props) => {
             queryParams={queryParams}
             from={from}
             to={to}
+            retentionPeriod={retentionPeriod}
             onClose={() => setShowDatepicker(false)}
           />
         )

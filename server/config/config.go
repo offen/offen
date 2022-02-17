@@ -182,12 +182,7 @@ func New(populateMissing bool, override string) (*Config, error) {
 		c.Secret = Bytes(cookieSecret)
 	}
 
-	if c.App.RetentionDays >= 0 {
-		if c.App.RetentionDays > 31*6 || c.App.RetentionDays == 0 {
-			return &c, fmt.Errorf("config: cannot set a retention period that is zero or that is higher than 186 days")
-		}
-		EventRetention = time.Duration(c.App.RetentionDays) * time.Hour * 24
-	}
+	EventRetention = c.App.Retention.retention
 
 	// some deploy targets have custom overrides for creating the
 	// runtime configuration

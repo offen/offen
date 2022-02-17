@@ -130,6 +130,7 @@ const AuditoriumView = (props) => {
             from={from}
             to={to}
             queryParams={queryParams}
+            retentionPeriod={model.account.retentionPeriod}
           />
         </div>
       </div>
