@@ -27,7 +27,7 @@ const predefinedRanges = [
 const RangeSelector = (props) => {
   const {
     resolution, range: currentRange, showExplainer, onExplain, explainerActive,
-    from, to, queryParams, retentionPeriod
+    from, to, queryParams, retentionPeriod = '6months'
   } = props
 
   const [showDatepicker, setShowDatepicker] = useState(false)
