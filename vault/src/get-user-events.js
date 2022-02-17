@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * Copyright 2020-2022 - Offen Authors <hioffen@posteo.de>
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -19,14 +19,19 @@ module.exports.getUserEventsWith = getUserEventsWith
 function getUserEventsWith (queries, eventStore, api) {
   return function (query) {
     return ensureSyncWith(eventStore, api)()
-      .then(function () {
+      .then(function (result) {
         return queries.getDefaultStats(null, query)
+          .then(function (queryResult) {
+            queryResult.account = { retentionPeriod: result.retentionPeriod }
+            return queryResult
+          })
       })
   }
 }
 
 function ensureSyncWith (eventStore, api) {
   return function () {
+    var retentionPeriod
     return eventStore.getLastKnownCheckpoint(null)
       .then(function (checkpoint) {
         var params = checkpoint
@@ -42,6 +47,7 @@ function ensureSyncWith (eventStore, api) {
             throw err
           })
           .then(function (payload) {
+            retentionPeriod = payload.retentionPeriod
             var events = payload.events
             return Promise.all([
               decryptUserEventsWith(eventStore)(events),
@@ -66,6 +72,9 @@ function ensureSyncWith (eventStore, api) {
           )
         })
         return eventStore.putEvents(null, events)
+          .then(function (result) {
+            return Object.assign(result, { retentionPeriod: retentionPeriod })
+          })
       })
   }
 }

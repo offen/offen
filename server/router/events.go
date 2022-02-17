@@ -96,6 +96,7 @@ func (rt *router) getEvents(c *gin.Context) {
 		).Pipe(c)
 		return
 	}
+	result.RetentionPeriod = rt.config.App.Retention.String()
 	c.JSON(http.StatusOK, result)
 }
 

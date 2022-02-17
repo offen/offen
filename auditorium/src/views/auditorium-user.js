@@ -32,7 +32,6 @@ const AuditoriumView = (props) => {
   const { handlePurge, handleQuery, expressConsent, getConsentStatus, getOnboardingStatus, completeOnboarding } = props
   const { range, resolution, onboarding: forceOnboarding, from, to, filter: rawFilter } = matches
   const filter = rawFilter && window.decodeURIComponent(rawFilter)
-
   useEffect(function fetchConsentStatus () {
     getConsentStatus()
     getOnboardingStatus()
@@ -100,6 +99,7 @@ const AuditoriumView = (props) => {
             from={from}
             to={to}
             queryParams={queryParams}
+            retentionPeriod={model.account.retentionPeriod}
             {...explainerPropsFor('range-selector')}
           />
         </div>

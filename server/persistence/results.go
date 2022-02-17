@@ -14,9 +14,10 @@ type SecretResult struct {
 // EventsResult contains all data that is returned to a user requesting their
 // data
 type EventsResult struct {
-	Events        *EventsByAccountID `json:"events,omitempty"`
-	DeletedEvents []string           `json:"deletedEvents,omitempty"`
-	Sequence      string             `json:"sequence,omitempty"`
+	Events          *EventsByAccountID `json:"events,omitempty"`
+	DeletedEvents   []string           `json:"deletedEvents,omitempty"`
+	Sequence        string             `json:"sequence,omitempty"`
+	RetentionPeriod string             `json:"retentionPeriod,omitempty"`
 }
 
 // EventResult is an element returned from a query. It contains all data that

@@ -63,7 +63,8 @@ describe('src/get-user-events', function () {
             }]
           },
           deletedEvents: ['k'],
-          sequence: 'sequence-b'
+          sequence: 'sequence-b',
+          retentionPeriod: '30days'
         })
       }
       var getUserEvents = getUserEventsWith(mockQueries, mockStorage, mockApi)
@@ -97,7 +98,7 @@ describe('src/get-user-events', function () {
 
           assert(mockQueries.getDefaultStats.calledOnce)
           assert(mockQueries.getDefaultStats.calledWith(null))
-          assert.deepStrictEqual(result, { mock: 'result' })
+          assert.deepStrictEqual(result, { mock: 'result', account: { retentionPeriod: '30days' } })
         })
     })
   })
