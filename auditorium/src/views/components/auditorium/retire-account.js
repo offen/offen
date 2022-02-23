@@ -18,7 +18,7 @@ const InitialScreen = (props) => {
   return (
     <Fragment>
       <Paragraph class='ma0 mb1'>
-        {__('If you retire the account <em class="%s">%s,</em> it will not appear in your statistics anymore. Users will be able to access and manage their data for the account for another 6 months until data expires.', 'i tracked', account.name)}
+        {__('If you retire the account <em class="%s">%s,</em> it will not appear in your statistics anymore. Users will be able to access and manage their data for the account until it expires.', 'i tracked', account.name)}
       </Paragraph>
       <Paragraph class='ma0 mb3 dark-red'>
         {__('<em class="%s">Danger zone! This action cannot be undone.</em>', 'i')}

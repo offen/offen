@@ -78,10 +78,9 @@ function ensureSyncWith (eventStore, api) {
             ])
               .then(function (results) {
                 var privateKey = results[0]
-                var result = Object.assign(payload.account, {
+                return Object.assign(payload.account, {
                   privateKey: privateKey
                 })
-                return result
               })
           })
       })

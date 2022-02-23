@@ -32,7 +32,7 @@ module.exports = (props) => {
             {__('How is my data handled?')}
           </Paragraph>
           <Paragraph class='mt0 mb1'>
-            {__('Your usage data is encrypted end-to-end. It will be automatically deleted after 6 months. You can delete your usage data yourself at any time in the privacy panel.')}
+            {__('Your usage data is encrypted end-to-end. It will be automatically deleted in maximum 6 months. You can delete your usage data yourself at any time in the privacy panel.')}
           </Paragraph>
         </div>
         <div class='w-100 w-50-ns ml4-ns'>

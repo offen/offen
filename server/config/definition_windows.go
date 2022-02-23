@@ -1,6 +1,7 @@
 // Copyright 2020 - Offen Authors <hioffen@posteo.de>
 // SPDX-License-Identifier: Apache-2.0
 
+//go:build windows
 // +build windows
 
 package config
@@ -31,6 +32,7 @@ type Config struct {
 		RootAccount  string
 		DemoAccount  string `ignored:"true"`
 		DeployTarget DeployTarget
+		Retention    Retention `default:"6months"`
 	}
 	Secret Bytes
 	SMTP   struct {

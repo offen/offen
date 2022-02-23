@@ -19,8 +19,16 @@ const localeMap = {
   en: require('date-fns/locale/en-GB')
 }
 
+const lookBack = {
+  '6months': 6 * 31,
+  '12weeks': 12 * 7,
+  '6weeks': 6 * 7,
+  '30days': 30,
+  '7days': 7
+}
+
 module.exports = (props) => {
-  const { onClose, from, to, queryParams } = props
+  const { onClose, from, to, queryParams, retentionPeriod } = props
   const [startDate, setStartDate] = useState(from ? new Date(from) : new Date())
   const [endDate, setEndDate] = useState(to ? new Date(to) : new Date())
   const dateFormatProps = { year: 'numeric', month: 'long', day: 'numeric' }
@@ -48,7 +56,7 @@ module.exports = (props) => {
             startDate={startDate}
             endDate={endDate}
             selectsStart
-            minDate={subDays(now, 6 * 31)}
+            minDate={subDays(now, lookBack[retentionPeriod])}
             maxDate={endDate}
           />
         </div>

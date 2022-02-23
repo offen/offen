@@ -15,6 +15,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/securecookie"
 	"github.com/microcosm-cc/bluemonday"
+	"github.com/offen/offen/server/config"
 	"github.com/offen/offen/server/persistence"
 )
 
@@ -50,7 +51,7 @@ func TestRouter_GetAccount(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			cookieSigner := securecookie.New([]byte("abc123"), nil)
 			auth, _ := cookieSigner.Encode("auth", test.accountID)
-			rt := router{db: test.database, cookieSigner: cookieSigner}
+			rt := router{db: test.database, cookieSigner: cookieSigner, config: &config.Config{}}
 			w := httptest.NewRecorder()
 			r := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/%s", test.accountID), nil)
 			m := gin.New()

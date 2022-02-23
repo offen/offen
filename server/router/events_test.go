@@ -116,7 +116,8 @@ func TestRouter_getEvents(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			m := gin.New()
 			rt := router{
-				db: test.db,
+				db:     test.db,
+				config: &config.Config{},
 			}
 			m.GET("/", func(c *gin.Context) {
 				c.Set(contextKeyCookie, "user-id")
