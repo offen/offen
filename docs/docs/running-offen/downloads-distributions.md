@@ -54,11 +54,6 @@ Both for binaries and Docker images you can use one of these channels to pick yo
 
 In case you want to deploy Offen, this channel is what you are most likely going to use. When ready, we cut official releases and tag them with a version identifier (e.g. `v0.1.0`). These releases are immutable and will never change, so both a download and the Docker image are guaranteed to provide the exact same build every time.
 
-### Stable channel
-{: .no_toc }
-
-The `stable` channel gives you the most recent build from the `master` branch of our repository. These are usually stable and ready to use. Be aware that there is not necessarily an upgrade path in between `stable` versions. Only binaries and Docker images are available for this channel.
-
 ### Development channel
 {: .no_toc }
 
@@ -109,13 +104,13 @@ dpkg-sig --verify offen.deb
 
 ## Pulling the Docker image
 
-Docker images are available as `offen/offen` on [Docker Hub][docker-hub]. Tagged releases are available under the respective tag (e.g. `offen/offen:v0.1.0`). The `stable` and `development` channel are available as image tags as well. As per Docker convention `latest` maps to the latest tagged release.
+Docker images are available as `offen/offen` on [Docker Hub][docker-hub]. Tagged releases are available under the respective tag (e.g. `offen/offen:v0.1.0`). The `development` channel is available as an image tag as well. As per Docker convention `latest` maps to the latest tagged release.
 
 ```sh
 # {{ site.offen_version }} release
 docker pull offen/offen:{{ site.offen_version }}
-# stable channel
-docker pull offen/offen:stable
+# development channel
+docker pull offen/offen:development
 ```
 
 ---
@@ -123,7 +118,7 @@ docker pull offen/offen:stable
 __Heads Up__
 {: .label .label-red }
 
-While our version tags on Docker Hub are immutable and __will always return the same build__, it is important to note that `development`, `stable` and `latest` will be updated on a rolling basis. If you deploy Offen using Docker, make sure to use a version tag or pin your image's revision.
+While our version tags on Docker Hub are immutable and __will always return the same build__, it is important to note that `development` and `latest` will be updated on a rolling basis. If you deploy Offen using Docker, make sure to use a version tag or pin your image's revision.
 
 [docker-hub]: https://hub.docker.com/r/offen/offen
 
