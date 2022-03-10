@@ -1,35 +1,26 @@
-# Copyright 2020 - Offen Authors <hioffen@posteo.de>
+# Copyright 2020-2022 - Offen Authors <hioffen@posteo.de>
 # SPDX-License-Identifier: Apache-2.0
-
-.vscode
-*.pem
-*.db
-
-bootstrap-alpha.yml
-Dockerrun.aws.json
 
 node_modules/
 dist/
-*.log
-
 bin/
-statik.go
+bundle.*
 
 package-lock.json
 !*/package-lock.json
 
-server.crt
-server.key
-bundle.*
 
 integration/cypress/screenshots
 integration/cypress/videos
 
-docs-site
-
 dependencies.csv
+
 *.deb
+*.tab
+*.tar.gz
+*.db
+*.log
 
 .jekyll-cache
+docs-site
 
-*.tab
