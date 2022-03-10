@@ -23,6 +23,9 @@ RUN mkdir -p /var/opt/offen \
 ENV OFFEN_SERVER_PORT 80
 EXPOSE 80 443
 
+HEALTHCHECK --interval=1m --timeout=5s \
+  CMD wget -qO- http://localhost:80/healthz || exit 1
+
 ENTRYPOINT ["/sbin/tini", "--", "offen"]
 
 USER offen
