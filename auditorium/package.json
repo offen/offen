@@ -46,7 +46,7 @@
     "@babel/core": "^7.8.4",
     "@babel/preset-env": "^7.8.4",
     "@csstools/postcss-sass": "^4.0.0",
-    "@offen/l10nify": "^0.3.0",
+    "@offen/l10nify": "^0.4.0",
     "aliasify": "^2.1.0",
     "babel-preset-preact": "^2.0.0",
     "babelify": "^10.0.0",
