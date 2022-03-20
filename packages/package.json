@@ -14,7 +14,7 @@
     "extract-strings": "extract-strings index.js $(find consent-banner -name '*.js')"
   },
   "dependencies": {
-    "@offen/l10nify": "^0.3.0",
+    "@offen/l10nify": "^0.4.0",
     "browserify-css": "0.15.0",
     "envify": "^4.1.0",
     "nanohtml": "^1.9.1",
