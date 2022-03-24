@@ -1511,7 +1511,7 @@ msgstr "Barra"
 #. src/views/components/auditorium/awareness-widgets.js:18
 #: 
 msgid "/user-access-widget-bar-en.svg"
-msgstr "/user-access-widget-bar-en.svg"
+msgstr "/user-access-widget-bar-pt.svg"
 
 #. src/views/components/auditorium/awareness-widgets.js:21
 #: 
@@ -1521,7 +1521,7 @@ msgstr "Caixa"
 #. src/views/components/auditorium/awareness-widgets.js:22
 #: 
 msgid "/user-access-widget-box-en.svg"
-msgstr "/user-access-widget-box-en.svg"
+msgstr "/user-access-widget-box-pt.svg"
 
 #. src/views/components/auditorium/awareness-widgets.js:25
 #: 
@@ -1531,7 +1531,7 @@ msgstr "Círculo"
 #. src/views/components/auditorium/awareness-widgets.js:26
 #: 
 msgid "/user-access-widget-circle-en.svg"
-msgstr "/user-access-widget-circle-en.svg"
+msgstr "/user-access-widget-circle-pt.svg"
 
 #. src/views/components/auditorium/awareness-widgets.js:53
 #: 
