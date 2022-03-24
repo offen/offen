@@ -167,7 +167,7 @@ const Container = (props) => {
       css.push(isFallback ? 'dark-red' : 'dark-green')
     }
     if (tableSets.length > 1) {
-      css.push('f5', 'b', 'normal', 'link', 'dim', 'dib', 'pt2', 'pb2', 'ph2', 'mr0', 'mr2-ns')
+      css.push('lh-copy', 'f5', 'b', 'normal', 'link', 'dim', 'dib', 'pt2', 'pb2', 'ph2', 'mr0', 'mr2-ns')
       css.push(isFallback ? 'dark-red' : 'dark-green')
     }
 
