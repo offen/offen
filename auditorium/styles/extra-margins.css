@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * Copyright 2022 - Offen Authors <hioffen@posteo.de>
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -14,4 +14,7 @@
 }
 .ma-4 {
   margin: -4em;
+}
+.margin-filterIcon {
+  margin-top: 0.15em;
 }
