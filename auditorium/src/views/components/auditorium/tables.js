@@ -181,6 +181,8 @@ const Container = (props) => {
       css.push('bt', 'bw2')
       css.push(isFallback ? 'b--dark-red' : 'b--dark-green')
       ariaLabels['aria-current'] = 'true'
+    } else {
+      css.push('mt1')
     }
 
     let explainerProps = {}
@@ -206,16 +208,18 @@ const Container = (props) => {
         }}
         {...ariaLabels}
       >
-        {set.props.headline}
-        {showExplainer && (index === selectedTab)
-          ? (
-            <ExplainerIcon
-              onclick={explainerProps.onExplain}
-              invert={explainerProps.explainerActive}
-              marginLeft
-            />
-          )
-          : null}
+        <div class='flex'>
+          {set.props.headline}
+          {showExplainer && (index === selectedTab)
+            ? (
+              <ExplainerIcon
+                onclick={explainerProps.onExplain}
+                invert={explainerProps.explainerActive}
+                marginLeft
+              />
+            )
+            : null}
+        </div>
       </a>
     )
   })
@@ -230,7 +234,7 @@ const Container = (props) => {
     <div>
       <div class={classnames(wrapperClass)}>
         {headlines.length
-          ? (<div>{headlines}</div>)
+          ? (<div class='flex'>{headlines}</div>)
           : null}
         {(() => {
           if (!explainerPropsFor || !showExplainer || !tableSets[selectedTab].props.explainer) {
