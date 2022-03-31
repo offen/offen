@@ -136,6 +136,7 @@ function Queries (storage) {
     var realtimeLowerBound = subMinutes(now, 15)
     var realtimeUpperBound = now
     var realtimeEvents = proxy.getEvents(realtimeLowerBound, realtimeUpperBound)
+      .then(filter.apply.bind(filter))
 
     // `pageviews` is a list of basic metrics grouped by the given range
     // and resolution. It contains the number of pageviews, unique visitors
