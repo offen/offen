@@ -14,10 +14,11 @@ const ExplainerIcon = require('./explainer-icon')
 const Paragraph = require('./../_shared/paragraph')
 
 const FilterIcon = (props) => {
+  const { isFallback } = props
   return (
     <div class='margin-filterIcon mr2'>
       <svg class='dib' width='16' height='17' viewBox='0 0 16 17' fill='none' xmlns='http://www.w3.org/2000/svg'>
-        <path d='M15.9317 0.49858C16.0603 0.848011 16.0073 1.14631 15.7728 1.39347L10.1787 7.69602V17.1818C10.1787 17.5398 10.0311 17.7912 9.73612 17.9361C9.63778 17.9787 9.54322 18 9.45244 18C9.24819 18 9.07798 17.919 8.94182 17.7571L6.03694 14.4844C5.89321 14.3224 5.82134 14.1307 5.82134 13.9091V7.69602L0.22718 1.39347C-0.00732838 1.14631 -0.0602819 0.848011 0.0683195 0.49858C0.196921 0.166193 0.420082 0 0.737803 0H15.2622C15.5799 0 15.8031 0.166193 15.9317 0.49858Z' fill='#137752' />
+        <path d='M15.9317 0.49858C16.0603 0.848011 16.0073 1.14631 15.7728 1.39347L10.1787 7.69602V17.1818C10.1787 17.5398 10.0311 17.7912 9.73612 17.9361C9.63778 17.9787 9.54322 18 9.45244 18C9.24819 18 9.07798 17.919 8.94182 17.7571L6.03694 14.4844C5.89321 14.3224 5.82134 14.1307 5.82134 13.9091V7.69602L0.22718 1.39347C-0.00732838 1.14631 -0.0602819 0.848011 0.0683195 0.49858C0.196921 0.166193 0.420082 0 0.737803 0H15.2622C15.5799 0 15.8031 0.166193 15.9317 0.49858Z' fill={isFallback ? '#e7040f' : '#137752'} />
       </svg>
     </div>
   )
@@ -79,7 +80,8 @@ const FilterLink = (props) => {
 const URLTable = (props) => {
   const {
     model, showExplainer, explainerActive,
-    onExplain, explainerPropsFor, queryParams
+    onExplain, explainerPropsFor, queryParams,
+    isFallback
   } = props
 
   const [showAll, setShowAll] = useState(null)
@@ -183,7 +185,7 @@ const URLTable = (props) => {
         >
           <Tables.Table
             headline={currentFilterProp === 'referrer'
-              ? <Fragment><FilterIcon />{__('Referrers')}</Fragment>
+              ? <Fragment><FilterIcon isFallback={isFallback} />{__('Referrers')}</Fragment>
               : __('Referrers')}
             columnNames={[__('Host'), __('Sessions'), __('Page depth')]}
             formatAs={['count', 'value']}
@@ -219,7 +221,7 @@ const URLTable = (props) => {
           />
           <Tables.Table
             headline={currentFilterProp === 'campaign'
-              ? <Fragment><FilterIcon />{__('Campaigns')}</Fragment>
+              ? <Fragment><FilterIcon isFallback={isFallback} />{__('Campaigns')}</Fragment>
               : __('Campaigns')}
             columnNames={[__('Campaign'), __('Sessions'), __('Page depth')]}
             formatAs={['count', 'value']}
@@ -247,7 +249,7 @@ const URLTable = (props) => {
           />
           <Tables.Table
             headline={currentFilterProp === 'source'
-              ? <Fragment><FilterIcon />{__('Sources')}</Fragment>
+              ? <Fragment><FilterIcon isFallback={isFallback} />{__('Sources')}</Fragment>
               : __('Sources')}
             columnNames={[__('Source'), __('Sessions'), __('Page depth')]}
             formatAs={['count', 'value']}
@@ -281,7 +283,7 @@ const URLTable = (props) => {
         >
           <Tables.Table
             headline={currentFilterProp === 'landing'
-              ? <Fragment><FilterIcon />{__('Landing pages')}</Fragment>
+              ? <Fragment><FilterIcon isFallback={isFallback} />{__('Landing pages')}</Fragment>
               : __('Landing pages')}
             columnNames={[__('URL'), __('Landings')]}
             rows={model.landingPages}
@@ -306,7 +308,7 @@ const URLTable = (props) => {
           />
           <Tables.Table
             headline={currentFilterProp === 'exit'
-              ? <Fragment><FilterIcon />{__('Exit pages')}</Fragment>
+              ? <Fragment><FilterIcon isFallback={isFallback} />{__('Exit pages')}</Fragment>
               : __('Exit pages')}
             columnNames={[__('URL'), __('Exits')]}
             rows={model.exitPages}
