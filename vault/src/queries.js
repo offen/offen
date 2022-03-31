@@ -181,6 +181,7 @@ function Queries (storage) {
       var currentChunkLowerBound = subtract.days(now, (i + 1) * 7)
       var currentChunkUpperBound = subtract.days(now, i * 7)
       var chunk = proxy.getEvents(currentChunkLowerBound, currentChunkUpperBound)
+        .then(filter.apply.bind(filter))
       retentionChunks.push(chunk)
     }
     retentionChunks = retentionChunks.reverse()
