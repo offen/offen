@@ -185,6 +185,11 @@ const Container = (props) => {
       css.push('mt1')
     }
 
+    let headline = set.props.headline
+    if (typeof set.props.headline === 'function') {
+      headline = set.props.headline({ isFallback })
+    }
+
     let explainerProps = {}
     if (showExplainer && explainerPropsFor) {
       explainerProps = explainerPropsFor(`table/${groupName}/${set.props.headline}`)
@@ -209,7 +214,7 @@ const Container = (props) => {
         {...ariaLabels}
       >
         <div class='flex'>
-          {set.props.headline}
+          {headline}
           {showExplainer && (index === selectedTab)
             ? (
               <ExplainerIcon

@@ -80,8 +80,7 @@ const FilterLink = (props) => {
 const URLTable = (props) => {
   const {
     model, showExplainer, explainerActive,
-    onExplain, explainerPropsFor, queryParams,
-    isFallback
+    onExplain, explainerPropsFor, queryParams
   } = props
 
   const [showAll, setShowAll] = useState(null)
@@ -184,8 +183,8 @@ const URLTable = (props) => {
           groupName='referrers'
         >
           <Tables.Table
-            headline={currentFilterProp === 'referrer'
-              ? <Fragment><FilterIcon isFallback={isFallback} />{__('Referrers')}</Fragment>
+            headline={(props) => currentFilterProp === 'referrer'
+              ? <Fragment><FilterIcon {...props} />{__('Referrers')}</Fragment>
               : __('Referrers')}
             columnNames={[__('Host'), __('Sessions'), __('Page depth')]}
             formatAs={['count', 'value']}
@@ -220,8 +219,8 @@ const URLTable = (props) => {
             emptyFallback={currentFilterProp === 'referrer' && { key: currentFilterValue, count: [0, 0] }}
           />
           <Tables.Table
-            headline={currentFilterProp === 'campaign'
-              ? <Fragment><FilterIcon isFallback={isFallback} />{__('Campaigns')}</Fragment>
+            headline={(props) => currentFilterProp === 'campaign'
+              ? <Fragment><FilterIcon {...props} />{__('Campaigns')}</Fragment>
               : __('Campaigns')}
             columnNames={[__('Campaign'), __('Sessions'), __('Page depth')]}
             formatAs={['count', 'value']}
@@ -248,8 +247,8 @@ const URLTable = (props) => {
             setShowAll={(open) => setShowAll(open ? 2 : null)}
           />
           <Tables.Table
-            headline={currentFilterProp === 'source'
-              ? <Fragment><FilterIcon isFallback={isFallback} />{__('Sources')}</Fragment>
+            headline={(props) => currentFilterProp === 'source'
+              ? <Fragment><FilterIcon {...props} />{__('Sources')}</Fragment>
               : __('Sources')}
             columnNames={[__('Source'), __('Sessions'), __('Page depth')]}
             formatAs={['count', 'value']}
@@ -282,8 +281,8 @@ const URLTable = (props) => {
           groupName='landing-exit'
         >
           <Tables.Table
-            headline={currentFilterProp === 'landing'
-              ? <Fragment><FilterIcon isFallback={isFallback} />{__('Landing pages')}</Fragment>
+            headline={(props) => currentFilterProp === 'landing'
+              ? <Fragment><FilterIcon {...props} />{__('Landing pages')}</Fragment>
               : __('Landing pages')}
             columnNames={[__('URL'), __('Landings')]}
             rows={model.landingPages}
@@ -307,8 +306,8 @@ const URLTable = (props) => {
             setShowAll={(open) => setShowAll(open ? 3 : null)}
           />
           <Tables.Table
-            headline={currentFilterProp === 'exit'
-              ? <Fragment><FilterIcon isFallback={isFallback} />{__('Exit pages')}</Fragment>
+            headline={(props) => currentFilterProp === 'exit'
+              ? <Fragment><FilterIcon {...props} />{__('Exit pages')}</Fragment>
               : __('Exit pages')}
             columnNames={[__('URL'), __('Exits')]}
             rows={model.exitPages}
