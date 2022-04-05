@@ -70,6 +70,7 @@ Next, we create an empty file for holding the runtime configuration:
 ```
 mkdir -p ~/.config
 touch ~/.config/offen.env
+sudo chown 10000:10001 ~/.config/offen.env
 ```
 
 __Heads Up__
