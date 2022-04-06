@@ -8,7 +8,7 @@ const { h, Fragment } = require('preact')
 
 const RelativeTime = (props) => {
   const { children, invert } = props
-  let display = ''
+  let display = __('Initial %d days', 7)
   if (children !== 0) {
     display = invert ? __('%d days later', children * 7) : __('%d days earlier', children * 7)
   }
