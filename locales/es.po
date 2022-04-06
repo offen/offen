@@ -111,7 +111,7 @@ msgstr "Forma completa: tiempo medio para cargar página. El tiempo medio que ta
 
 # src/views/components/auditorium/relative-time.js:11
 msgid "Initial %d days"
-msgstr ""
+msgstr "Primeros %d días"
 
 msgid "%d days later"
 msgstr "%d días después"
