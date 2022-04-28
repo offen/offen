@@ -62,7 +62,7 @@ RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key
     --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
-RUN npm install -g npm@6
+RUN npm install -g npm@8.8.0
 
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 ENV ADBLOCK true

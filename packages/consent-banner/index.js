@@ -57,7 +57,7 @@ function followupScreen (props) {
 function initialScreen (props) {
   return html`
     <p class="banner__paragraph banner__paragraph--first">
-      ${__('We only access usage data with your consent.')}
+      ${__('We only access usage data with your consentzzzz.')}
     </p>
     <p class="banner__paragraph">
       ${__('You can opt out and delete any time.')}
