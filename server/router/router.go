@@ -72,6 +72,7 @@ const (
 	contextKeyCookie        = "contextKeyCookie"
 	contextKeyAuth          = "contextKeyAuth"
 	contextKeySecureContext = "contextKeySecure"
+	contextKeyLang          = "contextKeyLang"
 )
 
 func (rt *router) userCookie(userID string, secure bool) *http.Cookie {

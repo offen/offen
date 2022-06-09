@@ -1,4 +1,4 @@
-Copyright 2020-2021 - Offen Authors <hioffen@posteo.de>
+Copyright 2020-2022 - Offen Authors <hioffen@posteo.de>
 SPDX-License-Identifier: Apache-2.0
 ///////////////////////////////////////////////////////////////////////
 License information about 3rd party JavaScript included in this

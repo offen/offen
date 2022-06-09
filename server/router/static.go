@@ -9,6 +9,7 @@ import (
 	"log"
 	"net/http"
 	"net/http/httptest"
+	"path"
 	"regexp"
 	"strings"
 	"time"
@@ -49,7 +50,14 @@ func staticMiddleware(fileServer, fallback http.Handler) gin.HandlerFunc {
 
 	return func(c *gin.Context) {
 		secureContext := c.GetBool(contextKeySecureContext)
-		status, contentType := tryStatic(c.Request.Method, c.Request.URL.String())
+		requestURL := c.Request.URL.String()
+		if lang := c.Query("lang"); lang != "" {
+			u := c.Request.URL
+			u.Path = path.Join(lang, u.Path)
+			requestURL = "/" + u.String()
+		}
+
+		status, contentType := tryStatic(c.Request.Method, requestURL)
 		// Right now, we manually trigger an error when trying to read a directory
 		// so we can skip the directory listings provided by the Go FileServer.
 		// TODO: revisit this solution.
