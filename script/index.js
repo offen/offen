@@ -25,6 +25,12 @@ function main () {
   if (accountId) {
     vaultUrl.searchParams.set('accountId', accountId)
   }
+
+  var scriptUrl = new window.URL(scriptHost)
+  if (scriptUrl.searchParams.has('lang')) {
+    vaultUrl.searchParams.set('lang', scriptUrl.searchParams.get('lang'))
+  }
+
   var app = router(vaultUrl.toString())
   app.on('PAGEVIEW', supportMiddleware, function (context, send, next) {
     var message = {
