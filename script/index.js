@@ -15,20 +15,22 @@ var accountId = document.currentScript && document.currentScript.dataset.account
 var scriptHost = document.currentScript && document.currentScript.src
 var useApi = document.currentScript && 'useApi' in document.currentScript.dataset
 
-var scriptUrl = ''
+var scriptOrigin = ''
+var scriptSearchParams = new window.URLSearchParams()
 try {
-  scriptUrl = new window.URL(scriptHost).origin
+  var scriptUrl = new window.URL(scriptHost)
+  scriptOrigin = scriptUrl.origin
+  scriptSearchParams = scriptUrl.searchParams
 } catch (err) {}
 
 function main () {
-  var vaultUrl = new window.URL(process.env.VAULT_HOST || scriptUrl + '/vault')
+  var vaultUrl = new window.URL(process.env.VAULT_HOST || scriptOrigin + '/vault')
   if (accountId) {
     vaultUrl.searchParams.set('accountId', accountId)
   }
 
-  var scriptUrl = new window.URL(scriptHost)
-  if (scriptUrl.searchParams.has('lang')) {
-    vaultUrl.searchParams.set('lang', scriptUrl.searchParams.get('lang'))
+  if (scriptSearchParams.has('lang')) {
+    vaultUrl.searchParams.set('lang', scriptSearchParams.get('lang'))
   }
 
   var app = router(vaultUrl.toString())

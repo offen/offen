@@ -14,10 +14,16 @@ import (
 )
 
 func (rt *router) getVault(c *gin.Context) {
+	lang := string(rt.config.App.Locale)
+	if override := c.Query("lang"); override != "" {
+		lang = override
+	}
+
 	accountID := c.Request.URL.Query().Get("accountId")
 	if accountID == "" {
 		c.HTML(http.StatusOK, "vault", map[string]interface{}{
 			"accountStyles": nil,
+			"lang":          lang,
 		})
 		return
 	}
@@ -34,6 +40,7 @@ func (rt *router) getVault(c *gin.Context) {
 
 		c.HTML(http.StatusOK, "vault", map[string]interface{}{
 			"accountStyles": template.CSS(cachedStyles),
+			"lang":          lang,
 		})
 		return
 	}
@@ -70,6 +77,7 @@ func (rt *router) getVault(c *gin.Context) {
 
 	c.HTML(http.StatusOK, "vault", map[string]interface{}{
 		"accountStyles": template.CSS(styles),
+		"lang":          lang,
 	})
 }
 

@@ -32,7 +32,7 @@ type LocalizedFS struct {
 // rev is a function that can be used to look up revisioned assets
 // in the given file system by specifying their unrevisioned name. In case no
 // revisioned asset can be found the original asset name is returned.
-func (l *LocalizedFS) rev(location string) string {
+func (l *LocalizedFS) rev(location, lang string) string {
 	dir := path.Dir(location)
 	manifestFile, manifestErr := l.Open(path.Join(dir, "rev-manifest.json"))
 	if manifestErr != nil {
