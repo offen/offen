@@ -82,8 +82,12 @@ func (rt *router) getIntro(c *gin.Context) {
 }
 
 func (rt *router) getIndex(c *gin.Context) {
+	lang := string(rt.config.App.Locale)
+	if override := c.Query("lang"); override != "" {
+		lang = override
+	}
 	c.HTML(http.StatusOK, "index", map[string]interface{}{
 		"rootAccount": rt.config.App.RootAccount,
-		"lang":        rt.config.App.Locale,
+		"lang":        lang,
 	})
 }
