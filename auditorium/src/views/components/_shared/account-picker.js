@@ -5,10 +5,10 @@
 
 /** @jsx h */
 const { h } = require('preact')
-const LocalizedAnchor = require('./localized-anchor')
+const ForwardingAnchor = require('./forwarding-anchor')
 
 const AccountPicker = (props) => {
-  const { accounts, selectedId, headline, queryParams } = props
+  const { accounts, selectedId, headline } = props
 
   let body = null
   if (!Array.isArray(accounts) || !accounts.length) {
@@ -30,16 +30,15 @@ const AccountPicker = (props) => {
           buttonClass = 'link dim dib br1 ph3 pv2 mb2 mr2 white bg-black-30'
         }
 
-        const search = new window.URLSearchParams(queryParams)
         return (
           <li key={idx}>
-            <LocalizedAnchor
-              href={`/auditorium/${account.accountId}/${search.toString() ? `?${search}` : ''}`}
+            <ForwardingAnchor
+              href={`/auditorium/${account.accountId}/`}
               class={buttonClass}
               aria-current={isCurrent ? 'page' : 'false'}
             >
               {account.accountName}
-            </LocalizedAnchor>
+            </ForwardingAnchor>
           </li>
         )
       })

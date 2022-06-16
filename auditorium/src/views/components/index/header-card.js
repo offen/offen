@@ -5,6 +5,7 @@
 
 /** @jsx h */
 const { h, Fragment } = require('preact')
+const ForwardingAnchor = require('./../_shared/forwarding-anchor')
 
 module.exports = (props) => {
   let content = null
@@ -31,13 +32,13 @@ module.exports = (props) => {
           </h2>
         </div>
         <div class='w-100 w-40-ns link dim tc mt2 mt0-ns'>
-          <a
+          <ForwardingAnchor
             href='/auditorium/'
             class='f5 tc no-underline bn ph3 pv2 dib br1 white bg-dark-green'
             data-testid='index/open-auditorium'
           >
             {__('Open Auditorium')}
-          </a>
+          </ForwardingAnchor>
         </div>
       </Fragment>
     )
@@ -71,7 +72,7 @@ module.exports = (props) => {
               disabled={!noStatusYet}
               data-testid='index/consent-opt-out'
             >
-              {__('I don\'t allow')}
+              {__("I don't allow")}
             </button>
           </div>
         </div>

@@ -12,6 +12,7 @@ const countries = require('i18n-iso-countries')
 const Tables = require('./tables')
 const ExplainerIcon = require('./explainer-icon')
 const Paragraph = require('./../_shared/paragraph')
+const ForwardingAnchor = require('./../_shared/forwarding-anchor')
 
 const FilterIcon = (props) => {
   const { isFallback } = props
@@ -25,21 +26,15 @@ const FilterIcon = (props) => {
 }
 
 const FilterLink = (props) => {
-  let href = window.location.pathname
   const { filterProp, filterValue, children: linkContent, isFallback, queryParams, filter } = props
-  const search = new window.URLSearchParams(queryParams)
   const value = `${filterProp}:${filterValue || linkContent}`
   if (value === filter) {
-    search.delete('filter')
-    if (search.toString()) {
-      href += '?' + search
-    }
     const color = isFallback ? 'bg-dark-red' : 'bg-dark-green'
     return (
-      <a
+      <ForwardingAnchor
+        skip={['filter']}
         class={`flex flex-nowrap-ns flex-wrap w-100 no-underline link dim dib br1 ph2 pv2 nt2 nb2 nl2 white ${color}`}
         title={__('Remove this filter.')}
-        href={href}
       >
         <div
           class='order-1-ns order-2 lh-solid mt0-ns mt2'
@@ -60,20 +55,18 @@ const FilterLink = (props) => {
             class='filter-close-icon'
           />
         </div>
-      </a>
+      </ForwardingAnchor>
     )
   }
 
-  search.set('filter', window.encodeURIComponent(value))
-  href += '?' + search
   return (
-    <a
+    <ForwardingAnchor
       class='link dim dark-green'
       title={__('Filter current view by this item.')}
-      href={href}
+      values={{ filter: window.encodeURIComponent(value) }}
     >
       {linkContent}
-    </a>
+    </ForwardingAnchor>
   )
 }
 

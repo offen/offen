@@ -12,6 +12,7 @@ const path = require('path')
 
 const HighlightBox = require('./highlight-box')
 const Paragraph = require('./paragraph')
+const ForwardingAnchor = require('./forwarding-anchor')
 const flash = require('./../../../action-creators/flash')
 
 const Layout = (props) => {
@@ -31,10 +32,10 @@ const Layout = (props) => {
     <div class='f5 roboto dark-gray'>
       <div class='w-100 bg-black-05'>
         <div class='mw8 center flex pb3 pt2 viewport-padding' id='headline'>
-          <a href='/' class='dim link flex'>
+          <ForwardingAnchor href='/' class='dim link flex'>
             <img src={urify(path.join(__dirname, 'offen-icon-black.svg'))} alt='Offen logo' width='37' height='40' class='ma0 mt1 mr3' />
             <h1 class='dib dark-gray f2 normal ma0 mt1'>{props.headline || __('Offen Auditorium')}</h1>
-          </a>
+          </ForwardingAnchor>
         </div>
       </div>
       <div class='viewport-main center ph0 ph3-ns pb4'>

@@ -10,6 +10,7 @@ const { useState } = require('preact/hooks')
 
 const LabeledInput = require('./../_shared/labeled-input')
 const SubmitButton = require('./../_shared/submit-button')
+const ForwardingAnchor = require('./../_shared/forwarding-anchor')
 
 const Form = forwardRef((props, ref) => {
   const [isDisabled, setIsDisabled] = useState(false)
@@ -54,9 +55,9 @@ const Form = forwardRef((props, ref) => {
           {__('Log in')}
         </SubmitButton>
         <div class='mb3'>
-          <a class='b link dim dark-green' href='/forgot-password/'>
+          <ForwardingAnchor class='b link dim dark-green' href='/forgot-password/'>
             {__('Forgot password?')}
-          </a>
+          </ForwardingAnchor>
         </div>
       </form>
     </div>
