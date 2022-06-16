@@ -110,7 +110,7 @@ func TestLocalizedFS_rev(t *testing.T) {
 				root:   http.FS(testFS),
 				prefix: "/testdata",
 			}
-			result := l.rev(test.lookup, "")
+			result := l.rev(test.lookup)
 			if test.expected != result {
 				t.Errorf("Expected %v, got %v", test.expected, result)
 			}

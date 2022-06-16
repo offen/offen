@@ -14,8 +14,8 @@
   </head>
   <body class="bg-washed-yellow">
     <div id="app-host" role="main"></div>
-    <script src="{{ rev "/auditorium/vendor.js" .lang }}"></script>
-    <script src="{{ rev "/auditorium/index.js" .lang }}"></script>
+    <script src="{{ rev (print "/" .lang "/auditorium/vendor.js") }}"></script>
+    <script src="{{ rev (print "/" .lang "/auditorium/index.js") }}"></script>
     <noscript>
       <div class="f5 roboto dark-gray">
         <div class="w-100 h3 bg-black-05">
@@ -187,8 +187,8 @@
       </head>
       <body>
           <div id="host"></div>
-          <script src="{{ rev "/vault/vendor.js" .lang }}"></script>
-          <script src="{{ rev "/vault/index.js" .lang }}"></script>
+          <script src="{{ rev (print "/" .lang "/vault/vendor.js") }}"></script>
+          <script src="{{ rev (print "/" .lang "/vault/index.js") }}"></script>
           {{ with .accountStyles }}
             <style>
               {{ . }}
