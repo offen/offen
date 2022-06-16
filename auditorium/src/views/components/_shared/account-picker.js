@@ -5,6 +5,7 @@
 
 /** @jsx h */
 const { h } = require('preact')
+const LocalizedAnchor = require('./localized-anchor')
 
 const AccountPicker = (props) => {
   const { accounts, selectedId, headline, queryParams } = props
@@ -32,13 +33,13 @@ const AccountPicker = (props) => {
         const search = new window.URLSearchParams(queryParams)
         return (
           <li key={idx}>
-            <a
+            <LocalizedAnchor
               href={`/auditorium/${account.accountId}/${search.toString() ? `?${search}` : ''}`}
               class={buttonClass}
               aria-current={isCurrent ? 'page' : 'false'}
             >
               {account.accountName}
-            </a>
+            </LocalizedAnchor>
           </li>
         )
       })
