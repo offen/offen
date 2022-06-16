@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Known issues
-nav_order: 13
+nav_order: 14
 description: "Known issues when running Offen and their possible workarounds"
 permalink: /running-offen/known-issues/
 parent: Running Offen
