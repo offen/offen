@@ -8,8 +8,11 @@
     <title>Offen</title>
     <link rel="stylesheet" type="text/css" href="/tachyons.min.css">
     {{ template "meta" . }}
+    <script>
+      window.OFFEN_APP_LOCALE = "{{ .lang }}";
+    </script>
     {{ if .rootAccount }}
-      <script src="/script.js" data-use-api data-account-id="{{ .rootAccount }}"></script>
+      <script src="/script.js?lang={{ .lang }}" data-use-api data-account-id="{{ .rootAccount }}"></script>
     {{ end }}
   </head>
   <body class="bg-washed-yellow">
@@ -187,6 +190,9 @@
       </head>
       <body>
           <div id="host"></div>
+          <script>
+            window.OFFEN_APP_LOCALE = "{{ .lang }}";
+          </script>
           <script src="{{ rev (print "/" .lang "/vault/vendor.js") }}"></script>
           <script src="{{ rev (print "/" .lang "/vault/index.js") }}"></script>
           {{ with .accountStyles }}

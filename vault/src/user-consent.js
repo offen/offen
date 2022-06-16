@@ -63,7 +63,8 @@ function askForConsent (styleHost) {
         consentGiven: consentGiven,
         handleAllow: allowHandler,
         handleDeny: denyHandler,
-        handleClose: closeHandler
+        handleClose: closeHandler,
+        lang: window.OFFEN_APP_LOCALE
       })
       if (host.firstChild) {
         var current = host.firstChild

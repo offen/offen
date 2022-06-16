@@ -39,12 +39,16 @@ exports.bannerView = function (props) {
 }
 
 function followupScreen (props) {
+  var href = '/auditorium/'
+  if (props.lang) {
+    href += '?lang=' + props.lang
+  }
   return html`
     <p class="banner__paragraph banner__paragraph--first">
       ${__('Thanks for your help to make this website better.')}
     </p>
     <p class="banner__paragraph">
-      ${raw(__('To manage your usage data <a class="%s"target="_blank" rel="noopener" href="%s">open the Auditorium.</a>', 'paragraph__anchor', '/auditorium/'))}
+      ${raw(__('To manage your usage data <a class="%s"target="_blank" rel="noopener" href="%s">open the Auditorium.</a>', 'paragraph__anchor', href))}
     </p>
     <div class="banner__buttons">
       <button class="buttons__button" onclick="${props.handleClose}">
