@@ -11,7 +11,7 @@ type Locale string
 // Decode validates and assigns l.
 func (l *Locale) Decode(s string) error {
 	switch s {
-	case "en", "de", "fr", "es", "pt":
+	case "en", "de", "fr", "es", "pt", "vi":
 		*l = Locale(s)
 	default:
 		return fmt.Errorf("unknown or unsupported locale %s", s)
