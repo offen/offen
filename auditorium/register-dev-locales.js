@@ -14,7 +14,7 @@ registerLocale('de', require('date-fns/locale/de'))
 registerLocale('fr', require('date-fns/locale/fr'))
 registerLocale('es', require('date-fns/locale/es'))
 registerLocale('pt', require('date-fns/locale/pt'))
-registerLocale('vi', require('date-fns/locale/pt'))
+registerLocale('vi', require('date-fns/locale/vi'))
 
 const countries = require('i18n-iso-countries')
 countries.registerLocale(require('i18n-iso-countries/langs/en.json'))
