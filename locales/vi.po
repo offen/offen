@@ -645,7 +645,7 @@ msgstr "Bảng này hiển thị những thông số chính quan trọng nhất 
 #. src/views/components/auditorium/metrics.js:60
 #: 
 msgid "Unique %s"
-msgstr "Số %s riêng biệt"
+msgstr "%s riêng biệt"
 
 #. src/views/components/auditorium/metrics.js:69
 #: 
