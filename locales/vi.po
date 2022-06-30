@@ -219,7 +219,7 @@ msgstr "Cài đặt"
 #. src/views/components/_shared/with-layout.js:34
 #: 
 msgid "Offen Auditorium"
-msgstr "Phòng xem số liệu Offen"
+msgstr "Offen Auditorium"
 
 #. src/views/components/_shared/with-layout.js:55
 #: 
@@ -229,7 +229,7 @@ msgstr "<a href=\"https://www.offen.dev/\" class=\"%s\" target=\"_blank\" rel=\"
 #. src/views/components/_shared/with-layout.js:62
 #: 
 msgid "Fair web analytics"
-msgstr "Phân tích web công bằng"
+msgstr "Fair web analytics"
 
 #. src/views/components/_shared/with-layout.js:69
 #: 
@@ -360,7 +360,7 @@ msgstr "Quản lý dữ liệu dùng web của bạn mà trang web thu thập."
 #. src/views/components/index/header-card.js:39
 #: 
 msgid "Open Auditorium"
-msgstr "Mở Phòng xem số liệu"
+msgstr "Mở Auditorium"
 
 #. src/views/components/index/header-card.js:50
 #: 
@@ -395,7 +395,7 @@ msgstr "Làm sao để tôi có thể xem qua và xoá đi dữ liệu dùng web
 #. src/views/components/index/main-card.js:22
 #: 
 msgid "<a href=\"%s\" class=\"%s\">Go to the Auditorium.</a>"
-msgstr "<a href=\"%s\" class=\"%s\">Đến xem Phòng số liệu.</a>"
+msgstr "<a href=\"%s\" class=\"%s\">Đến xem Auditorium.</a>"
 
 #. src/views/components/index/main-card.js:37
 #: 
@@ -470,7 +470,7 @@ msgstr "Những từ ngữ căn bản"
 #. src/views/components/auditorium/basic-terms.js:20
 #: 
 msgid "Auditorium"
-msgstr "Phòng xem số liệu"
+msgstr "Auditorium"
 
 #. src/views/components/auditorium/basic-terms.js:26
 #: 
@@ -480,7 +480,7 @@ msgstr "Cài đặt Offen"
 #. src/views/components/auditorium/basic-terms.js:29
 #: 
 msgid "One Offen installation can include several websites. All metrics of all websites in this installation are displayed in the <a href=\"#terms-auditorium\" class=\"%s\">Auditorium.</a> Metrics generated on websites of other installations can only be viewed in the associated <a href=\"#terms-auditorium\" class=\"%s\">Auditorium.</a>"
-msgstr "One Offen installation can include several websites. Một bản cài đặt Offen có thể dùng cho nhiều trang web. Tất cả những số liệu đo lường trên tất cả trang web của bản cài đặt này có thể được xem ở trong <a href=\"#terms-auditorium\" class=\"%s\">Phòng xem số liệu.</a> Những số liệu thống kê trên trang web của những bản cài đặt khác chỉ có thể được xem ở <a href=\"#terms-auditorium\" class=\"%s\">Phòng xem số liệu.</a> liên quan trên bản đó."
+msgstr "One Offen installation can include several websites. Một bản cài đặt Offen có thể dùng cho nhiều trang web. Tất cả những số liệu đo lường trên tất cả trang web của bản cài đặt này có thể được xem ở trong <a href=\"#terms-auditorium\" class=\"%s\">Auditorium.</a> Những số liệu thống kê trên trang web của những bản cài đặt khác chỉ có thể được xem ở <a href=\"#terms-auditorium\" class=\"%s\">Auditorium</a> liên quan trên bản đó."
 
 #. src/views/components/auditorium/basic-terms.js:32
 #: 
@@ -555,27 +555,27 @@ msgstr "k"
 #. src/views/components/auditorium/range-selector.js:15
 #: 
 msgid "24 hours"
-msgstr "24 tiếng trước"
+msgstr "24h trc"
 
 #. src/views/components/auditorium/range-selector.js:16
 #: 
 msgid "7 days"
-msgstr "7 ngày trước"
+msgstr "7 ngày trc"
 
 #. src/views/components/auditorium/range-selector.js:18
 #: 
 msgid "6 weeks"
-msgstr "6 tuần trước"
+msgstr "6 tuần trc"
 
 #. src/views/components/auditorium/range-selector.js:19
 #: 
 msgid "12 weeks"
-msgstr "12 tuần trước"
+msgstr "12 tuần trc"
 
 #. src/views/components/auditorium/range-selector.js:20
 #: 
 msgid "6 months"
-msgstr "6 tháng trước"
+msgstr "6 tháng trc"
 
 #. src/views/components/auditorium/retention-chart.js:69
 #: 
@@ -655,12 +655,12 @@ msgstr "Số lượng trang web bạn đã ghé xem qua nơi mà một<a href=\"
 #. src/views/components/auditorium/metrics.js:77
 #: 
 msgid "Unique sessions"
-msgstr "Phiên xem riêng biệt"
+msgstr "Phiên riêng biệt"
 
 #. src/views/components/auditorium/metrics.js:86
 #: 
 msgid "The number of <a href=\"#terms-unique-session\" class=\"%s\">unique sessions</a> you have created on pages where the <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation</a> is active."
-msgstr "Số lượng <a href=\"#terms-unique-session\" class=\"%s\">phiên xem riêng biệt</a> bạn đã mở lên trên những trang có một <a href=\"#terms-offen-installation\" class=\"%s\">bản cài đặt Offen</a> đang hoạt động."
+msgstr "Số lượng <a href=\"#terms-unique-session\" class=\"%s\">phiên riêng biệt</a> bạn đã mở lên trên những trang có một <a href=\"#terms-offen-installation\" class=\"%s\">bản cài đặt Offen</a> đang hoạt động."
 
 #. src/views/components/auditorium/metrics.js:94
 #: 
@@ -670,7 +670,7 @@ msgstr "Độ sâu TB trang"
 #. src/views/components/auditorium/metrics.js:104
 #: 
 msgid "Full form: Average page depth. The average number of pages you have visited during all <a href=\"#terms-unique-session\" class=\"%s\">unique sessions</a> on all websites where the <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation</a> is active."
-msgstr "Nguyên văn: Độ sâu trung bình trang. Số lượng trang mà bạn đã ghé xem trong tất cả <a href=\"#terms-unique-session\" class=\"%s\">những phiên xem riêng biệt</a> trên cả thảy những trang web mà một <a href=\"#terms-offen-installation\" class=\"%s\">bản cài đặt Offen</a> đang hoạt động."
+msgstr "Nguyên văn: Độ sâu trung bình trang. Số lượng trang mà bạn đã ghé xem trong tất cả <a href=\"#terms-unique-session\" class=\"%s\">những phiên riêng biệt</a> trên cả thảy những trang web mà một <a href=\"#terms-offen-installation\" class=\"%s\">bản cài đặt Offen</a> đang hoạt động."
 
 #. src/views/components/auditorium/metrics.js:112
 #: 
@@ -680,7 +680,7 @@ msgstr "Tỷ lệ bật trang"
 #. src/views/components/auditorium/metrics.js:122
 #: 
 msgid "The percentage of <a href=\"#terms-unique-session\" class=\"%s\">unique sessions</a> where you only visited one page of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation.</a> Therefore a website with only one page will always have a bounce rate of 100%."
-msgstr "Tỷ lệ phần trăm trong số những <a href=\"#terms-unique-session\" class=\"%s\">phiên xem riêng biệt</a> mà bạn chỉ xem qua 1 trang của trang web có cài đặt <a href=\"#terms-offen-installation\" class=\"%s\">phần mềm Offen.</a> Chính vì thế trang web nào mà chỉ có duy nhất 1 trang sẽ luôn có tỷ lệ bật trang là 100%."
+msgstr "Tỷ lệ phần trăm trong số những <a href=\"#terms-unique-session\" class=\"%s\">phiên riêng biệt</a> mà bạn chỉ xem qua 1 trang của trang web có cài đặt <a href=\"#terms-offen-installation\" class=\"%s\">phần mềm Offen.</a> Chính vì thế trang web nào mà chỉ có duy nhất 1 trang sẽ luôn có tỷ lệ bật trang là 100%."
 
 #. src/views/components/auditorium/metrics.js:130
 #: 
@@ -690,12 +690,12 @@ msgstr "Khách quen"
 #. src/views/components/auditorium/metrics.js:152
 #: 
 msgid "Mobile users"
-msgstr "Những khách xem trên di động"
+msgstr "Ng xem bằng đt"
 
 #. src/views/components/auditorium/metrics.js:152
 #: 
 msgid "Mobile user"
-msgstr "Khách xem trên di động"
+msgstr "Ng xem bằng đt"
 
 #. src/views/components/auditorium/metrics.js:162
 #: 
@@ -705,12 +705,12 @@ msgstr "Cho thấy liệu thiết bị bạn đang dùng để xem web có phả
 #. src/views/components/auditorium/metrics.js:170
 #: 
 msgid "Avg. page load time"
-msgstr "Thời gian lên trang TB."
+msgstr "Thgian tải trang TB"
 
 #. src/views/components/auditorium/metrics.js:180
 #: 
 msgid "Full form: Average page load time. The average time it took for all pages of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation</a> you visited to become interactive."
-msgstr "Nguyên văn: Thời gian lên trang trung bình. Thời gian trung bình để cho tất cả những trang trên trang web có cài đặt phần mềm <a href=\"#terms-offen-installation\" class=\"%s\">Offen</a> mà bạn ghé xem có thể hiển thị đầy đủ và tương tác được hoàn chỉnh."
+msgstr "Nguyên văn: Thời gian tải trang trung bình. Thời gian trung bình để cho tất cả những trang trên trang web có cài đặt phần mềm <a href=\"#terms-offen-installation\" class=\"%s\">Offen</a> mà bạn ghé xem có thể hiển thị đầy đủ và tương tác được hoàn chỉnh."
 
 #. src/views/components/auditorium/embed-code.js:18
 #: 
@@ -798,7 +798,7 @@ msgstr "Nguồn chủ chạy"
 #. src/views/components/auditorium/url-tables.js:76
 #: 
 msgid "Sessions"
-msgstr "Phiên xem riêng biệt"
+msgstr "Phiên riêng biệt"
 
 #. src/views/components/auditorium/url-tables.js:50
 #. src/views/components/auditorium/url-tables.js:63
@@ -854,7 +854,7 @@ msgstr "Những trang đáp đến"
 #. src/views/components/auditorium/url-tables.js:100
 #: 
 msgid "A list of pages of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation</a> that you have opened first in all <a href=\"#terms-unique-session\" class=\"%s\">unique sessions.</a>"
-msgstr "Danh sách những trang trên trang web có cài đặt một <a href=\"#terms-offen-installation\" class=\"%s\">bản phần mềm Offen</a> mà bạn mở xem đầu tiên trong tất cả những <a href=\"#terms-unique-session\" class=\"%s\">phiên xem riêng biệt.</a>"
+msgstr "Danh sách những trang trên trang web có cài đặt một <a href=\"#terms-offen-installation\" class=\"%s\">bản phần mềm Offen</a> mà bạn mở xem đầu tiên trong tất cả những <a href=\"#terms-unique-session\" class=\"%s\">phiên riêng biệt.</a>"
 
 #. src/views/components/auditorium/url-tables.js:106
 #: 
@@ -869,7 +869,7 @@ msgstr "Những trang thoát"
 #. src/views/components/auditorium/url-tables.js:112
 #: 
 msgid "A list of pages of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen installation</a> that you have opened last in all <a href=\"#terms-unique-session\" class=\"%s\">unique sessions.</a> For this to be counted you must have visited at least two pages."
-msgstr "Danh sách những trang trên trang web có cài đặt một <a href=\"#terms-offen-installation\" class=\"%s\">bản phần mềm Offen</a> mà bạn mở xem cuối cùng trước khi thoát ra khỏi tranf web trong tất cả những <a href=\"#terms-unique-session\" class=\"%s\">phiên xem riêng biệt.</a> Để chỉ số này được tính vào, bạn cần phải xem qua ít nhất 2 trang trên trang web."
+msgstr "Danh sách những trang trên trang web có cài đặt một <a href=\"#terms-offen-installation\" class=\"%s\">bản phần mềm Offen</a> mà bạn mở xem cuối cùng trước khi thoát ra khỏi tranf web trong tất cả những <a href=\"#terms-unique-session\" class=\"%s\">phiên riêng biệt.</a> Để chỉ số này được tính vào, bạn cần phải xem qua ít nhất 2 trang trên trang web."
 
 #. src/views/components/auditorium/frequently-asked-questions.js:15
 #: 
@@ -879,7 +879,7 @@ msgstr "Câu hỏi thường gặp"
 #. src/views/components/auditorium/frequently-asked-questions.js:23
 #: 
 msgid "Only page views, sessions, referrer and the visited URL are collected. From this, other metrics such as for example the bounce rate are calculated."
-msgstr "Chỉ có dữ liệu về lượt xem, phiên xem riêng biệt, nguồn giới thiệu và đường link trang đã xem được thu thập lại. Từ những số liệu này, những thông số khác như tỷ lệ bật trang mới được tính ra."
+msgstr "Chỉ có dữ liệu về lượt xem, phiên riêng biệt, nguồn giới thiệu và đường link trang đã xem được thu thập lại. Từ những số liệu này, những thông số khác như tỷ lệ bật trang mới được tính ra."
 
 #. src/views/components/auditorium/frequently-asked-questions.js:26
 #: 
@@ -1152,7 +1152,7 @@ msgstr "Bỏ qua"
 #. src/views/components/auditorium/user-onboarding.js:46
 #: 
 msgid "Welcome to the Auditorium, this is how it works."
-msgstr "Chào mừng đến với Phòng xem số liệu, đây là cách thức mà nó hoạt động."
+msgstr "Chào mừng đến với Auditorium, đây là cách thức mà nó hoạt động."
 
 #. src/views/components/auditorium/user-onboarding.js:49
 #: 
@@ -1295,7 +1295,7 @@ msgstr "Bạn đã rút phép."
 #. src/views/components/index/main-card.js:61
 #: 
 msgid "Only page views, sessions, referrer and visited URLs are collected. From this, other metrics such as the bounce rate are calculated."
-msgstr "Chỉ có dữ liệu về lượt xem, phiên xem riêng biệt, nguồn giới thiệu và đường link trang đã xem được thu thập lại. Từ những số liệu này, những thông số khác như tỷ lệ bật trang mới được tính ra."
+msgstr "Chỉ có dữ liệu về lượt xem, phiên riêng biệt, nguồn giới thiệu và đường link trang đã xem được thu thập lại. Từ những số liệu này, những thông số khác như tỷ lệ bật trang mới được tính ra."
 
 #. src/views/components/index/main-card.js:91
 #: 
@@ -1305,7 +1305,7 @@ msgstr "Sau khi mở xem một trang web mà có một <a href=\"#terms-offen-in
 #. src/views/components/auditorium/basic-terms.js:23
 #: 
 msgid "You are viewing the Auditorium right now. Only available after opt-in, it is the interface where you can review and delete your usage data or opt out entirely."
-msgstr "Bạn đang xem trong Phòng xem số liệu. Phòng này chỉ hiện ra sau khi bạn cấp phép, đó là nơi mà bạn có thể xem và xoá dữ liệu dùng web của bạn hoặc rút phép hẳn ra khỏi việc thu thập dữ liệu."
+msgstr "Bạn đang xem trong Auditorium. Phòng này chỉ hiện ra sau khi bạn cấp phép, đó là nơi mà bạn có thể xem và xoá dữ liệu dùng web của bạn hoặc rút phép hẳn ra khỏi việc thu thập dữ liệu."
 
 #. src/views/components/auditorium/basic-terms.js:49
 #: 
@@ -1315,7 +1315,7 @@ msgstr "Bạn được xem lad một người dùng riêng biệt sau khi bạn 
 #. src/views/components/auditorium/user-onboarding.js:125
 #: 
 msgid "Review your data in the Auditorium. You can delete your data or opt out completely at any time in the Privacy tab."
-msgstr "Xem lại dữ liệu của bạn trong Phòng xem số liệu. Bạn có thể xoá hoặc rút phép hoàn toàn bất cứ lúc nào trong mục Quyền riêng tư."
+msgstr "Xem lại dữ liệu của bạn trong Auditorium. Bạn có thể xoá hoặc rút phép hoàn toàn bất cứ lúc nào trong mục Quyền riêng tư."
 
 #. src/views/components/auditorium/retire-account.js:104
 #: 
@@ -1458,7 +1458,7 @@ msgstr "Áp dụng style"
 #. consent-banner/index.js:47
 #: 
 msgid "To manage your usage data <a class=\"%s\"target=\"_blank\" rel=\"noopener\" href=\"%s\">open the Auditorium.</a>"
-msgstr "Để quản lý dữ liệu dùng web của bạn <a class=\"%s\"target=\"_blank\" rel=\"noopener\" href=\"%s\">hãy mở Phòng xem số liệu.</a>"
+msgstr "Để quản lý dữ liệu dùng web của bạn <a class=\"%s\"target=\"_blank\" rel=\"noopener\" href=\"%s\">hãy mở Auditorium.</a>"
 
 #. src/views/components/auditorium/url-tables.js:29
 #: 
@@ -1476,7 +1476,7 @@ msgstr "Lọc phần xem hiện tại bằng mục này."
 #. src/views/auditorium-operator.js:258
 #: 
 msgid "Auditorium | %s"
-msgstr "Phòng xem số liệu | %s"
+msgstr "Auditorium | %s"
 
 #. src/views/404.js:20
 #: 
@@ -1541,12 +1541,12 @@ msgstr "Bật tắt công cụ hiển thị thông báo cho người dùng"
 #. src/views/components/auditorium/awareness-widgets.js:67
 #: 
 msgid "Let users access their data on every page of your website. Link directly to the User Auditorium or use the HTML widget."
-msgstr "Cho phép người dùng truy cập dữ liệu cho từng trang trên trang web của bạn. Liên kết trực tiếp đến Phòng xem số liệu người dùng hoặc dùng công cụ HTML."
+msgstr "Cho phép người dùng truy cập dữ liệu cho từng trang trên trang web của bạn. Liên kết trực tiếp đến Auditorium cho người dùng hoặc dùng công cụ HTML."
 
 #. src/views/components/auditorium/awareness-widgets.js:70
 #: 
 msgid "User Auditorium link"
-msgstr "Đường link Phòng xem số liệu"
+msgstr "Đường link Auditorium"
 
 #. src/views/components/auditorium/awareness-widgets.js:80
 #: 
@@ -1599,12 +1599,12 @@ msgstr "Quốc gia"
 #. src/views/components/auditorium/url-tables.js:160
 #: 
 msgid "The geographic location associated with each session."
-msgstr "Vị trí địa lý được gắn với mỗi phiên xem riêng biệt."
+msgstr "Vị trí địa lý được gắn với mỗi phiên riêng biệt."
 
 #. src/views/components/login/user-auditorium.js:15
 #: 
 msgid "Not the operator of this Offen installation? Manage your data in the <a href=\"/auditorium/\" class=\"%s\" >User Auditorium.</a>"
-msgstr "Không phải là điều hành viên của bản cài đặt Offen này? Quản lý dữ liệu dùng web của bạn ở <a href=\"/auditorium/\" class=\"%s\" >Phòng xem số liệu người dùng.</a>"
+msgstr "Không phải là điều hành viên của bản cài đặt Offen này? Quản lý dữ liệu dùng web của bạn ở <a href=\"/auditorium/\" class=\"%s\" >Auditorium người dùng.</a>"
 
 #: 
 msgid "Access your usage data"
@@ -1641,7 +1641,7 @@ msgstr "Nếu bạn cho nghỉ hưu tài khoản <em class=\"%s\">%s,</em> nó s
 
 #: 
 msgid "Your usage data is encrypted end-to-end. It will be automatically deleted in maximum 6 months. <a href=\"/auditorium/\" class=\"%s\">You can delete your usage data yourself at any time in the Auditorium.</a>"
-msgstr "Dữ liệu dùng web của bạn được mã hoá đầu gửi và đầu nhận. Dữ liệu sẽ được tự động xoá đi sau tối đa là 6 tháng. <a href=\"/auditorium/\" class=\"%s\">Bạn có thể tự xoá dữ liệu dùng web của mình bất cứ lúc nào trong Phòng xem số liệu.</a>"
+msgstr "Dữ liệu dùng web của bạn được mã hoá đầu gửi và đầu nhận. Dữ liệu sẽ được tự động xoá đi sau tối đa là 6 tháng. <a href=\"/auditorium/\" class=\"%s\">Bạn có thể tự xoá dữ liệu dùng web của mình bất cứ lúc nào trong Auditorium.</a>"
 
 #: 
 msgid "Your usage data is encrypted end-to-end. It will be automatically deleted in maximum 6 months. You can delete your usage data yourself at any time."
