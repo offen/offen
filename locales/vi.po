@@ -1300,7 +1300,7 @@ msgstr "Chỉ có dữ liệu về lượt xem, phiên riêng biệt, nguồn gi
 #. src/views/components/index/main-card.js:91
 #: 
 msgid "After opening a website where an Offen installation is active, you can explicitly opt in to the data collection and thereby help to improve the services you use. Only then you will be assigned a user and a session ID using a cookie. Offen handles these IDs in an unrecognizable form. <a href=\"https://en.wikipedia.org/wiki/HTTP_cookie\" class=\"%s\" target=\"_blank\" rel=\"noreferer noopener\">Learn more about cookies here.</a>"
-msgstr "Sau khi mở xem một trang web mà có một <a href=\"#terms-offen-installation\" class=\"%s\">bản cài đặt Offen</a> đang hoạt động, bạn có thể cấp quyền trực tiếp cho việc thu thập dữ liệu và từ đó giúp cải thiện hơn những dịch vụ trang web mà bạn đang sử dụng. Chỉ khi đó, hệ thống mới phân một mã <a href=\"#terms-id\" class=\"%s\">ID</a> người dùng và mã phiên xem bằng việc sử dụng <a href=\"#terms-cookies\" class=\"%s\">cookie.</a> Hệ thống Offen xử lý những <a href=\"#terms-id\" class=\"%s\">mã ID</a> này dưới dạng thay hình đổi dạng, nghĩa là, không có một máy chủ nào sẽ lưu trữ những mã định phiên và người dùng theo nguyên dạng của nó."
+msgstr "Sau khi mở xem một trang web mà có một bản cài đặt Offen đang hoạt động, bạn có thể cấp quyền trực tiếp cho việc thu thập dữ liệu và từ đó giúp cải thiện hơn những dịch vụ trang web mà bạn đang sử dụng. Chỉ khi đó, hệ thống mới phân một mã ID người dùng và mã phiên xem bằng việc sử dụng cookie. Hệ thống Offen xử lý những mã ID này dưới dạng thay hình đổi dạng, nghĩa là, không có một máy chủ nào sẽ lưu trữ những mã định phiên và người dùng theo nguyên dạng của nó."
 
 #. src/views/components/auditorium/basic-terms.js:23
 #: 
