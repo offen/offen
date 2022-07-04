@@ -15,17 +15,17 @@ const Collapsible = require('./../_shared/collapsible')
 const HTMLWidgets = [
   {
     name: __('Bar'),
-    asset: __('/user-access-widget-bar-vi.svg'),
+    asset: __('/user-access-widget-bar-en.svg'),
     alt: [__('Fair web analytics'), __('Access your usage data')].join(' ')
   },
   {
     name: __('Box'),
-    asset: __('/user-access-widget-box-vi.svg'),
+    asset: __('/user-access-widget-box-en.svg'),
     alt: [__('Fair web analytics'), __('Access your data')].join(' ')
   },
   {
     name: __('Circle'),
-    asset: __('/user-access-widget-circle-vi.svg'),
+    asset: __('/user-access-widget-circle-en.svg'),
     alt: [__('Fair web analytics'), __('Access your data')].join(' ')
   }
 ]
