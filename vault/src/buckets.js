@@ -67,6 +67,10 @@ var buckets = [
   {
     re: /\.wikipedia\.org($|\/)/,
     name: 'Wikipedia'
+  },
+  {
+    re: /\.zoom\.us($|\/)/,
+    name: 'Zoom'
   }
 ]
 

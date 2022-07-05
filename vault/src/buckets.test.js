@@ -51,7 +51,8 @@ describe('src/buckets.js', function () {
         'www.qwant.com',
         'en.wikipedia.org',
         'fr.m.wikipedia.org',
-        'fake.not-reallywikipedia.org'
+        'fake.not-reallywikipedia.org',
+        'st1.zoom.us'
       ]
       var mapped = referrers.map(mapToBuckets)
       assert.deepStrictEqual(mapped, [
@@ -95,7 +96,8 @@ describe('src/buckets.js', function () {
         'Qwant',
         'Wikipedia',
         'Wikipedia',
-        'fake.not-reallywikipedia.org'
+        'fake.not-reallywikipedia.org',
+        'Zoom'
       ])
     })
   })
