@@ -65,7 +65,7 @@ const EmbedCode = (props) => {
   const renderBody = (props = {}) => (
     <div class='mw6 center ph3 mt3 mb4'>
       <Paragraph class='ma0 mb3'>
-        {__('To use Offen asds with the account <em class="%s">%s</em> on your website, embed the following script on each page you want to appear in your statistics.', 'i tracked', model.account.name)}
+        {__('To use Offen with the account <em class="%s">%s</em> on your website, embed the following script on each page you want to appear in your statistics.', 'i tracked', model.account.name)}
       </Paragraph>
       <Paragraph class='ma0 mb3'>
         {__('In case you are serving multiple domains from your Offen instance, please double check that the domain in this snippet matches the target account.')}
