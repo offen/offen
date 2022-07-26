@@ -13,6 +13,7 @@ var buffer = require('vinyl-buffer')
 var gap = require('gulp-append-prepend')
 var Readable = require('stream').Readable
 var linguasFile = require('linguas-file')
+var CryptoJS = require('crypto-js')
 
 var pkg = require('./package.json')
 
@@ -52,6 +53,7 @@ function makeScriptTask (dest, locale) {
     // we are setting this at process level so that it propagates to
     // dependencies that also require setting it
     process.env.LOCALE = locale
+    process.env.SCRIPT_INTEGRITY_HASH = "unkown"
     var b = browserify({
       entries: './index.js',
       // See: https://github.com/nikku/karma-browserify/issues/130#issuecomment-120036815
@@ -66,6 +68,8 @@ function makeScriptTask (dest, locale) {
           return ['@offen/l10nify']
         }
         if (transform === 'envify' || (Array.isArray(transform) && transform[0] === 'envify')) {
+          let scriptContent = fs.readFileSync("./index.js", "utf8");
+          process.env.SCRIPT_INTEGRITY_HASH = CryptoJS.SHA256(scriptContent);
           return ['envify', { LOCALE: locale }]
         }
         return transform
