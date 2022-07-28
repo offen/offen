@@ -17,6 +17,7 @@ COPY ./auditorium/package.json ./auditorium/package-lock.json /code/deps/
 WORKDIR /code/deps
 RUN npm ci
 COPY ./auditorium /code/auditorium
+COPY --from=script ./ /code/auditorium/script
 COPY ./banner.txt /code/banner.txt
 COPY ./locales /code/auditorium/locales
 WORKDIR /code/auditorium
