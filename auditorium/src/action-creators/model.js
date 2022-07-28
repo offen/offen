@@ -47,12 +47,15 @@ exports.query = (data, authenticatedUser, softFailureMessage, inBackground) => (
 
   return postMessage({
     type: 'QUERY',
-    payload
+    payload,
+    meta: {
+      queryAll: true
+    }
   })
-    .then((response) => {
+    .then((responses) => {
       dispatch({
         type: 'QUERY_SUCCESS',
-        payload: response.payload.result
+        payload: responses[0].payload.result
       })
     })
     .catch((err) => {
@@ -77,12 +80,15 @@ exports.purge = () => (dispatch, getState, postMessage) => {
 
   return postMessage({
     type: 'PURGE',
-    payload: null
+    payload: null,
+    meta: {
+      queryAll: true
+    }
   })
-    .then((response) => {
+    .then((responses) => {
       dispatch({
         type: 'PURGE_SUCCESS',
-        payload: response.payload.result
+        payload: responses[0].payload.result
       })
     })
     .catch((err) => dispatch(errors.unrecoverable(err)))

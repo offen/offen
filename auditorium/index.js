@@ -50,11 +50,24 @@ sf('./styles/extra-margins.css')
 sf('./styles/loading-overlay.css')
 sf('./styles/first-letter-uppercase.css')
 
-const vaultInstance = vault(process.env.VAULT_HOST || (window.location.origin + '/vault'))
+const vaultInstances = Promise.resolve([
+  vault(process.env.VAULT_HOST || (window.location.origin + '/vault'))
+])
 
 const middlewares = [
   thunk.withExtraArgument(
-    msg => vaultInstance.then(postMessage => postMessage(msg))
+    (msg) => {
+      if (msg.meta && msg.meta.queryAll) {
+        return vaultInstances.then(instances => {
+          return Promise.all(instances.map(instance => {
+            return instance.then(postMessage => postMessage(msg))
+          }))
+        })
+      }
+      return vaultInstances.then(
+        instances => instances[0].then(postMessage => postMessage(msg))
+      )
+    }
   ),
   pushStateMiddleware,
   redirectMiddleware,

@@ -14,7 +14,7 @@ describe('src/action-creators/model.js', function () {
   describe('query()', function () {
     it('handles successful responses', function () {
       const mockPostMessage = sinon.stub()
-      mockPostMessage.resolves({ type: 'QUERY_SUCCESS', payload: { result: 'fake model' } })
+      mockPostMessage.resolves([{ type: 'QUERY_SUCCESS', payload: { result: 'fake model' } }])
       const mockStore = configureMockStore([thunk.withExtraArgument(mockPostMessage)])
       const store = mockStore({})
 
@@ -26,6 +26,9 @@ describe('src/action-creators/model.js', function () {
           assert(mockPostMessage.calledOnce)
           assert(mockPostMessage.calledWith({
             type: 'QUERY',
+            meta: {
+              queryAll: true
+            },
             payload: { authenticatedUser: 'user' }
           }))
 
@@ -55,6 +58,9 @@ describe('src/action-creators/model.js', function () {
           assert(mockPostMessage.calledOnce)
           assert(mockPostMessage.calledWith({
             type: 'QUERY',
+            meta: {
+              queryAll: true
+            },
             payload: {
               authenticatedUser: 'user',
               query: 'query'
@@ -75,7 +81,7 @@ describe('src/action-creators/model.js', function () {
   describe('purge()', function () {
     it('handles successful responses', function () {
       const mockPostMessage = sinon.stub()
-      mockPostMessage.resolves({ type: 'PURGE_SUCCESS', payload: { result: null } })
+      mockPostMessage.resolves([{ type: 'PURGE_SUCCESS', payload: { result: null } }])
       const mockStore = configureMockStore([thunk.withExtraArgument(mockPostMessage)])
       const store = mockStore({})
 
@@ -87,6 +93,9 @@ describe('src/action-creators/model.js', function () {
           assert(mockPostMessage.calledOnce)
           assert(mockPostMessage.calledWith({
             type: 'PURGE',
+            meta: {
+              queryAll: true
+            },
             payload: null
           }))
 
@@ -116,6 +125,9 @@ describe('src/action-creators/model.js', function () {
           assert(mockPostMessage.calledOnce)
           assert(mockPostMessage.calledWith({
             type: 'PURGE',
+            meta: {
+              queryAll: true
+            },
             payload: null
           }))
 
