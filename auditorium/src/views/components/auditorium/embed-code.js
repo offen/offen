@@ -12,7 +12,6 @@ const { useState } = require('preact/hooks')
 const Collapsible = require('./../_shared/collapsible')
 const Paragraph = require('./../_shared/paragraph')
 
-
 const EmbedCode = (props) => {
   const { model, collapsible, onCopy } = props
 
@@ -25,8 +24,7 @@ const EmbedCode = (props) => {
   }
 
   const renderHeader = (props = {}) => {
-    const { handleToggle = null, isCollapsed } = props
-    
+    const { handleToggle = null, isCollapsed } = props  
     return (
       <div
         class='flex flex-wrap justify-between pa3'
@@ -55,12 +53,11 @@ const EmbedCode = (props) => {
     )
   }
 
-
   const snippet = `<script async src="${window.location.origin}/script.js" data-account-id="${model.account.accountId}"></script>`
   const snippetWithSRI = `<script async src="${window.location.origin}/script.js" data-account-id="${model.account.accountId}" integrity="sha256-${process.env.SCRIPT_INTEGRITY_HASH}"></script>`
   const [useSnippetWithSRI, setActive] = useState(false);
   let embeddedSnipped = useSnippetWithSRI ? snippetWithSRI : snippet;
-  let buttonText = useSnippetWithSRI ? 'Hide integrity hash' : 'Show with integrity hash';
+  let buttonText = useSnippetWithSRI ? __('Hide integrity hash') : __('Show with integrity hash');
 
   const renderBody = (props = {}) => (
     <div class='mw6 center ph3 mt3 mb4'>
@@ -72,7 +69,7 @@ const EmbedCode = (props) => {
       </Paragraph>
       <div class="flex items-end">
         <div class="w-100 tr bb b--light-gray">
-          <button onClick={toggleScriptDisplay} class='pointer w-100 w-auto-ns fw1 f7 tc bn dib br1 ph2 pv1 black bg-black-10'><span class={classnames('ml2', 'dib', 'label-toggle', 'label-toggle', !useSnippetWithSRI? null : 'label-toggle--rotate')}></span> {buttonText}</button>
+          <button onClick={toggleScriptDisplay} class='pointer w-100 w-auto-ns fw1 f7 tc bn dib br1 ph2 pv1 black bg-black-10'><span class={classnames('ml2', 'dib', 'label-toggle', {'label-toggle--rotate': useSnippetWithSRI })}></span> {buttonText}</button>
         </div> 
       </div> 
       <div class='w-100 br1 ph2 pv2 bg-black-10'>
