@@ -19,12 +19,12 @@ const EmbedCode = (props) => {
     onCopy(__('Successfully copied embed code to clipboard.'))
   }
 
-  function toggleScriptDisplay() {
-    setActive(!useSnippetWithSRI);
+  function toggleScriptDisplay () {
+    setActive(!useSnippetWithSRI)
   }
 
   const renderHeader = (props = {}) => {
-    const { handleToggle = null, isCollapsed } = props  
+    const { handleToggle = null, isCollapsed } = props
     return (
       <div
         class='flex flex-wrap justify-between pa3'
@@ -55,9 +55,9 @@ const EmbedCode = (props) => {
 
   const snippet = `<script async src="${window.location.origin}/script.js" data-account-id="${model.account.accountId}"></script>`
   const snippetWithSRI = `<script async src="${window.location.origin}/script.js" data-account-id="${model.account.accountId}" integrity="sha256-${process.env.SCRIPT_INTEGRITY_HASH}"></script>`
-  const [useSnippetWithSRI, setActive] = useState(false);
-  let embeddedSnipped = useSnippetWithSRI ? snippetWithSRI : snippet;
-  let buttonText = useSnippetWithSRI ? __('Hide integrity hash') : __('Show with integrity hash');
+  const [useSnippetWithSRI, setActive] = useState(false)
+  const embeddedSnipped = useSnippetWithSRI ? snippetWithSRI : snippet
+  const buttonText = useSnippetWithSRI ? __('Hide integrity hash') : __('Show with integrity hash')
 
   const renderBody = (props = {}) => (
     <div class='mw6 center ph3 mt3 mb4'>
@@ -67,11 +67,11 @@ const EmbedCode = (props) => {
       <Paragraph class='ma0 mb3'>
         {__('In case you are serving multiple domains from your Offen instance, please double check that the domain in this snippet matches the target account.')}
       </Paragraph>
-      <div class="flex items-end">
-        <div class="w-100 tr bb b--light-gray">
-          <button onClick={toggleScriptDisplay} class='pointer w-100 w-auto-ns fw1 f7 tc bn dib br1 ph2 pv1 black bg-black-10'><span class={classnames('ml2', 'dib', 'label-toggle', {'label-toggle--rotate': useSnippetWithSRI })}></span> {buttonText}</button>
-        </div> 
-      </div> 
+      <div class='flex items-end'>
+        <div class='w-100 tr bb b--light-gray'>
+          <button onClick={toggleScriptDisplay} class='pointer w-100 w-auto-ns fw1 f7 tc bn dib br1 ph2 pv1 black bg-black-10'><span class={classnames('ml2', 'dib', 'label-toggle', { 'label-toggle--rotate': useSnippetWithSRI })} /> {buttonText}</button>
+        </div>
+      </div>
       <div class='w-100 br1 ph2 pv2 bg-black-10'>
         <code
           class='ma0 lh-solid word-wrap'
