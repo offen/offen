@@ -71,7 +71,7 @@ function makeScriptTask (dest, locale) {
         }
         if (transform === 'envify' || (Array.isArray(transform) && transform[0] === 'envify')) {
           // Does not work right now
-          const scriptContent = fs.readFileSync('./dist/' + locale + '/auditorium/script/index.js', 'utf8')
+          const scriptContent = fs.readFileSync(dest + '/script/index.js', 'utf8')
           process.env.SCRIPT_INTEGRITY_HASH = crypto.createHash('sha256').update(scriptContent).digest('base64')
 
           return ['envify', {
