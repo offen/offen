@@ -67,7 +67,7 @@ services:
     working_dir: /offen/auditorium
     environment:
       LOCALE: ${LOCALE:-en}
-      SCRIPT_INTEGRITY_HASH: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+      SCRIPT_INTEGRITY_HASH: PLACEHODER_VALUE
       PORT: 9955
     volumes:
       - .:/offen

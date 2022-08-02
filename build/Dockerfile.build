@@ -10,6 +10,22 @@ ENV ADBLOCK true
 ENV DISABLE_OPENCOLLECTIVE true
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 
+FROM offen_node as auditorium
+ARG skip_locales
+ENV SKIP_LOCALES=$skip_locales
+COPY ./auditorium/package.json ./auditorium/package-lock.json /code/deps/
+WORKDIR /code/deps
+RUN npm ci
+COPY ./auditorium /code/auditorium
+COPY ./banner.txt /code/banner.txt
+COPY ./locales /code/auditorium/locales
+WORKDIR /code/auditorium
+# COPY --from=script /code/script/dist/ /script/
+RUN cp -a /code/deps/node_modules /code/auditorium/
+ENV NODE_ENV production
+RUN npm run build
+RUN npm run licenses
+
 FROM offen_node as script
 ARG skip_locales
 ENV SKIP_LOCALES=$skip_locales
@@ -21,22 +37,6 @@ COPY ./banner.txt /code/banner.txt
 COPY ./locales /code/script/locales
 WORKDIR /code/script
 RUN cp -a /code/deps/node_modules /code/script/
-ENV NODE_ENV production
-RUN npm run build
-RUN npm run licenses
-
-FROM offen_node as auditorium
-ARG skip_locales
-ENV SKIP_LOCALES=$skip_locales
-COPY ./auditorium/package.json ./auditorium/package-lock.json /code/deps/
-WORKDIR /code/deps
-RUN npm ci
-COPY ./auditorium /code/auditorium
-COPY --from=script ./code/script/index.js /code/auditorium/script/index.js
-COPY ./banner.txt /code/banner.txt
-COPY ./locales /code/auditorium/locales
-WORKDIR /code/auditorium
-RUN cp -a /code/deps/node_modules /code/auditorium/
 ENV NODE_ENV production
 RUN npm run build
 RUN npm run licenses
