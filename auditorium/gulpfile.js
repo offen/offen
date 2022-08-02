@@ -70,7 +70,8 @@ function makeScriptTask (dest, locale) {
           return ['@offen/l10nify']
         }
         if (transform === 'envify' || (Array.isArray(transform) && transform[0] === 'envify')) {
-          const scriptContent = fs.readFileSync('./script/script.js', 'utf8')
+          // Does not work right now
+          const scriptContent = fs.readFileSync('./dist/' + locale + '/auditorium/script/index.js', 'utf8')
           process.env.SCRIPT_INTEGRITY_HASH = crypto.createHash('sha256').update(scriptContent).digest('base64')
 
           return ['envify', {
