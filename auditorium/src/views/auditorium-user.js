@@ -20,6 +20,7 @@ const Chart = require('./components/auditorium/chart')
 const Privacy = require('./components/auditorium/privacy')
 const RetentionChart = require('./components/auditorium/retention-chart')
 const URLTables = require('./components/auditorium/url-tables')
+const ExtensionData = require('./components/auditorium/extension-data')
 const UserOnboading = require('./components/auditorium/user-onboarding')
 const BasicTerms = require('./components/auditorium/basic-terms')
 const FrequentlyAskedQuestions = require('./components/auditorium/frequently-asked-questions')
@@ -28,7 +29,7 @@ const consent = require('./../action-creators/consent-status')
 const onboarding = require('./../action-creators/onboarding')
 
 const AuditoriumView = (props) => {
-  const { matches, model, consentStatus, onboardingCompleted, queryParams } = props
+  const { matches, model, consentStatus, extensionData, onboardingCompleted, queryParams } = props
   const { handlePurge, handleQuery, expressConsent, getConsentStatus, getOnboardingStatus, completeOnboarding } = props
   const { range, resolution, onboarding: forceOnboarding, from, to, filter: rawFilter } = matches
   const filter = rawFilter && window.decodeURIComponent(rawFilter)
@@ -88,6 +89,13 @@ const AuditoriumView = (props) => {
             userHasOptedIn={consentStatus.status === 'allow'}
             onPurge={handlePurge}
             onConsent={expressConsent}
+          />
+        </div>
+      </div>
+      <div class='mw8 center flex flex-column flex-row-l'>
+        <div class='w-100 flex mb2 mr0-ns br0 br2-ns'>
+          <ExtensionData
+            extensionData={extensionData}
           />
         </div>
       </div>
@@ -157,7 +165,8 @@ const AuditoriumView = (props) => {
 const mapStateToProps = (state) => ({
   consentStatus: state.consentStatus,
   model: state.model,
-  onboardingCompleted: state.onboardingCompleted
+  onboardingCompleted: state.onboardingCompleted,
+  extensionData: state.extensionData
 })
 
 const mapDispatchToProps = {
