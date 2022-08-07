@@ -1,0 +1,17 @@
+{
+  "popup_headline": {
+    "message": "Extension headline"
+  },
+  "popup_subline": {
+    "message": "From script"
+  },
+  "manifest_name": {
+    "message": "Offen Instant Access"
+  },
+  "manifest_description": {
+    "message": "A description"
+  },
+  "manifest_action_title": {
+    "message": "Offen Instant Access"
+  }
+}

@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
-  "name": "Page to extension messaging",
-  "description": "TBD",
+  "name": "__MSG_manifest_name__",
+  "description": "__MSG_manifest_description__",
   "version": "1.0",
   "homepage_url": "https://www.offen.dev",
   "icons": {},
@@ -10,12 +10,15 @@
     "extension/page-script.js"
   ],
   "browser_action": {
-    "default_icon": "extension/icons/star.png"
+    "default_icon": "extension/icons/star.png",
+    "default_title": "__MSG_manifest_action_title__",
+    "default_popup": "extension/popup/index.html"
   },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
       "js": ["extension/content-script.js"]
     }
-  ]
+  ],
+  "default_locale": "en"
 }
