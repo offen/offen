@@ -66,7 +66,8 @@ function handleCheckScriptIntegrityWith () {
           return window.crypto.subtle.digest('SHA-256', new TextEncoder().encode(script))
         })
         .then((hash) => {
-          return window.btoa(String.fromCharCode(...new Uint8Array(hash)))
+          return [...new Uint8Array(hash)]
+            .map(x => x.toString(16).padStart(2, '0')).join('')
         })
     }
     function fetchVersionInfo () {
