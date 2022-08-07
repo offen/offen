@@ -6,6 +6,8 @@
 /** @jsx h */
 const { h } = require('preact')
 
+const { Link, Container } = require('./../_shared/link-list')
+
 const InstallInstructions = (props) => {
   return <p>{__("Here's how to install things.")}</p>
 }
@@ -23,18 +25,27 @@ module.exports = (props) => {
             return <InstallInstructions />
           }
           return (
-            <ul class='flex flex-wrap list pl0 ma0 b--moon-gray'>
+            <Container>
               {extensionData.installs.map((install, idx) => {
                 return (
-                  <li
-                    class='link dim dib br1 ph3 pv2 mb2 mr2 white bg-mid-gray'
-                    key={install + idx}
+                  <Link
+                    key={`install-${install}`}
+                    isActive={(() => {
+                      return install === window.location.host
+                    })()}
+                    href={(() => {
+                      let protocol = 'https'
+                      if (/^localhost:/.test(install)) {
+                        protocol = 'http'
+                      }
+                      return `${protocol}://${install}/auditorium/`
+                    })()}
                   >
                     {install}
-                  </li>
+                  </Link>
                 )
               })}
-            </ul>
+            </Container>
           )
         })()}
       </div>
