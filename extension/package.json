@@ -1,0 +1,23 @@
+{
+  "name": "extension",
+  "version": "0.0.0",
+  "private": true,
+  "author": "Offen Authors <hioffen@posteo.de>",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "web-ext": "^6.8.0"
+  },
+  "scripts": {
+    "start": "web-ext run",
+    "build": "web-ext build"
+  },
+  "webExt": {
+    "ignoreFiles": [
+      "package.json",
+      "package-lock.json"
+    ],
+    "build": {
+      "overwriteDest": true
+    }
+  }
+}

@@ -7,7 +7,7 @@
 
 (function main () {
   const s = document.createElement('script')
-  s.src = chrome.runtime.getURL('extension/page-script.js')
+  s.src = chrome.runtime.getURL('page-script.js')
   s.onload = function () {
     this.remove()
   }
