@@ -47,6 +47,12 @@ jobs:
     steps:
       - test_node_app
 
+  extension:
+    executor: node
+    working_directory: ~/offen/extension
+    steps:
+      - test_node_app
+
   reuse:
     executor: python
     working_directory: ~/offen
@@ -245,6 +251,7 @@ workflows:
       - auditorium: *all_tags_filter
       - packages: *all_tags_filter
       - reuse: *all_tags_filter
+      - extension: *all_tags_filter
       - build: *all_tags_filter
       - integration_sqlite: &integration_filter
           <<: *all_tags_filter
@@ -261,6 +268,7 @@ workflows:
             - auditorium
             - packages
             - reuse
+            - extension
             - integration_postgres
             - integration_mysql
             - integration_sqlite
