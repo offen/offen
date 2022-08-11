@@ -1,5 +1,5 @@
 <!--
-Copyright 2020-2021 - Offen Authors <hioffen@posteo.de>
+Copyright 2020-2022 - Offen Fair Web Analytics Authors <hioffen@posteo.de>
 SPDX-License-Identifier: Apache-2.0
 -->
 
@@ -7,7 +7,7 @@ SPDX-License-Identifier: Apache-2.0
     <img src="https://offen.github.io/press-kit/offen-material/gfx-GitHub-Offen-logo.svg" alt="Offen logo" title="Offen" width="150px"/>
 </a>
 
-# Fair web analytics
+# Fair Web Analytics
 
 [![CircleCI](https://circleci.com/gh/offen/offen/tree/development.svg?style=svg)](https://circleci.com/gh/offen/offen/tree/development)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
@@ -37,7 +37,7 @@ __Software__
 __Community__
 - [Feedback and contributions welcome](#feedback-and-contributions-welcome)
 - [Kind support](#kind-support)
-- [Who's using Offen?](#whos-using-offen)
+- [Who's using Offen Fair Web Analytics?](#whos-using-offen)
 - [Links](#links)
 
 ## Core features
@@ -45,12 +45,12 @@ __Community__
 __Secure & free__  
 Our code is open source.
 All usage data is encrypted end-to-end.
-Offen will always be available for free.
+Offen Fair Web Analytics will always be available for free.
 
 __Self hosted__  
 Comply with GDPR guidelines.
 No ads, no third parties involved.
-Offen uses first-party cookies only.
+Offen Fair Web Analytics uses first-party cookies only.
 
 __Fair & by choice__  
 Opt-in only.
@@ -60,7 +60,7 @@ They have full access to their data.
 ## How it works
 
 __Your job__
-- Self host Offen while protecting your users' data.  
+- Self host Offen Fair Web Analytics while protecting your users' data.  
 - Integrate the code snippet into pages you want to track.  
 - Make your users aware of the access to their data.  
 - Improve your services with fair and transparent insights.  
@@ -71,13 +71,13 @@ __Benefits for your users__
 - Only delete usage data or opt out completely at any time.  
 
 __What you see__  
-Data of all pages where your Offen installation is active.
+Data of all pages where your installation is active.
 For example:
 
 ![Example A](https://offen.github.io/press-kit/offen-material/gfx-GitHub-Example-A.svg)
 
 __What your users see__  
-Data of all pages a user has visited where your Offen installation is active. For example:
+Data of all pages a user has visited where your installation is active. For example:
 
 ![Example B](https://offen.github.io/press-kit/offen-material/gfx-GitHub-Example-B.svg)
 
@@ -85,7 +85,7 @@ __More features__
 - Easily analyze multiple websites within one installation.
 - All website accounts can be shared within teams.
 - User data is only stored for 6 months and then deleted.  
-- A detailed documentation on how to run Offen is available.  
+- A detailed documentation on how to run Offen Fair Web Analytics is available.  
 
 ## Essential metrics
 
@@ -97,27 +97,27 @@ Filter collected data by URL, Location, Referrer, UTM parameters, as well as Lan
 
 __Privacy friendly__  
 Collection of usage data is opt in, users that do not actively opt in will never leave a trace.
-After opt in, Offen collects the minimal amount of data needed to generate meaningful statistics for operators.
+After opt in, Offen Fair Web Analytics collects the minimal amount of data needed to generate meaningful statistics for operators.
 No IPs, User-Agent strings or similar are being collected or even looked at.
 
 __Secure__  
-Data in Offen is encrypted End-To-End.
+Data in Offen Fair Web Analytics is encrypted End-To-End.
 Clients encrypt usage data before it leaves the browser and there is no way for the server storing this data to decrypt it.
 Attackers have no means to compromise an instance, accidental data leaks cannot expose user data.
 
 __Self hosted and lightweight__  
-You can run Offen on-premises, or in any other deployment scenario that fits your need.
+You can run Offen Fair Web Analytics on-premises, or in any other deployment scenario that fits your need.
 All you need to do is download a single binary file or pull a Docker image, and run it on your server.
-Offen will automatically install and renew SSL certificates for you if you want it to.
+Offen Fair Web Analytics will automatically install and renew SSL certificates for you if you want it to.
 If you do not want to deploy a dedicated database, you can use SQLite to store data directly on the server.
 
 __Transparent and fair__  
-Offen treats the user as a party of equal importance in the collection of usage data.
+Offen Fair Web Analytics treats the user as a party of equal importance in the collection of usage data.
 Users have access to the same set of tools for analyzing their own data and they can delete their data at any time.
 
 ## Localize
 
-__Offen is currently available in English, French, German, Portuguese, Spanish and Vietnamese.__
+__Offen Fair Web Analytics is currently available in English, French, German, Portuguese, Spanish and Vietnamese.__
 Our consent banner and the Auditorium for operators as well as users can be displayed in the respective locale.  
 
 Support fair web analytics by contributing Italian, Chinese and other language versions. [Request an invite.][]
@@ -126,13 +126,13 @@ Support fair web analytics by contributing Italian, Chinese and other language v
 
 ## Customize
 
-The Offen consent banner is customizable in __color, shape and basic font specifications__ to match your design. [Learn more.][]
+Our consent banner is customizable in __color, shape and basic font specifications__ to match your design. [Learn more.][]
 
 [Learn more.]: https://docs.offen.dev/running-offen/customizing-consent-banner/
 
 ## Test drive
 
-Give Offen a test drive right now. Open your terminal and type:
+Give Offen Fair Web Analytics a test drive right now. Open your terminal and type:
 
 ```sh
 curl https://demo.offen.dev | bash
@@ -147,9 +147,9 @@ Work in this repository is licensed under multiple licences.
 
 - All original source code is licensed under [Apache-2.0][license-apache].
 - All documentation is licensed under [Apache-2.0][license-apache].
-- The Offen icon and logo are licensed as [CC-BY-NC-ND-4.0][license-cc].
+- The Offen Fair Web Analytics icon and logo are licensed as [CC-BY-NC-ND-4.0][license-cc].
 
-See the [NOTICE][notice] file for license information on works that get bundled by Offen.
+See the [NOTICE][notice] file for license information on works that get bundled by Offen Fair Web Analytics.
 
 [license-apache]: https://github.com/offen/offen/blob/development/LICENSES/Apache-2.0.txt
 [license-cc]: https://github.com/offen/offen/blob/development/LICENSES/CC-BY-NC-ND-4.0.txt
@@ -157,7 +157,7 @@ See the [NOTICE][notice] file for license information on works that get bundled 
 
 ## Project status
 
-__Offen is in active development.__  
+__Offen Fair Web Analytics is in active development.__  
 Check our [roadmap][] and [blog][] for detailed updates on what we are working on right now and what's up next.
 
 [roadmap]: https://github.com/offen/offen/projects/1
@@ -170,7 +170,7 @@ For details on how to get started head over to our [contributing guidelines.](ht
 
 ---
 
-This repository contains all source code needed to work on Offen, both on the server as well as on the client.
+This repository contains all source code needed to work on Offen Fair Web Analytics, both on the server as well as on the client.
 The development setup requires `docker` and `docker-compose` to be installed.
 
 After cloning the repository
@@ -233,9 +233,9 @@ We are happy to work with [NLnet Foundation,](https://nlnet.nl/) which actively 
 
 Cross-Browser testing provided by [BrowserStack](https://www.browserstack.com/).
 
-## Who's using Offen?
+## Who's using Offen Fair Web Analytics?
 
-Are you using Offen? We're happy to feature you in this README.
+We're happy to feature you in this README.
 Send a PR adding your site or app to this section.
 
 ## Links
