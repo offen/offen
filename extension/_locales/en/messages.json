@@ -1,23 +1,30 @@
 {
   "popup_headline": {
+    "description": "The headline used in the popup",
     "message": "Offen Instant Access"
   },
   "popup_footer": {
+    "description": "Footer content in the popup",
     "message": "<a href=\"https://docs.offen.dev\">Read the docs</a> to learn more about how Offen instant access works."
   },
   "popup_install_info": {
+    "description": "Information about the current installation",
     "message": "The currently open website {host} runs version {version}."
   },
   "popup_auditorium_link": {
+    "description": "Link to the current Auditorium from the popup",
     "message": "Open Auditorium"
   },
   "manifest_name": {
+    "description": "The extension name used in the manifest",
     "message": "Offen Instant Access"
   },
   "manifest_description": {
+    "description": "The description used in the manifest",
     "message": "A description"
   },
   "manifest_action_title": {
+    "description": "The title for the main browser action",
     "message": "Offen Instant Access"
   }
 }
