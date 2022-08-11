@@ -5,7 +5,7 @@
   "version": "1.0",
   "homepage_url": "https://www.offen.dev",
   "icons": {},
-  "permissions": ["<all_urls>", "storage", "webRequest", "webRequestBlocking"],
+  "permissions": ["<all_urls>", "storage", "webRequest", "tabs"],
   "web_accessible_resources": [
     "page-script.js"
   ],
@@ -13,6 +13,10 @@
     "default_icon": "icons/star.png",
     "default_title": "__MSG_manifest_action_title__",
     "default_popup": "popup/index.html"
+  },
+  "background": {
+    "scripts": ["background-script.js"],
+    "persistent": true
   },
   "content_scripts": [
     {
