@@ -6,11 +6,18 @@
 /* global chrome */
 const db = new Database()
 
+const tabs = []
+
 chrome.runtime.onMessage.addListener(function (message, sender, respond) {
   switch (message.type) {
     case 'ADD':
+      chrome.browserAction.setIcon({
+        path: 'xxx.png',
+        tabId: sender.tab.id
+      })
+      tabs.push({ id: sender.tab.id, version: message.payload.version })
       db
-        .add(message.payload)
+        .add(message.payload.origin)
         .then(
           (result) => respond({ payload: result }),
           (err) => respond({ error: err })
@@ -26,16 +33,14 @@ chrome.runtime.onMessage.addListener(function (message, sender, respond) {
           (err) => respond({ error: err })
         )
       return true
-    case 'VERSION':
-      db
-        .setCurrentVersion(message.payload)
-        .then(
-          (result) => respond({ payload: result }),
-          (err) => respond({ error: err })
-        )
-      return true
+    case 'STATUS':
+      const matchingTab = tabs.find(tab => tab.id === message.payload) || { version: null }
+      respond({ payload: matchingTab.version })
+      return false
     default:
-      throw new Error(`Background script received unknown message type "${message.type}".`)
+      throw new Error(
+        `Background script received unknown message type "${message.type}".`
+      )
   }
 })
 

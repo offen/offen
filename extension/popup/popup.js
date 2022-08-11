@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 - Offen Authors <hioffen@posteo.de>
+ * Copyright 2022 - Offen Authors <hioffen@posteo.de>
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -20,3 +20,9 @@ function localizeHtmlPage () {
 }
 
 localizeHtmlPage()
+
+chrome.tabs.query({ active: true, currentWindow: true }, ([activeTab]) => {
+  chrome.runtime.sendMessage({ type: 'STATUS', payload: activeTab.id }, (version) => {
+    console.log('found version', version)
+  })
+})
