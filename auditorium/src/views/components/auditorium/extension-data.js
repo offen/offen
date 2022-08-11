@@ -26,22 +26,16 @@ module.exports = (props) => {
           }
           return (
             <Container>
-              {extensionData.installs.map((install, idx) => {
+              {extensionData.installs.map((origin, idx) => {
+                const u = new window.URL(origin)
+                u.pathname = '/auditorium'
                 return (
                   <Link
-                    key={`install-${install}`}
-                    isActive={(() => {
-                      return install === window.location.host
-                    })()}
-                    href={(() => {
-                      let protocol = 'https'
-                      if (/^localhost:/.test(install)) {
-                        protocol = 'http'
-                      }
-                      return `${protocol}://${install}/auditorium/`
-                    })()}
+                    key={`install-${origin}`}
+                    isActive={u.host === window.location.host}
+                    href={u.toString()}
                   >
-                    {install}
+                    {u.host}
                   </Link>
                 )
               })}

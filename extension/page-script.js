@@ -13,10 +13,7 @@ setTimeout(function () {
     .then(function (vaultElem) {
       const u = new window.URL(vaultElem.src)
       document.dispatchEvent(new window.CustomEvent('Offen_connectExtension', {
-        detail: { hostname: u.host }
-      }))
-      document.dispatchEvent(new window.CustomEvent('Offen_checkScriptIntegrity', {
-        detail: { hostname: u.host, protocol: u.protocol }
+        detail: { url: u.toString() }
       }))
     })
 

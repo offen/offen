@@ -19,9 +19,6 @@
     'Offen_connectExtension', handleConnectExtensionWith(db)
   )
   document.addEventListener(
-    'Offen_checkScriptIntegrity', handleCheckScriptIntegrityWith()
-  )
-  document.addEventListener(
     'Offen_queryExtension', handleQueryExtensionWith(db)
   )
 })()
@@ -45,7 +42,18 @@ function handleQueryExtensionWith (db) {
 
 function handleConnectExtensionWith (db) {
   return function handleConnectExtension (evt) {
-    db.add(evt.detail.hostname)
+    const url = new window.URL(evt.detail.url)
+    return checkScriptIntegrity(url)
+      .then((ok) => {
+        if (!ok) {
+          console.log(`Could not verify installation at "${evt.detail.url}", skipping`)
+          return
+        }
+        return db.add(url.origin)
+          .then(() => {
+            console.log(`"${evt.detail.url}"" was added to the list of known installs.`)
+          })
+      })
       .catch(err => {
         console.error(
           `Failed to add "${evt.detail.hostname}" to list of known installs: ${err.message}.`
@@ -54,33 +62,31 @@ function handleConnectExtensionWith (db) {
   }
 }
 
-function handleCheckScriptIntegrityWith () {
-  return function handleCheckScriptIntegrity (evt) {
-    function fetchScriptChecksum () {
-      const script = `${evt.detail.protocol}//${evt.detail.hostname}/script.js`
-      return window.fetch(script)
-        .then((res) => {
-          return res.text()
-        })
-        .then((script) => {
-          return window.crypto.subtle.digest('SHA-256', new TextEncoder().encode(script))
-        })
-        .then((hash) => {
-          return [...new Uint8Array(hash)]
-            .map(x => x.toString(16).padStart(2, '0')).join('')
-        })
-    }
-    function fetchVersionInfo () {
-      const version = `${evt.detail.protocol}//${evt.detail.hostname}/versionz`
-      return window.fetch(version)
-        .then((res) => res.json())
-        .then((i) => i.revision)
-    }
-    Promise.all([fetchScriptChecksum(), fetchVersionInfo()])
-      .then(([checksum, version]) => {
-        console.log({ checksum, version })
+function checkScriptIntegrity (urlObj) {
+  function fetchKnownChecksums () {
+    return window.fetch(chrome.runtime.getURL('checksums.txt'))
+      .then(r => r.text())
+      .then(file => file.split('\n').map(line => line.trim()).filter(Boolean))
+  }
+  function fetchCurrentChecksum () {
+    const url = new window.URL(urlObj)
+    url.pathname = '/script.js'
+    return window.fetch(url)
+      .then((res) => {
+        return res.text()
+      })
+      .then((script) => {
+        return window.crypto.subtle.digest('SHA-256', new TextEncoder().encode(script))
+      })
+      .then((hash) => {
+        return [...new Uint8Array(hash)]
+          .map(x => x.toString(16).padStart(2, '0')).join('')
       })
   }
+  return Promise.all([fetchCurrentChecksum(), fetchKnownChecksums()])
+    .then(([checksum, checksums]) => {
+      return checksums.indexOf(checksum) >= 0
+    })
 }
 
 function Database () {
