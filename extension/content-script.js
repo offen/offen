@@ -44,7 +44,14 @@ function handleConnectExtension (evt) {
       }
 
       return new Promise((resolve, reject) => {
-        chrome.runtime.sendMessage({ type: 'ADD', payload: { origin: url.origin, version: version } }, (response) => {
+        chrome.runtime.sendMessage({
+          type: 'ADD',
+          payload: {
+            host: new window.URL(window.location.origin).host,
+            origin: url.origin,
+            version: version
+          }
+        }, (response) => {
           if (response.error) {
             reject(response.error)
             return

@@ -6,7 +6,7 @@
 /* global chrome */
 const db = new Database()
 
-const tabs = []
+const tabs = {}
 
 chrome.runtime.onMessage.addListener(function (message, sender, respond) {
   switch (message.type) {
@@ -15,7 +15,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, respond) {
         path: 'xxx.png',
         tabId: sender.tab.id
       })
-      tabs.push({ id: sender.tab.id, version: message.payload.version })
+      tabs[sender.tab.id] = message.payload
       db
         .add(message.payload.origin)
         .then(
@@ -33,10 +33,10 @@ chrome.runtime.onMessage.addListener(function (message, sender, respond) {
           (err) => respond({ error: err })
         )
       return true
-    case 'STATUS':
-      const matchingTab = tabs.find(tab => tab.id === message.payload) || { version: null }
-      respond({ payload: matchingTab.version })
+    case 'STATUS': {
+      respond({ payload: tabs[message.payload] || null })
       return false
+    }
     default:
       throw new Error(
         `Background script received unknown message type "${message.type}".`

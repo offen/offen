@@ -1,9 +1,15 @@
 {
   "popup_headline": {
-    "message": "Extension headline"
+    "message": "Offen Instant Access"
   },
-  "popup_subline": {
-    "message": "From script"
+  "popup_footer": {
+    "message": "<a href=\"https://docs.offen.dev\">Read the docs</a> to learn more about how Offen instant access works."
+  },
+  "popup_install_info": {
+    "message": "The currently open website {host} runs version {version}."
+  },
+  "popup_auditorium_link": {
+    "message": "Open Auditorium"
   },
   "manifest_name": {
     "message": "Offen Instant Access"

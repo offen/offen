@@ -12,7 +12,14 @@ SPDX-License-Identifier: Apache-2.0
   <link rel="stylesheet" href="./tachyons.min.css">
 </head>
 <body class="bg-washed-yellow">
-  <h1>__MSG_popup_headline__</h1>
+  <h1 data-localize="popup_headline"></h1>
+  <div class="install-info dn">
+    <p class="install-data" data-localize="popup_install_info"></p>
+    <a class="install-link" href="#" data-localize="popup_auditorium_link" id="auditorium-link"></a>
+  </div>
+  <div class="footer">
+    <p data-localize="popup_footer"></p>
+  </div>
   <script src="./popup.js"></script>
 </body>
 </html>

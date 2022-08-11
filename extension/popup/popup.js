@@ -5,24 +5,23 @@
 
 /* global chrome */
 
-const el = document.createElement('h2')
-el.innerText = chrome.i18n.getMessage('popup_subline')
-
-document.body.appendChild(el)
-
-function localizeHtmlPage () {
-  var objects = document.getElementsByTagName('html')
-  for (const obj of objects) {
-    obj.innerHTML = obj.innerHTML.replace(/__MSG_(\w+)__/g, function (match, v1) {
-      return v1 ? chrome.i18n.getMessage(v1) : ''
-    })
-  }
-}
-
 localizeHtmlPage()
 
 chrome.tabs.query({ active: true, currentWindow: true }, ([activeTab]) => {
-  chrome.runtime.sendMessage({ type: 'STATUS', payload: activeTab.id }, (version) => {
-    console.log('found version', version)
+  chrome.runtime.sendMessage({ type: 'STATUS', payload: activeTab.id }, ({ payload }) => {
+    let data = document.querySelector('.install-data').innerHTML
+    for (const [key, value] of Object.entries(payload)) {
+      data = data.replace(`{${key}}`, value)
+    }
+    document.querySelector('.install-data').innerHTML = data
+    document.querySelector('.install-link').setAttribute('href', `${payload.origin}/auditorium`)
+    document.querySelector('.install-info').classList.toggle('dn')
   })
 })
+
+function localizeHtmlPage () {
+  var objects = document.querySelectorAll('[data-localize]')
+  for (const obj of objects) {
+    obj.innerHTML = chrome.i18n.getMessage(obj.dataset.localize)
+  }
+}
