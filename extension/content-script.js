@@ -74,7 +74,12 @@ function checkScriptIntegrity (urlObj) {
   function fetchKnownChecksums () {
     return window.fetch(chrome.runtime.getURL('checksums.txt'))
       .then(r => r.text())
-      .then(file => file.split('\n').map(line => line.trim()).filter(Boolean))
+      .then(file => {
+        return file.split('\n')
+          .map(line => line.trim())
+          .filter(Boolean)
+          .filter(l => l.indexOf('#') !== 0)
+      })
   }
 
   function fetchCurrentChecksum () {
