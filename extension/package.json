@@ -15,7 +15,8 @@
   "webExt": {
     "ignoreFiles": [
       "package.json",
-      "package-lock.json"
+      "package-lock.json",
+      "scripts/*.*"
     ],
     "build": {
       "overwriteDest": true
