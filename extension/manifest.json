@@ -4,13 +4,15 @@
   "description": "__MSG_manifest_description__",
   "version": "1.0",
   "homepage_url": "https://www.offen.dev",
-  "icons": {},
+  "icons": {
+    "64": "icons/on.png"
+  },
   "permissions": ["<all_urls>", "storage", "webRequest", "tabs"],
   "web_accessible_resources": [
     "page-script.js"
   ],
   "browser_action": {
-    "default_icon": "icons/star.png",
+    "default_icon": "icons/off.png",
     "default_title": "__MSG_manifest_action_title__",
     "default_popup": "popup/index.html"
   },

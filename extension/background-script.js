@@ -12,7 +12,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, respond) {
   switch (message.type) {
     case 'ADD':
       chrome.browserAction.setIcon({
-        path: 'xxx.png',
+        path: 'on.png',
         tabId: sender.tab.id
       })
       tabs[sender.tab.id] = message.payload
