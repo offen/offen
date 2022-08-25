@@ -13,12 +13,12 @@ const InstallInstructions = (props) => {
     <div class='flex flex-column flex-row-ns items-center pb4'>
       <div class='w-100 w-60-ns mr3-ns mb3 mb0-ns'>
         <h3 class='f5 tl normal mt0 mb0'>
-          {__('Add our browser extention to have instant access to your usage data from other Offen Fair Web Analytics installations you have visited.')}
+          {__('Add our browser extension to have instant access to your usage data from other Offen Fair Web Analytics installations you have visited.')}
         </h3>
       </div>
       <div class='w-100 w-40-ns link dim tc'>
         <a href='https://docs.offen.dev/' target='_blank' rel='noreferrer noopener' class='w-100 w-auto-ns f5 tc no-underline bn ph3 pv2 dib br1 white bg-mid-gray'>
-          {__('Add browser extention')}
+          {__('Add browser extension')}
         </a>
       </div>
     </div>
