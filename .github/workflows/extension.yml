@@ -1,7 +1,7 @@
 # Copyright 2022 - Offen Authors <hioffen@posteo.de>
 # SPDX-License-Identifier: Apache-2.0
 
-name: Update Extension Checksums
+name: Update Extension
 
 on:
   release:
@@ -13,19 +13,25 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Compute checksums for release
+        working-directory: ./extension
         run: |
-          cd extension && ./scripts/add-checksums.sh ${{ github.event.release.tag_name }} >> checksums.txt
+          ./scripts/add-checksums.sh ${{ github.event.release.tag_name }} >> checksums.txt
+      - name: Update version in manifest
+        working-directory: ./extension
+        run: |
+          stripped_version=echo "${{ github.event.release.tag_name }}" | cut -c 2-
+          cat <<< $(jq '.version = "$stripped_version"' manifest.json ) > manifest.json
       - name: Create Pull Request
         id: cpr
         uses: peter-evans/create-pull-request@v3
         with:
           token: ${{ secrets.PERSONAL_TOKEN }}
-          commit-message: Update message files
+          commit-message: Update extension
           committer: Offen Bot <hioffen@posteo.de>
           author: ${{ github.actor }} <hioffen@posteo.de>
-          branch: add-new-checksums
-          title: Update checksums in Extension
+          branch: update-extension
+          title: Update Extension
           body: |
-            Merge this PR to update the accepted checksums for the browser extension
+            Merge this PR to update the accepted checksums and version for the browser extension
             to match version ${{ github.event.release.tag_name }}.
           draft: false

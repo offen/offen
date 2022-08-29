@@ -17,7 +17,12 @@ const InstallInstructions = (props) => {
         </h3>
       </div>
       <div class='w-100 w-40-ns link dim tc'>
-        <a href='https://docs.offen.dev/' target='_blank' rel='noreferrer noopener' class='w-100 w-auto-ns f5 tc no-underline bn ph3 pv2 dib br1 white bg-mid-gray'>
+        <a
+          class='w-100 w-auto-ns f5 tc no-underline bn ph3 pv2 dib br1 white bg-mid-gray'
+          href='https://docs.offen.dev/using-offen/browser-extension/'
+          target='_blank'
+          rel='noreferrer noopener'
+        >
           {__('Add browser extension')}
         </a>
       </div>
@@ -47,6 +52,7 @@ module.exports = (props) => {
                     key={`install-${origin}`}
                     isActive={u.host === window.location.host}
                     href={u.toString()}
+                    rel='noopener noreferrer'
                   >
                     {u.host}
                   </Link>

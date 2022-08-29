@@ -2,12 +2,17 @@
   "manifest_version": 2,
   "name": "__MSG_manifest_name__",
   "description": "__MSG_manifest_description__",
-  "version": "1.0",
+  "version": "1.0.0",
   "homepage_url": "https://www.offen.dev",
   "icons": {
     "64": "icons/on.png"
   },
-  "permissions": ["<all_urls>", "storage", "webRequest", "tabs"],
+  "permissions": [
+    "<all_urls>",
+    "storage",
+    "webRequest",
+    "tabs"
+  ],
   "web_accessible_resources": [
     "page-script.js"
   ],
@@ -17,13 +22,19 @@
     "default_popup": "popup/index.html"
   },
   "background": {
-    "scripts": ["background-script.js"],
+    "scripts": [
+      "background-script.js"
+    ],
     "persistent": true
   },
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
-      "js": ["content-script.js"]
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "content-script.js"
+      ]
     }
   ],
   "default_locale": "en"
