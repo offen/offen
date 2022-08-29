@@ -1,0 +1,34 @@
+{
+  "popup_headline": {
+    "description": "The headline used in the popup",
+    "message": "Offen Instant Access"
+  },
+  "popup_footer": {
+    "description": "Footer content in the popup",
+    "message": "<a href=\"https://docs.offen.dev\" class=\"b link dim dark-green\">Read the docs</a> to learn more about how Offen Instant Access works."
+  },
+  "popup_install_info": {
+    "description": "Information about the current installation",
+    "message": "The currently open website <em class=\"i tracked\">{host}</em> runs Offen Fair Web Analytics version {version}."
+  },
+  "popup_auditorium_info": {
+    "description": "Information about how to open the Auditorium",
+    "message": "If your usage data is collected, you can access it in the Auditorium."
+  },
+  "popup_auditorium_link": {
+    "description": "Link to the current Auditorium from the popup",
+    "message": "Open Auditorium"
+  },
+  "manifest_name": {
+    "description": "The extension name used in the manifest",
+    "message": "Offen Instant Access"
+  },
+  "manifest_description": {
+    "description": "The description used in the manifest",
+    "message": "A description"
+  },
+  "manifest_action_title": {
+    "description": "The title for the main browser action",
+    "message": "Offen Instant Access"
+  }
+}

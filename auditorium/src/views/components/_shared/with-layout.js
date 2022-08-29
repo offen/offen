@@ -54,7 +54,7 @@ const Layout = (props) => {
           <Paragraph
             class='ma0 mb0'
           >
-            {__('<a href="https://www.offen.dev/" class="%s" target="_blank" rel="noreferer noopener">Offen</a>', 'b link dim mid-gray')}
+            {__('<a href="https://www.offen.dev/" class="%s" target="_blank" rel="noreferrer noopener">Offen</a>', 'b link dim mid-gray')}
           </Paragraph>
         </div>
         <div class='w-100 w-50-ns pr3-ns'>
@@ -68,7 +68,7 @@ const Layout = (props) => {
           <Paragraph
             class='ma0 tl tr-ns'
           >
-            {__('Found an issue, need help or want to add something?<br><a href="https://twitter.com/hioffen" class="%s" target="_blank" rel="noreferer noopener">Tweet,</a> <a href="mailto:hioffen@posteo.de" class="%s" target="_blank">email</a> or file an <a href="https://github.com/offen/offen" class="%s" target="_blank" rel="noreferer noopener">issue.</a>', 'b link dim mid-gray', 'b link dim mid-gray', 'b link dim mid-gray')}
+            {__('Found an issue, need help or want to add something?<br><a href="https://twitter.com/hioffen" class="%s" target="_blank" rel="noreferrer noopener">Tweet,</a> <a href="mailto:hioffen@posteo.de" class="%s" target="_blank">email</a> or file an <a href="https://github.com/offen/offen" class="%s" target="_blank" rel="noreferrer noopener">issue.</a>', 'b link dim mid-gray', 'b link dim mid-gray', 'b link dim mid-gray')}
           </Paragraph>
         </div>
       </div>

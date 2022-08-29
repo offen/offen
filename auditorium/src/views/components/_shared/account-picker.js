@@ -5,6 +5,7 @@
 
 /** @jsx h */
 const { h } = require('preact')
+const { Link, Container } = require('./../_shared/link-list')
 
 const AccountPicker = (props) => {
   const { accounts, selectedId, headline, queryParams } = props
@@ -23,30 +24,22 @@ const AccountPicker = (props) => {
         return a.accountName.localeCompare(b.accountName)
       })
       .map(function (account, idx) {
-        const isCurrent = account.accountId === selectedId
-        let buttonClass = 'link dim dib br1 ph3 pv2 mb2 mr2 white bg-mid-gray'
-        if (isCurrent) {
-          buttonClass = 'link dim dib br1 ph3 pv2 mb2 mr2 white bg-black-30'
-        }
-
         const search = new window.URLSearchParams(queryParams)
         return (
-          <li key={idx}>
-            <a
-              href={`/auditorium/${account.accountId}/${search.toString() ? `?${search}` : ''}`}
-              class={buttonClass}
-              aria-current={isCurrent ? 'page' : 'false'}
-            >
-              {account.accountName}
-            </a>
-          </li>
+          <Link
+            href={`/auditorium/${account.accountId}/${search.toString() ? `?${search}` : ''}`}
+            isActive={account.accountId === selectedId}
+            key={idx}
+          >
+            {account.accountName}
+          </Link>
         )
       })
     body = (
       <div class='mw6 center ph3 mt3'>
-        <ul class='flex flex-wrap list pl0 ma0 b--moon-gray'>
+        <Container>
           {availableAccounts}
-        </ul>
+        </Container>
       </div>
     )
   }

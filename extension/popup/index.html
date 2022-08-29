@@ -1,0 +1,42 @@
+<!--
+Copyright 2022 - Offen Authors <hioffen@posteo.de>
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Offen Instant Access</title>
+  <link rel="stylesheet" href="./fonts.css">
+  <link rel="stylesheet" href="./tachyons.min.css">
+  <link rel="stylesheet" href="./fix.css">
+</head>
+<body class="popup-mw bg-washed-yellow f5 roboto dark-gray">
+  <div class="w-100 bg-black-05">
+    <div class="pa1 pb2">
+      <div class="flex">
+        <img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyBmaWxsPSJub25lIiB2ZXJzaW9uPSIxLjEiIHZpZXdCb3g9IjAgMCA0MiA0NiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczpjYz0iaHR0cDovL2NyZWF0aXZlY29tbW9ucy5vcmcvbnMjIiB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyI+CjxtZXRhZGF0YT4KPHJkZjpSREY+CjxjYzpXb3JrIHJkZjphYm91dD0iIj4KPGRjOmZvcm1hdD5pbWFnZS9zdmcreG1sPC9kYzpmb3JtYXQ+CjxkYzp0eXBlIHJkZjpyZXNvdXJjZT0iaHR0cDovL3B1cmwub3JnL2RjL2RjbWl0eXBlL1N0aWxsSW1hZ2UiLz4KPGRjOnRpdGxlLz4KPC9jYzpXb3JrPgo8L3JkZjpSREY+CjwvbWV0YWRhdGE+CjxwYXRoIGQ9Im0yMC4wMzcgMS4yODcxYy0wLjI1MTcyIDAuMDA2NTYyNS0wLjUwNjIyIDAuMDI1NTQ3LTAuNzYxNzIgMC4wNjA1NDctMi4yMTUgMC4zMDItNC40NzU4IDAuNTI2NTItNi41OTM4IDEuMzUzNS0xLjAxMyAwLjM5Ni0xLjg2NzMgMS4xMTctMi43NzczIDEuNzA5LTEuNTQgMS0zLjE1NCAyLjA3MzMtNC4zNzUgMy40ODYzLTEuMTQxIDEuMzIxLTEuOTYxMiAzLjAzNDctMi41NzYyIDQuNjc3Ny0wLjcxMSAxLjkwMS0xLjM1NDggMy45ODUtMS42MzQ4IDYtMC4xMjQgMC44OTEtMC4yOTM1NSAxLjcyMTctMC4xODU1NSAyLjYzODcgMC4zNTcgMy4wNTEgMi4yODc5IDQuOTc1NiA0LjgzNzkgNi4yNjU2IDEuNTQ5IDAuNzg0IDIuODcyOSAxLjIxNTIgNC42Mjg5IDEuMDMzMiAwLjYyMS0wLjA2NSAxLjIyODYtMC4yNDQyNyAxLjg0OTYtMC4zMjIyNyAwLjgyLTAuMTAzIDEuNzU2OS0wLjExNjE5IDIuNTQ0OS0wLjM2NzE5IDAuNTQ1LTAuMTc0IDAuOTkxODYtMC41MTg4MSAxLjUwNTktMC43NTc4MSAxLjI5My0wLjU5OSAyLjU1NTQtMS4xNjEgMy44MTg0LTEuODM0IDEuNDU1LTAuNzc3IDMuMDYyNS0xLjM5MTUgNC4zOTY1LTIuMzk2NSAxLjc0OS0xLjMxOSAzLjEyNTItMy41NjcxIDQuMDM1Mi01LjU4MDEgMC4zMTItMC42OSAwLjQ0ODU4LTEuNDMwMiAwLjY0MjU4LTIuMTYwMiAwLjcxLTIuNjg1IDAuOTkzMTYtNS41MjkyLTAuMDg5ODQ0LTguMTU4Mi0wLjQ5NC0xLjItMS4yNzkyLTIuMDg5LTIuMTU4Mi0zLTAuNTk3LTAuNjItMS4yMTE4LTEuMjM1NC0xLjk2NjgtMS42NDg0LTAuODY0LTAuNDczLTEuOTQ0Ni0wLjYxOTA2LTIuODkyNi0wLjc4OTA2LTAuNzUxNS0wLjEzNS0xLjQ5MjktMC4yMzA2Mi0yLjI0OC0wLjIxMDk0em0xMy41ODYgMi4yMjA3YzAuMjA4IDAuNzQ3IDAuNTk1MDUgMS40MzcyIDAuODczMDUgMi4xNjAyIDAuNTI0IDEuMzU4IDAuOTA5MTYgMi43NTczIDEuMTYwMiA0LjE5NzMgMC42MiAzLjU2MiAwLjI4MTA1IDcuNS0wLjg3Njk1IDEwLjkxOC0wLjYxNSAxLjgxNC0xLjUxNzcgMy41MjMzLTIuMjYxNyA1LjI3OTMtMS4xOCAyLjc4NS0yLjE3MDcgNS42NDI4LTQuNjc5NyA3LjQ2NDgtMC40OTkgMC4zNjMtMS4wNzQxIDAuNTE5MTEtMS42MTkxIDAuNzg3MTEtMS41NDcgMC43NjQtMy4zODE4IDEuNTE3OS01LjA4OTggMS43OTQ5LTAuNjE0IDAuMS0xLjIyOTUtMC4xNDQ3My0xLjg1MzUtMC4wNTI3MzQtMi4yNzcgMC4zMzYtNC4zNzcgMC44Mzk4My02LjcwOSAwLjY3MzgzLTIuNjItMC4xODYtNS4zNDU3LTAuOTc4MzEtNy42MzY3LTIuMzIwM2EyMy44ODQgMjMuODg0IDAgMCAxLTIuMTk5Mi0xLjQzOTVjLTAuNTM0LTAuMzk4LTEuMDA5MS0wLjg4MTQ0LTEuNjE5MS0xLjE0ODQgMC40NCAxLjAyNCAxLjM1OTUgMS41OTM0IDIuMDYyNSAyLjQwMDQgMS41OTggMS44MzQgMy4yMDYgMy42NTIgNC45OTggNS4yOTMgMS44NjQgMS43MDYgMy42MDM3IDMuODQ1MiA2LjAxMzcgNC43NDIyIDEuNDgyIDAuNTUyIDIuOTYwNyAwLjY2MTQ4IDQuNTExNyAwLjc3MTQ4IDEuMjkzIDAuMDkyIDIuNjM2NSAwLjIyMjg5IDMuOTM1NSAwLjA4Nzg5MSAyLjQ1Ni0wLjI1NCA0Ljg0ODYtMS4zNDE5IDcuMDU2Ni0yLjQyMTkgMS43MzgtMC44NTEgMy40NDI4LTEuNjY2NyA0LjgzOTgtMy4wOTU3IDIuNDkyLTIuNTUgNC4wMjM0LTUuNTI2NCA1LjMxODQtOC44NTc0IDAuNzM4LTEuODk4IDEuNDI1LTMuODIzOSAxLjYyMy01Ljg4MDkgMC4xMy0xLjMzNy0wLjA2NjQwNi0yLjg1OTMtMC4xOTE0MS00LjE5NzMtMC4yNTQtMi43MjctMC44MTI0Ny01LjI2OTgtMS44NTU1LTcuNzk4OC0wLjYwNC0xLjQ2Ni0xLjQzMDMtMi43ODcyLTIuMTExMy00LjIwMTJhMjEuOTk1IDIxLjk5NSAwIDAgMC0yLjE5OTItMy41OTc3Yy0wLjQzLTAuNTgtMC44MzgyMy0xLjIzNTYtMS40OTAyLTEuNTU4NnoiIGZpbGw9IiMzMzMiLz4KPC9zdmc+Cg==" alt="Offen logo" width="26" height="28" class="ma0 mt1 mh2">
+        <h1 class="dib dark-gray f3 normal ma0 mt1" data-localize="popup_headline">Offen Auditorium</h1>
+      </div>
+    </div>
+  </div>
+  <div class="pa2">
+
+    <div class="install-info dn bg-light-yellow pa2 mb2">
+      <p class="install-data ma0 mb1" data-localize="popup_install_info"></p>
+      <p class="ma0 mb3" data-localize="popup_auditorium_info"></p>
+      <div class="tc mb2">
+        <a class="install-link link dim f5 tc no-underline bn dib br1 white bg-mid-gray ph3 pv2" href="#" data-localize="popup_auditorium_link" id="auditorium-link"></a>
+      </div>
+    </div>
+
+    <div class="bg-black-05 footer pa2 mb2">
+      <p class="ma0 mb2" data-localize="popup_footer"></p>
+    </div>
+
+  </div>
+  <script src="./popup.js"></script>
+</body>
+</html>

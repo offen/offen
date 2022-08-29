@@ -9,12 +9,12 @@ Copyright: 2020 Offen Authors <hioffen@posteo.de>
 License: Apache-2.0
 
 # package managers
-Files: */package.json */package-lock.json */cypress.json */go.mod */go.sum */Gemfile */Gemfile.lock
+Files: */package.json */package-lock.json */cypress.json */go.mod */go.sum */Gemfile */Gemfile.lock */manifest.json
 Copyright: 2020 Offen Authors <hioffen@posteo.de>
 License: Apache-2.0
 
 # text files
-Files: banner.txt */robots.txt
+Files: banner.txt */robots.txt extension/checksums.txt extension/.web-extension-id
 Copyright: 2020 Offen Authors <hioffen@posteo.de>
 License: Apache-2.0
 
@@ -29,6 +29,6 @@ Copyright: 2020 Offen Authors <hioffen@posteo.de>
 License: Apache-2.0
 
 # l10n related files
-Files: locales/*
+Files: locales/* extension/_locales/*/messages.json
 Copyright: 2020 Offen Authors <hioffen@posteo.de>
 License: Apache-2.0

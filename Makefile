@@ -111,6 +111,15 @@ build-docker: # @HELP Build the docker image
 build-docker:
 	@docker build -t offen/offen:${DOCKER_IMAGE_TAG} -f build/${DOCKERFILE} .
 
+.PHONY: build-extension
+build-extension: # @HELP Build the browser extension
+build-extension:
+	@docker build -t offen/extension -f build/Dockerfile.extension .
+	@mkdir -p bin
+	@docker create --entrypoint=ash -it --name extension offen/extension
+	@docker cp extension:/build/. ./bin
+	@docker rm extension
+
 .PHONY: setup-docs
 setup-docs: # @HELP Setup the development environment for working on the docs site
 setup-docs:

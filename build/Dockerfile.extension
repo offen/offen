@@ -1,0 +1,21 @@
+# Copyright 2022 - Offen Authors <hioffen@posteo.de>
+# SPDX-License-Identifier: Apache-2.0
+
+FROM node:16-alpine as offen_node
+RUN apk add git
+RUN apk add --no-cache --virtual .gyp python3 make g++
+RUN npm i -g npm@6
+COPY ./packages /code/packages
+ENV ADBLOCK true
+ENV DISABLE_OPENCOLLECTIVE true
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
+
+COPY ./extension/package.json ./extension/package-lock.json /code/deps/
+WORKDIR /code/deps
+RUN npm ci
+COPY ./extension /code/extension
+WORKDIR /code/extension
+RUN cp -a /code/deps/node_modules /code/extension/
+ENV NODE_ENV production
+RUN npm run build
+RUN cp -r /code/extension/web-ext-artifacts  /build
