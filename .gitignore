@@ -24,3 +24,5 @@ dependencies.csv
 .jekyll-cache
 docs-site
 
+*.pem
+*.crx

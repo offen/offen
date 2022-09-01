@@ -2,5 +2,3 @@
 # SPDX-License-Identifier: Apache-2.0
 
 web-ext-artifacts
-*.pem
-*.crx
