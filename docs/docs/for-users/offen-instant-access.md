@@ -1,9 +1,10 @@
 ---
 layout: default
 title: Offen Instant Access
-nav_order: 2
+nav_order: 1
 description: How to install and use the Offen Instant Access Browser Extension
-permalink: /using-offen/browser-extension/
+permalink: /offen-fair-web-analytisc/for-users/offen-instant-access
+parent: For users
 ---
 
 <!--

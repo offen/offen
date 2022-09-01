@@ -2,11 +2,9 @@
 layout: default
 title: Operator guide
 has_children: true
-has_gradchildren: true
-nav_order: 1
+nav_order: 2
 description: "Explaining how to install and configure the Offen Fair Web Analytics software."
 permalink: /running-offen/
-parent: Offen Fair Web Analytics
 ---
 
 <!--
