@@ -67,7 +67,7 @@ RUN npm run licenses
 
 FROM ruby:2.7-alpine AS server_licenses
 
-COPY --from=golang:1.18-alpine /usr/local/go/ /usr/local/go/
+COPY --from=golang:1.19-alpine /usr/local/go/ /usr/local/go/
 ENV PATH="/usr/local/go/bin:${PATH}"
 
 RUN gem install license_finder
@@ -98,7 +98,7 @@ RUN python ./create_notice.py \
   --client auditorium.csv \
   --server server.csv >> NOTICE
 
-FROM techknowlogick/xgo:go-1.18.x as compiler
+FROM techknowlogick/xgo:go-1.19.x as compiler
 
 ARG rev
 ENV GIT_REVISION=$rev
