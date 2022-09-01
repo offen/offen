@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Using the Offen command
-nav_order: 8
+nav_order: 9
 description: "Explaining subcommands and flags for the offen command."
 permalink: /running-offen/using-the-command/
 parent: Operator guide

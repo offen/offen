@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Downloads and distributions
-nav_order: 6
+nav_order: 8
 description: "Where and how to download Offen Fair Web Analytics or install it from other sources."
 permalink: /running-offen/downloads-distributions/
 parent: Operator guide

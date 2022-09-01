@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Configuring the application
-nav_order: 9
+nav_order: 7
 description: "How to configure an Offen instance at runtime."
 permalink: /running-offen/configuring-the-application/
 parent: Operator guide
