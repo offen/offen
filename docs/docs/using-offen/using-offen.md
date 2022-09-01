@@ -13,3 +13,6 @@ SPDX-License-Identifier: Apache-2.0
 -->
 
 # Using Offen
+
+Offen is designed to be an analytics software that has both operators and users of websites as its target audience.
+This section is intended to collect documentation for users who are interested in learning more about the ideas behind Offen and how to use it.
