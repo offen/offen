@@ -3,3 +3,4 @@
 
 web-ext-artifacts
 *.pem
+*.crx
