@@ -2,6 +2,10 @@
 # SPDX-License-Identifier: Apache-2.0
 
 FROM node:16-alpine as offen_node
+
+ARG api_key
+ARG api_secret
+
 RUN apk add git
 RUN apk add --no-cache --virtual .gyp python3 make g++
 RUN npm i -g npm@6
@@ -17,5 +21,5 @@ COPY ./extension /code/extension
 WORKDIR /code/extension
 RUN cp -a /code/deps/node_modules /code/extension/
 ENV NODE_ENV production
-RUN npm run build
+RUN npm run build -- --api-key=$api_key --api-secret=$api_secret
 RUN cp -r /code/extension/web-ext-artifacts  /build

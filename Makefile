@@ -114,7 +114,10 @@ build-docker:
 .PHONY: build-extension
 build-extension: # @HELP Build the browser extension
 build-extension:
-	@docker build -t offen/extension -f build/Dockerfile.extension .
+	@docker build \
+		--build-arg api_key=${API_KEY} \
+		--build-arg api_secret=${API_SECRET} \
+		-t offen/extension -f build/Dockerfile.extension .
 	@mkdir -p bin
 	@docker create --entrypoint=ash -it --name extension offen/extension
 	@docker cp extension:/build/. ./bin
