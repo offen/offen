@@ -1,11 +1,11 @@
 ---
 layout: default
-title: "Configuring and deploying Offen on Heroku"
+title: Intsallation on Heroku
 nav_order: 3
-description: "A step by step tutorial on how deploy Offen on Heroku."
+description: "A step by step tutorial on how deploy Offen Fair Web Analytics on Heroku."
 permalink: /running-offen/tutorials/configuring-deploying-offen-heroku/
-parent: Installation tutorials
-grand_parent: Running Offen
+parent: Operator guide
+grand_parent: Offen Fair Web Analytics
 ---
 
 <!--
@@ -13,15 +13,16 @@ Copyright 2020 - Offen Authors <hioffen@posteo.de>
 SPDX-License-Identifier: Apache-2.0
 -->
 
-# Configuring and deploying Offen on Heroku
+# Configuring and deploying Offen Fair Web Analytics on Heroku
 {: .no_toc }
 
-This tutorial walks you through the steps needed to setup and deploy a single-node Offen instance on [Heroku][heroku] using PostgreSQL for storing data.
+This tutorial walks you through the steps needed to setup and deploy a single-node Offen Fair Web Analytics instance on [Heroku][heroku] using PostgreSQL for storing data.
 
-__All resources created in this tutorial are free of charge__. You might want to upgrade some of them to another plan with costs when running Offen in production though. A single Hobby Dyno ($7 at the time of writing) should be beefy enough to handle most traffic scenarios and will also give you __free and managed SSL for a custom domain__.
+__All resources created in this tutorial are free of charge__. You might want to upgrade some of them to another plan with costs when running Offen Fair Web Analytics in production though. A single Hobby Dyno ($7 at the time of writing) should be beefy enough to handle most traffic scenarios and will also give you __free and managed SSL for a custom domain__.
 
 <span class="label label-green">Note</span>
-If you get stuck or need help, [file an issue][gh-issues], [tweet (@hioffen)][twitter] or [email][email]. If you have installed Offen and would like to spread the word, we're happy to feature you in our README. [Send a PR][edit-readme] adding your site or app and we'll merge it.
+
+If you get stuck or need help, [file an issue][gh-issues], [tweet (@hioffen)][twitter] or [email][email]. If you have installed Offen Fair Web Analytics and would like to spread the word, we're happy to feature you in our README. [Send a PR][edit-readme] adding your site or app and we'll merge it.
 
 [gh-issues]: https://github.com/offen/offen/issues
 [twitter]: https://twitter.com/hioffen
@@ -49,7 +50,7 @@ To follow the steps in this tutorial you will need to have created an account wi
 
 You can automatically deploy our [template repository][template] to Heroku using this button:
 
-<a class="btn btn-outline" target="_blank" href="https://heroku.com/deploy?template=https://github.com/offen/heroku">Deploy Offen on Heroku</a>
+<a class="btn btn-outline" target="_blank" href="https://heroku.com/deploy?template=https://github.com/offen/heroku">Deploy Offen Fair Web Analytics on Heroku</a>
 
 [template]: https://github.com/offen/heroku
 
@@ -64,12 +65,12 @@ Heroku will now ask you for a name for you instance (you can call this something
 ### Email credentials
 {: .no_toc }
 
-Offen needs to send transactional email for the following features:
+Offen Fair Web Analytics needs to send transactional email for the following features:
 
 - Inviting a new user to an account
 - Resetting your password in case you forgot it
 
-To enable this, you need supply SMTP credentials to Offen, namely __Host, User, Password and Port__ to the setup form. If you do not know which values to use right now, you can start by using your personal mail account or create a new mailbox using your default email provider.
+To enable this, you need supply SMTP credentials to Offen Fair Web Analytics, namely __Host, User, Password and Port__ to the setup form. If you do not know which values to use right now, you can start by using your personal mail account or create a new mailbox using your default email provider.
 
 If you need to look these up, and don't want to do it right away, you can always add these at a later time. __Remember though that you cannot reset account passwords or invite users until email is configured__.
 
@@ -77,7 +78,7 @@ If you need to look these up, and don't want to do it right away, you can always
 
 ## Deploy the app
 
-You are now ready to press the "Deploy app" button. Building the application can take a little while, but you will see the interface updating while Offen is being installed for you.
+You are now ready to press the "Deploy app" button. Building the application can take a little while, but you will see the interface updating while Offen Fair Web Analytics is being installed for you.
 
 ## Creating an account
 
@@ -92,9 +93,9 @@ You can now head to the running application at `https://<your-provided-app-name>
 
 ---
 
-## Run Offen on your own domain
+## Run Offen Fair Web Analytics on your own domain
 
-In a real world setup, you will likely want to [make Offen available as a subdomain of your own domain][same-domain].
+In a real world setup, you will likely want to [make Offen Fair Web Analytics available as a subdomain of your own domain][same-domain].
 
 [same-domain]: /running-offen/installation-requirements/#usage-of-a-subdomain
 
@@ -106,6 +107,6 @@ To setup DNS first configure Heroku to use your desired custom domain in your ap
 ### Setting up SSL
 {: .no_toc }
 
-Offen requires to be served via SSL. In case you are on a paid plan, Heroku offers free Certificate Management for your domain and there is nothing you need to other than enable it. In case you are using the free plan, you can use self-signed certificates. Instructions can be found [in the Heroku documentation on the topic][heroku-ssl].
+Offen Fair Web Analytics requires to be served via SSL. In case you are on a paid plan, Heroku offers free Certificate Management for your domain and there is nothing you need to other than enable it. In case you are using the free plan, you can use self-signed certificates. Instructions can be found [in the Heroku documentation on the topic][heroku-ssl].
 
 [heroku-ssl]: https://devcenter.heroku.com/articles/ssl

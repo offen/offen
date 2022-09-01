@@ -1,10 +1,11 @@
 ---
 layout: default
 title: Configuring the application
-nav_order: 5
+nav_order: 9
 description: "How to configure an Offen instance at runtime."
 permalink: /running-offen/configuring-the-application/
-parent: Running Offen Fair Web Analytics
+parent: Operator guide
+grand_parent: Offen Fair Web Analytics
 ---
 
 <!--

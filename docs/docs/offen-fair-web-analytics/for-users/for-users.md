@@ -1,10 +1,11 @@
 ---
 layout: default
-title: Using Offen
+title: For users
 has_children: true
 nav_order: 3
 description: Explaining user facing features of the Offen Analytics Software.
 permalink: /using-offen/
+parent: Offen Fair Web Analytics
 ---
 
 <!--

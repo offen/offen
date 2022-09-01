@@ -1,10 +1,9 @@
 ---
 layout: default
-title: Offen Instant Access Browser Extension
-nav_order: 1
+title: Offen Instant Access
+nav_order: 2
 description: How to install and use the Offen Instant Access Browser Extension
 permalink: /using-offen/browser-extension/
-parent: Using Offen
 ---
 
 <!--
@@ -12,7 +11,12 @@ Copyright 2022 - Offen Authors <hioffen@posteo.de>
 SPDX-License-Identifier: Apache-2.0
 -->
 
-# Offen Instant Access Browser Extension
+# Offen Instant Access
+
+A browser extension for Offen Fair Web Analytics.
+
+Offen Fair Web Analytics is designed to be an analytics software that has both operators and users of websites as its target audience. This section is intended to collect documentation for users who are interested in learning more about the ideas behind Offen and how to use it.
+
 
 Offen is designed to be self hosted software.
 This means that every operator that uses Offen for collecting usage statistics runs their own setup.

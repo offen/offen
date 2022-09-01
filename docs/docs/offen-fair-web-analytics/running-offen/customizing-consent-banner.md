@@ -1,10 +1,11 @@
 ---
 layout: default
 title: Customizing the consent banner
-nav_order: 8
-description: "How to add custom CSS to customize the appearance of the consent banner in Offen"
+nav_order: 12
+description: "How to add custom CSS to customize the appearance of the consent banner in Offen Fair Web Analytics"
 permalink: /running-offen/customizing-consent-banner/
-parent: Running Offen
+parent: Operator guide
+grand_parent: Offen Fair Web Analytics
 ---
 
 <!--
@@ -15,7 +16,7 @@ SPDX-License-Identifier: Apache-2.0
 # Customizing the consent banner
 {: .no_toc }
 
-Offen lets you customize the appearance of the consent banner by appending custom CSS provided by yourself. To edit the CSS, navigate to the "Customize appearance" tab in the Auditorium. Appearance is customized at account level, so you can add different styles for different accounts. It's currently not possible to share the appearance of multiple accounts using other means than manually copy / pasting the contents. Only a selected subset of CSS is allowed to prevent XSS or injecting tracking into the consent banner.
+Offen Fair Web Analytics lets you customize the appearance of the consent banner by appending custom CSS provided by yourself. To edit the CSS, navigate to the "Customize appearance" tab in the Auditorium. Appearance is customized at account level, so you can add different styles for different accounts. It's currently not possible to share the appearance of multiple accounts using other means than manually copy / pasting the contents. Only a selected subset of CSS is allowed to prevent XSS or injecting tracking into the consent banner.
 
 ---
 
@@ -126,7 +127,7 @@ More complex customizations are also possible. Changes to font size and spacing 
 
 ## Allowed CSS properties and values
 
-Certain validation rules apply to the CSS you can use for styling your banner: Offen wants to make sure malicious actors could not change the appearance of your banner to be misleading when it comes to enabling users to express their consent freely.
+Certain validation rules apply to the CSS you can use for styling your banner: Offen Fair Web Analytics wants to make sure malicious actors could not change the appearance of your banner to be misleading when it comes to enabling users to express their consent freely.
 
 ### Selectors
 {: .no_toc }

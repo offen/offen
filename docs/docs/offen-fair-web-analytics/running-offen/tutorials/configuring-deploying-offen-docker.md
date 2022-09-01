@@ -1,11 +1,11 @@
 ---
 layout: default
-title: "Configuring and deploying Offen using Docker"
+title: Intsallation with Docker
 nav_order: 1
 description: "A step by step tutorial on how to use Docker to deploy Offen."
 permalink: /running-offen/tutorials/configuring-deploying-offen-docker/
-parent: Installation tutorials
-grand_parent: Running Offen
+parent: Operator guide
+grand_parent: Offen Fair Web Analytics
 ---
 
 <!--
@@ -13,13 +13,14 @@ Copyright 2020 - Offen Authors <hioffen@posteo.de>
 SPDX-License-Identifier: Apache-2.0
 -->
 
-# Configuring and deploying Offen using Docker
+# Configuring and deploying Offen Fair Web Analytics using Docker
 {: .no_toc }
 
-This tutorial walks you through the steps needed to setup and deploy a standalone, single-node Offen instance that is using SQLite file as its database backend.
+This tutorial walks you through the steps needed to setup and deploy a standalone, single-node Offen Fair Web Analytics instance that is using SQLite file as its database backend.
 
 <span class="label label-green">Note</span>
-If you get stuck or need help, [file an issue][gh-issues], [tweet (@hioffen)][twitter] or [email][email]. If you have installed Offen and would like to spread the word, we're happy to feature you in our README. [Send a PR][edit-readme] adding your site or app and we'll merge it.
+
+If you get stuck or need help, [file an issue][gh-issues], [tweet (@hioffen)][twitter] or [email][email]. If you have installed Offen Fair Web Analytics and would like to spread the word, we're happy to feature you in our README. [Send a PR][edit-readme] adding your site or app and we'll merge it.
 
 [gh-issues]: https://github.com/offen/offen/issues
 [twitter]: https://twitter.com/hioffen
@@ -40,13 +41,13 @@ If you get stuck or need help, [file an issue][gh-issues], [tweet (@hioffen)][tw
 
 ## Prerequisites
 
-Apart from having already installed Docker, this tutorial assumes the machine you are planning to run Offen on is connected to the internet and has DNS records for `offen.example.com` (or the domain you are actually planning to use) pointing to it. Ports 80 and 443 are expected to be accessible to the public. See the [documentation for subdomains][domain-doc] for further information on this topic.
+Apart from having already installed Docker, this tutorial assumes the machine you are planning to run Offen Fair Web Analytics on is connected to the internet and has DNS records for `offen.example.com` (or the domain you are actually planning to use) pointing to it. Ports 80 and 443 are expected to be accessible to the public. See the [documentation for subdomains][domain-doc] for further information on this topic.
 
 [domain-doc]: ../../setting-up-using-subdomains/
 
 ## Storing your data
 
-In the simple setup described in this tutorial Offen needs to read and persist the following data:
+In the simple setup described in this tutorial Offen Fair Web Analytics needs to read and persist the following data:
 
 - a database file
 - cache files for the SSL certificates
@@ -82,7 +83,7 @@ Storing the config file in `~/.config/offen.env` follows an established pattern 
 
 ## Running the `setup` command
 
-Offen lets you setup a new instance using the `setup` command.
+Offen Fair Web Analytics lets you setup a new instance using the `setup` command.
 
 The value provided to the `email` flag will be your login, `name` is the name of the first account to be created. The password for your login will be requested in a prompt. Passing `-populate` will create required secrets in the `offen.env` file.
 
@@ -118,7 +119,7 @@ The official Docker image is available as [`offen/offen`][docker-hub] on Docker 
 
 ## Setting up AutoTLS
 
-Offen requires a secure connection and can automatically acquire a renew SSL certificates from LetsEncrypt for your domain. All you need to do is add the domain you want to serve Offen from to your `offen.env` file:
+Offen Fair Web Analytics requires a secure connection and can automatically acquire a renew SSL certificates from LetsEncrypt for your domain. All you need to do is add the domain you want to serve Offen Fair Web Analytics from to your `offen.env` file:
 
 ```
 OFFEN_SERVER_AUTOTLS="offen.mysite.com"
@@ -130,7 +131,7 @@ To make sure the automatic certificate creation and renewal works, make sure you
 
 ## Setting up email
 
-Offen needs to send transactional email for the following features:
+Offen Fair Web Analytics needs to send transactional email for the following features:
 
 - Inviting a new user to an account
 - Resetting your password in case you forgot it
@@ -149,7 +150,7 @@ OFFEN_SMTP_PORT="587"
 __Heads Up__
 {: .label .label-red }
 
-Offen will start without these values being set, but you will not be able to reset your password or invite new users without email being set up correctly. If you want to skip it for now, you can always add these at a later time though.
+Offen Fair Web Analytics will start without these values being set, but you will not be able to reset your password or invite new users without email being set up correctly. If you want to skip it for now, you can always add these at a later time though.
 
 ---
 
@@ -166,13 +167,13 @@ OFFEN_SMTP_PASSWORD="my-password"
 OFFEN_SMTP_PORT="587"
 ```
 
-If all of this is populated with the values you expect, you're ready to use Offen.
+If all of this is populated with the values you expect, you're ready to use Offen Fair Web Analytics.
 
 ---
 
 ## Starting the application
 
-To start Offen use the Docker image's default command:
+To start Offen Fair Web Analytics use the Docker image's default command:
 
 ```
 docker run -d \
@@ -216,7 +217,7 @@ docker logs offen
 
 ## Bonus: Example docker-compose setups
 
-docker-compose is an ubiquitous tool for handling multi container setups. Below you will find templates to use for deploying Offen alongside a database. Alternatively, check out our [template repository][deploy-template] which we use to deploy Offen ourselves.
+docker-compose is an ubiquitous tool for handling multi container setups. Below you will find templates to use for deploying Offen Fair Web Analytics alongside a database. Alternatively, check out our [template repository][deploy-template] which we use to deploy it ourselves.
 
 [deploy-template]: https://github.com/offen/deployment
 

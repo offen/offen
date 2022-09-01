@@ -1,10 +1,11 @@
 ---
 layout: default
-title: Developing Offen
+title: Developer guide
 has_children: true
-nav_order: 3
+nav_order: 2
 description: "A collection of documents aimed at helping developers to contribute to Offen."
 permalink: /developing-offen/
+parent: Offen Fair Web Analytics
 ---
 
 <!--

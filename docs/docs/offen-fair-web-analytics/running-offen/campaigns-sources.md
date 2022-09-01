@@ -1,10 +1,11 @@
 ---
 layout: default
 title: Tagging campaigns and sources (UTM)
-nav_order: 10
+nav_order: 14
 description: "How to better understand the traffic to your website by tagging campaigns and sources."
 permalink: /running-offen/campaigns-sources/
-parent: Offen Fair Web Analytics
+parent: Operator guide
+grand_parent: Offen Fair Web Analytics
 ---
 
 <!--

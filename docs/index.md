@@ -14,7 +14,7 @@ SPDX-License-Identifier: Apache-2.0
 # Offen Fair Web Analytics
 
 Let your users access their data and gain valuable insights. Open, lightweight, self hosted and free.
-{: .text-grey-dk-000.mb-8 .mt-4 }
+{: .mb-8 }
 
 ### I run a website and want to collect usage statistics.
 

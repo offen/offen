@@ -1,10 +1,11 @@
 ---
 layout: default
 title: Test drive
-nav_order: 12
-description: "Test drive Offen on your system today."
+nav_order: 16
+description: "Test drive Offen Fair Web Analytics on your system today."
 permalink: /running-offen/test-drive/
-parent: Running Offen
+parent: Operator guide
+grand_parent: Offen Fair Web Analytics
 ---
 
 <!--
@@ -14,7 +15,7 @@ SPDX-License-Identifier: Apache-2.0
 
 # Test drive
 
-If you just want to experiment with Offen or give it a quick test drive, you can run the application in demo mode.
+If you just want to experiment with Offen Fair Web Analytics or give it a quick test drive, you can run the application in demo mode.
 
 Open your terminal and type:
 

@@ -1,10 +1,12 @@
 ---
 layout: default
-title: Running Offen Fair Web Analytics
+title: Operator guide
 has_children: true
+has_gradchildren: true
 nav_order: 1
 description: "Explaining how to install and configure the Offen Fair Web Analytics software."
 permalink: /running-offen/
+parent: Offen Fair Web Analytics
 ---
 
 <!--
@@ -12,7 +14,7 @@ Copyright 2020 - Offen Authors <hioffen@posteo.de>
 SPDX-License-Identifier: Apache-2.0
 -->
 
-# Running Offen Fair Web Analytics
+# Operator guide
 
 ## Downloads
 
