@@ -2,9 +2,9 @@
 layout: default
 title: Understanding the development setup
 nav_order: 4
-description: "An in-depth look at the development setup for Offen and how to work with it."
+description: "An in-depth look at the development setup for Offen Fair Web Analytics and how to work with it."
 permalink: /developing-offen/understanding-development-setup/
-parent: Developing Offen
+parent: Developer guide
 ---
 
 <!--
@@ -14,7 +14,7 @@ SPDX-License-Identifier: Apache-2.0
 
 # Understanding the development setup
 
-When built for production use, Offen builds into a single binary file that includes the server application, as well as all static assets like Stylesheets and JavaScript files that it serves. This is great for distribution, but it's a tedious process getting in the way of a rapid feedback cycle in development. This is why when running the development environment the following setup will be launched instead:
+When built for production use, Offen Fair Web Analytics builds into a single binary file that includes the server application, as well as all static assets like Stylesheets and JavaScript files that it serves. This is great for distribution, but it's a tedious process getting in the way of a rapid feedback cycle in development. This is why when running the development environment the following setup will be launched instead:
 
 - the `server` application starts and is routed as-is through an `nginx` reverse proxy. Package [refresh][] is used to live reload the application on code changes
 - on top of the server application, the routes for the client side sub-applications (the `auditorium`, the `vault`  and the `script`) are overridden by the `nginx` setup and routed to a [live-reloading development version][budo] of these subapps

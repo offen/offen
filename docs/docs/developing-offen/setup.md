@@ -2,9 +2,9 @@
 layout: default
 title: Setup
 nav_order: 2
-description: "How to setup the development environment for Offen."
+description: "How to setup the development environment for Offen Fair Web Analytics."
 permalink: /developing-offen/setup/
-parent: Developing Offen
+parent: Developer guide
 ---
 
 <!--

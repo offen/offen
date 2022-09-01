@@ -2,9 +2,9 @@
 layout: default
 title: Required tools
 nav_order: 1
-description: "Tools required for developing Offen."
+description: "Tools required for developing Offen Fair Web Analytics."
 permalink: /developing-offen/required-tools/
-parent: Developing Offen
+parent: Developer guide
 ---
 
 <!--
@@ -14,9 +14,9 @@ SPDX-License-Identifier: Apache-2.0
 
 # Required tools
 
-Developing Offen currently requires [Docker][docker] and [docker-compose][] to be installed and working correctly. Both tools are free and available for Linux, Windows and Mac.
+Developing Offen Fair Web Analytics currently requires [Docker][docker] and [docker-compose][] to be installed and working correctly. Both tools are free and available for Linux, Windows and Mac.
 
-If your system knows how to run `make` it will help a lot with common tasks like installing dependencies and building, yet you will still be able to work on Offen without it (this will likely be the case if you are developing on Windows).
+If your system knows how to run `make` it will help a lot with common tasks like installing dependencies and building, yet you will still be able to work on Offen Fair Web Analytics without it (this will likely be the case if you are developing on Windows).
 
 If you are on an older version of Windows and want to use `make`, consider installing [Git Bash][git-bash], if you are using Windows 10, you could use the [Windows Subsystem for Linux][wsl]. Alternatively, you can look up the commands in the Makefile and resort to manually running them in sequence.
 

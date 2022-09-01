@@ -5,7 +5,6 @@ nav_order: 17
 description: "Known issues when running Offen Fair Web Analytics and their possible workarounds"
 permalink: /running-offen/known-issues/
 parent: Operator guide
-grand_parent: Offen Fair Web Analytics
 ---
 
 <!--

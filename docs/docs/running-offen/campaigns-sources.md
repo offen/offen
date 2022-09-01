@@ -5,7 +5,6 @@ nav_order: 14
 description: "How to better understand the traffic to your website by tagging campaigns and sources."
 permalink: /running-offen/campaigns-sources/
 parent: Operator guide
-grand_parent: Offen Fair Web Analytics
 ---
 
 <!--

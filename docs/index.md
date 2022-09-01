@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Home
+title: Offen Fair Web Analytics
 nav_order: 1
 description: "Welcome to the Offen documentation site. Here you find guides to Offen Fair Web Analytics and other tools we develop."
 permalink: /

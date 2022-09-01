@@ -5,7 +5,6 @@ nav_order: 12
 description: "How to add custom CSS to customize the appearance of the consent banner in Offen Fair Web Analytics"
 permalink: /running-offen/customizing-consent-banner/
 parent: Operator guide
-grand_parent: Offen Fair Web Analytics
 ---
 
 <!--

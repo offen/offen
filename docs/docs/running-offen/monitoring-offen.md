@@ -5,7 +5,6 @@ nav_order: 13
 description: "How to set up monitoring for your Offen Fair Web Analytics instance and what is being logged"
 permalink: /running-offen/monitoring-offen/
 parent: Operator guide
-grand_parent: Offen Fair Web Analytics
 ---
 
 <!--
@@ -13,7 +12,7 @@ Copyright 2020 - Offen Authors <hioffen@posteo.de>
 SPDX-License-Identifier: Apache-2.0
 -->
 
-# Monitoring an Offen Fair Web Analytics instance
+# Monitoring an instance
 {: .no_toc }
 
 ## Instance health

@@ -1,11 +1,10 @@
 ---
 layout: default
-title: Intsallation with Docker
+title: Installation with Docker
 nav_order: 1
 description: "A step by step tutorial on how to use Docker to deploy Offen."
 permalink: /running-offen/tutorials/configuring-deploying-offen-docker/
 parent: Operator guide
-grand_parent: Offen Fair Web Analytics
 ---
 
 <!--
@@ -13,7 +12,9 @@ Copyright 2020 - Offen Authors <hioffen@posteo.de>
 SPDX-License-Identifier: Apache-2.0
 -->
 
-# Configuring and deploying Offen Fair Web Analytics using Docker
+#	Installation with Docker
+
+Configuring and deploying Offen Fair Web Analytics using Docker
 {: .no_toc }
 
 This tutorial walks you through the steps needed to setup and deploy a standalone, single-node Offen Fair Web Analytics instance that is using SQLite file as its database backend.

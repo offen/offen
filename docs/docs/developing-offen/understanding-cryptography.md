@@ -4,7 +4,7 @@ title: Understanding the cryptographic entities
 nav_order: 6
 description: "Explaining the key concepts for encrypting user data."
 permalink: /developing-offen/understanding-cryptography/
-parent: Developing Offen
+parent: Developer guide
 ---
 
 <!--
@@ -14,7 +14,7 @@ SPDX-License-Identifier: Apache-2.0
 
 # Understanding the cryptographic entities in use
 
-Event data in Offen is encrypted before leaving the user's browser and will also be stored like this at rest. Decryption only happens on the client side. In order to share data between users and operators the following cryptographic entities will be used:
+Event data in Offen Fair Web Analytics is encrypted before leaving the user's browser and will also be stored like this at rest. Decryption only happens on the client side. In order to share data between users and operators the following cryptographic entities will be used:
 
 ## Account keypair
 
@@ -22,7 +22,7 @@ Each account owns a unique RSA keypair. The public key can be accessed by anyone
 
 ## User secrets
 
-Before a user sends data to an instance of Offen for the first time, the following procedure which roughly resembles a PGP exchange will happen:
+Before a user sends data to an instance of Offen Fair Web Analytics for the first time, the following procedure which roughly resembles a PGP exchange will happen:
 
 - in the client, a random symmetric `UserSecret` will be created and persisted locally
 - the account's public key will be used to encrypt the `UserSecret`

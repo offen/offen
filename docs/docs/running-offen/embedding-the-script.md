@@ -5,7 +5,6 @@ nav_order: 11
 description: "How to add the Offen script to your webpage."
 permalink: /running-offen/embedding-the-script/
 parent: Operator guide
-grand_parent: Offen Fair Web Analytics
 ---
 
 <!--
@@ -13,7 +12,7 @@ Copyright 2020 - Offen Authors <hioffen@posteo.de>
 SPDX-License-Identifier: Apache-2.0
 -->
 
-# Embedding the Offen Fair Web Analytics script
+# Embedding the script
 {: .no_toc }
 
 Each page that is expected to be included in the usages statistics requires to load the Offen Fair Web Analytics script. The script needs to be configured with the Account ID you want to use for that page.

@@ -5,7 +5,6 @@ nav_order: 10
 description: "How to configure and use subdomains for your Offen Fair Web Analytics installation"
 permalink: /running-offen/setting-up-using-subdomains/
 parent: Operator guide
-grand_parent: Offen Fair Web Analytics
 ---
 
 <!--

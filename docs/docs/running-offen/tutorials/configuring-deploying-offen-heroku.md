@@ -1,11 +1,10 @@
 ---
 layout: default
-title: Intsallation on Heroku
+title: Installation on Heroku
 nav_order: 3
 description: "A step by step tutorial on how deploy Offen Fair Web Analytics on Heroku."
 permalink: /running-offen/tutorials/configuring-deploying-offen-heroku/
 parent: Operator guide
-grand_parent: Offen Fair Web Analytics
 ---
 
 <!--
@@ -13,7 +12,9 @@ Copyright 2020 - Offen Authors <hioffen@posteo.de>
 SPDX-License-Identifier: Apache-2.0
 -->
 
-# Configuring and deploying Offen Fair Web Analytics on Heroku
+# Installation on Heroku
+
+Configuring and deploying Offen Fair Web Analytics on Heroku
 {: .no_toc }
 
 This tutorial walks you through the steps needed to setup and deploy a single-node Offen Fair Web Analytics instance on [Heroku][heroku] using PostgreSQL for storing data.

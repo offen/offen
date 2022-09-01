@@ -5,7 +5,6 @@ nav_order: 7
 description: "Considerations for installing Offen Fair Web Analytics in an production environment."
 permalink: /running-offen/installation-requirements/
 parent: Operator guide
-grand_parent: Offen Fair Web Analytics
 ---
 
 <!--
@@ -13,7 +12,7 @@ Copyright 2020 - Offen Authors <hioffen@posteo.de>
 SPDX-License-Identifier: Apache-2.0
 -->
 
-# Requirements for installing Offen Fair Web Analytics
+# Requirements for installing
 {: .no_toc }
 
 In case you want to use Offen Fair Web Analytics for collecting usage data in a production setup or similar, there are a few requirements to consider.

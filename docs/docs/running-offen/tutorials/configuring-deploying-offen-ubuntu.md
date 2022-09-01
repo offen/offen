@@ -1,11 +1,10 @@
 ---
 layout: default
-title: Intsallation on Ubuntu
+title: Installation on Ubuntu
 nav_order: 2
 description: "A step by step tutorial on how to deploy Offen Fair Web Analytics on an Ubuntu system using systemd."
 permalink: /running-offen/tutorials/configuring-deploying-offen-ubuntu/
 parent: Operator guide
-grand_parent: Offen Fair Web Analytics
 ---
 
 <!--
@@ -13,12 +12,15 @@ Copyright 2020 - Offen Authors <hioffen@posteo.de>
 SPDX-License-Identifier: Apache-2.0
 -->
 
-# Configuring and deploying Offen Fair Web Analytics on Ubuntu
+# Installation on Ubuntu
+
+Configuring and deploying Offen Fair Web Analytics on Ubuntu
 {: .no_toc }
 
 This tutorial walks you through the steps needed to setup and deploy a standalone, single-node Offen Fair Web Analytics instance that is using a local SQLite file as its database backend. `systemd` is used for managing the Offen Fair Web Analytics service.
 
 <span class="label label-green">Note</span>
+
 If you get stuck or need help, [file an issue][gh-issues], [tweet (@hioffen)][twitter] or [email][email]. If you have installed Offen Fair Web Analytics and would like to spread the word, we're happy to feature you in our README. [Send a PR][edit-readme] adding your site or app and we'll merge it.
 
 [gh-issues]: https://github.com/offen/offen/issues

@@ -5,7 +5,6 @@ nav_order: 8
 description: "Explaining subcommands and flags for the offen command."
 permalink: /running-offen/using-the-command/
 parent: Operator guide
-grand_parent: Offen Fair Web Analytics
 ---
 
 <!--

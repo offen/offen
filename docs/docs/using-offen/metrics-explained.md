@@ -1,10 +1,10 @@
 ---
 layout: default
 title: Metrics explained
-nav_order: 15
+nav_order: 1
 description: "Explanations of the key metrics displayed in Offen Fair Web Analytics."
-permalink: /running-offen/metrics-explained/
-parent: Operator guide
+permalink: /using-offen/metrics-explained/
+parent: For users
 ---
 
 <!--
