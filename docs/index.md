@@ -2,7 +2,7 @@
 layout: page
 title: Home
 nav_order: 1
-description: "Welcome to the documentation site for Offen, the fair and lightweight web analytics tool. Featuring guides for operators, users and developers."
+description: "Welcome to the Offen documentation site. Here you find guides to Offen Fair Web Analytics and other tools we develop."
 permalink: /
 ---
 
@@ -11,14 +11,14 @@ Copyright 2020 - Offen Authors <hioffen@posteo.de>
 SPDX-License-Identifier: Apache-2.0
 -->
 
-Offen is a fair web analytics tool. Let your users access their data. Gain valuable insights at the same time. Open, lightweight, self hosted and free.
-{: .text-grey-dk-000 }
+# Offen Fair Web Analytics
 
----
+Let your users access their data and gain valuable insights. Open, lightweight, self hosted and free.
+{: .text-grey-dk-000.mb-8 .mt-4 }
 
 ### I run a website and want to collect usage statistics.
 
-[How to run Offen](./running-offen/){: .btn .btn-green }
+[Operator guide](./running-offen/){: .btn .btn-green }
 {: .mb-8 .mt-4 }
 
 

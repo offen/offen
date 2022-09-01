@@ -4,7 +4,7 @@ title: Tagging campaigns and sources (UTM)
 nav_order: 10
 description: "How to better understand the traffic to your website by tagging campaigns and sources."
 permalink: /running-offen/campaigns-sources/
-parent: Running Offen
+parent: Offen Fair Web Analytics
 ---
 
 <!--
@@ -14,7 +14,7 @@ SPDX-License-Identifier: Apache-2.0
 
 # Tagging campaigns and sources (UTM)
 
-To better understand the traffic to your website coming from links you have shared, you can add special tags to your URLs. These are then recognized by Offen as distinct referrers and presented separately in the Auditorium.
+To better understand the traffic to your website coming from links you have shared, you can add special tags to your URLs. These are then recognized by Offen Fair Web Analytics as distinct referrers and presented separately in the Auditorium.
 
 The two categories **Campaigns** and **Sources** are supported. They are listed in the **Top Pages** section in addition to **Referrers** and specify Sessions and Page depth in addition to the tag name.
 

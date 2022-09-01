@@ -42,6 +42,13 @@ a:not([class]):hover,
 }
 
 /* fix headline "Table of contents" of an article folder (e.g. "Running Offen") */
+
+@media (max-width: 31.25rem) {
+  h1 {
+    font-size: 28px !important;
+  }
+}
+
 h2.text-delta {
   font-size: 24px !important;
   text-transform: none;

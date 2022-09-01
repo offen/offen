@@ -4,7 +4,7 @@ title: Configuring the application
 nav_order: 5
 description: "How to configure an Offen instance at runtime."
 permalink: /running-offen/configuring-the-application/
-parent: Running Offen
+parent: Running Offen Fair Web Analytics
 ---
 
 <!--
@@ -15,9 +15,9 @@ SPDX-License-Identifier: Apache-2.0
 # Configuring the application at runtime
 {: .no_toc }
 
-At runtime, __Offen is configured using environment variables__. All variables are following the pattern of `OFFEN_<scope>_<key>` (e.g. `OFFEN_SERVER_PORT`).
+At runtime, __Offen Fair Web Analytics is configured using environment variables__. All variables are following the pattern of `OFFEN_<scope>_<key>` (e.g. `OFFEN_SERVER_PORT`).
 
-In addition to setting variables in the host environment __Offen also supports setting these values through [`env` files][dotenv]__.
+In addition to setting variables in the host environment __It also supports setting these values through [`env` files][dotenv]__.
 
 [dotenv]: https://github.com/joho/godotenv
 
@@ -36,7 +36,7 @@ In addition to setting variables in the host environment __Offen also supports s
 ### On Linux and MacOS
 {: .no_toc }
 
-In case the `-envfile` flag was supplied with a value when invoking a command, Offen will use this file. In case no such flag was given, Offen looks for files named `offen.env` in the following locations:
+In case the `-envfile` flag was supplied with a value when invoking a command, Offen Fair Web Analytics will use this file. In case no such flag was given, it looks for files named `offen.env` in the following locations:
 
 - In the current working directory
 - In `~/.config`
@@ -46,7 +46,7 @@ In case the `-envfile` flag was supplied with a value when invoking a command, O
 ### On Windows
 {: .no_toc }
 
-In case the `-envfile` flag was supplied with a value when invoking a command, Offen will use this file. In case no such flag was given, Offen expects a file named `offen.env` to be present in the current working directory.
+In case the `-envfile` flag was supplied with a value when invoking a command, Offen Fair Web Analytics will use this file. In case no such flag was given, it expects a file named `offen.env` to be present in the current working directory.
 
 ## Configuration format
 
@@ -88,29 +88,29 @@ If set to `true` the application will assume it is running behind a reverse prox
 ### OFFEN_SERVER_SSLCERTIFICATE
 {: .no_toc }
 
-In case you own a SSL certificate that is valid for the domain you are planning to serve your Offen instance from, you can pass the location of the certificate file using this variable. It also requires `OFFEN_SERVER_SSLKEY` to be set.
+In case you own a SSL certificate that is valid for the domain you are planning to serve your Offen Fair Web Analytics instance from, you can pass the location of the certificate file using this variable. It also requires `OFFEN_SERVER_SSLKEY` to be set.
 
 ### OFFEN_SERVER_SSLKEY
 {: .no_toc }
 
-In case you own a SSL certificate that is valid for the domain you are planning to serve your Offen instance from, you can pass the location of the key file using this variable. It also requires `OFFEN_SERVER_SSLCERTIFICATE` to be set.
+In case you own a SSL certificate that is valid for the domain you are planning to serve your Offen Fair Web Analytics instance from, you can pass the location of the key file using this variable. It also requires `OFFEN_SERVER_SSLCERTIFICATE` to be set.
 
 ### OFFEN_SERVER_AUTOTLS
 {: .no_toc }
 
-In case you want Offen to automatically request a free SSL certificate from LetsEncrypt you can use this parameter and assign a comma separated list of supported domain names (e.g. `offen.mydomain.org,offen.otherdomain.org`) you are planning to serve Offen from. This will have the application automatically handle certificate issuing and renewal.
+In case you want Offen Fair Web Analytics to automatically request a free SSL certificate from LetsEncrypt you can use this parameter and assign a comma separated list of supported domain names (e.g. `offen.mydomain.org,offen.otherdomain.org`) you are planning to serve it from. This will have the application automatically handle certificate issuing and renewal.
 
 __Heads Up__
 {: .label .label-red }
 
-Using this feature will invalidate any port value that has been configured and will make Offen listen to both port 80 and 443. In such a setup, it is important that both ports are available to the public internet.
+Using this feature will invalidate any port value that has been configured and will make Offen Fair Web Analytics listen to both port 80 and 443. In such a setup, it is important that both ports are available to the public internet.
 
 ### OFFEN_SERVER_CERTFICATECACHE
 {: .no_toc }
 
 Defaults to `/var/www/.cache` on Linux and MacOS, `%Temp%\offen.db` on Windows.
 
-When using the AutoTLS feature, this sets the location where Offen will be caching certificates.
+When using the AutoTLS feature, this sets the location where Offen Fair Web Analytics will be caching certificates.
 
 __Heads Up__
 {: .label .label-red }
@@ -126,7 +126,7 @@ In case you are using the AutoTLS feature, this setting can be used to pass an e
 
 ### Database
 
-The `DATABASE` namespace collects settings regarding the connected persistence layer. If you do not configure any of these, Offen will be able to start, but data will not persist as it will be saved into a local temporary database.
+The `DATABASE` namespace collects settings regarding the connected persistence layer. If you do not configure any of these, Offen Fair Web Analytics will be able to start, but data will not persist as it will be saved into a local temporary database.
 
 ### OFFEN_DATABASE_DIALECT
 {: .no_toc }
@@ -159,7 +159,7 @@ OFFEN_DATABASE_CONNECTIONSTRING=postgres://user:pass@localhost:5432/offen?sslmod
 
 Defaults to `0`.
 
-When running in a setup where you start the Offen server together with your database, you might run into race scenarios where Offen tries to connect to your database before it's ready to accept connections (e.g. docker-compose with MySQL). If needed, you can use this setting to tell Offen to retry connecting to the database after sleeping for a few seconds. This mechanism uses an exponential backoff algorithm, so if you specify a large number, the intervals might become big.
+When running in a setup where you start the Offen Fair Web Analytics server together with your database, you might run into race scenarios where Offen Fair Web Analytics tries to connect to your database before it's ready to accept connections (e.g. docker-compose with MySQL). If needed, you can use this setting to tell it to retry connecting to the database after sleeping for a few seconds. This mechanism uses an exponential backoff algorithm, so if you specify a large number, the intervals might become big.
 
 As this is more of a workaround, the __default behavior is not to retry__.
 
@@ -167,7 +167,7 @@ As this is more of a workaround, the __default behavior is not to retry__.
 
 ### Email
 
-`SMTP` is a namespace used for configuring how transactional email is being sent. If any of these values is missing, Offen will fallback to using local `sendmail` which will likely be unreliable, so **configuring these values is highly recommended**.
+`SMTP` is a namespace used for configuring how transactional email is being sent. If any of these values is missing, Offen Fair Web Analytics will fallback to using local `sendmail` which will likely be unreliable, so **configuring these values is highly recommended**.
 
 ### OFFEN_SMTP_USER
 {: .no_toc }
@@ -215,7 +215,7 @@ The From address used when sending transactional email.
 
 No default value.
 
-A Base64 encoded secret that is used for signing cookies and validating URL tokens. Ideally, it is of 16 bytes length. __If this is not set, a random value will be created at application startup__. This would mean that Offen can serve requests, but __an application restart would invalidate all existing sessions and all pending invitation/password reset emails__. If you do not want this behavior, populate this value, which is what we recommend.
+A Base64 encoded secret that is used for signing cookies and validating URL tokens. Ideally, it is of 16 bytes length. __If this is not set, a random value will be created at application startup__. This would mean that Offen Fair Web Analytics can serve requests, but __an application restart would invalidate all existing sessions and all pending invitation/password reset emails__. If you do not want this behavior, populate this value, which is what we recommend.
 
 ---
 
@@ -242,7 +242,7 @@ The `APP` namespace affects how the application will behave.
 
 Defaults to `en`.
 
-The language the application will use when displaying user facing text. Right now, `en` (English), `de` (German), `fr` (French), `es` (Spanish), `pt` (Portuguese) and `vi` (Vietnamese) are supported. In case you want to contribute to Offen by adding a new language, [we'd love to hear from you][email].
+The language the application will use when displaying user facing text. Right now, `en` (English), `de` (German), `fr` (French), `es` (Spanish), `pt` (Portuguese) and `vi` (Vietnamese) are supported. In case you want to contribute to Offen Fair Web Analytics by adding a new language, [we'd love to hear from you][email].
 
 [email]: mailto:hioffen@posteo.de
 
@@ -258,21 +258,21 @@ Specifies the application's log level. Possible values are `debug`, `info`, `war
 
 Defaults to `true`.
 
-In case you want to run Offen as a horizontally scaling service, you can set this value to `false`. This will disable all cron jobs and similar that handle automated database migration and event expiration.
+In case you want to run Offen Fair Web Analytics as a horizontally scaling service, you can set this value to `false`. This will disable all cron jobs and similar that handle automated database migration and event expiration.
 
 ### OFFEN_APP_ROOTACCOUNT
 {: .no_toc }
 
 No default value.
 
-If you want to collect usage statistics for your Offen installation using Offen, you can use this parameter to specify an Account ID known to your Offen instance that will be used for collecting data.
+If you want to collect usage statistics for your installation using Offen Fair Web Analytics, you can use this parameter to specify an Account ID known to your Offen Fair Web Analytics instance that will be used for collecting data.
 
 ### OFFEN_APP_RETENTION
 {: .no_toc }
 
 Defaults to `6months`
 
-By default, Offen retains data for 6 months (186 days) and deletes all data that is older than this threshold.
+By default, Offen Fair Web Analytics retains data for 6 months (186 days) and deletes all data that is older than this threshold.
 In case you wish to expire data even earlier, use this setting to define a shorter retention period.
 Possible values are:
 

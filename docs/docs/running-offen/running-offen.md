@@ -1,9 +1,9 @@
 ---
 layout: default
-title: Running Offen
+title: Running Offen Fair Web Analytics
 has_children: true
 nav_order: 1
-description: "Explaining how to install and configure the Offen web analytics software."
+description: "Explaining how to install and configure the Offen Fair Web Analytics software."
 permalink: /running-offen/
 ---
 
@@ -12,11 +12,11 @@ Copyright 2020 - Offen Authors <hioffen@posteo.de>
 SPDX-License-Identifier: Apache-2.0
 -->
 
-# Running Offen
+# Running Offen Fair Web Analytics
 
 ## Downloads
 
-Offen is distributed as a single binary file, and is currently built for Linux, Windows and MacOS. You can [download the most recent release][repo-releases] from our GitHub repository or from <https://get.offen.dev>.
+Offen Fair Web Analytics is distributed as a single binary file, and is currently built for Linux, Windows and MacOS. You can [download the most recent release][repo-releases] from our GitHub repository or from <https://get.offen.dev>.
 
 [repo-releases]: https://github.com/offen/offen/releases
 
