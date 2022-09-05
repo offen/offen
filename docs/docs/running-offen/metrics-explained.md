@@ -41,7 +41,7 @@ The number of unique users that are currently interacting with pages.
 
 ---
 
-## Show data from the last
+## Show data from
 
 Here you can set the time frame for all displayed metrics. As all data is generally deleted after 6 months, the selection is limited to this duration.
 
@@ -107,6 +107,14 @@ This panel displays several page lists that count the total number of page views
 
 ---
 
+## Location
+
+The geographic location associated to the sessions in the selected timeframe.
+Offen Fair Web Analytics does not rely on an IP database for deriving geo location, but instead asks the browser for the selected timezone and tries to map this to a country.
+Country level is the only resolution available, countries that span multiple timezones are merged before storing data.
+
+---
+
 ## Referrers
 
 A list of referrer values that directed users to pages. Popular referrers like, for example, Google or Twitter display their proper name, others their domain. Referrals that are coming from the same host domain are excluded.
@@ -122,14 +130,6 @@ A list of special referrer values that directed users to pages. For this metric,
 ## Sources
 
 A list of special referrer values that directed users to pages. For this metric, referrers will be grouped by the `utm_source` values contained in their querystring parameters. Check ["Tagging campaigns and sources (UTM)"][campaigns sources] for how URLs have to be tagged for this feature.
-
----
-
-## Location
-
-The geographic location associated to the sessions in the selected timeframe.
-Offen Fair Web Analytics does not rely on an IP database for deriving geo location, but instead asks the browser for the selected timezone and tries to map this to a country.
-Country level is the only resolution available, countries that span multiple timezones are merged before storing data.
 
 ---
 
