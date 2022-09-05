@@ -4,7 +4,7 @@ title: Tagging campaigns and sources (UTM)
 nav_order: 14
 description: "How to better understand the traffic to your website by tagging campaigns and sources."
 permalink: /running-offen/campaigns-sources/
-parent: Operator guide
+parent: For operators
 ---
 
 <!--

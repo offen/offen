@@ -4,7 +4,7 @@ title: Required tools
 nav_order: 1
 description: "Tools required for developing Offen Fair Web Analytics."
 permalink: /developing-offen/required-tools/
-parent: Developer guide
+parent: For developers
 ---
 
 <!--

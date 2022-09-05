@@ -18,13 +18,13 @@ Let your users access their data and gain valuable insights. Open, lightweight, 
 
 ### I run a website and want to collect usage statistics.
 
-[Operator guide](./running-offen/){: .btn .btn-green }
+[For operators](./running-offen/){: .btn .btn-green }
 {: .mb-8 .mt-4 }
 
 
-### I want to contribute as a developer.
+### I want to contribute to the Open Source code.
 
-[Developer guide](./developing-offen/){: .btn  .btn-green }
+[For developers](./developing-offen/){: .btn  .btn-green }
 {: .mb-8 .mt-4 }
 
 ---

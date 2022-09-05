@@ -4,7 +4,7 @@ title: Embedding the script
 nav_order: 11
 description: "How to add the Offen script to your webpage."
 permalink: /running-offen/embedding-the-script/
-parent: Operator guide
+parent: For operators
 ---
 
 <!--

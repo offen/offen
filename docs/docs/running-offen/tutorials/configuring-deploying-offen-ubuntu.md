@@ -4,7 +4,7 @@ title: Installation on Ubuntu
 nav_order: 2
 description: "A step by step tutorial on how to deploy Offen Fair Web Analytics on an Ubuntu system using systemd."
 permalink: /running-offen/tutorials/configuring-deploying-offen-ubuntu/
-parent: Operator guide
+parent: For operators
 ---
 
 <!--

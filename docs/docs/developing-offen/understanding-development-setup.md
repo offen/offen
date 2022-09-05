@@ -4,7 +4,7 @@ title: Understanding the development setup
 nav_order: 4
 description: "An in-depth look at the development setup for Offen Fair Web Analytics and how to work with it."
 permalink: /developing-offen/understanding-development-setup/
-parent: Developer guide
+parent: For developers
 ---
 
 <!--

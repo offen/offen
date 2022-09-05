@@ -4,7 +4,7 @@ title: Known issues
 nav_order: 17
 description: "Known issues when running Offen Fair Web Analytics and their possible workarounds"
 permalink: /running-offen/known-issues/
-parent: Operator guide
+parent: For operators
 ---
 
 <!--

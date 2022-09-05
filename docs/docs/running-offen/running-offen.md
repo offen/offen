@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Operator guide
+title: For operators
 has_children: true
 nav_order: 2
 description: "Explaining how to install and configure the Offen Fair Web Analytics software."

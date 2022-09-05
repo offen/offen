@@ -4,7 +4,7 @@ title: Monitoring an instance
 nav_order: 13
 description: "How to set up monitoring for your Offen Fair Web Analytics instance and what is being logged"
 permalink: /running-offen/monitoring-offen/
-parent: Operator guide
+parent: For operators
 ---
 
 <!--

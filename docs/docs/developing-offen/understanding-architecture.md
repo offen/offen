@@ -4,7 +4,7 @@ title: Understanding the application architecture
 nav_order: 5
 description: "Explaining the key concepts of Offen Fair Web Analytics application architecture."
 permalink: /developing-offen/understanding-architecture/
-parent: Developer guide
+parent: For developers
 ---
 
 <!--

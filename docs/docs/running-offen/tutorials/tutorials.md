@@ -4,7 +4,7 @@ title: Other installation options
 nav_order: 4
 description: "More tutorials on how to configure and deploy Offen Fair Web Analytics."
 permalink: /running-offen/tutorials/
-parent: Operator guide
+parent: For operators
 ---
 
 <!--

@@ -4,7 +4,7 @@ title: Metrics explained
 nav_order: 15
 description: "Explanations of the key metrics displayed in Offen Fair Web Analytics."
 permalink: /running-offen/metrics-explained/
-parent: Operator guide
+parent: For operators
 ---
 
 <!--

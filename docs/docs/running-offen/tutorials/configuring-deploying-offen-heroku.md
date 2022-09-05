@@ -4,7 +4,7 @@ title: Installation on Heroku
 nav_order: 3
 description: "A step by step tutorial on how deploy Offen Fair Web Analytics on Heroku."
 permalink: /running-offen/tutorials/configuring-deploying-offen-heroku/
-parent: Operator guide
+parent: For operators
 ---
 
 <!--

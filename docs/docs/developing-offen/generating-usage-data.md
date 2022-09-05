@@ -4,7 +4,7 @@ title: Generating usage data for development
 nav_order: 7
 description: "How to generate usage data while developing Offen Fair Web Analytics."
 permalink: /developing-offen/generating-usage-data/
-parent: Developer guide
+parent: For developers
 ---
 
 <!--

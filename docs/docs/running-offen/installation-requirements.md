@@ -4,7 +4,7 @@ title: Requirements for installing
 nav_order: 6
 description: "Considerations for installing Offen Fair Web Analytics in an production environment."
 permalink: /running-offen/installation-requirements/
-parent: Operator guide
+parent: For operators
 ---
 
 <!--

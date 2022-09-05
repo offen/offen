@@ -4,7 +4,7 @@ title: Test drive
 nav_order: 16
 description: "Test drive Offen Fair Web Analytics on your system today."
 permalink: /running-offen/test-drive/
-parent: Operator guide
+parent: For operators
 ---
 
 <!--

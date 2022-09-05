@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Developer guide
+title: For developers
 has_children: true
 nav_order: 3
 description: "A collection of documents aimed at helping developers to contribute to Offen Fair Web Analytics."

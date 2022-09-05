@@ -4,7 +4,7 @@ title: Understanding the cryptographic entities
 nav_order: 6
 description: "Explaining the key concepts for encrypting user data."
 permalink: /developing-offen/understanding-cryptography/
-parent: Developer guide
+parent: For developers
 ---
 
 <!--

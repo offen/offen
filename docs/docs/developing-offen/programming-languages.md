@@ -4,7 +4,7 @@ title: Programming languages
 nav_order: 3
 description: "An introduction to the languages chosen to develop Offen Fair Web Analytics."
 permalink: /developing-offen/programming-languages/
-parent: Developer guide
+parent: For developers
 ---
 
 <!--
