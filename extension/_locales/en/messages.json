@@ -5,7 +5,7 @@
   },
   "popup_footer": {
     "description": "Footer content in the popup",
-    "message": "<a href=\"https://docs.offen.dev\" class=\"b link dim dark-green\">Read the docs</a> to learn more about how Offen Instant Access works."
+    "message": "<a href=\"https://docs.offen.dev/using-offen/browser-extension/\" class=\"b link dim dark-green\">Read the docs</a> to learn more about how Offen Instant Access works."
   },
   "popup_install_info": {
     "description": "Information about the current installation",
