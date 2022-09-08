@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "__MSG_manifest_name__",
   "description": "__MSG_manifest_description__",
-  "version": "1.0.0",
+  "version": "1.2.1",
   "homepage_url": "https://www.offen.dev",
   "icons": {
     "64": "icons/on.png"
