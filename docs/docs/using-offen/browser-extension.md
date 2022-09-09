@@ -24,10 +24,10 @@ The Offen Instant Access Browser Extension is built on the web extension standar
 ## Installation
 
 Users of Firefox can install the extension from the [Mozilla Add Ons Store][mozilla-add-ons].
-Everyone else can download the extension from the [official releases page][releases].
+Everyone else can download the extension from the [our website][releases].
 
-[mozilla-add-ons]: https://addons.mozilla.org/
-[releases]: https://github.com/offen/offen/releases
+[mozilla-add-ons]: https://addons.mozilla.org/addon/offen-instant-access/
+[releases]: https://get.offen.dev/crx/
 
 ## FAQ
 
