@@ -265,7 +265,7 @@ In case you want to run Offen as a horizontally scaling service, you can set thi
 
 No default value.
 
-If you want to collect usage statistics for your Offen Fair Web Analytics installation using Offen, you can use this parameter to specify an Account ID known to your Offen instance that will be used for collecting data.
+If you want to collect usage statistics for your Offen installation using Offen, you can use this parameter to specify an Account ID known to your Offen instance that will be used for collecting data.
 
 ### OFFEN_APP_RETENTION
 {: .no_toc }
