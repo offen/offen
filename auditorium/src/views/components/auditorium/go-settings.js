@@ -42,7 +42,7 @@ const GoSettings = (props) => {
           return (
             <div class='mw6 center ph3 mt3 mb4'>
               <p class='ma0 mb3'>
-                {__('Share all accounts, create a new one, change your email address and password, log out from Offen')}
+                {__('Share all accounts, create a new one, change your email address and password, log out from Offen Fair Web Analytics')}
               </p>
               <div class='link dim'>
                 <a

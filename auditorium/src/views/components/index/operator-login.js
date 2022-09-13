@@ -11,7 +11,7 @@ const OperatorLogin = (props) => {
     <div class='flex flex-column flex-row-ns items-center ph3 ph4-ns pv4 bg-black-05' data-testid='index/operator-login'>
       <div class='w-100 w-60-ns mr3-ns mb3 mb0-ns'>
         <h3 class='f5 tc tl-ns normal mt0 mb0'>
-          {__('Are you the operator of this Offen installation? Log in to your account.')}
+          {__('Are you the operator of this installation? Log in to your account.')}
         </h3>
       </div>
       <div class='w-100 w-40-ns link dim tc'>
