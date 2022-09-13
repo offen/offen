@@ -32,7 +32,7 @@ module.exports = (props) => {
             {__('Cookies')}
           </Paragraph>
           <Paragraph class='mt0 mb4'>
-            {__('When you visit a website where a <a href="#terms-offen-installation" class="%s">Offen Fair Web Analytics installation</a> is active, small amounts of data are stored on your computer. These data elements are known as cookies. <a href="https://en.wikipedia.org/wiki/HTTP_cookie" class="%s" target="_blank" rel="noreferer noopener">Learn more.</a>', 'b link dim dark-green', 'b link dim dark-green')}
+            {__('When you visit a website where a <a href="#terms-offen-installation" class="%s">Offen Fair Web Analytics installation</a> is active, small amounts of data are stored on your computer. These data elements are known as cookies. <a href="https://en.wikipedia.org/wiki/HTTP_cookie" class="%s" target="_blank" rel="noreferrer noopener">Learn more.</a>', 'b link dim dark-green', 'b link dim dark-green')}
           </Paragraph>
           <Paragraph class='i mt0 mb2' id='terms-operator'>
             {__('Operator')}
@@ -58,7 +58,7 @@ module.exports = (props) => {
             {__('ID')}
           </Paragraph>
           <Paragraph class='mt0 mb4'>
-            {__('Originally: UUID. Full form: Universally unique identifier. Offen uses UUID of version 4. These IDs are generated randomly, unique and without using any personal data. On the individual Offen server, they are handled in an unrecognizable form. <a href="https://en.wikipedia.org/wiki/Universally_unique_identifier" class="%s" target="_blank" rel="noreferer noopener">Learn more.</a>', 'b link dim dark-green')}
+            {__('Originally: UUID. Full form: Universally unique identifier. Offen uses UUID of version 4. These IDs are generated randomly, unique and without using any personal data. On the individual Offen server, they are handled in an unrecognizable form. <a href="https://en.wikipedia.org/wiki/Universally_unique_identifier" class="%s" target="_blank" rel="noreferrer noopener">Learn more.</a>', 'b link dim dark-green')}
           </Paragraph>
         </div>
       </div>
