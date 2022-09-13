@@ -2,7 +2,7 @@
 layout: default
 title: Setting up and using subdomains
 nav_order: 6
-description: "How to configure and use subdomains for your Offen installation"
+description: "How to configure and use subdomains for your Offen Fair Web Analytics installation"
 permalink: /running-offen/setting-up-using-subdomains/
 parent: Running Offen
 ---
@@ -32,11 +32,11 @@ In practice, this boils down to the following setup: if you are using your Offen
 __Heads Up__
 {: .label .label-red }
 
-Even if it would make sense, we recommend **not to use an `analytics.yoursite.org` subdomain** for your Offen installation as these domains are often **subject to blocking by adblockers** like uBlock or similar.
+Even if it would make sense, we recommend **not to use an `analytics.yoursite.org` subdomain** for your Offen Fair Web Analytics installation as these domains are often **subject to blocking by adblockers** like uBlock or similar.
 
 ---
 
-In case you would be using a _different_ top level domain for your Offen installation (e.g. `offen.example.com`), Offen would be limited to user agents that accept 3rd party cookies, which is a concept that is luckily fading away quickly.
+In case you would be using a _different_ top level domain for your Offen Fair Web Analytics installation (e.g. `offen.example.com`), Offen would be limited to user agents that accept 3rd party cookies, which is a concept that is luckily fading away quickly.
 
 __Heads Up__
 {: .label .label-red }
@@ -53,7 +53,7 @@ If you access your installation using an IP address you will usually set an A re
 
 Refer to your providers documentation for instructions on how to do this.
 
-## Using one Offen installation for multiple sites
+## Using one Offen Fair Web Analytics installation for multiple sites
 
 One Offen instance can be used to serve multiple accounts on different domains. Say for example you are using Offen to collect usage data for multiple customers, you can point multiple DNS records to the same instance and use it for each of these customers.
 
@@ -70,7 +70,7 @@ When embedding the Offen script on sites in such a setup, __make sure it is usin
 
 ### Configuring AutoTLS for multiple sites
 
-If your Offen installation serves multiple domains, you will need to provide SSL certificates for each of them. Offen can acquire free and self-renewing certificates from LetsEncrypt for you when you specify these as a comma separated list in the `OFFEN_SERVER_AUTOTLS` configuration value:
+If your Offen Fair Web Analytics installation serves multiple domains, you will need to provide SSL certificates for each of them. Offen can acquire free and self-renewing certificates from LetsEncrypt for you when you specify these as a comma separated list in the `OFFEN_SERVER_AUTOTLS` configuration value:
 
 ```
 OFFEN_SERVER_AUTOTLS="offen.yoursite.org,offen.anothersite.org,offen.somethingelse.org"
