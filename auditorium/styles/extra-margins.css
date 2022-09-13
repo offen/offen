@@ -18,3 +18,9 @@
 .margin-filterIcon {
   margin-top: 0.15em;
 }
+.margin-header {
+  margin-top: 0.15em;
+}
+@media screen and (max-width: 30em) {
+  .margin-header {  margin-top: 0.5em; }
+}
