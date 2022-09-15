@@ -16,27 +16,8 @@ msgstr "Preparando configuración..."
 msgid "Checking your consent status"
 msgstr "Verificando el estado de su consentimiento"
 
-msgid "There has been an error resetting your password, please try again."
-msgstr "Se ha producido un error al restablecer su contraseña. Inténtelo nuevamente."
-
-msgid "Reset password"
-msgstr "Restablecer contraseña"
-
-msgid "Email address"
-msgstr "Dirección de correo electrónico"
-
-msgid "New password"
-msgstr "Nueva contraseña"
-
-msgid "Repeat new password"
-msgstr "Repetir la contraseña nueva"
-
-msgid "Reset Password"
-msgstr "Restablecer contraseña"
-
 msgid "Passwords did not match. Please try again."
 msgstr "Las contraseñas no coinciden. Inténtelo de nuevo\n"
-
 
 msgid "You can now log in using the provided credentials."
 msgstr "Ahora puede iniciar sesión con las credenciales proporcionadas."
@@ -62,32 +43,23 @@ msgstr "Repetir contraseña"
 msgid "Setup instance"
 msgstr "Instancia de configuración"
 
-msgid "Please log in again using your updated email."
-msgstr "Vuelva a iniciar sesión con su correo electrónico actualizado."
+msgid "There has been an error resetting your password, please try again."
+msgstr "Se ha producido un error al restablecer su contraseña. Inténtelo nuevamente."
 
-msgid "Could not change email. Try again."
-msgstr "No se ha podido cambiar el correo electrónico. Inténtelo de nuevo."
+msgid "Reset password"
+msgstr "Restablecer contraseña"
 
-msgid "Change email address"
-msgstr "Cambiar correo electrónico"
+msgid "Email address"
+msgstr "Dirección de correo electrónico"
 
-msgid "New email address"
-msgstr "Nueva dirección de correo electrónico"
+msgid "New password"
+msgstr "Nueva contraseña"
 
-msgid "You need to confirm this action with your credentials."
-msgstr "Debe confirmar esta acción con sus credenciales."
+msgid "Repeat new password"
+msgstr "Repetir la contraseña nueva"
 
-msgid "Current email address"
-msgstr "Dirección de correo electrónico actual"
-
-msgid "Password"
-msgstr "Contraseña"
-
-msgid "Confirm"
-msgstr "Confirmar"
-
-msgid "Cancel"
-msgstr "Cancelar"
+msgid "Reset Password"
+msgstr "Restablecer contraseña"
 
 msgid "Log in again to use the newly created account <em class=\"%s\">\"%s\"</em>."
 msgstr "Inicie sesión nuevamente para usar la cuenta recién creada <em class=\"%s\">\"%s\"</em>."
@@ -104,8 +76,35 @@ msgstr "Nombre de la cuenta"
 msgid "Create account"
 msgstr "Crear cuenta"
 
+msgid "You need to confirm this action with your credentials."
+msgstr "Debe confirmar esta acción con sus credenciales."
+
 msgid "Your email"
 msgstr "Su correo electrónico"
+
+msgid "Confirm"
+msgstr "Confirmar"
+
+msgid "Cancel"
+msgstr "Cancelar"
+
+msgid "Please log in again using your updated email."
+msgstr "Vuelva a iniciar sesión con su correo electrónico actualizado."
+
+msgid "Could not change email. Try again."
+msgstr "No se ha podido cambiar el correo electrónico. Inténtelo de nuevo."
+
+msgid "Change email address"
+msgstr "Cambiar correo electrónico"
+
+msgid "New email address"
+msgstr "Nueva dirección de correo electrónico"
+
+msgid "Current email address"
+msgstr "Dirección de correo electrónico actual"
+
+msgid "Password"
+msgstr "Contraseña"
 
 msgid "Please log in again using your new password."
 msgstr "Vuelva a iniciar sesión con su nueva contraseña."
@@ -122,7 +121,6 @@ msgstr "Contraseña actual"
 msgid "Share all accounts"
 msgstr "Compartir todas las cuentas"
 
-#, updated
 msgid "Share all your Offen Fair Web Analytics accounts via email invitation. When granted Admin privilges, invited users have full access to shared accounts and can create new accounts on this instance."
 msgstr "Comparta todas sus cuentas de Offen Fair Web Analytics enviando una invitación por correo electrónico. Si concede privilegios de administrador a los usuarios invitados, tendrán acceso completo a las cuentas compartidas y podrán crear nuevas cuentas en esta instancia."
 
@@ -147,13 +145,13 @@ msgstr "Las contraseñas no coinciden"
 msgid "Your account has been set up, you can now log in."
 msgstr "Su cuenta se ha configurado, ya puede iniciar sesión."
 
-msgid "Join Offen"
-msgstr "Registrarse en Offen"
+#, updated
+msgid "Join Offen Fair Web Analytics"
+msgstr "Registrarse en Offen Fair Web Analytics"
 
 msgid "Accept invite"
 msgstr "Aceptar invitación"
 
-#, updated
 msgid "Not the operator of this installation? Manage your data in the <a href=\"/auditorium/\" class=\"%s\" >User Auditorium.</a>"
 msgstr "¿No es el operador de esta instalación? Gestione sus datos en el <a href=\"/auditorium/\" class=\"%s\" >Auditorium del usuario.</a>"
 
@@ -169,7 +167,6 @@ msgstr "Iniciar sesión"
 msgid "Forgot password?"
 msgstr "¿Ha olvidado su contraseña?"
 
-#, updated
 msgid "Are you the operator of this installation? Log in to your account."
 msgstr "¿Es usted el operador de esta instalación? Inicie sesión en su cuenta."
 
@@ -230,19 +227,15 @@ msgstr "Sí, en concreto utilizamos las cookies para almacenar su decisión rela
 msgid "How does it all work?"
 msgstr "¿Cómo funciona todo esto?"
 
-#, updated
 msgid "After opening a website where an Offen Fair Web Analytics installation is active, you can explicitly opt in to the data collection and thereby help to improve the services you use. Only then you will be assigned a user and a session ID using a cookie. Offen Fair Web Analytics handles these IDs in an unrecognizable form. <a href=\"https://en.wikipedia.org/wiki/HTTP_cookie\" class=\"%s\" target=\"_blank\" rel=\"noreferrer noopener\">Learn more about cookies here.</a>"
 msgstr "Después de abrir un sitio web en el que esté activa una instalación de Offen Fair Web Analytics, puede otorgar su autorización explícita para la recopilación de datos y así ayudar a mejorar los servicios que utiliza. Solo entonces se le asignará un usuario y una ID de sesión mediante una cookie. Offen Fair Web Analytics gestiona estas ID de forma irreconocible. <a href=\"https://en.wikipedia.org/wiki/HTTP_cookie\" class=\"%s\" target=\"_blank\" rel=\"noreferrer noopener\">Obtenga más información sobre las cookies aquí.</a>"
 
-#, updated
 msgid "Offen Fair Web Analytics requires cookies to function properly."
 msgstr "Offen Fair Web Analytics requiere cookies para funcionar correctamente."
 
-#, updated
 msgid "Offen Fair Web Analytics is a fair and open source analytics software. It is installed on the website that linked you here."
 msgstr "Offen Fair Web Analytics es un software de análisis justo y de código abierto. Está instalado en la página web que le ha dirigido aquí."
 
-#, updated
 msgid "For Offen Fair Web Analytics to work, your browser has to accept cookies. Please change your browsers settings and reload this page. Subsequently, you will be asked for consent to collect your usage data."
 msgstr "Para que Offen Fair Web Analytics funcione, su navegador debe aceptar cookies. Cambie la configuración de su navegador y vuelva a cargar esta página. Posteriormente, se le pedirá su consentimiento para recopilar sus datos de uso."
 
@@ -255,7 +248,6 @@ msgstr "Abrir Auditorium"
 msgid "We only access usage data with your consent."
 msgstr "Solo accedemos a los datos de uso con su permiso."
 
-#, updated
 msgid "Offen Fair Web Analytics is a fair and open source analytics software. Help the website that linked you here by allowing access to your usage data."
 msgstr "Offen Fair Web Analytics es un software de análisis justo y de código abierto. Ayude al sitio web que le ha dirigido hasta aquí permitiendo el acceso a sus datos de uso."
 
@@ -309,14 +301,12 @@ msgstr "Un momento…"
 
 #. #-#-#-#-#  server.po  #-#-#-#-#
 #. ~ line 49 "public/static/index.go.html"
-#, updated
 msgid "Offen Fair Web Analytics"
 msgstr "Offen Fair Web Analytics"
 
 msgid "An error occurred: %s"
 msgstr "Ha ocurrido un error: %s"
 
-#, updated
 msgid "<a href=\"https://www.offen.dev/\" class=\"%s\" target=\"_blank\" rel=\"noreferrer noopener\">Offen Fair Web Analytics</a>"
 msgstr "<a href=\"https://www.offen.dev/\" class=\"%s\" target=\"_blank\" rel=\"noreferrer noopener\">Offen Fair Web Analytics</a>"
 
@@ -410,7 +400,6 @@ msgstr "usuarios"
 msgid "websites"
 msgstr "sitios web"
 
-#, updated
 msgid "This panel displays the number of pages (bright green) and websites (dark green) you have visited where the <a href=\"#terms-offen-installation\" class=\"%s\">Offen Fair Web Analytics installation</a> is active. To measure this, a cookie is used to assign you a user and a session <a href=\"#terms-id\" class=\"%s\">ID.</a>"
 msgstr "Este panel muestra el número de páginas (verde claro) y sitios web (verde oscuro) que ha visitado en los que la <a href=\"#terms-offen-installation\" class=\"%s\">instalación de Offen Fair Web Analytics</a> está activa. Para medir esto, se utiliza una cookie que le asigna un <a href=\"#terms-id\" class=\"%s\">usuario y una ID de sesión.</a>"
 
@@ -420,55 +409,20 @@ msgstr "Estado vacío"
 msgid "No data available <br>for the selected time range."
 msgstr "No hay datos disponibles <br>para el intervalo de tiempo seleccionado."
 
-msgid "Basic Terms"
-msgstr "Términos básicos"
+msgid "Real time"
+msgstr "Tiempo real"
 
-msgid "Auditorium"
-msgstr "Auditorium"
+msgid "Active users on site"
+msgstr "Usua. act. en el sitio"
 
-msgid "You are viewing the Auditorium right now. Only available after opt-in, it is the interface where you can review and delete your usage data or opt out entirely."
-msgstr "En este momento, está viendo el Auditorium. Solo está disponible después de haber otorgado su autorización. Es la interfaz en la que puede revisar y eliminar sus datos de uso o denegar su autorización por completo."
+msgid "Active pages"
+msgstr "Páginas activas"
 
-#, updated
-msgid "Offen Fair Web Analytics installation"
-msgstr "Instalación de Offen Fair Web Analytics"
+msgid "URL"
+msgstr "URL"
 
-#, updated
-msgid "One Offen Fair Web Analytics installation can include several websites. All metrics of all websites in this installation are displayed in the <a href=\"#terms-auditorium\" class=\"%s\">Auditorium.</a> Metrics generated on websites of other installations can only be viewed in the associated <a href=\"#terms-auditorium\" class=\"%s\">Auditorium.</a>"
-msgstr "Una instalación de Offen Fair Web Analytics puede incluir varios sitios web. Todas las métricas de los sitios web de esa instalación se muestran en el <a href=\"#terms-auditorium\" class=\"%s\">Auditorium.</a> Las métricas generadas en los sitios web de otras instalaciones solo se pueden visualizar en el <a href=\"#terms-auditorium\" class=\"%s\">Auditorium asociado.</a>"
-
-msgid "Cookies"
-msgstr "Cookies"
-
-#, updated
-msgid "When you visit a website where a <a href=\"#terms-offen-installation\" class=\"%s\">Offen Fair Web Analytics installation</a> is active, small amounts of data are stored on your computer. These data elements are known as cookies. <a href=\"https://en.wikipedia.org/wiki/HTTP_cookie\" class=\"%s\" target=\"_blank\" rel=\"noreferrer noopener\">Learn more.</a>"
-msgstr "Cuando visita un sitio web donde hay una <a href=\"#terms-offen-installation\" class=\"%s\">instalación de Offen Fair Web Analytics</a> activa, se almacenan pequeñas cantidades de datos en su ordenador. Esos datos se conocen como cookies. <a href=\"https://en.wikipedia.org/wiki/HTTP_cookie\" class=\"%s\" target=\"_blank\" rel=\"noreferrer noopener\">Obtenga más información.</a>"
-
-msgid "Operator"
-msgstr "Operador"
-
-#, updated
-msgid "Operators are the owners of <a href=\"#terms-offen-installation\" class=\"%s\">Offen Fair Web Analytics installations.</a> Only after you opted in, your usage data of a website is collected. Operators then can view it for maximum 6 months."
-msgstr "Los operadores son los propietarios de las <a href=\"#terms-offen-installation\" class=\"%s\">instalaciones de Offen Fair Web Analytics.</a> Solo se recopilan tus datos de uso de un sitio web si has otorgado tu autorización previamente. Los operadores pueden verlos durante un máximo de 6 meses."
-
-msgid "Unique user"
-msgstr "Usuario único"
-
-msgid "You are defined as a unique user after your opt-in to data collection. To measure this, a <a href=\"#terms-cookies\" class=\"%s\">cookie</a> is used to assign a user <a href=\"#terms-id\" class=\"%s\">ID</a> to you."
-msgstr "Después de otorgar su autorización para la recopilación de datos, se le considera usuario único. Para medir esto, se utiliza una <a href=\"#terms-cookies\" class=\"%s\">cookie</a> que le asigna un usuario y una <a href=\"#terms-id\" class=\"%s\">ID</a> de sesión."
-
-msgid "Unique session"
-msgstr "Sesión única"
-
-msgid "A unique session is defined as a <a href=\"#terms-unique-user\" class=\"%s\">unique user</a> being actively engaged with a page during a browser session. To measure this, a <a href=\"#terms-cookies\" class=\"%s\">cookie</a> is used to assign a session <a href=\"#terms-id\" class=\"%s\">ID</a> to you."
-msgstr "Una sesión única consiste en un <a href=\"#terms-unique-user\" class=\"%s\">usuario único</a> que participa activamente en una página durante una sesión del navegador. Para medir esto, se utiliza una <a href=\"#terms-cookies\" class=\"%s\">cookie</a> que le asigna un <a href=\"#terms-id\" class=\"%s\">ID</a> de sesión."
-
-msgid "ID"
-msgstr "ID"
-
-#, updated
-msgid "Originally: UUID. Full form: Universally unique identifier. Offen uses UUID of version 4. These IDs are generated randomly, unique and without using any personal data. On the individual Offen server, they are handled in an unrecognizable form. <a href=\"https://en.wikipedia.org/wiki/Universally_unique_identifier\" class=\"%s\" target=\"_blank\" rel=\"noreferrer noopener\">Learn more.</a>"
-msgstr "Originalmente: UUID. Forma completa: identificador único universal. Offen usa UUID de versión 4. Estas ID se generan de forma aleatoria, única y sin utilizar ningún dato personal. En el servidor individual de Offen, se manejan de forma irreconocible. <a href=\"https://en.wikipedia.org/wiki/Universally_unique_identifier\" class=\"%s\" target=\"_blank\" rel=\"noreferrer noopener\">Obtenga más información.</a>"
+msgid "Visitors"
+msgstr "Visitantes"
 
 msgid "Yesterday"
 msgstr "Ayer"
@@ -506,6 +460,73 @@ msgstr "Mostrar datos desde"
 msgid "Here you can set the time frame for all displayed metrics. As all data is generally deleted after 6 months maximum, the selection is limited to this duration."
 msgstr "Aquí puedes establecer el intervalo de tiempo para las métricas mostradas. Puesto que todos los datos generalmente se eliminan después máximo de 6 meses, la selección se limita a esta duración."
 
+msgid "Basic Terms"
+msgstr "Términos básicos"
+
+msgid "Auditorium"
+msgstr "Auditorium"
+
+msgid "You are viewing the Auditorium right now. Only available after opt-in, it is the interface where you can review and delete your usage data or opt out entirely."
+msgstr "En este momento, está viendo el Auditorium. Solo está disponible después de haber otorgado su autorización. Es la interfaz en la que puede revisar y eliminar sus datos de uso o denegar su autorización por completo."
+
+msgid "Offen Fair Web Analytics installation"
+msgstr "Instalación de Offen Fair Web Analytics"
+
+msgid "One Offen Fair Web Analytics installation can include several websites. All metrics of all websites in this installation are displayed in the <a href=\"#terms-auditorium\" class=\"%s\">Auditorium.</a> Metrics generated on websites of other installations can only be viewed in the associated <a href=\"#terms-auditorium\" class=\"%s\">Auditorium.</a>"
+msgstr "Una instalación de Offen Fair Web Analytics puede incluir varios sitios web. Todas las métricas de los sitios web de esa instalación se muestran en el <a href=\"#terms-auditorium\" class=\"%s\">Auditorium.</a> Las métricas generadas en los sitios web de otras instalaciones solo se pueden visualizar en el <a href=\"#terms-auditorium\" class=\"%s\">Auditorium asociado.</a>"
+
+msgid "Cookies"
+msgstr "Cookies"
+
+msgid "When you visit a website where a <a href=\"#terms-offen-installation\" class=\"%s\">Offen Fair Web Analytics installation</a> is active, small amounts of data are stored on your computer. These data elements are known as cookies. <a href=\"https://en.wikipedia.org/wiki/HTTP_cookie\" class=\"%s\" target=\"_blank\" rel=\"noreferrer noopener\">Learn more.</a>"
+msgstr "Cuando visita un sitio web donde hay una <a href=\"#terms-offen-installation\" class=\"%s\">instalación de Offen Fair Web Analytics</a> activa, se almacenan pequeñas cantidades de datos en su ordenador. Esos datos se conocen como cookies. <a href=\"https://en.wikipedia.org/wiki/HTTP_cookie\" class=\"%s\" target=\"_blank\" rel=\"noreferrer noopener\">Obtenga más información.</a>"
+
+msgid "Operator"
+msgstr "Operador"
+
+msgid "Operators are the owners of <a href=\"#terms-offen-installation\" class=\"%s\">Offen Fair Web Analytics installations.</a> Only after you opted in, your usage data of a website is collected. Operators then can view it for maximum 6 months."
+msgstr "Los operadores son los propietarios de las <a href=\"#terms-offen-installation\" class=\"%s\">instalaciones de Offen Fair Web Analytics.</a> Solo se recopilan tus datos de uso de un sitio web si has otorgado tu autorización previamente. Los operadores pueden verlos durante un máximo de 6 meses."
+
+msgid "Unique user"
+msgstr "Usuario único"
+
+msgid "You are defined as a unique user after your opt-in to data collection. To measure this, a <a href=\"#terms-cookies\" class=\"%s\">cookie</a> is used to assign a user <a href=\"#terms-id\" class=\"%s\">ID</a> to you."
+msgstr "Después de otorgar su autorización para la recopilación de datos, se le considera usuario único. Para medir esto, se utiliza una <a href=\"#terms-cookies\" class=\"%s\">cookie</a> que le asigna un usuario y una <a href=\"#terms-id\" class=\"%s\">ID</a> de sesión."
+
+msgid "Unique session"
+msgstr "Sesión única"
+
+msgid "A unique session is defined as a <a href=\"#terms-unique-user\" class=\"%s\">unique user</a> being actively engaged with a page during a browser session. To measure this, a <a href=\"#terms-cookies\" class=\"%s\">cookie</a> is used to assign a session <a href=\"#terms-id\" class=\"%s\">ID</a> to you."
+msgstr "Una sesión única consiste en un <a href=\"#terms-unique-user\" class=\"%s\">usuario único</a> que participa activamente en una página durante una sesión del navegador. Para medir esto, se utiliza una <a href=\"#terms-cookies\" class=\"%s\">cookie</a> que le asigna un <a href=\"#terms-id\" class=\"%s\">ID</a> de sesión."
+
+msgid "ID"
+msgstr "ID"
+
+#, updated
+msgid "Originally: UUID. Full form: Universally unique identifier. Offen Fair Web Analytics uses UUID of version 4. These IDs are generated randomly, unique and without using any personal data. On the individual Offen Fair Web Analytics server, they are handled in an unrecognizable form. <a href=\"https://en.wikipedia.org/wiki/Universally_unique_identifier\" class=\"%s\" target=\"_blank\" rel=\"noreferrer noopener\">Learn more.</a>"
+msgstr "Originalmente: UUID. Forma completa: identificador único universal. Offen Fair Web Analytics usa UUID de versión 4. Estas ID se generan de forma aleatoria, única y sin utilizar ningún dato personal. En el servidor individual de Offen Fair Web Analytics, se manejan de forma irreconocible. <a href=\"https://en.wikipedia.org/wiki/Universally_unique_identifier\" class=\"%s\" target=\"_blank\" rel=\"noreferrer noopener\">Obtenga más información.</a>"
+
+msgid "Select"
+msgstr "Seleccionar"
+
+msgid "No"
+msgstr "No"
+
+msgid "Yes"
+msgstr "Sí"
+
+msgid "s"
+msgstr "s"
+
+msgid "ms"
+msgstr "ms"
+
+msgid "M"
+msgstr "M"
+
+msgid "k"
+msgstr "k"
+
 msgid "Stay opted in,<br>only delete usage data"
 msgstr "Mantener autoriz.,<br>eliminar datos de uso"
 
@@ -529,9 +550,6 @@ msgstr "Conceder autorización"
 
 msgid "To review your data collected over time, <br class=\"dn db-l\">set a bookmark for this page."
 msgstr "Para revisar datos recopilados en el tiempo, <br class=\"dn db-l\">cree un marcador para esta página."
-
-msgid "Select"
-msgstr "Seleccionar"
 
 msgid "If you retire the account <em class=\"%s\">%s,</em> it will not appear in your statistics anymore. Users will be able to access and manage their data for the account until it expires."
 msgstr "Si retiras la cuenta <em class=\"%s\">%s,</em> ya no aparecerá en tus estadísticas. Los usuarios podrán acceder y administrar tus datos para la cuenta durante hasta que caduquen."
@@ -557,23 +575,14 @@ msgstr "Retirar esta cuenta"
 msgid "Toggle display of retire account functionality"
 msgstr "Alternar la visualización de la funcionalidad de retirar cuenta"
 
-msgid "No"
-msgstr "No"
+msgid "Initial %d days"
+msgstr "Primeros %d días"
 
-msgid "Yes"
-msgstr "Sí"
+msgid "%d days later"
+msgstr "%d días después"
 
-msgid "s"
-msgstr "s"
-
-msgid "ms"
-msgstr "ms"
-
-msgid "M"
-msgstr "M"
-
-msgid "k"
-msgstr "k"
+msgid "%d days earlier"
+msgstr "%d días antes"
 
 msgid "Your custom CSS here"
 msgstr "Escriba aquí su código CSS personalizado"
@@ -611,22 +620,12 @@ msgstr "Aplique sus estilos personalizados a los banners de consentimiento para 
 msgid "Apply styles"
 msgstr "Aplicar estilos"
 
-msgid "Initial %d days"
-msgstr "Primeros %d días"
-
-msgid "%d days later"
-msgstr "%d días después"
-
-msgid "%d days earlier"
-msgstr "%d días antes"
-
 msgid "Admin console"
 msgstr "Consola de administrador"
 
 msgid "Toggle display of admin console navigation"
 msgstr "Alternar la visualización de la navegación de la consola de administrador"
 
-#, updated
 msgid "Share all accounts, create a new one, change your email address and password, log out from Offen Fair Web Analytics"
 msgstr "Compartir todas las cuentas, crear una nueva, cambiar su dirección de correo electrónico y contraseña, cerrar sesión en Offen Fair Web Analytics"
 
@@ -648,7 +647,6 @@ msgstr "Tus datos de uso están cifrados de extremo a extremo. Se eliminarán au
 msgid "Yes, in particular cookies are used to store your decision about granting access to your usage data. If you opt in, we also use <a href=\"#terms-cookies\" class=\"%s\">cookies</a> to store a user and a session <a href=\"#terms-id\" class=\"%s\">ID</a> for you."
 msgstr "Sí, en concreto utilizamos las cookies para almacenar su decisión relativa a otorgar el acceso a sus datos de uso. Si concede su autorización, también usamos <a href=\"#terms-cookies\" class=\"%s\">cookies</a> para almacenar un usuario y una <a href=\"#terms-id\" class=\"%s\">ID</a> de sesión para usted."
 
-#, updated
 msgid "After opening a website where a <a href=\"#terms-offen-installation\" class=\"%s\">Offen Fair Web Analytics installation</a> is active, you can explicitly opt in to the data collection and thereby help to improve the services you use. Only then you will be assigned a user and a session <a href=\"#terms-id\" class=\"%s\">ID</a> using a <a href=\"#terms-cookies\" class=\"%s\">cookie.</a> Offen Fair Web Analytics handles these <a href=\"#terms-id\" class=\"%s\">IDs</a> in an unrecognizable form, i.e. no server will ever store this identifier."
 msgstr "Después de abrir un sitio web en el que está activa una <a href=\"#terms-offen-installation\" class=\"%s\">instalación de Offen Fair Web Analytics</a>, puede conceder su autorización explícita para la recopilación de datos y, por lo tanto, ayudar a mejorar los servicios que utiliza. Solo entonces se le asignará un usuario y una <a href=\"#terms-id\" class=\"%s\">ID</a> de sesión, mediante una <a href=\"#terms-cookies\" class=\"%s\">cookie.</a> Offen Fair Web Analytics gestiona estas <a href=\"#terms-id\" class=\"%s\">ID</a> de una forma irreconocible, es decir, ningún servidor almacenará este identificador en ningún momento."
 
@@ -715,33 +713,6 @@ msgstr "El código del widget se ha copiado correctamente en el portapapeles."
 msgid "Copy widget"
 msgstr "Copiar widget"
 
-msgid "Successfully copied embed code to clipboard."
-msgstr "El código de inserción se copió correctamente en el portapapeles."
-
-msgid "Embed code"
-msgstr "Código de inserción"
-
-msgid "Toggle display of embed code"
-msgstr "Alternar la visualización del código de inserción"
-
-#, updated
-msgid "To use Offen Fair Web Analytics with the account <em class=\"%s\">%s</em> on your website, embed the following script on each page you want to appear in your statistics."
-msgstr "Para utilizar Offen Fair Web Analytics con la cuenta <em class=\"%s\">%s</em> en su sitio web, inserte el siguiente script en cada página que desee que aparezca en sus estadísticas."
-
-#, updated
-msgid "In case you are serving multiple domains from your instance, please double check that the domain in this snippet matches the target account."
-msgstr "En caso de que esté sirviendo varios dominios desde su instancia, verifique que el dominio en este fragmento coincida con la cuenta de destino."
-
-msgid "Copy code"
-msgstr "Copiar código"
-
-msgid "Share this account"
-msgstr "Compartir esta cuenta"
-
-#, updated
-msgid "Share your Offen Fair Web Analytics account <em class=\"%s\">%s</em> via email invitation. If granted admin privileges, invited users have full access to a shared account and can also create further accounts for this instance."
-msgstr "Comparta su cuenta de Offen Fair Web Analytics <em class=\"%s\">%s</em> enviando una invitación por correo electrónico. Si concede privilegios de administrador a los usuarios invitados, tendrán acceso completo a las cuentas compartidas y podrán crear nuevas cuentas en esta instancia."
-
 msgid "Remove this filter."
 msgstr "Eliminar este filtro."
 
@@ -751,12 +722,8 @@ msgstr "Filtrar la vista actual por este elemento."
 msgid "Top pages"
 msgstr "Páginas principales"
 
-#, updated
 msgid "This panel displays several page lists that count the total number of your page views of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen Fair Web Analytics installation</a> per URL in different categories."
 msgstr "Este panel muestra varias listas de páginas que cuentan el número total de visitas a la página de la <a href=\"#terms-offen-installation\" class=\"%s\">instalación de Offen Fair Web Analytics</a> por URL en diferentes categorías."
-
-msgid "URL"
-msgstr "URL"
 
 msgid "Pageviews"
 msgstr "Vistas"
@@ -785,7 +752,6 @@ msgstr "Referentes"
 msgid "Host"
 msgstr "Host"
 
-#, updated
 msgid "A list of referrers that directed you to pages of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen Fair Web Analytics installation.</a> Popular referrers like, for example, Google or Twitter display their proper name, others their domain."
 msgstr "Una lista de referentes que lo dirigieron a las páginas de la <a href=\"#terms-offen-installation\" class=\"%s\">instalación de Offen Fair Web Analytics.</a> Los referentes populares como Google o Twitter muestran su nombre propio, otros, su dominio."
 
@@ -795,7 +761,6 @@ msgstr "Campañas"
 msgid "Campaign"
 msgstr "Campaña"
 
-#, updated
 msgid "A list of special referrers that directed you to pages of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen Fair Web Analytics installation.</a> <a href=\"#terms-operator\" class=\"%s\">Operators</a> can mark links to their pages with a campaign tag. This is used, for example, to measure the success of online advertising campaigns."
 msgstr "Una lista de referentes especiales que lo dirigieron a páginas de la <a href=\"#terms-offen-installation\" class=\"%s\">instalación de Offen Fair Web Analytics.</a> <a href=\"#terms-operator\" class=\"%s\">Los operadores</a> pueden marcar enlaces a sus páginas con una etiqueta de campaña. Esto se utiliza, por ejemplo, para medir el éxito de las campañas publicitarias online."
 
@@ -805,7 +770,6 @@ msgstr "Fuentes"
 msgid "Source"
 msgstr "Fuente"
 
-#, updated
 msgid "A list of special referrers that directed you to pages of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen Fair Web Analytics installation.</a> <a href=\"#terms-operator\" class=\"%s\">Operators</a> can mark links to their pages with a source tag. This is used, for example, to measure the success of online advertising campaigns."
 msgstr "Una lista de referentes especiales que lo dirigieron a páginas de la <a href=\"#terms-offen-installation\" class=\"%s\">instalación de Offen Fair Web Analytics.</a> <a href=\"#terms-operator\" class=\"%s\">Los operadores</a> pueden marcar enlaces a sus páginas con una etiqueta de fuente. Esto se utiliza, por ejemplo, para medir el éxito de las campañas publicitarias online."
 
@@ -815,7 +779,6 @@ msgstr "Páginas de inicio"
 msgid "Landings"
 msgstr "Inicios"
 
-#, updated
 msgid "A list of pages of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen Fair Web Analytics installation</a> that you have opened first in all <a href=\"#terms-unique-session\" class=\"%s\">unique sessions.</a>"
 msgstr "Una lista de las páginas de la <a href=\"#terms-offen-installation\" class=\"%s\">instalación de Offen Fair Web Analytics</a> que ha abierto primero en todas las <a href=\"#terms-unique-session\" class=\"%s\">sesiones únicas.</a>"
 
@@ -825,25 +788,29 @@ msgstr "Páginas de salida"
 msgid "Exits"
 msgstr "Salidas"
 
-#, updated
 msgid "A list of pages of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen Fair Web Analytics installation</a> that you have opened last in all <a href=\"#terms-unique-session\" class=\"%s\">unique sessions.</a> For this to be counted you must have visited at least two pages."
 msgstr "Una lista de las páginas de la <a href=\"#terms-offen-installation\" class=\"%s\">instalación de Offen Fair Web Analytics</a> que ha abierto por última vez en todas las <a href=\"#terms-unique-session\" class=\"%s\">sesiones únicas.</a> Para que esto se contabilice, debe haber visitado al menos dos páginas."
+
+msgid "Share this account"
+msgstr "Compartir esta cuenta"
+
+msgid "Share your Offen Fair Web Analytics account <em class=\"%s\">%s</em> via email invitation. If granted admin privileges, invited users have full access to a shared account and can also create further accounts for this instance."
+msgstr "Comparta su cuenta de Offen Fair Web Analytics <em class=\"%s\">%s</em> enviando una invitación por correo electrónico. Si concede privilegios de administrador a los usuarios invitados, tendrán acceso completo a las cuentas compartidas y podrán crear nuevas cuentas en esta instancia."
 
 msgid "Weekly retention"
 msgstr "Retención semanal"
 
-#, updated
 msgid "This panel displays your recurring visits of pages of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen Fair Web Analytics installation</a> during the last 4 weeks. For each of the previous weeks, the percentage is calculated from the value of the current week."
 msgstr "Este panel muestra sus visitas recurrentes a páginas de la <a href=\"#terms-offen-installation\" class=\"%s\">instalación de Offen Fair Web Analytics</a> durante las últimas 4 semanas. Para cada una de las semanas anteriores, el porcentaje se calcula a partir del valor de la semana actual."
+
+msgid "Choose account"
+msgstr "Seleccionar cuenta"
 
 msgid "You are viewing data as operator with account <em class=\"%s\">%s</em>."
 msgstr "Está visualizando datos como operador con cuenta <em class=\"%s\">%s</em>."
 
 msgid "You are viewing your usage data."
 msgstr "Está visualizando sus datos de uso."
-
-msgid "Choose account"
-msgstr "Seleccionar cuenta"
 
 msgid "Key metrics"
 msgstr "Métricas clave"
@@ -854,28 +821,24 @@ msgstr "Este panel muestra de un vistazo las métricas más importantes."
 msgid "Unique %s"
 msgstr "%s única"
 
-#, updated
 msgid "The number of websites you have visited where the <a href=\"#terms-offen-installation\" class=\"%s\">Offen Fair Web Analytics installation</a> is active. This value will be 1 in many cases."
 msgstr "El número de sitios web que ha visitado en los que la <a href=\"#terms-offen-installation\" class=\"%s\">instalación de Offen Fair Web Analytics</a> está activa. En muchos casos, este valor será 1."
 
 msgid "Unique sessions"
 msgstr "Sesiones únicas"
 
-#, updated
 msgid "The number of <a href=\"#terms-unique-session\" class=\"%s\">unique sessions</a> you have created on pages where the <a href=\"#terms-offen-installation\" class=\"%s\">Offen Fair Web Analytics installation</a> is active."
 msgstr "El número de <a href=\"#terms-unique-session\" class=\"%s\">sesiones únicas</a> que ha creado en páginas en las que la <a href=\"#terms-offen-installation\" class=\"%s\">instalación de Offen Fair Web Analytics</a> está activa."
 
 msgid "Avg. page depth"
 msgstr "Prof. med de pág."
 
-#, updated
 msgid "Full form: Average page depth. The average number of pages you have visited during all <a href=\"#terms-unique-session\" class=\"%s\">unique sessions</a> on all websites where the <a href=\"#terms-offen-installation\" class=\"%s\">Offen Fair Web Analytics installation</a> is active."
 msgstr "Forma completa: profundidad media de la página. La cantidad media de páginas que ha visitado durante todas las <a href=\"#terms-unique-session\" class=\"%s\">sesiones únicas</a> en todos los sitios web en los que la <a href=\"#terms-offen-installation\" class=\"%s\">instalación de Offen Fair Web Analytics</a> está activa."
 
 msgid "Bounce rate"
 msgstr "Tasa de rebote"
 
-#, updated
 msgid "The percentage of <a href=\"#terms-unique-session\" class=\"%s\">unique sessions</a> where you only visited one page of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen Fair Web Analytics installation.</a> Therefore a website with only one page will always have a bounce rate of 100%."
 msgstr "El porcentaje de <a href=\"#terms-unique-session\" class=\"%s\">sesiones únicas</a> en las que solo visitó una página de la <a href=\"#terms-offen-installation\" class=\"%s\">instalación de Offen Fair Web Analytics.</a> Por lo tanto, un sitio web con una sola página siempre tendrá una tasa de rebote del 100 %."
 
@@ -894,7 +857,6 @@ msgstr "Muestra si se considera que está utilizando un dispositivo móvil. Se r
 msgid "Avg. page load time"
 msgstr "Tpo medio carga pág."
 
-#, updated
 msgid "Full form: Average page load time. The average time it took for all pages of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen Fair Web Analytics installation</a> you visited to become interactive."
 msgstr "Forma completa: tiempo medio para cargar página. El tiempo medio que tardaron todas las páginas de la <a href=\"#terms-offen-installation\" class=\"%s\">instalación de Offen Fair Web Analytics</a> que visitó para ser interactivas."
 
@@ -928,17 +890,23 @@ msgstr "Mostrar solo las %d mejores"
 msgid "Show all entries"
 msgstr "Mostrar todas las entradas"
 
-msgid "Real time"
-msgstr "Tiempo real"
+msgid "Successfully copied embed code to clipboard."
+msgstr "El código de inserción se copió correctamente en el portapapeles."
 
-msgid "Active users on site"
-msgstr "Usua. act. en el sitio"
+msgid "Embed code"
+msgstr "Código de inserción"
 
-msgid "Active pages"
-msgstr "Páginas activas"
+msgid "Toggle display of embed code"
+msgstr "Alternar la visualización del código de inserción"
 
-msgid "Visitors"
-msgstr "Visitantes"
+msgid "To use Offen Fair Web Analytics with the account <em class=\"%s\">%s</em> on your website, embed the following script on each page you want to appear in your statistics."
+msgstr "Para utilizar Offen Fair Web Analytics con la cuenta <em class=\"%s\">%s</em> en su sitio web, inserte el siguiente script en cada página que desee que aparezca en sus estadísticas."
+
+msgid "In case you are serving multiple domains from your instance, please double check that the domain in this snippet matches the target account."
+msgstr "En caso de que esté sirviendo varios dominios desde su instancia, verifique que el dominio en este fragmento coincida con la cuenta de destino."
+
+msgid "Copy code"
+msgstr "Copiar código"
 
 msgid "Thanks for your help to make this website better."
 msgstr "Gracias por su ayuda para mejorar este sitio web."
@@ -955,14 +923,15 @@ msgstr "Puede denegar y borrar cuando lo desee."
 msgid "Learn more"
 msgstr "Ver más"
 
-msgid "Offen does not support this site: %s"
-msgstr "Offen no es compatible con este sitio: %s"
+msgid "Browser does not support IndexedDB which is required."
+msgstr "El navegador no es compatible con IndexedDB, que es una interfaz necesaria."
+
+#, updated
+msgid "Offen Fair Web Analytics does not support this site: %s"
+msgstr "Offen Fair Web Analytics no es compatible con este sitio: %s"
 
 msgid "No data will be collected. Find out more at \"https://www.offen.dev\"."
 msgstr "No se recopilarán datos. Obtenga más información en \"https://www.offen.dev\"."
-
-msgid "Browser does not support IndexedDB which is required."
-msgstr "El navegador no es compatible con IndexedDB, que es una interfaz necesaria."
 
 #. ~ line 5 "public/static/emails.go.html"
 msgid "Reset your password"
@@ -983,24 +952,28 @@ msgid "The link is valid for 24 hours after this email has been sent. In case yo
 msgstr "El enlace será válido durante las 24 horas siguientes al envío de este correo electrónico. En caso de que haya pasado este plazo, puede solicitar un nuevo enlace."
 
 #. ~ line 19 "public/static/emails.go.html"
-msgid "You have been invited to join Offen."
-msgstr "Le han invitado a registrarse en Offen."
+#, updated
+msgid "You have been invited to join Offen Fair Web Analytics."
+msgstr "Le han invitado a registrarse en Offen Fair Web Analytics."
 
 #. ~ line 25 "public/static/emails.go.html"
-msgid "You have been invited to Offen. To accept your invite, visit the following link:"
-msgstr "Se le ha invitado a Offen. Para aceptar su invitación, visite el siguiente enlace:"
+#, updated
+msgid "You have been invited to Offen Fair Web Analytics. To accept your invite, visit the following link:"
+msgstr "Se le ha invitado a Offen Fair Web Analytics. Para aceptar su invitación, visite el siguiente enlace:"
 
 #. ~ line 29 "public/static/emails.go.html"
 msgid "The link is valid for 7 days after this email has been sent. In case you have missed this deadline, request a new invite."
 msgstr "El enlace será válido durante 7 días a partir del envío de este correo electrónico. En caso de que haya pasado este plazo, solicite una nueva invitación."
 
 #. ~ line 33 "public/static/emails.go.html"
-msgid "You have been added to additional accounts on Offen."
-msgstr "Le han añadido a cuentas adicionales en Offen."
+#, updated
+msgid "You have been added to additional accounts on Offen Fair Web Analytics."
+msgstr "Le han añadido a cuentas adicionales en Offen Fair Web Analytics."
 
 #. ~ line 39 "public/static/emails.go.html"
-msgid "You have been added to the following new accounts on Offen:"
-msgstr "Se le ha añadido a las siguientes cuentas nuevas en Offen:"
+#, updated
+msgid "You have been added to the following new accounts on Offen Fair Web Analytics:"
+msgstr "Se le ha añadido a las siguientes cuentas nuevas en Offen Fair Web Analytics:"
 
 #. ~ line 45 "public/static/emails.go.html"
 msgid "You automatically gain access to these accounts the next time you log in."
@@ -1011,33 +984,31 @@ msgid "It seems like your browser has JavaScript disabled."
 msgstr "Parece que su navegador tiene JavaScript desactivado."
 
 #. ~ line 36 "public/static/index.go.html"
-#, updated
 msgid "Offen Fair Web Analytics requires JavaScript to function properly."
 msgstr "Offen Fair Web Analytics requiere JavaScript para funcionar correctamente."
 
 #. ~ line 39 "public/static/index.go.html"
-#, updated
 msgid "Offen Fair Web Analytics is installed on the website that linked you here."
 msgstr "Offen Fair Web Analytics es un software de análisis justo y de código abierto. Está instalado en la página web que le ha dirigido aquí."
 
 #. ~ line 42 "public/static/index.go.html"
-#, updated
 msgid "For Offen Fair Web Analytics to work, your browser has to allow JavaScript and accept cookies. Please change your browser settings and reload this page. Subsequently, Offen Fair Web Analytics will ask for your consent before collecting any usage data."
 msgstr "Para que Offen Fair Web Analytics funcione, su navegador debe permitir el funcionamiento de JavaScript y aceptar cookies. Cambie la configuración de su navegador y vuelva a cargar esta página. Posteriormente, Offen Fair Web Analytics le solicitará su consentimiento antes de recopilar cualquier dato de uso."
 
 #. ~ line 162 "public/static/index.go.html"
-#, updated
 msgid "Offen Fair Web Analytics is an open alternative to common web analytics tools. Operators gain insights while users have full access to their data. Lightweight, self hosted and free."
 msgstr "Offen Fair Web Analytics es una alternativa abierta a las herramientas de análisis web habituales. Los operadores obtienen información y los usuarios tienen un acceso total a sus datos. Ligero, con host ropio y gratuito."
 
-msgid "This page is using Offen to collect usage statistics."
-msgstr "Esta página utiliza Offen para recopilar estadísticas de uso."
+#, updated
+msgid "This page is using Offen Fair Web Analytics to collect usage statistics."
+msgstr "Esta página utiliza Offen Fair Web Analytics para recopilar estadísticas de uso."
 
 msgid "You can access and manage all of your personal data or opt-out at \"%s/auditorium/\"."
 msgstr "Puede acceder y administrar todos sus datos personales o denegar su autorización en \"%s/auditorium/\"."
 
-msgid "Find out more about Offen at \"https://www.offen.dev\"."
-msgstr "Obtenga más información sobre Offen en \"https://www.offen.dev\"."
+#, updated
+msgid "Find out more about Offen Fair Web Analytics at \"https://www.offen.dev\"."
+msgstr "Obtenga más información sobre Offen Fair Web Analytics en \"https://www.offen.dev\"."
 
 msgid "Your setup prevents third party cookies or you have disabled it in your browser's settings."
 msgstr "Su configuración no admite cookies de terceros o usted ha desactivado la opción en la configuración de su navegador."
@@ -1048,5 +1019,6 @@ msgstr "No se recopilarán datos de uso."
 msgid "You have opted out of data collection, no data is being collected."
 msgstr "Ha denegado su autorización para la recopilación de datos, no se está recopilando ningún dato."
 
-msgid "Find out more about Offen at \"%s\""
-msgstr "Obtenga más información sobre Offen en \"%s\""
+#, updated
+msgid "Find out more about Offen Fair Web Analytics at \"%s\""
+msgstr "Obtenga más información sobre Offen Fair Web Analytics en \"%s\""
