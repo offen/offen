@@ -16,24 +16,6 @@ msgstr "Đang chuẩn bị cài đặt…"
 msgid "Checking your consent status"
 msgstr "Đang kiểm tra tình trạng cho phép của bạn"
 
-msgid "There has been an error resetting your password, please try again."
-msgstr "Có lỗi khi đặt lại mật khẩu của bạn, xin hãy thử lại."
-
-msgid "Reset password"
-msgstr "Đặt lại mật khẩu"
-
-msgid "Email address"
-msgstr "Địa chỉ email"
-
-msgid "New password"
-msgstr "Mật khẩu mới"
-
-msgid "Repeat new password"
-msgstr "Nhập lại mật khẩu mới"
-
-msgid "Reset Password"
-msgstr "Đặt lại mật khẩu"
-
 msgid "Passwords did not match. Please try again."
 msgstr "Hai mật khẩu không trùng khớp. Xin thử lại."
 
@@ -61,32 +43,23 @@ msgstr "Nhập lại mật khẩu"
 msgid "Setup instance"
 msgstr "Cài đặt"
 
-msgid "Please log in again using your updated email."
-msgstr "Xin đăng nhập lại dùng địa chỉ email mới cập nhật của bạn."
+msgid "There has been an error resetting your password, please try again."
+msgstr "Có lỗi khi đặt lại mật khẩu của bạn, xin hãy thử lại."
 
-msgid "Could not change email. Try again."
-msgstr "Không thể đổi email. Hãy thử lại."
+msgid "Reset password"
+msgstr "Đặt lại mật khẩu"
 
-msgid "Change email address"
-msgstr "Đổi địa chỉ email"
+msgid "Email address"
+msgstr "Địa chỉ email"
 
-msgid "New email address"
-msgstr "Địa chỉ email mới"
+msgid "New password"
+msgstr "Mật khẩu mới"
 
-msgid "You need to confirm this action with your credentials."
-msgstr "Bạn cần xác nhận thao tác này với thông tin đăng nhập của bạn."
+msgid "Repeat new password"
+msgstr "Nhập lại mật khẩu mới"
 
-msgid "Current email address"
-msgstr "Địa chỉ email hiện tại"
-
-msgid "Password"
-msgstr "Mật khẩu"
-
-msgid "Confirm"
-msgstr "Xác nhận"
-
-msgid "Cancel"
-msgstr "Huỷ bỏ"
+msgid "Reset Password"
+msgstr "Đặt lại mật khẩu"
 
 msgid "Log in again to use the newly created account <em class=\"%s\">\"%s\"</em>."
 msgstr "Đăng nhập vào lại để bắt đầu dùng tài khoản <em class=\"%s\">\"%s\"</em> mới được tạo."
@@ -103,8 +76,35 @@ msgstr "Tên tài khoản"
 msgid "Create account"
 msgstr "Tạo tài khoản"
 
+msgid "You need to confirm this action with your credentials."
+msgstr "Bạn cần xác nhận thao tác này với thông tin đăng nhập của bạn."
+
 msgid "Your email"
 msgstr "Email của bạn"
+
+msgid "Confirm"
+msgstr "Xác nhận"
+
+msgid "Cancel"
+msgstr "Huỷ bỏ"
+
+msgid "Please log in again using your updated email."
+msgstr "Xin đăng nhập lại dùng địa chỉ email mới cập nhật của bạn."
+
+msgid "Could not change email. Try again."
+msgstr "Không thể đổi email. Hãy thử lại."
+
+msgid "Change email address"
+msgstr "Đổi địa chỉ email"
+
+msgid "New email address"
+msgstr "Địa chỉ email mới"
+
+msgid "Current email address"
+msgstr "Địa chỉ email hiện tại"
+
+msgid "Password"
+msgstr "Mật khẩu"
 
 msgid "Please log in again using your new password."
 msgstr "Xin đăng nhập lại dùng mật khẩu mới của bạn."
@@ -121,7 +121,6 @@ msgstr "Mật khẩu hiện tại"
 msgid "Share all accounts"
 msgstr "Chia sẻ tất cả tài khoản"
 
-#, updated
 msgid "Share all your Offen Fair Web Analytics accounts via email invitation. When granted Admin privilges, invited users have full access to shared accounts and can create new accounts on this instance."
 msgstr "Chia sẻ tất cả những tài khoản Offen Fair Web Analytics của bạn qua thư mời email. Khi được cấp quyền Admin, những người dùng được mời sẽ có toàn quyền truy cập vào những tài khoản đã được chia sẻ và có thể tạo những tài khoản mới."
 
@@ -146,13 +145,13 @@ msgstr "Mật khẩu không trùng khớp"
 msgid "Your account has been set up, you can now log in."
 msgstr "Tài khoản của bạn đã được cài đặt, giờ bạn có thể đăng nhập vào rồi."
 
-msgid "Join Offen"
-msgstr "Tham gia Offen"
+#, fuzzy
+msgid "Join Offen Fair Web Analytics"
+msgstr "Offen Fair Web Analytics"
 
 msgid "Accept invite"
 msgstr "Chấp nhận lời mời"
 
-#, updated
 msgid "Not the operator of this installation? Manage your data in the <a href=\"/auditorium/\" class=\"%s\" >User Auditorium.</a>"
 msgstr "Không phải là điều hành viên của bản cài đặt này? Quản lý dữ liệu dùng web của bạn ở <a href=\"/auditorium/\" class=\"%s\" >Auditorium người dùng.</a>"
 
@@ -168,7 +167,6 @@ msgstr "Đăng nhập"
 msgid "Forgot password?"
 msgstr "Quên mật khẩu?"
 
-#, updated
 msgid "Are you the operator of this installation? Log in to your account."
 msgstr "Bạn có phải là điều hành viên cho bản này? Hãy đăng nhập vào tài khoản của bạn."
 
@@ -229,19 +227,15 @@ msgstr "Có nhé bạn, cụ thể là cookie được dùng để lưu trữ qu
 msgid "How does it all work?"
 msgstr "Tất cả các thứ này hoạt động như thế nào?"
 
-#, updated
 msgid "After opening a website where an Offen Fair Web Analytics installation is active, you can explicitly opt in to the data collection and thereby help to improve the services you use. Only then you will be assigned a user and a session ID using a cookie. Offen Fair Web Analytics handles these IDs in an unrecognizable form. <a href=\"https://en.wikipedia.org/wiki/HTTP_cookie\" class=\"%s\" target=\"_blank\" rel=\"noreferrer noopener\">Learn more about cookies here.</a>"
 msgstr "Sau khi mở xem một trang web mà có một bản cài đặt Offen Fair Web Analytics đang hoạt động, bạn có thể cấp quyền trực tiếp cho việc thu thập dữ liệu và từ đó giúp cải thiện hơn những dịch vụ trang web mà bạn đang sử dụng. Chỉ khi đó, hệ thống mới phân một mã ID người dùng và mã phiên xem bằng việc sử dụng cookie. Hệ thống Offen Fair Web Analytics xử lý những mã ID này dưới dạng thay hình đổi dạng, nghĩa là, không có một máy chủ nào sẽ lưu trữ những mã định phiên và người dùng theo nguyên dạng của nó."
 
-#, updated
 msgid "Offen Fair Web Analytics requires cookies to function properly."
 msgstr "Offen Fair Web Analytics yêu cầu cookie được hỗ trợ để hoạt động."
 
-#, updated
 msgid "Offen Fair Web Analytics is a fair and open source analytics software. It is installed on the website that linked you here."
 msgstr "Offen Fair Web Analytics là một phần mềm phân tích số liệu công bằng mã nguồn mở. Nó được cài đặt trên trang web mà đã dẫn bạn đến đây."
 
-#, updated
 msgid "For Offen Fair Web Analytics to work, your browser has to accept cookies. Please change your browsers settings and reload this page. Subsequently, you will be asked for consent to collect your usage data."
 msgstr "Để Offen Fair Web Analytics hoạt động tốt, trình duyệt của bạn cần chấp nhận cookie. Xin hãy chỉnh lại cài đặt trên trình duyệt và tải lại trang này. Sau đó, bạn sẽ được hỏi sự cho phép hay không để thu thập dữ liệu dùng web của bạn."
 
@@ -254,7 +248,6 @@ msgstr "Mở Auditorium"
 msgid "We only access usage data with your consent."
 msgstr "Chúng tôi chỉ có thể truy cập dữ liệu dùng web với sự cho phép của bạn."
 
-#, updated
 msgid "Offen Fair Web Analytics is a fair and open source analytics software. Help the website that linked you here by allowing access to your usage data."
 msgstr "Offen Fair Web Analytics là một phần mềm phân tích số liệu công bằng mã nguồn mã. Hãy giúp trang web đã dẫn bạn đến đây bằng cách cho phép những dữ liệu dùng web của bạn được truy cập."
 
@@ -308,14 +301,12 @@ msgstr "Chờ xíu nhé…"
 
 #. #-#-#-#-#  server.po  #-#-#-#-#
 #. ~ line 49 "public/static/index.go.html"
-#, updated
 msgid "Offen Fair Web Analytics"
 msgstr "Offen Fair Web Analytics"
 
 msgid "An error occurred: %s"
 msgstr "Có lỗi xảy ra: %s"
 
-#, updated
 msgid "<a href=\"https://www.offen.dev/\" class=\"%s\" target=\"_blank\" rel=\"noreferrer noopener\">Offen Fair Web Analytics</a>"
 msgstr "<a href=\"https://www.offen.dev/\" class=\"%s\" target=\"_blank\" rel=\"noreferrer noopener\">Offen Fair Web Analytics</a>"
 
@@ -409,7 +400,6 @@ msgstr "người xem"
 msgid "websites"
 msgstr "trang web"
 
-#, updated
 msgid "This panel displays the number of pages (bright green) and websites (dark green) you have visited where the <a href=\"#terms-offen-installation\" class=\"%s\">Offen Fair Web Analytics installation</a> is active. To measure this, a cookie is used to assign you a user and a session <a href=\"#terms-id\" class=\"%s\">ID.</a>"
 msgstr "Bảng này hiển thị số lượng trang (xanh lá nhạt) và những trang web (xanh lá đậm) bạn đã ghé xem qua mà có một <a href=\"#terms-offen-installation\" class=\"%s\">bản cài đặt Offen Fair Web Analytics</a> đang hoạt động. Để đo lường những con số này, một mảnh thông tin nhỏ gọi là cookie được dùng để phân cho bạn một mã <a href=\"#terms-id\" class=\"%s\">ID</a> người xem và mã phiên xem web."
 
@@ -419,55 +409,20 @@ msgstr "Trạng thái trống"
 msgid "No data available <br>for the selected time range."
 msgstr "Không có dữ liệu dùng web nào hiện có <br>cho khoảng thời gian đã lựa chọn."
 
-msgid "Basic Terms"
-msgstr "Những từ ngữ căn bản"
+msgid "Real time"
+msgstr "Ngay lúc này"
 
-msgid "Auditorium"
-msgstr "Auditorium"
+msgid "Active users on site"
+msgstr "Khách đang xem web"
 
-msgid "You are viewing the Auditorium right now. Only available after opt-in, it is the interface where you can review and delete your usage data or opt out entirely."
-msgstr "Bạn đang xem trong Auditorium. Phòng này chỉ hiện ra sau khi bạn cấp phép, đó là nơi mà bạn có thể xem và xoá dữ liệu dùng web của bạn hoặc rút phép hẳn ra khỏi việc thu thập dữ liệu."
+msgid "Active pages"
+msgstr "Trang đang được xem"
 
-#, updated
-msgid "Offen Fair Web Analytics installation"
-msgstr "Cài đặt Offen Fair Web Analytics"
+msgid "URL"
+msgstr "Đường link"
 
-#, updated
-msgid "One Offen Fair Web Analytics installation can include several websites. All metrics of all websites in this installation are displayed in the <a href=\"#terms-auditorium\" class=\"%s\">Auditorium.</a> Metrics generated on websites of other installations can only be viewed in the associated <a href=\"#terms-auditorium\" class=\"%s\">Auditorium.</a>"
-msgstr "Một bản cài đặt Offen Fair Web Analytics có thể dùng cho nhiều trang web. Tất cả những số liệu đo lường trên tất cả trang web của bản cài đặt này có thể được xem ở trong <a href=\"#terms-auditorium\" class=\"%s\">Auditorium.</a> Những số liệu thống kê trên trang web của những bản cài đặt khác chỉ có thể được xem ở <a href=\"#terms-auditorium\" class=\"%s\">Auditorium</a> liên quan trên bản đó."
-
-msgid "Cookies"
-msgstr "Cookie"
-
-#, updated
-msgid "When you visit a website where a <a href=\"#terms-offen-installation\" class=\"%s\">Offen Fair Web Analytics installation</a> is active, small amounts of data are stored on your computer. These data elements are known as cookies. <a href=\"https://en.wikipedia.org/wiki/HTTP_cookie\" class=\"%s\" target=\"_blank\" rel=\"noreferrer noopener\">Learn more.</a>"
-msgstr "Khi bạn ghé xem một trang web nơi đang có một<a href=\"#terms-offen-installation\" class=\"%s\">bản cài đặt Offen Fair Web Analytics</a> hoạt động, một lượng nhỏ dữ liệu sẽ được lưu trên máy tính của bạn. Những phần tử dữ liệu này chính là cookie. <a href=\"https://en.wikipedia.org/wiki/HTTP_cookie\" class=\"%s\" target=\"_blank\" rel=\"noreferrer noopener\">Tìm hiểu thêm.</a>"
-
-msgid "Operator"
-msgstr "Điều hành viên"
-
-#, updated
-msgid "Operators are the owners of <a href=\"#terms-offen-installation\" class=\"%s\">Offen Fair Web Analytics installations.</a> Only after you opted in, your usage data of a website is collected. Operators then can view it for maximum 6 months."
-msgstr "Điều hành viên là những người chủ sở hữu của <a href=\"#terms-offen-installation\" class=\"%s\">những bản cài đặt Offen Fair Web Analytics.</a> Chỉ khi bạn cấp phép rồi, thì dữ liệu dũng web của bạn trên một trang web mới được thu thập. Những điều hành viên có thể xem dữ liệu tối đa là 6 tháng."
-
-msgid "Unique user"
-msgstr "Khách xem mới"
-
-msgid "You are defined as a unique user after your opt-in to data collection. To measure this, a <a href=\"#terms-cookies\" class=\"%s\">cookie</a> is used to assign a user <a href=\"#terms-id\" class=\"%s\">ID</a> to you."
-msgstr "Bạn được xem lad một người dùng riêng biệt sau khi bạn cấp phép cho việc thu thập dữ liệu dùng web. Để đo lường dữ liệu này, một <a href=\"#terms-cookies\" class=\"%s\">cookie</a> được dùng để phân một mã <a href=\"#terms-id\" class=\"%s\">ID</a> người dùng cho bạn."
-
-msgid "Unique session"
-msgstr "Phiên xem mới"
-
-msgid "A unique session is defined as a <a href=\"#terms-unique-user\" class=\"%s\">unique user</a> being actively engaged with a page during a browser session. To measure this, a <a href=\"#terms-cookies\" class=\"%s\">cookie</a> is used to assign a session <a href=\"#terms-id\" class=\"%s\">ID</a> to you."
-msgstr "Một phiên xem mới được định nghĩa như là <a href=\"#terms-unique-user\" class=\"%s\">một khách xem mới</a> đang thao tác với một trang trong một phiên mở của trình duyệt. Để đo lường phiên mới này, một <a href=\"#terms-cookies\" class=\"%s\">cookie</a> được dùng để phân một <a href=\"#terms-id\" class=\"%s\">ID</a> phiên cho bạn."
-
-msgid "ID"
-msgstr "Mã ID"
-
-#, updated
-msgid "Originally: UUID. Full form: Universally unique identifier. Offen uses UUID of version 4. These IDs are generated randomly, unique and without using any personal data. On the individual Offen server, they are handled in an unrecognizable form. <a href=\"https://en.wikipedia.org/wiki/Universally_unique_identifier\" class=\"%s\" target=\"_blank\" rel=\"noreferrer noopener\">Learn more.</a>"
-msgstr "Nguyên thuỷ: Mã UUID. Tên đầy đủ: Universally unique identifier. Offen sử dụng phiên bản UUID thứ 4. Những mã ID này được khởi tạo ngẫu nhiên, không trùng lặp và không dùng bất kỳ thông tin cá nhân nào đính kèm trong đó. Trên mỗi máy chủ chạy phần mềm Offen, những mã này được xử lý thay hình đổi dạng không dễ nhận biết được nguyên hình. <a href=\"https://en.wikipedia.org/wiki/Universally_unique_identifier\" class=\"%s\" target=\"_blank\" rel=\"noreferrer noopener\">Tìm hiểu thêm tại đây.</a>"
+msgid "Visitors"
+msgstr "Lượt khách"
 
 msgid "Yesterday"
 msgstr "Hôm qua"
@@ -505,6 +460,73 @@ msgstr "Hiển thị dữ liệu từ"
 msgid "Here you can set the time frame for all displayed metrics. As all data is generally deleted after 6 months maximum, the selection is limited to this duration."
 msgstr "Ở phần này bạn có thể chỉnh khảong thời gian cho những thông số thống kê được hiển thị. Vì tất cả những dữ liệu trên sẽ thường được xoá đi sau tối đa 6 tháng, nên lựa chọn khung thời gian ở đây cũng được giới hạn vào khoảng đó."
 
+msgid "Basic Terms"
+msgstr "Những từ ngữ căn bản"
+
+msgid "Auditorium"
+msgstr "Auditorium"
+
+msgid "You are viewing the Auditorium right now. Only available after opt-in, it is the interface where you can review and delete your usage data or opt out entirely."
+msgstr "Bạn đang xem trong Auditorium. Phòng này chỉ hiện ra sau khi bạn cấp phép, đó là nơi mà bạn có thể xem và xoá dữ liệu dùng web của bạn hoặc rút phép hẳn ra khỏi việc thu thập dữ liệu."
+
+msgid "Offen Fair Web Analytics installation"
+msgstr "Cài đặt Offen Fair Web Analytics"
+
+msgid "One Offen Fair Web Analytics installation can include several websites. All metrics of all websites in this installation are displayed in the <a href=\"#terms-auditorium\" class=\"%s\">Auditorium.</a> Metrics generated on websites of other installations can only be viewed in the associated <a href=\"#terms-auditorium\" class=\"%s\">Auditorium.</a>"
+msgstr "Một bản cài đặt Offen Fair Web Analytics có thể dùng cho nhiều trang web. Tất cả những số liệu đo lường trên tất cả trang web của bản cài đặt này có thể được xem ở trong <a href=\"#terms-auditorium\" class=\"%s\">Auditorium.</a> Những số liệu thống kê trên trang web của những bản cài đặt khác chỉ có thể được xem ở <a href=\"#terms-auditorium\" class=\"%s\">Auditorium</a> liên quan trên bản đó."
+
+msgid "Cookies"
+msgstr "Cookie"
+
+msgid "When you visit a website where a <a href=\"#terms-offen-installation\" class=\"%s\">Offen Fair Web Analytics installation</a> is active, small amounts of data are stored on your computer. These data elements are known as cookies. <a href=\"https://en.wikipedia.org/wiki/HTTP_cookie\" class=\"%s\" target=\"_blank\" rel=\"noreferrer noopener\">Learn more.</a>"
+msgstr "Khi bạn ghé xem một trang web nơi đang có một<a href=\"#terms-offen-installation\" class=\"%s\">bản cài đặt Offen Fair Web Analytics</a> hoạt động, một lượng nhỏ dữ liệu sẽ được lưu trên máy tính của bạn. Những phần tử dữ liệu này chính là cookie. <a href=\"https://en.wikipedia.org/wiki/HTTP_cookie\" class=\"%s\" target=\"_blank\" rel=\"noreferrer noopener\">Tìm hiểu thêm.</a>"
+
+msgid "Operator"
+msgstr "Điều hành viên"
+
+msgid "Operators are the owners of <a href=\"#terms-offen-installation\" class=\"%s\">Offen Fair Web Analytics installations.</a> Only after you opted in, your usage data of a website is collected. Operators then can view it for maximum 6 months."
+msgstr "Điều hành viên là những người chủ sở hữu của <a href=\"#terms-offen-installation\" class=\"%s\">những bản cài đặt Offen Fair Web Analytics.</a> Chỉ khi bạn cấp phép rồi, thì dữ liệu dũng web của bạn trên một trang web mới được thu thập. Những điều hành viên có thể xem dữ liệu tối đa là 6 tháng."
+
+msgid "Unique user"
+msgstr "Khách xem mới"
+
+msgid "You are defined as a unique user after your opt-in to data collection. To measure this, a <a href=\"#terms-cookies\" class=\"%s\">cookie</a> is used to assign a user <a href=\"#terms-id\" class=\"%s\">ID</a> to you."
+msgstr "Bạn được xem lad một người dùng riêng biệt sau khi bạn cấp phép cho việc thu thập dữ liệu dùng web. Để đo lường dữ liệu này, một <a href=\"#terms-cookies\" class=\"%s\">cookie</a> được dùng để phân một mã <a href=\"#terms-id\" class=\"%s\">ID</a> người dùng cho bạn."
+
+msgid "Unique session"
+msgstr "Phiên xem mới"
+
+msgid "A unique session is defined as a <a href=\"#terms-unique-user\" class=\"%s\">unique user</a> being actively engaged with a page during a browser session. To measure this, a <a href=\"#terms-cookies\" class=\"%s\">cookie</a> is used to assign a session <a href=\"#terms-id\" class=\"%s\">ID</a> to you."
+msgstr "Một phiên xem mới được định nghĩa như là <a href=\"#terms-unique-user\" class=\"%s\">một khách xem mới</a> đang thao tác với một trang trong một phiên mở của trình duyệt. Để đo lường phiên mới này, một <a href=\"#terms-cookies\" class=\"%s\">cookie</a> được dùng để phân một <a href=\"#terms-id\" class=\"%s\">ID</a> phiên cho bạn."
+
+msgid "ID"
+msgstr "Mã ID"
+
+#, fuzzy
+msgid "Originally: UUID. Full form: Universally unique identifier. Offen Fair Web Analytics uses UUID of version 4. These IDs are generated randomly, unique and without using any personal data. On the individual Offen Fair Web Analytics server, they are handled in an unrecognizable form. <a href=\"https://en.wikipedia.org/wiki/Universally_unique_identifier\" class=\"%s\" target=\"_blank\" rel=\"noreferrer noopener\">Learn more.</a>"
+msgstr "Nguyên thuỷ: Mã UUID. Tên đầy đủ: Universally unique identifier. Offen sử dụng phiên bản UUID thứ 4. Những mã ID này được khởi tạo ngẫu nhiên, không trùng lặp và không dùng bất kỳ thông tin cá nhân nào đính kèm trong đó. Trên mỗi máy chủ chạy phần mềm Offen, những mã này được xử lý thay hình đổi dạng không dễ nhận biết được nguyên hình. <a href=\"https://en.wikipedia.org/wiki/Universally_unique_identifier\" class=\"%s\" target=\"_blank\" rel=\"noreferrer noopener\">Tìm hiểu thêm tại đây.</a>"
+
+msgid "Select"
+msgstr "Chọn"
+
+msgid "No"
+msgstr "Không"
+
+msgid "Yes"
+msgstr "Ok"
+
+msgid "s"
+msgstr "s"
+
+msgid "ms"
+msgstr "ms"
+
+msgid "M"
+msgstr "M"
+
+msgid "k"
+msgstr "k"
+
 msgid "Stay opted in,<br>only delete usage data"
 msgstr "Vẫn cho phép thu thập,<br>chỉ xoá dữ liệu dùng web đã thu thập thôi"
 
@@ -528,9 +550,6 @@ msgstr "Cho phép"
 
 msgid "To review your data collected over time, <br class=\"dn db-l\">set a bookmark for this page."
 msgstr "Để xem những dữ liệu dùng web đã được thu thập qua thời gian, <br class=\"dn db-l\">hãy đánh dấu lại trang này."
-
-msgid "Select"
-msgstr "Chọn"
 
 msgid "If you retire the account <em class=\"%s\">%s,</em> it will not appear in your statistics anymore. Users will be able to access and manage their data for the account until it expires."
 msgstr "Nếu bạn cho nghỉ hưu tài khoản <em class=\"%s\">%s,</em> nó sẽ không hiển thị trong bảng số liệu thống kê nữa. Người dùng vẫn sẽ truy cập được vào và quản lý dữ liệu của họ cho tài khoản cho đến khi nó hết hạn dùng."
@@ -556,23 +575,14 @@ msgstr "Cho tài khoản này về quê dưỡng già"
 msgid "Toggle display of retire account functionality"
 msgstr "Bật tắt tính năng cho nghỉ hưu tài khoản"
 
-msgid "No"
-msgstr "Không"
+msgid "Initial %d days"
+msgstr "%d ngày đầu"
 
-msgid "Yes"
-msgstr "Ok"
+msgid "%d days later"
+msgstr "%d ngày sau"
 
-msgid "s"
-msgstr "s"
-
-msgid "ms"
-msgstr "ms"
-
-msgid "M"
-msgstr "M"
-
-msgid "k"
-msgstr "k"
+msgid "%d days earlier"
+msgstr "%d ngày trước"
 
 msgid "Your custom CSS here"
 msgstr "Mã CSS tuỳ chỉnh của bạn ở đây"
@@ -610,22 +620,12 @@ msgstr "Áp dụng style tuỳ chỉnh của bạn vào bảng cho phép cho tà
 msgid "Apply styles"
 msgstr "Áp dụng style"
 
-msgid "Initial %d days"
-msgstr "%d ngày đầu"
-
-msgid "%d days later"
-msgstr "%d ngày sau"
-
-msgid "%d days earlier"
-msgstr "%d ngày trước"
-
 msgid "Admin console"
 msgstr "Bảng quản trị"
 
 msgid "Toggle display of admin console navigation"
 msgstr "Bật tắt hiển thị điều hướng phần quản trị"
 
-#, updated
 msgid "Share all accounts, create a new one, change your email address and password, log out from Offen Fair Web Analytics"
 msgstr "Chia sẻ tất cả tài khoản, tạo một tài khoản mới, thay đổi địa chỉ email và mật khẩu của bạn, thoát ra khỏi Offen Fair Web Analytics"
 
@@ -647,7 +647,6 @@ msgstr "Dữ liệu dùng web của bạn được mã hoá đầu gửi và đ�
 msgid "Yes, in particular cookies are used to store your decision about granting access to your usage data. If you opt in, we also use <a href=\"#terms-cookies\" class=\"%s\">cookies</a> to store a user and a session <a href=\"#terms-id\" class=\"%s\">ID</a> for you."
 msgstr "Có nhé bạn, cụ thể là cookie được dùng để lưu trữ quyết định của bạn về việc cho phép quyền truy cập dữ liệu dùng web của bạn. Nếu bạn cho phép, chúng tôi cũng dùng <a href=\"#terms-cookies\" class=\"%s\">cookies</a> để lưu người dùng và <a href=\"#terms-id\" class=\"%s\">ID</a> phiên dùng web cho bạn."
 
-#, updated
 msgid "After opening a website where a <a href=\"#terms-offen-installation\" class=\"%s\">Offen Fair Web Analytics installation</a> is active, you can explicitly opt in to the data collection and thereby help to improve the services you use. Only then you will be assigned a user and a session <a href=\"#terms-id\" class=\"%s\">ID</a> using a <a href=\"#terms-cookies\" class=\"%s\">cookie.</a> Offen Fair Web Analytics handles these <a href=\"#terms-id\" class=\"%s\">IDs</a> in an unrecognizable form, i.e. no server will ever store this identifier."
 msgstr "Sau khi mở xem một trang web mà có một <a href=\"#terms-offen-installation\" class=\"%s\">bản cài đặt Offen Fair Web Analytics</a> đang hoạt động, bạn có thể cấp quyền trực tiếp cho việc thu thập dữ liệu và từ đó giúp cải thiện hơn những dịch vụ trang web mà bạn đang sử dụng. Chỉ khi đó, hệ thống mới phân một mã <a href=\"#terms-id\" class=\"%s\">ID</a> người dùng và mã phiên xem bằng việc sử dụng <a href=\"#terms-cookies\" class=\"%s\">cookie.</a> Hệ thống Offen Fair Web Analytics xử lý những <a href=\"#terms-id\" class=\"%s\">mã ID</a> này dưới dạng thay hình đổi dạng, nghĩa là, không có một máy chủ nào sẽ lưu trữ những mã định phiên và người dùng theo nguyên dạng của nó."
 
@@ -714,33 +713,6 @@ msgstr "Đã sao chép mã công cụ thành công vào bộ nhớ tạm thời.
 msgid "Copy widget"
 msgstr "Sao chép công cụ"
 
-msgid "Successfully copied embed code to clipboard."
-msgstr "Đã copy mã nhúng vào bộ nhớ tạm thời."
-
-msgid "Embed code"
-msgstr "Mã nhúng"
-
-msgid "Toggle display of embed code"
-msgstr "Bật tắt hiển thị mã nhúng"
-
-#, updated
-msgid "To use Offen Fair Web Analytics with the account <em class=\"%s\">%s</em> on your website, embed the following script on each page you want to appear in your statistics."
-msgstr "Để sử dụng Offen Fair Web Analytics với tài khoản <em class=\"%s\">%s</em> trên trang web của bạn, hãy thêm đoạn mã script này vào mỗi trang mà bạn muốn theo dõi và hiển thị trong phần thống kê trang web."
-
-#, updated
-msgid "In case you are serving multiple domains from your instance, please double check that the domain in this snippet matches the target account."
-msgstr "Trường hợp bạn muốn dùng nhiều tên miền để theo dõi số liệu từ một bản cài đặt Offen Fair Web Analytics của bạn, xin hãy kiểm tra rằng tên miền trong đoạn mã trùng khớp với tên miền trang web đích bạn muốn theo dõi."
-
-msgid "Copy code"
-msgstr "Sao chép mã"
-
-msgid "Share this account"
-msgstr "Chia sẻ tài khoản này"
-
-#, updated
-msgid "Share your Offen Fair Web Analytics account <em class=\"%s\">%s</em> via email invitation. If granted admin privileges, invited users have full access to a shared account and can also create further accounts for this instance."
-msgstr "Chia sẻ tài khoản Offen <em class=\"%s\">%s</em> qua một thư mời dmail. Nếu được cấp quyền quản trị, những người dùng được mời sẽ có toàn quyền truy cập tài khoản được chia sẻ và ngoài ra còn có thể tạo thêm những tài khoản khác cho bản cài đặt Offen này."
-
 msgid "Remove this filter."
 msgstr "Xoá tấm lọc này."
 
@@ -750,12 +722,8 @@ msgstr "Lọc phần xem hiện tại bằng mục này."
 msgid "Top pages"
 msgstr "Những trang xem nhiều nhất"
 
-#, updated
 msgid "This panel displays several page lists that count the total number of your page views of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen Fair Web Analytics installation</a> per URL in different categories."
 msgstr "Bảng này hiển thị danh sách vài trang mà có đếm qua số lượt xem trang tổng của bạn trên trang web có cài đặt <a href=\"#terms-offen-installation\" class=\"%s\">phần mềm Offen Fair Web Analytics</a> theo mỗi đường link khác nhau trong những phân mục khác nhau."
-
-msgid "URL"
-msgstr "Đường link"
 
 msgid "Pageviews"
 msgstr "Lượt xem"
@@ -784,7 +752,6 @@ msgstr "Nguồn giới thiệu"
 msgid "Host"
 msgstr "Nguồn chủ chạy"
 
-#, updated
 msgid "A list of referrers that directed you to pages of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen Fair Web Analytics installation.</a> Popular referrers like, for example, Google or Twitter display their proper name, others their domain."
 msgstr "Danh sách những nguồn giới thiệu đã đưa bạn đến xem những trang trên trang web có một <a href=\"#terms-offen-installation\" class=\"%s\">bản cài đặt Offen Fair Web Analytics.</a> Những nguồn giới thiệu thường gặp như là, ví dụ, Google hay Twitter sẽ thường hiển thị hẳn tên công ty của họ, còn những nguồn khác có thể là hiển thị tên miền của họ."
 
@@ -794,7 +761,6 @@ msgstr "Chiến dịch"
 msgid "Campaign"
 msgstr "Chiến dịch"
 
-#, updated
 msgid "A list of special referrers that directed you to pages of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen Fair Web Analytics installation.</a> <a href=\"#terms-operator\" class=\"%s\">Operators</a> can mark links to their pages with a campaign tag. This is used, for example, to measure the success of online advertising campaigns."
 msgstr "Danh sách những nguồn giới thiệu mà đã đưa bạn đến những trang trên trang web đang cài đặt một <a href=\"#terms-offen-installation\" class=\"%s\">bản phần mềm Offen Fair Web Analytics.</a> <a href=\"#terms-operator\" class=\"%s\">Những điều hành viên</a> có thể đánh dấu những đường link đến trang của họ bằng một thẻ tag chiến dịch. Việc này thường được dùng, ví dụ như, để đo lường mức độ thành công của những chiến dịch chạy quảng cáo online."
 
@@ -804,7 +770,6 @@ msgstr "Nguồn"
 msgid "Source"
 msgstr "Nguồn"
 
-#, updated
 msgid "A list of special referrers that directed you to pages of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen Fair Web Analytics installation.</a> <a href=\"#terms-operator\" class=\"%s\">Operators</a> can mark links to their pages with a source tag. This is used, for example, to measure the success of online advertising campaigns."
 msgstr "Danh sách những nguồn giới thiệu mà đã đưa bạn đến những trang trên trang web đang cài đặt một <a href=\"#terms-offen-installation\" class=\"%s\">bản phần mềm Offen Fair Web Analytics.</a> <a href=\"#terms-operator\" class=\"%s\">Những điều hành viên</a> có thể đánh dấu những đường link đến trang của họ bằng một thẻ tag nguồn. Việc này thường được dùng, ví dụ như, để đo lường mức độ thành công của những chiến dịch chạy quảng cáo online."
 
@@ -814,7 +779,6 @@ msgstr "Trang đích đến"
 msgid "Landings"
 msgstr "Những trang đáp đến"
 
-#, updated
 msgid "A list of pages of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen Fair Web Analytics installation</a> that you have opened first in all <a href=\"#terms-unique-session\" class=\"%s\">unique sessions.</a>"
 msgstr "Danh sách những trang trên trang web có cài đặt một <a href=\"#terms-offen-installation\" class=\"%s\">bản phần mềm Offen Fair Web Analytics</a> mà bạn mở xem đầu tiên trong tất cả những <a href=\"#terms-unique-session\" class=\"%s\">phiên riêng biệt.</a>"
 
@@ -824,25 +788,29 @@ msgstr "Trang thoát ra"
 msgid "Exits"
 msgstr "Những trang thoát"
 
-#, updated
 msgid "A list of pages of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen Fair Web Analytics installation</a> that you have opened last in all <a href=\"#terms-unique-session\" class=\"%s\">unique sessions.</a> For this to be counted you must have visited at least two pages."
 msgstr "Danh sách những trang trên trang web có cài đặt một <a href=\"#terms-offen-installation\" class=\"%s\">bản phần mềm Offen Fair Web Analytics</a> mà bạn mở xem cuối cùng trước khi thoát ra khỏi tranf web trong tất cả những <a href=\"#terms-unique-session\" class=\"%s\">phiên riêng biệt.</a> Để chỉ số này được tính vào, bạn cần phải xem qua ít nhất 2 trang trên trang web."
+
+msgid "Share this account"
+msgstr "Chia sẻ tài khoản này"
+
+msgid "Share your Offen Fair Web Analytics account <em class=\"%s\">%s</em> via email invitation. If granted admin privileges, invited users have full access to a shared account and can also create further accounts for this instance."
+msgstr "Chia sẻ tài khoản Offen <em class=\"%s\">%s</em> qua một thư mời dmail. Nếu được cấp quyền quản trị, những người dùng được mời sẽ có toàn quyền truy cập tài khoản được chia sẻ và ngoài ra còn có thể tạo thêm những tài khoản khác cho bản cài đặt Offen này."
 
 msgid "Weekly retention"
 msgstr "Mức độ giữ chân khách hằng tuần"
 
-#, updated
 msgid "This panel displays your recurring visits of pages of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen Fair Web Analytics installation</a> during the last 4 weeks. For each of the previous weeks, the percentage is calculated from the value of the current week."
 msgstr "Bảng này hiển thị những lượt xem quay lại của những trang trên <a href=\"#terms-offen-installation\" class=\"%s\">trang web đã cài đặt Offen Fair Web Analytics</a> trong vòng 4 tuần trước. Cho mỗi tuần trong số đó, giá trị % được tính dựa trên giá trị của tuần này."
+
+msgid "Choose account"
+msgstr "Chọn tài khoản"
 
 msgid "You are viewing data as operator with account <em class=\"%s\">%s</em>."
 msgstr "Bạn đang xem dữ liệu với vai trò là điều hành viên của tài khoản <em class=\"%s\">%s</em>."
 
 msgid "You are viewing your usage data."
 msgstr "Bạn đang xem dữ liệu dùng web của bạn."
-
-msgid "Choose account"
-msgstr "Chọn tài khoản"
 
 msgid "Key metrics"
 msgstr "Thông số chính"
@@ -853,28 +821,24 @@ msgstr "Bảng này hiển thị những thông số chính quan trọng nhất 
 msgid "Unique %s"
 msgstr "%s riêng biệt"
 
-#, updated
 msgid "The number of websites you have visited where the <a href=\"#terms-offen-installation\" class=\"%s\">Offen Fair Web Analytics installation</a> is active. This value will be 1 in many cases."
 msgstr "Số lượng trang web bạn đã ghé xem qua nơi mà một<a href=\"#terms-offen-installation\" class=\"%s\">bản cài đặt Offen Fair Web Analytics</a> đang hoạt động. Trong nhiều trường hợp giá trị này sẽ là 1."
 
 msgid "Unique sessions"
 msgstr "Phiên riêng biệt"
 
-#, updated
 msgid "The number of <a href=\"#terms-unique-session\" class=\"%s\">unique sessions</a> you have created on pages where the <a href=\"#terms-offen-installation\" class=\"%s\">Offen Fair Web Analytics installation</a> is active."
 msgstr "Số lượng <a href=\"#terms-unique-session\" class=\"%s\">phiên riêng biệt</a> bạn đã mở lên trên những trang có một <a href=\"#terms-offen-installation\" class=\"%s\">bản cài đặt Offen Fair Web Analytics</a> đang hoạt động."
 
 msgid "Avg. page depth"
 msgstr "Độ sâu TB trang"
 
-#, updated
 msgid "Full form: Average page depth. The average number of pages you have visited during all <a href=\"#terms-unique-session\" class=\"%s\">unique sessions</a> on all websites where the <a href=\"#terms-offen-installation\" class=\"%s\">Offen Fair Web Analytics installation</a> is active."
 msgstr "Nguyên văn: Độ sâu trung bình trang. Số lượng trang mà bạn đã ghé xem trong tất cả <a href=\"#terms-unique-session\" class=\"%s\">những phiên riêng biệt</a> trên cả thảy những trang web mà một <a href=\"#terms-offen-installation\" class=\"%s\">bản cài đặt Offen Fair Web Analytics</a> đang hoạt động."
 
 msgid "Bounce rate"
 msgstr "Tỷ lệ bật trang"
 
-#, updated
 msgid "The percentage of <a href=\"#terms-unique-session\" class=\"%s\">unique sessions</a> where you only visited one page of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen Fair Web Analytics installation.</a> Therefore a website with only one page will always have a bounce rate of 100%."
 msgstr "Tỷ lệ phần trăm trong số những <a href=\"#terms-unique-session\" class=\"%s\">phiên riêng biệt</a> mà bạn chỉ xem qua 1 trang của trang web có cài đặt <a href=\"#terms-offen-installation\" class=\"%s\">phần mềm Offen Fair Web Analytics.</a> Chính vì thế trang web nào mà chỉ có duy nhất 1 trang sẽ luôn có tỷ lệ bật trang là 100%."
 
@@ -893,7 +857,6 @@ msgstr "Cho thấy liệu thiết bị bạn đang dùng để xem web có phả
 msgid "Avg. page load time"
 msgstr "Thgian tải trang TB"
 
-#, updated
 msgid "Full form: Average page load time. The average time it took for all pages of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen Fair Web Analytics installation</a> you visited to become interactive."
 msgstr "Nguyên văn: Thời gian tải trang trung bình. Thời gian trung bình để cho tất cả những trang trên trang web có cài đặt phần mềm <a href=\"#terms-offen-installation\" class=\"%s\">Offen Fair Web Analytics</a> mà bạn ghé xem có thể hiển thị đầy đủ và tương tác được hoàn chỉnh."
 
@@ -927,17 +890,23 @@ msgstr "Chỉ hiển thị top %d"
 msgid "Show all entries"
 msgstr "Hiển thị tất cả các mục"
 
-msgid "Real time"
-msgstr "Ngay lúc này"
+msgid "Successfully copied embed code to clipboard."
+msgstr "Đã copy mã nhúng vào bộ nhớ tạm thời."
 
-msgid "Active users on site"
-msgstr "Khách đang xem web"
+msgid "Embed code"
+msgstr "Mã nhúng"
 
-msgid "Active pages"
-msgstr "Trang đang được xem"
+msgid "Toggle display of embed code"
+msgstr "Bật tắt hiển thị mã nhúng"
 
-msgid "Visitors"
-msgstr "Lượt khách"
+msgid "To use Offen Fair Web Analytics with the account <em class=\"%s\">%s</em> on your website, embed the following script on each page you want to appear in your statistics."
+msgstr "Để sử dụng Offen Fair Web Analytics với tài khoản <em class=\"%s\">%s</em> trên trang web của bạn, hãy thêm đoạn mã script này vào mỗi trang mà bạn muốn theo dõi và hiển thị trong phần thống kê trang web."
+
+msgid "In case you are serving multiple domains from your instance, please double check that the domain in this snippet matches the target account."
+msgstr "Trường hợp bạn muốn dùng nhiều tên miền để theo dõi số liệu từ một bản cài đặt Offen Fair Web Analytics của bạn, xin hãy kiểm tra rằng tên miền trong đoạn mã trùng khớp với tên miền trang web đích bạn muốn theo dõi."
+
+msgid "Copy code"
+msgstr "Sao chép mã"
 
 msgid "Thanks for your help to make this website better."
 msgstr "Cảm ơn sự giúp đỡ của bạn để giúp trang web này tốt hơn."
@@ -954,14 +923,15 @@ msgstr "Bạn có thể rút phép và xoá dữ liệu bất cứ lúc nào."
 msgid "Learn more"
 msgstr "Tìm hiểu thêm"
 
-msgid "Offen does not support this site: %s"
+msgid "Browser does not support IndexedDB which is required."
+msgstr "Trình duyệt của bạn không hỗ trợ cơ sở dữ liệu IndexedDB cần cho Offen."
+
+#, fuzzy
+msgid "Offen Fair Web Analytics does not support this site: %s"
 msgstr "Offen hiện chưa hỗ trợ trang web này: %s"
 
 msgid "No data will be collected. Find out more at \"https://www.offen.dev\"."
 msgstr "Không có dữ liệu nào sẽ được thu thập. Tìm hiểu thêm tại \"https://www.offen.dev\"."
-
-msgid "Browser does not support IndexedDB which is required."
-msgstr "Trình duyệt của bạn không hỗ trợ cơ sở dữ liệu IndexedDB cần cho Offen."
 
 #. ~ line 5 "public/static/emails.go.html"
 msgid "Reset your password"
@@ -982,11 +952,13 @@ msgid "The link is valid for 24 hours after this email has been sent. In case yo
 msgstr "Đường link có hiệu lực trong vòng 24 giờ từ lúc email này được gửi ra. Trường hợp bạn lỡ mất thời gian này, bạn luôn có thể yêu cầu lại một đường link mới."
 
 #. ~ line 19 "public/static/emails.go.html"
-msgid "You have been invited to join Offen."
+#, fuzzy
+msgid "You have been invited to join Offen Fair Web Analytics."
 msgstr "Bạn đã được mời tham gia vào Offen."
 
 #. ~ line 25 "public/static/emails.go.html"
-msgid "You have been invited to Offen. To accept your invite, visit the following link:"
+#, fuzzy
+msgid "You have been invited to Offen Fair Web Analytics. To accept your invite, visit the following link:"
 msgstr "Bạn đã được mời vào dùng Offen. Để chấp nhận lời mời, hãy bấm xem đường link sau nhé:"
 
 #. ~ line 29 "public/static/emails.go.html"
@@ -994,11 +966,13 @@ msgid "The link is valid for 7 days after this email has been sent. In case you 
 msgstr "Đường link có hiệu lực trong vòng 7 ngày sau khi email này được gửi đi. Trường hợp bạn lỡ qua thời gian này, hãy yêu cầu một thư mời mới."
 
 #. ~ line 33 "public/static/emails.go.html"
-msgid "You have been added to additional accounts on Offen."
+#, fuzzy
+msgid "You have been added to additional accounts on Offen Fair Web Analytics."
 msgstr "Bạn đã được thêm vào những tài khoản thêm có trên Offen."
 
 #. ~ line 39 "public/static/emails.go.html"
-msgid "You have been added to the following new accounts on Offen:"
+#, fuzzy
+msgid "You have been added to the following new accounts on Offen Fair Web Analytics:"
 msgstr "Bạn đã được thêm vào những tài khoản mới sau đây trên Offen:"
 
 #. ~ line 45 "public/static/emails.go.html"
@@ -1010,32 +984,30 @@ msgid "It seems like your browser has JavaScript disabled."
 msgstr "Có vẻ như trình duyệt web của bạn đang tắt chế độ JavaScript."
 
 #. ~ line 36 "public/static/index.go.html"
-#, updated
 msgid "Offen Fair Web Analytics requires JavaScript to function properly."
 msgstr "Offen Fair Web Analytics cần JavaScript được hỗ trợ để hoạt động đúng cách."
 
 #. ~ line 39 "public/static/index.go.html"
-#, updated
 msgid "Offen Fair Web Analytics is installed on the website that linked you here."
 msgstr "Offen Fair Web Analytics là một phần mềm phân tích số liệu công bằng mã nguồn mở. Nó được cài đặt trên trang web mà đã dẫn bạn đến đây."
 
 #. ~ line 42 "public/static/index.go.html"
-#, updated
 msgid "For Offen Fair Web Analytics to work, your browser has to allow JavaScript and accept cookies. Please change your browser settings and reload this page. Subsequently, Offen Fair Web Analytics will ask for your consent before collecting any usage data."
 msgstr "Để Offen Fair Web Analytics có thể hoạt động, trình duyệt của bạn cần bật JavaScript và hỗ trợ cookie. Xin hãy chỉnh lại cài đặt trong trình duyệt của bạn và bấm tải lại trang này. Sau đó, Offen sẽ hỏi xin phép bạn trước khi thu thập bất kỳ thông tin dùng web nào."
 
 #. ~ line 162 "public/static/index.go.html"
-#, updated
 msgid "Offen Fair Web Analytics is an open alternative to common web analytics tools. Operators gain insights while users have full access to their data. Lightweight, self hosted and free."
 msgstr "Offen Fair Web Analytics là một giải pháp thay thế mã nguồn mở cho những công cụ phân tích dữ liệu web thông dụng. Những điều hành viên có được những kiến giải quan trọng giúp họ cải thiện dịch vụ trong khi người dùng web có toàn quyền truy cập và xem những dữ liệu dùng web của họ. Công cụ nhẹ, có thể tự host và miễn phí."
 
-msgid "This page is using Offen to collect usage statistics."
+#, fuzzy
+msgid "This page is using Offen Fair Web Analytics to collect usage statistics."
 msgstr "Trang này đàn sử dụng Offen để thu thập thống kê những số liệu dùng web."
 
 msgid "You can access and manage all of your personal data or opt-out at \"%s/auditorium/\"."
 msgstr "Bạn có thể truy cập và quản lý tất cả những dữ liệu cá nhân hay rút phép tại \"%s/auditorium/\"."
 
-msgid "Find out more about Offen at \"https://www.offen.dev\"."
+#, fuzzy
+msgid "Find out more about Offen Fair Web Analytics at \"https://www.offen.dev\"."
 msgstr "Tìm hiểu thêm về Offen tại \"https://www.offen.dev\"."
 
 msgid "Your setup prevents third party cookies or you have disabled it in your browser's settings."
@@ -1047,5 +1019,9 @@ msgstr "Không có dữ liệu dùng web nào được thu thập."
 msgid "You have opted out of data collection, no data is being collected."
 msgstr "Bạn đã rút phép ra khỏi việc thu thập dữ liệu dùng web, sẽ không có dữ liệu nào được thu thập."
 
-msgid "Find out more about Offen at \"%s\""
+#, fuzzy
+msgid "Find out more about Offen Fair Web Analytics at \"%s\""
 msgstr "Tìm hiểu thêm về Offen ở \"%s\""
+
+#~ msgid "Join Offen"
+#~ msgstr "Tham gia Offen"
