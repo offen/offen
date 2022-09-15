@@ -1049,12 +1049,3 @@ msgstr "Bạn đã rút phép ra khỏi việc thu thập dữ liệu dùng web,
 
 msgid "Find out more about Offen at \"%s\""
 msgstr "Tìm hiểu thêm về Offen ở \"%s\""
-
-#~ msgid "Offen Auditorium"
-#~ msgstr "Offen Auditorium"
-
-#~ msgid "Found an issue, need help or want to add something?<br><a href=\"https://twitter.com/hioffen\" class=\"%s\" target=\"_blank\" rel=\"noreferrer noopener\">Tweet,</a> <a href=\"mailto:hioffen@posteo.de\" class=\"%s\" target=\"_blank\">email</a> or file an <a href=\"https://github.com/offen/offen\" class=\"%s\" target=\"_blank\" rel=\"noreferrer noopener\">issue.</a>"
-#~ msgstr "Tìm thấy một vấn đề, cần hỗ trợ hay muốn bổ sung thêm gì đó?<br><a href=\"https://twitter.com/hioffen\" class=\"%s\" target=\"_blank\" rel=\"noreferrer noopener\">Gửi tweet,</a> <a href=\"mailto:hioffen@posteo.de\" class=\"%s\" target=\"_blank\">gửi email</a> hay gửi<a href=\"https://github.com/offen/offen\" class=\"%s\" target=\"_blank\" rel=\"noreferrer noopener\">vấn đề.</a>"
-
-#~ msgid "Offen"
-#~ msgstr "Offen"

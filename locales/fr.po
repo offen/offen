@@ -1049,12 +1049,3 @@ msgstr "Vous avez exercé votre droit d'opposition à la collecte de données, a
 
 msgid "Find out more about Offen at \"%s\""
 msgstr "Apprenez-en plus sur Offen sur \"%s\""
-
-#~ msgid "Offen Auditorium"
-#~ msgstr "Auditorium Offen"
-
-#~ msgid "Found an issue, need help or want to add something?<br><a href=\"https://twitter.com/hioffen\" class=\"%s\" target=\"_blank\" rel=\"noreferrer noopener\">Tweet,</a> <a href=\"mailto:hioffen@posteo.de\" class=\"%s\" target=\"_blank\">email</a> or file an <a href=\"https://github.com/offen/offen\" class=\"%s\" target=\"_blank\" rel=\"noreferrer noopener\">issue.</a>"
-#~ msgstr "Vous avez un souci, besoin d'aide ou souhaitez ajouter quelque chose ?<br><a href=\"https://twitter.com/hioffen\" class=\"%s\" target=\"_blank\" rel=\"noreferrer noopener\">Tweetez,</a> <a href=\"mailto:hioffen@posteo.de\" class=\"%s\" target=\"_blank\">envoyez un courriel</a> ou signalez un <a href=\"https://github.com/offen/offen\" class=\"%s\" target=\"_blank\" rel=\"noreferrer noopener\">problème.</a>"
-
-#~ msgid "Offen"
-#~ msgstr "Offen"
