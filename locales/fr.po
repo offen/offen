@@ -145,9 +145,9 @@ msgstr "Les mots de passe ne correspondent pas"
 msgid "Your account has been set up, you can now log in."
 msgstr "Votre compte a été créé, vous pouvez maintenant vous connecter."
 
-#, fuzzy
+#, updated
 msgid "Join Offen Fair Web Analytics"
-msgstr "Offen Fair Web Analytics"
+msgstr "Rejoindre Offen Fair Web Analytics"
 
 msgid "Accept invite"
 msgstr "Accepter l'invitation"
@@ -502,9 +502,9 @@ msgstr "Une session unique est définie comme un <a href=\"#terms-unique-user\" 
 msgid "ID"
 msgstr "ID"
 
-#, fuzzy
+#, updated
 msgid "Originally: UUID. Full form: Universally unique identifier. Offen Fair Web Analytics uses UUID of version 4. These IDs are generated randomly, unique and without using any personal data. On the individual Offen Fair Web Analytics server, they are handled in an unrecognizable form. <a href=\"https://en.wikipedia.org/wiki/Universally_unique_identifier\" class=\"%s\" target=\"_blank\" rel=\"noreferrer noopener\">Learn more.</a>"
-msgstr "À l'origine : UUID (IDentifiant Unique Universel). Offen utilise l'UUID de la version 4. Ces identifiants sont générés aléatoirement, de façon unique et sans utiliser de données personnelles. Sur le serveur Offen individuel, ils sont traités sous une forme méconnaissable. <a href=\"https://en.wikipedia.org/wiki/Universally_unique_identifier\" class=\"%s\" target=\"_blank\" rel=\"noreferrer noopener\">En savoir plus.</a>"
+msgstr "À l'origine : UUID (IDentifiant Unique Universel). Offen Fair Web Analytics utilise l'UUID de la version 4. Ces identifiants sont générés aléatoirement, de façon unique et sans utiliser de données personnelles. Sur le serveur Offen Fair Web Analytics individuel, ils sont traités sous une forme méconnaissable. <a href=\"https://en.wikipedia.org/wiki/Universally_unique_identifier\" class=\"%s\" target=\"_blank\" rel=\"noreferrer noopener\">En savoir plus.</a>"
 
 msgid "Select"
 msgstr "Sélectionner"
@@ -926,9 +926,9 @@ msgstr "En savoir plus"
 msgid "Browser does not support IndexedDB which is required."
 msgstr "Le navigateur ne support pas IndexedDB qui est requis."
 
-#, fuzzy
+#, updated
 msgid "Offen Fair Web Analytics does not support this site: %s"
-msgstr "Offen ne supporte pas ce site : %s"
+msgstr "Offen Fair Web Analytics ne supporte pas ce site : %s"
 
 msgid "No data will be collected. Find out more at \"https://www.offen.dev\"."
 msgstr "Aucune donnée ne sera collectée. En savoir plus sur \"https://www.offen.dev\"."
@@ -952,28 +952,28 @@ msgid "The link is valid for 24 hours after this email has been sent. In case yo
 msgstr "Le lien est valide pendant 24 heures après l'envoi de ce courriel. Au cas où vous auriez dépassé ce délai, vous pouvez toujours demander un nouveau lien."
 
 #. ~ line 19 "public/static/emails.go.html"
-#, fuzzy
+#, updated
 msgid "You have been invited to join Offen Fair Web Analytics."
-msgstr "Vous avez été invité à rejoindre Offen."
+msgstr "Vous avez été invité à rejoindre Offen Fair Web Analytics."
 
 #. ~ line 25 "public/static/emails.go.html"
-#, fuzzy
+#, updated
 msgid "You have been invited to Offen Fair Web Analytics. To accept your invite, visit the following link:"
-msgstr "Vous avez été invité à Offen. Pour accepter votre invitation, visitez le lien suivant :"
+msgstr "Vous avez été invité à Offen Fair Web Analytics. Pour accepter votre invitation, visitez le lien suivant :"
 
 #. ~ line 29 "public/static/emails.go.html"
 msgid "The link is valid for 7 days after this email has been sent. In case you have missed this deadline, request a new invite."
 msgstr "Le lien est valable 7 jours après l'envoi de ce courriel. Au cas où vous auriez dépassé cette date limite, demandez une nouvelle invitation."
 
 #. ~ line 33 "public/static/emails.go.html"
-#, fuzzy
+#, updated
 msgid "You have been added to additional accounts on Offen Fair Web Analytics."
-msgstr "Vous avez été ajouté à des comptes supplémentaires sur Offen."
+msgstr "Vous avez été ajouté à des comptes supplémentaires sur Offen Fair Web Analytics."
 
 #. ~ line 39 "public/static/emails.go.html"
-#, fuzzy
+#, updated
 msgid "You have been added to the following new accounts on Offen Fair Web Analytics:"
-msgstr "Vous avez été ajouté aux nouveaux comptes suivants sur Offen :"
+msgstr "Vous avez été ajouté aux nouveaux comptes suivants sur Offen Fair Web Analytics:"
 
 #. ~ line 45 "public/static/emails.go.html"
 msgid "You automatically gain access to these accounts the next time you log in."
@@ -999,16 +999,16 @@ msgstr "Pour que Offen Fair Web Analytics fonctionne, votre navigateur doit auto
 msgid "Offen Fair Web Analytics is an open alternative to common web analytics tools. Operators gain insights while users have full access to their data. Lightweight, self hosted and free."
 msgstr "Offen Fair Web Analytics est une alternative ouverte aux outils d'analyse Web courants. Les opérateurs obtiennent des informations tandis que les utilisateurs ont un accès complet à leurs données. Léger, auto-hébergé et gratuit."
 
-#, fuzzy
+#, updated
 msgid "This page is using Offen Fair Web Analytics to collect usage statistics."
-msgstr "Cette page utilise Offen pour collecter des statistiques d'utilisation."
+msgstr "Cette page utilise Offen Fair Web Analytics pour collecter des statistiques d'utilisation."
 
 msgid "You can access and manage all of your personal data or opt-out at \"%s/auditorium/\"."
 msgstr "Vous pouvez accéder et gérer toutes vos données personnelles ou retirer votre consentement dans l'\"%s/auditorium/\"."
 
-#, fuzzy
+#, updated
 msgid "Find out more about Offen Fair Web Analytics at \"https://www.offen.dev\"."
-msgstr "Apprenez-en plus sur Offen sur \"https://www.offen.dev\""
+msgstr "Apprenez-en plus sur Offen Fair Web Analytics sur \"https://www.offen.dev\""
 
 msgid "Your setup prevents third party cookies or you have disabled it in your browser's settings."
 msgstr "Votre configuration empêche les cookies tiers ou vous l'avez désactivée dans les paramètres de votre navigateur."
@@ -1019,9 +1019,6 @@ msgstr "Aucune donnée d'utilisation ne sera collectée."
 msgid "You have opted out of data collection, no data is being collected."
 msgstr "Vous avez exercé votre droit d'opposition à la collecte de données, aucune donnée n'est collectée."
 
-#, fuzzy
+#, updated
 msgid "Find out more about Offen Fair Web Analytics at \"%s\""
-msgstr "Apprenez-en plus sur Offen sur \"%s\""
-
-#~ msgid "Join Offen"
-#~ msgstr "Rejoindre Offen"
+msgstr "Apprenez-en plus sur Offen Fair Web Analytics sur \"%s\""

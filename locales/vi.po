@@ -145,9 +145,9 @@ msgstr "Mật khẩu không trùng khớp"
 msgid "Your account has been set up, you can now log in."
 msgstr "Tài khoản của bạn đã được cài đặt, giờ bạn có thể đăng nhập vào rồi."
 
-#, fuzzy
+#, updated
 msgid "Join Offen Fair Web Analytics"
-msgstr "Offen Fair Web Analytics"
+msgstr "Tham gia Offen Fair Web Analytics"
 
 msgid "Accept invite"
 msgstr "Chấp nhận lời mời"
@@ -502,9 +502,9 @@ msgstr "Một phiên xem mới được định nghĩa như là <a href=\"#terms
 msgid "ID"
 msgstr "Mã ID"
 
-#, fuzzy
+#, updated
 msgid "Originally: UUID. Full form: Universally unique identifier. Offen Fair Web Analytics uses UUID of version 4. These IDs are generated randomly, unique and without using any personal data. On the individual Offen Fair Web Analytics server, they are handled in an unrecognizable form. <a href=\"https://en.wikipedia.org/wiki/Universally_unique_identifier\" class=\"%s\" target=\"_blank\" rel=\"noreferrer noopener\">Learn more.</a>"
-msgstr "Nguyên thuỷ: Mã UUID. Tên đầy đủ: Universally unique identifier. Offen sử dụng phiên bản UUID thứ 4. Những mã ID này được khởi tạo ngẫu nhiên, không trùng lặp và không dùng bất kỳ thông tin cá nhân nào đính kèm trong đó. Trên mỗi máy chủ chạy phần mềm Offen, những mã này được xử lý thay hình đổi dạng không dễ nhận biết được nguyên hình. <a href=\"https://en.wikipedia.org/wiki/Universally_unique_identifier\" class=\"%s\" target=\"_blank\" rel=\"noreferrer noopener\">Tìm hiểu thêm tại đây.</a>"
+msgstr "Nguyên thuỷ: Mã UUID. Tên đầy đủ: Universally unique identifier. Offen Fair Web Analytics sử dụng phiên bản UUID thứ 4. Những mã ID này được khởi tạo ngẫu nhiên, không trùng lặp và không dùng bất kỳ thông tin cá nhân nào đính kèm trong đó. Trên mỗi máy chủ chạy phần mềm Offen Fair Web Analytics, những mã này được xử lý thay hình đổi dạng không dễ nhận biết được nguyên hình. <a href=\"https://en.wikipedia.org/wiki/Universally_unique_identifier\" class=\"%s\" target=\"_blank\" rel=\"noreferrer noopener\">Tìm hiểu thêm tại đây.</a>"
 
 msgid "Select"
 msgstr "Chọn"
@@ -926,9 +926,9 @@ msgstr "Tìm hiểu thêm"
 msgid "Browser does not support IndexedDB which is required."
 msgstr "Trình duyệt của bạn không hỗ trợ cơ sở dữ liệu IndexedDB cần cho Offen."
 
-#, fuzzy
+#, updated
 msgid "Offen Fair Web Analytics does not support this site: %s"
-msgstr "Offen hiện chưa hỗ trợ trang web này: %s"
+msgstr "Offen Fair Web Analytics hiện chưa hỗ trợ trang web này: %s"
 
 msgid "No data will be collected. Find out more at \"https://www.offen.dev\"."
 msgstr "Không có dữ liệu nào sẽ được thu thập. Tìm hiểu thêm tại \"https://www.offen.dev\"."
@@ -952,28 +952,28 @@ msgid "The link is valid for 24 hours after this email has been sent. In case yo
 msgstr "Đường link có hiệu lực trong vòng 24 giờ từ lúc email này được gửi ra. Trường hợp bạn lỡ mất thời gian này, bạn luôn có thể yêu cầu lại một đường link mới."
 
 #. ~ line 19 "public/static/emails.go.html"
-#, fuzzy
+#, updated
 msgid "You have been invited to join Offen Fair Web Analytics."
-msgstr "Bạn đã được mời tham gia vào Offen."
+msgstr "Bạn đã được mời tham gia vào Offen Fair Web Analytics."
 
 #. ~ line 25 "public/static/emails.go.html"
-#, fuzzy
+#, updated
 msgid "You have been invited to Offen Fair Web Analytics. To accept your invite, visit the following link:"
-msgstr "Bạn đã được mời vào dùng Offen. Để chấp nhận lời mời, hãy bấm xem đường link sau nhé:"
+msgstr "Bạn đã được mời vào dùng Offen Fair Web Analytics. Để chấp nhận lời mời, hãy bấm xem đường link sau nhé:"
 
 #. ~ line 29 "public/static/emails.go.html"
 msgid "The link is valid for 7 days after this email has been sent. In case you have missed this deadline, request a new invite."
 msgstr "Đường link có hiệu lực trong vòng 7 ngày sau khi email này được gửi đi. Trường hợp bạn lỡ qua thời gian này, hãy yêu cầu một thư mời mới."
 
 #. ~ line 33 "public/static/emails.go.html"
-#, fuzzy
+#, updated
 msgid "You have been added to additional accounts on Offen Fair Web Analytics."
-msgstr "Bạn đã được thêm vào những tài khoản thêm có trên Offen."
+msgstr "Bạn đã được thêm vào những tài khoản thêm có trên Offen Fair Web Analytics."
 
 #. ~ line 39 "public/static/emails.go.html"
-#, fuzzy
+#, updated
 msgid "You have been added to the following new accounts on Offen Fair Web Analytics:"
-msgstr "Bạn đã được thêm vào những tài khoản mới sau đây trên Offen:"
+msgstr "Bạn đã được thêm vào những tài khoản mới sau đây trên Offen Fair Web Analytics:"
 
 #. ~ line 45 "public/static/emails.go.html"
 msgid "You automatically gain access to these accounts the next time you log in."
@@ -999,16 +999,16 @@ msgstr "Để Offen Fair Web Analytics có thể hoạt động, trình duyệt 
 msgid "Offen Fair Web Analytics is an open alternative to common web analytics tools. Operators gain insights while users have full access to their data. Lightweight, self hosted and free."
 msgstr "Offen Fair Web Analytics là một giải pháp thay thế mã nguồn mở cho những công cụ phân tích dữ liệu web thông dụng. Những điều hành viên có được những kiến giải quan trọng giúp họ cải thiện dịch vụ trong khi người dùng web có toàn quyền truy cập và xem những dữ liệu dùng web của họ. Công cụ nhẹ, có thể tự host và miễn phí."
 
-#, fuzzy
+#, updated
 msgid "This page is using Offen Fair Web Analytics to collect usage statistics."
-msgstr "Trang này đàn sử dụng Offen để thu thập thống kê những số liệu dùng web."
+msgstr "Trang này đàn sử dụng Offen Fair Web Analytics để thu thập thống kê những số liệu dùng web."
 
 msgid "You can access and manage all of your personal data or opt-out at \"%s/auditorium/\"."
 msgstr "Bạn có thể truy cập và quản lý tất cả những dữ liệu cá nhân hay rút phép tại \"%s/auditorium/\"."
 
-#, fuzzy
+#, updated
 msgid "Find out more about Offen Fair Web Analytics at \"https://www.offen.dev\"."
-msgstr "Tìm hiểu thêm về Offen tại \"https://www.offen.dev\"."
+msgstr "Tìm hiểu thêm về Offen Fair Web Analytics tại \"https://www.offen.dev\"."
 
 msgid "Your setup prevents third party cookies or you have disabled it in your browser's settings."
 msgstr "Cài đặt trên máy của bạn đang chặn cookie của bên thứ ba hoặc bạn đang tắt chế độ cookie trong phần cài đặt trong trình duyệt."
@@ -1019,9 +1019,6 @@ msgstr "Không có dữ liệu dùng web nào được thu thập."
 msgid "You have opted out of data collection, no data is being collected."
 msgstr "Bạn đã rút phép ra khỏi việc thu thập dữ liệu dùng web, sẽ không có dữ liệu nào được thu thập."
 
-#, fuzzy
+#, updated
 msgid "Find out more about Offen Fair Web Analytics at \"%s\""
-msgstr "Tìm hiểu thêm về Offen ở \"%s\""
-
-#~ msgid "Join Offen"
-#~ msgstr "Tham gia Offen"
+msgstr "Tìm hiểu thêm về Offen Fair Web Analytics ở \"%s\""
