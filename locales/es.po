@@ -1050,12 +1050,3 @@ msgstr "Ha denegado su autorización para la recopilación de datos, no se está
 
 msgid "Find out more about Offen at \"%s\""
 msgstr "Obtenga más información sobre Offen en \"%s\""
-
-#~ msgid "Offen Auditorium"
-#~ msgstr "Offen Auditorium"
-
-#~ msgid "Found an issue, need help or want to add something?<br><a href=\"https://twitter.com/hioffen\" class=\"%s\" target=\"_blank\" rel=\"noreferrer noopener\">Tweet,</a> <a href=\"mailto:hioffen@posteo.de\" class=\"%s\" target=\"_blank\">email</a> or file an <a href=\"https://github.com/offen/offen\" class=\"%s\" target=\"_blank\" rel=\"noreferrer noopener\">issue.</a>"
-#~ msgstr "¿Encontró un problema, necesita ayuda o desea añadir algo?<br><a href=\"https://twitter.com/hioffen\" class=\"%s\" target=\"_blank\" rel=\"noreferrer noopener\">Tweet,</a> <a href=\"mailto:hioffen@posteo.de\" class=\"%s\" target=\"_blank\">email</a> o <a href=\"https://github.com/offen/offen\" class=\"%s\" target=\"_blank\" rel=\"noreferrer noopener\">notificar.</a>"
-
-#~ msgid "Offen"
-#~ msgstr "Offen"

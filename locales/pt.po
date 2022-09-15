@@ -1049,12 +1049,3 @@ msgstr "Você recusou a coleta de dados. Nenhum dado está sendo coletado."
 
 msgid "Find out more about Offen at \"%s\""
 msgstr "Saiba mais sobre o Offen em \"%s\""
-
-#~ msgid "Offen Auditorium"
-#~ msgstr "Auditorium Offen"
-
-#~ msgid "Found an issue, need help or want to add something?<br><a href=\"https://twitter.com/hioffen\" class=\"%s\" target=\"_blank\" rel=\"noreferrer noopener\">Tweet,</a> <a href=\"mailto:hioffen@posteo.de\" class=\"%s\" target=\"_blank\">email</a> or file an <a href=\"https://github.com/offen/offen\" class=\"%s\" target=\"_blank\" rel=\"noreferrer noopener\">issue.</a>"
-#~ msgstr "Encontrou um problema, precisa de ajuda ou quer dizer algo?<br><a href=\"https://twitter.com/hioffen\" class=\"%s\" target=\"_blank\" rel=\"noreferrer noopener\">Twitter,</a> <a href=\"mailto:hioffen@posteo.de\" class=\"%s\" target=\"_blank\">e-mail</a> ou registre um <a href=\"https://github.com/offen/offen\" class=\"%s\" target=\"_blank\" rel=\"noreferrer noopener\">problema.</a>"
-
-#~ msgid "Offen"
-#~ msgstr "Offen"
