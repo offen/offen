@@ -19,7 +19,7 @@ jobs:
       - name: Update version in manifest
         working-directory: ./extension
         run: |
-          stripped_version=echo "${{ github.event.release.tag_name }}" | cut -c 2-
+          stripped_version=$(echo "${{ github.event.release.tag_name }}" | cut -c 2-)
           cat <<< $(jq '.version = "$stripped_version"' manifest.json ) > manifest.json
       - name: Create Pull Request
         id: cpr
