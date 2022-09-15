@@ -79,7 +79,7 @@ module.exports = window.__offen__
 function supportMiddleware (context, send, next) {
   checkSupport(function (err) {
     if (err) {
-      console.log(__('Offen does not support this site: %s', err.message))
+      console.log(__('Offen Fair Web Analytics does not support this site: %s', err.message))
       console.log(__('No data will be collected. Find out more at "https://www.offen.dev".'))
       return
     }

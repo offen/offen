@@ -36,7 +36,7 @@ const Form = forwardRef((props, ref) => {
   return (
     <div class='pa3 bg-black-05'>
       <h4 class='f4 normal mt0 mb3'>
-        {__('Join Offen')}
+        {__('Join Offen Fair Web Analytics')}
       </h4>
       <form class='mw6 center' onsubmit={handleSubmit}>
         <LabeledInput
