@@ -24,9 +24,9 @@ register('EVENT',
   function (event, respond, next) {
     handler.handleAnalyticsEvent(event.data)
       .then(function () {
-        console.log(__('This page is using Offen to collect usage statistics.'))
+        console.log(__('This page is using Offen Fair Web Analytics to collect usage statistics.'))
         console.log(__('You can access and manage all of your personal data or opt-out at "%s/auditorium/".', window.location.origin))
-        console.log(__('Find out more about Offen at "https://www.offen.dev".'))
+        console.log(__('Find out more about Offen Fair Web Analytics at "https://www.offen.dev".'))
         respond(null)
       })
       .catch(next)
@@ -64,10 +64,10 @@ function allowsCookiesMiddleware (event, respond, next) {
   if (allowsCookies()) {
     return next()
   }
-  console.log(__('This page is using Offen to collect usage statistics.'))
+  console.log(__('This page is using Offen Fair Web Analytics to collect usage statistics.'))
   console.log(__('Your setup prevents third party cookies or you have disabled it in your browser\'s settings.'))
   console.log(__('No usage data will be collected.'))
-  console.log(__('Find out more about Offen at "https://www.offen.dev".'))
+  console.log(__('Find out more about Offen Fair Web Analytics at "https://www.offen.dev".'))
 }
 
 function callHandler (handler) {

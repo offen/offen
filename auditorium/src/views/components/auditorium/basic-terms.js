@@ -58,7 +58,7 @@ module.exports = (props) => {
             {__('ID')}
           </Paragraph>
           <Paragraph class='mt0 mb4'>
-            {__('Originally: UUID. Full form: Universally unique identifier. Offen uses UUID of version 4. These IDs are generated randomly, unique and without using any personal data. On the individual Offen server, they are handled in an unrecognizable form. <a href="https://en.wikipedia.org/wiki/Universally_unique_identifier" class="%s" target="_blank" rel="noreferrer noopener">Learn more.</a>', 'b link dim dark-green')}
+            {__('Originally: UUID. Full form: Universally unique identifier. Offen Fair Web Analytics uses UUID of version 4. These IDs are generated randomly, unique and without using any personal data. On the individual Offen Fair Web Analytics server, they are handled in an unrecognizable form. <a href="https://en.wikipedia.org/wiki/Universally_unique_identifier" class="%s" target="_blank" rel="noreferrer noopener">Learn more.</a>', 'b link dim dark-green')}
           </Paragraph>
         </div>
       </div>
