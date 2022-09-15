@@ -1,10 +1,10 @@
 ---
 layout: default
 title: Using the Offen command
-nav_order: 4
+nav_order: 9
 description: "Explaining subcommands and flags for the offen command."
 permalink: /running-offen/using-the-command/
-parent: Running Offen
+parent: For operators
 ---
 
 <!--
@@ -15,7 +15,7 @@ SPDX-License-Identifier: Apache-2.0
 # Using the `offen` command
 {: .no_toc }
 
-Offen is distributed as a single binary `offen` that you can download and deploy to basically any environment. Alternatively [offen/offen][] is available on Docker Hub and wraps the same command that is described here.
+Offen Fair Web Analytics is distributed as a single binary `offen` that you can download and deploy to basically any environment. Alternatively [offen/offen][] is available on Docker Hub and wraps the same command that is described here.
 
 [offen/offen]: https://hub.docker.com/r/offen/offen
 
@@ -31,7 +31,7 @@ Offen is distributed as a single binary `offen` that you can download and deploy
 
 ## Starting the application
 
-Running `offen` without any arguments starts the Offen web server, listening to the port that is configured. When deploying the application and exposing it to the internet, this will be the command you will be using.
+Running `offen` without any arguments starts the Offen Fair Web Analytics web server, listening to the port that is configured. When deploying the application and exposing it to the internet, this will be the command you will be using.
 
 It is also aliased as `offen serve`.
 
@@ -56,7 +56,7 @@ Each subcommand can also show information about its usage when passing `-help`.
 
 ### `offen setup`
 
-Offen writes data to a database. `offen setup` ensures the configured database is set up correctly and populated with seed data.
+Offen Fair Web Analytics writes data to a database. `offen setup` ensures the configured database is set up correctly and populated with seed data.
 
 ```
 Usage of "setup":
@@ -92,7 +92,7 @@ INFO[0000] You can now enter your password (input is not displayed):
 
 ### `offen secret`
 
-Offen requires secret random values to be provided in its runtime configuration. `offen secret` can be used to generate Base64 encoded secrets of the requested length and count.
+Offen Fair Web Analytics requires secret random values to be provided in its runtime configuration. `offen secret` can be used to generate Base64 encoded secrets of the requested length and count.
 
 ```
 Usage of "secret":
@@ -137,7 +137,7 @@ Usage of "debug":
 ## When run as a horizontally scaling service
 {: .no_toc }
 
-The following commands are only relevant when you plan to run offen as a horizontally scaling service, i.e. you might have multiple instances of the application writing to and reading from the same database.
+The following commands are only relevant when you plan to run Offen Fair Web Analytics as a horizontally scaling service, i.e. you might have multiple instances of the application writing to and reading from the same database.
 
 ### `offen migrate`
 
@@ -152,11 +152,11 @@ Usage of "migrate":
 __Heads Up__
 {: .label .label-red }
 
-In case you have configured Offen to run as a single node setup (which is the default), this will automatically be run on application startup.
+In case you have configured Offen Fair Web Analytics to run as a single node setup (which is the default), this will automatically be run on application startup.
 
 ### `offen expire`
 
-Event data in Offen is expected to expire and be pruned after six months. Running `offen expire` looks for events in the configured database that qualify for deletion and removes them. This is a destructive operation and cannot be undone.
+Event data in Offen Fair Web Analytics is expected to expire and be pruned after six months. Running `offen expire` looks for events in the configured database that qualify for deletion and removes them. This is a destructive operation and cannot be undone.
 
 ```
 Usage of "expire":
@@ -167,4 +167,4 @@ Usage of "expire":
 __Heads Up__
 {: .label .label-red }
 
-In case you have configured Offen to run as a single node setup (which is the default), a job running this command will automatically be scheduled, so you will never need to run this yourself.
+In case you have configured Offen Fair Web Analytics to run as a single node setup (which is the default), a job running this command will automatically be scheduled, so you will never need to run this yourself.

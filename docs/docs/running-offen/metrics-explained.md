@@ -1,10 +1,10 @@
 ---
 layout: default
 title: Metrics explained
-nav_order: 11
-description: "Explanations of the key metrics displayed in Offen."
+nav_order: 15
+description: "Explanations of the key metrics displayed in Offen Fair Web Analytics."
 permalink: /running-offen/metrics-explained/
-parent: Running Offen
+parent: For operators
 ---
 
 <!--
@@ -41,7 +41,7 @@ The number of unique users that are currently interacting with pages.
 
 ---
 
-## Show data from the last
+## Show data from
 
 Here you can set the time frame for all displayed metrics. As all data is generally deleted after 6 months, the selection is limited to this duration.
 
@@ -79,7 +79,7 @@ Full form: Average page depth. The average number of pages that a unique user ha
 
 ## Bounce rate
 
-The percentage of unique sessions that contain only one page visit. An account with only one page will always have a bounce rate of 100%. This metric is more relevant for accounts with a large number of pages that are linked to each other. The length of visits is not measured by Offen. The definition of bounce is therefore rather broad.
+The percentage of unique sessions that contain only one page visit. An account with only one page will always have a bounce rate of 100%. This metric is more relevant for accounts with a large number of pages that are linked to each other. The length of visits is not measured by Offen Fair Web Analytics. The definition of bounce is therefore rather broad.
 
 ---
 
@@ -91,7 +91,7 @@ The number of unique users in the selected timeframe who have visited at least o
 
 ## Mobile users
 
-The percentage of unique users for which the use of a mobile device is considered. Offen respects the privacy of users and therefore does not use the browser’s User Agent String in any way. Instead, a check is made to see if the device thinks it can change its orientation. If so, it is considered mobile.
+The percentage of unique users for which the use of a mobile device is considered. Offen Fair Web Analytics respects the privacy of users and therefore does not use the browser’s User Agent String in any way. Instead, a check is made to see if the device thinks it can change its orientation. If so, it is considered mobile.
 
 ---
 
@@ -104,6 +104,14 @@ Full form: Average page load time. The average time it took for served pages to 
 ## Top pages
 
 This panel displays several page lists that count the total number of page views per URL in different categories. These URLs are stripped off any querystring or hash parameters.
+
+---
+
+## Location
+
+The geographic location associated to the sessions in the selected timeframe.
+Offen Fair Web Analytics does not rely on an IP database for deriving geo location, but instead asks the browser for the selected timezone and tries to map this to a country.
+Country level is the only resolution available, countries that span multiple timezones are merged before storing data.
 
 ---
 
@@ -122,14 +130,6 @@ A list of special referrer values that directed users to pages. For this metric,
 ## Sources
 
 A list of special referrer values that directed users to pages. For this metric, referrers will be grouped by the `utm_source` values contained in their querystring parameters. Check ["Tagging campaigns and sources (UTM)"][campaigns sources] for how URLs have to be tagged for this feature.
-
----
-
-## Location
-
-The geographic location associated to the sessions in the selected timeframe.
-Offen does not rely on an IP database for deriving geo location, but instead asks the browser for the selected timezone and tries to map this to a country.
-Country level is the only resolution available, countries that span multiple timezones are merged before storing data.
 
 ---
 

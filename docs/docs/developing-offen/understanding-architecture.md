@@ -2,9 +2,9 @@
 layout: default
 title: Understanding the application architecture
 nav_order: 5
-description: "Explaining the key concepts of Offen's application architecture."
+description: "Explaining the key concepts of Offen Fair Web Analytics application architecture."
 permalink: /developing-offen/understanding-architecture/
-parent: Developing Offen
+parent: For developers
 ---
 
 <!--
@@ -15,7 +15,7 @@ SPDX-License-Identifier: Apache-2.0
 # Understanding the application architecture
 {: .no_toc }
 
-Offen is composed of four major parts.
+Offen Fair Web Analytics is composed of four major parts.
 
 ## Table of contents
 {: .no_toc }
@@ -25,15 +25,15 @@ Offen is composed of four major parts.
 
 ## The `script`
 
-In order to use Offen to collect usage data on a site, the `script` needs to embedded on each page that is supposed to be contained in the statistics. It is a simple script that will collect and transmit basic pageview data on pageload as well as on pushstate events.
+In order to use Offen Fair Web Analytics to collect usage data on a site, the `script` needs to embedded on each page that is supposed to be contained in the statistics. It is a simple script that will collect and transmit basic pageview data on pageload as well as on pushstate events.
 
 ## The `vault`
 
-Offen aims to protect all of the data it is handling from 3rd party scripts that might be running on the same host page as the `script`. This is why the `vault` acts as intermediate layer between client side applications like the `script` and the `auditorium`, leveraging the protection offered by the Same-Origin-Policy.
+Offen Fair Web Analytics aims to protect all of the data it is handling from 3rd party scripts that might be running on the same host page as the `script`. This is why the `vault` acts as intermediate layer between client side applications like the `script` and the `auditorium`, leveraging the protection offered by the Same-Origin-Policy.
 
 The `vault` is a basic HTML document that is supposed to be loaded in an invisible iframe by any application that wants to use it to interact with the server. It runs a script that is listening for `postMessage` messages emitted by its host document. It is also able to query for data - either in the local IndexedDB or against the `server` - and respond to messages if needed. Message origins are checked and responses are limited to messages coming from the same domain, ensuring no data is leaked to 3rd parties.
 
-The `vault` should be the only interface for both the `script` and the `auditorium` to read and update data on the `server` as it ensures all data exchange is protected. The `vault` also has two other important responsibilities: it handles all client-side cryptography, ensuring event data is encrypted before leaving the browser, as well as managing the data that is persisted in the local IndexedDB. Handling IndexedDB operations from the `vault` also ensures it is only accessible to offen and protected from 3rd party access.
+The `vault` should be the only interface for both the `script` and the `auditorium` to read and update data on the `server` as it ensures all data exchange is protected. The `vault` also has two other important responsibilities: it handles all client-side cryptography, ensuring event data is encrypted before leaving the browser, as well as managing the data that is persisted in the local IndexedDB. Handling IndexedDB operations from the `vault` also ensures it is only accessible to Offen Fair Web Analytics and protected from 3rd party access.
 
 ## The `auditorium`
 

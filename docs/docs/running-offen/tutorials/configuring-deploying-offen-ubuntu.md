@@ -1,11 +1,10 @@
 ---
 layout: default
-title: "Configuring and deploying Offen on Ubuntu using Systemd"
+title: Installation on Ubuntu
 nav_order: 2
-description: "A step by step tutorial on how to deploy Offen on an Ubuntu system using systemd."
+description: "A step by step tutorial on how to deploy Offen Fair Web Analytics on an Ubuntu system using systemd."
 permalink: /running-offen/tutorials/configuring-deploying-offen-ubuntu/
-parent: Installation tutorials
-grand_parent: Running Offen
+parent: For operators
 ---
 
 <!--
@@ -13,13 +12,16 @@ Copyright 2020 - Offen Authors <hioffen@posteo.de>
 SPDX-License-Identifier: Apache-2.0
 -->
 
-# Configuring and deploying Offen on Ubuntu
+# Installation on Ubuntu
+
+Configuring and deploying Offen Fair Web Analytics on Ubuntu
 {: .no_toc }
 
-This tutorial walks you through the steps needed to setup and deploy a standalone, single-node Offen instance that is using a local SQLite file as its database backend. `systemd` is used for managing the Offen service.
+This tutorial walks you through the steps needed to setup and deploy a standalone, single-node Offen Fair Web Analytics instance that is using a local SQLite file as its database backend. `systemd` is used for managing the Offen Fair Web Analytics service.
 
 <span class="label label-green">Note</span>
-If you get stuck or need help, [file an issue][gh-issues], [tweet (@hioffen)][twitter] or [email][email]. If you have installed Offen and would like to spread the word, we're happy to feature you in our README. [Send a PR][edit-readme] adding your site or app and we'll merge it.
+
+If you get stuck or need help, [file an issue][gh-issues], [tweet (@hioffen)][twitter] or [email][email]. If you have installed Offen Fair Web Analytics and would like to spread the word, we're happy to feature you in our README. [Send a PR][edit-readme] adding your site or app and we'll merge it.
 
 [gh-issues]: https://github.com/offen/offen/issues
 [twitter]: https://twitter.com/hioffen
@@ -38,13 +40,13 @@ If you get stuck or need help, [file an issue][gh-issues], [tweet (@hioffen)][tw
 
 ## Prerequisites
 
-This tutorial assumes the machine you are planning to run Offen on is connected to the internet and has DNS records for `offen.mysite.com` (or the domain you are actually planning to use) pointing to it. Ports 80 and 443 are expected to be accessible to the public. See the [documentation for subdomains][domain-doc] for further information on this topic.
+This tutorial assumes the machine you are planning to run Offen Fair Web Analytics on is connected to the internet and has DNS records for `offen.mysite.com` (or the domain you are actually planning to use) pointing to it. Ports 80 and 443 are expected to be accessible to the public. See the [documentation for subdomains][domain-doc] for further information on this topic.
 
 [domain-doc]: ./../setting-up-using-subdomains/
 
 ## Downloading and installing the package
 
-Offen version v0.1.6 and later is packaged as a Debian package, so installation on Ubuntu (and other Debian based distributions) is easy. First, download the package for the latest release:
+Offen Fair Web Analytics version v0.1.6 and later is packaged as a Debian package, so installation on Ubuntu (and other Debian based distributions) is easy. First, download the package for the latest release:
 
 ```
 curl -sSL https://get.offen.dev/deb -o offen.deb
@@ -80,13 +82,13 @@ rm offen.deb
 
 ---
 
-## Configuring Offen
+## Configuring Offen Fair Web Analytics
 
-In this setup, Offen stores its runtime configuration in `/etc/offen/offen.env`. This file has already been created on installation, so you can now populate it with the values required for your install.
+In this setup, Offen Fair Web Analytics stores its runtime configuration in `/etc/offen/offen.env`. This file has already been created on installation, so you can now populate it with the values required for your install.
 
 ### Application Secret
 
-Offen is using a secret to sign login cookies and tokens for resetting passwords or inviting users. You can generate a unique secret for your installation using the `offen secret` subcommand:
+Offen Fair Web Analytics is using a secret to sign login cookies and tokens for resetting passwords or inviting users. You can generate a unique secret for your installation using the `offen secret` subcommand:
 
 ```
 $ offen secret
@@ -102,11 +104,11 @@ OFFEN_SECRET="S2dR9JYYTNG3+5QN+jxiwA==" # do not use this secret in production
 __Heads Up__
 {: .label .label-red }
 
-If you do not set this config value, Offen will generate a random one every time it starts up. This means it works securely, yet all login sessions, password reset emails or invitations will be invalidated when the service restarts.
+If you do not set this config value, Offen Fair Web Analytics will generate a random one every time it starts up. This means it works securely, yet all login sessions, password reset emails or invitations will be invalidated when the service restarts.
 
 ### Setting up AutoTLS
 
-Offen requires a secure connection and can automatically acquire a renew SSL certificates from LetsEncrypt for your domain. Add the domain you want to use to serve Offen to `OFFEN_SERVER_AUTOTLS`:
+Offen Fair Web Analytics requires a secure connection and can automatically acquire a renew SSL certificates from LetsEncrypt for your domain. Add the domain you want to use to serve Offen Fair Web Analytics to `OFFEN_SERVER_AUTOTLS`:
 
 ```
 OFFEN_SERVER_AUTOTLS="offen.mysite.com"
@@ -116,7 +118,7 @@ To make sure the automatic certificate creation and renewal works, make sure you
 
 ### Setting up email
 
-Offen needs to send transactional email for the following features:
+Offen Fair Web Analytics needs to send transactional email for the following features:
 
 - Inviting a new user to an account
 - Resetting your password in case you forgot it
@@ -134,7 +136,7 @@ OFFEN_SMTP_PORT="587"
 __Heads Up__
 {: .label .label-red }
 
-Offen will run without these values being set and try to fall back to a local `sendmail` install, yet please be aware that if you rely on any of the above features email delivery will be __very unreliable if not configured correctly__. You can always add this at a later time though.
+Offen Fair Web Analytics will run without these values being set and try to fall back to a local `sendmail` install, yet please be aware that if you rely on any of the above features email delivery will be __very unreliable if not configured correctly__. You can always add this at a later time though.
 
 ---
 
@@ -151,13 +153,13 @@ OFFEN_SMTP_PASSWORD="my-password"
 OFFEN_SMTP_PORT="587"
 ```
 
-If all of this is populated with the values you expect, you're ready to use Offen.
+If all of this is populated with the values you expect, you're ready to use Offen Fair Web Analytics.
 
 ---
 
 ## Starting the `systemd` service
 
-`systemd` is used to make sure Offen is up and running at all times (e.g. after rebooting or crashing) and accepts events. The `deb` package has already creating a `systemd` service for you on installation, so all you need to do now is start it:
+`systemd` is used to make sure Offen Fair Web Analytics is up and running at all times (e.g. after rebooting or crashing) and accepts events. The `deb` package has already creating a `systemd` service for you on installation, so all you need to do now is start it:
 
 ```
 sudo systemctl enable offen
@@ -184,9 +186,9 @@ Your instance is now ready to use.
 
 ## Setting up the instance
 
-Now that Offen is up and running, you can create your login user and a first account by navigating to `https://offen.mysite.com/setup`. You can create one user and one account here, but you can always add more later on.
+Now that Offen Fair Web Analytics is up and running, you can create your login user and a first account by navigating to `https://offen.mysite.com/setup`. You can create one user and one account here, but you can always add more later on.
 
-After submitting the form, your Offen instance is ready to use.
+After submitting the form, your Offen Fair Web Analytics instance is ready to use.
 
 ## Maintenance
 
@@ -212,7 +214,7 @@ sudo systemctl disable offen
 
 ### Updating the version in use
 
-To update to a new version of Offen, download the package for the newer version and install:
+To update to a new version of Offen Fair Web Analytics, download the package for the newer version and install:
 
 ```
 curl https://get.offen.dev/deb -o offen.deb
