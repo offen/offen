@@ -25,7 +25,7 @@
   },
   "manifest_description": {
     "description": "The description used in the manifest",
-    "message": "A description"
+    "message": "Get instant access to your usage data from all Offen Fair Web Analytics installations you have visited."
   },
   "manifest_action_title": {
     "description": "The title for the main browser action",
