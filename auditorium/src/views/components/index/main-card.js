@@ -88,7 +88,7 @@ module.exports = (props) => {
             {__('How does it all work?')}
           </Headline>
           <Paragraph class='mt0 mb1'>
-            {__('After opening a website where an Offen installation is active, you can explicitly opt in to the data collection and thereby help to improve the services you use. Only then you will be assigned a user and a session ID using a cookie. Offen handles these IDs in an unrecognizable form. <a href="https://en.wikipedia.org/wiki/HTTP_cookie" class="%s" target="_blank" rel="noreferer noopener">Learn more about cookies here.</a>', 'b link dim dark-green')}
+            {__('After opening a website where an Offen Fair Web Analytics installation is active, you can explicitly opt in to the data collection and thereby help to improve the services you use. Only then you will be assigned a user and a session ID using a cookie. Offen Fair Web Analytics handles these IDs in an unrecognizable form. <a href="https://en.wikipedia.org/wiki/HTTP_cookie" class="%s" target="_blank" rel="noreferrer noopener">Learn more about cookies here.</a>', 'b link dim dark-green')}
           </Paragraph>
         </div>
       </div>

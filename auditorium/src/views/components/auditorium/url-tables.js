@@ -105,7 +105,7 @@ const URLTable = (props) => {
         {explainerActive
           ? (
             <Paragraph class='mw7 ma0 pv2'>
-              {__('This panel displays several page lists that count the total number of your page views of the <a href="#terms-offen-installation" class="%s">Offen installation</a> per URL in different categories.', 'b link dim dark-green')}
+              {__('This panel displays several page lists that count the total number of your page views of the <a href="#terms-offen-installation" class="%s">Offen Fair Web Analytics installation</a> per URL in different categories.', 'b link dim dark-green')}
             </Paragraph>
           )
           : null}
@@ -210,7 +210,7 @@ const URLTable = (props) => {
             explainer={(props) => {
               return (
                 <Paragraph class='mw7 ma0 ph1 pv2 ws-normal'>
-                  {__('A list of referrers that directed you to pages of the <a href="#terms-offen-installation" class="%s">Offen installation.</a> Popular referrers like, for example, Google or Twitter display their proper name, others their domain.', 'b link dim dark-green')}
+                  {__('A list of referrers that directed you to pages of the <a href="#terms-offen-installation" class="%s">Offen Fair Web Analytics installation.</a> Popular referrers like, for example, Google or Twitter display their proper name, others their domain.', 'b link dim dark-green')}
                 </Paragraph>
               )
             }}
@@ -239,7 +239,7 @@ const URLTable = (props) => {
             explainer={(props) => {
               return (
                 <Paragraph class='mw7 ma0 ph1 pv2 ws-normal'>
-                  {__('A list of special referrers that directed you to pages of the <a href="#terms-offen-installation" class="%s">Offen installation.</a> <a href="#terms-operator" class="%s">Operators</a> can mark links to their pages with a campaign tag. This is used, for example, to measure the success of online advertising campaigns.', 'b link dim dark-green', 'b link dim dark-green')}
+                  {__('A list of special referrers that directed you to pages of the <a href="#terms-offen-installation" class="%s">Offen Fair Web Analytics installation.</a> <a href="#terms-operator" class="%s">Operators</a> can mark links to their pages with a campaign tag. This is used, for example, to measure the success of online advertising campaigns.', 'b link dim dark-green', 'b link dim dark-green')}
                 </Paragraph>
               )
             }}
@@ -267,7 +267,7 @@ const URLTable = (props) => {
             explainer={(props) => {
               return (
                 <Paragraph class='mw7 ma0 ph1 pv2 ws-normal'>
-                  {__('A list of special referrers that directed you to pages of the <a href="#terms-offen-installation" class="%s">Offen installation.</a> <a href="#terms-operator" class="%s">Operators</a> can mark links to their pages with a source tag. This is used, for example, to measure the success of online advertising campaigns.', 'b link dim dark-green', 'b link dim dark-green')}
+                  {__('A list of special referrers that directed you to pages of the <a href="#terms-offen-installation" class="%s">Offen Fair Web Analytics installation.</a> <a href="#terms-operator" class="%s">Operators</a> can mark links to their pages with a source tag. This is used, for example, to measure the success of online advertising campaigns.', 'b link dim dark-green', 'b link dim dark-green')}
                 </Paragraph>
               )
             }}
@@ -299,7 +299,7 @@ const URLTable = (props) => {
             emptyFallback={currentFilterProp === 'landing' && { key: currentFilterValue, count: [0, 0] }}
             explainer={(props) => (
               <Paragraph class='mw7 ma0 ph1 pv2 ws-normal'>
-                {__('A list of pages of the <a href="#terms-offen-installation" class="%s">Offen installation</a> that you have opened first in all <a href="#terms-unique-session" class="%s">unique sessions.</a>', 'b link dim dark-green', 'b link dim dark-green')}
+                {__('A list of pages of the <a href="#terms-offen-installation" class="%s">Offen Fair Web Analytics installation</a> that you have opened first in all <a href="#terms-unique-session" class="%s">unique sessions.</a>', 'b link dim dark-green', 'b link dim dark-green')}
               </Paragraph>
             )}
             showAll={showAll === 3}
@@ -325,7 +325,7 @@ const URLTable = (props) => {
             explainer={(props) => {
               return (
                 <Paragraph class='mw7 ma0 ph1 pv2 ws-normal'>
-                  {__('A list of pages of the <a href="#terms-offen-installation" class="%s">Offen installation</a> that you have opened last in all <a href="#terms-unique-session" class="%s">unique sessions.</a> For this to be counted you must have visited at least two pages.', 'b link dim dark-green', 'b link dim dark-green')}
+                  {__('A list of pages of the <a href="#terms-offen-installation" class="%s">Offen Fair Web Analytics installation</a> that you have opened last in all <a href="#terms-unique-session" class="%s">unique sessions.</a> For this to be counted you must have visited at least two pages.', 'b link dim dark-green', 'b link dim dark-green')}
                 </Paragraph>
               )
             }}

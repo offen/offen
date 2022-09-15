@@ -66,7 +66,7 @@ const Metrics = (props) => {
   const explainerUniqueEntities = (
     <ExplainerContent {...propsUniqueEntities}>
       <Paragraph class='mw7 ma0 ph1 pv2'>
-        {__('The number of websites you have visited where the <a href="#terms-offen-installation" class="%s">Offen installation</a> is active. This value will be 1 in many cases.', 'b link dim dark-green')}
+        {__('The number of websites you have visited where the <a href="#terms-offen-installation" class="%s">Offen Fair Web Analytics installation</a> is active. This value will be 1 in many cases.', 'b link dim dark-green')}
       </Paragraph>
     </ExplainerContent>
   )
@@ -83,7 +83,7 @@ const Metrics = (props) => {
   const explainerUniqueSessions = (
     <ExplainerContent {...propsUniqueSessions}>
       <Paragraph class='mw7 ma0 ph1 pv2'>
-        {__('The number of <a href="#terms-unique-session" class="%s">unique sessions</a> you have created on pages where the <a href="#terms-offen-installation" class="%s">Offen installation</a> is active.', 'b link dim dark-green', 'b link dim dark-green')}
+        {__('The number of <a href="#terms-unique-session" class="%s">unique sessions</a> you have created on pages where the <a href="#terms-offen-installation" class="%s">Offen Fair Web Analytics installation</a> is active.', 'b link dim dark-green', 'b link dim dark-green')}
       </Paragraph>
     </ExplainerContent>
   )
@@ -101,7 +101,7 @@ const Metrics = (props) => {
   const explainerAveragePageDepth = (
     <ExplainerContent {...propsAveragePageDepth}>
       <Paragraph class='mw7 ma0 ph1 pv2'>
-        {__('Full form: Average page depth. The average number of pages you have visited during all <a href="#terms-unique-session" class="%s">unique sessions</a> on all websites where the <a href="#terms-offen-installation" class="%s">Offen installation</a> is active.', 'b link dim dark-green', 'b link dim dark-green')}
+        {__('Full form: Average page depth. The average number of pages you have visited during all <a href="#terms-unique-session" class="%s">unique sessions</a> on all websites where the <a href="#terms-offen-installation" class="%s">Offen Fair Web Analytics installation</a> is active.', 'b link dim dark-green', 'b link dim dark-green')}
       </Paragraph>
     </ExplainerContent>
   )
@@ -119,7 +119,7 @@ const Metrics = (props) => {
   const explainerBounceRate = (
     <ExplainerContent {...propsBounceRate}>
       <Paragraph class='mw7 ma0 ph1 pv2'>
-        {__('The percentage of <a href="#terms-unique-session" class="%s">unique sessions</a> where you only visited one page of the <a href="#terms-offen-installation" class="%s">Offen installation.</a> Therefore a website with only one page will always have a bounce rate of 100%.', 'b link dim dark-green', 'b link dim dark-green')}
+        {__('The percentage of <a href="#terms-unique-session" class="%s">unique sessions</a> where you only visited one page of the <a href="#terms-offen-installation" class="%s">Offen Fair Web Analytics installation.</a> Therefore a website with only one page will always have a bounce rate of 100%.', 'b link dim dark-green', 'b link dim dark-green')}
       </Paragraph>
     </ExplainerContent>
   )
@@ -165,7 +165,7 @@ const Metrics = (props) => {
   const explainerAveragePageload = (
     <ExplainerContent {...propsAveragePageload}>
       <Paragraph class='mw7 ma0 ph1 pv2'>
-        {__('Full form: Average page load time. The average time it took for all pages of the <a href="#terms-offen-installation" class="%s">Offen installation</a> you visited to become interactive.', 'b link dim dark-green')}
+        {__('Full form: Average page load time. The average time it took for all pages of the <a href="#terms-offen-installation" class="%s">Offen Fair Web Analytics installation</a> you visited to become interactive.', 'b link dim dark-green')}
       </Paragraph>
     </ExplainerContent>
   )

@@ -12,13 +12,13 @@ module.exports = (props) => {
     content = (
       <div class='w-100 w-90-ns mr3-ns'>
         <h3 class='f4 normal ma0 mb3'>
-          {__('Offen requires cookies to function properly.')}
+          {__('Offen Fair Web Analytics requires cookies to function properly.')}
         </h3>
         <p class='ma0 mb2'>
-          {__('Offen is a fair and open source analytics software. It is installed on the website that linked you here.')}
+          {__('Offen Fair Web Analytics is a fair and open source analytics software. It is installed on the website that linked you here.')}
         </p>
         <p class='ma0'>
-          {__('For Offen to work, your browser has to accept cookies. Please change your browsers settings and reload this page. Subsequently, you will be asked for consent to collect your usage data.')}
+          {__('For Offen Fair Web Analytics to work, your browser has to accept cookies. Please change your browsers settings and reload this page. Subsequently, you will be asked for consent to collect your usage data.')}
         </p>
       </div>
     )
@@ -50,7 +50,7 @@ module.exports = (props) => {
             {__('We only access usage data with your consent.')}
           </h2>
           <p class='ma0 mb2'>
-            {__('Offen is a fair and open source analytics software. Help the website that linked you here by allowing access to your usage data.')}
+            {__('Offen Fair Web Analytics is a fair and open source analytics software. Help the website that linked you here by allowing access to your usage data.')}
           </p>
           <p class='ma0 mb2 mb0-ns'>
             {__('Your data always remains yours. You can review and delete it at any time. Opt out again whenever you want.')}

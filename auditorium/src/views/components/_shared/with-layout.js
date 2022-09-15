@@ -33,7 +33,7 @@ const Layout = (props) => {
         <div class='mw8 center flex pb3 pt2 viewport-padding' id='headline'>
           <a href='/' class='dim link flex'>
             <img src={urify(path.join(__dirname, 'offen-icon-black.svg'))} alt='Offen logo' width='37' height='40' class='ma0 mt1 mr3' />
-            <h1 class='dib dark-gray f2 normal ma0 mt1'>{props.headline || __('Offen Auditorium')}</h1>
+            <h1 class='dib dark-gray f3 f2-ns normal ma0 margin-header'>{props.headline || __('Offen Fair Web Analytics')}</h1>
           </a>
         </div>
       </div>
@@ -54,17 +54,10 @@ const Layout = (props) => {
           <Paragraph
             class='ma0 mb0'
           >
-            {__('<a href="https://www.offen.dev/" class="%s" target="_blank" rel="noreferrer noopener">Offen</a>', 'b link dim mid-gray')}
+            {__('<a href="https://www.offen.dev/" class="%s" target="_blank" rel="noreferrer noopener">Offen Fair Web Analytics</a>', 'b link dim mid-gray')}
           </Paragraph>
         </div>
-        <div class='w-100 w-50-ns pr3-ns'>
-          <Paragraph
-            class='ma0 mb3'
-          >
-            {__('Fair web analytics')}
-          </Paragraph>
-        </div>
-        <div class='w-100 w-50-ns'>
+        <div class='w-100'>
           <Paragraph
             class='ma0 tl tr-ns'
           >

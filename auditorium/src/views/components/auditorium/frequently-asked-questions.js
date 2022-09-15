@@ -52,7 +52,7 @@ module.exports = (props) => {
             {__('How does it all work?')}
           </Paragraph>
           <Paragraph class='mt0 mb4'>
-            {__('After opening a website where a <a href="#terms-offen-installation" class="%s">Offen installation</a> is active, you can explicitly opt in to the data collection and thereby help to improve the services you use. Only then you will be assigned a user and a session <a href="#terms-id" class="%s">ID</a> using a <a href="#terms-cookies" class="%s">cookie.</a> Offen handles these <a href="#terms-id" class="%s">IDs</a> in an unrecognizable form, i.e. no server will ever store this identifier.', 'b link dim dark-green', 'b link dim dark-green', 'b link dim dark-green', 'b link dim dark-green')}
+            {__('After opening a website where a <a href="#terms-offen-installation" class="%s">Offen Fair Web Analytics installation</a> is active, you can explicitly opt in to the data collection and thereby help to improve the services you use. Only then you will be assigned a user and a session <a href="#terms-id" class="%s">ID</a> using a <a href="#terms-cookies" class="%s">cookie.</a> Offen Fair Web Analytics handles these <a href="#terms-id" class="%s">IDs</a> in an unrecognizable form, i.e. no server will ever store this identifier.', 'b link dim dark-green', 'b link dim dark-green', 'b link dim dark-green', 'b link dim dark-green')}
           </Paragraph>
         </div>
       </div>
