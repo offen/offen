@@ -35,9 +35,8 @@ msgid "Reset Password"
 msgstr "Restablecer contraseña"
 
 msgid "Passwords did not match. Please try again."
-msgstr ""
-"Las contraseñas no coinciden. Inténtelo de nuevo\n"
-"."
+msgstr "Las contraseñas no coinciden. Inténtelo de nuevo\n"
+
 
 msgid "You can now log in using the provided credentials."
 msgstr "Ahora puede iniciar sesión con las credenciales proporcionadas."
@@ -123,9 +122,9 @@ msgstr "Contraseña actual"
 msgid "Share all accounts"
 msgstr "Compartir todas las cuentas"
 
-#, fuzzy
+#, updated
 msgid "Share all your Offen Fair Web Analytics accounts via email invitation. When granted Admin privilges, invited users have full access to shared accounts and can create new accounts on this instance."
-msgstr "Comparta todas sus cuentas de Offen enviando una invitación por correo electrónico. Si concede privilegios de administrador a los usuarios invitados, tendrán acceso completo a las cuentas compartidas y podrán crear nuevas cuentas en esta instancia de Offen."
+msgstr "Comparta todas sus cuentas de Offen Fair Web Analytics enviando una invitación por correo electrónico. Si concede privilegios de administrador a los usuarios invitados, tendrán acceso completo a las cuentas compartidas y podrán crear nuevas cuentas en esta instancia."
 
 msgid "Open account"
 msgstr "Abrir cuenta"
@@ -154,9 +153,9 @@ msgstr "Registrarse en Offen"
 msgid "Accept invite"
 msgstr "Aceptar invitación"
 
-#, fuzzy
+#, updated
 msgid "Not the operator of this installation? Manage your data in the <a href=\"/auditorium/\" class=\"%s\" >User Auditorium.</a>"
-msgstr "¿No es el operador de esta instalación de Offen? Gestione sus datos en el <a href=\"/auditorium/\" class=\"%s\" >Auditorium del usuario.</a>"
+msgstr "¿No es el operador de esta instalación? Gestione sus datos en el <a href=\"/auditorium/\" class=\"%s\" >Auditorium del usuario.</a>"
 
 msgid "Could not log in using the given credentials. Try again."
 msgstr "No se ha podido iniciar la sesión con las credenciales proporcionadas. Inténtelo de nuevo."
@@ -170,9 +169,9 @@ msgstr "Iniciar sesión"
 msgid "Forgot password?"
 msgstr "¿Ha olvidado su contraseña?"
 
-#, fuzzy
+#, updated
 msgid "Are you the operator of this installation? Log in to your account."
-msgstr "¿Es usted el operador de esta instalación de Offen? Inicie sesión en su cuenta."
+msgstr "¿Es usted el operador de esta instalación? Inicie sesión en su cuenta."
 
 msgid "You have opted in."
 msgstr "Ha concedido su autorización."
@@ -231,21 +230,21 @@ msgstr "Sí, en concreto utilizamos las cookies para almacenar su decisión rela
 msgid "How does it all work?"
 msgstr "¿Cómo funciona todo esto?"
 
-#, fuzzy
+#, updated
 msgid "After opening a website where an Offen Fair Web Analytics installation is active, you can explicitly opt in to the data collection and thereby help to improve the services you use. Only then you will be assigned a user and a session ID using a cookie. Offen Fair Web Analytics handles these IDs in an unrecognizable form. <a href=\"https://en.wikipedia.org/wiki/HTTP_cookie\" class=\"%s\" target=\"_blank\" rel=\"noreferrer noopener\">Learn more about cookies here.</a>"
-msgstr "Después de abrir un sitio web en el que esté activa una instalación de Offen, puede otorgar su autorización explícita para la recopilación de datos y así ayudar a mejorar los servicios que utiliza. Solo entonces se le asignará un usuario y una ID de sesión mediante una cookie. Offen gestiona estas ID de forma irreconocible. <a href=\"https://en.wikipedia.org/wiki/HTTP_cookie\" class=\"%s\" target=\"_blank\" rel=\"noreferer noopener\">Obtenga más información sobre las cookies aquí.</a>"
+msgstr "Después de abrir un sitio web en el que esté activa una instalación de Offen Fair Web Analytics, puede otorgar su autorización explícita para la recopilación de datos y así ayudar a mejorar los servicios que utiliza. Solo entonces se le asignará un usuario y una ID de sesión mediante una cookie. Offen Fair Web Analytics gestiona estas ID de forma irreconocible. <a href=\"https://en.wikipedia.org/wiki/HTTP_cookie\" class=\"%s\" target=\"_blank\" rel=\"noreferrer noopener\">Obtenga más información sobre las cookies aquí.</a>"
 
-#, fuzzy
+#, updated
 msgid "Offen Fair Web Analytics requires cookies to function properly."
-msgstr "Offen requiere cookies para funcionar correctamente."
+msgstr "Offen Fair Web Analytics requiere cookies para funcionar correctamente."
 
-#, fuzzy
+#, updated
 msgid "Offen Fair Web Analytics is a fair and open source analytics software. It is installed on the website that linked you here."
-msgstr "Offen es un software de análisis justo y de código abierto. Está instalado en la página web que le ha dirigido aquí."
+msgstr "Offen Fair Web Analytics es un software de análisis justo y de código abierto. Está instalado en la página web que le ha dirigido aquí."
 
-#, fuzzy
+#, updated
 msgid "For Offen Fair Web Analytics to work, your browser has to accept cookies. Please change your browsers settings and reload this page. Subsequently, you will be asked for consent to collect your usage data."
-msgstr "Para que Offen funcione, su navegador debe aceptar cookies. Cambie la configuración de su navegador y vuelva a cargar esta página. Posteriormente, se le pedirá su consentimiento para recopilar sus datos de uso."
+msgstr "Para que Offen Fair Web Analytics funcione, su navegador debe aceptar cookies. Cambie la configuración de su navegador y vuelva a cargar esta página. Posteriormente, se le pedirá su consentimiento para recopilar sus datos de uso."
 
 msgid "Manage your usage data this website has collected."
 msgstr "Administre los datos de uso recopilados por este sitio."
@@ -256,9 +255,9 @@ msgstr "Abrir Auditorium"
 msgid "We only access usage data with your consent."
 msgstr "Solo accedemos a los datos de uso con su permiso."
 
-#, fuzzy
+#, updated
 msgid "Offen Fair Web Analytics is a fair and open source analytics software. Help the website that linked you here by allowing access to your usage data."
-msgstr "Offen es un software de análisis justo y de código abierto. Ayude al sitio web que le ha dirigido hasta aquí permitiendo el acceso a sus datos de uso."
+msgstr "Offen Fair Web Analytics es un software de análisis justo y de código abierto. Ayude al sitio web que le ha dirigido hasta aquí permitiendo el acceso a sus datos de uso."
 
 msgid "Your data always remains yours. You can review and delete it at any time. Opt out again whenever you want."
 msgstr "Sus datos siempre serán suyos. Puede revisarlos y eliminarlos en cualquier momento. Vuelva a retirar su autorización cuando lo desee."
@@ -310,16 +309,16 @@ msgstr "Un momento…"
 
 #. #-#-#-#-#  server.po  #-#-#-#-#
 #. ~ line 49 "public/static/index.go.html"
-#, fuzzy
+#, updated
 msgid "Offen Fair Web Analytics"
-msgstr "Fair web analytics"
+msgstr "Offen Fair Web Analytics"
 
 msgid "An error occurred: %s"
 msgstr "Ha ocurrido un error: %s"
 
-#, fuzzy
+#, updated
 msgid "<a href=\"https://www.offen.dev/\" class=\"%s\" target=\"_blank\" rel=\"noreferrer noopener\">Offen Fair Web Analytics</a>"
-msgstr "<a href=\"https://www.offen.dev/\" class=\"%s\" target=\"_blank\" rel=\"noreferrer noopener\">Offen</a>"
+msgstr "<a href=\"https://www.offen.dev/\" class=\"%s\" target=\"_blank\" rel=\"noreferrer noopener\">Offen Fair Web Analytics</a>"
 
 #. #-#-#-#-#  server.po  #-#-#-#-#
 #. ~ line 54 "public/static/index.go.html"
@@ -411,9 +410,9 @@ msgstr "usuarios"
 msgid "websites"
 msgstr "sitios web"
 
-#, fuzzy
+#, updated
 msgid "This panel displays the number of pages (bright green) and websites (dark green) you have visited where the <a href=\"#terms-offen-installation\" class=\"%s\">Offen Fair Web Analytics installation</a> is active. To measure this, a cookie is used to assign you a user and a session <a href=\"#terms-id\" class=\"%s\">ID.</a>"
-msgstr "Este panel muestra el número de páginas (verde claro) y sitios web (verde oscuro) que ha visitado en los que la <a href=\"#terms-offen-installation\" class=\"%s\">instalación de Offen</a> está activa. Para medir esto, se utiliza una cookie que le asigna un <a href=\"#terms-id\" class=\"%s\">usuario y una ID de sesión.</a>"
+msgstr "Este panel muestra el número de páginas (verde claro) y sitios web (verde oscuro) que ha visitado en los que la <a href=\"#terms-offen-installation\" class=\"%s\">instalación de Offen Fair Web Analytics</a> está activa. Para medir esto, se utiliza una cookie que le asigna un <a href=\"#terms-id\" class=\"%s\">usuario y una ID de sesión.</a>"
 
 msgid "Empty state"
 msgstr "Estado vacío"
@@ -430,27 +429,27 @@ msgstr "Auditorium"
 msgid "You are viewing the Auditorium right now. Only available after opt-in, it is the interface where you can review and delete your usage data or opt out entirely."
 msgstr "En este momento, está viendo el Auditorium. Solo está disponible después de haber otorgado su autorización. Es la interfaz en la que puede revisar y eliminar sus datos de uso o denegar su autorización por completo."
 
-#, fuzzy
+#, updated
 msgid "Offen Fair Web Analytics installation"
-msgstr "Instalación de Offen"
+msgstr "Instalación de Offen Fair Web Analytics"
 
-#, fuzzy
+#, updated
 msgid "One Offen Fair Web Analytics installation can include several websites. All metrics of all websites in this installation are displayed in the <a href=\"#terms-auditorium\" class=\"%s\">Auditorium.</a> Metrics generated on websites of other installations can only be viewed in the associated <a href=\"#terms-auditorium\" class=\"%s\">Auditorium.</a>"
-msgstr "Una instalación de Offen puede incluir varios sitios web. Todas las métricas de los sitios web de esa instalación se muestran en el <a href=\"#terms-auditorium\" class=\"%s\">Auditorium.</a> Las métricas generadas en los sitios web de otras instalaciones solo se pueden visualizar en el <a href=\"#terms-auditorium\" class=\"%s\">Auditorium asociado.</a>"
+msgstr "Una instalación de Offen Fair Web Analytics puede incluir varios sitios web. Todas las métricas de los sitios web de esa instalación se muestran en el <a href=\"#terms-auditorium\" class=\"%s\">Auditorium.</a> Las métricas generadas en los sitios web de otras instalaciones solo se pueden visualizar en el <a href=\"#terms-auditorium\" class=\"%s\">Auditorium asociado.</a>"
 
 msgid "Cookies"
 msgstr "Cookies"
 
-#, fuzzy
+#, updated
 msgid "When you visit a website where a <a href=\"#terms-offen-installation\" class=\"%s\">Offen Fair Web Analytics installation</a> is active, small amounts of data are stored on your computer. These data elements are known as cookies. <a href=\"https://en.wikipedia.org/wiki/HTTP_cookie\" class=\"%s\" target=\"_blank\" rel=\"noreferrer noopener\">Learn more.</a>"
-msgstr "Cuando visita un sitio web donde hay una <a href=\"#terms-offen-installation\" class=\"%s\">instalación de Offen</a> activa, se almacenan pequeñas cantidades de datos en su ordenador. Esos datos se conocen como cookies. <a href=\"https://en.wikipedia.org/wiki/HTTP_cookie\" class=\"%s\" target=\"_blank\" rel=\"noreferer noopener\">Obtenga más información.</a>"
+msgstr "Cuando visita un sitio web donde hay una <a href=\"#terms-offen-installation\" class=\"%s\">instalación de Offen Fair Web Analytics</a> activa, se almacenan pequeñas cantidades de datos en su ordenador. Esos datos se conocen como cookies. <a href=\"https://en.wikipedia.org/wiki/HTTP_cookie\" class=\"%s\" target=\"_blank\" rel=\"noreferrer noopener\">Obtenga más información.</a>"
 
 msgid "Operator"
 msgstr "Operador"
 
-#, fuzzy
+#, updated
 msgid "Operators are the owners of <a href=\"#terms-offen-installation\" class=\"%s\">Offen Fair Web Analytics installations.</a> Only after you opted in, your usage data of a website is collected. Operators then can view it for maximum 6 months."
-msgstr "Los operadores son los propietarios de las <a href=\"#terms-offen-installation\" class=\"%s\">instalaciones de Offen.</a> Solo se recopilan tus datos de uso de un sitio web si has otorgado tu autorización previamente. Los operadores pueden verlos durante un máximo de 6 meses."
+msgstr "Los operadores son los propietarios de las <a href=\"#terms-offen-installation\" class=\"%s\">instalaciones de Offen Fair Web Analytics.</a> Solo se recopilan tus datos de uso de un sitio web si has otorgado tu autorización previamente. Los operadores pueden verlos durante un máximo de 6 meses."
 
 msgid "Unique user"
 msgstr "Usuario único"
@@ -467,9 +466,9 @@ msgstr "Una sesión única consiste en un <a href=\"#terms-unique-user\" class=\
 msgid "ID"
 msgstr "ID"
 
-#, fuzzy
+#, updated
 msgid "Originally: UUID. Full form: Universally unique identifier. Offen uses UUID of version 4. These IDs are generated randomly, unique and without using any personal data. On the individual Offen server, they are handled in an unrecognizable form. <a href=\"https://en.wikipedia.org/wiki/Universally_unique_identifier\" class=\"%s\" target=\"_blank\" rel=\"noreferrer noopener\">Learn more.</a>"
-msgstr "Originalmente: UUID. Forma completa: identificador único universal. Offen usa UUID de versión 4. Estas ID se generan de forma aleatoria, única y sin utilizar ningún dato personal. En el servidor individual de Offen, se manejan de forma irreconocible. <a href=\"https://en.wikipedia.org/wiki/Universally_unique_identifier\" class=\"%s\" target=\"_blank\" rel=\"noreferer noopener\">Obtenga más información.</a>"
+msgstr "Originalmente: UUID. Forma completa: identificador único universal. Offen usa UUID de versión 4. Estas ID se generan de forma aleatoria, única y sin utilizar ningún dato personal. En el servidor individual de Offen, se manejan de forma irreconocible. <a href=\"https://en.wikipedia.org/wiki/Universally_unique_identifier\" class=\"%s\" target=\"_blank\" rel=\"noreferrer noopener\">Obtenga más información.</a>"
 
 msgid "Yesterday"
 msgstr "Ayer"
@@ -627,9 +626,9 @@ msgstr "Consola de administrador"
 msgid "Toggle display of admin console navigation"
 msgstr "Alternar la visualización de la navegación de la consola de administrador"
 
-#, fuzzy
+#, updated
 msgid "Share all accounts, create a new one, change your email address and password, log out from Offen Fair Web Analytics"
-msgstr "Compartir todas las cuentas, crear una nueva, cambiar su dirección de correo electrónico y contraseña, cerrar sesión en Offen"
+msgstr "Compartir todas las cuentas, crear una nueva, cambiar su dirección de correo electrónico y contraseña, cerrar sesión en Offen Fair Web Analytics"
 
 msgid "Open admin console"
 msgstr "Abrir consola de administrador"
@@ -649,9 +648,9 @@ msgstr "Tus datos de uso están cifrados de extremo a extremo. Se eliminarán au
 msgid "Yes, in particular cookies are used to store your decision about granting access to your usage data. If you opt in, we also use <a href=\"#terms-cookies\" class=\"%s\">cookies</a> to store a user and a session <a href=\"#terms-id\" class=\"%s\">ID</a> for you."
 msgstr "Sí, en concreto utilizamos las cookies para almacenar su decisión relativa a otorgar el acceso a sus datos de uso. Si concede su autorización, también usamos <a href=\"#terms-cookies\" class=\"%s\">cookies</a> para almacenar un usuario y una <a href=\"#terms-id\" class=\"%s\">ID</a> de sesión para usted."
 
-#, fuzzy
+#, updated
 msgid "After opening a website where a <a href=\"#terms-offen-installation\" class=\"%s\">Offen Fair Web Analytics installation</a> is active, you can explicitly opt in to the data collection and thereby help to improve the services you use. Only then you will be assigned a user and a session <a href=\"#terms-id\" class=\"%s\">ID</a> using a <a href=\"#terms-cookies\" class=\"%s\">cookie.</a> Offen Fair Web Analytics handles these <a href=\"#terms-id\" class=\"%s\">IDs</a> in an unrecognizable form, i.e. no server will ever store this identifier."
-msgstr "Después de abrir un sitio web en el que está activa una <a href=\"#terms-offen-installation\" class=\"%s\">instalación de Offen</a>, puede conceder su autorización explícita para la recopilación de datos y, por lo tanto, ayudar a mejorar los servicios que utiliza. Solo entonces se le asignará un usuario y una <a href=\"#terms-id\" class=\"%s\">ID</a> de sesión, mediante una <a href=\"#terms-cookies\" class=\"%s\">cookie.</a> Offen gestiona estas <a href=\"#terms-id\" class=\"%s\">ID</a> de una forma irreconocible, es decir, ningún servidor almacenará este identificador en ningún momento."
+msgstr "Después de abrir un sitio web en el que está activa una <a href=\"#terms-offen-installation\" class=\"%s\">instalación de Offen Fair Web Analytics</a>, puede conceder su autorización explícita para la recopilación de datos y, por lo tanto, ayudar a mejorar los servicios que utiliza. Solo entonces se le asignará un usuario y una <a href=\"#terms-id\" class=\"%s\">ID</a> de sesión, mediante una <a href=\"#terms-cookies\" class=\"%s\">cookie.</a> Offen Fair Web Analytics gestiona estas <a href=\"#terms-id\" class=\"%s\">ID</a> de una forma irreconocible, es decir, ningún servidor almacenará este identificador en ningún momento."
 
 msgid "Add our browser extension to have instant access to your usage data from other Offen Fair Web Analytics installations you have visited."
 msgstr "Añada nuestra extensión de navegador para tener acceso instantáneo a sus datos de uso de otras instalaciones de Offen Fair Web Analytics que haya visitado."
@@ -725,13 +724,13 @@ msgstr "Código de inserción"
 msgid "Toggle display of embed code"
 msgstr "Alternar la visualización del código de inserción"
 
-#, fuzzy
+#, updated
 msgid "To use Offen Fair Web Analytics with the account <em class=\"%s\">%s</em> on your website, embed the following script on each page you want to appear in your statistics."
-msgstr "Para utilizar Offen con la cuenta <em class=\"%s\">%s</em> en su sitio web, inserte el siguiente script en cada página que desee que aparezca en sus estadísticas."
+msgstr "Para utilizar Offen Fair Web Analytics con la cuenta <em class=\"%s\">%s</em> en su sitio web, inserte el siguiente script en cada página que desee que aparezca en sus estadísticas."
 
-#, fuzzy
+#, updated
 msgid "In case you are serving multiple domains from your instance, please double check that the domain in this snippet matches the target account."
-msgstr "En caso de que esté sirviendo varios dominios desde su instancia de Offen, verifique que el dominio en este fragmento coincida con la cuenta de destino."
+msgstr "En caso de que esté sirviendo varios dominios desde su instancia, verifique que el dominio en este fragmento coincida con la cuenta de destino."
 
 msgid "Copy code"
 msgstr "Copiar código"
@@ -739,9 +738,9 @@ msgstr "Copiar código"
 msgid "Share this account"
 msgstr "Compartir esta cuenta"
 
-#, fuzzy
+#, updated
 msgid "Share your Offen Fair Web Analytics account <em class=\"%s\">%s</em> via email invitation. If granted admin privileges, invited users have full access to a shared account and can also create further accounts for this instance."
-msgstr "Comparta su cuenta de Offen <em class=\"%s\">%s</em> enviando una invitación por correo electrónico. Si concede privilegios de administrador a los usuarios invitados, tendrán acceso completo a las cuentas compartidas y podrán crear nuevas cuentas en esta instancia de Offen."
+msgstr "Comparta su cuenta de Offen Fair Web Analytics <em class=\"%s\">%s</em> enviando una invitación por correo electrónico. Si concede privilegios de administrador a los usuarios invitados, tendrán acceso completo a las cuentas compartidas y podrán crear nuevas cuentas en esta instancia."
 
 msgid "Remove this filter."
 msgstr "Eliminar este filtro."
@@ -752,9 +751,9 @@ msgstr "Filtrar la vista actual por este elemento."
 msgid "Top pages"
 msgstr "Páginas principales"
 
-#, fuzzy
+#, updated
 msgid "This panel displays several page lists that count the total number of your page views of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen Fair Web Analytics installation</a> per URL in different categories."
-msgstr "Este panel muestra varias listas de páginas que cuentan el número total de visitas a la página de la <a href=\"#terms-offen-installation\" class=\"%s\">instalación de Offen</a> por URL en diferentes categorías."
+msgstr "Este panel muestra varias listas de páginas que cuentan el número total de visitas a la página de la <a href=\"#terms-offen-installation\" class=\"%s\">instalación de Offen Fair Web Analytics</a> por URL en diferentes categorías."
 
 msgid "URL"
 msgstr "URL"
@@ -786,9 +785,9 @@ msgstr "Referentes"
 msgid "Host"
 msgstr "Host"
 
-#, fuzzy
+#, updated
 msgid "A list of referrers that directed you to pages of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen Fair Web Analytics installation.</a> Popular referrers like, for example, Google or Twitter display their proper name, others their domain."
-msgstr "Una lista de referentes que lo dirigieron a las páginas de la <a href=\"#terms-offen-installation\" class=\"%s\">instalación de Offen.</a> Los referentes populares como Google o Twitter muestran su nombre propio, otros, su dominio."
+msgstr "Una lista de referentes que lo dirigieron a las páginas de la <a href=\"#terms-offen-installation\" class=\"%s\">instalación de Offen Fair Web Analytics.</a> Los referentes populares como Google o Twitter muestran su nombre propio, otros, su dominio."
 
 msgid "Campaigns"
 msgstr "Campañas"
@@ -796,9 +795,9 @@ msgstr "Campañas"
 msgid "Campaign"
 msgstr "Campaña"
 
-#, fuzzy
+#, updated
 msgid "A list of special referrers that directed you to pages of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen Fair Web Analytics installation.</a> <a href=\"#terms-operator\" class=\"%s\">Operators</a> can mark links to their pages with a campaign tag. This is used, for example, to measure the success of online advertising campaigns."
-msgstr "Una lista de referentes especiales que lo dirigieron a páginas de la <a href=\"#terms-offen-installation\" class=\"%s\">instalación de Offen.</a> <a href=\"#terms-operator\" class=\"%s\">Los operadores</a> pueden marcar enlaces a sus páginas con una etiqueta de campaña. Esto se utiliza, por ejemplo, para medir el éxito de las campañas publicitarias online."
+msgstr "Una lista de referentes especiales que lo dirigieron a páginas de la <a href=\"#terms-offen-installation\" class=\"%s\">instalación de Offen Fair Web Analytics.</a> <a href=\"#terms-operator\" class=\"%s\">Los operadores</a> pueden marcar enlaces a sus páginas con una etiqueta de campaña. Esto se utiliza, por ejemplo, para medir el éxito de las campañas publicitarias online."
 
 msgid "Sources"
 msgstr "Fuentes"
@@ -806,9 +805,9 @@ msgstr "Fuentes"
 msgid "Source"
 msgstr "Fuente"
 
-#, fuzzy
+#, updated
 msgid "A list of special referrers that directed you to pages of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen Fair Web Analytics installation.</a> <a href=\"#terms-operator\" class=\"%s\">Operators</a> can mark links to their pages with a source tag. This is used, for example, to measure the success of online advertising campaigns."
-msgstr "Una lista de referentes especiales que lo dirigieron a páginas de la <a href=\"#terms-offen-installation\" class=\"%s\">instalación de Offen.</a> <a href=\"#terms-operator\" class=\"%s\">Los operadores</a> pueden marcar enlaces a sus páginas con una etiqueta de fuente. Esto se utiliza, por ejemplo, para medir el éxito de las campañas publicitarias online."
+msgstr "Una lista de referentes especiales que lo dirigieron a páginas de la <a href=\"#terms-offen-installation\" class=\"%s\">instalación de Offen Fair Web Analytics.</a> <a href=\"#terms-operator\" class=\"%s\">Los operadores</a> pueden marcar enlaces a sus páginas con una etiqueta de fuente. Esto se utiliza, por ejemplo, para medir el éxito de las campañas publicitarias online."
 
 msgid "Landing pages"
 msgstr "Páginas de inicio"
@@ -816,9 +815,9 @@ msgstr "Páginas de inicio"
 msgid "Landings"
 msgstr "Inicios"
 
-#, fuzzy
+#, updated
 msgid "A list of pages of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen Fair Web Analytics installation</a> that you have opened first in all <a href=\"#terms-unique-session\" class=\"%s\">unique sessions.</a>"
-msgstr "Una lista de las páginas de la <a href=\"#terms-offen-installation\" class=\"%s\">instalación de Offen</a> que ha abierto primero en todas las <a href=\"#terms-unique-session\" class=\"%s\">sesiones únicas.</a>"
+msgstr "Una lista de las páginas de la <a href=\"#terms-offen-installation\" class=\"%s\">instalación de Offen Fair Web Analytics</a> que ha abierto primero en todas las <a href=\"#terms-unique-session\" class=\"%s\">sesiones únicas.</a>"
 
 msgid "Exit pages"
 msgstr "Páginas de salida"
@@ -826,16 +825,16 @@ msgstr "Páginas de salida"
 msgid "Exits"
 msgstr "Salidas"
 
-#, fuzzy
+#, updated
 msgid "A list of pages of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen Fair Web Analytics installation</a> that you have opened last in all <a href=\"#terms-unique-session\" class=\"%s\">unique sessions.</a> For this to be counted you must have visited at least two pages."
-msgstr "Una lista de las páginas de la <a href=\"#terms-offen-installation\" class=\"%s\">instalación de Offen</a> que ha abierto por última vez en todas las <a href=\"#terms-unique-session\" class=\"%s\">sesiones únicas.</a> Para que esto se contabilice, debe haber visitado al menos dos páginas."
+msgstr "Una lista de las páginas de la <a href=\"#terms-offen-installation\" class=\"%s\">instalación de Offen Fair Web Analytics</a> que ha abierto por última vez en todas las <a href=\"#terms-unique-session\" class=\"%s\">sesiones únicas.</a> Para que esto se contabilice, debe haber visitado al menos dos páginas."
 
 msgid "Weekly retention"
 msgstr "Retención semanal"
 
-#, fuzzy
+#, updated
 msgid "This panel displays your recurring visits of pages of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen Fair Web Analytics installation</a> during the last 4 weeks. For each of the previous weeks, the percentage is calculated from the value of the current week."
-msgstr "Este panel muestra sus visitas recurrentes a páginas de la <a href=\"#terms-offen-installation\" class=\"%s\">instalación de Offen</a> durante las últimas 4 semanas. Para cada una de las semanas anteriores, el porcentaje se calcula a partir del valor de la semana actual."
+msgstr "Este panel muestra sus visitas recurrentes a páginas de la <a href=\"#terms-offen-installation\" class=\"%s\">instalación de Offen Fair Web Analytics</a> durante las últimas 4 semanas. Para cada una de las semanas anteriores, el porcentaje se calcula a partir del valor de la semana actual."
 
 msgid "You are viewing data as operator with account <em class=\"%s\">%s</em>."
 msgstr "Está visualizando datos como operador con cuenta <em class=\"%s\">%s</em>."
@@ -855,30 +854,30 @@ msgstr "Este panel muestra de un vistazo las métricas más importantes."
 msgid "Unique %s"
 msgstr "%s única"
 
-#, fuzzy
+#, updated
 msgid "The number of websites you have visited where the <a href=\"#terms-offen-installation\" class=\"%s\">Offen Fair Web Analytics installation</a> is active. This value will be 1 in many cases."
-msgstr "El número de sitios web que ha visitado en los que la <a href=\"#terms-offen-installation\" class=\"%s\">instalación de Offen</a> está activa. En muchos casos, este valor será 1."
+msgstr "El número de sitios web que ha visitado en los que la <a href=\"#terms-offen-installation\" class=\"%s\">instalación de Offen Fair Web Analytics</a> está activa. En muchos casos, este valor será 1."
 
 msgid "Unique sessions"
 msgstr "Sesiones únicas"
 
-#, fuzzy
+#, updated
 msgid "The number of <a href=\"#terms-unique-session\" class=\"%s\">unique sessions</a> you have created on pages where the <a href=\"#terms-offen-installation\" class=\"%s\">Offen Fair Web Analytics installation</a> is active."
-msgstr "El número de <a href=\"#terms-unique-session\" class=\"%s\">sesiones únicas</a> que ha creado en páginas en las que la <a href=\"#terms-offen-installation\" class=\"%s\">instalación de Offen</a> está activa."
+msgstr "El número de <a href=\"#terms-unique-session\" class=\"%s\">sesiones únicas</a> que ha creado en páginas en las que la <a href=\"#terms-offen-installation\" class=\"%s\">instalación de Offen Fair Web Analytics</a> está activa."
 
 msgid "Avg. page depth"
 msgstr "Prof. med de pág."
 
-#, fuzzy
+#, updated
 msgid "Full form: Average page depth. The average number of pages you have visited during all <a href=\"#terms-unique-session\" class=\"%s\">unique sessions</a> on all websites where the <a href=\"#terms-offen-installation\" class=\"%s\">Offen Fair Web Analytics installation</a> is active."
-msgstr "Forma completa: profundidad media de la página. La cantidad media de páginas que ha visitado durante todas las <a href=\"#terms-unique-session\" class=\"%s\">sesiones únicas</a> en todos los sitios web en los que la <a href=\"#terms-offen-installation\" class=\"%s\">instalación de Offen</a> está activa."
+msgstr "Forma completa: profundidad media de la página. La cantidad media de páginas que ha visitado durante todas las <a href=\"#terms-unique-session\" class=\"%s\">sesiones únicas</a> en todos los sitios web en los que la <a href=\"#terms-offen-installation\" class=\"%s\">instalación de Offen Fair Web Analytics</a> está activa."
 
 msgid "Bounce rate"
 msgstr "Tasa de rebote"
 
-#, fuzzy
+#, updated
 msgid "The percentage of <a href=\"#terms-unique-session\" class=\"%s\">unique sessions</a> where you only visited one page of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen Fair Web Analytics installation.</a> Therefore a website with only one page will always have a bounce rate of 100%."
-msgstr "El porcentaje de <a href=\"#terms-unique-session\" class=\"%s\">sesiones únicas</a> en las que solo visitó una página de la <a href=\"#terms-offen-installation\" class=\"%s\">instalación de Offen.</a> Por lo tanto, un sitio web con una sola página siempre tendrá una tasa de rebote del 100 %."
+msgstr "El porcentaje de <a href=\"#terms-unique-session\" class=\"%s\">sesiones únicas</a> en las que solo visitó una página de la <a href=\"#terms-offen-installation\" class=\"%s\">instalación de Offen Fair Web Analytics.</a> Por lo tanto, un sitio web con una sola página siempre tendrá una tasa de rebote del 100 %."
 
 msgid "Returning users"
 msgstr "Usuarios recurrentes"
@@ -895,9 +894,9 @@ msgstr "Muestra si se considera que está utilizando un dispositivo móvil. Se r
 msgid "Avg. page load time"
 msgstr "Tpo medio carga pág."
 
-#, fuzzy
+#, updated
 msgid "Full form: Average page load time. The average time it took for all pages of the <a href=\"#terms-offen-installation\" class=\"%s\">Offen Fair Web Analytics installation</a> you visited to become interactive."
-msgstr "Forma completa: tiempo medio para cargar página. El tiempo medio que tardaron todas las páginas de la <a href=\"#terms-offen-installation\" class=\"%s\">instalación de Offen</a> que visitó para ser interactivas."
+msgstr "Forma completa: tiempo medio para cargar página. El tiempo medio que tardaron todas las páginas de la <a href=\"#terms-offen-installation\" class=\"%s\">instalación de Offen Fair Web Analytics</a> que visitó para ser interactivas."
 
 msgid "Fetching and decrypting the latest data"
 msgstr "Obteniendo y descifrando los datos más recientes"
@@ -1012,24 +1011,24 @@ msgid "It seems like your browser has JavaScript disabled."
 msgstr "Parece que su navegador tiene JavaScript desactivado."
 
 #. ~ line 36 "public/static/index.go.html"
-#, fuzzy
+#, updated
 msgid "Offen Fair Web Analytics requires JavaScript to function properly."
-msgstr "Offen requiere JavaScript para funcionar correctamente."
+msgstr "Offen Fair Web Analytics requiere JavaScript para funcionar correctamente."
 
 #. ~ line 39 "public/static/index.go.html"
-#, fuzzy
+#, updated
 msgid "Offen Fair Web Analytics is installed on the website that linked you here."
-msgstr "Offen es un software de análisis justo y de código abierto. Está instalado en la página web que le ha dirigido aquí."
+msgstr "Offen Fair Web Analytics es un software de análisis justo y de código abierto. Está instalado en la página web que le ha dirigido aquí."
 
 #. ~ line 42 "public/static/index.go.html"
-#, fuzzy
+#, updated
 msgid "For Offen Fair Web Analytics to work, your browser has to allow JavaScript and accept cookies. Please change your browser settings and reload this page. Subsequently, Offen Fair Web Analytics will ask for your consent before collecting any usage data."
-msgstr "Para que Offen funcione, su navegador debe permitir el funcionamiento de JavaScript y aceptar cookies. Cambie la configuración de su navegador y vuelva a cargar esta página. Posteriormente, Offen le solicitará su consentimiento antes de recopilar cualquier dato de uso."
+msgstr "Para que Offen Fair Web Analytics funcione, su navegador debe permitir el funcionamiento de JavaScript y aceptar cookies. Cambie la configuración de su navegador y vuelva a cargar esta página. Posteriormente, Offen Fair Web Analytics le solicitará su consentimiento antes de recopilar cualquier dato de uso."
 
 #. ~ line 162 "public/static/index.go.html"
-#, fuzzy
+#, updated
 msgid "Offen Fair Web Analytics is an open alternative to common web analytics tools. Operators gain insights while users have full access to their data. Lightweight, self hosted and free."
-msgstr "Offen es una alternativa abierta a las herramientas de análisis web habituales. Los operadores obtienen información y los usuarios tienen un acceso total a sus datos. Ligero, con host ropio y gratuito."
+msgstr "Offen Fair Web Analytics es una alternativa abierta a las herramientas de análisis web habituales. Los operadores obtienen información y los usuarios tienen un acceso total a sus datos. Ligero, con host ropio y gratuito."
 
 msgid "This page is using Offen to collect usage statistics."
 msgstr "Esta página utiliza Offen para recopilar estadísticas de uso."
@@ -1055,8 +1054,8 @@ msgstr "Obtenga más información sobre Offen en \"%s\""
 #~ msgid "Offen Auditorium"
 #~ msgstr "Offen Auditorium"
 
-#~ msgid "Found an issue, need help or want to add something?<br><a href=\"https://twitter.com/hioffen\" class=\"%s\" target=\"_blank\" rel=\"noreferer noopener\">Tweet,</a> <a href=\"mailto:hioffen@posteo.de\" class=\"%s\" target=\"_blank\">email</a> or file an <a href=\"https://github.com/offen/offen\" class=\"%s\" target=\"_blank\" rel=\"noreferer noopener\">issue.</a>"
-#~ msgstr "¿Encontró un problema, necesita ayuda o desea añadir algo?<br><a href=\"https://twitter.com/hioffen\" class=\"%s\" target=\"_blank\" rel=\"noreferer noopener\">Tweet,</a> <a href=\"mailto:hioffen@posteo.de\" class=\"%s\" target=\"_blank\">email</a> o <a href=\"https://github.com/offen/offen\" class=\"%s\" target=\"_blank\" rel=\"noreferer noopener\">notificar.</a>"
+#~ msgid "Found an issue, need help or want to add something?<br><a href=\"https://twitter.com/hioffen\" class=\"%s\" target=\"_blank\" rel=\"noreferrer noopener\">Tweet,</a> <a href=\"mailto:hioffen@posteo.de\" class=\"%s\" target=\"_blank\">email</a> or file an <a href=\"https://github.com/offen/offen\" class=\"%s\" target=\"_blank\" rel=\"noreferrer noopener\">issue.</a>"
+#~ msgstr "¿Encontró un problema, necesita ayuda o desea añadir algo?<br><a href=\"https://twitter.com/hioffen\" class=\"%s\" target=\"_blank\" rel=\"noreferrer noopener\">Tweet,</a> <a href=\"mailto:hioffen@posteo.de\" class=\"%s\" target=\"_blank\">email</a> o <a href=\"https://github.com/offen/offen\" class=\"%s\" target=\"_blank\" rel=\"noreferrer noopener\">notificar.</a>"
 
 #~ msgid "Offen"
 #~ msgstr "Offen"
