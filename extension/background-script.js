@@ -37,6 +37,57 @@ chrome.runtime.onMessage.addListener(function (message, sender, respond) {
       respond({ payload: tabs[message.payload] || null })
       return false
     }
+    case 'GET_CURRENT_CHECKSUM': {
+      const url = new window.URL(message.payload)
+      url.pathname = '/script.js'
+      window.fetch(url)
+        .then((res) => {
+          return res.text()
+        })
+        .then((script) => {
+          return window.crypto.subtle.digest('SHA-256', new TextEncoder().encode(script))
+        })
+        .then((hash) => {
+          return [...new Uint8Array(hash)]
+            .map(x => x.toString(16).padStart(2, '0')).join('')
+        })
+        .then(
+          (result) => respond({ payload: result }),
+          (err) => respond({ error: err })
+        )
+      return true
+    }
+    case 'GET_CURRENT_VERSION': {
+      const url = new window.URL(message.payload)
+      url.pathname = '/versionz'
+      window.fetch(url)
+        .then((res) => {
+          return res.json()
+        })
+        .then((res) => {
+          return res.revision
+        })
+        .then(
+          (result) => respond({ payload: result }),
+          (err) => respond({ error: err })
+        )
+      return true
+    }
+    case 'GET_KNOWN_CHECKSUMS': {
+      window.fetch(chrome.runtime.getURL('checksums.txt'))
+        .then(r => r.text())
+        .then(file => {
+          return file.split('\n')
+            .map(line => line.trim())
+            .filter(Boolean)
+            .filter(l => l.indexOf('#') !== 0)
+        })
+        .then(
+          (result) => respond({ payload: result }),
+          (err) => respond({ error: err })
+        )
+      return true
+    }
     default:
       throw new Error(
         `Background script received unknown message type "${message.type}".`
