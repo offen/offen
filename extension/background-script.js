@@ -81,6 +81,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, respond) {
             .map(line => line.trim())
             .filter(Boolean)
             .filter(l => l.indexOf('#') !== 0)
+            .filter((el, index, list) => list.indexOf(el) === index)
         })
         .then(
           (result) => respond({ payload: result }),

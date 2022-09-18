@@ -65,11 +65,11 @@ function checkScriptIntegrity (urlObj) {
   }
 
   function fetchCurrentChecksum () {
-    return requestFromBackgroundScript('GET_CURRENT_CHECKSUM', urlObj)
+    return requestFromBackgroundScript('GET_CURRENT_CHECKSUM', urlObj.toString())
   }
 
   function fetchCurrentVersion () {
-    return requestFromBackgroundScript('GET_CURRENT_VERSION', urlObj)
+    return requestFromBackgroundScript('GET_CURRENT_VERSION', urlObj.toString())
   }
 
   return Promise.all([fetchCurrentChecksum(), fetchKnownChecksums()])
