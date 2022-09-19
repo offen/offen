@@ -15,7 +15,8 @@
     "tabs"
   ],
   "web_accessible_resources": [
-    "page-script.js"
+    "page-script.js",
+    "checksums.txt"
   ],
   "browser_action": {
     "default_icon": "icons/off.png",
