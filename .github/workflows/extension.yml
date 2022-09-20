@@ -28,6 +28,7 @@ jobs:
           token: ${{ secrets.PERSONAL_TOKEN }}
           commit-message: Update extension
           committer: Offen Bot <hioffen@posteo.de>
+          base: ${{ github.head_ref }}
           author: ${{ github.actor }} <hioffen@posteo.de>
           branch: update-extension
           title: Update Extension

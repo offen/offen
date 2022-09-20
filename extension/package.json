@@ -9,7 +9,7 @@
   },
   "scripts": {
     "start": "web-ext run",
-    "build": "web-ext build && web-ext sign",
+    "build": "web-ext build",
     "test": "web-ext lint && web-ext build"
   },
   "webExt": {
