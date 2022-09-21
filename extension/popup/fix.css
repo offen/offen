@@ -5,4 +5,5 @@
 
 .popup-mw {
   max-width: 24rem;
+  width: max-content;
 }
