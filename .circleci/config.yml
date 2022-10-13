@@ -397,7 +397,7 @@ commands:
           command: sudo npm i -g npm@6
 
 orbs:
-  docker: circleci/docker@1.0.1
+  docker: circleci/docker@2.1.4
   browser-tools: circleci/browser-tools@1.1.0
 
 x-docker-pull-creds: &docker-pull-creds
