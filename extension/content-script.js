@@ -75,7 +75,7 @@ function checkAuditoriumIntegrity (urlObj) {
   ])
     .then(([checksum, checksums]) => {
       const auditoriumChecksums = Object.values(checksums)
-        .map(v => v.auditorisum)
+        .map(v => v.auditorium || [])
         .reduce((acc, list) => {
           return [...acc, ...list]
         }, [])
