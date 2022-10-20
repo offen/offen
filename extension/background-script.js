@@ -37,13 +37,28 @@ chrome.runtime.onMessage.addListener(function (message, sender, respond) {
       respond({ payload: tabs[message.payload] || null })
       return false
     }
-    case 'VERIFY_AUDITORIUM': {
-      setTimeout(() => {
-        respond({ payload: true })
-      }, 50)
+    case 'GET_AUDITORIUM_CHECKSUM': {
+      window.fetch(message.payload)
+        .then(r => r.text())
+        .then(htmlString => {
+          return Promise.all([
+            htmlString,
+            window.crypto.subtle.digest('SHA-256', new TextEncoder().encode(htmlString))
+              .then((hash) => {
+                return [...new Uint8Array(hash)]
+                  .map(x => x.toString(16).padStart(2, '0')).join('')
+              })
+          ])
+        })
+        .then(([html, checksum]) => {
+          respond({ payload: checksum })
+        })
+        .catch((err) => {
+          respond({ error: err })
+        })
       return true
     }
-    case 'GET_CURRENT_CHECKSUM': {
+    case 'GET_SCRIPT_CHECKSUM': {
       const url = new window.URL(message.payload)
       url.pathname = '/script.js'
       window.fetch(url)
@@ -80,15 +95,8 @@ chrome.runtime.onMessage.addListener(function (message, sender, respond) {
       return true
     }
     case 'GET_KNOWN_CHECKSUMS': {
-      window.fetch(chrome.runtime.getURL('checksums.txt'))
-        .then(r => r.text())
-        .then(file => {
-          return file.split('\n')
-            .map(line => line.trim())
-            .filter(Boolean)
-            .filter(l => l.indexOf('#') !== 0)
-            .filter((el, index, list) => list.indexOf(el) === index)
-        })
+      window.fetch(chrome.runtime.getURL('checksums.json'))
+        .then(r => r.json())
         .then(
           (result) => respond({ payload: result }),
           (err) => respond({ error: err })

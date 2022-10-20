@@ -17,15 +17,20 @@
   document.addEventListener('Offen_queryExtension', handleQueryExtension)
 })()
 
-function handleQueryExtension () {
-  requestFromBackgroundScript('VERIFY_AUDITORIUM')
+function handleQueryExtension (evt) {
+  const url = new window.URL(evt.detail.url)
+  checkAuditoriumIntegrity(url)
     .then((ok) => {
-      if (ok) {
-        return requestFromBackgroundScript('QUERY')
+      if (!ok) {
+        console.log(`Could not verify installation at "${evt.detail.url}", skipping`)
+        return null
       }
-      return null
+      return requestFromBackgroundScript('QUERY')
     })
     .then((result) => {
+      if (!result) {
+        return
+      }
       window.postMessage({
         direction: 'from-content-script',
         message: result
@@ -63,28 +68,51 @@ function handleConnectExtension (evt) {
     })
 }
 
-function checkScriptIntegrity (urlObj) {
-  function fetchKnownChecksums () {
-    return requestFromBackgroundScript('GET_KNOWN_CHECKSUMS', null)
-  }
-
-  function fetchCurrentChecksum () {
-    return requestFromBackgroundScript('GET_CURRENT_CHECKSUM', urlObj.toString())
-  }
-
-  function fetchCurrentVersion () {
-    return requestFromBackgroundScript('GET_CURRENT_VERSION', urlObj.toString())
-  }
-
-  return Promise.all([fetchCurrentChecksum(), fetchKnownChecksums()])
+function checkAuditoriumIntegrity (urlObj) {
+  return Promise.all([
+    requestFromBackgroundScript('GET_AUDITORIUM_CHECKSUM', urlObj.toString()),
+    requestFromBackgroundScript('GET_KNOWN_CHECKSUMS', null)
+  ])
     .then(([checksum, checksums]) => {
-      return checksums.indexOf(checksum) >= 0
+      const auditoriumChecksums = Object.values(checksums)
+        .map(v => v.auditorisum)
+        .reduce((acc, list) => {
+          return [...acc, ...list]
+        }, [])
+        .filter((value, index, list) => {
+          return list.indexOf(value) === index
+        })
+      return auditoriumChecksums.indexOf(checksum) >= 0
     })
     .then((ok) => {
       if (!ok) {
         return null
       }
-      return fetchCurrentVersion()
+      return requestFromBackgroundScript('GET_CURRENT_VERSION', urlObj.toString())
+    })
+}
+
+function checkScriptIntegrity (urlObj) {
+  return Promise.all([
+    requestFromBackgroundScript('GET_SCRIPT_CHECKSUM', urlObj.toString()),
+    requestFromBackgroundScript('GET_KNOWN_CHECKSUMS', null)
+  ])
+    .then(([checksum, checksums]) => {
+      const scriptChecksums = Object.values(checksums)
+        .map(v => v.script)
+        .reduce((acc, list) => {
+          return [...acc, ...list]
+        }, [])
+        .filter((value, index, list) => {
+          return list.indexOf(value) === index
+        })
+      return scriptChecksums.indexOf(checksum) >= 0
+    })
+    .then((ok) => {
+      if (!ok) {
+        return null
+      }
+      return requestFromBackgroundScript('GET_CURRENT_VERSION', urlObj.toString())
     })
 }
 
