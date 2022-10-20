@@ -37,21 +37,37 @@ chrome.runtime.onMessage.addListener(function (message, sender, respond) {
       respond({ payload: tabs[message.payload] || null })
       return false
     }
-    case 'GET_AUDITORIUM_CHECKSUM': {
-      window.fetch(message.payload)
-        .then(r => r.text())
+    case 'GET_AUDITORIUM_CHECKSUMS': {
+      getText(message.payload)
         .then(htmlString => {
           return Promise.all([
             htmlString,
-            window.crypto.subtle.digest('SHA-256', new TextEncoder().encode(htmlString))
-              .then((hash) => {
-                return [...new Uint8Array(hash)]
-                  .map(x => x.toString(16).padStart(2, '0')).join('')
-              })
+            computeHexEncodedChecksum(htmlString)
           ])
         })
         .then(([html, checksum]) => {
-          respond({ payload: checksum })
+          const parser = new window.DOMParser()
+          const doc = parser.parseFromString(html, 'text/html')
+          const scripts = doc.querySelectorAll('script') || []
+          const sources = []
+          for (const script of scripts) {
+            const u = new window.URL(message.payload)
+            u.pathname = script.getAttribute('src')
+            sources.push(u.pathname)
+          }
+          return Promise.all(sources.map((source) => {
+            const u = new window.URL(message.payload)
+            u.pathname = source
+            return getText(u.toString()).then(computeHexEncodedChecksum).then(c => ({ [source]: c }))
+          }))
+            .then((checksums) => {
+              return checksums.reduce((acc, next) => {
+                return Object.assign(acc, next)
+              }, {})
+            })
+            .then((checksumsBySource) => {
+              respond({ payload: { ...checksumsBySource, auditorium: checksum } } )
+            })
         })
         .catch((err) => {
           respond({ error: err })
@@ -61,17 +77,8 @@ chrome.runtime.onMessage.addListener(function (message, sender, respond) {
     case 'GET_SCRIPT_CHECKSUM': {
       const url = new window.URL(message.payload)
       url.pathname = '/script.js'
-      window.fetch(url)
-        .then((res) => {
-          return res.text()
-        })
-        .then((script) => {
-          return window.crypto.subtle.digest('SHA-256', new TextEncoder().encode(script))
-        })
-        .then((hash) => {
-          return [...new Uint8Array(hash)]
-            .map(x => x.toString(16).padStart(2, '0')).join('')
-        })
+      getText(url)
+        .then(computeHexEncodedChecksum)
         .then(
           (result) => respond({ payload: result }),
           (err) => respond({ error: err })
@@ -193,4 +200,16 @@ function KeyValueStorage (schemaVersion = 1, seed = {}) {
       })
     })
   }
+}
+
+function computeHexEncodedChecksum (str) {
+  return window.crypto.subtle.digest('SHA-256', new TextEncoder().encode(str))
+    .then((hash) => {
+      return [...new Uint8Array(hash)]
+        .map(x => x.toString(16).padStart(2, '0')).join('')
+    })
+}
+
+function getText (url) {
+  return window.fetch(url).then(r => r.text())
 }

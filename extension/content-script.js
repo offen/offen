@@ -70,10 +70,10 @@ function handleConnectExtension (evt) {
 
 function checkAuditoriumIntegrity (urlObj) {
   return Promise.all([
-    requestFromBackgroundScript('GET_AUDITORIUM_CHECKSUM', urlObj.toString()),
+    requestFromBackgroundScript('GET_AUDITORIUM_CHECKSUMS', urlObj.toString()),
     requestFromBackgroundScript('GET_KNOWN_CHECKSUMS', null)
   ])
-    .then(([checksum, checksums]) => {
+    .then(([checksumResult, checksums]) => {
       const auditoriumChecksums = Object.values(checksums)
         .map(v => v.auditorium || [])
         .reduce((acc, list) => {
@@ -82,7 +82,7 @@ function checkAuditoriumIntegrity (urlObj) {
         .filter((value, index, list) => {
           return list.indexOf(value) === index
         })
-      return auditoriumChecksums.indexOf(checksum) >= 0
+      return auditoriumChecksums.indexOf(checksumResult.auditorium) >= 0
     })
     .then((ok) => {
       if (!ok) {
