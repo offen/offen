@@ -37,6 +37,12 @@ chrome.runtime.onMessage.addListener(function (message, sender, respond) {
       respond({ payload: tabs[message.payload] || null })
       return false
     }
+    case 'VERIFY_AUDITORIUM': {
+      setTimeout(() => {
+        respond({ payload: true })
+      }, 50)
+      return true
+    }
     case 'GET_CURRENT_CHECKSUM': {
       const url = new window.URL(message.payload)
       url.pathname = '/script.js'

@@ -18,20 +18,24 @@
 })()
 
 function handleQueryExtension () {
-  chrome.runtime.sendMessage({
-    type: 'QUERY'
-  }, (result) => {
-    if (result.error) {
+  requestFromBackgroundScript('VERIFY_AUDITORIUM')
+    .then((ok) => {
+      if (ok) {
+        return requestFromBackgroundScript('QUERY')
+      }
+      return null
+    })
+    .then((result) => {
+      window.postMessage({
+        direction: 'from-content-script',
+        message: result
+      }, '*')
+    })
+    .catch((err) => {
       console.error(
-        `Failed to query list of known installs: ${result.error.message}.`
+        `Failed to query list of known installs: ${err.message}.`
       )
-      return
-    }
-    window.postMessage({
-      direction: 'from-content-script',
-      message: result.payload
-    }, '*')
-  })
+    })
 }
 
 function handleConnectExtension (evt) {
