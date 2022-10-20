@@ -58,15 +58,18 @@ chrome.runtime.onMessage.addListener(function (message, sender, respond) {
           return Promise.all(sources.map((source) => {
             const u = new window.URL(message.payload)
             u.pathname = source
-            return getText(u.toString()).then(computeHexEncodedChecksum).then(c => ({ [source]: c }))
+            return getText(u.toString())
+              .then(computeHexEncodedChecksum)
+              .then(c => ({ pathname: source, checksum: c }))
           }))
-            .then((checksums) => {
-              return checksums.reduce((acc, next) => {
-                return Object.assign(acc, next)
-              }, {})
-            })
-            .then((checksumsBySource) => {
-              respond({ payload: { ...checksumsBySource, auditorium: checksum } } )
+            .then((results) => {
+              const u = new window.URL(message.payload)
+              respond({
+                payload: [
+                  ...results,
+                  { pathname: u.pathname, checksum }
+                ]
+              })
             })
         })
         .catch((err) => {
@@ -80,7 +83,9 @@ chrome.runtime.onMessage.addListener(function (message, sender, respond) {
       getText(url)
         .then(computeHexEncodedChecksum)
         .then(
-          (result) => respond({ payload: result }),
+          (result) => respond({
+            payload: { pathname: '/script.js', checksum: result }
+          }),
           (err) => respond({ error: err })
         )
       return true

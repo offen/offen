@@ -1,6 +1,6 @@
 {
   "v1.3.2": {
-    "script": [
+    "/script.js": [
       "fbbfcdf941381ee3ca8d79e0f8de26779389fec1abba06d7ef8a99cb7bf82711",
       "fb875cd597f351d95b4bcd0f86655a212c8b06ad59946ef6fafb8f13d0678ba3",
       "7c4164a4cbac73c07d43dcc7ad9f92c863d4306efbb5ca6261541d1c91a117a7",
@@ -8,12 +8,18 @@
       "c535f10ca66766221c42349c1f94b1e9a38607f9d25a191a26cda6f0f2f1b320",
       "9fbbaa33dcf732039f66c69454fa050b47ece217c7536dbdb4dbdce17620ebba"
     ],
-    "auditorium": [
+    "/auditorium/": [
       "b8b02fc23ca3c4f2b35fb0d3bc6c9d7204c65a96740e60859d5ed7aa13311e52"
+    ],
+    "/auditorium/vendor-213594240c.js": [
+      "3444e7c4e791cbc8609ee505506ec72a4a2d0bf532a1dfdc794720cdd8cdd29a"
+    ],
+    "/auditorium/index-62d6e1a3fd.js": [
+      "b3f460c1b34fc5afcd51547f1031a3b65087769e6dfb80990aa807b45bafad42"
     ]
   },
   "v1.3.1": {
-    "script": [
+    "/script.js": [
       "fbbfcdf941381ee3ca8d79e0f8de26779389fec1abba06d7ef8a99cb7bf82711",
       "fb875cd597f351d95b4bcd0f86655a212c8b06ad59946ef6fafb8f13d0678ba3",
       "7c4164a4cbac73c07d43dcc7ad9f92c863d4306efbb5ca6261541d1c91a117a7",
@@ -21,12 +27,12 @@
       "c535f10ca66766221c42349c1f94b1e9a38607f9d25a191a26cda6f0f2f1b320",
       "9fbbaa33dcf732039f66c69454fa050b47ece217c7536dbdb4dbdce17620ebba"
     ],
-    "auditorium": [
+    "/auditorium/": [
       "b8b02fc23ca3c4f2b35fb0d3bc6c9d7204c65a96740e60859d5ed7aa13311e52"
     ]
   },
   "v1.3.0": {
-    "script": [
+    "/script.js": [
       "fbbfcdf941381ee3ca8d79e0f8de26779389fec1abba06d7ef8a99cb7bf82711",
       "fb875cd597f351d95b4bcd0f86655a212c8b06ad59946ef6fafb8f13d0678ba3",
       "7c4164a4cbac73c07d43dcc7ad9f92c863d4306efbb5ca6261541d1c91a117a7",
@@ -34,12 +40,12 @@
       "c535f10ca66766221c42349c1f94b1e9a38607f9d25a191a26cda6f0f2f1b320",
       "9fbbaa33dcf732039f66c69454fa050b47ece217c7536dbdb4dbdce17620ebba"
     ],
-    "auditorium": [
+    "/auditorium/": [
       "b8b02fc23ca3c4f2b35fb0d3bc6c9d7204c65a96740e60859d5ed7aa13311e52"
     ]
   },
   "v1.2.1": {
-    "script": [
+    "/script.js": [
       "d428add94b3e2b64b703afa086763ed8e807c1af644260cb8c5e042ebd809d50",
       "ad17e482a2dedeab38ee7633efd99f25bede7c2dc6f8753820ac5413c59b0131",
       "f4ff8f8871ae22167b8f8e0bbf215597207b14367a51e48625cb2a3b735b2e65",
@@ -49,7 +55,7 @@
     ]
   },
   "v1.2.0": {
-    "script": [
+    "/script.js": [
       "d428add94b3e2b64b703afa086763ed8e807c1af644260cb8c5e042ebd809d50",
       "ad17e482a2dedeab38ee7633efd99f25bede7c2dc6f8753820ac5413c59b0131",
       "f4ff8f8871ae22167b8f8e0bbf215597207b14367a51e48625cb2a3b735b2e65",
@@ -59,7 +65,7 @@
     ]
   },
   "v1.1.0": {
-    "script": [
+    "/script.js": [
       "d428add94b3e2b64b703afa086763ed8e807c1af644260cb8c5e042ebd809d50",
       "ad17e482a2dedeab38ee7633efd99f25bede7c2dc6f8753820ac5413c59b0131",
       "f4ff8f8871ae22167b8f8e0bbf215597207b14367a51e48625cb2a3b735b2e65",
@@ -68,7 +74,7 @@
     ]
   },
   "v1.0.1": {
-    "script": [
+    "/script.js": [
       "d428add94b3e2b64b703afa086763ed8e807c1af644260cb8c5e042ebd809d50",
       "ad17e482a2dedeab38ee7633efd99f25bede7c2dc6f8753820ac5413c59b0131",
       "f4ff8f8871ae22167b8f8e0bbf215597207b14367a51e48625cb2a3b735b2e65",
@@ -77,7 +83,7 @@
     ]
   },
   "v1.0.0": {
-    "script": [
+    "/script.js": [
       "d428add94b3e2b64b703afa086763ed8e807c1af644260cb8c5e042ebd809d50",
       "ad17e482a2dedeab38ee7633efd99f25bede7c2dc6f8753820ac5413c59b0131",
       "f4ff8f8871ae22167b8f8e0bbf215597207b14367a51e48625cb2a3b735b2e65",
@@ -86,7 +92,7 @@
     ]
   },
   "v0.7.0": {
-    "script": [
+    "/script.js": [
       "d428add94b3e2b64b703afa086763ed8e807c1af644260cb8c5e042ebd809d50",
       "ad17e482a2dedeab38ee7633efd99f25bede7c2dc6f8753820ac5413c59b0131",
       "f4ff8f8871ae22167b8f8e0bbf215597207b14367a51e48625cb2a3b735b2e65",
@@ -96,7 +102,7 @@
   },
 
   "v0.6.0": {
-    "script": [
+    "/script.js": [
       "d428add94b3e2b64b703afa086763ed8e807c1af644260cb8c5e042ebd809d50",
       "ad17e482a2dedeab38ee7633efd99f25bede7c2dc6f8753820ac5413c59b0131",
       "f4ff8f8871ae22167b8f8e0bbf215597207b14367a51e48625cb2a3b735b2e65",
@@ -104,127 +110,127 @@
     ]
   },
   "v0.5.1": {
-    "script": [
+    "/script.js": [
       "d428add94b3e2b64b703afa086763ed8e807c1af644260cb8c5e042ebd809d50",
       "ad17e482a2dedeab38ee7633efd99f25bede7c2dc6f8753820ac5413c59b0131",
       "f4ff8f8871ae22167b8f8e0bbf215597207b14367a51e48625cb2a3b735b2e65"
     ]
   },
   "v0.5.0": {
-    "script": [
+    "/script.js": [
       "d428add94b3e2b64b703afa086763ed8e807c1af644260cb8c5e042ebd809d50",
       "ad17e482a2dedeab38ee7633efd99f25bede7c2dc6f8753820ac5413c59b0131",
       "f4ff8f8871ae22167b8f8e0bbf215597207b14367a51e48625cb2a3b735b2e65"
     ]
   },
   "v0.4.4": {
-    "script": [
+    "/script.js": [
       "079349ba3e64d85378048694f8076c2b895decd7367cdeaccc4138bcf994de00",
       "93c065f95c75d3b51dcec0dd03a8413ab3e76d91825a4af5eb86074efaaf88fa",
       "81a233cd75d8e8169ab0c1023c285c90ba6b7ff13c397c45f3318d0658ef71f6"
     ]
   },
   "v0.4.3": {
-    "script": [
+    "/script.js": [
       "e68887c5610b2fdba9669c71885544bf3445eb0cbee0df4489f71ab3d6fc2db2",
       "d8e1538eede92bf7ab4e512876e30592379b7bb6b989fb8679d0c4fc2bb7e624",
       "9a3de01e93a042f1b46a47ed89d0fd0a5bb722078259440d058821b30e2d3fb6"
     ]
   },
   "v0.4.2": {
-    "script": [
+    "/script.js": [
       "f9981b3eebfdd01a8a1e8134573f068c4f50b621342d0045e08bcd1d6a80d98b",
       "10f2f3738ff4bab1b457e0b776678d518acbdb10314ae04385e2cc12be69561b",
       "e34b441ec516464d327ae301344f0134d71a459395e9e5636e621e4c9fede380"
     ]
   },
   "v0.4.1": {
-    "script": [
+    "/script.js": [
       "d6ccaf01b9aa4f7829fa4c68e2741944d41d5fc1b6f4ffd56e0bed96c5f8c0cf",
       "f0e4cb3014a25376925a415b74feaea1c74dcd1d63f0a0f69fde0417e47da571",
       "bfe159eefd7974742f51e3c05ab08b98f0286f4bfe68a1ab792cf1b9390cdfca"
     ]
   },
   "v0.4.0": {
-    "script": [
+    "/script.js": [
       "d6ccaf01b9aa4f7829fa4c68e2741944d41d5fc1b6f4ffd56e0bed96c5f8c0cf",
       "f0e4cb3014a25376925a415b74feaea1c74dcd1d63f0a0f69fde0417e47da571"
     ]
   },
   "v0.3.1": {
-    "script": [
+    "/script.js": [
       "d6ccaf01b9aa4f7829fa4c68e2741944d41d5fc1b6f4ffd56e0bed96c5f8c0cf",
       "f0e4cb3014a25376925a415b74feaea1c74dcd1d63f0a0f69fde0417e47da571"
     ]
   },
   "v0.3.0": {
-    "script": [
+    "/script.js": [
       "d6ccaf01b9aa4f7829fa4c68e2741944d41d5fc1b6f4ffd56e0bed96c5f8c0cf",
       "f0e4cb3014a25376925a415b74feaea1c74dcd1d63f0a0f69fde0417e47da571"
     ]
   },
   "v0.2.3": {
-    "script": [
+    "/script.js": [
       "b03adee63d849542e0c1f25b756135e9ff17e05eda36f28506c3026b19eb0c1e"
     ]
   },
   "v0.2.2": {
-    "script": [
+    "/script.js": [
       "2ef4029969471765c7450b8723ca50b570c773fcb4a3bddac6d49bfafd67af94"
     ]
   },
   "v0.2.1": {
-    "script": [
+    "/script.js": [
       "2ef4029969471765c7450b8723ca50b570c773fcb4a3bddac6d49bfafd67af94"
     ]
   },
   "v0.2.0": {
-    "script": [
+    "/script.js": [
       "2ef4029969471765c7450b8723ca50b570c773fcb4a3bddac6d49bfafd67af94"
     ]
   },
   "v0.1.8": {
-    "script": [
+    "/script.js": [
       "2ef4029969471765c7450b8723ca50b570c773fcb4a3bddac6d49bfafd67af94"
     ]
   },
   "v0.1.7": {
-    "script": [
+    "/script.js": [
       "2ef4029969471765c7450b8723ca50b570c773fcb4a3bddac6d49bfafd67af94"
     ]
   },
   "v0.1.6": {
-    "script": [
+    "/script.js": [
       "2ef4029969471765c7450b8723ca50b570c773fcb4a3bddac6d49bfafd67af94"
     ]
   },
   "v0.1.5": {
-    "script": [
+    "/script.js": [
       "2ef4029969471765c7450b8723ca50b570c773fcb4a3bddac6d49bfafd67af94"
     ]
   },
   "v0.1.4": {
-    "script": [
+    "/script.js": [
       "f22ce9505e7f7c3b680cafb85b4825c77d904fd690d3d3dca49840e00dc02c7a"
     ]
   },
   "v0.1.3": {
-    "script": [
+    "/script.js": [
       "f22ce9505e7f7c3b680cafb85b4825c77d904fd690d3d3dca49840e00dc02c7a"
     ]
   },
   "v0.1.2": {
-    "script": [
+    "/script.js": [
       "bfdc82ee61f77a5a3fef7d8f21978f75fa8c7350bda25a78d2ece2f058986ccb"
     ]
   },
   "v0.1.1": {
-    "script": [
+    "/script.js": [
       "bfdc82ee61f77a5a3fef7d8f21978f75fa8c7350bda25a78d2ece2f058986ccb"
     ]
   },
   "v0.1.0": {
-    "script": [
+    "/script.js": [
       "cb354b539bf41024550f7be7c0aa15f24b8a3164d46777c6aa43428d277ccfd8"
     ]
   }

@@ -73,16 +73,14 @@ function checkAuditoriumIntegrity (urlObj) {
     requestFromBackgroundScript('GET_AUDITORIUM_CHECKSUMS', urlObj.toString()),
     requestFromBackgroundScript('GET_KNOWN_CHECKSUMS', null)
   ])
-    .then(([checksumResult, checksums]) => {
-      const auditoriumChecksums = Object.values(checksums)
-        .map(v => v.auditorium || [])
-        .reduce((acc, list) => {
-          return [...acc, ...list]
-        }, [])
-        .filter((value, index, list) => {
-          return list.indexOf(value) === index
+    .then(([results, checksums]) => {
+      return Object.values(checksums).some((checksumsByPathname) => {
+        return results.every(result => {
+          const { pathname, checksum } = result
+          const match = checksumsByPathname[pathname] || []
+          return match.indexOf(checksum) !== -1
         })
-      return auditoriumChecksums.indexOf(checksumResult.auditorium) >= 0
+      })
     })
     .then((ok) => {
       if (!ok) {
@@ -97,16 +95,16 @@ function checkScriptIntegrity (urlObj) {
     requestFromBackgroundScript('GET_SCRIPT_CHECKSUM', urlObj.toString()),
     requestFromBackgroundScript('GET_KNOWN_CHECKSUMS', null)
   ])
-    .then(([checksum, checksums]) => {
+    .then(([checksumResult, checksums]) => {
       const scriptChecksums = Object.values(checksums)
-        .map(v => v.script)
+        .map(v => v[checksumResult.pathname])
         .reduce((acc, list) => {
           return [...acc, ...list]
         }, [])
         .filter((value, index, list) => {
           return list.indexOf(value) === index
         })
-      return scriptChecksums.indexOf(checksum) >= 0
+      return scriptChecksums.indexOf(checksumResult.checksum) >= 0
     })
     .then((ok) => {
       if (!ok) {
