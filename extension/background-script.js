@@ -39,13 +39,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, respond) {
     }
     case 'GET_AUDITORIUM_CHECKSUMS': {
       getText(message.payload)
-        .then(htmlString => {
-          return Promise.all([
-            htmlString,
-            computeHexEncodedChecksum(htmlString)
-          ])
-        })
-        .then(([html, checksum]) => {
+        .then((html) => {
           const parser = new window.DOMParser()
           const doc = parser.parseFromString(html, 'text/html')
           const scripts = doc.querySelectorAll('script') || []
@@ -63,13 +57,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, respond) {
               .then(c => ({ pathname: source, checksum: c }))
           }))
             .then((results) => {
-              const u = new window.URL(message.payload)
-              respond({
-                payload: [
-                  ...results,
-                  { pathname: u.pathname, checksum }
-                ]
-              })
+              respond({ payload: results })
             })
         })
         .catch((err) => {
