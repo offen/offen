@@ -17,21 +17,30 @@
   document.addEventListener('Offen_queryExtension', handleQueryExtension)
 })()
 
-function handleQueryExtension () {
-  chrome.runtime.sendMessage({
-    type: 'QUERY'
-  }, (result) => {
-    if (result.error) {
+function handleQueryExtension (evt) {
+  const url = new window.URL(evt.detail.url)
+  checkAuditoriumIntegrity(url)
+    .then((ok) => {
+      if (!ok) {
+        console.log(`Could not verify installation at "${evt.detail.url}", skipping`)
+        return null
+      }
+      return requestFromBackgroundScript('QUERY')
+    })
+    .then((result) => {
+      if (!result) {
+        return
+      }
+      window.postMessage({
+        direction: 'from-content-script',
+        message: result
+      }, '*')
+    })
+    .catch((err) => {
       console.error(
-        `Failed to query list of known installs: ${result.error.message}.`
+        `Failed to query list of known installs: ${err.message}.`
       )
-      return
-    }
-    window.postMessage({
-      direction: 'from-content-script',
-      message: result.payload
-    }, '*')
-  })
+    })
 }
 
 function handleConnectExtension (evt) {
@@ -59,28 +68,49 @@ function handleConnectExtension (evt) {
     })
 }
 
-function checkScriptIntegrity (urlObj) {
-  function fetchKnownChecksums () {
-    return requestFromBackgroundScript('GET_KNOWN_CHECKSUMS', null)
-  }
-
-  function fetchCurrentChecksum () {
-    return requestFromBackgroundScript('GET_CURRENT_CHECKSUM', urlObj.toString())
-  }
-
-  function fetchCurrentVersion () {
-    return requestFromBackgroundScript('GET_CURRENT_VERSION', urlObj.toString())
-  }
-
-  return Promise.all([fetchCurrentChecksum(), fetchKnownChecksums()])
-    .then(([checksum, checksums]) => {
-      return checksums.indexOf(checksum) >= 0
+function checkAuditoriumIntegrity (urlObj) {
+  return Promise.all([
+    requestFromBackgroundScript('GET_AUDITORIUM_CHECKSUMS', urlObj.toString()),
+    requestFromBackgroundScript('GET_KNOWN_CHECKSUMS', null)
+  ])
+    .then(([results, checksums]) => {
+      return Object.values(checksums).some((checksumsByPathname) => {
+        return results.every(result => {
+          const { pathname, checksum } = result
+          const match = checksumsByPathname[pathname] || []
+          return match.indexOf(checksum) !== -1
+        })
+      })
     })
     .then((ok) => {
       if (!ok) {
         return null
       }
-      return fetchCurrentVersion()
+      return requestFromBackgroundScript('GET_CURRENT_VERSION', urlObj.toString())
+    })
+}
+
+function checkScriptIntegrity (urlObj) {
+  return Promise.all([
+    requestFromBackgroundScript('GET_SCRIPT_CHECKSUM', urlObj.toString()),
+    requestFromBackgroundScript('GET_KNOWN_CHECKSUMS', null)
+  ])
+    .then(([checksumResult, checksums]) => {
+      const scriptChecksums = Object.values(checksums)
+        .map(v => v[checksumResult.pathname])
+        .reduce((acc, list) => {
+          return [...acc, ...list]
+        }, [])
+        .filter((value, index, list) => {
+          return list.indexOf(value) === index
+        })
+      return scriptChecksums.indexOf(checksumResult.checksum) >= 0
+    })
+    .then((ok) => {
+      if (!ok) {
+        return null
+      }
+      return requestFromBackgroundScript('GET_CURRENT_VERSION', urlObj.toString())
     })
 }
 

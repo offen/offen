@@ -30,7 +30,9 @@ setTimeout(function () {
       })
     })
     document.dispatchEvent(new window.CustomEvent('Offen_queryExtension', {
-      detail: {}
+      detail: {
+        url: window.location.href
+      }
     }))
   }
 }, 0)

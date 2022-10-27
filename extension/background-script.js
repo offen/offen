@@ -37,22 +37,43 @@ chrome.runtime.onMessage.addListener(function (message, sender, respond) {
       respond({ payload: tabs[message.payload] || null })
       return false
     }
-    case 'GET_CURRENT_CHECKSUM': {
+    case 'GET_AUDITORIUM_CHECKSUMS': {
+      getText(message.payload)
+        .then((html) => {
+          const parser = new window.DOMParser()
+          const doc = parser.parseFromString(html, 'text/html')
+          const scripts = doc.querySelectorAll('script') || []
+          const sources = []
+          for (const script of scripts) {
+            const u = new window.URL(message.payload)
+            u.pathname = script.getAttribute('src')
+            sources.push(u.pathname)
+          }
+          return Promise.all(sources.map((source) => {
+            const u = new window.URL(message.payload)
+            u.pathname = source
+            return getText(u.toString())
+              .then(computeHexEncodedChecksum)
+              .then(c => ({ pathname: source, checksum: c }))
+          }))
+            .then((results) => {
+              respond({ payload: results })
+            })
+        })
+        .catch((err) => {
+          respond({ error: err })
+        })
+      return true
+    }
+    case 'GET_SCRIPT_CHECKSUM': {
       const url = new window.URL(message.payload)
       url.pathname = '/script.js'
-      window.fetch(url)
-        .then((res) => {
-          return res.text()
-        })
-        .then((script) => {
-          return window.crypto.subtle.digest('SHA-256', new TextEncoder().encode(script))
-        })
-        .then((hash) => {
-          return [...new Uint8Array(hash)]
-            .map(x => x.toString(16).padStart(2, '0')).join('')
-        })
+      getText(url)
+        .then(computeHexEncodedChecksum)
         .then(
-          (result) => respond({ payload: result }),
+          (result) => respond({
+            payload: { pathname: '/script.js', checksum: result }
+          }),
           (err) => respond({ error: err })
         )
       return true
@@ -74,15 +95,8 @@ chrome.runtime.onMessage.addListener(function (message, sender, respond) {
       return true
     }
     case 'GET_KNOWN_CHECKSUMS': {
-      window.fetch(chrome.runtime.getURL('checksums.txt'))
-        .then(r => r.text())
-        .then(file => {
-          return file.split('\n')
-            .map(line => line.trim())
-            .filter(Boolean)
-            .filter(l => l.indexOf('#') !== 0)
-            .filter((el, index, list) => list.indexOf(el) === index)
-        })
+      window.fetch(chrome.runtime.getURL('checksums.json'))
+        .then(r => r.json())
         .then(
           (result) => respond({ payload: result }),
           (err) => respond({ error: err })
@@ -179,4 +193,16 @@ function KeyValueStorage (schemaVersion = 1, seed = {}) {
       })
     })
   }
+}
+
+function computeHexEncodedChecksum (str) {
+  return window.crypto.subtle.digest('SHA-256', new TextEncoder().encode(str))
+    .then((hash) => {
+      return [...new Uint8Array(hash)]
+        .map(x => x.toString(16).padStart(2, '0')).join('')
+    })
+}
+
+function getText (url) {
+  return window.fetch(url).then(r => r.text())
 }
