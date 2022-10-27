@@ -2,6 +2,8 @@
 # Copyright 2022 - Offen Authors <hioffen@posteo.de>
 # SPDX-License-Identifier: Apache-2.0
 
+set -e
+
 VERSION=$1
 
 echo "# $VERSION"
