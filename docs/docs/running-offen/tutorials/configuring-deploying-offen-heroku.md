@@ -23,10 +23,9 @@ __All resources created in this tutorial are free of charge__. You might want to
 
 <span class="label label-green">Note</span>
 
-If you get stuck or need help, [file an issue][gh-issues], [tweet (@hioffen)][twitter] or [email][email]. If you have installed Offen Fair Web Analytics and would like to spread the word, we're happy to feature you in our README. [Send a PR][edit-readme] adding your site or app and we'll merge it.
+If you get stuck or need help, [file an issue][gh-issues], or send an [email][email]. If you have installed Offen Fair Web Analytics and would like to spread the word, we're happy to feature you in our README. [Send a PR][edit-readme] adding your site or app and we'll merge it.
 
 [gh-issues]: https://github.com/offen/offen/issues
-[twitter]: https://twitter.com/hioffen
 [email]: mailto:hioffen@posteo.de
 [edit-readme]: https://github.com/offen/offen/edit/development/README.md
 [heroku]: https://www.heroku.com/
