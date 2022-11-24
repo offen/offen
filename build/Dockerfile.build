@@ -98,7 +98,7 @@ RUN python ./create_notice.py \
   --client auditorium.csv \
   --server server.csv >> NOTICE
 
-FROM techknowlogick/xgo:go-1.19.x as compiler
+FROM techknowlogick/xgo:go-1.19.2 as compiler
 
 ARG rev
 ENV GIT_REVISION=$rev
