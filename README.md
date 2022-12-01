@@ -120,9 +120,9 @@ Users have access to the same set of tools for analyzing their own data and they
 __Offen Fair Web Analytics is currently available in English, French, German, Portuguese, Spanish and Vietnamese.__
 Our consent banner and the Auditorium for operators as well as users can be displayed in the respective locale.  
 
-Support fair web analytics by contributing Italian, Chinese and other language versions. [Request an invite.][]
+If you want to support fair web analytics by contributing Italian, Dutch, Polish or other language versions, don't hesitate to [request an invite.][]
 
-[Request an invite.]: mailto:hioffen@posteo.de
+[request an invite.]: mailto:hioffen@posteo.de
 
 ## Customize
 
