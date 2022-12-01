@@ -1,4 +1,35 @@
 {
+  "v1.3.4": {
+    "/script.js": [
+      "fbbfcdf941381ee3ca8d79e0f8de26779389fec1abba06d7ef8a99cb7bf82711",
+      "fb875cd597f351d95b4bcd0f86655a212c8b06ad59946ef6fafb8f13d0678ba3",
+      "7c4164a4cbac73c07d43dcc7ad9f92c863d4306efbb5ca6261541d1c91a117a7",
+      "6627f0c52c7558d5e4f81a7d5f13c5eafd459076517f3dea8593f12f020e27b6",
+      "c535f10ca66766221c42349c1f94b1e9a38607f9d25a191a26cda6f0f2f1b320",
+      "9fbbaa33dcf732039f66c69454fa050b47ece217c7536dbdb4dbdce17620ebba"
+    ],
+    "/auditorium/vendor-213594240c.js": [
+      "3444e7c4e791cbc8609ee505506ec72a4a2d0bf532a1dfdc794720cdd8cdd29a"
+    ],
+    "/auditorium/index-b33d9f326e.js": [
+      "017c2891dea9a8580d1b9f2a8f04de1aadf36a6bd7c5f5ba8c777b6047f038a1"
+    ],
+    "/auditorium/index-45de364f01.js": [
+      "9ba77ab007602a6b507c6738a885a8b7502e3179e58bee33cf0060dd7008a82b"
+    ],
+    "/auditorium/index-191dcee528.js": [
+      "89496ea433adabb98bd4552350838585f5a79d4c6c1b2447106eee3008b59c53"
+    ],
+    "/auditorium/index-5c51cf285a.js": [
+      "263f6d02bbcf44b257b538764680385421bdafd21ae76c13f7d7baade2f91583"
+    ],
+    "/auditorium/index-1381196172.js": [
+      "48333a5fa631696a6b2a088b6791eeb260b3f812139bfcfd24e7b599c66ce753"
+    ],
+    "/auditorium/index-4fc76f1a7a.js": [
+      "635531b39a72b60f14f0c30dbc52f457166a3c170e03784dc6e1e60abc17ae9c"
+    ]
+  },
   "v1.3.3": {
     "/script.js": [
       "fbbfcdf941381ee3ca8d79e0f8de26779389fec1abba06d7ef8a99cb7bf82711",
