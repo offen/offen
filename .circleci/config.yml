@@ -417,7 +417,7 @@ executors:
     docker:
       - image: cimg/node:16.13-browsers
         auth: *docker-pull-creds
-      - image: circleci/postgres:11.2-alpine
+      - image: cimg/postgres:15.0
         auth: *docker-pull-creds
         environment:
           POSTGRES_USER: circle
@@ -426,7 +426,7 @@ executors:
     docker:
       - image: cimg/node:16.13-browsers
         auth: *docker-pull-creds
-      - image: circleci/mysql:5.7.32
+      - image: cimg/mysql:5.7.38
         auth: *docker-pull-creds
         environment:
           MYSQL_DATABASE: circle_test
