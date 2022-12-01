@@ -61,7 +61,7 @@ const Layout = (props) => {
           <Paragraph
             class='ma0 tl tr-ns'
           >
-            {__('Found an issue, need help or want to add something?<br><a href="mailto:hioffen@posteo.de" class="%s" target="_blank">Send an email</a> or file an <a href="https://github.com/offen/offen" class="%s" target="_blank" rel="noreferrer noopener">issue.</a>', 'b link dim mid-gray', 'b link dim mid-gray', 'b link dim mid-gray')}
+            {__('Found an issue, need help or want to add something?<br><a href="mailto:hioffen@posteo.de" class="%s" target="_blank">Send an email</a> or file an <a href="https://github.com/offen/offen" class="%s" target="_blank" rel="noreferrer noopener">issue.</a>', 'b link dim mid-gray', 'b link dim mid-gray')}
           </Paragraph>
         </div>
       </div>
