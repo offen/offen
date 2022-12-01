@@ -241,5 +241,4 @@ Send a PR adding your site or app to this section.
 ## Links
 [Website](https://www.offen.dev/)  
 [Docs](https://docs.offen.dev/)  
-[Twitter](https://twitter.com/hioffen)  
 [Mastodon](https://fosstodon.org/@offen)
