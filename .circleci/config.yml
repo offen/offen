@@ -147,7 +147,6 @@ jobs:
       DOCKER_LOGIN: offen
       DOCKER_BUILDKIT: '1'
       DOCKER_CLI_EXPERIMENTAL: enabled
-      MINIO_STORAGE: https://storage.offen.dev
     working_directory: ~/offen
     steps:
       - checkout
