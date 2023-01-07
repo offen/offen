@@ -14,8 +14,6 @@ SPDX-License-Identifier: Apache-2.0
 [![Docs](https://img.shields.io/badge/Documentation-docs.offen.dev-blue.svg)](https://docs.offen.dev)
 [![Awesome Humane Tech](https://raw.githubusercontent.com/humanetech-community/awesome-humane-tech/main/humane-tech-badge.svg?sanitize=true)](https://github.com/humanetech-community/awesome-humane-tech)
 [![REUSE status](https://api.reuse.software/badge/github.com/offen/offen)](https://api.reuse.software/info/github.com/offen/offen)
-[![Total alerts](https://img.shields.io/lgtm/alerts/g/offen/offen.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/offen/offen/alerts/)
-[![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/offen/offen.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/offen/offen/context:javascript)
 
 __Let your users access their data.  
 Gain valuable insights at the same time.  

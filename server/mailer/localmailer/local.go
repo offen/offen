@@ -19,10 +19,10 @@ type localMailer struct{}
 
 func (*localMailer) Send(from, to, subject, body string) error {
 	fmt.Println("=========")
-	fmt.Printf("From: %s\n", from)       // lgtm [go/log-injection]
-	fmt.Printf("To: %s\n", to)           // lgtm [go/log-injection]
-	fmt.Printf("Subject: %s\n", subject) // lgtm [go/log-injection]
-	fmt.Printf("Body: %s\n", body)       // lgtm [go/log-injection]
+	fmt.Printf("From: %s\n", from)
+	fmt.Printf("To: %s\n", to)
+	fmt.Printf("Subject: %s\n", subject)
+	fmt.Printf("Body: %s\n", body)
 	fmt.Println("=========")
 	return nil
 }
