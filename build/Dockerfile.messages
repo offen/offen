@@ -74,7 +74,7 @@ WORKDIR /code/packages
 RUN cp -a /code/deps/node_modules /code/packages/
 RUN npm run --silent extract-strings > packages.po
 
-FROM golang:1.19
+FROM golang:1.20
 
 RUN apt-get update \
   && apt-get install -y gettext \

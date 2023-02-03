@@ -1,6 +1,6 @@
 module github.com/offen/offen/server
 
-go 1.19
+go 1.20
 
 require (
 	github.com/NYTimes/gziphandler v1.1.1
