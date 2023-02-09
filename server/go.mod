@@ -8,7 +8,7 @@ require (
 	github.com/cenkalti/backoff/v4 v4.1.1
 	github.com/felixge/httpsnoop v1.0.2
 	github.com/gin-contrib/location v0.0.2
-	github.com/gin-gonic/gin v1.7.4
+	github.com/gin-gonic/gin v1.7.7
 	github.com/go-gomail/gomail v0.0.0-20160411212932-81ebce5c23df
 	github.com/go-gormigrate/gormigrate/v2 v2.0.0
 	github.com/go-playground/validator/v10 v10.9.0 // indirect
