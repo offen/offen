@@ -5,7 +5,7 @@
   "author": "Offen Authors <hioffen@posteo.de>",
   "license": "Apache-2.0",
   "dependencies": {
-    "web-ext": "^6.8.0"
+    "web-ext": "^7.5.0"
   },
   "scripts": {
     "start": "web-ext run",
