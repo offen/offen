@@ -22,21 +22,38 @@ Open, lightweight, self hosted and free.__
 ## Contents
 
 __Software__
-- [Core features](#core-features)
-- [How it works](#how-it-works)
-- [Essential metrics](#essential-metrics)
-- [Objectives](#objectives)
-- [Localize](#localize)
-- [Customize](#customize)
-- [Test drive](#test-drive)
-- [License](#license)
-- [Project status](#project-status)
+- [Fair Web Analytics](#fair-web-analytics)
+  - [Contents](#contents)
+  - [Core features](#core-features)
+  - [How it works](#how-it-works)
+  - [Essential metrics](#essential-metrics)
+  - [Objectives](#objectives)
+  - [Localize](#localize)
+  - [Customize](#customize)
+  - [Test drive](#test-drive)
+  - [License](#license)
+  - [Project status](#project-status)
+  - [Feedback and contributions welcome](#feedback-and-contributions-welcome)
+  - [Kind support](#kind-support)
+  - [Who's using Offen Fair Web Analytics?](#whos-using-offen-fair-web-analytics)
+  - [Links](#links)
 
 __Community__
-- [Feedback and contributions welcome](#feedback-and-contributions-welcome)
-- [Kind support](#kind-support)
-- [Who's using Offen Fair Web Analytics?](#whos-using-offen)
-- [Links](#links)
+- [Fair Web Analytics](#fair-web-analytics)
+  - [Contents](#contents)
+  - [Core features](#core-features)
+  - [How it works](#how-it-works)
+  - [Essential metrics](#essential-metrics)
+  - [Objectives](#objectives)
+  - [Localize](#localize)
+  - [Customize](#customize)
+  - [Test drive](#test-drive)
+  - [License](#license)
+  - [Project status](#project-status)
+  - [Feedback and contributions welcome](#feedback-and-contributions-welcome)
+  - [Kind support](#kind-support)
+  - [Who's using Offen Fair Web Analytics?](#whos-using-offen-fair-web-analytics)
+  - [Links](#links)
 
 ## Core features
 
@@ -235,6 +252,8 @@ Cross-Browser testing provided by [BrowserStack](https://www.browserstack.com/).
 
 We're happy to feature you in this README.
 Send a PR adding your site or app to this section.
+
+- [All Quiet](https://allquiet.app) - Incident escalation made easy
 
 ## Links
 [Website](https://www.offen.dev/)  
