@@ -236,6 +236,8 @@ Cross-Browser testing provided by [BrowserStack](https://www.browserstack.com/).
 We're happy to feature you in this README.
 Send a PR adding your site or app to this section.
 
+- [All Quiet](https://allquiet.app) - Incident escalation made easy  
+
 ## Links
 [Website](https://www.offen.dev/)  
 [Docs](https://docs.offen.dev/)  
