@@ -8,7 +8,7 @@
     "test:chrome": "cypress run --browser $(which google-chrome)"
   },
   "dependencies": {
-    "cypress-audit": "^0.2.5"
+    "cypress-audit": "^1.1.0"
   },
   "devDependencies": {
     "standard": "^14.3.3"
