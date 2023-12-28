@@ -35,7 +35,12 @@ type Config struct {
 		Retention    Retention `default:"6months"`
 	}
 	Secret Bytes
-	SMTP   struct {
+	OIDC   struct {
+		Issuer       string
+		ClientID     string
+		ClientSecret string
+	}
+	SMTP struct {
 		User     string
 		Password string
 		Host     string
