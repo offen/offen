@@ -20,6 +20,7 @@ import (
 	"github.com/offen/offen/server/public"
 	"github.com/offen/offen/server/router"
 	"golang.org/x/crypto/acme/autocert"
+	"mpldr.codes/oidc"
 )
 
 var serveUsage = `
@@ -49,9 +50,7 @@ func cmdServe(subcommand string, flags []string) {
 		fmt.Fprint(flag.CommandLine.Output(), serveUsage)
 		cmd.PrintDefaults()
 	}
-	var (
-		envFile = cmd.String("envfile", "", "the env file to use")
-	)
+	envFile := cmd.String("envfile", "", "the env file to use")
 	cmd.Parse(flags)
 	a := newApp(false, false, *envFile)
 
@@ -89,17 +88,32 @@ func cmdServe(subcommand string, flags []string) {
 		a.logger.WithError(emailErr).Fatal("Failed parsing template files, cannot continue")
 	}
 
+	routerConfig := []router.Config{
+		router.WithDatabase(db),
+		router.WithLogger(a.logger),
+		router.WithTemplate(tpl),
+		router.WithEmails(emails),
+		router.WithConfig(a.config),
+		router.WithFS(fs),
+		router.WithMailer(a.config.NewMailer()),
+	}
+
+	if a.config.OIDC.Issuer != "" &&
+		a.config.OIDC.ClientID != "" &&
+		a.config.OIDC.ClientSecret != "" {
+		a.logger.Info("Using OIDC authentication")
+		// TODO: generate a proper callback URL
+		// callbackUrl := a.config.App.DeployTarget
+		oidcCfg, err := oidc.Configure(a.config.OIDC.Issuer, "")
+		if err != nil {
+			a.logger.WithError(err).Fatal("Failed initializing OIDC with provided configuration, cannot continue")
+		}
+		routerConfig = append(routerConfig, router.WithOIDC(oidcCfg))
+	}
+
 	srv := &http.Server{
-		Addr: fmt.Sprintf("0.0.0.0:%d", a.config.Server.Port),
-		Handler: router.New(
-			router.WithDatabase(db),
-			router.WithLogger(a.logger),
-			router.WithTemplate(tpl),
-			router.WithEmails(emails),
-			router.WithConfig(a.config),
-			router.WithFS(fs),
-			router.WithMailer(a.config.NewMailer()),
-		),
+		Addr:    fmt.Sprintf("0.0.0.0:%d", a.config.Server.Port),
+		Handler: router.New(routerConfig...),
 	}
 	go func() {
 		if a.config.Server.SSLCertificate != "" && a.config.Server.SSLKey != "" {

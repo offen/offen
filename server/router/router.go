@@ -23,6 +23,7 @@ import (
 	ratelimiter "github.com/offen/offen/server/ratelimiter"
 	"github.com/patrickmn/go-cache"
 	"github.com/sirupsen/logrus"
+	"mpldr.codes/oidc"
 )
 
 type router struct {
@@ -37,6 +38,7 @@ type router struct {
 	sanitizer    *bluemonday.Policy
 	limiter      ratelimiter.Throttler
 	cache        *cache.Cache
+	oidc         *oidc.Configuration
 }
 
 func (rt *router) getLimiter() ratelimiter.Throttler {
@@ -113,7 +115,6 @@ func (rt *router) authCookie(userID string, secure bool) (*http.Cookie, error) {
 		c.Value = value
 	}
 	return &c, nil
-
 }
 
 // Config adds a configuration value to the router
@@ -167,6 +168,12 @@ func WithFS(fs http.FileSystem) Config {
 func WithMailer(m mailer.Mailer) Config {
 	return func(r *router) {
 		r.mailer = m
+	}
+}
+
+func WithOIDC(oidc *oidc.Configuration) Config {
+	return func(r *router) {
+		r.oidc = oidc
 	}
 }
 
@@ -233,16 +240,22 @@ func New(opts ...Config) http.Handler {
 		api.POST("/purge", userCookie, rt.purgeEvents)
 
 		api.GET("/login", accountAuth, rt.getLogin)
-		api.POST("/login", rt.postLogin)
-		api.POST("/logout", rt.postLogout)
+		if rt.oidc == nil {
+			api.POST("/login", rt.postLogin)
+			api.POST("/logout", rt.postLogout)
 
-		api.POST("/change-password", accountAuth, rt.postChangePassword)
-		api.POST("/change-email", accountAuth, rt.postChangeEmail)
-		api.POST("/forgot-password", rt.postForgotPassword)
-		api.POST("/reset-password", rt.postResetPassword)
-		api.POST("/share-account/:accountID", accountAuth, rt.postShareAccount)
-		api.POST("/share-account", accountAuth, rt.postShareAccount)
-		api.POST("/join", rt.postJoin)
+			api.POST("/change-password", accountAuth, rt.postChangePassword)
+			api.POST("/change-email", accountAuth, rt.postChangeEmail)
+			api.POST("/forgot-password", rt.postForgotPassword)
+			api.POST("/reset-password", rt.postResetPassword)
+			api.POST("/share-account/:accountID", accountAuth, rt.postShareAccount)
+			api.POST("/share-account", accountAuth, rt.postShareAccount)
+			api.POST("/join", rt.postJoin)
+		} else {
+			api.POST("/login", rt.oauthLogin)
+			api.POST("/login/callback", rt.oauthCallback)
+			api.POST("/logout", rt.oauthLogout)
+		}
 		api.GET("/setup", rt.getSetup)
 		api.POST("/setup", rt.postSetup)
 

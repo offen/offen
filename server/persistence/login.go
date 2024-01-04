@@ -4,6 +4,7 @@
 package persistence
 
 import (
+	"crypto/sha512"
 	"encoding/base64"
 	"errors"
 	"fmt"
@@ -13,6 +14,25 @@ import (
 	"github.com/lestrrat-go/jwx/jwk"
 	"github.com/offen/offen/server/keys"
 )
+
+func (p *persistenceLayer) LoginSSO(email, salt string) (LoginResult, error) {
+	sha512Hash := sha512.New()
+	sha512Hash.Write([]byte(email))
+	sha512Hash.Write([]byte(salt))
+	dummyPassword := base64.URLEncoding.EncodeToString(sha512Hash.Sum(nil))
+	_, err := p.findAccountUser(email, false, false)
+	switch {
+	case errors.Is(err, ErrAccountUserNotFound):
+		err = p.Join(email, dummyPassword)
+		if err != nil {
+			return LoginResult{}, fmt.Errorf("persistence: error joining account: %w", err)
+		}
+	case err != nil:
+		return LoginResult{}, fmt.Errorf("persistence: error looking up account user: %w", err)
+	}
+
+	return p.Login(email, dummyPassword)
+}
 
 func (p *persistenceLayer) Login(email, password string) (LoginResult, error) {
 	accountUser, err := p.findAccountUser(email, true, true)
@@ -299,5 +319,7 @@ func selectAccountUser(available []AccountUser, email string) (*AccountUser, err
 			return &user, nil
 		}
 	}
-	return nil, fmt.Errorf("persistence: no account user found for %s", email)
+	return nil, fmt.Errorf("%w for %s", ErrAccountUserNotFound, email)
 }
+
+var ErrAccountUserNotFound = errors.New("persistence: no account user found")
