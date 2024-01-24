@@ -22,7 +22,7 @@ require (
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/leodido/go-urn v1.2.4 // indirect
 	github.com/leonelquinteros/gotext v1.5.0
-	github.com/lestrrat-go/jwx v1.2.27
+	github.com/lestrrat-go/jwx v1.2.28
 	github.com/mattn/go-runewidth v0.0.13 // indirect
 	github.com/mattn/go-sqlite3 v1.14.8 // indirect
 	github.com/microcosm-cc/bluemonday v1.0.16
