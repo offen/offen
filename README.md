@@ -1,13 +1,13 @@
 <!--
-Copyright 2020-2022 - Offen Fair Web Analytics Authors <hioffen@posteo.de>
+Copyright 2020-2024 - Offen Fair Web Analytics Authors <hioffen@posteo.de>
 SPDX-License-Identifier: Apache-2.0
 -->
 
 <a href="https://www.offen.dev/">
-    <img src="https://offen.github.io/press-kit/offen-material/gfx-GitHub-Offen-logo.svg" alt="Offen logo" title="Offen" width="150px"/>
+  <img src="https://offen.github.io/press-kit/avatars/avatar-OFWA-header.svg" alt="Offen Fair Web Analytics logo" title="Offen Fair Web Analytics" width="60px"/>
 </a>
 
-# Fair Web Analytics
+# Offen Fair Web Analytics
 
 [![CircleCI](https://circleci.com/gh/offen/offen/tree/development.svg?style=svg)](https://circleci.com/gh/offen/offen/tree/development)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
