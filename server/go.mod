@@ -22,7 +22,7 @@ require (
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/leodido/go-urn v1.2.4 // indirect
 	github.com/leonelquinteros/gotext v1.5.0
-	github.com/lestrrat-go/jwx v1.2.28
+	github.com/lestrrat-go/jwx v1.2.29
 	github.com/mattn/go-runewidth v0.0.13 // indirect
 	github.com/mattn/go-sqlite3 v1.14.8 // indirect
 	github.com/microcosm-cc/bluemonday v1.0.16
@@ -33,10 +33,10 @@ require (
 	github.com/phayes/freeport v0.0.0-20180830031419-95f893ade6f2
 	github.com/schollz/progressbar/v3 v3.8.3
 	github.com/sirupsen/logrus v1.8.1
-	golang.org/x/crypto v0.17.0
-	golang.org/x/net v0.17.0 // indirect
-	golang.org/x/sys v0.15.0
-	golang.org/x/term v0.15.0 // indirect
+	golang.org/x/crypto v0.21.0
+	golang.org/x/net v0.21.0 // indirect
+	golang.org/x/sys v0.18.0
+	golang.org/x/term v0.18.0 // indirect
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
 	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df // indirect
 	gopkg.in/yaml.v2 v2.4.0
