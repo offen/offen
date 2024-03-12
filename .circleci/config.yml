@@ -117,7 +117,7 @@ jobs:
   integration_postgres:
     environment:
       <<: *integration_env
-      OFFEN_DATABASE_DIALECT: postgres
+      OFFEN_DATABASE_DIALECT_FILE: /tmp/dialect_secret
       OFFEN_DATABASE_CONNECTIONSTRING: postgres://circle:test@localhost:5432/circle_test?sslmode=disable
     executor: node-postgres
     working_directory: ~/offen
@@ -125,6 +125,9 @@ jobs:
       - wait_for:
           service: Postgres
           port: 5432
+      - run:
+          name: Populate secret file
+          command: echo -n "postgres" > /tmp/dialect_secret
       - run_integration_tests
 
   integration_mysql:
