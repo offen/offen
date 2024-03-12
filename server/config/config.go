@@ -12,7 +12,7 @@ import (
 	"time"
 
 	"github.com/joho/godotenv"
-	"github.com/kelseyhightower/envconfig"
+	"github.com/offen/envconfig"
 	"github.com/offen/offen/server/keys"
 	"github.com/offen/offen/server/mailer"
 	"github.com/offen/offen/server/mailer/localmailer"

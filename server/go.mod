@@ -19,7 +19,6 @@ require (
 	github.com/jinzhu/gorm v1.9.16
 	github.com/joho/godotenv v1.3.0
 	github.com/json-iterator/go v1.1.12 // indirect
-	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/leodido/go-urn v1.2.4 // indirect
 	github.com/leonelquinteros/gotext v1.5.0
 	github.com/lestrrat-go/jwx v1.2.29
@@ -45,6 +44,8 @@ require (
 	gorm.io/driver/sqlite v1.1.5
 	gorm.io/gorm v1.21.15
 )
+
+require github.com/offen/envconfig v1.5.0
 
 require (
 	github.com/bytedance/sonic v1.9.1 // indirect

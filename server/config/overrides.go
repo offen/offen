@@ -6,7 +6,7 @@ package config
 import (
 	"fmt"
 
-	"github.com/kelseyhightower/envconfig"
+	"github.com/offen/envconfig"
 )
 
 type herokuRuntime struct {
