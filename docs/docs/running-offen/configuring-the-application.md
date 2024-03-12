@@ -62,6 +62,13 @@ OFFEN_DATABASE_CONNECTIONSTRING="/opt/offen/data/db.sqlite"
 
 ## Configuration options
 
+__Heads Up__
+{: .label .label-red }
+
+All values for options can also be read from files (e.g. using Docker secrets).
+To use this feature, use the option key suffixed with `_FILE` and set the path of the file containing the value,
+e.g. `OFFEN_DATABASE_CONNECTIONSTRING=/run/secrets/db_connection_string`.
+
 ### HTTP server
 
 The `SERVER` namespace collects settings that affect the behavior of the HTTP server that is serving the application.

@@ -35,6 +35,28 @@ var ErrPopulatedMissing = errors.New("populated missing secrets")
 // Revision will be set by ldflags on build time
 var Revision string
 
+func init() {
+	envconfig.Lookup = func(key string) (string, bool) {
+		value, okValue := os.LookupEnv(key)
+		location, okFile := os.LookupEnv(key + "_FILE")
+
+		switch {
+		case okValue && !okFile: // only value
+			return value, true
+		case !okValue && okFile: // only file
+			contents, err := os.ReadFile(location)
+			if err != nil {
+				panic(fmt.Errorf("failed to read %s: %s", location, err))
+			}
+			return string(contents), true
+		case okValue && okFile: // both
+			panic(fmt.Errorf("both %s and %s are set!", key, key+"_FILE"))
+		default: // neither, ignore
+			return "", false
+		}
+	}
+}
+
 // SMTPConfigured returns true if a SMTP Host is configured
 func (c *Config) SMTPConfigured() bool {
 	return c.SMTP.Host != ""
