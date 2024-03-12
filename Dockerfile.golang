@@ -16,3 +16,4 @@ WORKDIR /offen
 # configuration is found in the application directories
 # themselves
 RUN go install github.com/markbates/refresh@latest
+RUN git config --global --add safe.directory /offen

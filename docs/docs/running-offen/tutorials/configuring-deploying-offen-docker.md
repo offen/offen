@@ -215,9 +215,9 @@ docker logs offen
 
 ---
 
-## Bonus: Example docker-compose setups
+## Bonus: Example compose setups
 
-docker-compose is an ubiquitous tool for handling multi container setups. Below you will find templates to use for deploying Offen Fair Web Analytics alongside a database. Alternatively, check out our [template repository][deploy-template] which we use to deploy it ourselves.
+Docker compose is an ubiquitous tool for handling multi container setups. Below you will find templates to use for deploying Offen Fair Web Analytics alongside a database. Alternatively, check out our [template repository][deploy-template] which we use to deploy it ourselves.
 
 [deploy-template]: https://github.com/offen/deployment
 

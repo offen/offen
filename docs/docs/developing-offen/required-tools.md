@@ -14,7 +14,7 @@ SPDX-License-Identifier: Apache-2.0
 
 # Required tools
 
-Developing Offen Fair Web Analytics currently requires [Docker][docker] and [docker-compose][] to be installed and working correctly. Both tools are free and available for Linux, Windows and Mac.
+Developing Offen Fair Web Analytics currently requires [Docker][docker] and [the compose plugin][docker-compose] to be installed and working correctly. Both tools are free and available for Linux, Windows and Mac.
 
 If your system knows how to run `make` it will help a lot with common tasks like installing dependencies and building, yet you will still be able to work on Offen Fair Web Analytics without it (this will likely be the case if you are developing on Windows).
 
