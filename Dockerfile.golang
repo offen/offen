@@ -1,7 +1,7 @@
 # Copyright 2020 - Offen Authors <hioffen@posteo.de>
 # SPDX-License-Identifier: Apache-2.0
 
-FROM golang:1.21
+FROM golang:1.22
 
 RUN apt-get update \
   && apt-get install -y \
