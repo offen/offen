@@ -169,7 +169,7 @@ For details on how to get started head over to our [contributing guidelines.](ht
 ---
 
 This repository contains all source code needed to work on Offen Fair Web Analytics, both on the server as well as on the client.
-The development setup requires `docker` and `docker-compose` to be installed.
+The development setup requires `docker` and the `compose` plugin to be installed.
 
 After cloning the repository
 

@@ -22,19 +22,19 @@ setup: dev-build update
 bootstrap: # @HELP Set up and seed databases - **Important**: this deletes any existing data
 bootstrap:
 	@echo "Bootstrapping Server service ..."
-	@docker-compose run --rm server make setup
+	@docker compose run --rm server make setup
 
 LOCALE ?= en
 
 .PHONY: up
 up: # @HELP Start the development server
 up:
-	@LOCALE=${LOCALE} docker-compose up
+	@LOCALE=${LOCALE} docker compose up
 
 .PHONY: down
 down: # @HELP Tear down the development containers
 down:
-	@docker-compose down
+	@docker compose down
 
 .PHONY: extract-strings
 extract-strings: # @HELP Extract user facing strings for localization from source code
@@ -47,15 +47,15 @@ extract-strings:
 .PHONY: test
 test: # @HELP Run unit tests for all subapps
 test:
-	@docker-compose run --rm script npm test
-	@docker-compose run --rm vault npm test
-	@docker-compose run --rm auditorium npm test
-	@docker-compose run --rm server make test
+	@docker compose run --rm script npm test
+	@docker compose run --rm vault npm test
+	@docker compose run --rm auditorium npm test
+	@docker compose run --rm server make test
 
 .PHONY: integration
 integration: # @HELP Run integration tests
 integration:
-	@docker-compose \
+	@docker compose \
 		-p offen_integration \
 		-f docker-compose.integration.yml run --rm \
 		integration npm t
@@ -63,27 +63,27 @@ integration:
 .PHONY: dev-build
 dev-build: # @HELP Build the Docker images for local development
 dev-build:
-	@docker-compose build
+	@docker compose build
 
 .PHONY: update
 update: # @HELP Install and/or update dependencies for the subapp containers
 update:
 	@echo "Installing / updating dependencies ..."
-	@docker-compose run --rm script npm ci
-	@docker-compose run --rm vault npm ci
-	@docker-compose run --rm auditorium npm ci
-	@docker-compose run --rm server go mod download -x
+	@docker compose run --rm script npm ci
+	@docker compose run --rm vault npm ci
+	@docker compose run --rm auditorium npm ci
+	@docker compose run --rm server go mod download -x
 
 
 .PHONY: migrate
 migrate: # @HELP Apply pending migrations to the development database
 migrate:
-	@docker-compose run --rm server make migrate
+	@docker compose run --rm server make migrate
 
 .PHONY: secret
 secret: # @HELP Create an application secret
 secret:
-	@docker-compose run server make secret
+	@docker compose run server make secret
 
 TARGETS ?= linux/amd64
 LDFLAGS ?= -static
@@ -126,16 +126,16 @@ build-extension:
 .PHONY: setup-docs
 setup-docs: # @HELP Setup the development environment for working on the docs site
 setup-docs:
-	@docker-compose -p offen_docs -f docker-compose.docs.yml build
-	@docker-compose -p offen_docs -f docker-compose.docs.yml run --rm \
+	@docker compose -p offen_docs -f docker-compose.docs.yml build
+	@docker compose -p offen_docs -f docker-compose.docs.yml run --rm \
 		docs_jekyll bundle install
-	@docker-compose -p offen_docs -f docker-compose.docs.yml run --rm \
+	@docker compose -p offen_docs -f docker-compose.docs.yml run --rm \
 		docs_jekyll bundle exec just-the-docs rake search:init
 
 .PHONY: docs
 docs: # @HELP Run the development environment for the docs site
 docs:
-	@docker-compose -p offen_docs -f docker-compose.docs.yml up
+	@docker compose -p offen_docs -f docker-compose.docs.yml up
 
 .PHONY: build-docs
 build-docs: # @HELP Build the static assets for the docs site
