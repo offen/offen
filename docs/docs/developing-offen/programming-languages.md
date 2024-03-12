@@ -20,7 +20,7 @@ The server side application is written in [Go][golang] while the client is writt
 
 ## Go
 
-Go is currently at version 1.17 and all code in Offen Fair Web Analytics can expect all features present in that version. Formatting happens using [`go fmt`][fmt] and [`go vet`][vet] is enforced in CI. In case you would like to contribute to Offen Fair Web Analytics, but haven't used Go before don't be scared. It is easy to pick up and has great learning resources, head over to the [Go wiki][wiki] if you're interested.
+Go is currently at version 1.22 and all code in Offen Fair Web Analytics can expect all features present in that version. Formatting happens using [`go fmt`][fmt] and [`go vet`][vet] is enforced in CI. In case you would like to contribute to Offen Fair Web Analytics, but haven't used Go before don't be scared. It is easy to pick up and has great learning resources, head over to the [Go wiki][wiki] if you're interested.
 
 [fmt]: https://blog.golang.org/go-fmt-your-code
 [vet]: https://golang.org/cmd/vet/
