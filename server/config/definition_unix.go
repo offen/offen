@@ -36,6 +36,7 @@ type Config struct {
 	}
 	Secret Bytes
 	SMTP   struct {
+		Authtype string `default:"LOGIN"`
 		User     string
 		Password string
 		Host     string

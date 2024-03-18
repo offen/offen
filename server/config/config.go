@@ -70,7 +70,7 @@ func (c *Config) NewMailer() (mailer.Mailer, error) {
 		return localmailer.New()
 	}
 	if c.SMTPConfigured() {
-		return smtpmailer.New(c.SMTP.Host, c.SMTP.User, c.SMTP.Password, c.SMTP.Port)
+		return smtpmailer.New(c.SMTP.Host, c.SMTP.User, c.SMTP.Password, c.SMTP.Authtype, c.SMTP.Port)
 	}
 	return sendmailmailer.New()
 }

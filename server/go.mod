@@ -9,7 +9,6 @@ require (
 	github.com/felixge/httpsnoop v1.0.2
 	github.com/gin-contrib/location v0.0.2
 	github.com/gin-gonic/gin v1.9.1
-	github.com/go-gomail/gomail v0.0.0-20160411212932-81ebce5c23df
 	github.com/go-gormigrate/gormigrate/v2 v2.0.0
 	github.com/go-playground/validator/v10 v10.14.0 // indirect
 	github.com/goccy/go-json v0.10.2 // indirect
@@ -32,12 +31,11 @@ require (
 	github.com/phayes/freeport v0.0.0-20180830031419-95f893ade6f2
 	github.com/schollz/progressbar/v3 v3.8.3
 	github.com/sirupsen/logrus v1.8.1
+	github.com/wneessen/go-mail v0.4.1
 	golang.org/x/crypto v0.21.0
 	golang.org/x/net v0.21.0 // indirect
 	golang.org/x/sys v0.18.0
 	golang.org/x/term v0.18.0 // indirect
-	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
-	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df // indirect
 	gopkg.in/yaml.v2 v2.4.0
 	gorm.io/driver/mysql v1.1.2
 	gorm.io/driver/postgres v1.1.1
