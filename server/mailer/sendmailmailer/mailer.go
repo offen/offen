@@ -16,8 +16,8 @@ import (
 )
 
 // New creates a new Mailer that sends email using a local sendmail installation
-func New() mailer.Mailer {
-	return &sendmailMailer{}
+func New() (mailer.Mailer, error) {
+	return &sendmailMailer{}, nil
 }
 
 type sendmailMailer struct{}

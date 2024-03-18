@@ -9,9 +9,9 @@ import (
 )
 
 // New creates a new Mailer that sends email using the given SMTP configuration
-func New(endpoint, user, password string, port int) mailer.Mailer {
+func New(endpoint, user, password string, port int) (mailer.Mailer, error) {
 	d := gomail.NewDialer(endpoint, port, user, password)
-	return &smtpMailer{d}
+	return &smtpMailer{d}, nil
 }
 
 type smtpMailer struct {
