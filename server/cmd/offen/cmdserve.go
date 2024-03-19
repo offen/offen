@@ -89,6 +89,11 @@ func cmdServe(subcommand string, flags []string) {
 		a.logger.WithError(emailErr).Fatal("Failed parsing template files, cannot continue")
 	}
 
+	mailer, err := a.config.NewMailer()
+	if err != nil {
+		a.logger.WithError(err).Fatal("Failed to initialize mailer")
+	}
+
 	srv := &http.Server{
 		Addr: fmt.Sprintf("0.0.0.0:%d", a.config.Server.Port),
 		Handler: router.New(
@@ -98,7 +103,7 @@ func cmdServe(subcommand string, flags []string) {
 			router.WithEmails(emails),
 			router.WithConfig(a.config),
 			router.WithFS(fs),
-			router.WithMailer(a.config.NewMailer()),
+			router.WithMailer(mailer),
 		),
 	}
 	go func() {

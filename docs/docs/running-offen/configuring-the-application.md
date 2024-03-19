@@ -211,6 +211,13 @@ Default value `no-reply@offen.dev`.
 
 The From address used when sending transactional email.
 
+### OFFEN_SMTP_AUTHTYPE
+{: .no_toc }
+
+Default value `LOGIN`.
+
+The SMTP authentication type used when sending transactional email. Supported types are: `LOGIN`, `PLAIN`, `CRAM-MD5`, `NOAUTH`.
+
 ---
 
 ### Secrets

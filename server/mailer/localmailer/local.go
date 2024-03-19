@@ -11,8 +11,8 @@ import (
 
 // New creates a new Mailer that prints the mail to stdout instead of sending
 // actual email. It is supposed to be used in development only.
-func New() mailer.Mailer {
-	return &localMailer{}
+func New() (mailer.Mailer, error) {
+	return &localMailer{}, nil
 }
 
 type localMailer struct{}

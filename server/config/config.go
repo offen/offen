@@ -65,12 +65,12 @@ func (c *Config) SMTPConfigured() bool {
 // NewMailer returns a new mailer that is suitable for the given config.
 // In development, mail content will be printed to stdout. In production,
 // SMTP is preferred and falls back to sendmail if no SMTP credentials are given.
-func (c *Config) NewMailer() mailer.Mailer {
+func (c *Config) NewMailer() (mailer.Mailer, error) {
 	if c.App.Development {
 		return localmailer.New()
 	}
 	if c.SMTPConfigured() {
-		return smtpmailer.New(c.SMTP.Host, c.SMTP.User, c.SMTP.Password, c.SMTP.Port)
+		return smtpmailer.New(c.SMTP.Host, c.SMTP.User, c.SMTP.Password, c.SMTP.Authtype, c.SMTP.Port)
 	}
 	return sendmailmailer.New()
 }
