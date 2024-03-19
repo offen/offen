@@ -4,7 +4,6 @@
 package smtpmailer
 
 import (
-	"errors"
 	"fmt"
 	"github.com/offen/offen/server/mailer"
 	"github.com/wneessen/go-mail"
@@ -29,7 +28,7 @@ func New(endpoint, user, password, authtype string, port int) (mailer.Mailer, er
 		c.SetSMTPAuth(mail.SMTPAuthCramMD5)
 	case "noauth":
 	default:
-		return nil, errors.New("configured SMTP auth type is not supported")
+		return nil, fmt.Errorf("configured SMTP auth type %s is not supported", authtype)
 	}
 
 	return &smtpMailer{c}, nil
