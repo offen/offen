@@ -27,6 +27,7 @@ func New(endpoint, user, password, authtype string, port int) (mailer.Mailer, er
 		c.SetSMTPAuth(mail.SMTPAuthPlain)
 	case "cram-md5":
 		c.SetSMTPAuth(mail.SMTPAuthCramMD5)
+	case "noauth":
 	default:
 		return nil, errors.New("configured SMTP auth type is not supported")
 	}
