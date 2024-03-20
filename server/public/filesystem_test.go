@@ -87,17 +87,23 @@ func TestLocalizedFS_rev(t *testing.T) {
 			"no manifest",
 			"en",
 			"/file.txt",
-			"/file.txt",
+			"/en/file.txt",
 		},
 		{
 			"match",
 			"fr",
 			"/truc.txt",
-			"/truc-abc123.txt",
+			"/fr/truc-abc123.txt",
 		},
 		{
 			"no match",
 			"fr",
+			"/file.txt",
+			"/fr/file.txt",
+		},
+		{
+			"empty locale",
+			"",
 			"/file.txt",
 			"/file.txt",
 		},
@@ -110,7 +116,7 @@ func TestLocalizedFS_rev(t *testing.T) {
 				root:   http.FS(testFS),
 				prefix: "/testdata",
 			}
-			result := l.rev(test.lookup)
+			result := l.rev(test.lookup, test.locale)
 			if test.expected != result {
 				t.Errorf("Expected %v, got %v", test.expected, result)
 			}
