@@ -1,7 +1,7 @@
 ---
 layout: default
 title: For users
-nav_order: 4
+nav_order: 2
 description: Explaining user facing features of the Offen Fair Web Analytics software.
 has_children: true
 permalink: /using-offen/
