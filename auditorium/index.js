@@ -50,7 +50,12 @@ sf('./styles/extra-margins.css')
 sf('./styles/loading-overlay.css')
 sf('./styles/first-letter-uppercase.css')
 
-const vaultInstance = vault(process.env.VAULT_HOST || (window.location.origin + '/vault'))
+const vaultUrl = new window.URL(process.env.VAULT_HOST || (window.location.origin + '/vault'))
+const currentUrl = new window.URL(window.location.href)
+if (currentUrl.searchParams.has('locale')) {
+  vaultUrl.searchParams.append('locale', currentUrl.searchParams.get('locale'))
+}
+const vaultInstance = vault(vaultUrl.toString())
 
 const middlewares = [
   thunk.withExtraArgument(

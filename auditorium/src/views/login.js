@@ -24,7 +24,7 @@ const LoginView = (props) => {
         />
       </div>
       <div class='mw8 center br0 br2-ns'>
-        <UserAuditorium />
+        <UserAuditorium queryParams={props.queryParams} />
       </div>
     </div>
   )
@@ -34,7 +34,9 @@ const mapDispatchToProps = {
   handleLogin: authentication.login
 }
 
-module.exports = connect(null, mapDispatchToProps)(
+const mapStateToProps = (state) => ({ queryParams: state.queryParams })
+
+module.exports = connect(mapStateToProps, mapDispatchToProps)(
   withLayout()(
     LoginView
   )

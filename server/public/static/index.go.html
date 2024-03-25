@@ -9,13 +9,17 @@
     <link rel="stylesheet" type="text/css" href="/tachyons.min.css">
     {{ template "meta" . }}
     {{ if .rootAccount }}
-      <script src="/script.js" data-use-api data-account-id="{{ .rootAccount }}"></script>
+      {{ if .locale }}
+        <script src="/script.js" data-locale="{{ .locale }}" data-use-api data-account-id="{{ .rootAccount }}"></script>
+      {{ else }}
+        <script src="/script.js" data-use-api data-account-id="{{ .rootAccount }}"></script>
+      {{ end }}
     {{ end }}
   </head>
   <body class="bg-washed-yellow">
     <div id="app-host" role="main"></div>
-    <script src="{{ rev "/auditorium/vendor.js" }}"></script>
-    <script src="{{ rev "/auditorium/index.js" }}"></script>
+    <script src="{{ rev "/auditorium/vendor.js" .locale }}"></script>
+    <script src="{{ rev "/auditorium/index.js" .locale }}"></script>
     <noscript>
       <div class="f5 roboto dark-gray">
         <div class="w-100 h3 bg-black-05">
@@ -180,8 +184,8 @@
       </head>
       <body>
           <div id="host"></div>
-          <script src="{{ rev "/vault/vendor.js" }}"></script>
-          <script src="{{ rev "/vault/index.js" }}"></script>
+          <script src="{{ rev "/vault/vendor.js" .locale }}"></script>
+          <script src="{{ rev "/vault/index.js" .locale }}"></script>
           {{ with .accountStyles }}
             <style>
               {{ . }}

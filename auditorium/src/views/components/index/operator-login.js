@@ -5,6 +5,7 @@
 
 /** @jsx h */
 const { h } = require('preact')
+const ForwardingAnchor = require('./../_shared/forwarding-anchor')
 
 const OperatorLogin = (props) => {
   return (
@@ -15,9 +16,9 @@ const OperatorLogin = (props) => {
         </h3>
       </div>
       <div class='w-100 w-40-ns link dim tc'>
-        <a href='/login/' class='f5 tc no-underline bn ph3 pv2 dib br1 white bg-mid-gray'>
+        <ForwardingAnchor href='/login/' class='f5 tc no-underline bn ph3 pv2 dib br1 white bg-mid-gray'>
           {__('Log in as operator')}
-        </a>
+        </ForwardingAnchor>
       </div>
     </div>
   )

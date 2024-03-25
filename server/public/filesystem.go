@@ -16,6 +16,7 @@ import (
 )
 
 // FS provides static assets for the server to serve
+//
 //go:embed static
 var FS embed.FS
 
@@ -32,7 +33,10 @@ type LocalizedFS struct {
 // rev is a function that can be used to look up revisioned assets
 // in the given file system by specifying their unrevisioned name. In case no
 // revisioned asset can be found the original asset name is returned.
-func (l *LocalizedFS) rev(location string) string {
+func (l *LocalizedFS) rev(location, locale string) string {
+	if locale != "" {
+		location = "/" + path.Join(locale, location)
+	}
 	dir := path.Dir(location)
 	manifestFile, manifestErr := l.Open(path.Join(dir, "rev-manifest.json"))
 	if manifestErr != nil {

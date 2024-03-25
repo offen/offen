@@ -18,6 +18,7 @@ func (rt *router) getVault(c *gin.Context) {
 	if accountID == "" {
 		c.HTML(http.StatusOK, "vault", map[string]interface{}{
 			"accountStyles": nil,
+			"locale":        c.Query("locale"),
 		})
 		return
 	}
@@ -34,6 +35,7 @@ func (rt *router) getVault(c *gin.Context) {
 
 		c.HTML(http.StatusOK, "vault", map[string]interface{}{
 			"accountStyles": template.CSS(cachedStyles),
+			"locale":        c.Query("locale"),
 		})
 		return
 	}
@@ -70,6 +72,8 @@ func (rt *router) getVault(c *gin.Context) {
 
 	c.HTML(http.StatusOK, "vault", map[string]interface{}{
 		"accountStyles": template.CSS(styles),
+		"lang":          rt.config.App.Locale,
+		"locale":        c.Query("locale"),
 	})
 }
 
@@ -85,5 +89,6 @@ func (rt *router) getIndex(c *gin.Context) {
 	c.HTML(http.StatusOK, "index", map[string]interface{}{
 		"rootAccount": rt.config.App.RootAccount,
 		"lang":        rt.config.App.Locale,
+		"locale":      c.Query("locale"),
 	})
 }

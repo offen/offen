@@ -14,6 +14,7 @@ var events = require('./src/events')
 var accountId = document.currentScript && document.currentScript.dataset.accountId
 var scriptHost = document.currentScript && document.currentScript.src
 var useApi = document.currentScript && 'useApi' in document.currentScript.dataset
+var scriptLocale = document.currentScript && document.currentScript.dataset.locale
 
 var scriptUrl = ''
 try {
@@ -24,6 +25,9 @@ function main () {
   var vaultUrl = new window.URL(process.env.VAULT_HOST || scriptUrl + '/vault')
   if (accountId) {
     vaultUrl.searchParams.set('accountId', accountId)
+  }
+  if (scriptLocale) {
+    vaultUrl.searchParams.set('locale', scriptLocale)
   }
   var app = router(vaultUrl.toString())
   app.on('PAGEVIEW', supportMiddleware, function (context, send, next) {

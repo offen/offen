@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Known issues
-nav_order: 17
+nav_order: 18
 description: "Known issues when running Offen Fair Web Analytics and their possible workarounds"
 permalink: /running-offen/known-issues/
 parent: For operators
