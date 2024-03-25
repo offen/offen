@@ -32,7 +32,6 @@ const flashReducer = require('./src/reducers/flash')
 const staleReducer = require('./src/reducers/stale')
 const modelReducer = require('./src/reducers/model')
 const onboardingCompletedReducer = require('./src/reducers/onboarding-completed')
-const extensionDataReducer = require('./src/reducers/extension-data')
 const redirectMiddleware = require('./src/middleware/redirect')
 const pushStateMiddleware = require('./src/middleware/push-state')
 const flashMessagesMiddleware = require('./src/middleware/flash-messages')
@@ -78,8 +77,7 @@ const store = createStore(
     stale: staleReducer,
     setupStatus: setupStatusReducer,
     onboardingCompleted: onboardingCompletedReducer,
-    queryParams: queryParamsReducer,
-    extensionData: extensionDataReducer
+    queryParams: queryParamsReducer
   }),
   applyMiddleware(
     ...middlewares
