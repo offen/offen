@@ -8,6 +8,7 @@ const { h, Fragment } = require('preact')
 
 const Headline = require('./../_shared/headline')
 const Paragraph = require('./../_shared/paragraph')
+const ForwardingAnchor = require('./../_shared/forwarding-anchor')
 
 module.exports = (props) => {
   let mainQuestion = null
@@ -19,7 +20,9 @@ module.exports = (props) => {
           {__('How can I review and delete my usage data or opt out?')}
         </Headline>
         <Paragraph class='mt0 mb4'>
-          {__('<a href="%s" class="%s">Go to the Auditorium.</a>', '/auditorium/', 'b link dim dark-green')}
+          <ForwardingAnchor href='/auditorium/' class='b link dim dark-green'>
+            {__('Go to the Auditorium.')}
+          </ForwardingAnchor>
         </Paragraph>
       </Fragment>
     )
