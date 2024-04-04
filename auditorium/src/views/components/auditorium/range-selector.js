@@ -10,6 +10,7 @@ const classnames = require('classnames')
 
 const ExplainerIcon = require('./explainer-icon')
 const DatePicker = require('./date-picker')
+const ForwardingAnchor = require('./../_shared/forwarding-anchor')
 
 // possible values for `retentionPeriod` are:
 // `6months`, '12weeks', '6weeks', '30days', '7days'
@@ -77,7 +78,7 @@ const RangeSelector = (props) => {
             )
           }
           return (
-            <a
+            <ForwardingAnchor
               href={url}
               class={activeRange
                 ? 'dark-green b link dim dib mb2 mr1 pv2 ph1 bt bw2 b--dark-green'
@@ -86,7 +87,7 @@ const RangeSelector = (props) => {
               onclick={() => setShowDatepicker(false)}
             >
               {range.display}
-            </a>
+            </ForwardingAnchor>
           )
         })()}
       </li>

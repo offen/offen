@@ -5,6 +5,7 @@
 
 /** @jsx h */
 const { h } = require('preact')
+const ForwardingAnchor = require('./forwarding-anchor')
 
 const Container = (props) => {
   return (
@@ -25,13 +26,13 @@ const Link = (props) => {
   }
   return (
     <li {...rest}>
-      <a
+      <ForwardingAnchor
         href={href}
         class={buttonClass}
         aria-current={isActive ? 'page' : 'false'}
       >
         {props.children}
-      </a>
+      </ForwardingAnchor>
     </li>
   )
 }
