@@ -33,7 +33,7 @@ require (
 	github.com/sirupsen/logrus v1.8.1
 	github.com/wneessen/go-mail v0.4.1
 	golang.org/x/crypto v0.21.0
-	golang.org/x/net v0.21.0 // indirect
+	golang.org/x/net v0.23.0 // indirect
 	golang.org/x/sys v0.18.0
 	golang.org/x/term v0.18.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0
