@@ -661,9 +661,8 @@ msgstr "Você precisa confirmar esta ação com suas credenciais."
 msgid "Your email"
 msgstr "Seu e-mail"
 
-#, fuzzy
 msgid "Not the operator of this installation? Manage your data in the <a href=\"%s\" class=\"%s\" >User Auditorium.</a>"
-msgstr "Não é o operador desta instalação? Gerencie seus dados no <a href=\"/auditorium/\" class=\"%s\" >Auditorium do Usuário.</a>"
+msgstr "Não é o operador desta instalação? Gerencie seus dados no <a href=\"%s\" class=\"%s\" >Auditorium do Usuário.</a>"
 
 msgid "You are logged in as operator."
 msgstr "Você está logado como operador."

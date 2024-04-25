@@ -661,9 +661,8 @@ msgstr "Bạn cần xác nhận thao tác này với thông tin đăng nhập c�
 msgid "Your email"
 msgstr "Email của bạn"
 
-#, fuzzy
 msgid "Not the operator of this installation? Manage your data in the <a href=\"%s\" class=\"%s\" >User Auditorium.</a>"
-msgstr "Không phải là điều hành viên của bản cài đặt này? Quản lý dữ liệu dùng web của bạn ở <a href=\"/auditorium/\" class=\"%s\" >Auditorium người dùng.</a>"
+msgstr "Không phải là điều hành viên của bản cài đặt này? Quản lý dữ liệu dùng web của bạn ở <a href=\"%s\" class=\"%s\" >Auditorium người dùng.</a>"
 
 msgid "You are logged in as operator."
 msgstr "Bạn đã đăng nhập vào trong vai trò người điều hành."
@@ -746,7 +745,6 @@ msgstr "Có vẻ như trình duyệt của bạn đang chặn cookie."
 msgid "How can I review and delete my usage data or opt out?"
 msgstr "Làm sao để tôi có thể xem qua và xoá đi dữ liệu dùng web của tôi hay thu hồi phép?"
 
-#, fuzzy
 msgid "Go to the Auditorium."
 msgstr "Mở Auditorium"
 

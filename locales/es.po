@@ -663,9 +663,8 @@ msgstr "Debe confirmar esta acción con sus credenciales."
 msgid "Your email"
 msgstr "Su correo electrónico"
 
-#, fuzzy
 msgid "Not the operator of this installation? Manage your data in the <a href=\"%s\" class=\"%s\" >User Auditorium.</a>"
-msgstr "¿No es el operador de esta instalación? Gestione sus datos en el <a href=\"/auditorium/\" class=\"%s\" >Auditorium del usuario.</a>"
+msgstr "¿No es el operador de esta instalación? Gestione sus datos en el <a href=\"%s\" class=\"%s\" >Auditorium del usuario.</a>"
 
 msgid "You are logged in as operator."
 msgstr "Ha iniciado sesión como operador."
@@ -748,7 +747,6 @@ msgstr "Parece que su navegador está bloqueando las cookies."
 msgid "How can I review and delete my usage data or opt out?"
 msgstr "¿Cómo puedo revisar y eliminar mis datos de uso o denegar mi autorización?"
 
-#, fuzzy
 msgid "Go to the Auditorium."
 msgstr "Abrir Auditorium"
 
