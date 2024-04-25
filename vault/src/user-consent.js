@@ -59,7 +59,13 @@ function askForConsent (styleHost) {
 
     function render () {
       var host = document.body.querySelector('#host')
+      var locale
+      var url = new window.URL(window.location.href)
+      if (url.searchParams.has('locale')) {
+        locale = url.searchParams.get('locale')
+      }
       var banner = consentBanner.bannerView({
+        locale: locale,
         consentGiven: consentGiven,
         handleAllow: allowHandler,
         handleDeny: denyHandler,
