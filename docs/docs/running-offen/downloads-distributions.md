@@ -135,13 +135,6 @@ You can deploy Offen Fair Web Analytics to Heroku using our [deployment template
 [heroku-repo]: https://github.com/offen/heroku
 [heroku-tutorial]: /running-offen/tutorials/configuring-deploying-offen-heroku/
 
-### DigitalOcean
-
-Using [Packer][packer] you can build our [DigitalOcean image][do-repo] and use it to create a new Droplet running Offen Fair Web Analytics.
-
-[do-repo]: https://github.com/offen/digitalocean
-[packer]: https://www.packer.io/
-
 ### YunoHost
 
 If you use YunoHost to self-host your applications, you can install our [packaged Offen app][ynh-repo] to get Offen Fair Web Analytics up and running:
