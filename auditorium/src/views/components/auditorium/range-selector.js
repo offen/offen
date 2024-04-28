@@ -37,24 +37,9 @@ const RangeSelector = (props) => {
     const isConfigured = 'configured' in range
       ? range.configured(retentionPeriod)
       : true
-    let url = window.location.pathname
-    const search = new window.URLSearchParams(queryParams)
-    search.delete('from')
-    search.delete('to')
+    const url = window.location.pathname
     const activeRange = !from && !to &&
       JSON.stringify({ range: currentRange, resolution }) === JSON.stringify(range.query || {})
-
-    if (range.query) {
-      for (const key in range.query) {
-        search.set(key, range.query[key])
-      }
-    } else {
-      search.delete('range')
-      search.delete('resolution')
-    }
-    if (search.toString()) {
-      url += '?' + search
-    }
 
     return (
       <li
@@ -80,6 +65,8 @@ const RangeSelector = (props) => {
           return (
             <ForwardingAnchor
               href={url}
+              values={range.query}
+              skip={['from', 'to', ...(range.query ? [] : ['range', 'resolution'])]}
               class={activeRange
                 ? 'dark-green b link dim dib mb2 mr1 pv2 ph1 bt bw2 b--dark-green'
                 : 'dark-green b link dim dib mb2 mr1 pv2 ph1 mt1'}

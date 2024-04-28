@@ -52,7 +52,7 @@ function forward (href, queryParams, values = {}, skip = []) {
       forwardedHref.searchParams.set(key, values[key])
     }
 
-    updatedHref = forwardedHref.toString()
+    updatedHref = forwardedHref.toString().replace(forwardedHref.origin, '')
   }
   return updatedHref
 }
