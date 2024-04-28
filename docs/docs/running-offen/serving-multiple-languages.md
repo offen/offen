@@ -4,7 +4,7 @@ title: Serving multiple languages
 nav_order: 17
 description: How to use Offen on a multi-language site
 permalink: /running-offen/serving-multiple-languages/
-parent: Running Offen
+parent: For operators
 ---
 
 <!--
