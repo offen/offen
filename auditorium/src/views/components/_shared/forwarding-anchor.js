@@ -14,12 +14,13 @@ const ForwardingAnchor = (props) => {
     queryParams,
     values = {},
     skip = [],
+    pick = [],
     ...rest
   } = props
 
   return (
     <a
-      href={forward(href, queryParams, values, skip)}
+      href={forward(href, queryParams, values, skip, pick)}
       {...rest}
     >
       {children}
@@ -27,7 +28,7 @@ const ForwardingAnchor = (props) => {
   )
 }
 
-function forward (href, queryParams, values = {}, skip = []) {
+function forward (href, queryParams, values = {}, skip = [], pick = []) {
   let updatedHref = href
   if (queryParams) {
     let isFullUrl = false
@@ -41,6 +42,11 @@ function forward (href, queryParams, values = {}, skip = []) {
       : new window.URL(href, window.location.origin)
 
     for (const key in queryParams) {
+      if (pick.length) {
+        if (pick.indexOf(key) === -1) {
+          continue
+        }
+      }
       forwardedHref.searchParams.set(key, queryParams[key])
     }
 

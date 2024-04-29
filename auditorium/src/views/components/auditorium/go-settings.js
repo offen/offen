@@ -7,6 +7,7 @@
 const { h } = require('preact')
 
 const Collapsible = require('./../_shared/collapsible')
+const ForwardingAnchor = require('./../_shared/forwarding-anchor')
 const classnames = require('classnames')
 
 const GoSettings = (props) => {
@@ -45,13 +46,14 @@ const GoSettings = (props) => {
                 {__('Share all accounts, create a new one, change your email address and password, log out from Offen Fair Web Analytics')}
               </p>
               <div class='link dim'>
-                <a
+                <ForwardingAnchor
                   href='/console/'
+                  pick={['locale']}
                   data-testid='auditorium/console-link'
                   class='w-100 w-auto-ns f5 tc no-underline bn dib br1 ph3 pv2 mr0 mr2-ns mb3 white bg-mid-gray'
                 >
                   {__('Open admin console')}
-                </a>
+                </ForwardingAnchor>
               </div>
             </div>
           )

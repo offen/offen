@@ -55,7 +55,7 @@ const Form = forwardRef((props, ref) => {
           {__('Log in')}
         </SubmitButton>
         <div class='mb3'>
-          <ForwardingAnchor class='b link dim dark-green' href='/forgot-password/'>
+          <ForwardingAnchor pick={['locale']} class='b link dim dark-green' href='/forgot-password/'>
             {__('Forgot password?')}
           </ForwardingAnchor>
         </div>

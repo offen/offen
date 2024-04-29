@@ -32,7 +32,7 @@ const Layout = (props) => {
     <div class='f5 roboto dark-gray'>
       <div class='w-100 bg-black-05'>
         <div class='mw8 center flex pb3 pt2 viewport-padding' id='headline'>
-          <ForwardingAnchor href='/' class='dim link flex'>
+          <ForwardingAnchor pick={['locale']} href='/' class='dim link flex'>
             <img src={urify(path.join(__dirname, 'offen-icon-black.svg'))} alt='Offen logo' width='37' height='40' class='ma0 mt1 mr3' />
             <h1 class='dib dark-gray f3 f2-ns normal ma0 margin-header'>{props.headline || __('Offen Fair Web Analytics')}</h1>
           </ForwardingAnchor>
