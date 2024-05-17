@@ -4,10 +4,13 @@
 package smtpmailer
 
 import (
+	"context"
 	"fmt"
-	"github.com/offen/offen/server/mailer"
-	"github.com/wneessen/go-mail"
 	"strings"
+
+	"github.com/wneessen/go-mail"
+
+	"github.com/offen/offen/server/mailer"
 )
 
 // New creates a new Mailer that sends email using the given SMTP configuration
@@ -50,5 +53,13 @@ func (s *smtpMailer) Send(from, to, subject, body string) error {
 	msg.SetBodyString(mail.TypeTextPlain, body)
 	msg.SetUserAgent("Offen Fair Web Analytics")
 
-	return s.DialAndSend(msg)
+	ctx := context.Background()
+	if err := s.Client.DialWithContext(ctx); err != nil {
+		return fmt.Errorf("failed to dial SMTP client: %w", err)
+	}
+	if err := s.Client.Send(msg); err != nil {
+		return fmt.Errorf("failed to send message via SMTP: %w", err)
+	}
+	_ = s.Client.Close()
+	return nil
 }
