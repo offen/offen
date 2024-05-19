@@ -5,9 +5,19 @@
 
 /** @jsx h */
 const { h } = require('preact')
+const _ = require('underscore')
 
 const Paragraph = (props) => {
   const { children, ...otherProps } = props
+  if (!_.isString(children)) {
+    return (
+      <p
+        {...otherProps}
+      >
+        {children}
+      </p>
+    )
+  }
   return (
     <p
       {...otherProps}
