@@ -21,5 +21,39 @@ describe('src/events.js', function () {
       assert.deepStrictEqual(Object.keys(event2), ['type', 'href', 'referrer', 'pageload', 'isMobile'])
       assert.strictEqual(event2.pageload, null)
     })
+    context('with relative canonical links', function () {
+      let link
+      beforeEach(function () {
+        link = document.createElement('link')
+        link.setAttribute('rel', 'canonical')
+        link.setAttribute('href', '/foo')
+        document.head.append(link)
+      })
+      it('resolves relative canonical links', function () {
+        var event = events.pageview(false)
+        assert.strictEqual(event.href, window.location.origin + '/foo')
+        assert.ok(event.rawHref)
+      })
+      afterEach(function () {
+        document.head.removeChild(link)
+      })
+    })
+    context('with absolute canonical links', function () {
+      let link
+      beforeEach(function () {
+        link = document.createElement('link')
+        link.setAttribute('rel', 'canonical')
+        link.setAttribute('href', 'https://example.com/bar')
+        document.head.append(link)
+      })
+      it('uses the full link', function () {
+        var event = events.pageview(false)
+        assert.strictEqual(event.href, 'https://example.com/bar')
+        assert.ok(event.rawHref)
+      })
+      afterEach(function () {
+        document.head.removeChild(link)
+      })
+    })
   })
 })
