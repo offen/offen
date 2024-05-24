@@ -30,7 +30,6 @@ __Software__
 - [Customize](#customize)
 - [Test drive](#test-drive)
 - [License](#license)
-- [Project status](#project-status)
 
 __Community__
 - [Feedback and contributions welcome](#feedback-and-contributions-welcome)
@@ -153,14 +152,6 @@ See the [NOTICE][notice] file for license information on works that get bundled 
 [license-cc]: https://github.com/offen/offen/blob/development/LICENSES/CC-BY-NC-ND-4.0.txt
 [notice]: https://github.com/offen/offen/blob/development/NOTICE
 
-## Project status
-
-__Offen Fair Web Analytics is in active development.__  
-Check our [roadmap][] and [blog][] for detailed updates on what we are working on right now and what's up next.
-
-[roadmap]: https://github.com/offen/offen/projects/1
-[blog]: https://www.offen.dev/blog/
-
 ## Feedback and contributions welcome
 
 Found an issue or want to add something? Please do not hesitate to file an issue or open a pull request (or send an email in case you don't want to use GitHub).
@@ -223,7 +214,7 @@ This will serve the documentation site on <https://localhost:4000>.
 
 [![NLnet Foundation](https://offen.github.io/press-kit/external-material/nlnet-logo.svg)](https://nlnet.nl/)
 
-We are happy to work with [NLnet Foundation,](https://nlnet.nl/) which actively supports our efforts as part of its [Next Generation Internet](https://nlnet.nl/NGI/) initiative.
+We are happy to work with [NLnet Foundation,](https://nlnet.nl/) which has supported our efforts as part of its [Next Generation Internet](https://nlnet.nl/NGI/) initiative.
 
 <a href="https://www.browserstack.com/">
   <img src="https://offen.github.io/press-kit/external-material/browserstack-logo.svg" width="160">
