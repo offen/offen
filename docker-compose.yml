@@ -1,8 +1,6 @@
 #  Copyright 2020-2021 - Offen Authors <hioffen@posteo.de>
 #  SPDX-License-Identifier: Apache-2.0
 
-version: '3'
-
 services:
   proxy:
     image: nginx:1.17-alpine
