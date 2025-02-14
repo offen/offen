@@ -388,7 +388,9 @@ commands:
     steps:
       - run:
           name: Install npm 6 globally
-          command: sudo npm i -g npm@6
+          command: |
+            sudo npm i -g npm@6
+            npm --version
 
 orbs:
   docker: circleci/docker@2.1.4
