@@ -20,6 +20,8 @@ COPY ./auditorium /code/auditorium
 COPY ./banner.txt /code/banner.txt
 COPY ./locales /code/auditorium/locales
 WORKDIR /code/auditorium
+# This does not work right now
+COPY --from=script /code/script/dist/ /script/
 RUN cp -a /code/deps/node_modules /code/auditorium/
 ENV NODE_ENV production
 RUN npm run build
