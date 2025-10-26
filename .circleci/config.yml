@@ -401,15 +401,15 @@ x-docker-pull-creds: &docker-pull-creds
 executors:
   golang:
     docker:
-      - image: cimg/go:1.22
+      - image: cimg/go:1.25
         auth: *docker-pull-creds
   node:
     docker:
-      - image: cimg/node:16.13-browsers
+      - image: cimg/node:22.21.0-browsers
         auth: *docker-pull-creds
   node-postgres:
     docker:
-      - image: cimg/node:16.13-browsers
+      - image: cimg/node:22.21.0-browsers
         auth: *docker-pull-creds
       - image: cimg/postgres:15.0
         auth: *docker-pull-creds
@@ -418,7 +418,7 @@ executors:
           POSTGRES_PASSWORD: test
   node-mysql:
     docker:
-      - image: cimg/node:16.13-browsers
+      - image: cimg/node:22.21.0-browsers
         auth: *docker-pull-creds
       - image: cimg/mysql:5.7.38
         auth: *docker-pull-creds
@@ -427,5 +427,5 @@ executors:
           MYSQL_ROOT_PASSWORD: test
   python:
     docker:
-      - image: cimg/python:3.7
+      - image: cimg/python:3.8
         auth: *docker-pull-creds

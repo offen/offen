@@ -1,7 +1,7 @@
 # Copyright 2020-2021 - Offen Authors <hioffen@posteo.de>
 # SPDX-License-Identifier: Apache-2.0
 
-FROM node:16-alpine as offen_node
+FROM node:22-alpine as offen_node
 RUN apk add git
 RUN apk add --no-cache --virtual .gyp python3 make g++
 RUN npm i -g npm@6
@@ -9,6 +9,7 @@ COPY ./packages /code/packages
 ENV ADBLOCK true
 ENV DISABLE_OPENCOLLECTIVE true
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
+ENV NODE_OPTIONS --no-experimental-fetch
 
 FROM offen_node as auditorium
 ARG skip_locales
@@ -98,7 +99,7 @@ RUN python ./create_notice.py \
   --client auditorium.csv \
   --server server.csv >> NOTICE
 
-FROM techknowlogick/xgo:go-1.22.x as compiler
+FROM techknowlogick/xgo:go-1.25.x as compiler
 
 ARG rev
 ENV GIT_REVISION=$rev
