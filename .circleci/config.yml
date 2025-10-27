@@ -308,7 +308,7 @@ commands:
     steps:
       - browser-tools/install-browser-tools
       - checkout
-      - downgrade_npm
+      - lock_npm
       - attach_workspace:
           at: ~/offen
       - run:
@@ -363,7 +363,7 @@ commands:
     steps:
       - checkout:
           path: << parameters.checkout >>
-      - downgrade_npm
+      - lock_npm
       - run:
           name: Install dependencies
           command: npm ci
@@ -383,12 +383,12 @@ commands:
             sudo mv mc /usr/local/bin/mc
             command -v mc
 
-  downgrade_npm:
-    description: Downgrade npm to version 6
+  lock_npm:
+    description: Install npm version 11
     steps:
       - run:
-          name: Install npm 6 globally
-          command: sudo npm i -g npm@6
+          name: Install npm 11 globally
+          command: sudo npm i -g npm@11
 
 orbs:
   docker: circleci/docker@2.1.4

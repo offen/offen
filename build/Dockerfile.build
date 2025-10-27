@@ -4,7 +4,7 @@
 FROM node:22-alpine as offen_node
 RUN apk add git
 RUN apk add --no-cache --virtual .gyp python3 make g++
-RUN npm i -g npm@6
+RUN npm i -g npm@11
 COPY ./packages /code/packages
 ENV ADBLOCK true
 ENV DISABLE_OPENCOLLECTIVE true
