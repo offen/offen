@@ -20,6 +20,9 @@
     "nanohtml": "^1.9.1",
     "normalize.css": "^8.0.1"
   },
+  "pnpm": {
+    "onlyBuiltDependencies": ["puppeteer"]
+  },
   "devDependencies": {
     "dependency-check": "^3.4.0",
     "fetch-mock": "^7.3.3",

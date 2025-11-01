@@ -27,6 +27,9 @@
     "url-polyfill": "^1.1.12",
     "uuid": "^3.3.2"
   },
+  "pnpm": {
+    "onlyBuiltDependencies": ["puppeteer"]
+  },
   "devDependencies": {
     "@offen/l10nify": "^0.4.0",
     "@offen/schemaify": "^0.1.0",
