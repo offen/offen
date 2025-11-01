@@ -13,7 +13,6 @@ var rev = require('gulp-rev')
 var buffer = require('vinyl-buffer')
 var gap = require('gulp-append-prepend')
 var to = require('flush-write-stream')
-var tinyify = require('tinyify')
 var minifyStream = require('minify-stream')
 var linguasFile = require('linguas-file')
 
@@ -66,15 +65,11 @@ function makeScriptTask (dest, locale) {
         if (transform === '@offen/l10nify' || (Array.isArray(transform) && transform[0] === '@offen/l10nify')) {
           return ['@offen/l10nify']
         }
-        if (transform === 'envify' || (Array.isArray(transform) && transform[0] === 'envify')) {
-          return ['envify', { LOCALE: locale }]
+        if (transform === '@browserify/envify' || (Array.isArray(transform) && transform[0] === '@browserify/envify')) {
+          return ['@browserify/envify', { LOCALE: locale }]
         }
         return transform
       })
-    })
-
-    b.on('split.pipeline', function (pipeline) {
-      tinyify.applyToPipeline(pipeline)
     })
 
     return b
@@ -103,8 +98,7 @@ function makeScriptTask (dest, locale) {
           }
         }
       })
-      .transform('envify', { global: true })
-      .transform('uglifyify', { global: true })
+      .transform('@browserify/envify', { global: true })
       .bundle()
       .pipe(minifyStream({ sourceMap: false }))
       .pipe(source('index.js'))
@@ -126,8 +120,8 @@ function makeVendorTask (dest) {
     return b
       .require('dexie')
       .require('underscore')
-      .plugin('tinyify')
       .bundle()
+      .pipe(minifyStream({ sourceMap: false }))
       .pipe(source('vendor.js'))
       .pipe(buffer())
       .pipe(gap.prependText('*/'))

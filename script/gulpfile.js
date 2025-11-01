@@ -11,6 +11,7 @@ var buffer = require('vinyl-buffer')
 var source = require('vinyl-source-stream')
 var browserify = require('browserify')
 var linguasFile = require('linguas-file')
+var minifyStream = require('minify-stream')
 
 var pkg = require('./package.json')
 
@@ -66,16 +67,16 @@ function makeScriptTask (dest, locale) {
         if (transform === '@offen/l10nify' || (Array.isArray(transform) && transform[0] === '@offen/l10nify')) {
           return ['@offen/l10nify']
         }
-        if (transform === 'envify' || (Array.isArray(transform) && transform[0] === 'envify')) {
-          return ['envify', { LOCALE: locale }]
+        if (transform === '@browserify/envify' || (Array.isArray(transform) && transform[0] === '@browserify/envify')) {
+          return ['@browserify/envify', { LOCALE: locale }]
         }
         return transform
       })
     })
 
     return b
-      .plugin('tinyify')
       .bundle()
+      .pipe(minifyStream({ sourceMap: false }))
       .pipe(source('script.js'))
       .pipe(buffer())
       .pipe(gap.prependText('*/'))

@@ -13,6 +13,7 @@ var buffer = require('vinyl-buffer')
 var gap = require('gulp-append-prepend')
 var Readable = require('stream').Readable
 var linguasFile = require('linguas-file')
+var minifyStream = require('minify-stream')
 
 var pkg = require('./package.json')
 
@@ -65,8 +66,8 @@ function makeScriptTask (dest, locale) {
         if (transform === '@offen/l10nify' || (Array.isArray(transform) && transform[0] === '@offen/l10nify')) {
           return ['@offen/l10nify']
         }
-        if (transform === 'envify' || (Array.isArray(transform) && transform[0] === 'envify')) {
-          return ['envify', { LOCALE: locale }]
+        if (transform === '@browserify/envify' || (Array.isArray(transform) && transform[0] === '@browserify/envify')) {
+          return ['@browserify/envify', { LOCALE: locale }]
         }
         return transform
       })
@@ -81,8 +82,8 @@ function makeScriptTask (dest, locale) {
     return b
       .exclude('plotly.js-basic-dist')
       .exclude('zxcvbn')
-      .plugin('tinyify')
       .bundle()
+      .pipe(minifyStream({ sourceMap: false }))
       .pipe(source('index.js'))
       .pipe(buffer())
       .pipe(gap.prependText('*/'))
@@ -101,8 +102,8 @@ function makeVendorTask (dest) {
     return b
       .require('plotly.js-basic-dist')
       .require('zxcvbn')
-      .plugin('tinyify', { noFlat: true })
       .bundle()
+      .pipe(minifyStream({ sourceMap: false }))
       .pipe(source('vendor.js'))
       .pipe(buffer())
       .pipe(gap.prependText('*/'))
