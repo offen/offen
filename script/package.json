@@ -31,7 +31,7 @@
     "budo": "^11.7.0",
     "dependency-check": "^4.1.0",
     "envify": "^4.1.0",
-    "gulp": "^4.0.2",
+    "gulp": "^5.0.1",
     "gulp-append-prepend": "^1.0.8",
     "gulp-clean": "^0.4.0",
     "linguas-file": "^2.0.0",

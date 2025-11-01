@@ -48,7 +48,7 @@ services:
     volumes:
       - .:/offen
       - ./locales:/offen/vault/locales
-      - pnpmstore:/pnpmstore
+      - pnpmstore:/pnpm-store
       - vaultdeps:/offen/vault/node_modules
 
   script:
@@ -61,7 +61,7 @@ services:
     volumes:
       - .:/offen
       - ./locales:/offen/script/locales
-      - pnpmstore:/pnpmstore
+      - pnpmstore:/pnpm-store
       - scriptdeps:/offen/script/node_modules
 
   auditorium:
@@ -74,7 +74,7 @@ services:
     volumes:
       - .:/offen
       - ./locales:/offen/auditorium/locales
-      - pnpmstore:/pnpmstore
+      - pnpmstore:/pnpm-store
       - auditoriumdeps:/offen/auditorium/node_modules
 
   test_site:
