@@ -13,7 +13,6 @@ var rev = require('gulp-rev')
 var buffer = require('vinyl-buffer')
 var gap = require('gulp-append-prepend')
 var to = require('flush-write-stream')
-var tinyify = require('tinyify')
 var minifyStream = require('minify-stream')
 var linguasFile = require('linguas-file')
 
@@ -73,10 +72,6 @@ function makeScriptTask (dest, locale) {
       })
     })
 
-    b.on('split.pipeline', function (pipeline) {
-      tinyify.applyToPipeline(pipeline)
-    })
-
     return b
       .exclude('dexie')
       .exclude('underscore')
@@ -104,7 +99,6 @@ function makeScriptTask (dest, locale) {
         }
       })
       .transform('@browserify/envify', { global: true })
-      .transform('uglifyify', { global: true })
       .bundle()
       .pipe(minifyStream({ sourceMap: false }))
       .pipe(source('index.js'))
@@ -126,8 +120,8 @@ function makeVendorTask (dest) {
     return b
       .require('dexie')
       .require('underscore')
-      .plugin('tinyify')
       .bundle()
+      .pipe(minifyStream({ sourceMap: false }))
       .pipe(source('vendor.js'))
       .pipe(buffer())
       .pipe(gap.prependText('*/'))

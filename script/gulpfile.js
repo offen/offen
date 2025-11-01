@@ -11,6 +11,7 @@ var buffer = require('vinyl-buffer')
 var source = require('vinyl-source-stream')
 var browserify = require('browserify')
 var linguasFile = require('linguas-file')
+var minifyStream = require('minify-stream')
 
 var pkg = require('./package.json')
 
@@ -74,8 +75,8 @@ function makeScriptTask (dest, locale) {
     })
 
     return b
-      .plugin('tinyify')
       .bundle()
+      .pipe(minifyStream({ sourceMap: false }))
       .pipe(source('script.js'))
       .pipe(buffer())
       .pipe(gap.prependText('*/'))
