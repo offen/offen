@@ -26,7 +26,7 @@ All routes served are identical to the compiled version so the development envir
 To run the test of a single container, the easiest way is using `docker compose` to execute the command inside the container, e.g.:
 
 ```
-docker compose run --rm auditorium npm t
+docker compose run --rm auditorium pnpm t
 ```
 
 for client containers and

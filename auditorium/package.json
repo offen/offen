@@ -20,7 +20,9 @@
     }
   },
   "pnpm": {
-    "onlyBuiltDependencies": ["puppeteer"]
+    "onlyBuiltDependencies": [
+      "puppeteer"
+    ]
   },
   "dependencies": {
     "classnames": "^2.3.1",
@@ -53,10 +55,10 @@
     "aliasify": "^2.1.0",
     "babel-preset-preact": "^2.0.0",
     "babelify": "^10.0.0",
-    "browserify": "^16.2.3",
+    "browserify": "^17.0.1",
     "budo": "^11.7.0",
     "envify": "^4.1.0",
-    "gulp": "^4.0.2",
+    "gulp": "^5.0.1",
     "gulp-append-prepend": "^1.0.8",
     "gulp-clean": "^0.4.0",
     "gulp-rev": "^9.0.0",
