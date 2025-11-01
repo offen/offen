@@ -18,6 +18,9 @@ importers:
         specifier: ^3.1.4
         version: 3.1.4
     devDependencies:
+      '@browserify/envify':
+        specifier: ^6.0.0
+        version: 6.0.0
       '@offen/l10nify':
         specifier: ^0.4.0
         version: 0.4.0(@babel/preset-env@7.28.5(@babel/core@7.28.5))
@@ -28,9 +31,6 @@ importers:
         specifier: ^11.7.0
         version: 11.8.4
       dependency-check:
-        specifier: ^4.1.0
-        version: 4.1.0
-      envify:
         specifier: ^4.1.0
         version: 4.1.0
       gulp:
@@ -639,6 +639,10 @@ packages:
     resolution: {integrity: sha512-qQ5m48eI/MFLQ5PxQj4PFaprjyCTLI37ElWMmNs0K8Lk3dVeOdNpB3ks8jc7yM5CDmVC73eMVk/trk3fgmrUpA==}
     engines: {node: '>=6.9.0'}
 
+  '@browserify/envify@6.0.0':
+    resolution: {integrity: sha512-ovxHR0KTsRCyMNwD7MGV0+VCU1sT6Ds+itC4DaQHM41eUId+w5Jd0qlhLVoDkkIVBnkY3BAAM8yb2QfpBlHkPw==}
+    hasBin: true
+
   '@goto-bus-stop/common-shake@2.4.1':
     resolution: {integrity: sha512-U77x9X3VXHQfuo8ncsQShFGnQ+DLSiHjaAKWyqyfIzcoddnOromP2SE615r1UmZdZTyc9DAZ4BYEBs2QQ1JwMQ==}
 
@@ -735,6 +739,9 @@ packages:
 
   acorn-node@1.8.2:
     resolution: {integrity: sha512-8mt+fslDufLYntIoPAaIMUe/lrbrehIiwmR3t2k9LljIzoigEPF27eLk2hy8zSGzmR/ogr7zbRKINMo1u0yh5A==}
+
+  acorn-node@2.0.1:
+    resolution: {integrity: sha512-VLR5sHqjk+8c5hrKeP2fWaIHb8eewsoxnZ8r2qpwRHXMHuC7KyOPflnOx9dLssVQUurzJ7rO0OzIFjHcndafWw==}
 
   acorn-walk@7.2.0:
     resolution: {integrity: sha512-OPdCF6GsMIP+Az+aWfAAOEt2/+iVDKE7oy6lJ098aoe59oAmK76qV6Gw60SbZ8jHuG2wH058GF4pLFbYamYrVA==}
@@ -1694,10 +1701,6 @@ packages:
 
   end-of-stream@1.4.5:
     resolution: {integrity: sha512-ooEGc6HP26xXq/N+GCGOT0JKCLDGrq2bQUZrQ7gyrJiZANJ/8YDTxTpQBXGMn+WbIQXNVpyWymm7KYVICQnyOg==}
-
-  envify@4.1.0:
-    resolution: {integrity: sha512-IKRVVoAYr4pIx4yIWNsz9mOsboxlNXiu7TNBnem/K/uTHdkyzXWDzHCK7UTolqBbgaBz0tQHsD3YNls0uIIjiw==}
-    hasBin: true
 
   error-ex@1.3.4:
     resolution: {integrity: sha512-sqQamAnR14VgCr1A618A3sGrygcpK+HEbenA/HiEAkkUwcZIIB/tgWqHFxWgOyDh4nB4JCRimh79dR5Ywc9MDQ==}
@@ -5573,6 +5576,13 @@ snapshots:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.28.5
 
+  '@browserify/envify@6.0.0':
+    dependencies:
+      acorn-node: 2.0.1
+      dash-ast: 2.0.1
+      multisplice: 1.0.0
+      through2: 4.0.2
+
   '@goto-bus-stop/common-shake@2.4.1':
     dependencies:
       acorn-walk: 7.2.0
@@ -5679,6 +5689,12 @@ snapshots:
       acorn: 7.4.1
 
   acorn-node@1.8.2:
+    dependencies:
+      acorn: 7.4.1
+      acorn-walk: 7.2.0
+      xtend: 4.0.2
+
+  acorn-node@2.0.1:
     dependencies:
       acorn: 7.4.1
       acorn-walk: 7.2.0
@@ -6890,11 +6906,6 @@ snapshots:
   end-of-stream@1.4.5:
     dependencies:
       once: 1.4.0
-
-  envify@4.1.0:
-    dependencies:
-      esprima: 4.0.1
-      through: 2.3.8
 
   error-ex@1.3.4:
     dependencies:
@@ -9016,7 +9027,6 @@ snapshots:
     dependencies:
       '@offen/l10nify': 0.4.0(@babel/preset-env@7.28.5(@babel/core@7.28.5))
       browserify-css: 0.15.0
-      envify: 4.1.0
       nanohtml: 1.10.0
       normalize.css: 8.0.1
     transitivePeerDependencies:

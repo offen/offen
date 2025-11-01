@@ -50,6 +50,7 @@
   "devDependencies": {
     "@babel/core": "^7.8.4",
     "@babel/preset-env": "^7.8.4",
+    "@browserify/envify": "^6.0.0",
     "@csstools/postcss-sass": "^4.0.0",
     "@offen/l10nify": "^0.4.0",
     "aliasify": "^2.1.0",
@@ -57,7 +58,6 @@
     "babelify": "^10.0.0",
     "browserify": "^17.0.1",
     "budo": "^11.7.0",
-    "envify": "^4.1.0",
     "gulp": "^5.0.1",
     "gulp-append-prepend": "^1.0.8",
     "gulp-clean": "^0.4.0",
@@ -82,7 +82,7 @@
     "transform": [
       "babelify",
       "urify/transform",
-      "envify",
+      "@browserify/envify",
       "@offen/l10nify",
       [
         "sheetify",
