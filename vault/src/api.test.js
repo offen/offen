@@ -4,21 +4,25 @@
  */
 
 var assert = require('assert')
-var fetchMock = require('fetch-mock')
+var fetchMock = require('fetch-mock').default
 
 var api = require('./api')
 
 describe('src/api.js', function () {
   describe('getAccount', function () {
     before(function () {
-      fetchMock.get('https://server.offen.dev/accounts/foo-bar', {
+      fetchMock.mockGlobal().route({
+        url: 'https://server.offen.dev/accounts/foo-bar',
+        method: 'get'
+      }, {
         status: 200,
         body: { accountId: 'foo-bar', data: 'ok' }
       })
     })
 
     after(function () {
-      fetchMock.restore()
+      fetchMock.removeRoutes()
+      fetchMock.unmockGlobal()
     })
 
     it('calls the given endpoint with the correct parameters', function () {
@@ -32,14 +36,18 @@ describe('src/api.js', function () {
 
   describe('getEvents', function () {
     before(function () {
-      fetchMock.get('https://server.offen.dev/events', {
+      fetchMock.mockGlobal().route({
+        url: 'https://server.offen.dev/events',
+        method: 'get'
+      }, {
         status: 200,
         body: { events: ['a', 'b', 'c'] }
       })
     })
 
     after(function () {
-      fetchMock.restore()
+      fetchMock.removeRoutes()
+      fetchMock.unmockGlobal()
     })
 
     it('calls the given endpoint with the correct parameters', function () {

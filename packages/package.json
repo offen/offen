@@ -27,7 +27,7 @@
   "devDependencies": {
     "@browserify/envify": "^6.0.0",
     "dependency-check": "^3.4.0",
-    "fetch-mock": "^7.3.3",
+    "fetch-mock": "^12.6.0",
     "local-web-server": "^4.0.0",
     "mochify": "^9.2.0",
     "npm-license-crawler": "^0.2.1",

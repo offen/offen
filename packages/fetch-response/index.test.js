@@ -4,7 +4,7 @@
  */
 
 var assert = require('assert')
-var fetchMock = require('fetch-mock')
+var fetchMock = require('fetch-mock').default
 
 var handleFetchResponse = require('.')
 
@@ -12,14 +12,21 @@ describe('fetch-response/index.js', function () {
   describe('handleFetchResponse(response)', function () {
     context('with successful response', function () {
       before(function () {
-        fetchMock.get('https://example.net', {
-          body: '{"ok":"yes"}',
-          status: 200
-        })
+        fetchMock.mockGlobal().route(
+          {
+            url: 'https://example.net',
+            method: 'get'
+          },
+          {
+            body: '{"ok":"yes"}',
+            status: 200
+          }
+        )
       })
 
       after(function () {
-        fetchMock.restore()
+        fetchMock.removeRoutes()
+        fetchMock.unmockGlobal()
       })
 
       it('parses the response and passes it on', function () {
@@ -34,13 +41,17 @@ describe('fetch-response/index.js', function () {
 
     context('with successful empty response', function () {
       before(function () {
-        fetchMock.get('https://example.net', {
-          status: 204
-        })
+        fetchMock.mockGlobal().route(
+          { url: 'https://example.net', method: 'get' },
+          {
+            status: 204
+          }
+        )
       })
 
       after(function () {
-        fetchMock.restore()
+        fetchMock.removeRoutes()
+        fetchMock.unmockGlobal()
       })
 
       it('parses the response and passes it on', function () {
@@ -55,14 +66,18 @@ describe('fetch-response/index.js', function () {
 
     context('with 40x response', function () {
       before(function () {
-        fetchMock.get('https://example.net', {
-          status: 400,
-          body: '{"status":400,"error":"did not work"}'
-        })
+        fetchMock.mockGlobal().route(
+          { url: 'https://example.net', method: 'get' },
+          {
+            status: 400,
+            body: '{"status":400,"error":"did not work"}'
+          }
+        )
       })
 
       after(function () {
-        fetchMock.restore()
+        fetchMock.removeRoutes()
+        fetchMock.unmockGlobal()
       })
 
       it('rejects with an error containing the error message', function (done) {
@@ -85,14 +100,18 @@ describe('fetch-response/index.js', function () {
 
     context('with 50x response', function () {
       before(function () {
-        fetchMock.get('https://example.net', {
-          status: 503,
-          body: '{"status":500,"error":"could not connect to database"}'
-        })
+        fetchMock.mockGlobal().route(
+          { url: 'https://example.net', method: 'get' },
+          {
+            status: 503,
+            body: '{"status":500,"error":"could not connect to database"}'
+          }
+        )
       })
 
       after(function () {
-        fetchMock.restore()
+        fetchMock.removeRoutes()
+        fetchMock.unmockGlobal()
       })
 
       it('rejects with an error containing the error message', function (done) {
@@ -115,14 +134,18 @@ describe('fetch-response/index.js', function () {
 
     context('with malformed response', function () {
       before(function () {
-        fetchMock.get('https://example.net', {
-          status: 500,
-          body: 'Internal Server Error'
-        })
+        fetchMock.mockGlobal().route(
+          { url: 'https://example.net', method: 'get' },
+          {
+            status: 500,
+            body: 'Internal Server Error'
+          }
+        )
       })
 
       after(function () {
-        fetchMock.restore()
+        fetchMock.removeRoutes()
+        fetchMock.unmockGlobal()
       })
 
       it('rejects with an error containing the error message', function (done) {

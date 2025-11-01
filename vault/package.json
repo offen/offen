@@ -39,7 +39,7 @@
     "browserify": "^17.0.1",
     "budo": "^11.7.0",
     "dependency-check": "^3.4.0",
-    "fetch-mock": "^7.3.3",
+    "fetch-mock": "^12.6.0",
     "flush-write-stream": "^2.0.0",
     "gulp": "^5.0.1",
     "gulp-append-prepend": "^1.0.8",
