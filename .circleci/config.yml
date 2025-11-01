@@ -308,7 +308,7 @@ commands:
     steps:
       - browser-tools/install-browser-tools
       - checkout
-      - lock_npm
+      - install_pnpm
       - attach_workspace:
           at: ~/offen
       - run:
@@ -363,13 +363,13 @@ commands:
     steps:
       - checkout:
           path: << parameters.checkout >>
-      - lock_npm
+      - install_pnpm
       - run:
           name: Install dependencies
-          command: npm ci
+          command: pnpm install --frozen-lockfile
       - run:
           name: Run tests
-          command: npm t
+          command: pnpm test
 
   install_mc:
     description: Install MinIO client
@@ -383,12 +383,12 @@ commands:
             sudo mv mc /usr/local/bin/mc
             command -v mc
 
-  lock_npm:
+  install_pnpm:
     description: Install npm version 11
     steps:
       - run:
-          name: Install npm 11 globally
-          command: sudo npm i -g npm@11
+          name: Install pnpm 10 globally
+          command: sudo npm i -g pnpm@10
 
 orbs:
   docker: circleci/docker@2.1.4

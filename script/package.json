@@ -20,6 +20,9 @@
     "offen": "file:./../packages",
     "on-idle": "^3.1.4"
   },
+  "pnpm": {
+    "onlyBuiltDependencies": ["puppeteer"]
+  },
   "devDependencies": {
     "@offen/l10nify": "^0.4.0",
     "browserify": "^16.2.3",

@@ -44,9 +44,11 @@ services:
     environment:
       LOCALE: ${LOCALE:-en}
       PORT: 9977
+      npm_config_store_dir: /pnpm-store
     volumes:
       - .:/offen
       - ./locales:/offen/vault/locales
+      - pnpmstore:/pnpmstore
       - vaultdeps:/offen/vault/node_modules
 
   script:
@@ -55,9 +57,11 @@ services:
     environment:
       LOCALE: ${LOCALE:-en}
       PORT: 9966
+      npm_config_store_dir: /pnpm-store
     volumes:
       - .:/offen
       - ./locales:/offen/script/locales
+      - pnpmstore:/pnpmstore
       - scriptdeps:/offen/script/node_modules
 
   auditorium:
@@ -66,9 +70,11 @@ services:
     environment:
       LOCALE: ${LOCALE:-en}
       PORT: 9955
+      npm_config_store_dir: /pnpm-store
     volumes:
       - .:/offen
       - ./locales:/offen/auditorium/locales
+      - pnpmstore:/pnpmstore
       - auditoriumdeps:/offen/auditorium/node_modules
 
   test_site:
@@ -85,3 +91,4 @@ volumes:
   scriptdeps:
   auditoriumdeps:
   vaultdeps:
+  pnpmstore:
