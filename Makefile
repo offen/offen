@@ -47,9 +47,9 @@ extract-strings:
 .PHONY: test
 test: # @HELP Run unit tests for all subapps
 test:
-	@docker compose run --rm script npm test
-	@docker compose run --rm vault npm test
-	@docker compose run --rm auditorium npm test
+	@docker compose run --rm script pnpm test
+	@docker compose run --rm vault pnpm test
+	@docker compose run --rm auditorium pnpm test
 	@docker compose run --rm server make test
 
 .PHONY: integration
@@ -58,7 +58,7 @@ integration:
 	@docker compose \
 		-p offen_integration \
 		-f docker-compose.integration.yml run --rm \
-		integration npm t
+		integration pnpm t
 
 .PHONY: dev-build
 dev-build: # @HELP Build the Docker images for local development
