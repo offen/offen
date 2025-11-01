@@ -1,0 +1,3 @@
+{
+  "ignoreDependencies": ["browserify-css", "@offen/l10nify", "normalize.css"]
+}

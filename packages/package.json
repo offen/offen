@@ -7,7 +7,7 @@
     "test": "npm run server & (npm run mochify; status=$?; exit $status)",
     "mochify": "mochify --allow-chrome-as-root ./**/*.test.js",
     "server": "ws -d __fixtures__ -p 9876",
-    "pretest": "dependency-check package.json",
+    "pretest": "knip --include dependencies,unlisted --production",
     "posttest": "standard",
     "fix": "standard --fix",
     "licenses": "npm-license-crawler --production --onlyDirectDependencies --omitVersion --csv dependencies.csv",
@@ -26,8 +26,8 @@
   },
   "devDependencies": {
     "@browserify/envify": "^6.0.0",
-    "dependency-check": "^3.4.0",
     "fetch-mock": "^12.6.0",
+    "knip": "^5.66.4",
     "local-web-server": "^4.0.0",
     "mochify": "^9.2.0",
     "npm-license-crawler": "^0.2.1",
