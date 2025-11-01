@@ -39,7 +39,7 @@
     "mochify": "^9.2.0",
     "npm-license-crawler": "^0.2.1",
     "standard": "^14.3.1",
-    "tinyify": "^2.5.0",
+    "tinyify": "^4.0.0",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0"
   },
