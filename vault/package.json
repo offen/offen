@@ -28,12 +28,14 @@
     "uuid": "^3.3.2"
   },
   "pnpm": {
-    "onlyBuiltDependencies": ["puppeteer"]
+    "onlyBuiltDependencies": [
+      "puppeteer"
+    ]
   },
   "devDependencies": {
     "@offen/l10nify": "^0.4.0",
     "@offen/schemaify": "^0.1.0",
-    "browserify": "^16.2.3",
+    "browserify": "^17.0.1",
     "budo": "^11.7.0",
     "dependency-check": "^3.4.0",
     "envify": "^4.1.0",
