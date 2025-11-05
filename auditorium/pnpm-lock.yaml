@@ -27,10 +27,10 @@ importers:
         specifier: ^1.51.2
         version: 1.58.5
       preact:
-        specifier: ^10.7.1
+        specifier: ^10.27.2
         version: 10.27.2
       preact-router:
-        specifier: ^4.0.1
+        specifier: ^4.1.2
         version: 4.1.2(preact@10.27.2)
       prism-themes:
         specifier: ^1.6.0
@@ -39,7 +39,7 @@ importers:
         specifier: ^1.27.0
         version: 1.30.0
       react-copy-to-clipboard:
-        specifier: ^5.0.2
+        specifier: ^5.1.0
         version: 5.1.0(react@17.0.2)
       react-datepicker:
         specifier: ^3.3.0
@@ -48,19 +48,19 @@ importers:
         specifier: ^2.4.0
         version: 2.6.0(plotly.js@3.2.0(mapbox-gl@1.13.3))(react@17.0.2)
       react-redux:
-        specifier: ^7.2.4
+        specifier: ^7.2.9
         version: 7.2.9(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       react-simple-code-editor:
         specifier: ^0.11.0
         version: 0.11.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       redux:
-        specifier: ^4.1.0
+        specifier: ^4.2.1
         version: 4.2.1
       redux-logger:
         specifier: ^3.0.6
         version: 3.0.6
       redux-thunk:
-        specifier: ^2.3.0
+        specifier: ^2.4.2
         version: 2.4.2(redux@4.2.1)
       underscore:
         specifier: ^1.13.1
@@ -4557,8 +4557,8 @@ packages:
   saucelabs@1.5.0:
     resolution: {integrity: sha512-jlX3FGdWvYf4Q3LFfFWS1QvPg3IGCGWxIc8QBFdPTbpTJnt/v17FHXYVAn7C8sHf1yUXo2c7yIM0isDryfYtHQ==}
 
-  sax@1.4.1:
-    resolution: {integrity: sha512-+aWOz7yVScEGoKNd4PA10LZ8sk0A/z5+nXQG5giUO5rprX9jgYsTdov9qCchZiPIZezbZH+jRut8nPodFAX4Jg==}
+  sax@1.4.3:
+    resolution: {integrity: sha512-yqYn1JhPczigF94DMS+shiDMjDowYO6y9+wB/4WgO0Y19jWYk0lQ4tuG5KI7kj4FTp1wxPj5IFfcrz/s1c3jjQ==}
 
   scheduler@0.20.2:
     resolution: {integrity: sha512-2eWfGgAqqWFGqtdMmcL5zCMK1U8KlXv8SQFGglL3CEtd0aDVDWgeF/YoCmvln55m5zSk3J/20hTaSBeSObsQDQ==}
@@ -9824,7 +9824,7 @@ snapshots:
     dependencies:
       debug: 3.2.7
       iconv-lite: 0.4.24
-      sax: 1.4.1
+      sax: 1.4.3
     transitivePeerDependencies:
       - supports-color
 
@@ -10887,7 +10887,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  sax@1.4.1: {}
+  sax@1.4.3: {}
 
   scheduler@0.20.2:
     dependencies:
