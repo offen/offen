@@ -4,15 +4,15 @@
 FROM node:22-alpine AS auditorium
 RUN apk add git
 RUN apk add --no-cache --virtual .gyp python3 make g++
-RUN npm i -g npm@11
+RUN npm i -g pnpm@10
 
-COPY ./auditorium/package.json ./auditorium/package-lock.json /code/deps/
+COPY ./auditorium/package.json ./auditorium/pnpm-lock.yaml /code/deps/
 COPY ./packages /code/packages
 WORKDIR /code/deps
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 ENV ADBLOCK=true
 ENV DISABLE_OPENCOLLECTIVE=true
-RUN npm ci
+RUN pnpm install --frozen-lockfile
 COPY ./auditorium /code/auditorium
 WORKDIR /code/auditorium
 RUN cp -a /code/deps/node_modules /code/auditorium/
@@ -21,15 +21,15 @@ RUN npm run --silent extract-strings > auditorium.po
 FROM node:22-alpine AS script
 RUN apk add git
 RUN apk add --no-cache --virtual .gyp python3 make g++
-RUN npm i -g npm@11
+RUN npm i -g pnpm@10
 
-COPY ./script/package.json ./script/package-lock.json /code/deps/
+COPY ./script/package.json ./script/pnpm-lock.yaml /code/deps/
 COPY ./packages /code/packages
 WORKDIR /code/deps
 ENV ADBLOCK=true
 ENV DISABLE_OPENCOLLECTIVE=true
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
-RUN npm ci
+RUN pnpm install --frozen-lockfile
 COPY ./script /code/script
 COPY ./banner.txt /code/banner.txt
 COPY ./locales /code/script/locales
@@ -40,15 +40,15 @@ RUN npm run --silent extract-strings > script.po
 FROM node:22-alpine AS vault
 RUN apk add git
 RUN apk add --no-cache --virtual .gyp python3 make g++
-RUN npm i -g npm@11
+RUN npm i -g pnpm@10
 
-COPY ./vault/package.json ./vault/package-lock.json /code/deps/
+COPY ./vault/package.json ./vault/pnpm-lock.yaml /code/deps/
 COPY ./packages /code/packages
 WORKDIR /code/deps
 ENV ADBLOCK=true
 ENV DISABLE_OPENCOLLECTIVE=true
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
-RUN npm ci
+RUN pnpm install --frozen-lockfile
 COPY ./vault /code/vault
 COPY ./banner.txt /code/banner.txt
 COPY ./locales /code/vault/locales
@@ -59,14 +59,14 @@ RUN npm run --silent extract-strings > vault.po
 FROM node:22-alpine AS packages
 RUN apk add git
 RUN apk add --no-cache --virtual .gyp python3 make g++
-RUN npm i -g npm@11
+RUN npm i -g pnpm@10
 
-COPY ./packages/package.json ./packages/package-lock.json /code/deps/
+COPY ./packages/package.json ./packages/pnpm-lock.yaml /code/deps/
 WORKDIR /code/deps
 ENV ADBLOCK=true
 ENV DISABLE_OPENCOLLECTIVE=true
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
-RUN npm ci
+RUN pnpm install --frozen-lockfile
 COPY ./packages /code/packages
 COPY ./banner.txt /code/banner.txt
 COPY ./locales /code/packages/locales
@@ -74,7 +74,7 @@ WORKDIR /code/packages
 RUN cp -a /code/deps/node_modules /code/packages/
 RUN npm run --silent extract-strings > packages.po
 
-FROM golang:1.22
+FROM golang:1.25
 
 RUN apt-get update \
   && apt-get install -y gettext \
