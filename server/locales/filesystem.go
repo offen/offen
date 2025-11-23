@@ -6,7 +6,7 @@ package locales
 import (
 	"fmt"
 	"html/template"
-	"io/ioutil"
+	"io"
 
 	"github.com/leonelquinteros/gotext"
 	"github.com/offen/offen/server/public"
@@ -14,15 +14,15 @@ import (
 
 const defaultLocale = "en"
 
-func wrapFmt(f func(string, ...interface{}) string) func(string, ...interface{}) template.HTML {
-	return func(s string, args ...interface{}) template.HTML {
+func wrapFmt(f func(string, ...any) string) func(string, ...any) template.HTML {
+	return func(s string, args ...any) template.HTML {
 		return template.HTML(f(s, args...))
 	}
 }
 
 // GettextFor returns the gettext function for the requested locale. In case the
 // default locale is passed, fmt.Sprintf will be returned.
-func GettextFor(locale string) (func(string, ...interface{}) template.HTML, error) {
+func GettextFor(locale string) (func(string, ...any) template.HTML, error) {
 	if locale == defaultLocale {
 		return wrapFmt(fmt.Sprintf), nil
 	}
@@ -32,7 +32,7 @@ func GettextFor(locale string) (func(string, ...interface{}) template.HTML, erro
 		return nil, fmt.Errorf("locales: error opening file for locale %s: %w", locale, err)
 	}
 
-	b, err := ioutil.ReadAll(file)
+	b, err := io.ReadAll(file)
 	if err != nil {
 		return nil, fmt.Errorf("locales: error reading file contents for locale %s: %w", locale, err)
 	}

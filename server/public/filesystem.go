@@ -9,7 +9,7 @@ import (
 	"errors"
 	"fmt"
 	"html/template"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"os"
 	"path"
@@ -83,7 +83,7 @@ func NewLocalizedFS(locale string) *LocalizedFS {
 
 // HTMLTemplate creates a template object containing all of the HTML templates in the
 // public file system
-func (l *LocalizedFS) HTMLTemplate(gettext func(string, ...interface{}) template.HTML) (*template.Template, error) {
+func (l *LocalizedFS) HTMLTemplate(gettext func(string, ...any) template.HTML) (*template.Template, error) {
 	return l.getTemplate(
 		"html_template",
 		[]string{"/index.go.html"},
@@ -95,7 +95,7 @@ func (l *LocalizedFS) HTMLTemplate(gettext func(string, ...interface{}) template
 
 // EmailTemplate creates a template object containing all of the email templates in the
 // public file system
-func (l *LocalizedFS) EmailTemplate(gettext func(string, ...interface{}) template.HTML) (*template.Template, error) {
+func (l *LocalizedFS) EmailTemplate(gettext func(string, ...any) template.HTML) (*template.Template, error) {
 	return l.getTemplate(
 		"email_template",
 		[]string{"/emails.go.html"},
@@ -115,7 +115,7 @@ func (l *LocalizedFS) getTemplate(name string, templateFiles []string, funcMap t
 		if err != nil {
 			return nil, fmt.Errorf("public: error finding file %s: %w", file, err)
 		}
-		b, err := ioutil.ReadAll(f)
+		b, err := io.ReadAll(f)
 		if err != nil {
 			return nil, fmt.Errorf("public: error reading from file %s: %w", file, err)
 		}

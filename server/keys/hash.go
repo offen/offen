@@ -94,7 +94,7 @@ func CompareString(s, versionedCipher string) error {
 	default:
 		return fmt.Errorf("keys: received unknown algo version %d for comparing passwords", cipher.algoVersion)
 	}
-	if bytes.Compare(hashedInput, cipher.cipher) != 0 {
+	if !bytes.Equal(hashedInput, cipher.cipher) {
 		return errors.New("keys: could not match passwords")
 	}
 	return nil

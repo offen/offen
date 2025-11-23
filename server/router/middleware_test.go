@@ -219,8 +219,8 @@ func TestHeaderMiddleware(t *testing.T) {
 		t.Errorf("Unexpected status code %v", w1.Code)
 	}
 
-	if v := w1.HeaderMap["Cache-Control"]; v[0] != "no-store" {
-		t.Errorf("Unexpected cache control header %v", v[0])
+	if v := w1.Result().Header.Get("Cache-Control"); v != "no-store" {
+		t.Errorf("Unexpected cache control header %v", v)
 	}
 
 	m.ServeHTTP(w2, r)
@@ -229,13 +229,13 @@ func TestHeaderMiddleware(t *testing.T) {
 		t.Errorf("Unexpected status code %v", w2.Code)
 	}
 
-	if v := w2.HeaderMap["Cache-Control"]; v[0] != "no-store" {
-		t.Errorf("Unexpected cache control header %v", v[0])
+	if v := w2.Result().Header.Get("Cache-Control"); v != "no-store" {
+		t.Errorf("Unexpected cache control header %v", v)
 	}
 
-	test1, test2 := w1.HeaderMap["X-Test"], w2.HeaderMap["X-Test"]
-	if test1[0] == test2[0] {
-		t.Errorf("Unexpectedly received %v twice", test1[0])
+	test1, test2 := w1.Result().Header.Get("X-Test"), w2.Result().Header.Get("X-Test")
+	if test1 == test2 {
+		t.Errorf("Unexpectedly received %v twice", test1)
 	}
 }
 

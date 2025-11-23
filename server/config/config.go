@@ -6,6 +6,7 @@ package config
 import (
 	"errors"
 	"fmt"
+	"maps"
 	"os"
 	"path"
 	"runtime"
@@ -50,7 +51,7 @@ func init() {
 			}
 			return string(contents), true
 		case okValue && okFile: // both
-			panic(fmt.Errorf("both %s and %s are set!", key, key+"_FILE"))
+			panic(fmt.Errorf("both %s and %s are set", key, key+"_FILE"))
 		default: // neither, ignore
 			return "", false
 		}
@@ -116,12 +117,10 @@ func persistSettings(update map[string]string, envFile string) error {
 		}
 		envFile = path.Join(wd, envFileName)
 	}
+
 	existing, _ := godotenv.Read(envFile)
-	if existing != nil {
-		for key, value := range existing {
-			update[key] = value
-		}
-	}
+	maps.Copy(update, existing)
+
 	if err := godotenv.Write(update, envFile); err != nil {
 		return fmt.Errorf("config: error writing env file: %w", err)
 	}

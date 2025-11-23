@@ -8,7 +8,6 @@ import (
 	"errors"
 	"fmt"
 	"math/rand"
-	"time"
 
 	"github.com/lestrrat-go/jwx/jwk"
 	"github.com/offen/offen/server/keys"
@@ -289,7 +288,6 @@ func (p *persistenceLayer) findAccountUser(emailAddress string, includeRelations
 func selectAccountUser(available []AccountUser, email string) (*AccountUser, error) {
 	// this is so that users that have signed up at a later point in time
 	// also get decent login times
-	rand.Seed(time.Now().UnixNano())
 	rand.Shuffle(len(available), func(i, j int) {
 		available[i], available[j] = available[j], available[i]
 	})
