@@ -115,7 +115,6 @@ func cmdDemo(subcommand string, flags []string) {
 	}
 
 	a.logger.Info("Offen is generating some random usage data for your demo, this might take a little while.")
-	rand.Seed(time.Now().UnixNano())
 	account, _ := db.GetAccount(accountID.String(), false, false, "")
 
 	users := *numUsers
@@ -183,11 +182,8 @@ func cmdDemo(subcommand string, flags []string) {
 		done <- nil
 	}()
 
-	select {
-	case err := <-done:
-		if err != nil {
-			a.logger.WithError(err).Fatal("Error setting up demo")
-		}
+	if err := <-done; err != nil {
+		a.logger.WithError(err).Fatal("Error setting up demo")
 	}
 
 	fs := public.NewLocalizedFS(a.config.App.Locale.String())
@@ -233,7 +229,7 @@ func cmdDemo(subcommand string, flags []string) {
 	a.logger.Infof("in your browser. Please make sure to use the `localhost`")
 	a.logger.Infof("hostname so a secure context is available.")
 
-	quit := make(chan os.Signal)
+	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
 
@@ -247,7 +243,7 @@ func cmdDemo(subcommand string, flags []string) {
 }
 
 func mustSecret(length int) []byte {
-	secret, err := keys.GenerateRandomValue(16)
+	secret, err := keys.GenerateRandomValue(length)
 	if err != nil {
 		panic(err)
 	}
@@ -334,7 +330,7 @@ func newFakeSession(root string, length int) []*fakeEvent {
 	countryCode := randomCountryCode()
 
 	var href string
-	for i := 0; i < length; i++ {
+	for i := range length {
 		var referrer string
 		if i == 0 && randomBool(0.25) {
 			referrer = randomReferrer()

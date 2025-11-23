@@ -22,8 +22,6 @@ type ackResponse struct {
 	Ack bool `json:"ack"`
 }
 
-var errBadRequestContext = errors.New("could not use user id in request context")
-
 func (rt *router) postEvents(c *gin.Context) {
 	userID := c.GetString(contextKeyCookie)
 	if l := <-rt.getLimiter().LinearThrottle(time.Second/2, fmt.Sprintf("postEvents-%s", userID)); l.Error != nil {

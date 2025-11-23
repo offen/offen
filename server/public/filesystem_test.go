@@ -8,7 +8,7 @@ import (
 	"embed"
 	"fmt"
 	"html/template"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strings"
 	"testing"
@@ -67,7 +67,7 @@ func TestLocalizedFS_Open(t *testing.T) {
 				t.Errorf("Unexpected error value %v", err)
 			}
 			if test.expectedContent != "" {
-				s, _ := ioutil.ReadAll(result)
+				s, _ := io.ReadAll(result)
 				if !strings.Contains(string(s), test.expectedContent) {
 					t.Errorf("Expected '%v', got content '%v'", test.expectedContent, string(s))
 				}

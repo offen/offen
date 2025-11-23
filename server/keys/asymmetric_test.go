@@ -41,10 +41,22 @@ func TestEncryptAsymmetricWith(t *testing.T) {
 		t.Fatalf("Unexpected error creating key: %v", keyErr)
 	}
 
-	public, _ := key.Public().(*rsa.PublicKey)
+	public, ok := key.Public().(*rsa.PublicKey)
+	if !ok {
+		t.Fatal("Failed to cast key")
+	}
 	j, err := jwk.New(public)
+	if err != nil {
+		t.Fatalf("Unexpected error creating jwk: %v", err)
+	}
 	encrypted, err := EncryptAsymmetricWith(j, []byte("alice+bob"))
+	if err != nil {
+		t.Fatalf("Unexpected encrypting: %v", err)
+	}
 	b, err := base64.StdEncoding.DecodeString(strings.Split(encrypted.Marshal(), " ")[1])
+	if err != nil {
+		t.Fatalf("Unexpected error decoding: %v", err)
+	}
 	plaintext, err := key.Decrypt(rand.Reader, b, &rsa.OAEPOptions{
 		Hash: crypto.SHA256,
 	})

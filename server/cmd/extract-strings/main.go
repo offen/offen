@@ -6,7 +6,6 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"text/scanner"
 )
@@ -41,7 +40,7 @@ func main() {
 
 func extractFromFile(f string) ([]*token, error) {
 	var s scanner.Scanner
-	tpl, err := ioutil.ReadFile(f)
+	tpl, err := os.ReadFile(f)
 	if err != nil {
 		return nil, fmt.Errorf("extract: error opening file %s: %w", f, err)
 	}

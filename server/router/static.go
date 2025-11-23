@@ -5,7 +5,7 @@ package router
 
 import (
 	"context"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"net/http/httptest"
@@ -19,11 +19,11 @@ import (
 var (
 	defaultCSP             = "default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; img-src 'self' data:"
 	defaultSTS             = "max-age=15768000"
-	revisionedJSRe         = regexp.MustCompile("-[0-9a-z]{10}\\.js$")
-	webfontRe              = regexp.MustCompile("\\.(woff|woff2|ttf)$")
-	scriptRe               = regexp.MustCompile("script\\.js$")
-	stylesheetRe           = regexp.MustCompile("\\.css$")
-	assetRe                = regexp.MustCompile("\\.svg$")
+	revisionedJSRe         = regexp.MustCompile(`-[0-9a-z]{10}\.js$`)
+	webfontRe              = regexp.MustCompile(`\.(woff|woff2|ttf)$`)
+	scriptRe               = regexp.MustCompile(`script\.js$`)
+	stylesheetRe           = regexp.MustCompile(`\.css$`)
+	assetRe                = regexp.MustCompile(`\.svg$`)
 	defaultResponseHeaders = map[string]string{
 		"Referrer-Policy":        "origin-when-cross-origin",
 		"X-Content-Type-Options": "no-sniff",
@@ -35,7 +35,7 @@ var (
 // http package
 func muteRequest(r *http.Request) *http.Request {
 	return r.WithContext(context.WithValue(r.Context(), http.ServerContextKey, &http.Server{
-		ErrorLog: log.New(ioutil.Discard, "", log.LstdFlags),
+		ErrorLog: log.New(io.Discard, "", log.LstdFlags),
 	}))
 }
 

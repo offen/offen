@@ -155,7 +155,7 @@ func cmdServe(subcommand string, flags []string) {
 		runOnInit <- true
 	}
 
-	quit := make(chan os.Signal)
+	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
 

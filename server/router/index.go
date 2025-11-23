@@ -16,7 +16,7 @@ import (
 func (rt *router) getVault(c *gin.Context) {
 	accountID := c.Request.URL.Query().Get("accountId")
 	if accountID == "" {
-		c.HTML(http.StatusOK, "vault", map[string]interface{}{
+		c.HTML(http.StatusOK, "vault", map[string]any{
 			"accountStyles": nil,
 			"locale":        c.Query("locale"),
 		})
@@ -33,7 +33,7 @@ func (rt *router) getVault(c *gin.Context) {
 			return
 		}
 
-		c.HTML(http.StatusOK, "vault", map[string]interface{}{
+		c.HTML(http.StatusOK, "vault", map[string]any{
 			"accountStyles": template.CSS(cachedStyles),
 			"locale":        c.Query("locale"),
 		})
@@ -70,7 +70,7 @@ func (rt *router) getVault(c *gin.Context) {
 	// application by inserting malformed CSS into the database.
 	cache.Set(cacheKey, styles, ttl)
 
-	c.HTML(http.StatusOK, "vault", map[string]interface{}{
+	c.HTML(http.StatusOK, "vault", map[string]any{
 		"accountStyles": template.CSS(styles),
 		"lang":          rt.config.App.Locale,
 		"locale":        c.Query("locale"),
@@ -78,15 +78,14 @@ func (rt *router) getVault(c *gin.Context) {
 }
 
 func (rt *router) getIntro(c *gin.Context) {
-	c.HTML(http.StatusOK, "intro", map[string]interface{}{
+	c.HTML(http.StatusOK, "intro", map[string]any{
 		"demoAccount": rt.config.App.DemoAccount,
 		"lang":        rt.config.App.Locale,
 	})
-	return
 }
 
 func (rt *router) getIndex(c *gin.Context) {
-	c.HTML(http.StatusOK, "index", map[string]interface{}{
+	c.HTML(http.StatusOK, "index", map[string]any{
 		"rootAccount": rt.config.App.RootAccount,
 		"lang":        rt.config.App.Locale,
 		"locale":      c.Query("locale"),

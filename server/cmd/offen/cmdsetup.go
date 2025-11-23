@@ -7,7 +7,6 @@ import (
 	"flag"
 	"fmt"
 	"html"
-	"io/ioutil"
 	"os"
 	"time"
 
@@ -15,7 +14,7 @@ import (
 	"github.com/microcosm-cc/bluemonday"
 	"github.com/offen/offen/server/persistence"
 	"github.com/offen/offen/server/persistence/relational"
-	"golang.org/x/crypto/ssh/terminal"
+	"golang.org/x/term"
 	yaml "gopkg.in/yaml.v2"
 )
 
@@ -69,7 +68,7 @@ func cmdSetup(subcommand string, flags []string) {
 				a.logger.Info("You can now enter your password (input is not displayed):")
 			}
 		}()
-		input, inputErr := terminal.ReadPassword(int(os.Stdin.Fd()))
+		input, inputErr := term.ReadPassword(int(os.Stdin.Fd()))
 		if inputErr != nil {
 			a.logger.WithError(inputErr).Fatal("Error reading password")
 		}
@@ -79,7 +78,7 @@ func cmdSetup(subcommand string, flags []string) {
 	conf := persistence.BootstrapConfig{}
 	if *source != "" {
 		a.logger.Infof("Trying to read account seed data from %s", *source)
-		read, readErr := ioutil.ReadFile(*source)
+		read, readErr := os.ReadFile(*source)
 		if readErr != nil {
 			a.logger.WithError(readErr).Fatalf("Unable to read given source file %s", *source)
 		}
