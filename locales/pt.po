@@ -1007,14 +1007,3 @@ msgstr "Você recusou a coleta de dados. Nenhum dado está sendo coletado."
 msgid "Find out more about Offen Fair Web Analytics at \"%s\""
 msgstr "Saiba mais sobre o Offen Fair Web Analytics em \"%s\""
 
-#~ msgid "<a href=\"%s\" class=\"%s\">Go to the Auditorium.</a>"
-#~ msgstr "<a href=\"%s\" class=\"%s\">Vá ao Auditorium.</a>"
-
-#~ msgid "Add our browser extension to have instant access to your usage data from other Offen Fair Web Analytics installations you have visited."
-#~ msgstr "Adicione nossa extensão de navegador para ter acesso imediato aos seus dados de uso de outras instalações Offen Fair Web Analytics que você tenha visitado."
-
-#~ msgid "Add browser extension"
-#~ msgstr "Adicione extensão do navegador"
-
-#~ msgid "Instant access"
-#~ msgstr "Acesso imediato"

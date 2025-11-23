@@ -1007,14 +1007,3 @@ msgstr "Vous avez exercé votre droit d'opposition à la collecte de données, a
 msgid "Find out more about Offen Fair Web Analytics at \"%s\""
 msgstr "Apprenez-en plus sur Offen Fair Web Analytics sur \"%s\""
 
-#~ msgid "<a href=\"%s\" class=\"%s\">Go to the Auditorium.</a>"
-#~ msgstr "<a href=\"%s\" class=\"%s\">Aller à l'Auditorium.</a>"
-
-#~ msgid "Add our browser extension to have instant access to your usage data from other Offen Fair Web Analytics installations you have visited."
-#~ msgstr "Ajoutez notre extension navigateur pour bénéficier d'un accès instantané à vos données d'utilisation provenant d'autres instances Offen Fair Web Analytics que vous avez visitées."
-
-#~ msgid "Add browser extension"
-#~ msgstr "Ajouter l'extension navigateur"
-
-#~ msgid "Instant access"
-#~ msgstr "Accès instantané"

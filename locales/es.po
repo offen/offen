@@ -1008,14 +1008,3 @@ msgstr "Ha denegado su autorización para la recopilación de datos, no se está
 msgid "Find out more about Offen Fair Web Analytics at \"%s\""
 msgstr "Obtenga más información sobre Offen Fair Web Analytics en \"%s\""
 
-#~ msgid "<a href=\"%s\" class=\"%s\">Go to the Auditorium.</a>"
-#~ msgstr "<a href=\"%s\" class=\"%s\">Ir al Auditorium.</a>"
-
-#~ msgid "Add our browser extension to have instant access to your usage data from other Offen Fair Web Analytics installations you have visited."
-#~ msgstr "Añada nuestra extensión de navegador para tener acceso instantáneo a sus datos de uso de otras instalaciones de Offen Fair Web Analytics que haya visitado."
-
-#~ msgid "Add browser extension"
-#~ msgstr "Añadir extensión del navegador"
-
-#~ msgid "Instant access"
-#~ msgstr "Acceso instantáneo"

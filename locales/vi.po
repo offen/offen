@@ -1006,14 +1006,3 @@ msgstr "Bạn đã rút phép ra khỏi việc thu thập dữ liệu dùng web,
 msgid "Find out more about Offen Fair Web Analytics at \"%s\""
 msgstr "Tìm hiểu thêm về Offen Fair Web Analytics ở \"%s\""
 
-#~ msgid "<a href=\"%s\" class=\"%s\">Go to the Auditorium.</a>"
-#~ msgstr "<a href=\"%s\" class=\"%s\">Đến xem Auditorium.</a>"
-
-#~ msgid "Add our browser extension to have instant access to your usage data from other Offen Fair Web Analytics installations you have visited."
-#~ msgstr "Thêm tiện ích mở rộng trên trình duyệt của chúng tôi để có thể truy cập ngay lập tức đến dữ liệu người dùng của bạn từ những trang web có cài Offen Fair Web Analytics mà bạn đã xem qua."
-
-#~ msgid "Add browser extension"
-#~ msgstr "Thêm tiện ích mở rộng"
-
-#~ msgid "Instant access"
-#~ msgstr "Truy cập tức thì"

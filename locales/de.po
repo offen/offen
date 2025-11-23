@@ -1006,14 +1006,3 @@ msgstr "Du hast der Sammlung von Daten widersprochen, es werden keine Daten gesa
 msgid "Find out more about Offen Fair Web Analytics at \"%s\""
 msgstr "Erfahren mehr über Offen Fair Web Analytics unter \"%s\""
 
-#~ msgid "<a href=\"%s\" class=\"%s\">Go to the Auditorium.</a>"
-#~ msgstr "<a href=\"%s\" class=\"%s\">Öffne das Auditorium.</a>"
-
-#~ msgid "Add our browser extension to have instant access to your usage data from other Offen Fair Web Analytics installations you have visited."
-#~ msgstr "Füge unsere Browser Extension hinzu, um Zugriff auf deine Nutzungsdaten von anderen Offen Fair Web Analytics-Installationen zu erhalten, die du besucht hast."
-
-#~ msgid "Add browser extension"
-#~ msgstr "Browser Extension hinzufügen"
-
-#~ msgid "Instant access"
-#~ msgstr "Instant Access"
