@@ -9,7 +9,7 @@ RUN apt-get update \
   sqlite3 \
   && rm -rf /var/lib/apt/lists/*
 
-ENV GOCACHE /data/cache
+ENV GOCACHE=/data/cache
 
 WORKDIR /offen
 # this is used for hot-reloading applications on change

@@ -20,7 +20,7 @@ RUN mkdir -p /var/opt/offen \
   && mkdir -p /etc/offen \
   && chown offen: /var/opt/offen /var/www/.cache /etc/offen
 
-ENV OFFEN_SERVER_PORT 80
+ENV OFFEN_SERVER_PORT=80
 EXPOSE 80 443
 
 HEALTHCHECK --interval=1m --timeout=5s \

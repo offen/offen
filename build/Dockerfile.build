@@ -1,17 +1,17 @@
 # Copyright 2020-2021 - Offen Authors <hioffen@posteo.de>
 # SPDX-License-Identifier: Apache-2.0
 
-FROM node:22-alpine as offen_node
+FROM node:22-alpine AS offen_node
 RUN apk add git
 RUN apk add --no-cache --virtual .gyp python3 make g++
 RUN npm i -g pnpm@10
 COPY ./packages /code/packages
-ENV ADBLOCK true
-ENV DISABLE_OPENCOLLECTIVE true
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
-ENV NODE_OPTIONS --no-experimental-fetch
+ENV ADBLOCK=true
+ENV DISABLE_OPENCOLLECTIVE=true
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+ENV NODE_OPTIONS=--no-experimental-fetch
 
-FROM offen_node as auditorium
+FROM offen_node AS auditorium
 ARG skip_locales
 ENV SKIP_LOCALES=$skip_locales
 COPY ./auditorium/package.json ./auditorium/pnpm-lock.yaml /code/deps/
@@ -22,11 +22,11 @@ COPY ./banner.txt /code/banner.txt
 COPY ./locales /code/auditorium/locales
 WORKDIR /code/auditorium
 RUN cp -a /code/deps/node_modules /code/auditorium/
-ENV NODE_ENV production
+ENV NODE_ENV=production
 RUN npm run build
 RUN npm run licenses
 
-FROM offen_node as script
+FROM offen_node AS script
 ARG skip_locales
 ENV SKIP_LOCALES=$skip_locales
 COPY ./script/package.json ./script/pnpm-lock.yaml /code/deps/
@@ -37,11 +37,11 @@ COPY ./banner.txt /code/banner.txt
 COPY ./locales /code/script/locales
 WORKDIR /code/script
 RUN cp -a /code/deps/node_modules /code/script/
-ENV NODE_ENV production
+ENV NODE_ENV=production
 RUN npm run build
 RUN npm run licenses
 
-FROM offen_node as vault
+FROM offen_node AS vault
 ARG skip_locales
 ENV SKIP_LOCALES=$skip_locales
 COPY ./vault/package.json ./vault/pnpm-lock.yaml /code/deps/
@@ -52,18 +52,18 @@ COPY ./banner.txt /code/banner.txt
 COPY ./locales /code/vault/locales
 WORKDIR /code/vault
 RUN cp -a /code/deps/node_modules /code/vault/
-ENV NODE_ENV production
+ENV NODE_ENV=production
 RUN npm run build
 RUN npm run licenses
 
 # packages does not have a build step but we need to derive license information
-FROM offen_node as packages
+FROM offen_node AS packages
 COPY ./packages/package.json ./packages/pnpm-lock.yaml /code/deps/
 WORKDIR /code/deps
 RUN pnpm install --frozen-lockfile
 WORKDIR /code/packages
 RUN cp -a /code/deps/node_modules /code/packages/
-ENV NODE_ENV production
+ENV NODE_ENV=production
 RUN npm run licenses
 
 FROM ruby:2.7-alpine AS server_licenses
@@ -81,7 +81,7 @@ RUN go mod download
 RUN echo "repository,version,licenses" > dependencies.csv
 RUN license_finder report | tail -n +2 >> dependencies.csv
 
-FROM python:3.8-alpine as notice
+FROM python:3.8-alpine AS notice
 
 WORKDIR /code
 COPY ./create_notice.py ./NOTICE /code/
@@ -99,7 +99,7 @@ RUN python ./create_notice.py \
   --client auditorium.csv \
   --server server.csv >> NOTICE
 
-FROM techknowlogick/xgo:go-1.25.x as compiler
+FROM techknowlogick/xgo:go-1.25.x AS compiler
 
 ARG rev
 ENV GIT_REVISION=$rev
@@ -115,7 +115,7 @@ COPY --from=auditorium /code/auditorium/dist /go/src/github.com/offen/offen/serv
 COPY --from=notice /code/NOTICE /go/src/github.com/offen/offen/server/public/static/NOTICE.txt
 COPY ./locales/* /go/src/github.com/offen/offen/server/public/static/locales/
 
-ENV GOPATH /go
+ENV GOPATH=/go
 WORKDIR /build
 
 COPY ./build/compile.sh .
