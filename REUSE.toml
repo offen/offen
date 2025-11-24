@@ -1,0 +1,46 @@
+version = 1
+SPDX-PackageName = "Offen"
+SPDX-PackageSupplier = "Offen <hioffen@posteo.de>"
+SPDX-PackageDownloadLocation = "https://github.com/offen/offen"
+
+[[annotations]]
+path = ["LICENSE", "AUTHORS", "NOTICE"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2020 Offen Authors <hioffen@posteo.de>"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = ["**/package.json", "**/package-lock.json", "**/pnpm-lock.yaml", "**/cypress.json", "**/go.mod", "**/go.sum", "**/Gemfile", "**/Gemfile.lock", "**/manifest.json"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2020 Offen Authors <hioffen@posteo.de>"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = ["banner.txt", "**/robots.txt"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2020 Offen Authors <hioffen@posteo.de>"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "test-site/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2020 Offen Authors <hioffen@posteo.de>"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = ["packages/__fixtures__/**", "script/__fixtures__/**", "server/router/testdata/**", "server/public/testdata/**", "server/config/testdata/**"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2020 Offen Authors <hioffen@posteo.de>"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "locales/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2020 Offen Authors <hioffen@posteo.de>"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "**/knip.json"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2025 Offen Authors <hioffen@posteo.de>"
+SPDX-License-Identifier = "Apache-2.0"
