@@ -59,8 +59,8 @@ func extractFromFile(f string) ([]*token, error) {
 				}
 				braces[len(braces)-1] = append(braces[len(braces)-1], token{
 					token:    s.TokenText(),
-					filename: s.Position.Filename,
-					line:     s.Position.Line,
+					filename: s.Filename,
+					line:     s.Line,
 				})
 			}
 		}

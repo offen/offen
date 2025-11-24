@@ -112,7 +112,7 @@ func (g *bufferingGinWriter) Write(data []byte) (int, error) {
 func etagMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		bw := &bufferingGinWriter{c.Writer, bytes.Buffer{}}
-		defer bw.ResponseWriter.Flush()
+		defer bw.Flush()
 		c.Writer = bw
 		c.Next()
 

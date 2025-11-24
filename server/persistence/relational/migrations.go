@@ -247,13 +247,13 @@ func (r *relationalDAL) ApplyMigrations() error {
 		{
 			ID: "005_update_secrets_table",
 			Migrate: func(db *gorm.DB) error {
-				if db.Config.Dialector.Name() == "mysql" {
+				if db.Name() == "mysql" {
 					return db.Exec("ALTER TABLE secrets MODIFY COLUMN encrypted_secret TEXT").Error
 				}
 				return nil
 			},
 			Rollback: func(db *gorm.DB) error {
-				if db.Config.Dialector.Name() == "mysql" {
+				if db.Name() == "mysql" {
 					return db.Exec("ALTER TABLE secrets MODIFY COLUMN encrypted_secret VARCHAR").Error
 				}
 				return nil

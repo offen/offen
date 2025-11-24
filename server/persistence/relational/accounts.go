@@ -27,7 +27,7 @@ func (r *relationalDAL) UpdateAccount(a *persistence.Account) error {
 	return nil
 }
 
-func (r *relationalDAL) FindAccount(q interface{}) (persistence.Account, error) {
+func (r *relationalDAL) FindAccount(q any) (persistence.Account, error) {
 	var account Account
 	switch query := q.(type) {
 	case persistence.FindAccountQueryIncludeEvents:
@@ -37,7 +37,7 @@ func (r *relationalDAL) FindAccount(q interface{}) (persistence.Account, error) 
 			}
 			return account.export(), fmt.Errorf(`relational: error looking up account with id %s: %w`, query.AccountID, err)
 		}
-		var limit int = 500
+		var limit = 500
 		var offset int
 		var events []Event
 		queryDB := r.db.Preload("Secret").Limit(limit)
@@ -83,7 +83,7 @@ func (r *relationalDAL) FindAccount(q interface{}) (persistence.Account, error) 
 	}
 }
 
-func (r *relationalDAL) FindAccounts(q interface{}) ([]persistence.Account, error) {
+func (r *relationalDAL) FindAccounts(q any) ([]persistence.Account, error) {
 	var accounts []Account
 	switch q.(type) {
 	case persistence.FindAccountsQueryAllAccounts:
