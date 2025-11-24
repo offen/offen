@@ -175,6 +175,8 @@ jobs:
       AWS_ACCESS_KEY_ID: ${{ secrets.MINIO_ACCESS_KEY }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.MINIO_SECRET_KEY }}
       AWS_ENDPOINT_URL_S3: 'https://storage.offen.dev'
+      AWS_REQUEST_CHECKSUM_CALCULATION: 'when_required'
+      AWS_RESPONSE_CHECKSUM_VALIDATION: 'when_required'
     if: ${{ !(github.ref_type == 'branch' && github.ref_name != 'development') }}
     steps:
       - uses: actions/checkout@v4
@@ -210,6 +212,8 @@ jobs:
       AWS_ACCESS_KEY_ID: ${{ secrets.MINIO_ACCESS_KEY }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.MINIO_SECRET_KEY }}
       AWS_ENDPOINT_URL_S3: 'https://storage.offen.dev'
+      AWS_REQUEST_CHECKSUM_CALCULATION: 'when_required'
+      AWS_RESPONSE_CHECKSUM_VALIDATION: 'when_required'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v5
