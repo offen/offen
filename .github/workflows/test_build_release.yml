@@ -1,0 +1,316 @@
+# Copyright 2025 - Offen Authors <hioffen@posteo.de>
+# SPDX-License-Identifier: Apache-2.0
+
+on:
+  push:
+    branches: ['*']
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test_clients:
+    strategy:
+      fail-fast: false
+      matrix:
+        node_package:
+          - vault
+          - script
+          - auditorium
+          - packages
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: ./${{ matrix.node_package }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+        with:
+          version: '10'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+          cache-dependency-path: ./${{ matrix.node_package }}/pnpm-lock.yaml
+      - name: Install dependencies
+        run: |
+          pnpm install --frozen-lockfile
+      - name: Run tests
+        run: |
+          pnpm test
+  test_server:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: ./server
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Go
+        uses: actions/setup-go@v6
+        with:
+          go-version-file: 'server/go.mod'
+          cache-dependency-path: 'server/go.mod'
+      - name: Install dependencies
+        run: go mod download
+      - name: Test with the Go CLI
+        run: go test -v ./...
+  test_reuse:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run Reuse
+        run: |
+          pip install --user reuse==6.2.0
+          reuse lint
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Determine revision
+        run: |
+         if [[ "$GITHUB_REF_TYPE" == "tag" ]]; then
+            echo OFFEN_GIT_REVISION=$GITHUB_REF_NAME >> $GITHUB_ENV
+          else
+            echo OFFEN_GIT_REVISION=$(git rev-parse --short HEAD) >> $GITHUB_ENV
+          fi
+      - name: Build binaries
+        run: |
+          if [[ "$GITHUB_REF_TYPE" == "branch" ]] && [[ "$GITHUB_REF_NAME" != "development" ]]; then
+            SKIP_LOCALES=1 make build
+          else
+            TARGETS=linux/amd64,windows/amd64,linux/arm-7,linux/arm64 make build
+            # Darwin builds cannot be statically linked right now
+            # so we override the default LDFLAGS value
+            TARGETS=darwin/amd64 LDFLAGS='' make build
+          fi
+          tar -cvf binaries.tar.gz ./bin
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ github.run_id }}
+          path: binaries.tar.gz
+          retention-days: 1
+          overwrite: true
+  test_integration:
+    runs-on: ubuntu-24.04
+    needs: [test_clients, test_server, test_reuse, build]
+    env:
+      CYPRESS_BASE_URL: http://localhost:3000
+      CYPRESS_RUN_LIGHTHOUSE_AUDIT: 1
+      CYPRESS_OPERATOR_USERNAME: ci@offen.dev
+      CYPRESS_OPERATOR_PASSWORD: secret5ecrets0secret
+      OFFEN_SERVER_PORT: 3000
+      OFFEN_DATABASE_CONNECTIONRETRIES: 5
+    strategy:
+      fail-fast: false
+      matrix:
+        database:
+          - { dialect: "sqlite3", connection: "/tmp/offen.sqlite3" }
+          - { dialect: "postgres", connection: "postgres://ci:test@localhost:5432/ci_test?sslmode=disable" }
+          - { dialect: "mysql", connection: "root:test@tcp(localhost:3306)/ci_test?parseTime=true" }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v5
+        with:
+          name: ${{ github.run_id }}
+          path: /tmp/binaries
+          merge-multiple: true
+      - name: Setup environment
+        run: |
+          echo OFFEN_DATABASE_DIALECT="${{ matrix.database.dialect }}" >> $GITHUB_ENV
+          echo OFFEN_DATABASE_CONNECTIONSTRING="${{ matrix.database.connection }}" >> $GITHUB_ENV
+      - name: Provision database
+        run: |
+          if [[ "$OFFEN_DATABASE_DIALECT" = "sqlite3" ]]; then
+            touch /tmp/offen.sqlite3
+          fi
+          if [[ "$OFFEN_DATABASE_DIALECT" = "postgres" ]]; then
+            docker run --name postgres -d -p 5432:5432 -e POSTGRES_USER=ci -e POSTGRES_PASSWORD=test -e POSTGRES_DB=ci_test postgres:15-alpine
+            timeout 90s bash -c "until docker exec postgres pg_isready; do sleep 5; done"
+          fi
+          if [[ "$OFFEN_DATABASE_DIALECT" = "mysql" ]]; then
+            docker run --name mysql -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=test -e MYSQL_DATABASE=ci_test mysql:5.7
+            timeout 90s bash -c "until docker exec mysql mysqladmin ping --silent; do sleep 5; done"
+          fi
+      - name: Setup application
+        run: |
+          tar -xvf /tmp/binaries/binaries.tar.gz .
+          cp ./bin/offen-linux-amd64 ./offen
+          touch offen.env
+          ./offen setup \
+            -email ci@offen.dev \
+            -name ciuser \
+            -password secret5ecrets0secret \
+            -populate \
+            -forceid 9b63c4d8-65c0-438c-9d30-cc4b01173393
+      - name: Run application in background
+        run: |
+          ./offen &
+      - uses: pnpm/action-setup@v4
+        with:
+          version: '10'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+          cache-dependency-path: ./integration/pnpm-lock.yaml
+      - name: Install dependencies
+        working-directory: ./integration
+        run: |
+          pnpm config set side-effects-cache false --location .
+          pnpm install --frozen-lockfile
+          pnpm install cypress@4.5.0 -g
+          cypress install
+      - name: Run integration tests
+        run: |
+          pnpm test
+        working-directory: ./integration
+  release_docs:
+    needs: [test_integration]
+    runs-on: ubuntu-24.04
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.MINIO_ACCESS_KEY }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.MINIO_SECRET_KEY }}
+      AWS_ENDPOINT_URL_S3: 'https://storage.offen.dev'
+    if: ${{ !(github.ref_type == 'branch' && github.ref_name != 'development') }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build versioned docs site
+        run: |
+          if [[ "$GITHUB_REF_TYPE" != "tag" ]]; then
+            echo "offen_version: development" >> ./docs/_override.yml
+            echo "baseurl: v/development" >> ./docs/_override.yml
+            make build-docs
+            aws s3 sync \
+              --delete \
+              ./docs-site/ s3://docs/v/development/
+          else
+            aws s3 cp ./docs/robots.txt docs
+            # - once as the root version in /
+            # - once as the tagged version in /$TAG/
+            make build-docs
+            aws s3 sync \
+              --delete --exclude 'v/*' \
+              ./docs-site/ s3://docs/
+
+            echo "baseurl: v/$GITHUB_REF_NAME" >> ./docs/_override.yml
+            make build-docs
+            aws s3 sync \
+              --delete \
+              ./docs-site/ s3://docs/v/$GITHUB_REF/
+          fi
+  release:
+    needs: [test_integration]
+    if: ${{ !(github.ref_type == 'branch' && github.ref_name != 'development') }}
+    runs-on: ubuntu-24.04
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.MINIO_ACCESS_KEY }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.MINIO_SECRET_KEY }}
+      AWS_ENDPOINT_URL_S3: 'https://storage.offen.dev'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v5
+        with:
+          name: ${{ github.run_id }}
+          path: /tmp/binaries
+          merge-multiple: true
+      - name: Set image tags
+        run: |
+          if [[ "$GITHUB_REF_TYPE" != "tag" ]]; then
+            echo 'DOCKER_IMAGE_TAGS=development' >> $GITHUB_ENV
+          else
+            echo 'export DOCKER_IMAGE_TAGS=$GITHUB_REF_NAME,latest' >> $GITHUB_ENV
+          fi
+      - name: Unpack artifact file
+        run: |
+          tar -xvf /tmp/binaries/binaries.tar.gz .
+      - name: Download signing key
+        run: |
+          aws s3 cp \
+            s3://secrets/signing-key.asc /tmp
+          gpg --import /tmp/signing-key.asc
+      - name: Package tarball
+        working-directory: ./bin
+        run: |
+          md5sum $(find . -perm -111 -type f) > checksums.txt
+
+          for artifact in $(find . -perm -111 -type f); do
+            gpg --armor --detach-sign $artifact
+          done
+
+          cp ./../{LICENSE,README.md} .
+
+          mkdir -p /tmp/artifacts
+          for tag in ${DOCKER_IMAGE_TAGS//,/ }; do
+            tar -czvf /tmp/artifacts/offen-$tag.tar.gz $(ls -A)
+          done
+      - name: Upload tarballs to storage.offen.dev
+        run: |
+          for tag in ${DOCKER_IMAGE_TAGS//,/ }; do
+            aws s3 cp /tmp/artifacts/offen-$tag.tar.gz s3://binaries/offen-$tag.tar.gz
+          done
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Log in to GHCR
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/metadata-action@v5
+        with:
+          # list of Docker images to use as base name for tags
+          images: |
+            offen/offen
+            ghcr.io/offen/offen
+          # define global behaviour for tags
+          flavor: |
+            latest=false
+          # specify one tag which never gets set, to prevent the tag-attribute being empty, as it will fallback to a default
+          tags: |
+            type=semver,pattern=v{{version}},enable=false
+          labels: |
+            org.opencontainers.image.title=${{github.event.repository.name}}
+            org.opencontainers.image.vendor=${{github.repository_owner}}
+            org.opencontainers.image.licenses=Apache-2.0
+            org.opencontainers.image.version=${{github.ref_name}}
+            org.opencontainers.image.created=${{ env.NOW }}
+            org.opencontainers.image.source=${{github.server_url}}/${{github.repository}}
+            org.opencontainers.image.revision=${{github.sha}}
+            org.opencontainers.image.url=https://www.offen.dev/
+            org.opencontainers.image.documentation=https://docs.offen.dev
+      - name: Output image tags
+        id: tags
+        run: |
+          echo $DOCKER_IMAGE_TAGS
+          releases=""
+          for tag in ${DOCKER_IMAGE_TAGS//,/ }; do
+            echo $tag
+            releases="${releases:+$releases,}offen/offen:$tag,ghcr.io/offen/offen:$tag"
+          done
+          echo "releases=$releases" >> "$GITHUB_OUTPUT"
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          tags: ${{ steps.tags.outputs.releases }}
+          labels: ${{ steps.meta.outputs.labels }}
+          push: true
+          file: build/Dockerfile
+          context: "."
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ github.run_id }}-tarballs
+          path: /tmp/artifacts
+          retention-days: 1
+          overwrite: true

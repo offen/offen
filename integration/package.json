@@ -24,5 +24,10 @@
       "expect",
       "assert"
     ]
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "cypress"
+    ]
   }
 }
