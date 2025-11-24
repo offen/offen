@@ -54,12 +54,12 @@ func (s *smtpMailer) Send(from, to, subject, body string) error {
 	msg.SetUserAgent("Offen Fair Web Analytics")
 
 	ctx := context.Background()
-	if err := s.Client.DialWithContext(ctx); err != nil {
+	if err := s.DialWithContext(ctx); err != nil {
 		return fmt.Errorf("failed to dial SMTP client: %w", err)
 	}
 	if err := s.Client.Send(msg); err != nil {
 		return fmt.Errorf("failed to send message via SMTP: %w", err)
 	}
-	_ = s.Client.Close()
+	_ = s.Close()
 	return nil
 }

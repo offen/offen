@@ -240,7 +240,7 @@ func (rt *router) postForgotPassword(c *gin.Context) {
 		return
 	}
 
-	resetURL := strings.Replace(req.URLTemplate, "{token}", signedCredentials, -1)
+	resetURL := strings.ReplaceAll(req.URLTemplate, "{token}", signedCredentials)
 
 	subject, body := bytes.NewBuffer(nil), bytes.NewBuffer(nil)
 	if err := rt.emails.ExecuteTemplate(subject, "subject_reset_password", nil); err != nil {

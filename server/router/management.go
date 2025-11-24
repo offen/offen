@@ -179,7 +179,7 @@ func (rt *router) postShareAccount(c *gin.Context) {
 	var subjectErr error
 	body, subject := bytes.NewBuffer(nil), bytes.NewBuffer(nil)
 	if result.UserExistsWithPassword {
-		bodyErr = rt.emails.ExecuteTemplate(body, "body_existing_user_invite", map[string]interface{}{"accountNames": result.AccountNames})
+		bodyErr = rt.emails.ExecuteTemplate(body, "body_existing_user_invite", map[string]any{"accountNames": result.AccountNames})
 		subjectErr = rt.emails.ExecuteTemplate(subject, "subject_existing_user_invite", nil)
 	} else {
 		signedCredentials, signErr := rt.cookieSigner.MaxAge(7*24*60*60).Encode("credentials", req.InviteeEmailAddress)
@@ -188,8 +188,8 @@ func (rt *router) postShareAccount(c *gin.Context) {
 			c.Status(http.StatusNoContent)
 			return
 		}
-		joinURL := strings.Replace(req.URLTemplate, "{token}", signedCredentials, -1)
-		bodyErr = rt.emails.ExecuteTemplate(body, "body_new_user_invite", map[string]interface{}{"url": joinURL})
+		joinURL := strings.ReplaceAll(req.URLTemplate, "{token}", signedCredentials)
+		bodyErr = rt.emails.ExecuteTemplate(body, "body_new_user_invite", map[string]any{"url": joinURL})
 		subjectErr = rt.emails.ExecuteTemplate(subject, "subject_new_user_invite", nil)
 	}
 

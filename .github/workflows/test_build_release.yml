@@ -53,6 +53,12 @@ jobs:
           cache-dependency-path: 'server/go.mod'
       - name: Install dependencies
         run: go mod download
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v8
+        with:
+          version: v2.4
+          args: --timeout 5m
+          working-directory: ./server
       - name: Test with the Go CLI
         run: go test -v ./...
   test_reuse:
