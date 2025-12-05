@@ -30,12 +30,12 @@ require (
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/phayes/freeport v0.0.0-20180830031419-95f893ade6f2
 	github.com/schollz/progressbar/v3 v3.8.3
-	github.com/sirupsen/logrus v1.8.1
+	github.com/sirupsen/logrus v1.8.3
 	github.com/wneessen/go-mail v0.7.1
 	golang.org/x/crypto v0.45.0
 	golang.org/x/net v0.47.0 // indirect
 	golang.org/x/sys v0.38.0
-	golang.org/x/term v0.37.0 // indirect
+	golang.org/x/term v0.37.0
 	gopkg.in/yaml.v2 v2.4.0
 	gorm.io/driver/mysql v1.1.2
 	gorm.io/driver/postgres v1.1.1
