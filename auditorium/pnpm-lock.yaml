@@ -27,11 +27,11 @@ importers:
         specifier: ^1.51.2
         version: 1.58.5
       preact:
-        specifier: ^10.27.2
-        version: 10.27.2
+        specifier: ^10.27.3
+        version: 10.27.3
       preact-router:
         specifier: ^4.1.2
-        version: 4.1.2(preact@10.27.2)
+        version: 4.1.2(preact@10.27.3)
       prism-themes:
         specifier: ^1.6.0
         version: 1.9.0
@@ -938,20 +938,20 @@ packages:
   '@sinonjs/text-encoding@0.7.3':
     resolution: {integrity: sha512-DE427ROAphMQzU4ENbliGYrBSYPXF+TtLg9S8vzeA+OF4ZKzoDdzfL8sxuMUGS/lgRhM6j1URSk9ghf7Xo1tyA==}
 
-  '@turf/area@7.2.0':
-    resolution: {integrity: sha512-zuTTdQ4eoTI9nSSjerIy4QwgvxqwJVciQJ8tOPuMHbXJ9N/dNjI7bU8tasjhxas/Cx3NE9NxVHtNpYHL0FSzoA==}
+  '@turf/area@7.3.1':
+    resolution: {integrity: sha512-9nSiwt4zB5QDMcSoTxF28WpK1f741MNKcpUJDiHVRX08CZ4qfGWGV9ZIPQ8TVEn5RE4LyYkFuQ47Z9pdEUZE9Q==}
 
-  '@turf/bbox@7.2.0':
-    resolution: {integrity: sha512-wzHEjCXlYZiDludDbXkpBSmv8Zu6tPGLmJ1sXQ6qDwpLE1Ew3mcWqt8AaxfTP5QwDNQa3sf2vvgTEzNbPQkCiA==}
+  '@turf/bbox@7.3.1':
+    resolution: {integrity: sha512-/IyMKoS7P9B0ch5PIlQ6gMfoE8gRr48+cSbzlyexvEjuDuaAV1VURjH1jAthS0ipFG8RrFxFJKnp7TLL1Skong==}
 
-  '@turf/centroid@7.2.0':
-    resolution: {integrity: sha512-yJqDSw25T7P48au5KjvYqbDVZ7qVnipziVfZ9aSo7P2/jTE7d4BP21w0/XLi3T/9bry/t9PR1GDDDQljN4KfDw==}
+  '@turf/centroid@7.3.1':
+    resolution: {integrity: sha512-hRnsDdVBH4pX9mAjYympb2q5W8TCMUMNEjcRrAF7HTCyjIuRmjJf8vUtlzf7TTn9RXbsvPc1vtm3kLw20Jm8DQ==}
 
-  '@turf/helpers@7.2.0':
-    resolution: {integrity: sha512-cXo7bKNZoa7aC7ydLmUR02oB3IgDe7MxiPuRz3cCtYQHn+BJ6h1tihmamYDWWUlPHgSNF0i3ATc4WmDECZafKw==}
+  '@turf/helpers@7.3.1':
+    resolution: {integrity: sha512-zkL34JVhi5XhsuMEO0MUTIIFEJ8yiW1InMu4hu/oRqamlY4mMoZql0viEmH6Dafh/p+zOl8OYvMJ3Vm3rFshgg==}
 
-  '@turf/meta@7.2.0':
-    resolution: {integrity: sha512-igzTdHsQc8TV1RhPuOLVo74Px/hyPrVgVOTgjWQZzt3J9BVseCdpfY/0cJBdlSRI4S/yTmmHl7gAqjhpYH5Yaw==}
+  '@turf/meta@7.3.1':
+    resolution: {integrity: sha512-NWsfOE5RVtWpLQNkfOF/RrYvLRPwwruxhZUV0UFIzHqfiRJ50aO9Y6uLY4bwCUe2TumLJQSR4yaoA72Rmr2mnQ==}
 
   '@types/geojson-vt@3.2.5':
     resolution: {integrity: sha512-qDO7wqtprzlpe8FfQ//ClPV9xiuoh2nkIgiouIptON9w5jvD/fA4szvP9GBlDVdJ5dldAl0kX/sy3URbWwLx0g==}
@@ -4114,8 +4114,8 @@ packages:
     peerDependencies:
       preact: '>=10'
 
-  preact@10.27.2:
-    resolution: {integrity: sha512-5SYSgFKSyhCbk6SrXyMpqjb5+MQBgfvEKE/OC+PujcY34sOpqtr+0AZQtPYx5IA6VxynQ7rUPCtKzyovpj9Bpg==}
+  preact@10.27.3:
+    resolution: {integrity: sha512-ZieIP3zQHiQsNF3BA+SNVS8dcuRIg/nsxlkFbCMBLS2L1Ww4Bkxd9n6Md2A1crfTZsEbQPADV0neYmh/EElgeQ==}
 
   prelude-ls@1.1.2:
     resolution: {integrity: sha512-ESF23V4SKG6lVSGZgYNpbsiaAkdab6ZgOxe52p7+Kid3W3u3bxR4Vfd/o21dmN7jSt0IwgZ4v5MUd26FEtXE9w==}
@@ -6460,35 +6460,35 @@ snapshots:
 
   '@sinonjs/text-encoding@0.7.3': {}
 
-  '@turf/area@7.2.0':
+  '@turf/area@7.3.1':
     dependencies:
-      '@turf/helpers': 7.2.0
-      '@turf/meta': 7.2.0
+      '@turf/helpers': 7.3.1
+      '@turf/meta': 7.3.1
       '@types/geojson': 7946.0.16
       tslib: 2.8.1
 
-  '@turf/bbox@7.2.0':
+  '@turf/bbox@7.3.1':
     dependencies:
-      '@turf/helpers': 7.2.0
-      '@turf/meta': 7.2.0
+      '@turf/helpers': 7.3.1
+      '@turf/meta': 7.3.1
       '@types/geojson': 7946.0.16
       tslib: 2.8.1
 
-  '@turf/centroid@7.2.0':
+  '@turf/centroid@7.3.1':
     dependencies:
-      '@turf/helpers': 7.2.0
-      '@turf/meta': 7.2.0
+      '@turf/helpers': 7.3.1
+      '@turf/meta': 7.3.1
       '@types/geojson': 7946.0.16
       tslib: 2.8.1
 
-  '@turf/helpers@7.2.0':
+  '@turf/helpers@7.3.1':
     dependencies:
       '@types/geojson': 7946.0.16
       tslib: 2.8.1
 
-  '@turf/meta@7.2.0':
+  '@turf/meta@7.3.1':
     dependencies:
-      '@turf/helpers': 7.2.0
+      '@turf/helpers': 7.3.1
       '@types/geojson': 7946.0.16
 
   '@types/geojson-vt@3.2.5':
@@ -10230,9 +10230,9 @@ snapshots:
       '@plotly/d3-sankey-circular': 0.33.1
       '@plotly/mapbox-gl': 1.13.4(mapbox-gl@1.13.3)
       '@plotly/regl': 2.1.2
-      '@turf/area': 7.2.0
-      '@turf/bbox': 7.2.0
-      '@turf/centroid': 7.2.0
+      '@turf/area': 7.3.1
+      '@turf/bbox': 7.3.1
+      '@turf/centroid': 7.3.1
       base64-arraybuffer: 1.0.2
       canvas-fit: 1.5.0
       color-alpha: 1.0.4
@@ -10346,11 +10346,11 @@ snapshots:
 
   potpack@2.1.0: {}
 
-  preact-router@4.1.2(preact@10.27.2):
+  preact-router@4.1.2(preact@10.27.3):
     dependencies:
-      preact: 10.27.2
+      preact: 10.27.3
 
-  preact@10.27.2: {}
+  preact@10.27.3: {}
 
   prelude-ls@1.1.2: {}
 
