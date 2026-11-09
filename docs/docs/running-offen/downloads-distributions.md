@@ -145,6 +145,17 @@ $ sudo yunohost app install https://github.com/offen/offen_ynh
 
 [ynh-repo]: https://github.com/offen/offen_ynh
 
+### Easypanel
+
+[Easypanel](https://easypanel.io) is a self-hosted Docker deployment platform, and Offen Fair Web Analytics has a one-click deployment template there.
+
+[![Deploy on Easypanel][easypanel-btn]][easypanel-deploy]
+
+[easypanel-btn]: https://easypanel.io/img/deploy-on-easypanel-40.svg
+[easypanel-deploy]: https://easypanel.io/templates/offen
+
+The template deploys the `offen/offen` image with a PostgreSQL database already wired up.
+
 ## Building Offen for other architectures other
 
 Current distributions of Offen Fair Web Analytics target `amd64`, `arm64` and `arm/v7` architectures only. If you want to run it on different hardware, it is possible to build a binary for your target OS and platform yourself. Assuming you have Docker and `make` installed, you can build the latest version like this (the example targets Linux on ARM v6):
